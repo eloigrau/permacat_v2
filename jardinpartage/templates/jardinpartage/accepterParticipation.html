@@ -1,0 +1,26 @@
+{% extends 'jardinpartage/base_jardins.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 col-lg-6 textcenter justify-content-center">
+<h4>Bienvenue sur le blog des Jardins Partagés !</h4>
+    <hr>
+        <p>Afin d'avoir liste des gens intéressés, les articles concernant les jardins partagés sont plutôt réservés à ceux qui y participent (de près ou de loin). N'hésitez pas à entrer et vous joindre à nous ! </p>
+    <hr>
+    <p>Voulez-vous participer (de près ou de loin) aux jardins partagés ?</p>
+
+<form action="" method="post">{% csrf_token %}
+    <input type="submit" value="Oui" />
+        <input type="button"  onclick="window.history.back();"  value="Non" />
+</form>
+    <hr>        
+    <p class="textpetit">Si vous acceptez, vous serez automatiquement "abonné" aux nouveaux articles concernant les jardins partagés. N'oubliez pas de vous désabonner si vous ne voulez pas recevoir ces emails en cliquant sur la "cloche"</p>
+<p class="textpetit">Si vous ne souhaitez plus participer, vous pourrez ultérieurement vous désinscrire des jardins partagés en modifiant votre profil, </p>
+
+
+
+</div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,57 @@
+{% extends 'vote/baseVote.html' %}
+
+{% block subtitle %}
+<h3>Voter</h3>
+<a href="{{ suffrage.get_absolute_url }}" class="btn btn-secondary" >retour au suffrage</a>
+{% endblock %}
+{% block content %}
+<h5 class="textcenter">{{suffrage.titre}}</h5>
+
+<form  id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+    <p class="h5">Questions soumises au vote binaire : </p>
+    <div id="rb_formset">
+    {% for form in reponses_b_form %}
+        <div class="row">
+        <div class="col-sm-12 col-md-2">
+            {% if reponses_b_form|length > 1%}
+            {{ forloop.counter }} :
+    {% endif %}
+        </div>
+        <div class="col-sm-12 col-md-8">
+            {% include 'form_template2.html' %}
+        </div>
+        </div>
+        <hr>
+    {% endfor %}
+    </div>
+    <hr>
+    <p class="h5">Questions soumises au vote majoritaire : </p>
+    <div id="rm_formset">
+        {% for q, form in reponses_m_form.items %}
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {% ifchanged q.0 %}
+                    {{q.0}}
+                {% endifchanged %}
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {% include 'form_template2.html' %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <hr>
+
+     {% include 'form_template2.html' %}
+
+        <div class="row">
+            <div class="col-sm-12 textcenter">
+                <button id="btn-valider" type="submit" class="btn btn-primary">Je soumets mon bulletin de vote !</button>
+            </div>
+        </div>
+</form>
+{% endblock %}
+
+

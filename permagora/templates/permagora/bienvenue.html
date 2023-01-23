@@ -1,0 +1,148 @@
+{% extends 'permagora/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load fontawesome %}
+{%block header %}
+ <script src="{% static 'permagora/js/cookielaw.js'%}" type="text/javascript"></script>
+{%endblock%}
+
+{% block content %}
+    <div class="site-section site-hero">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-10 offset-md-2">
+            <span class="d-block mb-3 caption" data-aos="fade-up" data-aos-delay="100">Pour faire face aux bouleversements en cours</span>
+            <h1 class="d-block mb-4" data-aos="fade-up" data-aos-delay="200">L'Agora de PermAgora Catalane</h1>
+            <p><span class="d-block mb-5 caption" data-aos="fade-up" data-aos-delay="300">Plateforme d'intelligence collective au service de la Transition</span></p>
+        </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="site-section-heading">
+              <h2>Pourquoi ?</h2>
+            </div>
+          </div>
+          <div class="col-lg-5 mt-5 pl-lg-5" data-aos="fade-up" data-aos-delay="200">
+            <p>Parce que notre avenir est menacé par le changement climatique, la pollution, la perte de l'agriculture, l'aculturation, la fin des ressources fossiles, les catastrophes naturelles, etc...</p>
+<p> <a href="{% url 'permagora:introduction' %}" class="btn-custom" ><span>Comprendre notre démarche</span></a></p>
+
+                </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="site-section-heading">
+              <h2>Est-on à peu près d'accord sur le constat ?</h2>
+            </div>
+          </div>
+          <div class="col-lg-5 mt-5 pl-lg-5" data-aos="fade-up" data-aos-delay="200">
+            <p>Les experts et scientifiques sont assez clairs, mais venez vous informer, et discutons-en ensemble...</p>
+             <a href="{% url 'permagora:risques' %}" class="btn-custom" data-aos="fade-up" data-aos-delay="400"><span>S'informer et débattre...</span></a>
+  </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="site-section-heading">
+              <h2>Que faudrait-il faire ?</h2>
+            </div>
+          </div>
+          <div class="col-lg-5 mt-5 pl-lg-5" data-aos="fade-up" data-aos-delay="200">
+              <p>Faisons une liste de préconisations, d'engagements et d'actes qui répondent aux enjeux et aux problématiques soulevées</p>
+            <a href="{% url 'permagora:preconisations' %}" class="btn-custom" data-aos="fade-up" data-aos-delay="400"><span>Lire les préconisations</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="site-section-heading">
+              <h2>Nos propositions</h2>
+            </div>
+          </div>
+          <div class="col-lg-5 mt-5 pl-lg-5" data-aos="fade-up" data-aos-delay="200">
+            <p>A partir des préconisations, on établit un état des lieux et un plan d'action sous forme de propositions de projets. Ensuite nous mettrons nous-même en oeuvre avec tous ceux qui le souhaitent, pour la transition écologique et démocratique de notre territoire</p>
+
+<a href="{% url 'permagora:propositions' %}" class="btn-custom" data-aos="fade-up" data-aos-delay="400"><span>Lire les propositions</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="site-section-heading">
+              <h2>Qui sommes-nous ?</h2>
+            </div>
+          </div>
+          <div class="col-lg-5 mt-5 pl-lg-5" data-aos="fade-up" data-aos-delay="200">
+              <p><a href="{% url 'permagora:presentationPermagora' %}" class="btn-custom" data-aos="fade-up" data-aos-delay="400"><span>présentation du collectif</span></a></p>
+              <p><a href="{% url 'permagora:organisationPermagora' %}" class="btn-custom" data-aos="fade-up" data-aos-delay="400"><span>notre organisation</span></a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col-lg-4 ">
+            <div class="site-section-heading" data-aos="fade-up">
+              <h2>Partenaires</h2>
+            </div>
+          </div>
+          <div class="col-lg-6 mt-5 pl-lg-5" data-aos="fade-up" data-aos-delay="100">
+            <p>Toute participation est bienvenue ! Rejoignez-nous et ajoutez votre logo ici !</p>
+          </div>
+        </div>
+        <div class="row mb-5 justify-content-center">
+          <div class="col-md-6 col-lg-4 mb-5 mb-lg-0" data-aos="fade" data-aos-delay="200">
+            <img src="{% static 'android-chrome-256x256.png' %}" alt="Image" class="img-fluid" style="width:20%;">
+          </div>
+        </div>
+
+        <div class="row" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-12 text-center pt-5">
+              {% if request.user.is_authenticated %}
+              vous êtes connecté à Perma.Cat
+                  {% if request.user.adherent_scic %}
+                  et vous êtes inscrit.e dans le groupe PermAgora. Super ! Vous pouvez participer à la réflexion en ajoutant ou modifiant les <a href="{% url 'permagora:propositions' %}"> plans d'action</a>
+                  {% else %}
+              mais vous n'êtes pas (encore ?) inscrit.e <a href="{% url 'presentation_asso' asso='scic' %}">dans le groupe PermAgora</a>.
+                  {% endif %}
+              {% else %}
+            <a href="{% url 'login' %}?next={%url 'permagora:bienvenue'%}" class="btn-custom" data-aos="fade-up" data-aos-delay="400"><span>Je participe !</span></a>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% load cookielaw_tags %}
+    {% cookielaw_banner %}
+
+{% endblock %}
+
+

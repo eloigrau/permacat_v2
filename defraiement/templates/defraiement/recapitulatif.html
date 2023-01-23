@@ -1,0 +1,100 @@
+{% extends 'base_defraiement.html' %}
+{% load fontawesome %}
+{% load hitcount_tags %}
+
+{% block subtitle %}
+
+<p class="textcenter">
+    <a href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante %}">
+        <button type="button" class="btn btn-sm btn-primary">
+        &nbsp;Revenir à la liste des réunions
+        </button>
+    </a>
+</p>
+
+{% endblock %}
+
+{% block content %}
+<h4  class="textcenter">Récapitulatif</h4>
+
+<hr>
+<nav class="navbar  navbar-expand-md navbar-light justify-content-center">
+<div class="row justify-content-center">
+        <div class="collapse navbar-collapse" id="navbarType">
+            <ul class="nav navbar-nav justify-content-center ">
+                <li class="nav-item  ">
+                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}">
+                          <button type="button" class="btn  btn-block {%if type_courant == '999' %} btn-warning{% else %}btn-info{% endif %}" >
+                              <h6>Tout</h6>
+                       </button>
+                    </a>
+                </li>
+            {% for type_id, type_nom  in type_list %}
+                <li class="nav-item  ">
+                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante  %}?type_reunion={{type_id}}">
+                          <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
+                              <h6>{{type_nom}}</h6>
+                       </button>
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+</nav>
+</div>
+<div class="row contenu reunion">
+<div class="col justify-content-center">
+<table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                {% for ll in entete %}
+                <th>{{ll|safe}}</th>
+        {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+    {% for ll in lignes %}
+    <tr>
+        {% for l in ll %}
+        <td>{{l|safe}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+        </tbody>
+</table>
+
+</div>
+</div>
+
+
+<hr>
+<div class="row-sm-12">
+<div class="col-sm-12">
+	<form id="reunionForm" class="form-horizontal" role="form" action="" method="post"
+		enctype="multipart/form-data">
+		{% csrf_token %} <input type="hidden" name="Reunion"
+			value="{{ reunion }}"> {% include 'form_template.html'%}
+	</form>
+</div></div>
+<hr>
+{% if unite == euros %}
+<p class="textcenter">
+    <a href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}" >
+        <button type="button" class="btn btn-sm btn-primary">
+         Kilométrages
+        </button>
+    </a>
+</p>
+<hr>
+{% endif %}
+{% comment %}
+<p class="textcenter">
+    <a href="{% url 'defraiement:export_recapitulatif' %}" target="_blank">
+        <button type="button" class="btn btn-sm btn-primary">
+        &nbsp;Exporter en CSV
+        </button>
+    </a>
+</p>
+{% endcomment %}
+
+{% endblock %}

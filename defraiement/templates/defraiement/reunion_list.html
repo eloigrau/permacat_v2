@@ -1,0 +1,175 @@
+{% extends 'base_defraiement.html' %}
+{% load static %}
+{% load fontawesome %}
+
+{% load activity_tags %}
+{%block header %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+{%endblock%}
+
+{%block subtitle%}
+
+<h3 class="textcenter">
+    {% if asso_courante %} {{asso_courante.nom}} - {% endif %} Défraiement
+</h3>
+<h4 class="textcenter">
+    Liste des événements (réunions, trocs...)
+</h4>
+<p class="textcenter">
+    <a href="{% url 'defraiement:participants' asso_slug=asso_courante.abreviation %}">
+    <button type="button" class="btn btn-primary btn-sm" >
+            <i class="fa fa-arrow-right"></i> Liste des participants
+        </button>
+    </a>
+</p>
+<hr>
+<div class="row align-items-center reunion_titre_page_index">
+    <div class="col-md-4 offset-md-4 textcenter justify-content-center">
+
+        <a href="{% url 'defraiement:ajouterReunion' asso_slug=asso_courante.abreviation %}">
+        <button type="button" class="btn btn-success" >
+                <i class="fa fa-plus"></i> Ajouter une réunion
+            </button>
+        </a>
+    </div>
+    <div class="col-md-4 textcenter">
+
+        <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+         {% fontawesome_icon 'question-circle' %}
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog textaide" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <div class="row justify-content-center">
+                   <h5 > </h5>
+                  </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body textleft">
+                  <p>                  </p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
+{% block content %}
+<nav class="navbar  navbar-expand-md navbar-light justify-content-center">
+<div class="row justify-content-center">
+        <div class="collapse navbar-collapse" id="navbarType">
+            <ul class="nav navbar-nav justify-content-center ">
+            <li class="nav-item  ">
+                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}">
+                      <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
+                          <h6>Tout</h6>
+                      </button>
+                </a>
+            </li>
+        {% for type_id, type_nom  in categorie_list %}
+            <li class="nav-item  ">
+                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation  %}?categorie={{type_id}}">
+                      <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
+                          <h6>{{type_nom}}</h6>
+                   </button>
+                </a>
+            </li>
+        {% endfor %}
+
+
+        </ul>
+    </div>
+</div>
+</nav>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+            <button class="btn dropdown-toggle btn-light" type="button" id="menuOrdreTri" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   Trier par...
+           </button>
+                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
+                {% for ordreTri,type  in ordreTriPossibles.items %}
+                 <a class="dropdown-item"  href="?ordreTri={{type}}">{{ordreTri}}</a>
+                    {% endfor %}
+                </div>
+    </div></div>
+<div class="infinite-container ">
+    {% for reunion in reunion_list %}
+
+<div class="infinite-item ">
+   <div class="row justify-content-center ">
+    <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
+        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelier" >
+            <div></div>
+            <div style="background-color:{{reunion.get_couleur}};
+    font-variant: small-caps;" > {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }} - {{ reunion.titre }}  </div>
+            {% if reunion.start_time %}
+        <p class="textepetit">le {{ reunion.start_time|date:"DATE_FORMAT" }}</p>
+        {% endif %}
+
+        <p class="textepetit"> {{reunion.participants.all | length}} participants, {{reunion.getDistanceTotale}}km</p>
+
+        </a>
+    </div>
+   </div>
+</div>
+
+    {% endfor %}
+</div>
+{%include 'pagination.html' %}
+
+        {% if list_archive %}
+<hr>
+        <div class="textcenter">
+            <button id="btn-archives"  type="button" class="btn btn-lg" onclick="toggle_visibility('archives');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+                Afficher les archives
+            </button>
+        </div>
+        <hr>
+        <div id="archives" style='display:none;'>
+            {% for reunion in list_archive %}
+   <div class="row justify-content-center ">
+    <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
+        <a  href="{% url 'defraiement:lireReunion_id' id=reunion.id %}" class="boutonAtelier" > <div style="background-color:{{reunion.reunion.get_couleur}};
+    font-variant: small-caps;" >{{reunion.get_logo_nomgroupe_html}} {{ reunion.titre }}  </div>
+            {% if reunion.start_time %}
+        <p class="textepetit">le {{ reunion.start_time|date:"DATE_FORMAT" }}</p>
+        {% endif %}</a>
+
+    </div>
+   </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+<p class="textcenter">
+
+{% if asso_courante %}
+<a href="{% url 'defraiement:recapitulatif'  asso_slug=asso_courante.abreviation%}">
+<button type="button" class="btn btn-primary" >
+        <i class="fa fa-arrow-right"></i> Récapitulatif
+    </button>
+    </a>&ensp;
+{% endif %}
+</p>
+<script>
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       var btn = document.getElementById("btn-archives");
+       if(e.style.display == 'block'){
+          e.style.display = 'none';
+          btn.textContent = "Afficher les archives";
+      }
+       else{
+          e.style.display = 'block';
+          btn.textContent = "Cacher les archives";
+      }
+   }
+</script>
+{% endblock %}

@@ -1,0 +1,393 @@
+{% extends 'base_projets.html' %}
+{% load static %}
+{% load app_filters %}
+{% load blog_filters %}
+{% load fontawesome %}
+{% load activity_tags %}
+{% block subtitle %}
+<div class="row">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-8">
+        <p class="infos  textepetit"> <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}"  style="background-color:{{projet.get_couleur}}">Projet : {{ projet.get_categorie_display }}</a>, rédigé par <a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>, le {{ projet.date_creation|date:"DATE_FORMAT" }}
+
+
+        <a href="{% url 'blog:suivre_projet' projet.slug %}">
+            {% if request.user|is_following:projet %}
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
+                 {% fontawesome_icon 'bell' %} Suivi
+            </button>
+            {% else %}
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
+                 {% fontawesome_icon 'bell-slash' %} Non suivi
+            </button>
+            {% endif %}
+        </a>
+            {% if request.user.is_superuser %}
+        <a href="{% url 'blog:suiveursProjet' projet.slug %}">
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir qui est abonné tifications concernant cet article par mail">
+                 {% fontawesome_icon 'list' %}
+            </button>
+        </a>
+            {% endif %}
+        </p>
+    </div>
+    <div class="col-md-2">
+        {%if projet.auteur == request.user or request.user.is_superuser%}
+		<div class="btn-group">
+
+            <a href="{% url 'blog:modifierProjet' slug=projet.slug %}">
+               <button type="button" class="btn btn-sm btn-warning">
+               &nbsp;Modifier
+               </button></a>
+            <a href="{% url 'blog:supprimerProjet' slug=projet.slug %}">
+               <button type="button" class="btn btn-sm btn-danger">
+               &nbsp;Supprimer
+               </button></a>
+		</div>
+        {%endif%}
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="contenu article">
+
+<div class="row " id="contenu_projet">
+	<div class="col-sm-6">
+            <span class="badge {% if projet.estPublic%}badge-success{%else%}  badge-warning{%endif%}">
+                Projet {{projet.asso}}
+            </span>
+
+            {% if article.estArchive%}
+            <span class="badge badge-Light">
+                archivé
+            </span>
+            {%endif%}
+	</div>
+	<div class="col-sm-6 textright">
+               <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Statut : {{ projet.get_statut_display }}
+               </button>
+            <button type="button" class="btn" data-toggle="modal" data-target="#historique">
+              {% fontawesome_icon 'bell' %} Historique
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog textcenter" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                      <div class="row justify-content-center">
+                          <div class="col col-sm-12">
+                      <h5 >Historique</h5>
+                          </div>
+                      </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="contenu historique" id="idHistorique">
+                      {%for action in actions %}
+                            {% include "notifications/notifications_template3.html" with action=action%}
+                      {%endfor%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+	</div>
+</div>
+
+    <hr>
+<div class="row justify-content-center">
+      <h3 class="textcenter">{{ projet.titre }}</h3>
+</div>
+        <div class="row justify-content-center">
+            <div class="col textcenter">
+ {% if projet.slug == "un-jardin-partage-en-permaculture-accessible-a-tous" or projet.slug == "jardin-de-permacat-a-perpignan" or projet.slug == "jardins-partages-a-perpignan-au-champ-de-mars" %}
+
+         <a href="{% url 'jardinpartage:index_jardin' jardin='1' %}">
+             <button type="button" class="btn  btn-success" >
+                    <i class="fa fa-arrow-right"></i>&nbsp;Blog du jardin
+            </button>
+         </a>
+         <a href="{% url 'blog:index_asso' asso='jp' %}">
+             <button type="button" class="btn  btn-success" >
+                    <i class="fa fa-arrow-right"></i>&nbsp;Articles des jardins partagés sur le forum
+            </button>
+         </a>
+ {% elif projet.slug == "jardin-partage-de-palau" %}
+                     <a href="{% url 'jardinpartage:index_jardin' jardin='2' %}">
+                         <button type="button" class="btn  btn-success" >
+                                <i class="fa fa-arrow-right"></i>&nbsp;Blog du jardin
+                        </button>
+                     </a>
+
+                     <a href="{% url 'blog:index_asso' asso='jp' %}">
+                         <button type="button" class="btn  btn-success" >
+                                <i class="fa fa-arrow-right"></i>&nbsp;Articles des jardins partagés sur le forum
+                        </button>
+                     </a>
+    {% elif projet.slug == "jardins-du-lycee-jean-lurcat" %}
+                     <a href="{% url 'jardinpartage:index_jardin' jardin='3' %}">
+                         <button type="button" class="btn  btn-success" >
+                                <i class="fa fa-arrow-right"></i>&nbsp;Blog du jardin
+                        </button>
+                     </a>
+    {% elif projet.slug == "projet-eco-lieu" %}
+                     <a href="{% url 'blog:index' %}?categorie=Ecovillage">
+                         <button type="button" class="btn  btn-success" >
+                                <i class="fa fa-arrow-right"></i>&nbsp;Articles du forum
+                        </button>
+                     </a>
+{%endif  %}
+            </div></div>
+    <hr>
+<div class="row">
+<div class="col">
+    {{ projet.contenu|safe}}
+</div>
+</div>
+    {% comment %}
+<hr>
+<div class="row justify-content-center" >
+<div class="col-sm-12 textcenter">
+     <a href="{% url 'blog:index' %}?categorie={{projet.slug}}">
+         <button type="button" class="btn  btn-success" >
+                <i class="fa fa-arrow-right"></i>&nbsp;Voir les articles du forum
+        </button>
+     </a>&nbsp;
+</div>
+</div>
+    {% endcomment %}
+<hr>
+ {% if projet.tags.names %}
+<div class="row">
+<div class="col-sm-12">
+    <p><em>Mots-clés :</em>
+            {% for tag in projet.tags.names %}
+            {{tag}}{%if not forloop.last%}, {%endif%}
+           {% endfor %}
+    </p>
+</div>
+</div>
+    <hr>
+{% endif%}
+    <div class="col-sm-12 paddingbase">
+		<table class="table table-condensed ">
+			<tbody>
+                    {% if projet.coresponsable%}
+				<tr>
+					<td class="nomProprieteProduit">
+						Référent :
+					</td>
+					<td class="proprieteProduit">
+						{{ projet.coresponsable}}
+					</td>
+				</tr>
+                    {% endif %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Type de projet :
+					</td>
+					<td class="proprieteProduit">
+						{{ projet.get_categorie_display }}
+					</td>
+				</tr>
+
+                <tr>
+					<td class="nomProprieteProduit">
+						Dernière modification :
+					</td>
+					<td class="proprieteProduit">
+						{{ projet.date_modification |date:"DATE_FORMAT"}}
+					</td>
+				</tr>
+                    {% if projet.lien_document%}
+                <tr>
+					<td class="nomProprieteProduit">
+						Document en ligne :
+					</td>
+					<td class="proprieteProduit">
+                        <a href="{{ projet.lien_document}}" target="_blank">{{ projet.lien_document}}</a>
+					</td>
+				</tr>
+                    {% endif %}
+
+
+                    {% if projet.fichier_projet%}
+                <tr>
+					<td class="nomProprieteProduit">
+						Fichiers : {{ projet.fichier_projet}}
+					</td>
+					<td class="proprieteProduit">
+                        <a  href="{{ projet.fichier_projet.url}}" download>
+                            <button class="btn btn-info btn-sm textcenter">	{{ projet.fichier_projet.name}}</button>
+                            </a>
+
+					</td>
+				</tr>
+                <tr>
+					<td class="nomProprieteProduit">
+						Date de téléversement :
+					</td>
+					<td class="proprieteProduit">
+						{{ projet.date_fichier}}
+					</td>
+				</tr>
+                    {% endif %}
+                    {%if request.user.adherent_pc%}
+                        {% if projet.lien_vote%}
+                        <tr>
+                            <td class="nomProprieteProduit">
+                                Lien pour voter :
+                            </td>
+                            <td class="proprieteProduit">
+                                {{ projet.lien_vote}}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endif %}
+                {%if projet.end_time or projet.start_time%}
+                <tr>
+                    <td class="nomProprieteProduit">Date</td>
+                    <td class="proprieteProduit">
+
+              <a href="{% url 'cal:agenda' %} ">
+                {%if projet.end_time and projet.start_time != projet.end_time %}
+                    Du {{ projet.start_time|date:"d/m/Y"  }} au {{ projet.end_time|date:"d/m/Y"  }}
+                    {%else%}
+                    le {{ projet.start_time|date:"d/m/Y"  }}
+              </a>
+                {% endif %}</td>
+                </tr>
+            {% endif %}
+			</tbody>
+		</table>
+
+<div class="row">
+<div class="col-sm-12 textcenter">
+    {%if projet.has_ficheprojet %}
+    <h6>La Fiche Projet </h6>
+		<table class="table table-condensed ">
+			<tbody>
+				<tr>
+					<td class="nomProprieteProduit">
+						Raison d'étre :
+					</td>
+					<td class="textleft">
+						{{ projet.ficheprojet.raison|safe}}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Pourquoi : contexte
+					</td>
+					<td class="textleft">
+                        <p>{{ projet.ficheprojet.pourquoi_contexte|safe}}</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Pourquoi : motivations
+					</td>
+					<td class="textleft">
+                        <p>{{ projet.ficheprojet.pourquoi_motivation|safe}}</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Pourquoi : objectifs
+					</td>
+					<td class="textleft">
+                        <p>{{ projet.ficheprojet.pourquoi_objectifs|safe}}</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Pour qui : Le public
+					</td>
+					<td class="textleft">
+						{{ projet.ficheprojet.pour_qui|safe}}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Avec qui :
+					</td>
+					<td class="textleft">
+					    <p>	{{ projet.ficheprojet.par_qui|safe}}</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						<p>Avec qui : partenaires
+					</td>
+					<td class="textleft">
+                        <p>{{ projet.ficheprojet.avec_qui|safe}}</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Où
+					</td>
+					<td class="textleft">
+						{{ projet.ficheprojet.ou|safe}}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Quand
+					</td>
+					<td class="textleft">
+						{{ projet.ficheprojet.quand|safe}}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						comment :
+					</td>
+					<td class="textleft">
+						{{ projet.ficheprojet.comment|safe}}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Combien ? Budget prévisionnel
+					</td>
+					<td class="textleft">
+						{{ projet.ficheprojet.combien|safe}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+        {%if projet.auteur == request.user or request.user.is_superuser%}
+                <a href="{% url 'blog:modifierFicheProjet' slug=projet.slug %}">
+                <button type="button" class="btn btn-sm btn-warning" >
+                        <i class="fa fa-edit"></i> Modifier la Fiche Projet
+                </button>
+                </a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'blog:ajouterFicheProjet' slug=projet.slug %}">
+            <button type="button" class="btn btn-success" >
+                    <i class="fa fa-plus"></i> Ajouter la Fiche Projet
+            </button>
+            </a>
+        {% endif %}
+
+
+</div>
+</div>
+
+	</div>
+</div>
+
+
+<hr>
+
+{% include 'commentaires.html' %}
+
+{% endblock %}

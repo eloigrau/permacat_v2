@@ -1,0 +1,44 @@
+    {% extends 'base_altermarche.html' %}
+    {% load app_filters %}
+    {% block title %} - Proposer une annonce{% endblock %}
+    {% block subtitle %}
+    {% csrf_token %}
+    <style>.soustitre,.bodycontenu{background-color: {{ bgcolor }};}</style>
+    <div class="row justify-content-center">
+    <h4>Quel {{ type_produit }} proposez-vous ?</h4>
+    </div>
+    {% endblock %}
+    {% block content %}
+    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+        enctype="multipart/form-data">
+            {% include 'form_template.html'%}
+    </form>
+
+        <script type="text/javascript">
+        window.onload = function() {
+          var unite = document.getElementById('id_unite_prix').value;
+            if (unite=="Soudaqui" | unite=="G1" | unite=="heuresT" | unite=="JEU") {
+                document.getElementById('id_prix').style.visibility = "visible";
+                document.getElementById('id_type_prix').style.visibility = "visible";
+            }else{
+                document.getElementById('id_prix').style.visibility = "hidden";
+                document.getElementById('id_type_prix').style.visibility = "hidden";
+            }
+        };
+
+        $("#id_unite_prix").change(function(){
+            var unite = document.getElementById('id_unite_prix').value;
+            if (unite=="Soudaqui" | unite=="G1" | unite=="heuresT" | unite=="JEU") {
+                document.getElementById('id_prix').style.visibility = "visible";
+                document.getElementById('id_type_prix').style.visibility = "visible";
+            }else{
+                document.getElementById('id_prix').style.visibility = "hidden";
+                document.getElementById('id_type_prix').style.visibility = "hidden";
+            }
+        });
+    </script>
+    </div>
+
+    {% endblock %}
+
+    {% block comment %}{% endblock %}

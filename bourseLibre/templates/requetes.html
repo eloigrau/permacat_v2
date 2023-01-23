@@ -1,0 +1,51 @@
+{% extends 'base_altermarche.html' %}
+
+{% block subtitle %}
+Liste des demandes :
+{% endblock %}
+{% block content %}
+<div class="row">
+	{%if items%}
+    <div class="col-md-12">
+    <table class="table table-condensed tablepanier table-striped">
+        <thead class="thead-inverse">
+            <tr>
+                <th class="textcenter">Produit</th>
+                <th class="textcenter">Quantité</th>
+                <th class="textcenter">Prix unitaire</th>
+                <th class="textright">Total </th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for item in items %}
+        {% ifchanged item.panier.user.id  %}
+        <tr>
+            <td class="panierTableauStyle textcenter" colspan="5" ><a href="{% url 'agora_conversation' item.panier.user.username%}" class="btn btn-primary " type="button" id="buttonContacterProducteur">
+			Contacter {{ item.panier.user.username }} pour échanger :  </a> </td>
+        </tr>
+        {%endifchanged %}
+        <tr>
+            <td class="textcenter"><a href="{{item.produit.get_absolute_url}}">{{ item.produit.nom_produit }}</a></td>
+            <td class="textcenter">{{ item.quantite }} {{ item.produit.get_type_prix }}</td>
+            <td class="textcenter">{{ item.produit.get_prixEtUnite }} </td>
+            <td class="table-info textright">{{ item.total_prixEtunite }}</td>
+        </tr>
+
+    {% endfor %}
+		{%else%}
+		<p> Vous n'avez pas de requêtes en cours... faites de meilleures offres !</p>
+		{%endif%}
+    {% comment %}
+    <tr class="active">
+        <td class="table-success">Total</td>
+        <td class="table-success"></td>
+        <td class="table-success"> {{ panier.total_quantite_str }}</td>
+        <td class="table-success"></td>
+        <td class="table-success">{{ panier.total_prix_str }}</td>
+    </tr>
+    {% endcomment %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

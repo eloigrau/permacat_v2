@@ -1,0 +1,35 @@
+
+{% load app_filters %}
+{% load widget_tweaks %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-11 col-lg-10 text-center">
+<form method="post" id="myForm">
+  {% csrf_token %}
+  {% include 'form_template2.html' %}
+
+{% if not boutonAnnuler %}
+          <input type="button" class="btn btn-secondary"  onclick="window.history.back();"  value="Annuler" />
+{% endif %}
+  <button id ="btn-valider" type="submit" class="btn btn-primary">OK</button>
+
+
+
+</form>
+</div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+    $('#myForm').one('submit', function() {
+        var btn = $("#btn-valider");
+        btn.prop("disabled", true);
+        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+        setTimeout(function () {
+             btn.removeAttr("disabled")
+             btn.html( `veuillez patientez...` );
+          }, 8000);
+    });
+});
+</script>

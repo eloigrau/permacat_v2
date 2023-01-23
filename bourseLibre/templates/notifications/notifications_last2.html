@@ -1,0 +1,113 @@
+{% extends 'base_notifications.html' %}
+{% load activity_tags %}
+{% load fontawesome %}
+{% block subtitle %}
+
+<p class = "textcenter justify-content-center">
+        <a href="{% url 'notif_cejour' %}">
+                <button class="btn btn-sm btn-info" type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> aujourd'hui</button>
+        </a>
+        <a href="{% url 'notif_hier' %}">
+                <button class="btn btn-sm btn-info" type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> depuis hier</button>
+        </a>
+        <a href="{% url 'notif_cettesemaine' %}">
+                <button class="btn btn-sm btn-info" type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> cette semaine</button>
+        </a>
+        <a href="{% url 'notif_cemois' %}">
+                <button class="btn btn-sm btn-info" type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> ce mois-ci</button>
+        </a>
+    <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+         {% fontawesome_icon 'question-circle' %}
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog textaide" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <div class="row justify-content-center">
+                   <h5 > Que sont les Notifications' ?</h5>
+                  </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body textleft">
+                  <p>Les notifications permettent de voir d'un seul coup d'oeil tout ce qui s'est passé sur le site, y compris le contenu dont vous n'êtes pas "abonné" (informé par mail)</p>
+                  <p>Les "dernières notifications" sont les notifications depuis une certaine date, que vous pouvez définir en cliquant sur le bouton "depuis le "..." . Une fois les notifications lues, vous pouvez appuyer sur le bouton "Marquer comme lu" pour que la prochaine fois que vous venez visiter le site, vous voyez d'un coup tout ce qu'il s'estpassé depuis votre dernière visite</p>
+                  <p>Vous pouvez aussi voir toutes les notifications organisées par date, ou par type d'événement (nouvel article, nouveau commentaire, nouvelle inscription, nouvelle offre au marché, etc.)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+</p>
+<p class = "textcenter justify-content-center">
+        <a href="{% url 'changerDateNotif' %}">
+                <button class="btn btn-secondary btn-sm " type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> depuis le {{dateMin|date:"d/m/Y"}} à {{dateMin|date:"G:i"}}</button>
+        </a>
+</p>
+
+{% endblock %}
+{% block content %}
+{%if type_notif == "dateNotif" %}
+    {%if htmlArticles or htmlProjets or dico.listautres or dico.listinscriptions %}
+    <p class = "textcenter ">
+        <a href="{% url 'notificationsLues' temps=maintenant %}" class="btn btn-outline-primary">
+            <i class="fa fa-check"> Marquer comme lu</i>
+        </a>
+    </p>
+    {% else %}
+    <p class = "textcenter ">Pas de nouvelle activité </p>
+    {% endif %}
+{% endif %}
+
+<div class="row justify-content-center">
+<div class="">
+{%if htmlArticles  %}
+    <div class="card carte-notif-news notif3 d-md-flex">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item textcenter"  style="background-color:#ffc34d">Articles</li>
+            {{htmlArticles|safe }}
+        </ul>
+    </div>
+{% endif %}
+
+{%if htmlProjets %}
+    <div class="card carte-notif-news  d-md-flex">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item textcenter"  style="background-color:#f7ff99">Projets</li>
+            {{htmlProjets|safe }}
+        </ul>
+    </div>
+{% endif %}
+
+
+{%if  dico.listautres %}
+    <div class="card carte-notif-news notif3 d-md-flex textcenter">
+        <ul class="list-group list-group-flush">
+{%if htmlProjets or htmlArticles %}
+            <li class="list-group-item"  style="background-color:#cce6ff">Autres</li>
+{% endif %}
+      {% for action in dico.listautres %}
+                {% include "notifications/notifications_template4.html" with action=action %}
+      {% endfor %}
+{% endif %}
+
+{%if  dico.listinscriptions %}
+    <div class="card carte-notif-news notif3 d-md-flex textcenter">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"  style="background-color:#cce6ff">Inscriptions</li>
+      {% for action in dico.listinscriptions %}
+                {% include "notifications/notifications_template4.html" with action=action %}
+      {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+        </ul>
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

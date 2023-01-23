@@ -1,0 +1,65 @@
+{% extends 'base_asso.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block subtitle %}
+<h4 class = "textcenter rowbienvenue">{% trans "Administration et fichiers de l'association" %} {{asso.nom}}</h4>
+
+{% endblock %}
+{% block content %}
+
+<div class="row textcenter">
+	<div class="col-sm-12">
+        <a href="{% url 'listeContacts' asso=asso.abreviation %}">
+         <button type="button" class="btn btn-primary">
+                 Liste des emails
+            </button>
+		</a>
+	</div>
+</div>
+<hr>
+
+<div class="row textcenter">
+	<div class="col-sm-12">
+        <a href="{% url 'telechargements_asso' asso=asso.abreviation%}">
+         <button type="button" class="btn btn-primary">
+                 Fichiers à télécharger
+            </button>
+		</a>
+	</div>
+</div>
+<hr>
+{% if request.user.is_superuser %}
+<div class="row textcenter">
+	<div class="col-sm-12">
+        <a href="{% url 'listeFollowers' asso=asso.abreviation %}">
+         <button type="button" class="btn btn-primary">
+                 SU : Liste des suivis
+            </button>
+		</a>
+	</div>
+</div>
+
+<div class="row textcenter">
+    <div class="col-sm-12">
+    <a class="dropdown-item" href="{% url 'ajouterAdhesion' abreviationAsso=asso.abreviation  %}">
+    <button type="button" class="btn btn-primary">
+      SU : Ajouter adhésion
+    </button>
+    </a>
+    </div>
+</div>
+<div class="row textcenter">
+    <div class="col-sm-12">
+    <a class="dropdown-item" href="{% url 'listeAdhesions' asso=asso.abreviation %}">
+    <button type="button" class="btn btn-primary">
+      SU : Liste adhésions
+    </button>
+    </a>
+    </div>
+</div>
+<hr>
+{% endif %}
+{% endblock %}
+
+

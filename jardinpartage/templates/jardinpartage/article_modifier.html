@@ -1,0 +1,22 @@
+{% extends 'jardinpartage/base_jardins.html' %}
+{% block title %} - Modifier l'article{% endblock %}
+{% block subtitle %}
+<h3>Modifier l'article</h3>
+
+{% endblock %}
+{% block content %}
+
+<div class="row-sm-12 row-lg-6 mx-auto">
+    {% include 'form_template.html'%}
+</div>
+
+<script>
+    $(function() {
+    // Enable on all forms
+    $('form').areYouSure();
+    });
+</script>
+
+{% endblock %}
+
+{% block comment %}{% endblock %}

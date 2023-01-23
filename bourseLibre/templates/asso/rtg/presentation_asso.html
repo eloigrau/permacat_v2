@@ -1,0 +1,45 @@
+{% extends 'base_asso.html' %}
+{% load static %}
+{% block title %} - Accueil RTG{% endblock %}
+
+{% block subtitle %}
+
+<div class="row justify-content-center">
+	<div class="col-sm-12 col-md-8 textcenter">
+		<img src="{% static 'img/Logo_rtg.png' %}" class="thumbnail" style="width:100%;" alt="Logo de RTG">
+	</div>
+</div>
+
+{% include "asso/presentation_asso_template.html" with adherent=request.user.adherent_rtg assos='rtg' %}
+
+<h4 class = "textcenter rowbienvenue">Présentation de l'association </h4>
+{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col">
+		<p>
+		L’association a pour objet de "Développer un réseau solidaire à travers la mise en place d’actions
+		favorisant les échanges, le lien social et le développement durable". Ses missions visent à promouvoir les échanges de
+		semences à l’échelle locale et régionale, proposer et animer des temps forts à destination du grand public autour des sujets
+		associés à la préservation des variétés végétales, participer à la tenue d’ateliers pédagogiques, produire et distribuer des plantes et
+		semences dans un cadre pédagogique.
+		</p>
+
+</div>
+</div>
+
+<div class="row">
+	<div class="col">
+
+	<div>Facebook : <a href="https://www.facebook.com/ramenetagraine/" target="_blank">https://www.facebook.com/ramenetagraine/</a></div>
+		<div>Mail : ramenetagraine@live.fr</div>
+
+
+</div>
+</div>
+<p><b>Pour accéder au contenu RTG sur le site :  </b>
+	Il faut en faire la demande auprès de ramenetagraine@live.fr ou <a href="{% url 'adhesion_asso' asso='rtg' %}">adhérer à l'association</a>
+		</p>
+
+
+{% endblock %}

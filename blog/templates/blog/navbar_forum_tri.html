@@ -1,0 +1,29 @@
+{% load static %}
+{% load blog_filters %}
+{% load fontawesome %}
+{% load activity_tags %}
+<div class="row justify-content-center">
+    <nav class="navbar navbar-expand-md navbar-light">
+					<ul class="navbar-nav ">
+    {% if article_list or article_list_archives or article_epingles or article_partages%}
+        <li class="nav-item dropdown">
+            <a class="nav-item btn-block" href="#" id="menuOrdreTri" data-toggle="dropdown">
+                <button class="btn btn-light dropdown-toggle">
+                   Triés par : {{ordre_triage}}
+                </button>
+            </a>
+                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
+                    {% for titre, ordre in ordreTriPossibles.items %}
+                     <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri}}&ordreTri={{ordre}}#article_list">{{titre}}</a>
+                    {% endfor %}
+                </div>
+            </li>
+
+    {% else %}
+        <p>Il n'y a pas d'article dans ce dossier</p>
+    {% endif %}
+</ul>
+    </nav>
+
+
+</div>

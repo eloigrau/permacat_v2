@@ -1,0 +1,27 @@
+
+{% load activity_tags %}
+{% load fontawesome %}
+<div class="card article_carte textcenter"  style="background-color:{{article.get_couleur}}">
+  <a href="{% url 'jardinpartage:lireArticle' slug=article.slug %}">
+      <div class="article-card-header smallcaps_h ">{{ article.get_categorie_display }}</div>
+  <div class="card-body" {%if article.estArchive %} style="background-color:#e0e0d1;" {% endif %}>
+      <h5 class="btn-cat titreArticle">{{ article.titre }}</h5>
+    <span class="badge badge-success" data-toggle="tooltip" data-placement="bottom" title="Article {%if article.estPublic%}visible par tous les inscrits{%else%}visible par les membres de {{ article.asso }}  seulement{%endif%}">
+         {{article.get_jardin_display }}
+    </span>
+    {% if request.user|is_following:article %}
+    <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant cet article par mail">
+         {% fontawesome_icon 'bell' %}
+    </span>
+    {% else %}
+    <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant cet article par mail">
+         {% fontawesome_icon 'bell-slash' %}
+    </span>
+    {% endif %}
+      <p class="textsmall "> {% if article.start_time and article.end_time %} du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }} {% else %}{% if article.start_time %} le {{ article.start_time|date:"DATE_FORMAT" }}{% endif %}{% endif %} </p>
+  </p>
+        <p class="card-subtitle mb-2 ">
+      <p class="text-muted textsmall"> Rédigé le {{ article.date_creation|date:"DATE_FORMAT" }} {%ifnotequal  article.date_creation article.date_modification %}(dernière modification le {{ article.date_modification|date:"DATE_FORMAT" }}){%endifnotequal%}</p>
+  </div>
+  </a>
+</div>

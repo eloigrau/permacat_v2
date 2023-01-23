@@ -1,0 +1,235 @@
+{% extends 'vote/baseVote.html' %}
+
+{% block subtitle %}
+<div class="row">
+    <div class="col-md-2">
+        <a href="{{ suffrage.get_absolute_url }}" class="btn btn-primary" ><i class="fa fa-arrow-left"></i> retour</a>
+    </div>
+    <div class="col-md-8 textepetit">
+        {{suffrage | safe}}
+    </div>
+    <div class="col-md-2 textepetit">
+        Du {{ suffrage.start_time|date:"d/m/Y"  }} au {{ suffrage.end_time|date:"d/m/Y"  }}
+    </div>
+</div>
+
+<h3>Résultats du vote</h3>
+{% endblock %}
+{% block content %}
+{%if res_bin %}
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
+  <h4>Questions binaires</h4>
+<div style="overflow-x:auto;">
+    {% for qb, res in res_bin.items %}
+    <h5>{{qb}}  {{res.resultat}}
+
+    <button id="btn-detail-qb-{{forloop.counter}}" type="button" class="btn btn-lg" onclick="toggle_visibility('detail-qb-{{forloop.counter}}');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+       <i class="fa fa-eye"></i>
+    </button>
+        </h5>
+    <div id='detail-qb-{{forloop.counter}}' style='display:none;'>
+<table  class="comicGreen" cellpadding="2">
+<thead>
+  <tr>
+    <th class="tg-0lax">Votants </th>
+    <th class="tg-baqh">{{res.nbTotal}}</th>
+    <th class="tg-baqh">
+
+    </th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">Oui</td>
+    <td class="tg-baqh">{{res.nbOui.0}}</td>
+    <td class="tg-baqh">{{res.nbOui.1}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Non</td>
+    <td class="tg-baqh">{{res.nbNon.0}}</td>
+    <td class="tg-baqh">{{res.nbNon.1}}</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">Ne se prononce pas</td>
+    <td class="tg-baqh">{{res.nbNSPP.0}}</td>
+    <td class="tg-baqh">{{res.nbNSPP.1}}</td>
+  </tr>
+</tbody>
+</table>
+</div>
+<hr>
+{% endfor %}
+</div></div></div>
+{% endif %}
+
+{%if res_majo %}
+<div class="row justify-content-center">
+<div class="col-sm-12 textcenter ">
+    <h4>Questions soumises au jugement majoritaire</h4>
+
+        {% for qb, res in res_majo.items %}
+        <h5>Question : <em>{{qb}}</em></h5>
+        <p>Propositions :</p>
+        <ol>
+            {% for re in res%}
+            <li>{{re.0}}</li>
+            {% endfor %}
+        </ol>
+    <h5>
+    {% if res|length == 1 %}
+        <h5>Résultat : la proposition a obtenu la mention "{{res.0.1.1}}" et la note {{res.0.4}}%</h5>
+   {% else %}
+        <h5>Résultat : la proposition "<em>{{res.0.0}}</em>" l'emporte au jugement majoritaire (mention "{{res.0.1.1}}", note : {{res.0.4}}%)</h5>
+    {% endif %}
+
+    <button id="btn-detail-qm-{{forloop.counter}}"  type="button" class="btn btn-lg" onclick="toggle_visibility('detail-qm-{{forloop.counter}}');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+       <i class="fa fa-eye"></i>
+    </button>
+        </h5>
+        <div id='detail-qm-{{forloop.counter}}' style='display:none;'>
+        <table  class="comicGreen" cellpadding="2px;">
+        <thead>
+          <tr>
+                <th class="tg-0lax">Proposition  </th>
+                {% for choix in qb.get_typeChoix_liste %}
+                    <th class="tg-baqh">{{choix}}</th>
+                {%endfor%}
+                <th class="tg-baqh">Points (%) </th>
+                <th class="tg-baqh">Jauge majoritaire</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for re in res%}
+          <tr>
+            <td class="tg-0lax">{{forloop.counter}}</td>
+              {% if re.2 %}
+                {% for nom, total, pourcent in re.2 %}
+                     <td class="tg-baqh">{{pourcent}}% ({{total}})</td>
+                {%endfor%}
+              {%endif%}
+
+            <td class="tg-baqh">{{re.4}} </td>
+            <td class="tg-baqh">{{re.1}} </td>
+          </tr>
+        {%endfor%}
+
+        </tbody>
+        </table>
+        </div>
+        {% endfor %}
+</div>
+</div>
+<hr>
+
+{% endif %}
+
+{% if votes %}
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
+    <button id="btn-detail-comments" type="button" class="btn btn-lg" onclick="toggle_visibility('detail-comments');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+       Voir les votes
+    </button>
+    <div id="detail-comments"  style='display:none;'>
+
+<div class="contenu commentaires" id="idConversation">
+{% for vote in votes %}
+    <div class="row msg-auteur ">
+
+        <div class="col-sm-3 col-md-3 col-lg-2">
+            <p class="infos  textepetit ">
+                 {% if not vote.suffrage.estAnonyme %}{% ifchanged%}<a href="{% url 'profil_nom' vote.auteur %}"> {{vote.auteur}}</a><br>{% endifchanged %}{{ vote.date_creation|date:"d/m/Y, G:i" }}
+                {% else %}Vote anonyme
+                {% endif %}
+</p>
+
+            </div>
+        <div class=" col-sm-9 col-md-9 col-lg-10 message ">
+
+        {% with reponses=vote.getVoteStr   %}
+        {% if reponses.0 %}
+            <p><em>Questions binaires :</em> </p>
+            <ol>
+                {% for rep in reponses.0 %}
+                <li> {{rep}} </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+        {% if reponses.1 %}
+            <p><em>Questions soumises au jugement majoritaire :</em> </p>
+            <ul>
+                {% for rep in reponses.1 %}
+                {% ifchanged rep.0 %}
+                </ul>
+                <p> Question : {{rep.0}} </p>
+                <ul>
+                {% endifchanged%}
+
+                <li> {{rep.1}} </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+            <p><em>commentaire:</em> {{ vote.commentaire|safe}}</p>
+        </div>
+    </div>
+    <hr>
+{% endfor %}
+</div>
+    </div>
+</div></div>
+{% endif %}
+
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
+{% if vote %}
+        <h4> J'ai voté :</h4>
+        {% with reponses=vote.getVoteStr   %}
+        {% if reponses.0 %}
+        <p>Questions binaires : </p>
+        <ol>
+            {% for rep in reponses.0 %}
+            <li> {{rep}} </li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+        {% if reponses.1 %}
+        <p>Questions soumises au jugement majoritaire : </p>
+        <ul>
+            {% for rep in reponses.1 %}
+            {% ifchanged rep.0 %}
+            </ul>
+            <p> Question : {{rep.0}} </p>
+            <ul>
+            {% endifchanged%}
+
+            <li> {{rep.1}} </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% if vote.commentaire %}
+        <tr><td style="width: 30%;">Mon commentaire :</td><td style="width: 70%;">{{vote.commentaire|safe}}</td></tr>
+        {% endif %}
+    {% else %}
+        <hr>
+        <p> Vous n'avez pas participé à ce suffrage</p>
+    {% endif %}
+</div>
+</div>
+
+
+<script>
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'inline'){
+          e.style.display = 'none';
+      }
+       else{
+          e.style.display = 'inline';
+      }
+   }
+</script>
+{% endblock %}
+
+

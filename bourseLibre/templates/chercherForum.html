@@ -1,0 +1,55 @@
+{% extends 'base_site.html' %}
+{% load fontawesome %}
+
+{% block title %} - rechercher dans le forum{% endblock %}
+
+{% block subtitle %}<h5>Résultats de la recherche dans le forum : "{{recherche}}"</h5>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+             <div class="row no-gutters justify-content-center">
+                 <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_articles' %}" method="get" role = "search">
+                    {% csrf_token %}
+                    <div class="col" style="padding-right:0;">
+                            <input class="form-control border-secondary border-right-0 rounded-0" name="id_recherche" placeholder="rechercher sur le forum..." type="text">
+                                </div>
+                    <div class="col-auto" style="padding-left:0;">
+                                <button class="btn btn-outline-secondary border-left-0 rounded-0 rounded-right" type="submit" >{% fontawesome_icon 'search' %}</button>
+                    </div>
+                 </form>
+             </div>
+            </div></div>
+{% endblock %}
+{% block content %}
+
+<p>Articles trouvés dans le forum ({{articles_list|length}})</p>
+ {% include "blog/articles_template_tableau.html" with article_list=articles_list %}
+<hr>
+    {%if commentaires_list %}
+    <p>Dans les commentaires des articles du forum ({{commentaires_list|length}})</p>
+    <div class="row ">
+        {% for comm in commentaires_list %}
+            <div class="col ">
+            {% include "blog/article_template_recherche.html" with article=comm.article %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+    {% endif%}
+    {%if articles_jardin_list %}
+    <p>Articles trouvés dans le forum des jardins partagés ({{articles_jardin_list|length}})</p>
+    {% include "blog/articles_template_tableau.html" with article_list=articles_jardin_list %}
+    <hr>
+    {% endif%}
+{%if commentaires_jardin_list %}
+    <p>Dans les commentaires des articles du forum des jardins partagés ({{commentaires_jardin_list|length}})</p>
+    <div class="row ">
+        {% for comm in commentaires_jardin_list %}
+            <div class="col ">
+                {% include "jardinpartage/article_template_recherche.html" with article=comm.article %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif%}
+{% endblock %}

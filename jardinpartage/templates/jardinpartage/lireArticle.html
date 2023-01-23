@@ -1,0 +1,203 @@
+{% extends 'jardinpartage/base_jardins.html' %}
+{% load activity_tags %}
+{% load blog_filters %}
+{% load fontawesome %}
+{% load hitcount_tags %}
+
+{% block subtitle %}
+
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-2 " id="sec02">
+
+    </div>
+    <div class="col-md-8">
+            <a href="{% url 'jardinpartage:index'  %}?categorie={{article.categorie}}"  style="background-color:{{article.get_couleur}}" class="smallcaps_h2"><span class="badge badge-success" style="background-color:{{article.get_couleur}}" >Jardins partagés/{{ article.get_categorie_display }}</span></a>
+
+            {% if article.estArchive%}
+            <span class="badge badge-Light">
+                archivé
+            </span>
+            {%endif%}
+            {% if article.estModifiable %}
+            <span class="badge badge-info">
+                modifiable
+            </span>
+            {%endif%}
+            <a href="{% url 'profil' article.auteur.id %}">
+                <span class="badge badge-Light">
+               rédigé par {{ article.auteur.username }}
+                </span>
+            </a>
+
+            <span class="badge badge-Light">
+                le {{ article.date_creation|date:"DATE_FORMAT" }}
+            </span>
+            <span class="badge badge-Light">
+            {% get_hit_count for article as nbvues %}
+            {{ nbvues }} vue{{nbvues|pluralize:"s"}}
+            </span>
+
+        <a href="{% url 'jardinpartage:suivre_article' article.slug %}">
+            {% if request.user|is_following:article %}
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arreter de recevoir des notifications concernant cet article par mail">
+                 {% fontawesome_icon 'bell' %} Suivi
+            </button>
+            {% else %}
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant cet article par mail">
+                 {% fontawesome_icon 'bell-slash' %} Non suivi
+            </button>
+            {% endif %}
+        </a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'jardinpartage:suiveursArticle' article.slug %}">
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir abonnés">
+                 {% fontawesome_icon 'list' %}
+            </button>
+        </a>
+        {% endif %}
+        <span class="badge badge-Light">
+                <button class="btn btn-light btn-sm " onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
+        </span>
+    </div>
+    <div class="col-md-2">
+        <p>
+        {%if article.auteur == request.user or request.user.is_superuser %}
+		<div class="btn-group">
+            <a href="{% url 'jardinpartage:modifierArticle' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+               </button></a>
+            <a href="{% url 'jardinpartage:supprimerArticle' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Supprimer
+               </button></a>
+        </div>
+        {%elif article.estModifiable %}
+            <a href="{% url 'jardinpartage:modifierArticle' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+               </button>
+            </a>
+        {%endif%}
+
+    </p>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+{% block content %}
+     <div class="textcenter">
+         <a href="{% url 'jardinpartage:index_jardin' jardin=article.get_jardin_num %}">
+                <span class="badge badge-success">
+                 {{article.get_jardin_display }}
+            </span>
+         </a>
+     </div>
+     <div class="boxitem_droite">
+            {% if article.estArchive%}
+            <span class="badge badge-Light">
+                archivé
+            </span>
+            {%endif%}
+     </div>
+<div class="contenu article ">
+<div class="row">
+<div class="col-sm-12 textcenter">
+      <h3> {{ article.titre }}</h3>
+ </div>
+</div>
+    <hr>
+<div class="row" >
+
+    <div class="col textright" >
+
+        {%if article.start_time%}
+
+          <a href="{% url 'cal:agenda' %} ">
+            {%if article.end_time and article.start_time != article.end_time %}
+                Du {{ article.start_time|date:"d/m/Y"  }} au {{ article.end_time|date:"d/m/Y"  }}
+                {%else%}
+                le {{ article.start_time|date:"d/m/Y"  }}
+
+            {% endif %}
+              </a>
+        {% endif %}
+
+        {%if article.auteur == request.user or article.estPublic or request.user.adherent_pc %}
+            <button type="button" class="btn" data-toggle="modal" data-target="#dates">
+             </h5 class="textcenter">{% fontawesome_icon 'calendar' %} Dates {%if article.start_time %}supplémentaires{%endif%}</h5>
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="dates" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog textcenter" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                      <div class="row justify-content-center">
+                       <h5 > Dates</h5>
+                      </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      {%for date in dates %}
+                     <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}</p>
+                      {%empty%}
+                      -
+                      {%endfor%}
+                    {%if article.auteur == request.user or article.estModifiable %}
+                      <p><a class="btn btn-success" href="{% url 'jardinpartage:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une date</a></p>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        {% endif %}
+
+        {% if actions %}
+            <button type="button" class="btn" data-toggle="modal" data-target="#historique">
+              {% fontawesome_icon 'bell' %} Historique
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog textcenter" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                      <div class="row justify-content-center">
+                          <div class="col col-sm-12">
+                      <h5 >Historique</h5>
+                          </div>
+                      </div>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="contenu historique" id="idHistorique">
+                      {%for action in actions %}
+                            {% include "notifications/notifications_template3.html" with action=action%}
+                      {%endfor%}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+<div class="col contenuarticle">
+   {{ article.contenu |safe}}
+</div>
+</div>
+</div>
+
+
+{% include 'commentaires.html' %}
+
+{% endblock %}

@@ -1,0 +1,58 @@
+
+{% load blog_filters %}
+{% load avatar_tags %}
+
+{% if commentaires %}
+<div class="contenu commentaires" id="idConversation">
+{% for comment in commentaires %}
+    <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
+
+        <div class="col-sm-3 col-md-3 col-lg-2">
+            <p class="infos  textepetit ">
+                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %}{{comment.auteur_comm}}</a><br>{% endifchanged %}{{ comment.date_creation|date:"d/m/Y, G:i" }}
+
+                {% if request.user == comment.auteur_comm or request.user.is_superuser %}
+                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+                {% endif %}
+</p>
+
+            </div>
+        <div class=" col-sm-9 col-md-9 col-lg-10 message ">
+                <p>{{ comment.commentaire|safe}}</p>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<hr>
+
+{% endif %}
+{%if not request.user.is_anonymous %}
+{% if commentaires %}
+<h5>Répondre :</h5>
+{%else%}
+<h5>Commencer la discussion :</h5>
+{%endif%}
+<form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="Nouveau Message" value="{{ message_defaut }}">
+    {% include 'form_template3.html' %}
+
+</form>
+ {% else %}
+<p><small>Vous devez vous <a href="/auth/login/">authentifier</a> pour laisser un message.</small></p>
+ {% endif %}
+
+
+    <script>
+
+    var messageBody = document.querySelector('#idConversation');
+    messageBody.scrollTop = idConversation.scrollHeight - idConversation.clientHeight;
+
+    $(function() {
+    // Enable on all forms
+    $('form').areYouSure();
+    });
+
+
+</script>

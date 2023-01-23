@@ -1,0 +1,23 @@
+{% extends 'base.html' %} 
+
+{%block bodyEntete%}
+style="visibility: collapse;"
+{%endblock%}
+
+{% block content %}
+
+ <div class="container">
+        <div id="loginbox" style="margin-top:50px;">
+            <div style="padding-top:10px" class="panel-body" >
+                <div class="textcenter textinfo textepetit"><p>Si vous ne parvenez pas à vous connecter, veuillez nous contacter par mail (permacat66@gmail.com)</p></div>
+                
+                {% include 'form_template.html'%}
+
+                <div class="textcenter textinfo"><p>Pas encore inscrit.e ? <a class="underlineHover" href="{% url 'senregistrer' %}">Créer un compte</a></p></div>
+                <div class="textcenter textinfo"><p>Mot de passe oublié ? <a class="underlineHover" href="{% url 'password_reset' %}">Réinitialiser mot de passe</a></p></div>
+
+</div>
+</div>
+
+</div>
+{% endblock %}

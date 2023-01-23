@@ -1,0 +1,17 @@
+{% extends 'vote/baseVote.html' %}
+{% block title %} - Modifier le suffrage{% endblock %}
+{% block subtitle %}
+<h3>Modifier mon vote</h3>
+<a href="{{ suffrage.get_absolute_url }}" class="btn btn-secondary" >retour au suffrage</a>
+{% endblock %}
+{% block content %}
+<h5 class="textcenter">{{suffrage.question}}</h5>
+
+<div class="row-sm-12 row-lg-6 mx-auto">
+    {% include 'form_template.html'%}
+</div>
+
+
+{% endblock %}
+
+{% block comment %}{% endblock %}

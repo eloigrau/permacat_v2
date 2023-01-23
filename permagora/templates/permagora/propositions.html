@@ -1,0 +1,127 @@
+{% extends 'permagora/base.html' %}
+{% load fontawesome %}
+
+
+    {%block header %}
+    <script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    {%endblock%}
+{% block content %}
+
+ <div class="site-section">
+      <div class="container">
+        <div class="row mb-5  align-items-center">
+          <div class="col-sm-12 ">
+            <div class="site-section-heading" data-aos="fade-up" data-aos-delay="50">
+              <h2 class="text-center">Les propositions de PermAgora par pôle thématique :</h2>
+            </div>
+          </div>
+        </div>
+        </div>
+        </div>
+<div class="site-section ">
+      <div class="container">
+        <div class="row mb-5">
+
+          <div class="col-sm-12 mb-5">
+            <h5>Nous proposons de répondre aux questions suivantes par des plans d'action pratiques. Chaque question est ajoutée au fur et à mesure de nos visioconférences du lundi 19h.</h5>
+          </div>
+        </div>
+        <div class="row mb-5 justify-content-center">
+    <p><a href="https://www.perma.cat/media/documents/2022/05/16/SondageTablesRondes.pdf" target="_blank">voir la liste des questions établies par sondage</a> </p>
+        </div>
+        <div class="row mb-5 justify-content-center">
+            {%if request.user.is_authenticated %}
+                <p>Vous pouvez <a href="{% url 'permagora:ajouterProposition' %}">ajouter un plan d'action </a> </p>
+        {% else %}
+                   <p>Vous pouvez <a href="{% url 'permagora:ajouterProposition' %}">ajouter un plan d'action</a> après vous être <a href="{% url 'presentation_asso' asso='scic' %}"> inscrit.e sur le groupe PermAgora</a> du site perma.cat </p>
+        {% endif %}
+        </div>
+    </div>
+</div>
+
+{% for domaine in dico_charte %}
+{% if domaine.1 %}
+<div class="site-section justify-content-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-sm-12">
+            <div class="site-section-heading" data-aos="fade-up">
+              <h3 class="text-center titrePolePermagora" id="{{domaine.0.slug}}" onclick="toggle_visibility('{{domaine.0.slug}}_description');">{{ forloop.counter }}/ {{domaine.0|safe}}</h3>
+                {% if domaine.0.description %}<p style="text-align:center; " id="{{domaine.0.slug}}_description">{{domaine.0.description|safe}}</p> {% endif %}
+            </div>
+            </div>
+          </div>
+        </div>
+
+{% comment %}
+        <div class="row justify-content-center">
+          <div class="col-sm-12" data-aos="fade-up" data-aos-delay="200">
+           <table border="0">
+{% for point in domaine.1 %}
+    <th id="{{point.slug}}"> {{ forloop.counter }}. <a href="{{point.permagora:get_absolute_url}}" > {{point|safe}}</a></th>
+    <th width="15%">
+      <a href="{% url 'permagora:ajouterVote_plus' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}"> {% fontawesome_icon 'thumbs-up' %} {{point.compteur_plus}}</a> &nbsp
+      <a href="{% url 'permagora:ajouterVote_moins' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}" >{% fontawesome_icon 'thumbs-down' %} {{point.compteur_moins}} </a> &nbsp
+    </th>
+  </tr>
+{% endfor%}
+{% endif %}
+</table>
+          </div></div>
+
+{% endcomment %}
+        <div class="row justify-content-center mb-5">
+          <div class="col-sm-12 col-lg-10" data-aos="fade-up" data-aos-delay="200">
+              <ul>
+{% for point in domaine.1 %}
+
+                  <p><a id="{{point.slug}}">                  </a>{{forloop.parentloop.counter}}.{{ forloop.counter }}/   <a href="{{point.get_absolute_url}}" > {{point|safe}}</a></p>
+                      {% comment %}<p class="text-right">
+      <a href="{% url 'permagora:ajouterVote_plus' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}"> {% fontawesome_icon 'thumbs-up' %} {{point.compteur_plus}}</a> &nbsp
+      <a href="{% url 'permagora:ajouterVote_moins' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}" >{% fontawesome_icon 'thumbs-down' %} {{point.compteur_moins}} </a> &nbsp
+                      </p>
+                  {% endcomment %}
+              {%endfor%}
+              </ul>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+{% endif %}
+              {%endfor%}
+{% comment %}
+    <div class="site-section">
+      <div class="container">
+        <div class="row" data-aos="fade-up" data-aos-delay="500">
+          <div class="col-12 text-center pt-5">
+              {%if request.user.is_authenticated and request.user.a_signe_permagora %}
+           <a href="{% url 'permagora:signataires' %}"><button type="button" class="btn btn-lg btn-success" disabled data-aos="fade-up" data-aos-delay="200">
+                je soutiens !
+            </button></a>
+              {%else%}
+             <a href="{% url 'permagora:signer' %}" class="btn-custom" data-aos="fade-up" data-aos-delay="200"><span>Soutenir ici la démarche,
+              {%if not request.user.is_authenticated %}après m'être identifié{%endif%}!</span></a>
+              {%endif%}
+         </div>
+        </div>
+      </div>
+    </div>
+{% endcomment %}
+
+<script>
+function toggle_visibility(id) {
+   var e = document.getElementById(id);
+   if(e.style.display == 'inherit'){
+      e.style.display = 'none';
+  } else{
+      e.style.display = 'inherit';
+  }
+}
+</script>
+{% endblock %}
+
+
+  {% block compteur %}
+  {% endblock %}
+

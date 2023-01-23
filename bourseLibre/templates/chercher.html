@@ -1,0 +1,83 @@
+{% extends 'base_site.html' %}
+{% block title %} - Rechercher{% endblock %}
+
+{% block subtitle %}<h5>Résultats de la recherche : "{{recherche}}"</h5>
+{% endblock %}
+{% block content %}
+
+    {%if produits_list %}
+<p>Produits trouvés au marché ({{produits_list|length}})</p>
+<div class="row listOffres">
+    <div class="grid-container justify-content-center">
+        {% for produit in produits_list %}
+        {% include "bourseLibre/produit_template3.html" with produit=produit %}
+        {% endfor %}
+    </div>
+</div>
+<hr>
+    {% endif %}
+
+    {%if articles_list %}
+<p>Articles trouvés dans le forum ({{articles_list|length}})</p>
+ {% include "blog/articles_template_tableau.html" with article_list=articles_list %}
+    {% endif %}
+
+    {%if commentaires_list %}
+<p>Dans les commentaires des articles du forum ({{commentaires_list|length}})</p>
+<div class="row ">
+    <div class="grid-container justify-content-center">
+    {% for comm in commentaires_list %}
+            {% include "blog/article_template_recherche.html" with article=comm.article %}
+    {% endfor %}
+    </div>
+</div>
+<hr>
+    {% endif %}
+
+    {%if projets_list %}
+<p>Projets Permacat trouvés  ({{projets_list|length}})</p>
+<div class="row ">
+    <div class="grid-container justify-content-center">
+    {% for projet in projets_list %}
+        {% include "blog/projet_template_recherche.html" with projet=projet %}
+    {% endfor %}
+    </div>
+</div>
+    {% endif %}
+    {%if commentairesProjet_list %}
+<p>Dans les commentaires des projets Permacat ({{commentairesProjet_list|length}})</p>
+<div class="row ">
+    <div class="grid-container justify-content-center">
+    {% for comm in commentairesProjet_list %}
+        {% include "blog/projet_template_recherche.html" with projet=comm.projet %}
+    {% endfor %}
+    </div>
+</div>
+    {% endif %}
+    {%if profils_list %}
+<hr>
+<p>Producteurs trouvés  (description ou competence) ({{profils_list|length}})</p>
+<div class="row listOffres">
+    <div class="col-md-12">
+    <table class="table table-condensed tableprofils table-striped">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Pseudo</th>
+                <th>Email</th>
+                <th>Code postal</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for profil in profils_list %}
+        <tr>
+            <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
+            <td><a href="{% url 'profil_contact' profil.id %}">{{ profil.email }}</a></td>
+            <td><a href="{% url 'profil' profil.id %}">{{ profil.adresse.code_postal }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+    {% endif %}
+{% endblock %}

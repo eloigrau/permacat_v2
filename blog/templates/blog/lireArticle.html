@@ -1,0 +1,400 @@
+{% extends 'blog/base_blog.html' %}
+{% load activity_tags %}
+{% load blog_filters %}
+{% load fontawesome %}
+{% load static %}
+{% load hitcount_tags %}
+
+{% block subtitle %}
+
+<div class="container-fluid" >
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        <p>
+        {%if article.auteur == request.user or request.user.is_superuser %}
+		<div class="btn-group">
+            <a href="{% url 'blog:modifierArticle' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+               </button></a>
+            <a href="{% url 'blog:supprimerArticle' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Supprimer
+               </button></a>
+        </div>
+        {%elif article.estModifiable%}
+            <a href="{% url 'blog:modifierArticle' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+               </button></a>
+        {%endif%}
+        {%if request.user.is_superuser%}
+            <a href="https://www.perma.cat/gestion/blog/article/{{article.id}}/change/">
+               <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin
+               </button>
+            </a>
+            <a href="{% url 'blog:archiverArticleAdmin' slug=article.slug %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Archiver (Admin)
+               </button>
+            </a>
+        {%endif%}
+
+    </p>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="contenu article ">
+<div class="row">
+<div class="col-sm-12 offset-md-2 col-md-8 textcenter">
+    <p class="infos  textepetit textcenter">
+            <span >
+                <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}#ref-titre" >{{ article.get_logo_nomgroupe_html|safe }}</a>
+            </span>
+    {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> </td>{% endif %}
+            / <span class="badge badge-success" style="background-color:{{article.get_couleur}}" ><a href="{% url 'blog:index'  %}?categorie={{article.categorie}}" >{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %} {{ article.get_categorie_display }}</a>
+            </span> -
+
+        <a href="{% url 'blog:suivre_article' article.slug %}">
+            {% if request.user|is_following:article %}
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arreter de recevoir des notifications concernant cet article par mail">
+                 {% fontawesome_icon 'bell' %}
+            </button>
+            {% else %}
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant cet article par mail">
+                 {% fontawesome_icon 'bell-slash' %}
+            </button>
+            {% endif %}
+        </a>
+                    <button class="btn btn-light btn-sm" onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
+
+
+             {% if request.user.is_superuser %}
+        <a href="{% url 'blog:suiveursArticle' article.slug %}">
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir abonnés">
+                 {% fontawesome_icon 'list' %}
+            </button>
+        </a>
+            {% endif %}
+
+        </p>
+    <div class="row titre_fiche">
+        <div class="col textcenter" >
+              <h2>
+            {% if article.estEpingle%}
+            <span class="fa fa-thumb-tack"> </span>
+            {%endif%}
+                  {{ article.titre }}
+              </h2>
+        </div>
+    </div>
+        {%if article.start_time%}
+    <p>
+          <a href="{% url 'cal:agenda' %} ">
+            {%if article.end_time and article.start_time != article.end_time %}
+                Du {{ article.start_time|date:"l d F Y"  }} au {{ article.end_time|date:"l d F Y"  }}
+                {%else%}
+                le {{ article.start_time|date:"l d F Y"  }}
+
+            {% endif %}
+          </a>
+    </p>
+        {% endif %}
+
+        <div class="row-sm-12 justify-content-center">
+        <div class="col-sm-12  fiche_tags">
+            <p class="textcenter">
+                {% if article.tags.names  %}<em>Mots-clés:</em>
+           {% for tag in article.tags.names %}
+            {{tag}}{%if not forloop.last%}, {%endif%}
+           {% endfor %}
+           {% endif %}
+            </p>
+        </div>
+    </div>
+
+ </div>
+
+</div>
+
+    <nav class="nav nav-tabs justify-content-center">
+      <a class="nav-item nav-link active" href="#contenu" data-toggle="tab">Contenu</a>
+        {% if article.album %}
+      <a class="nav-item nav-link" href="#album" data-toggle="tab">Album photo</a>
+        {% endif %}
+        {% if salons %}
+      <a class="nav-item nav-link" href="#salons" data-toggle="tab">Salons</a>
+        {% endif %}
+        {% if ateliers %}
+      <a class="nav-item nav-link" href="#ateliers" data-toggle="tab">Ateliers</a>
+        {% endif %}
+        {% if dates %}
+      <a class="nav-item nav-link" href="#dates" data-toggle="tab">Evènements</a>
+        {% endif %}
+        {% if lieux %}
+      <a class="nav-item nav-link" href="#lieux" data-toggle="tab">Lieu{{lieux|pluralize:",x"}}</a>
+        {% endif %}
+        {% if documents %}
+      <a class="nav-item nav-link" href="#documents" data-toggle="tab">Document{{documents|pluralize:",s"}}</a>
+        {% endif %}
+{% if suffrages %}
+      <a class="nav-item nav-link" href="#suffrages" data-toggle="tab">Votes</a>
+   {% endif %}   
+<a class="nav-item nav-link" href="#historique" data-toggle="tab">Infos</a>
+      <a class="nav-item nav-link" href="#plus" data-toggle="tab">Ajouter...</a>
+
+    </nav>
+
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="contenu">
+        <div class="contenu fiche">
+   {{ article.contenu |safe}}
+  </div>
+  </div>
+
+  <div class="tab-pane fade" id="album">
+        <div class="contenu atelier">
+
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-8 col-lg-6 textcenter">
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+  <ol class="carousel-indicators">
+	    {% for photo in article.album.public %}
+            <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}" {% if forloop.first %} class="active"{% endif %}></li>
+	    {% endfor %}
+  </ol>
+  <div class="carousel-inner">
+	    {% for photo in article.album.public %}
+    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
+	        <a href="{{ photo.get_absolute_url }}">
+	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
+	        </a>
+    </div>
+          {% endfor %}
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Précédent</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Suivant</span>
+  </a>
+</div>
+</div>
+</div>
+<hr>
+<div class="row justify-content-center">
+<div class="col-sm-12 textcenter">
+        {% if article.album.description %}<p>{{ article.album.description|safe }}</p>{% endif %}
+
+</div>
+</div>
+   <div class="row">
+        <div class="col-sm-12 offset-md-1 col-md-10 textcenter">
+             <small>
+            {%if not article.album %}
+                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                       <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un album photo</a>
+                {% endif%}
+            {%else%}
+                 <a class="btn btn-sm btn-success textleft" href="{{ article.album.get_absolute_url }}"><i class="fa fa-arrow-right"></i> Voir tout l'album photo</a>
+
+                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerAlbumArticle' slug=article.slug%}"><i class="fa fa-times"></i> Enlever l'album photo de l'article</a>
+            {% endif %}
+        {%endif%}
+                 </small>
+        </div>
+        </div>
+        </div>
+  </div>
+
+
+  <div class="tab-pane fade" id="documents">
+    <div class="contenu fiche">
+<div class="row justify-content-center">
+<div class="col-sm-12 textcenter">
+        {% for document in documents %}
+        <p>
+            <a href="{{document.doc.url}}" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.titre }} </a>
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                <a class="btn btn-sm btn-danger textleft" href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i class="fa fa-times"></i> </a>
+            {% endif %}
+        </p>
+        {% endfor%}
+        <p>
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                   <a class="btn btn-sm btn-success textleft" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document</a>
+            {% endif%}
+        </p>
+    </div>
+  </div>
+    </div>
+  </div>
+
+  <div class="tab-pane fade " id="ateliers">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
+        <div class="contenu atelier">
+        {% for atelier in ateliers %}
+        <p>
+                <a href="{{atelier.get_absolute_url}}"> <i class="fa fa-arrow-right"></i>  Atelier du {{atelier.start_time |date:"l d F Y"}} : {{atelier.titre}}</a>
+
+                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <a class="btn btn-sm btn-danger textleft" href="{% url 'ateliers:supprimerAtelier' slug=atelier.slug%}"><i class="fa fa-times"></i> </a>
+            {% endif %}
+        </p>
+        {% endfor%}
+            <hr>
+        <p><a class="btn btn-sm  btn-success textleft" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>
+</p>
+          </div>
+          </div>
+  </div>
+
+
+<div class="tab-pane fade " id="dates">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu discussion_fiche">
+              {%for date in dates %}
+             <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
+
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser  %}
+                    <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerEvenementArticle' slug_article=article.slug  id_evenementArticle=date.id %}" ><i class="fa fa-times"></i> </a></p>
+            {% endif %}
+            </p>
+              {%endfor%}
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+            <hr>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
+            {% endif %}
+      </div>
+    </div>
+</div>
+<div class="tab-pane fade " id="lieux">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu discussion_fiche">
+              {%for lieu in lieux %}
+                <p> {{lieu}}
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}" ><i class="fa fa-times"></i> </a>
+            {% endif %}
+                    </p>
+              {%endfor%}
+             <p><a class="btn btn-sm btn-primary textleft" href="{% url 'blog:voirCarteLieux' id_article=article.id %}" ><i class="fa fa-compass"></i> Voir sur une carte</a></p>
+
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+            <hr>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a></p>
+            {% endif %}
+      </div>
+    </div>
+</div>
+<div class="tab-pane fade " id="salons">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu discussion_fiche">
+              {%for salon in salons %}
+            <p><a href="{{salon.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> {{salon.titre}}</a></p>
+              {%endfor%}
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+            <hr>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un salon de discussion</a></p>
+            {% endif %}
+      </div>
+    </div>
+</div>
+
+  <div class="tab-pane " id="historique">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu discussion_fiche">
+            <h6>
+            {% if article.get_partagesAsso %}
+                Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec
+                    {{article.get_partagesAssoLogo|safe}},
+            {%endif%}
+
+               rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a>
+
+                {% get_hit_count for article as nbvues %}
+                 ({{ nbvues }} vue{{nbvues|pluralize:"s"}})
+                {% if article.estArchive%}
+                    - archivé
+                {%endif%}
+                {% if article.estModifiable%}
+                    - modifiable
+                {%endif%}
+            </h6>
+            <div class="row textcenter">
+                <div class="col-sm-12">
+          {%for action in actions %}
+                {% include "notifications/notifications_template3.html" with action=action%}
+          {%endfor%}
+            </div>
+            </div>
+        </div>
+        </div>
+  </div>
+
+<div class="tab-pane fade " id="suffrages">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu discussion_fiche">
+              {%for suffrage in suffrages %}
+            <p><a href="{{suffrage.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> {{suffrage.titre}}</a></p>
+              {%endfor%}
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+            <hr>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un vote</a></p>
+            {% endif %}
+      </div>
+    </div>
+</div>
+
+  <div class="tab-pane fade " id="plus">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu discussion_fiche">
+        <p>
+          <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a>
+        </p>
+        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+        <p>
+            <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Associer à un album photo</a>
+        </p>
+        {% endif %}
+        <p>
+          <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a>
+        </p>
+        <p>
+          <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion</a>
+        </p>
+       <p>
+           <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document</a>
+       </p>
+        <p>
+            <a class="btn btn-sm btn-block  btn-info textleft" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>
+        </p>
+        <p>
+            <a class="btn btn-sm btn-block  btn-info textleft" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class="fa fa-plus"></i>  Covoiturage</a>
+        </p>
+        <p>
+            <a class="btn btn-sm btn-block  btn-info textleft" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" target="_blank"><i class="fa fa-plus"></i>  Ajouter un suffrage</a>
+        </p>
+
+          </div>
+          </div>
+  </div>
+</div>
+<hr>
+
+{% include 'commentaires_discussions.html' %}
+</div>
+
+
+
+
+{% endblock %}

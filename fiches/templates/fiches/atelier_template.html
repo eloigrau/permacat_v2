@@ -1,0 +1,56 @@
+{% load fontawesome %}
+{% load fiches_filters %}
+
+<div class="row liste_atelier">
+    <div class="col justify-content-center">
+    <div class="row">
+        <div class="col-sm-12 col-md-8  textcenter">
+            <p> <h3><a href="{% url 'fiches:lireAtelier' slug=atelier.slug %}">{{ atelier.titre }}</a>
+        </h3></p>
+        </div>
+        <div class="col-sm-12 col-md-4 textcenter">
+            <table class="greenTable">
+<thead>
+<tr>
+<th>Age</th>
+<th>Difficulté</th>
+<th>Budget</th>
+<th>Temps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>{{ atelier.get_age_display }}</td><td>{{ atelier.get_difficulte_display }}</td><td>
+
+      <img  style="max-width: 80%; height: auto;" src="{{STATIC_URL}}img/monnaie{{atelier.get_budget}}.png" alt="cout"/>
+    {%for i in atelier.get_budget_length %}
+               {% fontawesome_icon 'coins' %}
+               {% comment %}{% fontawesome_icon 'euro-sign' %} {% endcomment %}
+    {%endfor%}
+
+</td>
+    <td>
+        {{ atelier.get_temps_display }}
+         {% comment %}
+    {%for i in atelier.get_temps_length %}
+               {% fontawesome_icon 'link' %}
+               {% fontawesome_icon 'clock' %}
+    {%endfor%}
+         {% endcomment %}
+</td>
+</tr>
+</tbody>
+</tr>
+</table>
+
+        </div>
+    </div>
+         {% comment %}
+    <div class="row">
+        <div class="col-sm-12 ">
+            <p>{{ atelier.contenu|safe}}</p>
+        </div>
+    </div>
+         {% endcomment %}
+</div>
+</div>

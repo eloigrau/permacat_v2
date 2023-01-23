@@ -1,0 +1,3 @@
+{% for annonce in qs %}
+<p>{{forloop.counter0}}, "{{annonce.nom_produit}}", "{{annonce.date_creation}}", "{{annonce.estUneOffre}}", "{{annonce.categorie}}", "{{annonce.absolute_url}}",</p>
+{% endfor%}

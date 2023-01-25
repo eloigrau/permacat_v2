@@ -6,15 +6,15 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 import csv
 from django.db.models import Q
+from bourseLibre.settings import PROJECT_ROOT, os
 
 @login_required
 def accueil(request):
     return render(request, "jardins/accueil.html", {'msg':"Tout est pret"})
 
 
-def get_dossier_db():
-    from bourseLibre.settings import PROJECT_ROOT, os
-    return os.path.relpath(PROJECT_ROOT, "../../")
+def get_dossier_db(nomfichier):
+    return os.path.abspath(os.path.join(PROJECT_ROOT, "../../", nomfichier))
 
 @login_required
 def import_db_inpn_0(request):
@@ -22,8 +22,7 @@ def import_db_inpn_0(request):
         return HttpResponseForbidden()
 
     try:
-        dossier = get_dossier_db()
-        filename = dossier + "TAXREFv16.txt"
+        filename = get_dossier_db("TAXREFv16.txt")
         if 'reset' in request.GET:
             Plante.objects.all().delete()
         msg=" impor plantes"
@@ -59,8 +58,7 @@ def import_db_inpn_1(request):
         return HttpResponseForbidden()
     try:
         msg = "import rang OK"
-        dossier = get_dossier_db()
-        filename = dossier + "rangs_note.csv"
+        filename = get_dossier_db("rangs_note.csv")
         DBRang_inpn.objects.all().delete()
         with open(filename, 'r', encoding='latin-1' ) as data:
             for i, line in enumerate(csv.DictReader(data, delimiter=';')):

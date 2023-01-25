@@ -20,7 +20,7 @@ class DBStatut_inpn(models.Model):
     ORDRE = models.CharField(max_length=4)
     STATUT = models.CharField(max_length=2)
     DESCRIPTION = models.CharField(max_length=150)
-    DEFINITION = models.CharField(max_length=400)
+    DEFINITION = models.TextField(null=True)
 
     def __str__(self):
         return self.DESCRIPTION + " (" + self.DEFINITION + ")"

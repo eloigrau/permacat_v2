@@ -14,7 +14,7 @@ def accueil(request):
 
 
 def get_dossier_db(nomfichier):
-    return os.path.abspath(os.path.join(PROJECT_ROOT, "../../", nomfichier))
+    return os.path.abspath(os.path.join(PROJECT_ROOT, "../../../", nomfichier))
 
 @login_required
 def import_db_inpn_0(request):
@@ -79,8 +79,7 @@ def import_db_inpn_2(request):
 
     try:
         msg = "import statut OK"
-        dossier = get_dossier_db()
-        filename = dossier + "statuts_note.csv"
+        filename = get_dossier_db("statuts_note.csv")
         DBStatut_inpn.objects.all().delete()
         with open(filename, 'r', encoding='latin-1' ) as data:
             for i, line in enumerate(csv.DictReader(data, delimiter=';')):
@@ -97,11 +96,10 @@ def import_db_inpn_3(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    dossier = get_dossier_db()
 
     try:
         msg = "import habitat OK"
-        filename = dossier + "habitats_note.csv"
+        filename = get_dossier_db("habitats_note.csv")
         DBHabitat_inpn.objects.all().delete()
         with open(filename, 'r', encoding='iso-8859-1' ) as data:
             for i, line in enumerate(csv.DictReader(data, delimiter=';')):
@@ -118,8 +116,7 @@ def import_db_inpn_4(request):
 
     try:
         msg = "import vern OK"
-        dossier = get_dossier_db()
-        filename = dossier + "TAXVERNv16.txt"
+        filename = get_dossier_db("TAXVERNv16.txt")
         DBVern_inpn.objects.all().delete()
         with open(filename, 'r', ) as data:
             for i, line in enumerate(csv.DictReader(data, delimiter='\t')):

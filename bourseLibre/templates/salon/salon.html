@@ -131,6 +131,15 @@
 </div>
 </div>
 </div>
+{%else%}
+<div class="row">
+<div class="col-sm-12 textcenter">
+    <a href="{% url 'modifierSalon' slug=salon.slug %}">
+        <button type="button" class="btn btn-sm btn-warning" > Ajouter une description
+        </button>
+    </a>
+</div>
+</div>
 {%endif%}
 
 {% if salon.article%}

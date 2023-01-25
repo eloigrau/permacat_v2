@@ -88,7 +88,7 @@ class Plante(models.Model):
     WF = models.CharField(max_length=2)
     CLI = models.CharField(max_length=2)
     URL = models.CharField(max_length=200)
-    infos_supp = models.CharField(max_length=200, default="")
+    infos_supp = models.TextField(null=True)
 
 
     def __str__(self):

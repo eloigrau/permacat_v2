@@ -30,7 +30,7 @@ def import_db_inpn_0(request):
         else:
             j_max= 800000
         j = 0
-        msg=" impor plantes"
+        msg=" impor plantes jmax" + str(j_max)
         with open(filename, 'r') as data:
             for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
                 if j > j_max:
@@ -58,6 +58,7 @@ def import_db_inpn_0(request):
     except Exception as e:
             msg += "<p>" + str(e) + "</p>"
 
+    msg += "<p>j total" + str(j) + "</p>"
     return render(request, "jardins/accueil.html", {"msg":msg})
 
 @login_required

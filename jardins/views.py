@@ -26,10 +26,10 @@ def import_db_inpn_0(request):
         if 'reset' in request.GET:
             Plante.objects.all().delete()
         if 'nb_plantes' in request.GET:
-            j_max= 100
+            j_max= int(request.GET["nb_plantes"])
         else:
             j_max= 800000
-
+        j = 0
         msg=" impor plantes"
         with open(filename, 'r') as data:
             for i, line in enumerate(csv.DictReader(data, delimiter="\t")):

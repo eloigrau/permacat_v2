@@ -13,7 +13,7 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
-    SalonForm, Message_salonForm
+    SalonForm, Message_salonForm, ModifierSalonDesciptionForm
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
     Adhesion_asso, Adhesion_permacat
@@ -1221,6 +1221,37 @@ def creerSalon(request):
 
         return redirect(salon.get_absolute_url())
     return render(request, 'salon/creerSalon.html', {'form': form})
+
+@login_required
+def modifierSalon(request, slug):
+    salon = testIsMembreSalon(request, slug)
+    if not isinstance(salon, Salon):
+        raise PermissionDenied
+
+    form = ModifierSalonDesciptionForm(request.POST or None, instance=salon)
+    if form.is_valid():
+        salon = form.save()
+
+        message = Message_salon.objects.create(
+            salon=salon,
+            message=request.user.username + " a modifié le salon",
+            auteur=get_object_or_404(Profil, username="bot_permacat"),
+            date_creation=now()).save()
+
+        if salon.estPublic:
+            url = reverse('salon', kwargs={'slug':salon.slug})
+            action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, target=group, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
+
+        return redirect(salon.get_absolute_url())
+    return render(request, 'salon/modifierSalon.html', {'form': form, 'salon':salon})
+
+
+class ModifierSalonClass(UpdateView):
+    model = Salon
+    form_class = ModifierSalonDesciptionForm
+
+    def get_object(self):
+        return Salon.objects.get(slug=self.kwargs['slug'])
 
 @login_required
 def invitationDansSalon(request, slug_salon):

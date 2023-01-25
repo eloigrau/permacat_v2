@@ -1100,6 +1100,7 @@ class Salon(models.Model):
     titre = models.CharField(max_length=250)
     auteur = models.CharField(max_length=100)
     slug = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
     date_creation = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Date de parution")
     date_dernierMessage = models.DateTimeField(verbose_name="Date de Modification", auto_now=False, blank=True, null=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)

@@ -115,6 +115,23 @@
          {%endif%}
     </div>
 </div>
+{% if salon.description%}
+<div class="contenu article ">
+<div class="row">
+<div class="col-sm-12 offset-md-2 col-md-8">
+            {{salon.description|safe}}
+    </div>
+    </div>
+<div class="row">
+<div class="col-sm-12 textcenter">
+    <a href="{% url 'modifierSalon' slug=salon.slug %}">
+        <button type="button" class="btn btn-sm btn-warning" > Modifier
+        </button>
+    </a>
+</div>
+</div>
+</div>
+{%endif%}
 {% if salon.article%}
 <div class="row">
     <div class="col-md-12">

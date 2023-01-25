@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     'acme_challenge',
     'rest_framework',
     'permagora',
+    'jardins',
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',

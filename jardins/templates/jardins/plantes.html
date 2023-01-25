@@ -1,0 +1,51 @@
+{% extends 'base_fiches.html' %}
+{% load fontawesome %}
+
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Chercher une plante</h3>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+<form class="form-inline justify-content-center  " action="{% url 'jardins:plantes' %}" method="get" role = "search">
+
+                      <span class="input-group-append">
+                        <input class="form-control fmr-sm-2" name="recherche" type="text" placeholder="{{recherche}}">
+                        <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="recherche une plante...">{% fontawesome_icon 'search' %}</button>
+                    </span>
+                 </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+   </div>
+{%if msg %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        {{msg}}
+    </div>
+</div>
+{% endif %}
+
+
+{%include 'pagination_alphabet.html' %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+    <div class="textcenter justify-content-center">
+    {% for plante in plantes_list %}
+        <p>
+        <a class="" href="{{ plante.get_absolute_url }}">{{plante.get_nom_espece}}</a>
+        </p>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+

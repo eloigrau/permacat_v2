@@ -42,6 +42,7 @@ urlpatterns = [
     path(r'permagora/', include('permagora.urls', namespace='permagora')),
     path(r'defraiement/', include(('defraiement.urls', 'defraiement'), namespace='defraiement')),
     path(r'carto/', include('carto.urls')),
+    path(r'jardins/', include('jardins.urls')),
     url('^', include('django.contrib.auth.urls')),
     url('avatar/', include('avatar.urls')),
     url(r'^$', views.bienvenue, name='bienvenue'),

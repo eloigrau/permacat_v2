@@ -1,0 +1,56 @@
+{% extends 'base_fiches.html' %}
+{% load fontawesome %}
+
+{% load jardins_filters %}
+
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+         <p><a href="{% url 'jardins:plantes' %}">
+        <button type="button" class="btn btn-success btn-sm" >
+                       {% fontawesome_icon 'home' %}
+            </button>
+         </a>
+        </p>
+       <h3> {{plante.NOM_VERN}}</h3>
+       <h4> <a {% if plante.get_inpi_url %}href="{{plante.get_inpi_url}}" {% endif %}>{{plante.NOM_COMPLET_HTML|safe}}</a></h4>
+
+        <p><a  href="https://fr.wikipedia.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Wiki</a>
+         - <a  href="https://www.ekopedia.fr/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Eko</a>
+         - <a  href="https://jardinage.ooreka.fr/plante/recherche?motsClefs={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Ooreka</a>
+        </p>
+        <hr>
+        <p>
+        <ul style="list-style: none">
+            <li>CLASSE: {{plante.CLASSE}}</li>
+            <li>ORDRE: {{plante.ORDRE}}</li>
+            <li>FAMILLE: {{plante.FAMILLE}}</li>
+            <li>SOUS_FAMILLE: {{plante.SOUS_FAMILLE}}</li>
+        {%if plante.get_nomvern %}
+            <li>Autres noms: {{plante.get_nomvern}}</li>
+        {% endif %}
+            <li>Habitat: {{plante.get_habitat}}</li>
+            <li>Rang: {{plante.get_rang}}</li>
+        </ul>
+            </p>
+        <p>ID : {{plante.CD_NOM }} {%if plante.infos_supp %} (ou {{plante.get_info_supp_html|safe }}) {% endif %}</p>
+
+            {% if request.user.is_superuser %}
+        <p><ul style="list-style: none">
+            {% for p in plante.get_info_supp_html2 %}
+            <a href="{% url 'jardins:voir_plante_nom' %}?nom={{p}}">{{p}}</a>
+        {% endfor %}
+        </ul>
+        </p>
+            {% endif %}
+    </div>
+</div>
+
+
+
+{% endblock %}
+{% block content %}
+
+{% endblock %}
+

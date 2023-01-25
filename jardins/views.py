@@ -81,7 +81,7 @@ def import_db_inpn_2(request):
         msg = "import statut OK"
         filename = get_dossier_db("statuts_note.csv")
         DBStatut_inpn.objects.all().delete()
-        with open(filename, 'r', encoding='latin-1' ) as data:
+        with open(filename, 'r', encoding='iso-8859-1' ) as data:
             for i, line in enumerate(csv.DictReader(data, delimiter=';')):
                 if not DBStatut_inpn.objects.filter(ORDRE=line["ORDRE"]).exists():
                     DBStatut_inpn(**line).save()

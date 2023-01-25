@@ -9,55 +9,67 @@ from django.db.models import Q
 
 @login_required
 def accueil(request):
-    return render(request, "jardins/accueil.html")
+    return render(request, "jardins/accueil.html", {'msg':"Tout est pret"})
 
+
+def get_dossier_db():
+    from bourseLibre.settings import PROJECT_ROOT
+    return PROJECT_ROOT
 
 @login_required
 def import_db_inpn_0(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    dossier = "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/"
-    filename = dossier + "TAXREFv16.txt"
-    if 'reset' in request.GET:
-        Plante.objects.all().delete()
-    msg=" impor plantes"
-    with open(filename, 'r') as data:
-        for line in csv.DictReader(data, delimiter="\t"):
-            if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
-                if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
-                    pass
+    try:
+        dossier = get_dossier_db()
+        filename = dossier + "TAXREFv16.txt"
+        if 'reset' in request.GET:
+            Plante.objects.all().delete()
+        msg=" impor plantes"
+        with open(filename, 'r') as data:
+            for line in csv.DictReader(data, delimiter="\t"):
+                if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
+                    if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
+                        pass
 
-                if Plante.objects.filter(LB_NOM=line["LB_NOM"]).exists():
-                    p = Plante.objects.get(LB_NOM=line["LB_NOM"])
-                    if line["CD_NOM"] not in p.infos_supp:
-                        p.infos_supp = p.infos_supp + str(line["CD_NOM"]) + "; "
-                        p.save()
-                elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
-                    p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
-                    if line["CD_NOM"] not in p.infos_supp:
-                        p.infos_supp = p.infos_supp + str(line["CD_NOM"]) + "; "
-                        p.save()
-                else:
-                    try:
-                        Plante(**line).save()
-                    except:
-                        msg += "<p>" + str(line) + "</p>"
-    return render(request, "jardins/accueil.html", {"msg":"msg"})
+                    if Plante.objects.filter(LB_NOM=line["LB_NOM"]).exists():
+                        p = Plante.objects.get(LB_NOM=line["LB_NOM"])
+                        if line["CD_NOM"] not in p.infos_supp:
+                            p.infos_supp = p.infos_supp + str(line["CD_NOM"]) + "; "
+                            p.save()
+                    elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
+                        p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
+                        if line["CD_NOM"] not in p.infos_supp:
+                            p.infos_supp = p.infos_supp + str(line["CD_NOM"]) + "; "
+                            p.save()
+                    else:
+                        try:
+                            Plante(**line).save()
+                        except:
+                            msg += "<p>" + str(line) + "</p>"
+    except Exception as e:
+            msg += "<p>" + str(e) + "</p>"
+
+    return render(request, "jardins/accueil.html", {"msg":msg})
 
 @login_required
 def import_db_inpn_1(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
+    try:
+        msg = "import rang OK"
+        dossier = get_dossier_db()
+        filename = dossier + "rangs_note.csv"
+        DBRang_inpn.objects.all().delete()
+        with open(filename, 'r', encoding='latin-1' ) as data:
+            for i, line in enumerate(csv.DictReader(data, delimiter=';')):
+                    if not DBRang_inpn.objects.filter(RG_LEVEL=line["RG_LEVEL"]).exists():
+                        DBRang_inpn(**line).save()
+    except Exception as e:
+            msg += "<p>" + str(e) + "</p>"
 
-    dossier = "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/"
-    filename = dossier + "rangs_note.csv"
-    DBRang_inpn.objects.all().delete()
-    with open(filename, 'r', encoding='latin-1' ) as data:
-        for i, line in enumerate(csv.DictReader(data, delimiter=';')):
-                if not DBRang_inpn.objects.filter(RG_LEVEL=line["RG_LEVEL"]).exists():
-                    DBRang_inpn(**line).save()
-    return render(request, "jardins/accueil.html", {"msg":"import rang OK"})
+    return render(request, "jardins/accueil.html", {"msg":msg})
 
 
 
@@ -67,43 +79,56 @@ def import_db_inpn_2(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    dossier = "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/"
-    filename = dossier + "statuts_note.csv"
-    DBStatut_inpn.objects.all().delete()
-    with open(filename, 'r', encoding='latin-1' ) as data:
-        for i, line in enumerate(csv.DictReader(data, delimiter=';')):
-            if not DBStatut_inpn.objects.filter(ORDRE=line["ORDRE"]).exists():
-                DBStatut_inpn(**line).save()
+    try:
+        msg = "import statut OK"
+        dossier = get_dossier_db()
+        filename = dossier + "statuts_note.csv"
+        DBStatut_inpn.objects.all().delete()
+        with open(filename, 'r', encoding='latin-1' ) as data:
+            for i, line in enumerate(csv.DictReader(data, delimiter=';')):
+                if not DBStatut_inpn.objects.filter(ORDRE=line["ORDRE"]).exists():
+                    DBStatut_inpn(**line).save()
 
-    return render(request, "jardins/accueil.html", {"msg":"import statut OK"})
+    except Exception as e:
+            msg += "<p>" + str(e) + "</p>"
+
+    return render(request, "jardins/accueil.html", {"msg":msg})
 
 @login_required
 def import_db_inpn_3(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    dossier = "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/"
+    dossier = get_dossier_db()
 
-    filename = dossier + "habitats_note.csv"
-    DBHabitat_inpn.objects.all().delete()
-    with open(filename, 'r', encoding='iso-8859-1' ) as data:
-        for i, line in enumerate(csv.DictReader(data, delimiter=';')):
-            if not DBHabitat_inpn.objects.filter(HABITAT=line["HABITAT"]).exists():
-                DBHabitat_inpn(**line).save()
-    return render(request, "jardins/accueil.html", {"msg":"import habitat OK"})
+    try:
+        msg = "import habitat OK"
+        filename = dossier + "habitats_note.csv"
+        DBHabitat_inpn.objects.all().delete()
+        with open(filename, 'r', encoding='iso-8859-1' ) as data:
+            for i, line in enumerate(csv.DictReader(data, delimiter=';')):
+                if not DBHabitat_inpn.objects.filter(HABITAT=line["HABITAT"]).exists():
+                    DBHabitat_inpn(**line).save()
+    except Exception as e:
+            msg += "<p>" + str(e) + "</p>"
+    return render(request, "jardins/accueil.html", {"msg":msg})
 
 @login_required
 def import_db_inpn_4(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    dossier = "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/"
-    filename = dossier + "TAXVERNv16.txt"
-    DBVern_inpn.objects.all().delete()
-    with open(filename, 'r', ) as data:
-        for i, line in enumerate(csv.DictReader(data, delimiter='\t')):
-            if not DBVern_inpn.objects.filter(CD_VERN=line["CD_VERN"]).exists():
-                DBVern_inpn(**line).save()
+    try:
+        msg = "import vern OK"
+        dossier = get_dossier_db()
+        filename = dossier + "TAXVERNv16.txt"
+        DBVern_inpn.objects.all().delete()
+        with open(filename, 'r', ) as data:
+            for i, line in enumerate(csv.DictReader(data, delimiter='\t')):
+                if not DBVern_inpn.objects.filter(CD_VERN=line["CD_VERN"]).exists():
+                    DBVern_inpn(**line).save()
+    except Exception as e:
+            msg += "<p>" + str(e) + "</p>"
 
     return render(request, "jardins/accueil.html", {"msg":"import vern OK"})
 

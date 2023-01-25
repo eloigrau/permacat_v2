@@ -14,7 +14,7 @@ def accueil(request):
 
 def get_dossier_db():
     from bourseLibre.settings import PROJECT_ROOT, os
-    return os.path.join(PROJECT_ROOT, "../../")
+    return os.path.relpath(PROJECT_ROOT, "../../")
 
 @login_required
 def import_db_inpn_0(request):

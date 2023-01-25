@@ -27,8 +27,8 @@ class DBStatut_inpn(models.Model):
 
 class DBHabitat_inpn(models.Model):
     HABITAT = models.IntegerField()
-    LB_HABITAT = models.CharField(max_length=2)
-    DEFINITION = models.CharField(max_length=400)
+    LB_HABITAT = models.CharField(max_length=3)
+    DEFINITION = models.TextField(null=True)
 
     def __str__(self):
         return self.LB_HABITAT + " (" + self.DEFINITION + ")"

@@ -25,9 +25,16 @@ def import_db_inpn_0(request):
         filename = get_dossier_db("TAXREFv16.txt")
         if 'reset' in request.GET:
             Plante.objects.all().delete()
+        if 'nb_plantes' in request.GET:
+            j_max= 100
+        else:
+            j_max= 800000
+
         msg=" impor plantes"
         with open(filename, 'r') as data:
-            for line in csv.DictReader(data, delimiter="\t"):
+            for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
+                if j > j_max:
+                    break
                 if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
                     if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
                         pass
@@ -45,6 +52,7 @@ def import_db_inpn_0(request):
                     else:
                         try:
                             Plante(**line).save()
+                            j = j+1
                         except:
                             msg += "<p>" + str(line) + "</p>"
     except Exception as e:

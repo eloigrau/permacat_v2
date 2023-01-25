@@ -473,12 +473,12 @@ class creerAction_articlenouveauForm(forms.Form):
 
 
 class SalonForm(forms.ModelForm):
-    #asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
-    #                          label="Article public ou réservé aux membres du groupe :", )
-
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic' ]
+        fields = ['titre', 'estPublic', 'description' ]
+        widgets = {
+            'description': SummernoteWidget(),
+        }
 
     def save(self, request):
         instance = super(SalonForm, self).save(commit=False)
@@ -487,6 +487,16 @@ class SalonForm(forms.ModelForm):
         inscrit = InscritSalon(salon=instance, profil=request.user)
         inscrit.save()
         return instance
+
+
+class ModifierSalonDesciptionForm(forms.ModelForm):
+
+    class Meta:
+        model = Salon
+        fields = ['titre', 'description' ]
+        widgets = {
+            'description': SummernoteWidget(),
+        }
 
 class InviterDansSalonForm(forms.Form):
     profil_invite = forms.ChoiceField(label='Invité :')

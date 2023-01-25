@@ -19,7 +19,7 @@ class DBRang_inpn(models.Model):
 class DBStatut_inpn(models.Model):
     ORDRE = models.CharField(max_length=4)
     STATUT = models.CharField(max_length=2)
-    DESCRIPTION = models.CharField(max_length=30)
+    DESCRIPTION = models.CharField(max_length=150)
     DEFINITION = models.CharField(max_length=400)
 
     def __str__(self):

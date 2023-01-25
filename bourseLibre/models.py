@@ -35,6 +35,7 @@ def get_categorie_from_subcat(subcat):
 
 LATITUDE_DEFAUT = '42.6976'
 LONGITUDE_DEFAUT = '2.8954'
+
 #from django.contrib.gis.db import models as models_gis
 class Adresse(models.Model):
     rue = models.CharField(max_length=200, blank=True, null=True)

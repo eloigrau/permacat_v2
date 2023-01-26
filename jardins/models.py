@@ -67,7 +67,7 @@ class Plante(models.Model):
     GROUP2_INPN = models.CharField(max_length=20)
     GROUP3_INPN = models.CharField(max_length=20)
     CD_NOM = models.IntegerField(unique=True, primary_key=True)
-    CD_TAXSUP = models.CharField(max_length=5)
+    CD_TAXSUP = models.IntegerField()
     CD_SUP = models.IntegerField()
     CD_REF = models.IntegerField()
     RANG = models.CharField(max_length=4)

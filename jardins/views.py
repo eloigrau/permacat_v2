@@ -40,39 +40,42 @@ def import_db_inpn_0(request):
     dbg, created = DB_importeur.objects.get_or_create(nom='db_taxref')
     dbg.lg_debut = dbg.lg_fin
     msg +=" j_min" + str(j_min) + " jmax" + str(j_max)
-    with open(filename, 'r') as data:
-        for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
-            if i > j_max:
-                break
-            if i < j_min:
-                continue
-            if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
-                if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
+    try:
+        with open(filename, 'r') as data:
+            for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
+                if i > j_max:
+                    break
+                if i < j_min:
                     continue
+                if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
+                    if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
+                        continue
 
-                if Plante.objects.filter(LB_NOM=line["LB_NOM"]).exists():
-                    p = Plante.objects.get(LB_NOM=line["LB_NOM"])
-                    if not p.infos_supp:
-                        p.infos_supp = line["URL"] + "; "
-                    elif line["CD_NOM"] not in p.infos_supp:
-                        p.infos_supp = p.infos_supp + line["URL"] + "; "
-                    p.save()
-                elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
-                    p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
-                    if not p.infos_supp:
-                        p.infos_supp = line["URL"] + "; "
-                    elif line["CD_NOM"] not in p.infos_supp:
-                        p.infos_supp = p.infos_supp + line["URL"] + "; "
-                    p.save()
-                else:
-                    try:
-                        if not line["CD_SUP"]:
-                            line["CD_SUP"] = 0
-                        Plante(**line).save()
-                        j += 1
-                    except Exception as e:
-                        msg += "<p> erreur " + str(line) + str(e) + "</p>"
+                    if Plante.objects.filter(LB_NOM=line["LB_NOM"]).exists():
+                        p = Plante.objects.get(LB_NOM=line["LB_NOM"])
+                        if not p.infos_supp:
+                            p.infos_supp = line["URL"] + "; "
+                        elif line["CD_NOM"] not in p.infos_supp:
+                            p.infos_supp = p.infos_supp + line["URL"] + "; "
+                        p.save()
+                    elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
+                        p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
+                        if not p.infos_supp:
+                            p.infos_supp = line["URL"] + "; "
+                        elif line["CD_NOM"] not in p.infos_supp:
+                            p.infos_supp = p.infos_supp + line["URL"] + "; "
+                        p.save()
+                    else:
+                        try:
+                            if not line["CD_SUP"]:
+                                line["CD_SUP"] = 0
+                            Plante(**line).save()
+                            j += 1
+                        except Exception as e:
+                            msg += "<p> erreur " + str(line) + str(e) + "</p>"
 
+    except Exception as e:
+        msg += "<p> ERR " + str(line) + str(e) + "</p>"
     msg += "<p>j total" + str(j) + "</p>"
     return render(request, "jardins/accueil.html", {"msg":msg})
 

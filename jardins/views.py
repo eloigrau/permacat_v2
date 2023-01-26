@@ -6,7 +6,8 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 import csv
 from django.db.models import Q
-from bourseLibre.settings import PROJECT_ROOT, os, LOCALL
+from bourseLibre.settings import PROJECT_ROOT, os
+from bourseLibre.settings.production import LOCALL
 
 @login_required
 def accueil(request):

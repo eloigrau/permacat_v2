@@ -14,7 +14,7 @@ class DBRang_inpn(models.Model):
     DETAIL_EN = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.DETAIL
+        return str(self.DETAIL)
 
 class DBStatut_inpn(models.Model):
     ORDRE = models.CharField(max_length=4)
@@ -46,6 +46,15 @@ class DBVern_inpn(models.Model):
         return str(self.LB_VERN)
 
 
+class DB_importeur(models.Model):
+    nom = models.CharField(max_length=15)
+    lg_debut = models.IntegerField(default=0)
+    lg_fin = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.lg_debut) + " fin " + str(self.lg_fin)
+
+
 class Plante(models.Model):
     REGNE = models.CharField(max_length=15)
     PHYLUM = models.CharField(max_length=30)
@@ -69,7 +78,7 @@ class Plante(models.Model):
     NOM_VALIDE = models.CharField(max_length=150)
     NOM_VERN = models.CharField(max_length=150)
     NOM_VERN_ENG = models.CharField(max_length=150)
-    HABITAT = models.IntegerField()
+    HABITAT = models.CharField(max_length=40)
     FR = models.CharField(max_length=2)
     GF = models.CharField(max_length=2)
     MAR = models.CharField(max_length=2)
@@ -108,7 +117,7 @@ class Plante(models.Model):
 
     @property
     def get_rang(self):
-        return DBRang_inpn.objects.get(RANG=self.RANG)
+        return str(DBRang_inpn.objects.get(RANG=self.RANG))
 
     @property
     def get_nomvern(self):

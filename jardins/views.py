@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, UpdateView, DeleteView
-from .models import Plante, DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn
+from .models import Plante, DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 import csv
 from django.db.models import Q
-from bourseLibre.settings import PROJECT_ROOT, os
+from bourseLibre.settings import PROJECT_ROOT, os, LOCALL
 
 @login_required
 def accueil(request):
@@ -14,49 +14,64 @@ def accueil(request):
 
 
 def get_dossier_db(nomfichier):
+    if LOCALL:
+        return "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/" + nomfichier
+
     return os.path.abspath(os.path.join(PROJECT_ROOT, "../../../", nomfichier))
 
 @login_required
 def import_db_inpn_0(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
+    msg =" impor plantes "
+    filename = get_dossier_db("TAXREFv16.txt")
+    if 'reset' in request.GET:
+        Plante.objects.all().delete()
+    if 'j_max' in request.GET:
+        j_max= int(request.GET["j_max"])
+    else:
+        j_max= 800000
+    if 'j_min' in request.GET:
+        j_min= int(request.GET["j_min"])
+    else:
+        j_min= 0
+    j = 0
+    k = 0
+    dbg, created = DB_importeur.objects.get_or_create(nom='db_taxref')
+    dbg.lg_debut = dbg.lg_fin
+    msg +=" j_min" + str(j_min) + " jmax" + str(j_max)
+    with open(filename, 'r') as data:
+        for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
+            if i > j_max:
+                break
+            if i < j_min:
+                continue
+            if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
+                if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
+                    continue
 
-    try:
-        filename = get_dossier_db("TAXREFv16.txt")
-        if 'reset' in request.GET:
-            Plante.objects.all().delete()
-        if 'nb_plantes' in request.GET:
-            j_max= int(request.GET["nb_plantes"])
-        else:
-            j_max= 800000
-        j = 0
-        msg=" impor plantes jmax" + str(j_max)
-        with open(filename, 'r') as data:
-            for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
-                if j > j_max:
-                    break
-                if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
-                    if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
-                        pass
-
-                    if Plante.objects.filter(LB_NOM=line["LB_NOM"]).exists():
-                        p = Plante.objects.get(LB_NOM=line["LB_NOM"])
-                        if line["CD_NOM"] not in p.infos_supp:
-                            p.infos_supp = p.infos_supp + str(line["CD_NOM"]) + "; "
-                            p.save()
-                    elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
-                        p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
-                        if line["CD_NOM"] not in p.infos_supp:
-                            p.infos_supp = p.infos_supp + str(line["CD_NOM"]) + "; "
-                            p.save()
-                    else:
-                        try:
-                            Plante(**line).save()
-                            j = j+1
-                        except:
-                            msg += "<p>" + str(line) + "</p>"
-    except Exception as e:
-            msg += "<p>" + str(e) + "</p>"
+                if Plante.objects.filter(LB_NOM=line["LB_NOM"]).exists():
+                    p = Plante.objects.get(LB_NOM=line["LB_NOM"])
+                    if not p.infos_supp:
+                        p.infos_supp = line["URL"] + "; "
+                    elif line["CD_NOM"] not in p.infos_supp:
+                        p.infos_supp = p.infos_supp + line["URL"] + "; "
+                    p.save()
+                elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
+                    p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
+                    if not p.infos_supp:
+                        p.infos_supp = line["URL"] + "; "
+                    elif line["CD_NOM"] not in p.infos_supp:
+                        p.infos_supp = p.infos_supp + line["URL"] + "; "
+                    p.save()
+                else:
+                    try:
+                        if not line["CD_SUP"]:
+                            line["CD_SUP"] = 0
+                        Plante(**line).save()
+                        j += 1
+                    except Exception as e:
+                        msg += "<p> erreur " + str(line) + str(e) + "</p>"
 
     msg += "<p>j total" + str(j) + "</p>"
     return render(request, "jardins/accueil.html", {"msg":msg})
@@ -146,25 +161,26 @@ class ListePlantes(ListView):
         params = dict(self.request.GET.items())
         self.qs = Plante.objects.none()
         if "recherche" in params:
-            self.qs = Plante.objects.filter(Q(NOM_VERN__icontains=params['recherche']) | Q(NOM_COMPLET__icontains=params['recherche'])| Q(LB_NOM__icontains=params['recherche']))
+            self.qs = Plante.objects.filter(Q(RANG="ES") & (Q(NOM_VERN__icontains=params['recherche']) | Q(NOM_COMPLET__icontains=params['recherche'])| Q(LB_NOM__icontains=params['recherche'])))
 
             if 'lettre' in params:
                 self.qs = self.qs.filter(NOM_VERN__istartswith=params['lettre'])
         elif 'lettre' in params:
-            self.qs = Plante.objects.filter(NOM_VERN__istartswith=params['lettre'])
+            self.qs = Plante.objects.filter(RANG="ES", NOM_VERN__istartswith=params['lettre'])
 
         if "categorie" in params:
             self.qs = self.qs.filter(categorie=params['categorie'])
 
+        if self.qs.count() == 1:
+            return redirect("jardins:voir_plante", cd_nom=str(self.qs[0].CD_NOM))
+
         if "ordreTri" in params:
             self.qs = self.qs.order_by(params['ordreTri'])
         else:
-            self.qs = self.qs.order_by('-start_time', 'categorie', '-date_dernierMessage', )
+            self.qs = self.qs.order_by('NOM_VERN', )
 
-        if self.qs.count() == 1:
-            return redirect("jardins:voir_plante", kwargs={"cd_nom":str(self.qs[0].CD_NOM)})
 
-        return self.qs.order_by("NOM_VERN")
+        return self.qs
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

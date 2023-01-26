@@ -138,6 +138,6 @@ class Plante(models.Model):
     def get_info_supp_html2(self):
         if not self.infos_supp:
             return
-        return [str(x) for x in self.infos_supp.split('; ') if x and Plante.objects.filter(CD_NOM=int(x))]
+        return [str(x) for x in self.infos_supp.split('; ') if x]
 
 

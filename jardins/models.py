@@ -1,4 +1,4 @@
-from django.db import models
+From django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from taggit.managers import TaggableManager
@@ -68,7 +68,7 @@ class Plante(models.Model):
     GROUP3_INPN = models.CharField(max_length=20)
     CD_NOM = models.IntegerField(unique=True, primary_key=True)
     CD_TAXSUP = models.IntegerField()
-    CD_SUP = models.IntegerField()
+    CD_SUP = models.CharField(max_length=6)
     CD_REF = models.IntegerField()
     RANG = models.CharField(max_length=4)
     LB_NOM = models.CharField(max_length=150)

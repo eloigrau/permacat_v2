@@ -1,4 +1,4 @@
-From django.db import models
+from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from taggit.managers import TaggableManager

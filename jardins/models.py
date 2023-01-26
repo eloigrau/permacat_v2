@@ -131,7 +131,7 @@ class Plante(models.Model):
 
     @property
     def get_info_supp_html(self):
-        return "; ".join([" <a href='https://inpn.mnhn.fr/espece/cd_nom/"+str(x)+"' target=_blank>"+str(x)+"</a>" for x in self.infos_supp.split('; ')])
+        return "; ".join([" <a href='"+str(x)+"' target=_blank>"+str(i)+"</a>" for i, x in enumerate(self.infos_supp.split('; '))])
 
 
     @property

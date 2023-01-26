@@ -19,7 +19,7 @@
             </button>
          </a>
             {% if request.user.is_superuser %}
-         <a href="{% url 'jardins:import_db_inpn_0' %}?reset=True&j_min=0&j_max=100000">
+         <a href="{% url 'jardins:import_db_inpn_0' %}?j_min=0&j_max=500000">
         <button type="button" class="btn btn-success" >
                import DB Plantes
             </button>

@@ -75,7 +75,7 @@ def import_db_inpn_0(request):
                             msg += "<p> erreur " + str(line) + str(e) + "</p>"
 
     except Exception as e:
-        msg += "<p> ERR " + str(line) + str(e) + "</p>"
+        msg += "<p> ERR " + str(e) + "</p>"
     msg += "<p>j total" + str(j) + "</p>"
     return render(request, "jardins/accueil.html", {"msg":msg})
 

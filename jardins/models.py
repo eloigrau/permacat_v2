@@ -48,6 +48,7 @@ class DBVern_inpn(models.Model):
 
 class DB_importeur(models.Model):
     nom = models.CharField(max_length=15)
+    texte = models.TextField(blank=True, null=True, )
     lg_debut = models.IntegerField(default=0)
     lg_fin = models.IntegerField(default=0)
 

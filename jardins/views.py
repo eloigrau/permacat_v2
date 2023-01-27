@@ -40,7 +40,6 @@ def import_db_inpn_0(request):
     j = 0
     k = 0
     dbg, created = DB_importeur.objects.get_or_create(nom='db_taxref')
-    dbg.lg_debut = int(dbg.lg_fin)
     msg +=" j_min" + str(j_min) + " jmax" + str(j_max)
     try:
         with open(filename, 'r') as data:
@@ -49,6 +48,7 @@ def import_db_inpn_0(request):
                     break
                 if i < j_min or i < dbg.lg_debut:
                     continue
+                dbg.lg_debut = int(dbg.lg_fin)
                 if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
                     if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
                         continue
@@ -60,6 +60,7 @@ def import_db_inpn_0(request):
                         elif line["CD_NOM"] not in p.infos_supp:
                             p.infos_supp = p.infos_supp + line["URL"] + "; "
                         p.save()
+                        k += 1
                     elif Plante.objects.filter(NOM_VERN=line["NOM_VERN"]).exists() :
                         p = Plante.objects.get(NOM_VERN=line["NOM_VERN"])
                         if not p.infos_supp:
@@ -67,6 +68,7 @@ def import_db_inpn_0(request):
                         elif line["CD_NOM"] not in p.infos_supp:
                             p.infos_supp = p.infos_supp + line["URL"] + "; "
                         p.save()
+                        k += 1
                     else:
                         try:
                             if not line["CD_SUP"]:
@@ -81,6 +83,12 @@ def import_db_inpn_0(request):
     except Exception as e:
         msg += "<p> ERR " + str(e) + "</p>"
     msg += "<p>j total" + str(j) + "</p>"
+    if dbg.texte:
+        dbg.texte = dbg.texte + msg
+    else:
+        dbg.texte = msg
+    dbg.save()
+
     return render(request, "jardins/accueil.html", {"msg":msg})
 
 @login_required

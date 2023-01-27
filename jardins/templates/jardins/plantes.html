@@ -36,11 +36,14 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
     <div class="textcenter justify-content-center">
+        <table>
     {% for plante in plantes_list %}
-        <p>
-        <a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a>
-        </p>
+            <tr>
+                <td><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                <td><a class="" href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+            </tr>
     {% endfor %}
+            </table>
     </div>
 </div>
 

@@ -11,13 +11,10 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-<form class="form-inline justify-content-center  " action="{% url 'jardins:plantes' %}" method="get" role = "search">
-
-                      <span class="input-group-append">
-                        <input class="form-control fmr-sm-2" name="recherche" type="text" placeholder="{{recherche}}">
-                        <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="recherche une plante...">{% fontawesome_icon 'search' %}</button>
-                    </span>
-                 </form>
+        <form class="form-horizontal" role="form" action="{% url 'jardins:voir_plante_recherche' %}" method="get"
+	enctype="multipart/form-data">
+{% include 'form_template.html' with form=plant_form boutonAnnuler=true %}
+</form>
     </div>
 </div>
 

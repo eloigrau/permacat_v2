@@ -115,6 +115,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'permagora',
     'jardins',
+
+    'dal',
+    'dal_select2',
+
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',

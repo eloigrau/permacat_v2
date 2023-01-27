@@ -8,14 +8,13 @@
     </div>
 </div>
 
-<form class="form-inline justify-content-center  " action="{% url 'jardins:chercher_plante' %}" method="get" role = "search">
-                    <div class="col" style="padding-right:0;">
-                      <span class="input-group-append">
-                        <input class="form-control fmr-sm-2" name="recherche" type="text" placeholder="{{recherche}}">
-                        <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="recherche une plante...">{% fontawesome_icon 'search' %}</button>
-                    </span>
-                    </div>
-                 </form>
+<div class="row">
+    <div class="col textcenter">
+<form class="form-horizontal" role="form" action="" method="post"
+	enctype="multipart/form-data">
+	{% csrf_token %} <input type="hidden" name="Plante"
+		value="{{ plante }}"> {% include 'form_template.html'%}
+</form>
     </div></div>
 
 

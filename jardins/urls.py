@@ -31,5 +31,7 @@ urlpatterns = [
     path(r'plantes/', login_required(views.ListePlantes.as_view(), login_url='/auth/login/'), name="plantes"),
     path(r'voir_plante/<str:cd_nom>', views.voir_plante, name="voir_plante"),
     path(r'voir_plante_nom/', views.voir_plante_nom, name="voir_plante_nom"),
-
+    path(r'voir_plante_recherche/', views.voir_plante_recherche, name="voir_plante_recherche"),
+    url(r'^plante-ac/$', login_required(views.PlanteAutocomplete.as_view(), login_url='/auth/login/'), name='plante-ac',),
+    url(r'^ajouterPlante/$', views.ajouter_plante, name="ajouter_plante"),
 ]

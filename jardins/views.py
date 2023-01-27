@@ -8,6 +8,7 @@ import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
+from .forms import Plante_rechercheForm
 
 @login_required
 def accueil(request):
@@ -39,14 +40,14 @@ def import_db_inpn_0(request):
     j = 0
     k = 0
     dbg, created = DB_importeur.objects.get_or_create(nom='db_taxref')
-    dbg.lg_debut = dbg.lg_fin
+    dbg.lg_debut = int(dbg.lg_fin)
     msg +=" j_min" + str(j_min) + " jmax" + str(j_max)
     try:
         with open(filename, 'r') as data:
             for i, line in enumerate(csv.DictReader(data, delimiter="\t")):
                 if i > j_max:
                     break
-                if i < j_min:
+                if i < j_min or i < dbg.lg_debut:
                     continue
                 if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
                     if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
@@ -74,7 +75,9 @@ def import_db_inpn_0(request):
                             j += 1
                         except Exception as e:
                             msg += "<p> erreur " + str(line) + str(e) + "</p>"
-
+                if i % 2000 == 0:
+                    dbg.lg_fin = i
+                    dbg.save()
     except Exception as e:
         msg += "<p> ERR " + str(e) + "</p>"
     msg += "<p>j total" + str(j) + "</p>"
@@ -163,6 +166,7 @@ class ListePlantes(ListView):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
+
         self.qs = Plante.objects.none()
         if "recherche" in params:
             self.qs = Plante.objects.filter(Q(RANG="ES") & (Q(NOM_VERN__icontains=params['recherche']) | Q(NOM_COMPLET__icontains=params['recherche'])| Q(LB_NOM__icontains=params['recherche'])))
@@ -174,6 +178,9 @@ class ListePlantes(ListView):
 
         if "categorie" in params:
             self.qs = self.qs.filter(categorie=params['categorie'])
+
+        if "plante" in params:
+            return redirect("jardins:voir_plante", cd_nom=str(params["plante"]))
 
         if self.qs.count() == 1:
             return redirect("jardins:voir_plante", cd_nom=str(self.qs[0].CD_NOM))
@@ -200,6 +207,8 @@ class ListePlantes(ListView):
         if 'ordreTri' in self.request.GET:
             context['typeFiltre'] = "ordreTri"
 
+        context['plant_form'] = Plante_rechercheForm(None)
+
         return context
 
 
@@ -218,3 +227,39 @@ def voir_plante_nom(request):
         return render(request, "jardins/plante.html", {"msg":"plante introuvable"})
 
     return render(request, "jardins/plante.html", {"plante":p})
+
+@login_required
+def voir_plante_recherche(request):
+    cd_nom = int(request.GET["plante"])
+    try:
+        p = Plante.objects.get(CD_NOM=int(cd_nom))
+    except:
+        return render(request, "jardins/plante.html", {"msg":"plante introuvable"})
+
+    return render(request, "jardins/plante.html", {"plante":p})
+
+from dal import autocomplete
+
+class PlanteAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Plante.objects.none()
+
+        qs = Plante.objects.filter(RANG="ES")
+
+        if self.q:
+            qs = qs.filter(NOM_VERN__istartswith=self.q)
+
+        return qs
+
+
+
+@login_required
+def ajouter_plante(request):
+    form = Plante_rechercheForm(request.POST or None)
+    plante = ""
+    if form.is_valid():
+        plante = form.save(commit=False)
+
+    return render(request, "jardins/ajouter_plante.html", {"form":form, "plante":plante})

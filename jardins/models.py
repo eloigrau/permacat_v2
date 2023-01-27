@@ -141,3 +141,5 @@ class Plante(models.Model):
         return [str(x) for x in self.infos_supp.split('; ') if x]
 
 
+class Jardin(models.Model):
+    plante = models.ForeignKey(Plante, on_delete=models.CASCADE)

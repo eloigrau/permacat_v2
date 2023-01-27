@@ -25,15 +25,16 @@
         <hr>
         <p>
         <ul style="list-style: none">
-            <li>CLASSE: {{plante.CLASSE}}</li>
-            <li>ORDRE: {{plante.ORDRE}}</li>
-            <li>FAMILLE: {{plante.FAMILLE}}</li>
-            <li>SOUS_FAMILLE: {{plante.SOUS_FAMILLE}}</li>
+            <li>Rang: {{plante.get_rang}}</li>
+            <li>Sous-famille: {{plante.SOUS_FAMILLE}}</li>
+            <li>Famille: {{plante.FAMILLE}}</li>
+            <li>Ordre: {{plante.ORDRE}}</li>
+            <li>Classe: {{plante.CLASSE}}</li>
+        <hr>
         {%if plante.get_nomvern %}
             <li>Autres noms: {{plante.get_nomvern}}</li>
         {% endif %}
             <li>Habitat: {{plante.get_habitat}}</li>
-            <li>Rang: {{plante.get_rang}}</li>
         </ul>
             </p>
         <p>ID : {{plante.CD_NOM }} {%if plante.infos_supp %} (ou {{plante.get_info_supp_html|safe }}) {% endif %}</p>

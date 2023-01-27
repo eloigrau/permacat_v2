@@ -26,22 +26,17 @@ def import_db_inpn_0(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     msg =" impor plantes "
-    filename = get_dossier_db("TAXREFv16.txt")
+    filename = get_dossier_db("TAXREFv16_plante.txt")
     if 'reset' in request.GET:
         Plante.objects.all().delete()
     if 'j_max' in request.GET:
-        j_max= int(request.GET["j_max"])
+        j_max = int(request.GET["j_max"])
     else:
-        j_max= 800000
+        j_max = 200000
     if 'j_min' in request.GET:
-        j_min= int(request.GET["j_min"])
+        j_min = int(request.GET["j_min"])
     else:
-        j_min= 0
-    if 'tout' in request.GET:
-        espece_seulement = True
-    else:
-        espece_seulement = False
-
+        j_min = 0
 
     j = 0
     k = 0
@@ -54,7 +49,7 @@ def import_db_inpn_0(request):
                 break
             if i < j_min or i < dbg.lg_debut:
                 continue
-            if line["REGNE"] and line["NOM_VERN"] and (line["REGNE"] == "Plantae"):
+            if line["REGNE"] and line["NOM_VERN"] and line["RANG"] == "ES" and (line["REGNE"] == "Plantae"):
                 if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
                     continue
 

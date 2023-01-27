@@ -72,7 +72,7 @@ class Plante(models.Model):
     CD_SUP = models.CharField(max_length=8)
     CD_REF = models.IntegerField()
     RANG = models.CharField(max_length=4)
-    LB_NOM = models.CharField(max_length=200)
+    LB_NOM = models.CharField(max_length=200) #Nom scientifique
     LB_AUTEUR = models.CharField(max_length=200, null=True)
     NOM_COMPLET = models.TextField(null=True)
     NOM_COMPLET_HTML = models.TextField(null=True)

@@ -2,8 +2,6 @@
 {% load fontawesome %}
 {% load blog_filters %}
 {% load activity_tags %}
-{% load webpush_notifications %}
-{%block header%}{% webpush_header %}{%endblock%}
 {%block message%}{%endblock%}
 {%block title%}- Salon de discussion {{asso}}{%endblock%}
 {% block subtitle %}
@@ -124,9 +122,6 @@
             {{salon.description|safe}}
     </div>
     </div>
-{% if request.user.is_superuser %}
-    <p> {% webpush_button with_class="btn btn-outline-info" %}</p>
-{% endif %}
 
 <div class="row">
 <div class="col-sm-12 textcenter">

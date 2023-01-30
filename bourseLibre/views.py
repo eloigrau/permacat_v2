@@ -58,6 +58,8 @@ from bourseLibre.constantes import Choix as Choix_global
 from django.utils.timezone import now
 import pytz
 
+from webpush import send_user_notification
+
 CharField.register_lookup(Lower, "lower")
 
 from .views_notifications import getNbNewNotifications
@@ -1200,10 +1202,9 @@ def salon(request, slug):
 
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message, emails=emails)
 
-        if request.user.is_superuser:
-            from webpush import send_user_notification
-            payload = {"head": "Publié", "body": "Messge publié !"}
-            send_user_notification(user=request.user, payload=payload, ttl=1000)
+        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":url}
+        for suiv in followers(suivis):
+            send_user_notification(suiv, payload=payload, ttl=1000)
         return redirect(request.path)
 
     return render(request, 'salon/salon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})

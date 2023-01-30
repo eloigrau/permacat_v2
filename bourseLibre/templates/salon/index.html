@@ -59,6 +59,7 @@
 <div class="container">
         <div class="row justify-content-center">
             <div class="col-sm-12 textcenter">
+             <p> {% webpush_button with_class="btn btn-outline-info" %}</p>
                 <a href="{% url 'creerSalon' %}">
                 <button type="button" class="btn btn-success" >
                     <i class="fa fa-plus"></i> Créer un nouveau salon
@@ -85,7 +86,6 @@
 <hr>
 {% endif %}
 {% if salons_su %}
-    <p>WEBPUSH {% webpush_button %}</p>
         <div class="row justify-content-center">
             <div class="col-sm-12">
                 <h5 class="textcenter">Salons SU :</h5>

@@ -118,6 +118,7 @@ INSTALLED_APPS = [
 
     'dal',
     'dal_select2',
+    'webpush',
 
     #'formtools',
     #'channels', 'chat',
@@ -496,6 +497,11 @@ AVATAR_AUTO_GENERATE_SIZES = (80, 40)
 AVATAR_MAX_AVATARS_PER_USER = 5
 AVATAR_EXPOSE_USERNAMES = False
 
+{
+"subject" : "mailto: <eloi@perma.cat>",
+"publicKey" : "BIhfCAXdxkGb1D46sELlrfXwTPzSMwEn_qcQRdvwzrhEhjDUy7aoQ2XOzoGtUMzHSCjmK0GDD92T7b5mwlyMUGo",
+"privateKey" : "A7dlVSwnJf_o0DEd9M6xLJAs97Wq4Fjdu6CvFSzwngQ"
+}
 #on met ça a la fin pour importer les settings de production sur le serveur
 try:
     from production import *

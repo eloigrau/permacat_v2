@@ -2,6 +2,8 @@
 {% load fontawesome %}
 {% load blog_filters %}
 {% load activity_tags %}
+{% load webpush_notifications %}
+{%block header%}{% webpush_header %}{%endblock%}
 {%block message%}{%endblock%}
 {%block title%}- Salon de discussion {{asso}}{%endblock%}
 {% block subtitle %}
@@ -83,6 +85,7 @@
 <hr>
 {% endif %}
 {% if salons_su %}
+    <p>WEBPUSH {% webpush_button %}</p>
         <div class="row justify-content-center">
             <div class="col-sm-12">
                 <h5 class="textcenter">Salons SU :</h5>

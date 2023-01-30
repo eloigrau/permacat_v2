@@ -1156,6 +1156,7 @@ class ListeSalons(ListView):
         suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
         context["invit"] = InvitationDansSalon.objects.filter(profil_invite=self.request.user).order_by("salon__titre")
 
+        #context["webpush"] = {"group": group_name }
         if self.request.user.is_superuser:
             context["salons_su"] = Salon.objects.all().order_by("-titre")
 
@@ -1199,7 +1200,12 @@ def salon(request, slug):
 
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message, emails=emails)
 
+        if request.user.is_superuser:
+            from webpush import send_user_notification
+            payload = {"head": "Publié", "body": "Messge publié !"}
+            send_user_notification(user=request.user, payload=payload, ttl=1000)
         return redirect(request.path)
+
     return render(request, 'salon/salon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})
 
 @login_required

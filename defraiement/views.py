@@ -365,6 +365,10 @@ class ListeReunions(ListView):
         params = dict(self.request.GET.items())
         qs = Reunion.objects.filter(estArchive=False)
 
+        if "annee" in params:
+            qs = qs.filter(start_time__year = params['annee'])
+
+
         if "categorie" in params:
             qs = qs.filter(categorie=params['categorie'])
 
@@ -400,6 +404,9 @@ class ListeReunions_asso(ListeReunions):
         params = dict(self.request.GET.items())
         self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
         qs = Reunion.objects.filter(estArchive=False, asso=self.asso)
+
+        if "annee" in params:
+            qs = qs.filter(start_time__year = params['annee'])
 
         if "categorie" in params:
             qs = qs.filter(categorie=params['categorie'])

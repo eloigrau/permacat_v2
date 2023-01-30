@@ -45,6 +45,7 @@ urlpatterns = [
     path(r'jardins/', include('jardins.urls')),
     url('^', include('django.contrib.auth.urls')),
     url('avatar/', include('avatar.urls')),
+    url(r'^webpush/', include('webpush.urls')),
     url(r'^$', views.bienvenue, name='bienvenue'),
     url(r'^bienvenue/$', views.bienvenue, name='bienvenue'),
     url(r'^faq/$', views_base.faq, name='faq'),

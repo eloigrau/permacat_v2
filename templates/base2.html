@@ -39,6 +39,18 @@
 <link href="https://fonts.googleapis.com/css?family=Chivo:400,700|Playfair+Display:700" rel="stylesheet">
 
 <script src="{% static 'js/sorttable.js' %}"></script>
+
+<script type="text/javascript">
+ if ('serviceWorker' in navigator) {
+    /*console.log("Will the service worker register?");*/
+    navigator.serviceWorker.register("{% static 'js/service-worker.js' %}")
+      .then(function(reg){
+       /* console.log("Yes, it did.");*/
+     }).catch(function(err) {
+       /* console.log("No it didn't. This happened:", err)*/
+    });
+ }
+</script>
     {%block header %}
     {%endblock%}
 

@@ -195,8 +195,8 @@ class Article(models.Model):
 
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
-            payload = {"head": "Nouvel Atelier proposé " + self.titre, "body": "Un atelier proposé par " + self.auteur,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url}
+            payload = {"head": titre, "body": message,
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
                 send_user_notification(suiv, payload=payload, ttl=1000)
 
@@ -358,6 +358,9 @@ class Commentaire(models.Model):
     def __str__(self):
         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.article)
 
+    def get_absolute_url(self):
+        return self.article.get_absolute_url() + "#comm_" + str(self.id)
+
     @property
     def get_edit_url(self):
         return reverse('blog:modifierCommentaireArticle',  kwargs={'id':self.id})
@@ -370,8 +373,8 @@ class Commentaire(models.Model):
             self.date_creation = timezone.now()
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.article.asso.abreviation))
             titre = "Article commenté"
-            message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.article.get_absolute_url()) + "'>" + str(self.article.titre) + "</a>'"
-            suiveurs = [suiv.email for suiv in followers(self.article) if
+            message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.get_absolute_url())+ "'>" + str(self.article.titre) + "</a>'"
+            suiveurs = [suiv for suiv in followers(self.article) if
                       self.auteur_comm != suiv and self.article.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             self.article.date_dernierMessage = timezone.now()
@@ -381,7 +384,7 @@ class Commentaire(models.Model):
         if emails:
             action.send(self, verb='emails', url=self.article.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body":message,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url}
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
                 send_user_notification(suiv, payload=payload, ttl=1000)
         return retour

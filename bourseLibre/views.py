@@ -1192,7 +1192,7 @@ def salon(request, slug):
         message.salon = salon
         message.save()
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
-        url = reverse('salon', kwargs={'slug':salon.slug})
+        url = message.get_absolute_url()
         action.send(request.user, verb='envoi_salon_'+str(salon.slug),
                     action_object=message, target=group, url=url,
                     description="a envoyé un message dans le salon '" + str(salon.titre) + "' (>"+" ".join([str(x) for x in inscrits])+")")

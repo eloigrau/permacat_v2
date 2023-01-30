@@ -14,7 +14,7 @@
 {% for discu, comments in commentaires.items %}
   <div class="tab-pane fade  {% if forloop.first %} active show{% endif %}" id="{{discu.slug}}">
     {% for comment in comments %}
-    <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
+    <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}" id="comm_{{comment.id}}">
         <div class="col-sm-3 col-md-3 col-lg-2">
             <p class="infos  textepetit ">
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a><br>{% endifchanged %}{{ comment.date_creation|date:"d/m/Y, G:i" }}

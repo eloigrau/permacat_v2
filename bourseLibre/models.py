@@ -1199,7 +1199,7 @@ class Message_salon(models.Model):
         return reverse('modifierMessage',  kwargs={'id':self.id, 'type_msg':'salon', 'asso':'None'})
 
     def get_absolute_url(self):
-        return self.salon.get_absolute_url()
+        return self.salon.get_absolute_url() + "#comm_" + str(self.id)
 
     def save(self, *args, **kwargs):
         super(Message_salon, self).save(*args, **kwargs)

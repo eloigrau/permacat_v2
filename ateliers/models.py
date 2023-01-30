@@ -104,7 +104,7 @@ class Atelier(models.Model):
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body":message,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url}
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
                 send_user_notification(suiv, payload=payload, ttl=1000)
         return ret

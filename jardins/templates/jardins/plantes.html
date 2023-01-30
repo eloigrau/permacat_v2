@@ -39,8 +39,8 @@
         <table>
     {% for plante in plantes_list %}
             <tr>
-                <td><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
-                <td><a class="" href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+                <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
             </tr>
     {% endfor %}
             </table>

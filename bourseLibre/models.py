@@ -492,6 +492,7 @@ class Adhesion_permacat(models.Model):
         choices=Choix.type_paiement_adhesion,
         default='0', verbose_name="Moyen de maiement"
     )
+    detail = models.TextField( null=True, blank=True)
 
     def __str__(self):
         return self.user.username + " le "+ str(self.date_cotisation) + " " + str(self.montant) + " " + str(self.moyen)
@@ -506,6 +507,7 @@ class Adhesion_asso(models.Model):
         default='0', verbose_name="Moyen de maiement"
     )
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    detail = models.TextField( null=True, blank=True)
 
     def __str__(self):
         return self.user.username + " le " + str(self.date_cotisation) + " " + str(self.montant) + " " + str(self.moyen) + "(" + self.asso.nom + ")"

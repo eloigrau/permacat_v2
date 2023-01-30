@@ -15,16 +15,49 @@ Coopérateurs
 {% endblock %}
 {% block content %}
 
+{% comment %}
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter
 " id="{{mails.type}}">
         <ul>
+
 {% for adhesion in listeAdhesions %}
             <li>{{adhesion}}</li>
 {%endfor%}
         </ul>
 </div>
-<hr>
 
+<hr>
+{% endcomment %}
+
+<div class="row contenu reunion">
+<div class="col justify-content-center">
+<table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>asso</th>
+                <th>user</th>
+                <th>date</th>
+                <th>montant</th>
+                <th>moyen</th>
+                <th>detail</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for adhesion in listeAdhesions %}
+    <tr>
+        <td><a href="{{user.get_absolute_url}}">{%if not adhesion.asso%} permacat {%else%}{{adhesion.asso}}{%endif%}</a></td>
+        <td><a href="{{user.get_absolute_url}}">{{user}}</a></td>
+        <td><a href="{{user.get_absolute_url}}">{{adhesion.date_cotisation|date:"DATE_FORMAT"}}</a></td>
+        <td><a href="{{user.get_absolute_url}}">{{adhesion.montant}}</a></td>
+        <td><a href="{{user.get_absolute_url}}">{{adhesion.get_moyen_display}}</a></td>
+        <td><a href="{{user.get_absolute_url}}">{{adhesion.detail}}</a></td>
+    </tr>
+    {% endfor %}
+        </tbody>
+</table>
+
+</div>
+</div>
 
 {% endblock %}

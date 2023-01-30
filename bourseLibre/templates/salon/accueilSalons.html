@@ -2,10 +2,8 @@
 {% load fontawesome %}
 {% load blog_filters %}
 {% load activity_tags %}
-{% load webpush_notifications %}
-{%block header%}{% webpush_header %}{%endblock%}
 {%block message%}{%endblock%}
-{%block title%}- Salon de discussion {{asso}}{%endblock%}
+{%block title%}- Salons de discussion {%endblock%}
 {% block subtitle %}
 <div class="row">
     <div class="col-md-12">
@@ -59,7 +57,6 @@
 <div class="container">
         <div class="row justify-content-center">
             <div class="col-sm-12 textcenter">
-             <p> {% webpush_button with_class="btn btn-outline-info" %}</p>
                 <a href="{% url 'creerSalon' %}">
                 <button type="button" class="btn btn-success" >
                     <i class="fa fa-plus"></i> Créer un nouveau salon

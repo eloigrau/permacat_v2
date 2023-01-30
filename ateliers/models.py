@@ -7,6 +7,8 @@ import datetime as dt
 from bourseLibre.models import Profil, Suivis, Asso
 from actstream.models import followers
 from actstream import action
+from webpush import send_user_notification
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 
 class Choix():
@@ -91,14 +93,20 @@ class Atelier(models.Model):
                 self.auteur = Profil.objects.first()
 
             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
-            emails = [suiv.email for suiv in followers(suivi) if  self.est_autorise(suiv)]
-
+            suiveurs = [suiv.email for suiv in followers(self.article) if
+                      self.auteur_comm != suiv and self.article.est_autorise(suiv)]
+            suiveurs = [suiv.email for suiv in suiveurs if self.est_autorise(suiv)]
+            emails = [suiv.email for suiv in suiveurs]
             titre = "Nouvel atelier proposé"
             message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
+            payload = {"head": titre, "body":message,
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url}
+            for suiv in suiveurs:
+                send_user_notification(suiv, payload=payload, ttl=1000)
         return ret
 
 

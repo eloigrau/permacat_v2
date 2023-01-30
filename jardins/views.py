@@ -49,7 +49,8 @@ def import_db_inpn_0(request):
                 break
             if i < j_min or i < dbg.lg_debut:
                 continue
-            if line["REGNE"] and line["NOM_VERN"] and line["RANG"] == "ES" and (line["REGNE"] == "Plantae"):
+            if line["REGNE"] and line["NOM_VERN"] and (line["RANG"] == "ES" or line["RANG"] == "GN" or line["RANG"] == "SC") \
+                    and (line["REGNE"] == "Plantae"):
                 if Plante.objects.filter(CD_NOM=line["CD_NOM"]).exists():
                     continue
 

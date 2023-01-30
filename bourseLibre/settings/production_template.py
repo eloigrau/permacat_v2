@@ -52,3 +52,9 @@ ANYMAIL = {
 }
 
 
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "",
+    "VAPID_PRIVATE_KEY":"",
+    "VAPID_ADMIN_EMAIL": ""
+}
+

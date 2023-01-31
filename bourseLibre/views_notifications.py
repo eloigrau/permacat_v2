@@ -131,6 +131,9 @@ def raccourcirTempsStr(date):
     new = new.replace("heure","h")
     new = new.replace("minutes","mn")
     new = new.replace("minute","mn")
+    splitted = new.split(", ")
+    if splitted:
+        return splitted[0]
     return new
 
 @login_required

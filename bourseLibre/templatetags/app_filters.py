@@ -149,3 +149,14 @@ def get_item_dict(dictionary, key):
 def random_name(longueur=10):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(longueur))
+
+@register.filter
+def raccourcirTempsStr(date):
+    new = date.replace("heures","h")
+    new = new.replace("heure","h")
+    new = new.replace("minutes","mn")
+    new = new.replace("minute","mn")
+    splitted = new.split(", ")
+    if splitted:
+        return splitted[0]
+    return new

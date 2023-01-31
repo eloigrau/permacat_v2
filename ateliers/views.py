@@ -24,6 +24,8 @@ from actstream.models import Action as Actstream_action
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
 from bs4 import BeautifulSoup
+from webpush import send_user_notification
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 def accueil(request):
     return redirect("ateliers:index_ateliers")
@@ -154,11 +156,15 @@ def lireAtelier(request, atelier):
 
         action.send(request.user, verb='atelier_message', url=atelier.get_absolute_url(),
                     description="a commenté l'atelier: '%s'" % atelier.titre)
-        emails = [Profil.objects.get(username=atelier.auteur).email, ] + [x.user.email for x in InscriptionAtelier.objects.filter(atelier=atelier)]
+        suiveurs = [Profil.objects.get(username=atelier.auteur), ] + [x.user for x in InscriptionAtelier.objects.filter(atelier=atelier)]
+        emails = [suiv.email for suiv in suiveurs]
         message = "L'atelier <a href='https://www.perma.cat" + atelier.get_absolute_url() + "'>%s</a> a été commenté" %atelier.titre
         action.send(request.user, verb='emails', url=atelier.get_absolute_url(),
                     titre="a commenté l'atelier: '%s'" % atelier.titre,  message=message, emails=emails)
-
+        payload = {"head": "atelier: '%s'" % atelier.titre, "body": message,
+                   "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url()}
+        for suiv in suiveurs:
+            send_user_notification(suiv, payload=payload, ttl=1000)
         return redirect(request.path)
 
     return render(request, 'ateliers/lireAtelier.html', {'atelier': atelier,  'form': form_comment, 'commentaires':commentaires, 'user_inscrit': user_inscrit, 'inscrits': inscrits},)

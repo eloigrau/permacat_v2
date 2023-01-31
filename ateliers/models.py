@@ -106,7 +106,7 @@ class Atelier(models.Model):
             payload = {"head": titre, "body":message,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
-                send_user_notification(suiv, payload=payload, ttl=1000)
+                send_user_notification(suiv, payload=payload, ttl=7200)
         return ret
 
 

@@ -1205,8 +1205,9 @@ def salon(request, slug):
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message, emails=emails)
 
         payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":url}
-        for suiv in followers(suivis):
-            send_user_notification(suiv, payload=payload, ttl=1000)
+        for suiv in followers(suivis) :
+            if request.user != suiv or request.user.is_superuser:
+                send_user_notification(suiv, payload=payload, ttl=7200)
         return redirect(request.path)
 
     return render(request, 'salon/salon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})

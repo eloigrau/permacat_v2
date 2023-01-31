@@ -42,7 +42,18 @@ $(document).ready(function() {
 
     });
 });
+
+document.onreadystatechange = function() {
+    if (document.readyState == "complete") {
+        $("#loader").css('display', "none");
+        $("#contenucharge").css('visibility', "visible");
+    } else {
+        $("#contenucharge").css('visibility', "hidden");
+        $("#loader").css('visibility', "visible");
+    }
+};
 /*
+
 document.addEventListener("DOMContentLoaded", function(){
 
 		navbar = $('#navbar')
@@ -99,6 +110,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			}, 700);
 		});
 	}
+
+
 
 })
 //$(function() {

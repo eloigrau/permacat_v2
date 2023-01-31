@@ -776,11 +776,8 @@ class ListeProduit(ListView):
         if "offre" in params:
             qs = qs.filter(estUneOffre=params['offre'])
 
-        if "permacat" in params and self.request.user.adherent_pc:
-            if params['permacat'] == "True":
-                qs = qs.filter(estPublique=False)
-            else:
-                qs = qs.filter(estPublique=True)
+        if "asso" in params:
+            qs = qs.filter(asso__abreviation=params['asso'])
 
         res = qs.order_by('-date_creation', 'categorie', 'user')
         if "ordre" in params:
@@ -819,6 +816,8 @@ class ListeProduit(ListView):
             context['categorie_parent'] = self.request.GET['categorie']
             context['typeFiltre'] = "categorie"
         context['typeOffre'] = '<- | ->'
+        if "asso" in self.request.GET:
+            context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"])
 
         context['suivi'], created = Suivis.objects.get_or_create(nom_suivi="produits")
         return context

@@ -15,7 +15,8 @@
 		<div class="col-md-12 textcenter">
         <div class="row justify-content-center">
             <div class="col-md-4 offset-md-4">
-                <h3>Petites Annonces / Altermarché</h3>
+                <h3>Petites Annonces</h3>
+                <h4>L'Altermarché numérique</h4>
             </div>
             <div class="col-md-4 ">
             <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
@@ -123,8 +124,8 @@
                      <a class="dropdown-item"  href="?categorie=offresEtDemandes">Liste d'offres et demandes</a>
                      <a class="dropdown-item"  href="?categorie=aliment">Aliments</a>
                      <a class="dropdown-item"  href="?categorie=vegetal">Végétal</a>
-                     <a class="dropdown-item"  href="?categorie=service">Service</a>
-                     <a class="dropdown-item"  href="?categorie=objet">objet</a>
+                     <a class="dropdown-item"  href="?categorie=service">Services</a>
+                     <a class="dropdown-item"  href="?categorie=objet">Objets</a>
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
@@ -199,28 +200,28 @@
             <li class="nav-item dropdown active">
              <button type="button" class="btn btn-block {% if request.GET.permacat %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
-                {% if request.GET.permacat %}{% if request.GET.permacat == "True" %}Permacat {%else%}Public{%endif%}{%else%}Collectif{%endif%}
+                {% if request.GET.asso %}{{asso_courante}}{%else%}Collectif{%endif%}
               </button>
                 <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat">
         {% if request.user.adherent_pc%}
-                      <a class="dropdown-item" href="?permacat=True">Permacat</a>
+                      <a class="dropdown-item" href="?asso=pc">Permacat</a>
         {%endif%}
         {% if request.user.adherent_rtg %}
-                      <a class="dropdown-item" href="?rtg=True">Ramene Ta Graine</a>
+                      <a class="dropdown-item" href="?asso=rtg">Ramene Ta Graine</a>
         {%endif%}
         {% if request.user.adherent_fer %}
-                      <a class="dropdown-item" href="?rtg=True">Fermille</a>
+                      <a class="dropdown-item" href="?asso=fer">Fermille</a>
         {%endif%}
         {% if request.user.adherent_scic %}
-                      <a class="dropdown-item" href="?rtg=True">PermAgora</a>
+                      <a class="dropdown-item" href="?asso=scic">PermAgora</a>
         {%endif%}
         {% if request.user.adherent_citealt %}
-                      <a class="dropdown-item" href="?citealt=True">Cité Altruiste</a>
+                      <a class="dropdown-item" href="?asso=citealt">Cité Altruiste</a>
         {%endif%}
         {% if request.user.adherent_bzz2022 %}
-                      <a class="dropdown-item" href="?citealt=True">Projet Bzzz</a>
+                      <a class="dropdown-item" href="?asso=bzz2022">Projet Bzzz</a>
         {%endif%}
-                      <a class="dropdown-item" href="?permacat=False">Public</a>
+                      <a class="dropdown-item" href="?">Public</a>
                 </div>
             </li>
         {%endif%}

@@ -4,10 +4,13 @@
 {% load static %}
 {% load app_filters %}
 {% load avatar_tags %}
+{% load webpush_notifications %}
+{% load fontawesome %}
 {%endblock%}
 {%block header %}
 {% leaflet_js %}
 {% leaflet_css %}
+{% webpush_header %}
 {%endblock%}
 {% block title %} - {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.username }} {% endif %}
 {% endblock %}
@@ -69,8 +72,8 @@
 
 {% if  user.username == request.user.username %}
 <div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10">
-             <p> {% webpush_button with_class="btn btn-info" %}</p>
+  <div class="col-sm-12 textcenter">
+      <p><span>{% fontawesome_icon 'bell' %} {% webpush_button with_class="btn btn-info" %}</p>
   </div></div>
 {% endif %}
 <div class="row justify-content-center">

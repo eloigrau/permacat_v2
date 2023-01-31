@@ -26,6 +26,9 @@ from .constantes import Choix, DEGTORAD
 from .settings.production import SERVER_EMAIL
 import simplejson
 from datetime import datetime
+from webpush import send_user_notification
+from django.contrib.staticfiles.templatetags.staticfiles import static
+
 
 def get_categorie_from_subcat(subcat):
     for type_produit, dico in Choix.choix.items():
@@ -559,13 +562,15 @@ class Produit(models.Model):  # , BaseProduct):
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
         emails = []
+        suiveurs = []
         if not self.id:
             self.date_creation = now()
             self.stock_courant = self.stock_initial
             suivi, cree = Suivis.objects.get_or_create(nom_suivi='produits')
             titre = "[Permacat] nouveau produit"
-            emails = [suiv.email for suiv in followers(suivi) if
+            suiveurs = [suiv for suiv in followers(suivi) if
                       self.user != suiv and self.est_autorise(suiv)]
+            emails = [suiv.email for suiv in suiveurs]
 
         retour = super(Produit, self).save(*args, **kwargs)
 
@@ -578,6 +583,10 @@ class Produit(models.Model):  # , BaseProduct):
                 else:
                     message = "Nouvelle petite annonce (demande) : ["+ self.asso.nom +"] <a href='https://www.perma.cat" + self.get_absolute_url() +"'>" + self.nom_produit + "</a>"
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
+            payload = {"head": titre, "body": message,
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+            for suiv in suiveurs:
+                send_user_notification(suiv, payload=payload, ttl=1000)
         return retour
 
 

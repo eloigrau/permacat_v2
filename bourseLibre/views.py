@@ -234,8 +234,10 @@ def produit_proposer(request, type_produit):
         url = produit.get_absolute_url()
         suffix = "_" + produit.asso.abreviation
         offreOuDemande = "offre" if produit.estUneOffre else "demande"
-        action.send(request.user, verb='ajout_offre'+suffix, action_object=produit, url=url,
-                    description="a ajouté une "+offreOuDemande+" au marché : '%s'" %(produit.nom_produit))
+        titre = 'ajout_offre'+suffix
+        msg = "a ajouté une "+offreOuDemande+" au marché : '%s'" %(produit.nom_produit)
+        action.send(request.user, verb=titre, action_object=produit, url=url,
+                    description=msg)
 
         messages.info(request, 'Votre offre a été ajoutée au marché, merci !')
         return HttpResponseRedirect('/marche/detail/' + str(produit.id))

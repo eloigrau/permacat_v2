@@ -3,7 +3,8 @@
 {% load avatar_tags %}
 
 {% if commentaires %}
-<div class="contenu commentaires" id="idConversation">
+<div class="anchor_blank" id="idConversation"></div>
+<div class="contenu commentaires" id="">
 {% for comment in commentaires %}
     <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
 

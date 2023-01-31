@@ -9,7 +9,7 @@ var Cookielaw = {
         } else {
             expires = "";
         }
-        document.cookie = name + "=" + value + expires + "; path=/ ;" + "samesite=lax ; secure";
+        document.cookie = name + "=" + value + expires + "; path=/ ;" + "samesite=strict ; secure";
     },
 
     createCookielawCookie: function () {

@@ -119,7 +119,7 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'webpush',
-
+"django_minify_html",
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',
@@ -183,6 +183,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
+    "django_minify_html.middleware.MinifyHtmlMiddleware",
     #"visits.middleware.BotVisitorMiddleware",
      #"visits.middleware.CounterMiddleware",
     #'django.core.context_processors.request',

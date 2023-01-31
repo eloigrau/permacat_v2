@@ -81,6 +81,9 @@ body {
       text-rendering: optimizeLegibility;
 }
 
+#top{
+padding-top:50px;
+}
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
     margin-top: 1rem;
@@ -113,14 +116,20 @@ font : normal;
 }
 
 .fixed-top-2 {
-    margin-top: 56px;
+    margin-top: 5px;
     text-align:center;
 }
 
 .sticky-top {
-    padding-top: 56px;
+    padding-top: 0px;
+}
+.anchor_blank{
+scroll-margin-top: 50px;
+width:100%;
 }
 
+.navbarcontainer{
+}
 .subnavbar > li{
  padding-left:30px;
   padding-right:30px;
@@ -235,7 +244,7 @@ section.p3 {
 
 .rowprincipal{
     margin-bottom: 30px;
-    margin-top: 2em;
+    margin-top: 2px;
 }
 
 .colprincipal{
@@ -605,7 +614,6 @@ border: 1px inset rgba(28,110,164,0.65);
     /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
     min-height: 500px;
     min-width:200px;
-    margin-top:20px;
     margin-bottom:20px;
     /*background-color: rgba(255, 255, 255, .7);*/
     /*border: 0.5px solid #053200;*/

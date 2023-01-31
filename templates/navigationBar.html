@@ -2,7 +2,7 @@
 {% load static %}
 {% load app_filters %}
 {% block navBar %}
-
+<div class="navbarcontainer">
 <nav class="navbar navbar-light bs-dark navbar-expand-xl fixed-top" id="navbar">
     <div class="container-fluid">
         <button class="navbar-toggler navbar-btn" type="button" data-toggle="collapse" data-target="#navbarsActuel" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
@@ -533,6 +533,7 @@
 </div>
     </div>
 </nav>
+</div>
 <script>
 $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
   if (!$(this).next().hasClass('show')) {

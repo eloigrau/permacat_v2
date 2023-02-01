@@ -981,17 +981,20 @@ def lireConversation(request, destinataire):
             conversation.dernierMessage += "..."
         conversation.save()
         message.save()
-        url = conversation.get_absolute_url()
+        url = message.get_absolute_url()
         action.send(request.user, verb='envoi_salon_prive', action_object=conversation, url=url, group=destinataire,
                     description="a envoyé un message privé à " + destinataire)
+
         profil_destinataire = Profil.objects.get(username=destinataire)
         suivi, created = Suivis.objects.get_or_create(nom_suivi='conversations')
         if profil_destinataire in followers(suivi):
             titre = "Message Privé"
-            message = request.user.username + " vous a envoyé un <a href='https://www.perma.cat"+  url+"'>" + "message</a>"
+            msg = request.user.username + " vous a envoyé un <a href='https://www.perma.cat"+  url+"'>" + "message</a>"
             emails = [profil_destinataire.email, ]
-            action.send(request.user, verb='emails', url=url, titre=titre, message=message, emails=emails)
-
+            action.send(request.user, verb='emails', url=url, titre=titre, message=msg, emails=emails)
+            payload = {"head": titre, "body": msg,
+                       "icon": static('android-chrome-256x256.png'), "url": url}
+            send_user_notification(profil_destinataire, payload=payload, ttl=7200)
             # try:
             #     send_mail(sujet, message, SERVER_EMAIL, [profil_destinataire.email, ], fail_silently=False,)
             # except Exception as inst:
@@ -1250,7 +1253,7 @@ def modifierSalon(request, slug):
 
         if salon.estPublic:
             url = reverse('salon', kwargs={'slug':salon.slug})
-            action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, target=group, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
+            action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 
         return redirect(salon.get_absolute_url())
     return render(request, 'salon/modifierSalon.html', {'form': form, 'salon':salon})

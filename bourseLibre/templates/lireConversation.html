@@ -20,6 +20,7 @@ Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% 
 {% include 'pagination_new.html' %}
 
 {% for mess in page_obj %}
+    <div class="anchor_blank" id="msg_{{mess.id}}"></div>
 
     {% ifchanged %}
     <div class="row msg-date">

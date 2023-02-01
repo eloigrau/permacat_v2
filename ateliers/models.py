@@ -83,7 +83,7 @@ class Atelier(models.Model):
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
-        emails = []
+        emails, suiveurs = [], []
         if not self.id:
             self.date_creation = timezone.now()
 
@@ -93,8 +93,6 @@ class Atelier(models.Model):
                 self.auteur = Profil.objects.first()
 
             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
-            suiveurs = [suiv.email for suiv in followers(self.article) if
-                      self.auteur_comm != suiv and self.article.est_autorise(suiv)]
             suiveurs = [suiv.email for suiv in suiveurs if self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             titre = "Nouvel atelier proposé"

@@ -2,9 +2,8 @@
 {% load blog_filters %}
 {% load avatar_tags %}
 
-{% if commentaires %}
 <div class="anchor_blank" id="idConversation"></div>
-<div class="contenu commentaires" id="">
+<div class="contenu commentaires"  id="idConversation_2">
 {% for comment in commentaires %}
     <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
 
@@ -24,6 +23,7 @@
     </div>
 {% endfor %}
 </div>
+{% if commentaires %}
 
 <hr>
 
@@ -47,8 +47,8 @@
 
     <script>
 
-    var messageBody = document.querySelector('#idConversation');
-    messageBody.scrollTop = idConversation.scrollHeight - idConversation.clientHeight;
+    var messageBody = document.querySelector('#idConversation_2');
+    messageBody.scrollTop = idConversation_2.scrollHeight - idConversation_2.clientHeight;
 
     $(function() {
     // Enable on all forms

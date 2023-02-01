@@ -30,6 +30,7 @@
     <div class="row contenu atelier">
     <div class="col justify-content-center">
 
+	<div class="anchor_blank" id="idTitreAtelier"></div>
     <div class="row titre_atelier" style="background-color:{{atelier.atelier.get_couleur}};margin-bottom:5px;">
         <div class="col textcenter" >
               <h2> Atelier : {{ atelier.titre }}</h2>
@@ -87,23 +88,23 @@
             {%if request.user.is_authenticated %}
                  {% if user_inscrit %}
                     <p>Tu es inscrit.e à cet atelier
+
                     <a href="{% url 'ateliers:annulerInscription' slug=atelier.slug %}">
                        <button type="button" class="btn btn-warning btn-sm">
                             Se désinscrire
                        </button>
                     </a>
-                        </p>
+					</p>
 
 
                 {% else %}
-                    <a href="{% url 'ateliers:inscriptionAtelier' slug=atelier.slug %}">
-                       <button type="button" class="btn  btn-success btn-lg">
-                            <i class="fa fa-arrow-right"></i> S'inscrire à l'atelier
-                       </button>
-                    </a>
+
+<form>
+   <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire" onclick="clicked();" value="S'inscrire à l'atelier">
+</form>
                 {% endif %}
             {% else %}
-            <p><a href="/auth/login/" >Connectez vous pour vous inscrire à l'atelier</a></p>
+            <p><a href="/auth/login/" >Connectez-vous pour vous inscrire à l'atelier</a></p>
             {% endif %}
         </div>
  </div>
@@ -215,4 +216,13 @@
 
 {% include 'commentaires.html' %}
 
+<script type="text/javascript">
+    function clicked() {
+        if (confirm('Etes-vous sûr.e de vouloir vous inscrire à cet atelier ?')) {
+           location.href='{% url 'ateliers:inscriptionAtelier' slug=atelier.slug %}';
+           }else{
+           location.href='{{atelier.get_absolute_url}}#idTitreAtelier';
+       }
+    }
+</script>
 {% endblock %}

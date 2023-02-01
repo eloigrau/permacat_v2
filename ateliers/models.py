@@ -79,7 +79,7 @@ class Atelier(models.Model):
         return self.titre
 
     def get_absolute_url(self):
-        return reverse('ateliers:lireAtelier', kwargs={'slug':self.slug})
+        return reverse('ateliers:lireAtelier', kwargs={'slug':self.slug}) + "#idTitreAtelier"
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''

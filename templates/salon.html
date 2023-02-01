@@ -1,7 +1,7 @@
 
 {% load blog_filters %}
 <div class="anchor_blank" id="idConversation"></div>
-<div class="contenu conversation">
+<div class="contenu conversation" id="idConversation_2">
 {% include 'pagination_new.html' %}
 {% for mess in page_obj %}
     {% ifchanged %}
@@ -42,8 +42,8 @@
 {% include 'pagination_new.html' %}
 </div>
 <script>
-    var messageBody = document.querySelector('#idConversation');
-    messageBody.scrollTop = idConversation.scrollHeight - idConversation.clientHeight;
+    var messageBody = document.querySelector('#idConversation_2');
+    messageBody.scrollTop = idConversation_2.scrollHeight - idConversation_2.clientHeight;
 </script>
 
 

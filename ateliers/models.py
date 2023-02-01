@@ -93,7 +93,7 @@ class Atelier(models.Model):
                 self.auteur = Profil.objects.first()
 
             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
-            suiveurs = [suiv.email for suiv in suiveurs if self.est_autorise(suiv)]
+            suiveurs = [suiv for suiv in suiveurs if self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             titre = "Nouvel atelier proposé"
             message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"

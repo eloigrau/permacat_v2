@@ -173,7 +173,7 @@ class Article(models.Model):
 
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
-        suiveurs= []
+        suiveurs = []
         if creation or forcerCreationMails:
             titre = "Nouvel article"
             message = "Un article a été posté dans le forum [" + str(

@@ -33,13 +33,13 @@
                         <li> <a class="dropdown-item" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Covoiturage (togetzer) </a></li>
                     </ul>
                 </li>
+                <li class="divider" role="separator"></li>
                 <li> <a class="dropdown-item" href="{% url 'presentation_site_pkoi' %}"> Pourquoi utiliser le site ? </a></li>
                <li> <a class="dropdown-item" href="{% url 'presentation_site_conseils' %}"> Conseils d'utilisation </a></li>
                <li> <a class="dropdown-item" href="{% url 'faq' %}"> FAQ </a></li>
+                <li class="divider" role="separator"></li>
                <li> <a class="dropdown-item" href="{% url 'liens' %}"> Liens </a></li>
                <li> <a class="dropdown-item" href="{% url 'contact_admins' %}"> Contacter admins </a></li>
-
-                <li class="divider" role="separator"></li>
                <li> <a class="dropdown-item" href="{% url 'cgu' %}"> CGU </a></li>
                 <li class="divider" role="separator"></li>
                 {% if request.user.is_superuser %}
@@ -430,7 +430,7 @@
 
         <li class="nav-item dropdown nav7">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
-              {% fontawesome_icon 'user' %}  {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} </a>
+              {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} </a>
             <ul class="dropdown-menu dropdown-menu1 nav7-dropdown" aria-labelledby="navbarDropdownMenuLink">
                <li> <a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                 <li class="divider" role="separator"></li>

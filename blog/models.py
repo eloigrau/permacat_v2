@@ -174,10 +174,11 @@ class Article(models.Model):
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
         suiveurs = []
+        url = "https://www.perma.cat" + self.get_absolute_url() + "#ref-titre"
         if creation or forcerCreationMails:
             titre = "Nouvel article"
             message = "Un article a été posté dans le forum [" + str(
-                self.asso.nom) + "] : '<a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>'"
+                self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.abreviation))
             suiveurs = [suiv for suiv in followers(suivi) if self.auteur != self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
@@ -189,14 +190,15 @@ class Article(models.Model):
             temps_depuiscreation = timezone.now() - self.date_creation
             if temps_depuiscreation > timedelta(minutes=10):
                 titre = "Article actualisé"
-                message = "L'article [" + str(self.asso.nom) + "] '<a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
+                message = "L'article [" + str(self.asso.nom) + "] '<a href='"+ url +"'>" + self.titre + "</a>' a été modifié"
                 suiveurs = [suiv for suiv in followers(self) if self.est_autorise(suiv)]
                 emails = [suiv.email for suiv in suiveurs]
 
         if emails:
-            action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
+
+            action.send(self, verb='emails', url=url, titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body": message,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                       "icon": static('android-chrome-256x256.png'), "url": url}
             for suiv in suiveurs:
                 send_user_notification(suiv, payload=payload, ttl=7200)
 

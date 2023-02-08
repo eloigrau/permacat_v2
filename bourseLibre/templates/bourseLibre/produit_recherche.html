@@ -1,4 +1,4 @@
-{% extends 'base_altermarche.html' %}
+{% extends 'bourseLibre/base_produits.html' %}
     {% load static %}
 {% load activity_tags %}
 {% load fontawesome %}
@@ -35,7 +35,7 @@
 
 
 {%endblock subtitle%}
-{% block content %}
+{% block contenu %}
 
 <div class="card-deck listOffres infinite-container">
     {% for produit in produits_list %}

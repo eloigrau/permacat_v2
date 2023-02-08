@@ -1,0 +1,38 @@
+{% extends 'base_altermarche.html' %}
+    {% load static %}
+{% load activity_tags %}
+{% load fontawesome %}
+
+{% block header %}
+    <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'js/infinite.min.js' %}"></script>
+{% endblock %}
+
+{% block title %} - AlterMarché {% endblock %}
+
+{% block clspanel %}claspanel{% endblock %}
+ {% block content %}
+{% block sidebar %}
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+    <div class="position-sticky">
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <!-- Collapse 1 -->
+            <a href="{% url 'marche' %}" >
+               <h3> L'altermarché </h3>
+            </a>
+
+        <ul id="sidebar_menu" class="collapse show list-group list-group-flush">
+          {% block sidebar_sousmenu %}
+            {% endblock  %}
+        </ul>
+    <!-- Collapsed content -->
+        <!-- Collapse 2 -->
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+{% endblock  %}
+{% block contenu %}
+{% endblock  %}
+{% endblock %}

@@ -18,6 +18,8 @@ from bourseLibre.models import Asso
 from django.views.decorators.csrf import csrf_exempt
 from actstream.models import following
 from bourseLibre.models import Suivis
+from hitcount.models import HitCount
+from hitcount.views import HitCountMixin
 
 from django.utils.text import slugify
 import itertools
@@ -277,6 +279,9 @@ class SupprimerPhoto(DeleteAccess, DeleteView):
 @login_required
 def telechargerDocument(request, slug):
     doc = get_object_or_404(Document, slug=slug)
+    hit_count = HitCount.objects.get_for_object(doc)
+    hit_count_response = HitCountMixin.hit_count(request, hit_count)
+
     return render(doc.get_absolute_url())
 
 @login_required

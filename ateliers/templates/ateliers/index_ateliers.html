@@ -14,15 +14,7 @@
 
 
 <div class="row align-items-center atelier_titre_page_index">
-    <div class="col-md-4 offset-md-4 textcenter justify-content-center">
-
-        <a href="{% url 'ateliers:ajouterAtelier' %}">
-        <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter un atelier
-            </button>
-            </a>&ensp;
-    </div>
-    <div class="col-md-4 textcenter">
+    <div class="col-sm-12 textcenter">
 
                  <a href="{% url 'ateliers:suivre_ateliers' %}">
                 {% if request.user|is_following:suivis %}
@@ -63,8 +55,18 @@
     </div>
 </div>
 
+<div class="row align-items-center atelier_titre_page_index">
+    <div class="col-md-8 offset-md-2 textcenter justify-content-center sidebar_toggle">
+
+        <a href="{% url 'ateliers:ajouterAtelier' %}">
+        <button type="button" class="btn btn-success" >
+                <i class="fa fa-plus"></i> Ajouter un atelier
+            </button>
+            </a>&ensp;
+    </div>
+</div>
 {%endblock%}
-{% block content %}
+{% block contenu %}
 
 
     <nav class="nav nav-tabs justify-content-center">

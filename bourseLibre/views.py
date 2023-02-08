@@ -802,8 +802,10 @@ class ListeProduit(ListView):
         context['choixPossibles'] = Choix.choix
         context['ordreTriPossibles'] = Choix.ordreTri
         context['distancePossibles'] = Choix.distances
-        context['producteur_list'] = Profil.objects.all().order_by("username")
+        #context['producteur_list'] = Profil.objects.all().order_by("username")
         context['typeFiltre'] = "aucun"
+        context['asso_list'] = [(x.abreviation, x.nom, ) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+
         # context['form'] = self.form
         if 'producteur' in self.request.GET:
             context['typeFiltre'] = "producteur"
@@ -815,7 +817,7 @@ class ListeProduit(ListView):
         if 'categorie' in self.request.GET:
             context['categorie_parent'] = self.request.GET['categorie']
             context['typeFiltre'] = "categorie"
-        context['typeOffre'] = '<- | ->'
+        context['typeOffre'] = 'Offre/demande'
         if "asso" in self.request.GET:
             context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"])
 
@@ -830,7 +832,7 @@ class ListeProduit_offres(ListeProduit):
 
     def get_context_data(self, **kwargs):
         context = ListeProduit.get_context_data(self, **kwargs)
-        context['typeOffre'] = 'Offres->'
+        context['typeOffre'] = 'Offres'
         return context
 
 class ListeProduit_recherches(ListeProduit):
@@ -841,7 +843,7 @@ class ListeProduit_recherches(ListeProduit):
 
     def get_context_data(self, **kwargs):
         context = ListeProduit.get_context_data(self, **kwargs)
-        context['typeOffre'] = '<-Demandes'
+        context['typeOffre'] = 'Demandes'
         return context
 
 @login_required

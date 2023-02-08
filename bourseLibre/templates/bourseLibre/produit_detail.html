@@ -1,4 +1,4 @@
-{% extends 'base_altermarche.html' %}
+{% extends 'bourseLibre/base_produits.html' %}
 {% load app_filters %}
 {% block title %} -  {{ produit.nom_produit }} {% endblock %}
 {% block subtitle %}
@@ -27,7 +27,7 @@
   </div>
 {% endblock %}
 
-{% block content %}
+{% block contenu %}
 
 <script>
   	function ajouterAuPanier() {
@@ -73,7 +73,7 @@
 	</div>
 
 
-	<div class="row">
+	<li class="row">
 <div class="col-md-8 paddingbase">
 		<table class="table table-condensed ">
 			{%comment%}
@@ -95,7 +95,7 @@
 						Catégorie :
 					</td>
 					<td class="proprieteProduit">
-						{{ produit.souscategorie }}
+						{% if produit.souscategorie %}{{ produit.souscategorie }}{%endif%}
 					</td>
 				</tr>
 			
@@ -129,56 +129,28 @@
 		</table>
 	</div>
 
+{% endblock %}
+      {% block sidebar_sousmenu %}
 	{% if user.id != produit.user.id %}
-	<div class="col-md-4 paddingbase">
 
-				{%comment%}
-		<div class="row justify-content-center align-items-center">
-			Quantité :
-				<div class="col-md-5">
-
-			<div class="input-group">
-				<span class="input-group-btn">
-					<button type="button" class="quantite-left-minus btn btn-danger btn-number"  data-type="minus" data-field="">
-					  <span class="glyphicon glyphicon-minus"></span>
-					</button>
-				</span>
-				<input type="text" id="quantite" name="quantite" class="form-control input-number" value="1" min="0" >
-				<span class="input-group-btn">
-					<button type="button" class="quantite-right-plus btn btn-success btn-number" data-type="plus" data-field="">
-						<span class="glyphicon glyphicon-plus"></span>
-					</button>
-				</span>
-				</div>
-			</div>
-
-		<a onclick="ajouterAuPanier()" class="btn btn-primary btn-lg btn-block " type="button" id="buttonAjouterAuPanier">
-			<i class="fa fa-plus"></i> Ajouter au panier</a></br></br>
-		<a href="{%url 'agora_conversation' produit.user.username %}?produit={{produit.id}}" class="btn btn-success btn-block  btn-lg" type="button">Envoyer un message</a>
-
-		</div>
-
-				{%endcomment%}
+            <li class="list-group-item py-1">
 		<a href="{%url 'agora_conversation' produit.user.username %}" class="btn btn-success btn-block " type="button">Envoyer un message privé</a>
-		{%comment%}
-		<a href="{%url 'profil_contact' produit.user.id %}" class="btn btn-success btn-block  btn-lg" type="button">Mail</a>
-		{%endcomment%}
+			</li>
 
-	</div>
 	{%elif user.id == produit.user.id%}
-	<div class="col-md-4 paddingbase">
+            <li class="list-group-item py-1">
 		<a href="{%url 'produit_modifier' produit.id %}" class="btn btn-warning btn-lg btn-block" type="button">
 			Modifier</a>
 		<a href="{%url 'produit_supprimer' produit.id %}" class="btn btn-danger btn-lg btn-block" type="button">
 			Supprimer</a>
-	</div>
+			</li>
 	{%endif%}
 
 		{% if request.user.is_superuser %}
-	<div class="col-md-4 paddingbase">
+            <li class="list-group-item py-1">
 		<a href="https://www.perma.cat/gestion/bourseLibre/produit/{{produit.id}}/change/" class="btn btn-danger btn-lg btn-block" type="button">
 			SU : Admin </a>
 		{% endif %}
-	</div>
+	</li>
 
 {% endblock %}

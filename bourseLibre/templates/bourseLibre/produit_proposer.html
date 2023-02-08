@@ -1,4 +1,4 @@
-    {% extends 'base_altermarche.html' %}
+    {% extends 'bourseLibre/base_produits.html' %}
     {% load app_filters %}
     {% block title %} - Proposer une annonce{% endblock %}
     {% block subtitle %}
@@ -8,7 +8,7 @@
     <h4>Quel {{ type_produit }} proposez-vous ?</h4>
     </div>
     {% endblock %}
-    {% block content %}
+    {% block contenu %}
     <form id="myForm" class="form-horizontal" role="form" action="" method="post"
         enctype="multipart/form-data">
             {% include 'form_template.html'%}
@@ -40,5 +40,3 @@
     </div>
 
     {% endblock %}
-
-    {% block comment %}{% endblock %}

@@ -36,6 +36,7 @@ from bourseLibre.models import Suivis
 from actstream.models import followers
 from bourseLibre.settings import LOCALL
 from actstream import action
+from hitcount.models import HitCount
 
 logger = logging.getLogger('photologue.models')
 
@@ -331,6 +332,10 @@ class Document(models.Model):
         if self.asso.abreviation == "public":
             return True
         return getattr(user, "adherent_" + self.asso.abreviation)
+
+    @property
+    def getHitNumber(self,):
+        return HitCount.objects.get_for_object(self).hits
 
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),

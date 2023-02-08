@@ -109,15 +109,10 @@ class ArticleChangeForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['jardin', 'categorie', 'titre', 'contenu', 'start_time', 'end_time', 'estModifiable', 'estArchive']
+        fields = ['jardin', 'categorie', 'titre', 'contenu', 'start_time', 'estModifiable', 'estArchive']
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-              'end_time': forms.DateInput(
                 format=('%Y-%m-%d'),
                 attrs={'class': 'form-control',
                        'type': 'date'

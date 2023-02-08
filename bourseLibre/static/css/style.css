@@ -1705,7 +1705,7 @@ caption {
 	margin-bottom: 5px;
 	background: #333;
 	color: #fff;
-	width: 20px;
+	width: 24px;
 	border-radius: 50%;
   flex: 0 0 auto;
   align-self: flex-end;
@@ -1717,7 +1717,7 @@ caption {
 	margin-bottom: 5px;
 	background: green;
 	color: #fff;
-	width: 20px;
+	width: 24px;
 	border-radius: 50%;
   flex: 0 0 auto;
   align-self: start;
@@ -2256,4 +2256,52 @@ padding-bottom:10px;
   87.5% {
     box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
   }
+}
+
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 58px 0 0; /* Height of navbar */
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  width: 240px;
+  z-index: 600;
+}
+
+.claspanel {
+    padding-left: 200px;
+    padding-right: 0px;
+}
+.sidebar_toggle {
+  display:none;
+}
+@media (max-width: 991.98px) {
+  .sidebar {
+    width: 100%;
+  }
+.claspanel {
+    padding-left: inherit;
+}
+  .sidebar {
+    width: 100%;
+  }
+  .sidebar_toggle {
+  display:inherit;
+}
+}
+.sidebar .active {
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }

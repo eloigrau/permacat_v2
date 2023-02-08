@@ -625,7 +625,8 @@ class Produit(models.Model):  # , BaseProduct):
         return "Produit"
 
     def get_souscategorie(self):
-        return"standard"
+        return "standard"
+
 
     def get_message_demande(self):
         return "[A propos de l'annonce de '" + self.nom_produit + "']: "

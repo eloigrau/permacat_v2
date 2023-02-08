@@ -96,6 +96,7 @@ def liens(request):
         'https://alternatiba.eu/alternatiba66/',
     ],
         "sites locaux " :[
+        'https://www.permaterra.fr/',
         'https://tram66.org/',
         'http://terre-avenirs-peyrestortes.org/',
         'https://www.facebook.com/ramenetagraine/',

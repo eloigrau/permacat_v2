@@ -69,7 +69,7 @@
             {% include 'navigationBar.html' %}
             {% endblock%}
 
-        <div class="panel bodycontenucomplet">
+        <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
             <div class="panel-heading">
                 <div class="panel-title soustitre" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
                     <div class="row justify-content-sm-center">
@@ -86,14 +86,14 @@
                             {% endblock %}
                         </div>
 
-            {%block banniere %}
+            {% block banniere %}
             {% endblock%}
                         </div>
                     </div>
                 </div>
 
                 {% block submenu%}{% endblock %}
-                <div class="panel-body panelsoustitre ">
+                <div class="panel-body panelsoustitre  ">
                 <div class="row justify-content-sm-center">
                     <div class="anchor_blank" id="ref-titre"></div>
                     <div class="col-sm-12 col-md-12 col-lg-12 textcenter">

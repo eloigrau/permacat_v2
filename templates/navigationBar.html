@@ -1,6 +1,7 @@
 {% load fontawesome %}
 {% load static %}
 {% load app_filters %}
+{% load avatar_tags %}
 {% block navBar %}
 <div class="navbarcontainer">
 <nav class="navbar navbar-light bs-dark navbar-expand-xl fixed-top" id="navbar">
@@ -19,12 +20,27 @@
              {% fontawesome_icon 'globe' %} Site
             </a>
             <ul class="dropdown-menu dropdown-menu1 nav6-dropdown" aria-labelledby="navbarAbout2" id="dropdoownSite">
-               <li> <a class="dropdown-item" href="{% url 'presentation_site_pkoi' %}"> Pourquoi utiliser le site ? </a></li>
+
+                <li class="dropdown-submenu">
+                    <a class="dropdown-item dropdown-toggle"  href="#">Outils externes</a>
+                    <ul class="dropdown-menu nav8-dropdown-submenu">
+                        <li> <a class="dropdown-item" href="https://framatalk.org/permacat" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Visioconférence (Framatalk) </a></li>
+                        <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Doc partagé (Framapad) </a></li>
+                        <li> <a class="dropdown-item" href="https://lite.framacalc.org/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Tableau partagé (Framacalc) </a></li>
+                        <li> <a class="dropdown-item" href="https://framadate.org/create_poll.php?type=date&lang=fr" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Sondage date (Framadate) </a></li>
+                        <li> <a class="dropdown-item" href="https://framaforms.org/node/add/form1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Sondage (Framaforms) </a></li>
+                        <li> <a class="dropdown-item" href="https://www.balotilo.org/" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Vote (Balotilo) </a></li>
+                        <li> <a class="dropdown-item" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Covoiturage (togetzer) </a></li>
+                    </ul>
+                </li>
+                <li> <a class="dropdown-item" href="{% url 'presentation_site_pkoi' %}"> Pourquoi utiliser le site ? </a></li>
                <li> <a class="dropdown-item" href="{% url 'presentation_site_conseils' %}"> Conseils d'utilisation </a></li>
                <li> <a class="dropdown-item" href="{% url 'faq' %}"> FAQ </a></li>
-               <li> <a class="dropdown-item" href="{% url 'cgu' %}"> CGU </a></li>
                <li> <a class="dropdown-item" href="{% url 'liens' %}"> Liens </a></li>
                <li> <a class="dropdown-item" href="{% url 'contact_admins' %}"> Contacter admins </a></li>
+
+                <li class="divider" role="separator"></li>
+               <li> <a class="dropdown-item" href="{% url 'cgu' %}"> CGU </a></li>
                 <li class="divider" role="separator"></li>
                 {% if request.user.is_superuser %}
                 {% load admin_urls %}
@@ -50,9 +66,9 @@
                        <li> <a class="dropdown-item" href="{% url 'nettoyerHistoriqueAdmin' %}"> nettoyerHistoriqueAdmin</a></li>
                     </ul>
                 </li>
+                <li class="divider" role="separator"></li>
                 {%endif%}
 
-                <li class="divider" role="separator"></li>
                <li> <a class="dropdown-item" href="{% url 'adhesion_entree' %}"> Faire un don</a></li>
 
          <li class="nav-item">
@@ -137,7 +153,7 @@
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle"  href="#"><i class='fa fa-wrench iconleft' ></i>  Ateliers Collectifs</a>
                         <ul class="dropdown-menu nav5-dropdown-subsubmenu">
-                        <li><a class="dropdown-item" href="{% url 'ateliers:acceuil' %}"><i class='fa fa-wrench iconleft' ></i>  Tous les ateliers </a></li>
+                        <li><a class="dropdown-item" href="{% url 'ateliers:acceuil' %}"><i class='fa fa-wrench iconleft' ></i>  Voir les ateliers </a></li>
                         {% for atelier in liste_ateliers %}
                            <li><a class="dropdown-item" href="{{ atelier.get_absolute_url }}"><i class='fa fa-comments' ></i> {{atelier.titre|couperTexte:22}} {% if atelier.start_time %} ({{ atelier.start_time|date:"d/m" }})  {% endif %} </a></li>
                         {% endfor %}
@@ -297,6 +313,7 @@
             </a>
 
             <ul class="dropdown-menu dropdown-menu1 nav8-dropdown" aria-labelledby="navbarDropdownMenuLink">
+         <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> Salons </a></li>
                 <li class="dropdown-submenu">
                     <a class="dropdown-item dropdown-toggle"  href="#">Projets</a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
@@ -387,7 +404,7 @@
                 <li class="dropdown-submenu">
                     <a class="dropdown-item dropdown-toggle"  href="#">Ateliers </a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
-                        <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"><i class='fa fa-folder-open iconleft' ></i>  Tous les ateliers </a></li>
+                        <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"><i class='fa fa-folder-open iconleft' ></i>  Voir les ateliers </a></li>
                         {% for atelier in liste_ateliers %}
                         <li><a class=" dropdown-item " href="{%url 'ateliers:lireAtelier' slug=atelier.slug %}"><span>{{atelier.titre}} {% if atelier.start_time %}({{ atelier.start_time|date:"d/m" }}){% endif %} </span></a></li>
                         {% endfor %}
@@ -400,19 +417,7 @@
                         <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Documents </a></li>
                     </ul>
                 </li>
-                <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Outils externes</a>
-                    <ul class="dropdown-menu nav8-dropdown-submenu">
-                        <li> <a class="dropdown-item" href="https://framatalk.org/permacat" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Visioconférence (Framatalk) </a></li>
-                        <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Doc partagé (Framapad) </a></li>
-                        <li> <a class="dropdown-item" href="https://lite.framacalc.org/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Tableau partagé (Framacalc) </a></li>
-                        <li> <a class="dropdown-item" href="https://framadate.org/create_poll.php?type=date&lang=fr" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Sondage date (Framadate) </a></li>
-                        <li> <a class="dropdown-item" href="https://framaforms.org/node/add/form1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Sondage (Framaforms) </a></li>
-                        <li> <a class="dropdown-item" href="https://www.balotilo.org/" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Vote (Balotilo) </a></li>
-                        <li> <a class="dropdown-item" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Covoiturage (togetzer) </a></li>
-                    </ul>
-                </li>
-         <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> Salons </a></li>
+
             </ul>
         </li>
 
@@ -425,7 +430,7 @@
 
         <li class="nav-item dropdown nav7">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
-              {% fontawesome_icon 'user' %} Profil: {{request.user|truncatechars:8}} </a>
+              {% fontawesome_icon 'user' %}  {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} </a>
             <ul class="dropdown-menu dropdown-menu1 nav7-dropdown" aria-labelledby="navbarDropdownMenuLink">
                <li> <a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                 <li class="divider" role="separator"></li>

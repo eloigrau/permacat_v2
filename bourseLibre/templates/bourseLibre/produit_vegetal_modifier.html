@@ -1,11 +1,11 @@
-{% extends 'base_altermarche.html' %}
+{% extends 'bourseLibre/base_produits.html' %}
 {% block title %} - Modifier{% endblock %}
 {% block subtitle %}
 <style>.soustitre,.bodycontenu{background-color: {{ bgcolor }};}</style>
 Modifier
 
 {% endblock %}
-{% block content %}
+{% block contenu %}
 <form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
         {% include 'form_template.html' %}
     </form>

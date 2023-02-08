@@ -25,7 +25,23 @@
         </div>
  </div>
 {% endblock %}
-
+            {% block sidebar_menu %}
+          <li class="list-group-item py-1">
+              <a href="#ref-titre">
+                #Titre
+            </a>
+          </li>
+          <li class="list-group-item py-1">
+              <a href="#idDescription">
+                #Description
+            </a>
+          </li>
+          <li class="list-group-item py-1">
+              <a href="#idConversation">
+                #Discussion
+            </a>
+          </li>
+            {% endblock %}
 {% block contenu %}
     <div class="row contenu atelier">
     <div class="col justify-content-center">
@@ -109,7 +125,8 @@
         </div>
  </div>
 <hr>
-    <div class="row">
+	<div class="anchor_blank" id="idDescription"></div>
+    <div class="row" >
         <div class="col-sm-12 ">
 			<h4>Description : </h4>
             <p>{{ atelier.description|safe}}</p>

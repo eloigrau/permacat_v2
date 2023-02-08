@@ -1,5 +1,6 @@
 {% extends 'base_atelier.html' %}
 {% load static %}
+{% load fontawesome %}
 {% block titreBlog %}
 <h1>Ateliers </h1>
 {% endblock  %}
@@ -22,12 +23,14 @@
 {% block sidebar %}
   <!-- Sidebar -->
   <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-    <div class="position-sticky">
+    <div class="position-sticky textcenter">
+            <a href="{% url 'ateliers:index_ateliers' %}" >
+            <button type="button" class="btn  btn-success" >
+               {% fontawesome_icon 'home' %} Ateliers
+            </button>
+            </a>
       <div class="list-group list-group-flush mx-3 mt-4">
         <!-- Collapse 1 -->
-            <a href="{% url 'ateliers:index_ateliers' %}" >
-                <img class="img_banniere_smartp" src="{% static 'img/banniere/ateliers_smart.png' %}" height="80" alt="Logo_ateliers"/>
-            </a>
         <!-- Collapsed content -->
         <ul id="sidebar_menu" class="collapse show list-group list-group-flush">
           <li class="list-group-item py-1">
@@ -37,6 +40,8 @@
             </button>
             </a>&ensp;
           </li>
+            {% block sidebar_menu %}
+            {% endblock %}
         </ul>
         <!-- Collapse 2 -->
       </div>

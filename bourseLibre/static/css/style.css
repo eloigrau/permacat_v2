@@ -69,7 +69,7 @@
 }
 
 body {
-    background: url("/static/img/bckgnd-2.jpg") 0 0 no-repeat fixed;
+   /* background: url("/static/img/bckgnd-2.jpg") 0 0 no-repeat fixed;*/
     background-size: 100%;
     margin: auto;
     width: 99%;

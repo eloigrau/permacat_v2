@@ -124,7 +124,7 @@ class Choix:
         return 'img/logos/nom_'+abreviation+'.png'
 
     def get_logo_nomgroupe_html(abreviation, taille=25):
-        return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px'/>"
+        return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
 
     def get_type_annonce_asso(asso):
         try:

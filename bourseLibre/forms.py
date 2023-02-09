@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from blog.models import Article
 
 fieldsCommunsProduits = ['souscategorie', 'nom_produit',  'description', 'estUneOffre', 'asso',
-                'unite_prix', 'prix',  'type_prix', 'date_debut', 'date_expiration', ]
+                 'prix',  'type_prix', 'date_debut', 'date_expiration', ]
 
 
 class ProduitCreationForm(forms.ModelForm):
@@ -164,8 +164,7 @@ class Produit_objet_CreationForm(ProduitCreationForm):
 class Produit_offresEtDemandes_CreationForm(ProduitCreationForm):
     class Meta:
         model = Produit_offresEtDemandes
-        fields = ['nom_produit',  'description', 'asso',
-                'unite_prix', 'prix',  'type_prix', 'date_debut', 'date_expiration', ]
+        fields = ['nom_produit',  'description', 'asso',  'date_debut', 'date_expiration', ]
         widgets = {
             'date_debut': forms.DateInput(
                 format=('%Y-%m-%d'),
@@ -187,7 +186,7 @@ class Produit_offresEtDemandes_modifier_form(ProduitModifierForm):
     class Meta:
         model = Produit_offresEtDemandes
         fields = [ 'nom_produit',  'description', 'asso',
-                'unite_prix', 'prix',  'type_prix', 'date_debut', 'date_expiration', ]
+                'unite_prix', 'prix', 'date_debut', 'date_expiration', ]
         widgets = {
             'date_debut': forms.DateInput(
                 format=('%Y-%m-%d'),

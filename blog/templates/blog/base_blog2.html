@@ -1,0 +1,144 @@
+{% extends 'base_forum.html' %}
+{% load static %}
+{% load fontawesome %}
+{% block titreBlog %}
+<h1>Forum</h1>
+{% endblock  %}
+{%block banniere %}
+<div class="row row_banniere_ordi" >
+    <div class="col col-xs-12 d-flex justify-content-around">
+        <img  src="{% static 'img/banniere/forum_icone_ordi.png' %}" width="224" height="120" alt="Forum"/>
+        <img  src="{% static 'img/banniere/forum.png' %}" height="120" alt="Forum"/>
+    </div>
+</div>
+<div class="row row_banniere_smartphone">
+    <div class="col col-xs-12 d-flex justify-content-center">
+        <img class="img_banniere_smartp" src="{% static 'img/banniere/forum_icone_smartp.png' %}" height="120" alt="Forum"/>
+    </div>
+</div>
+{% endblock  %}
+
+
+{% block clspanel %}claspanel{% endblock %}
+ {% block content %}
+{% block sidebar %}
+  <!-- Sidebar -->
+<div class="area"></div>
+{% comment %}
+  <nav id="sidebarMenu2" class="main-menu collapse d-lg-block sidebar collapse ">
+            <ul>
+                <li>
+                    <a href="https://jbfarrow.com">
+                        <i class="fa fa-home fa-2x"></i>
+                        <span class="nav-text">
+                           Community Dashboard
+                        </span>
+                    </a>
+
+                </li>
+                <li class="has-subnav">
+                    <a href="#">
+                        <i class="fa fa-globe fa-2x"></i>
+                        <span class="nav-text">
+                            Global Surveyors
+                        </span>
+                    </a>
+
+                </li>
+                <li class="has-subnav">
+                    <a href="#">
+                       <i class="fa fa-comments fa-2x"></i>
+                        <span class="nav-text">
+                            Group Hub Forums
+                        </span>
+                    </a>
+
+                </li>
+                <li class="has-subnav">
+                    <a href="#">
+                       <i class="fa fa-camera-retro fa-2x"></i>
+                        <span class="nav-text">
+                            Survey Photos
+                        </span>
+                    </a>
+
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-film fa-2x"></i>
+                        <span class="nav-text">
+                            Surveying Tutorials
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-book fa-2x"></i>
+                        <span class="nav-text">
+                           Surveying Jobs
+                        </span>
+                    </a>
+                </li>
+                <li>
+                   <a href="#">
+                       <i class="fa fa-cogs fa-2x"></i>
+                        <span class="nav-text">
+                            Tools & Resources
+                        </span>
+                    </a>
+                </li>
+                <li>
+                   <a href="#">
+                        <i class="fa fa-map-marker fa-2x"></i>
+                        <span class="nav-text">
+                            Member Map
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                       <i class="fa fa-info fa-2x"></i>
+                        <span class="nav-text">
+                            Documentation
+                        </span>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="logout">
+                <li>
+                   <a href="#">
+                         <i class="fa fa-power-off fa-2x"></i>
+                        <span class="nav-text">
+                            Logout
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+{% endcomment %}
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse ">
+    <div class="position-sticky textcenter">
+            <a href="{% url 'blog:index' %}" >
+            <button type="button" class="btn  btn-info" >
+               {% fontawesome_icon 'home' %}
+            </button>
+            </a>
+      <div class="list-group list-group-flush mx-3 mt-4">
+        <!-- Collapse 1 -->
+        <!-- Collapsed content -->
+        <ul id="sidebar_menu" class="collapse show list-group list-group-flush">
+            {% block sidebar_menu %}
+            {% endblock %}
+        </ul>
+        <!-- Collapse 2 -->
+      </div>
+    </div>
+  </nav>
+  <!-- Sidebar -->
+{% endblock  %}
+
+{% block contenu %}
+{% endblock %}
+
+{% endblock %}

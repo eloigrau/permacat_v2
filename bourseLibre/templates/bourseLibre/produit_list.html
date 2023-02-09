@@ -5,9 +5,11 @@
 
 
 <div class="row justify-content-center">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-8 offset-md-2 ">
                 <h3>Petites Annonces</h3>
-                <h4>L'Altermarché numérique</h4>
+        <h4>{% if asso_courante %}Annonces du groupe : {{asso_courante}}{% endif %}</h4>
+        <h5> {% if typeOffre %} Type : {{typeOffre}} {% endif %} {% if categorie_parent %} {{categorie_parent}} {% endif %}{% if request.GET.monnaie %} Monnaie : {{request.GET.monnaie}} {% endif %}</h5>
+
             </div>
             <div class="col-md-2 ">
             <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
@@ -80,6 +82,7 @@
         </div>
         <div class="collapse navbar-collapse" id="navbarProduit">
             <ul class="nav navbar-nav">
+                {% comment %}
                 <li class="nav-item dropdown active">
                 <button class="btn btn-info dropdown-toggle btn-block" type="button" id="menuOffreOuDemande2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{typeOffre}}
@@ -92,6 +95,7 @@
                      <a class="dropdown-item"  href="{% url 'marche' %}?expire=1">Expiré</a>
                 </div>
                 </li>
+                {% endcomment %}
             <li class="nav-item" >
                 <a href="?"> <button class="btn btn-block {% if typeFiltre == 'aucun' %}btn-primary {%endif%}">Tout </button>
                 </a>
@@ -181,8 +185,8 @@
 
         {% if request.user.adherent_pc or request.user.adherent_rtg  or request.user.adherent_fer  or request.user.adherent_scic or request.user.adherent_citealt or request.user.adherent_bzz2022 %}
             <li class="nav-item dropdown active">
-             <button type="button" class="btn btn-block {% if asso_courante %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               data-target = "#idPermacat">
+             <button type="button" class="btn btn-block {% if asso_courante %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+               data-target = "#idPermacat2">
                 {% if asso_courante %}{{asso_courante}}{%else%}Groupe{%endif%}
              </button>
                 <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat2">
@@ -221,7 +225,7 @@
             </li>
 
             <li class="list-group-item py-1">
-             <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+             <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
                 {% if asso_courante %}{{asso_courante}}{%else%}Groupe{%endif%}
               </button>
@@ -231,6 +235,7 @@
                     {%endfor%}
                 </div>
             </li>
+                {% comment %}
           <li class="list-group-item py-1">
             <button class="btn btn-light dropdown-toggle btn-block" type="button" id="menuOffreOuDemande" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{typeOffre}}
@@ -238,11 +243,11 @@
                 <div class="dropdown-menu"  aria-labelledby="menuOffreOuDemande">
                      <a class="dropdown-item"  href="{% url 'marche_offres' %}">Offres</a>
                      <a class="dropdown-item"  href="{% url 'marche_recherches' %}">Demandes</a>
-                     <a class="dropdown-item"  href="{% url 'marche' %}?categorie=listeOffresEtDemandes">Liste d'offres et demandes</a>
                      <div class="dropdown-divider"></div>
                      <a class="dropdown-item"  href="{% url 'marche' %}?expire=1">Expirées</a>
                 </div>
           </li>
+                {% endcomment %}
 
              {%if producteur_list %}
             <li class="list-group-item py-1">
@@ -251,7 +256,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuProducteur"  id="idProducteur">
                     {% for producteur in producteur_list %}
-                      <a class="dropdown-item" href="?producteur={{producteur}}">{{producteur}}</a>
+                      <a class="dropdown-item" href="?{{ request.GET.urlencode }}&producteur={{producteur}}">{{producteur}}</a>
                     {% endfor %}
                 </div>
             </li>
@@ -265,7 +270,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuMonnaie"  id="idMonnaie">
                     {% for monnaie in monnaie_list %}
-                      <a class="dropdown-item" href="?monnaie={{monnaie}}">{{monnaie}}</a>
+                      <a class="dropdown-item" href="?{{ request.GET.urlencode }}&monnaie={{monnaie}}">{{monnaie}}</a>
                     {% endfor %}
                 </div>
             </li>
@@ -279,11 +284,13 @@
                 </button>
                 </button>
                 <div class="dropdown-menu"  aria-labelledby="menuAliment">
-                     <a class="dropdown-item"  href="?categorie=aliment">Aliments</a>
-                     <a class="dropdown-item"  href="?categorie=vegetal">Végétal</a>
-                     <a class="dropdown-item"  href="?categorie=service">Services</a>
-                     <a class="dropdown-item"  href="?categorie=objet">Objets</a>
+<a class="dropdown-item"  href="{% url 'marche' %}&categorie=listeOffresEtDemandes">Liste d'offres/demandes</a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=aliment">Aliments</a>
+                     <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=vegetal">Végétal</a>
+                     <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=service">Services</a>
+                     <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=objet">Objets</a>
+
                 </div>
           </li>
  <li class="list-group-item py-1">

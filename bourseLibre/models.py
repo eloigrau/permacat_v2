@@ -237,6 +237,10 @@ class Asso(models.Model):
     def get_logo_nomgroupe_html(self):
         return self.get_logo_nomgroupe_html_taille()
 
+    @property
+    def get_logo_nomgroupe_html_40(self):
+        return self.get_logo_nomgroupe_html_taille(40)
+
     def get_logo_nomgroupe_html_taille(self, taille=25):
         return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
@@ -604,7 +608,7 @@ class Produit(models.Model):  # , BaseProduct):
         if self.unite_prix in Choix.monnaies_nonquantifiables:
             return self.unite_prix
         elif self.get_prix() == 0:
-            return "gratuit"
+            return ""
         else:
             return Produit.objects.get_subclass(id=self.id).get_unite_prix()
             # return prod.get_unite_prix()
@@ -674,7 +678,7 @@ class Produit_aliment(Produit):  # , BaseProduct):
         if self.unite_prix in Choix.monnaies_nonquantifiables:
             return self.get_unite_prix_display()
         elif self.get_prix() == 0:
-            return "gratuit"
+            return ""
         return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
@@ -708,7 +712,7 @@ class Produit_vegetal(Produit):  # , BaseProduct):
         if self.unite_prix in Choix.monnaies_nonquantifiables:
             return self.get_unite_prix_display()
         elif self.get_prix() == 0:
-            return "gratuit"
+            return ""
         return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
@@ -747,7 +751,7 @@ class Produit_service(Produit):  # , BaseProduct):
         if self.unite_prix in Choix.monnaies_nonquantifiables:
             return self.get_unite_prix_display()
         elif self.get_prix() == 0:
-            return "gratuit"
+            return ""
         return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
@@ -786,11 +790,9 @@ class Produit_objet(Produit):  # , BaseProduct):
         if self.unite_prix in Choix.monnaies_nonquantifiables:
             return self.get_unite_prix_display()
         elif self.get_prix() == 0:
-            return "gratuit"
+            return ""
         return str(self.get_prix()) + " " + self.get_unite_prix()
 
-    def get_souscategorie(self):
-        return "objet"
 
 class Produit_offresEtDemandes(Produit):  # , BaseProduct):
     type = 'offresEtDemandes'
@@ -825,11 +827,14 @@ class Produit_offresEtDemandes(Produit):  # , BaseProduct):
         if self.unite_prix in Choix.monnaies_nonquantifiables:
             return self.get_unite_prix_display()
         elif self.get_prix() == 0:
-            return "gratuit"
+            return ""
         return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
-        return "offresEtDemandes"
+        return "liste"
+
+    def get_categorie(self):
+        return "liste"
 
 class ItemAlreadyExists(Exception):
     pass

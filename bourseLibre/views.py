@@ -817,7 +817,7 @@ class ListeProduit(ListView):
         if 'categorie' in self.request.GET:
             context['categorie_parent'] = self.request.GET['categorie']
             context['typeFiltre'] = "categorie"
-        context['typeOffre'] = 'Offre/demande'
+        context['typeOffre'] = ''
         if "asso" in self.request.GET:
             context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"])
 

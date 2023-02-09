@@ -1,4 +1,4 @@
-{% extends 'blog/base_blog.html' %}
+{% extends 'blog/base_blog2.html' %}
 {% load activity_tags %}
 {% load blog_filters %}
 {% load fontawesome %}
@@ -48,7 +48,27 @@
 </div>
 
 {% endblock %}
-{% block content %}
+
+    {% block sidebar_menu %}
+  <li class="list-group-item py-1">
+      <a href="#ref-titre">
+        #Titre
+    </a>
+  </li>
+  <li class="list-group-item py-1">
+      <a href="#idContenu">
+        #Contenu
+    </a>
+  </li>
+  <li class="list-group-item py-1">
+      <a href="#idConversation">
+        #Discussion
+    </a>
+  </li>
+  </li>
+
+    {% endblock %}
+{% block contenu %}
 <div class="contenu article ">
 <div class="row">
 <div class="col-sm-12 offset-md-2 col-md-8 textcenter">
@@ -121,7 +141,7 @@
  </div>
 
 </div>
-
+	<div class="anchor_blank" id="idContenu"></div>
     <nav class="nav nav-tabs justify-content-center">
       <a class="nav-item nav-link active" href="#contenu" data-toggle="tab">Contenu</a>
         {% if article.album %}

@@ -2273,6 +2273,18 @@ padding-bottom:10px;
   color:white;
 }
 
+#sidebar_menu > li{
+  background-color:#141433;
+}
+#sidebar_menu>li>a:visited{
+  color:white;
+}
+ #sidebar_menu>li>a:link{
+  color:white;
+ }
+ #sidebar_menu>li>a:hover{
+  color:white;
+ }
 .claspanel {
     padding-left: 30px;
     padding-right: 0px;

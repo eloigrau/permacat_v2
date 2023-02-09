@@ -220,7 +220,7 @@ ul.errorlist > li {
 .imgbienvenue {
 width:auto; max-width:
 500px; height: auto;
-max-height: 400px;
+max-height: 50vh;
   border-radius: 5%;
 }
 /*
@@ -1044,7 +1044,7 @@ border-color: #333;
 box-shadow: 0 10px 10px 0px grey;
  padding:3px;
     min-height: 150px;
-    max-height: 450px;
+    max-height: 45vh;
     border-radius: 0.3em;
     border:1.5px grey solid;
     min-width: 300px;

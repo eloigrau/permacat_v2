@@ -241,6 +241,10 @@ class Asso(models.Model):
     def get_logo_nomgroupe_html_40(self):
         return self.get_logo_nomgroupe_html_taille(40)
 
+    @property
+    def get_logo_nomgroupe_html_15(self):
+        return self.get_logo_nomgroupe_html_taille(15)
+
     def get_logo_nomgroupe_html_taille(self, taille=25):
         return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 

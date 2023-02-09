@@ -9,8 +9,9 @@
                     </div>
                     <div class="col-xs-2">
                          <span class="badge {% if produit.estUneOffre%}badge-warning{%else%} badge-info {%endif%}">{% if produit.estUneOffre%}Offre{%else%} Demande {%endif%}
-				 {% if produit.asso.abreviation == "public" %}publique {%else%}{{produit.asso}}  {%endif%}{% if produit.est_perimee %} (expirée) {% endif %}
+
 		                </span>
+		{{ produit.asso.get_logo_nomgroupe_html_15|safe }}
                     </div>
                     <div class="col-xs-5">
                         {{produit.souscategorie}}

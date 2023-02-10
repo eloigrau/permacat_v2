@@ -36,6 +36,13 @@
                 #Description
             </a>
           </li>
+		{% if atelier.materiel %}
+          <li class="list-group-item py-1">
+              <a href="#idMateriel">
+                #Matériel
+            </a>
+          </li>
+		{% endif %}
           <li class="list-group-item py-1">
               <a href="#idConversation">
                 #Discussion
@@ -134,6 +141,7 @@
     </div>
 		{% if atelier.materiel %}
 		<hr>
+<div class="anchor_blank" id="idMateriel"></div>
     <div class="row">
         <div class="col-sm-12 ">
 			<h4>Matériel : </h4>

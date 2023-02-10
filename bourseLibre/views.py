@@ -1026,8 +1026,9 @@ class ListeConversations(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-
-        context['conversations'] = Conversation.objects.filter(Q(date_dernierMessage__isnull=False) & (Q(profil2__id=self.request.user.id) | Q(profil1__id=self.request.user.id))).order_by('-date_dernierMessage')
+        dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
+        context['conversations'] = Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__gt=dateMin) & (Q(profil2__id=self.request.user.id) | Q(profil1__id=self.request.user.id))).order_by('-date_dernierMessage')
+        context['conversations_archive'] = Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__lte=dateMin) & (Q(profil2__id=self.request.user.id) | Q(profil1__id=self.request.user.id))).order_by('-date_dernierMessage')
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="conversations")
 
         return context

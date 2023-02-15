@@ -143,30 +143,32 @@
 </div>
 	<div class="anchor_blank" id="idContenu"></div>
     <nav class="nav nav-tabs justify-content-center">
-      <a class="nav-item nav-link active" href="#contenu" data-toggle="tab">Contenu</a>
-        {% if article.album %}
-      <a class="nav-item nav-link" href="#album" data-toggle="tab">Album photo</a>
-        {% endif %}
-        {% if salons %}
-      <a class="nav-item nav-link" href="#salons" data-toggle="tab">Salons</a>
-        {% endif %}
-        {% if ateliers %}
-      <a class="nav-item nav-link" href="#ateliers" data-toggle="tab">Ateliers</a>
+      <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"><i class="fa fa-align-center icon-left" ></i> </a>
+
+        {% if lieux %}
+      <a class="nav-item nav-link" href="#lieux" data-toggle="tab">
+                        <i class="fa fa-map-marker icon-left"></i></a>
         {% endif %}
         {% if dates %}
-      <a class="nav-item nav-link" href="#dates" data-toggle="tab">Evènements</a>
+      <a class="nav-item nav-link" href="#dates" data-toggle="tab"><i class="fa fa-calendar icon-left" ></i></a>
         {% endif %}
-        {% if lieux %}
-      <a class="nav-item nav-link" href="#lieux" data-toggle="tab">Lieu{{lieux|pluralize:",x"}}</a>
+        {% if article.album %}
+      <a class="nav-item nav-link" href="#album" data-toggle="tab"><i class="fa fa-camera-retro icon-left"></i></a>
+        {% endif %}
+        {% if salons %}
+      <a class="nav-item nav-link" href="#salons" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
+        {% endif %}
+        {% if ateliers %}
+      <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left" ></i></a>
         {% endif %}
         {% if documents %}
-      <a class="nav-item nav-link" href="#documents" data-toggle="tab">Document{{documents|pluralize:",s"}}</a>
+      <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i>Document{{documents|pluralize:",s"}}</a>
         {% endif %}
 {% if suffrages %}
-      <a class="nav-item nav-link" href="#suffrages" data-toggle="tab">Votes</a>
+      <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i>Votes</a>
    {% endif %}   
-<a class="nav-item nav-link" href="#historique" data-toggle="tab">Infos</a>
-      <a class="nav-item nav-link" href="#plus" data-toggle="tab">Ajouter...</a>
+<a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
+      <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
 
     </nav>
 
@@ -238,7 +240,7 @@
 
 
   <div class="tab-pane fade" id="documents">
-    <div class="contenu fiche">
+    <div class="contenu atelier">
 <div class="row justify-content-center">
 <div class="col-sm-12 textcenter">
         {% for document in documents %}
@@ -281,7 +283,7 @@
 
 <div class="tab-pane fade " id="dates">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu discussion_fiche">
+        <div class="contenu atelier">
               {%for date in dates %}
              <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
 
@@ -299,7 +301,7 @@
 </div>
 <div class="tab-pane fade " id="lieux">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu discussion_fiche">
+        <div class="contenu atelier">
               {%for lieu in lieux %}
                 <p> {{lieu}}
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
@@ -318,7 +320,7 @@
 </div>
 <div class="tab-pane fade " id="salons">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu discussion_fiche">
+        <div class="contenu atelier">
               {%for salon in salons %}
             <p><a href="{{salon.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> {{salon.titre}}</a></p>
               {%endfor%}
@@ -332,7 +334,7 @@
 
   <div class="tab-pane " id="historique">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu discussion_fiche">
+        <div class="contenu atelier">
             <h6>
             {% if article.get_partagesAsso %}
                 Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec

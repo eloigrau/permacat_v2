@@ -132,7 +132,7 @@ class Plante(models.Model):
 
     @property
     def get_info_supp_html(self):
-        return "; ".join([" <a href='"+str(x)+"' target=_blank>"+str(i)+"</a>" for i, x in enumerate(self.infos_supp.split('; '))])
+        return "; ".join([" <a href='"+str(x)+"' target='_blank'>"+str(i)+"</a>" for i, x in enumerate(self.infos_supp.split('; '))])
 
 
     @property

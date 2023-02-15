@@ -898,18 +898,14 @@ class SupprimerEvenementArticle(DeleteAccess, DeleteView):
 def ajouterAdresseArticle(request, id_article):
     article = Article.objects.get(id=id_article)
     form = AdresseArticleForm(request.POST or None)
-    form_adresse = AdresseForm(request.POST or None)
     form_adresse2 = AdresseForm2(request.POST or None)
 
-    if form.is_valid() and (form_adresse.is_valid() or form_adresse2.is_valid()):
-        if 'adressebtn' in request.POST:
-            adresse = form_adresse.save()
-        else:
-            adresse = form_adresse2.save()
+    if form_adresse2.is_valid():
+        adresse = form_adresse2.save()
         form.save(article, adresse)
         return redirect(article)
 
-    return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse':form_adresse, 'form_adresse2':form_adresse2 })
+    return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse2':form_adresse2 })
 
 
 class SupprimerAdresseArticle(DeleteView):

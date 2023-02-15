@@ -69,9 +69,11 @@ $(function() {
 </script>
 {% block content %}
 
+{% if filter.qs %}
 <hr>
  <p>Documents correspondants ({{filter.qs|length}})</p>
 
 {% include 'photologue/document_template.html' with object_list=filter.qs %}
 
+{% endif %}
 {% endblock %}

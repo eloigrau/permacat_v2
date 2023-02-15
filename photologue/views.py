@@ -324,7 +324,10 @@ def associerDocumentArticle(request, doc_slug):
 
 @login_required
 def filtrer_documents(request):
-    doc_list = Document.objects.all()
+    if request.GET:
+        doc_list = Document.objects.all()
+    else:
+        doc_list = Document.objects.none()
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             doc_list = doc_list.exclude(asso__abreviation=nomAsso)

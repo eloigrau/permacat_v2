@@ -38,7 +38,7 @@ django-scheduler==0.8.8
 django-sekizai==1.0.0
 django-simple-captcha==0.5.10
 django-stdimage==4.0.0
-django-summernote==0.8.11.4
+#django-summernote==0.8.11.4
 django-sortedm2m==3.1.1
 django-tinymce==2.8.0
 django-taggit==1.1.0

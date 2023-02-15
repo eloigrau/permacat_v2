@@ -102,7 +102,7 @@ INSTALLED_APPS = [
     'leaflet',
     'captcha',
     'bourseLibre.captcha_local',
-    'django_summernote',
+    'local_summernote',
     'actstream',
     'taggit',
     'hitcount',
@@ -427,14 +427,14 @@ SUMMERNOTE_CONFIG = {
 # Codemirror as codeview
 # If any codemirror settings are defined, it will include codemirror files automatically.
 'css': (
-    '//cdnjs.cloudflare.com/ajax/libs/codemirror/5.29.0/theme/monokai.min.css',
+   # 'css/monokai.min.css',
 ),
 'codemirror': {
     'mode': 'htmlmixed',
     'lineNumbers': 'true',
 
     # You have to include theme file in 'css' or 'css_for_inplace' before using it.
-    'theme': 'monokai',
+   # 'theme': 'monokai',
 },
 
 # Lazy initialize

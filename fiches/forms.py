@@ -3,7 +3,7 @@ from .models import Fiche, CommentaireFiche, Atelier
 from bourseLibre.forms import SummernoteWidgetWithCustomToolbar
 from django.utils.text import slugify
 import itertools
-from django_summernote.widgets import SummernoteWidget
+from local_summernote.widgets import SummernoteWidget
 
 class FicheForm(forms.ModelForm):
     objectif = forms.CharField(label="Objectif de la fiche", strip=False)

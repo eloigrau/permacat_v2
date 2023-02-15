@@ -32,7 +32,7 @@ admin.sites.site_title ="Admin Permacat"
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
-    url(r'^summernote/', include('django_summernote.urls')),
+    url(r'^summernote/', include('local_summernote.urls')),
     url(r'^captcha/', include('bourseLibre.captcha_local.urls')),
     url(r'^photolog/', include('photologue.urls', namespace='photologue')),
     url(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),

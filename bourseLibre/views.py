@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.core.mail import mail_admins, send_mail, BadHeaderError, send_mass_mail
-from django_summernote.widgets import SummernoteWidget
+from local_summernote.widgets import SummernoteWidget
 from random import choice
 from datetime import date, timedelta, datetime
 from django.http import HttpResponse

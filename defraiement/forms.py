@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.text import slugify
 import itertools
-from django_summernote.widgets import SummernoteWidget
+from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso
 from photologue.models import Album
 from .models import Choix, ParticipantReunion, Reunion

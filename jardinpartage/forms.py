@@ -4,7 +4,7 @@ from django.utils.text import slugify
 import itertools
 #from django.utils.formats import localize
 #from tinymce.widgets import TinyMCE
-from django_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
+from local_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
 from django.urls import reverse
 from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -22,7 +22,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
             'lang': lang,
             'url': {
                 'language': static('summernote/lang/summernote-' + lang + '.min.js'),
-                'upload_attachment': reverse('django_summernote-upload_attachment'),
+                'upload_attachment': reverse('local_summernote-upload_attachment'),
             },
                 # As an example, using Summernote Air-mode
                 'airMode': False,

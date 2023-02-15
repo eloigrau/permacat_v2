@@ -3,7 +3,7 @@ from bourseLibre.models import Salon, InscritSalon
 from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, Discussion, Choix
 from django.utils.text import slugify
 import itertools
-from django_summernote.widgets import SummernoteWidget
+from local_summernote.widgets import SummernoteWidget
 from django.urls import reverse
 from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
 from bourseLibre.models import Asso, Choix as choix_globaux
@@ -26,7 +26,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
             'lang': lang,
             'url': {
                 'language': static('summernote/lang/summernote-' + lang + '.min.js'),
-                'upload_attachment': reverse('django_summernote-upload_attachment'),
+                'upload_attachment': reverse('local_summernote-upload_attachment'),
             },
                 # As an example, using Summernote Air-mode
                 'airMode': False,

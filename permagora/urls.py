@@ -29,7 +29,7 @@ app_name = 'permagora'
 
 urlpatterns = [
     path('gestion/', admin.site.urls),
-    url(r'^summernote/', include('django_summernote.urls')),
+    url(r'^summernote/', include('local_summernote.urls')),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^$', views.bienvenue, name='bienvenue'),
     url(r'^planSite/$', views.planSite, name='planSite'),

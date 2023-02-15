@@ -65,7 +65,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'leaflet',
     'captcha',
-   # 'django_summernote',
+   # 'local_summernote',
    # "visits",
 )
 
@@ -345,14 +345,12 @@ SUMMERNOTE_CONFIG = {
 # Codemirror as codeview
 # If any codemirror settings are defined, it will include codemirror files automatically.
 'css': (
-    '//cdnjs.cloudflare.com/ajax/libs/codemirror/5.29.0/theme/monokai.min.css',
+
 ),
 'codemirror': {
     'mode': 'htmlmixed',
     'lineNumbers': 'true',
 
-    # You have to include theme file in 'css' or 'css_for_inplace' before using it.
-    'theme': 'monokai',
 },
 
 # Lazy initialize
@@ -372,11 +370,11 @@ SUMMERNOTE_CONFIG = {
 #    django_heroku.settings(locals())
 
 if not LOCALL:
-    SECURE_HSTS_SECONDS = 518400
+    SECURE_HSTS_SECONDS = 1296000
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
-    SECURE_SSL_REDIRECT  = True
-    SESSION_COOKIE_SECURE  = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
-    SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE=False

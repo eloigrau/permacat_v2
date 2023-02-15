@@ -3,7 +3,7 @@ from .models import Suffrage, Vote, Commentaire, Question_majoritaire, Question_
     Proposition_m, Choix
 from django.utils.text import slugify
 import itertools
-from django_summernote.widgets import SummernoteWidget
+from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from bourseLibre.settings import LOCALL
 from bourseLibre.models import Asso

@@ -2,7 +2,7 @@ from django import forms
 from .models import Jardin
 from django.utils.text import slugify
 import itertools
-from django_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
+from local_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
 from django.urls import reverse
 from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
 from django.contrib.staticfiles.templatetags.staticfiles import static

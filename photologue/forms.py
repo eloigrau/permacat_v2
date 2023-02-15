@@ -21,7 +21,7 @@ from django.template.defaultfilters import filesizeformat
 from .models import Album, Photo, Document
 from bourseLibre.models import Asso
 from blog.models import Article
-from django_summernote.widgets import SummernoteWidget
+from local_summernote.widgets import SummernoteWidget
 from django.utils.text import slugify
 import itertools
 

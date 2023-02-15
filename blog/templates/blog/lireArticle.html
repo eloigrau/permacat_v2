@@ -381,30 +381,30 @@
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu discussion_fiche">
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a>
         </p>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
         <p>
-            <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Associer à un album photo</a>
+            <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Associer à un album photo</a>
         </p>
         {% endif %}
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a>
         </p>
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion</a>
         </p>
        <p>
-           <a class="btn btn-sm btn-block btn-info textleft" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document</a>
+           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document</a>
        </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>
         </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class="fa fa-plus"></i>  Covoiturage</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class="fa fa-plus"></i>  Covoiturage</a>
         </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" target="_blank"><i class="fa fa-plus"></i>  Ajouter un suffrage</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" target="_blank"><i class="fa fa-plus"></i>  Ajouter un suffrage</a>
         </p>
 
           </div>

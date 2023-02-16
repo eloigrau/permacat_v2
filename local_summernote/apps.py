@@ -47,7 +47,7 @@ class LocalSummernoteConfig(AppConfig):
                 'summernote/codemirror.min.css',
             ),
             'codemirror_js': (
-                'summernote/codemirror.min.js',
+                'summernote/codemirror.min.js', #5.4
                 'summernote/xml.min.js',
                 'summernote/htmlmixed.min.js',
             ),
@@ -70,7 +70,7 @@ class LocalSummernoteConfig(AppConfig):
             # Summernote settings
             'summernote': {
                 'width': 720,
-                'height': 480,
+                'height': 500,
                 'lang': None,
                 'toolbar': [
                     ['style', ['style']],

@@ -30,7 +30,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
 
                 # Change editor size
                 'width': '100%',
-                'height': '250',
+                'height': '360',
 
                 # Use proper language setting automatically (default)
 

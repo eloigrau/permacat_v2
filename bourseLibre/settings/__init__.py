@@ -364,7 +364,7 @@ SUMMERNOTE_CONFIG = {
 
         # Change editor size
         'width': '100%',
-        'height': '440',
+        'height': '500',
 
         # Use proper language setting automatically (default)
         'lang': 'fr-FR',

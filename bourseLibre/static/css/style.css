@@ -2295,6 +2295,9 @@ padding-bottom:10px;
 .sidebar_toggle {
   display:none;
 }
+.sidebar_toggle_inverse {
+  display:inherit;
+}
 @media (max-width: 991.98px) {
   .sidebar {
     width: 100%;
@@ -2307,6 +2310,9 @@ padding-bottom:10px;
   }
   .sidebar_toggle {
   display:inherit;
+}
+  .sidebar_toggle_inverse {
+  display:none;
 }
 }
 .sidebar .active {

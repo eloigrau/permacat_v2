@@ -10,6 +10,7 @@
         <h4>{% if asso_courante %}Annonces du groupe : {{asso_courante}}{% endif %}</h4>
         <h5> {% if typeOffre %} Type : {{typeOffre}} {% endif %} {% if categorie_parent %} {{categorie_parent}} {% endif %}{% if request.GET.monnaie %} Monnaie : {{request.GET.monnaie}} {% endif %}</h5>
 
+        <p class="textsmall sidebar_toggle_inverse">(Passez la souris à gauche pour faire apparaître le menu)</p>
             </div>
             <div class="col-md-2 ">
             <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">

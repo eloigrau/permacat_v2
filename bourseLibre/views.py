@@ -941,7 +941,7 @@ def chercher_articles(request):
 def chercher_produits(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     if recherche:
-        produits_list = Produit.objects.filter(Q(nom_produit__lower__icontains=recherche) | Q(description__icontains=recherche)).distinct().select_subclasses()
+        produits_list = Produit.objects.filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(request.user, "adherent_" + nomAsso):
                 produits_list = produits_list.exclude(asso__abreviation=nomAsso)

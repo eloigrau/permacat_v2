@@ -67,6 +67,7 @@ if not LOCALL:
     CSRF_COOKIE_SECURE = True
     #X_FRAME_OPTIONS = 'DENY'
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+    SESSION_COOKIE_PATH = '/;HttpOnly'
 
 ALLOWED_HOSTS = ['www.perma.cat', 'perma.cat']
 #print("local" + str(LOCALL))

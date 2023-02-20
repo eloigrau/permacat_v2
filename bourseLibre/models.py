@@ -575,7 +575,7 @@ class Produit(models.Model):  # , BaseProduct):
             self.date_creation = now()
             self.stock_courant = self.stock_initial
             suivi, cree = Suivis.objects.get_or_create(nom_suivi='produits')
-            titre = "[Permacat] nouveau produit"
+            titre = "[Permacat] nouvelle annonce"
             suiveurs = [suiv for suiv in followers(suivi) if
                       self.user != suiv and self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]

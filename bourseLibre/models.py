@@ -1112,7 +1112,7 @@ def getOrCreateConversation(nom1, nom2):
     except Conversation.DoesNotExist:
         profil_1 = Profil.objects.get(username=nom1)
         profil_2 = Profil.objects.get(username=nom2)
-        convers = Conversation.objects.create(profil1=profil_1, profil2=profil_2)
+        convers, created = Conversation.objects.get_or_create(profil1=profil_1, profil2=profil_2)
 
     return convers
 

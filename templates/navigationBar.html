@@ -435,10 +435,10 @@
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
              {% fontawesome_icon 'plus' %} Ajouter </i> </a>
             <ul class="dropdown-menu dropdown-menu1 nav7-dropdown" aria-labelledby="navbarDropdownMenuLink">
-               <li> <a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}">Un article sur le forum</a></li>
                <li> <a class="dropdown-item" href="{% url 'produit_proposer_entree' %}">Une petite annonce</a></li>
-               <li> <a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}">Un atelier</a></li>
+               <li> <a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}">Un article sur le forum</a></li>
                  <li><a class="dropdown-item" href="{% url 'jardinpartage:ajouterNouvelArticle' %}"> Un article sur le blog des jardins partagés </a></li>
+               <li> <a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}">Un atelier</a></li>
                  <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug=none %}"> Un document </a></li>
                  <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Une photo </a></li>
             </ul>

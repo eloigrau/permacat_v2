@@ -58,6 +58,7 @@
                         <li><a class="dropdown-item" href="{% url 'vote:index' %}"><i class="fa fa-bullhorn iconleft"></i>  Liste des suffrages </a></li>
                        <li> <a class="dropdown-item" href="{% url 'nettoyerActions' %}"> nettoyerActions</a></li>
                        <li> <a class="dropdown-item" href="{% url 'voirPbProfils' %}"> voirPbProfils</a></li>
+                       <li> <a class="dropdown-item" href="{% url 'supprimervieuxcomptes' %}"> supprimervieuxcomptes</a></li>
                        <li> <a class="dropdown-item" href="{% url 'nettoyerFollows' %}"> nettoyerFollows</a></li>
                        <li> <a class="dropdown-item" href="{% url 'creerAction_articlenouveau' %}"> creerAction_articlenouveau</a></li>
                        <li> <a class="dropdown-item" href="{% url 'abonnerAdherentsCiteAlt' %}"> abonnerAdherentsCiteAlt</a></li>
@@ -444,8 +445,8 @@
             </ul>
         </li>
          <li class="nav-item nav4 5to4"><a class="nav-link hover-icon" href="{% url 'notifications_news' %}">
-             {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}
-             <i class="fa fa-bell" title="Notifications"></i></a>
+
+             <i class="fa fa-bell" title="Notifications"></i> {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}</a>
          </li>
 
         <li class="nav-item dropdown nav7">

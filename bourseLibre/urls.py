@@ -210,6 +210,8 @@ urlpatterns = [
     path(r'admin/decalerEvenements/<int:num>', views_admin.decalerEvenements,  name="decalerEvenements"),
     url(r'^admin/abonnerAdherentsCiteAlt/$', views_admin.abonnerAdherentsCiteAlt,  name="abonnerAdherentsCiteAlt"),
     url(r'^admin/creerAction_articlenouveau/$', views_admin.creerAction_articlenouveau,  name="creerAction_articlenouveau"),
+    url(r'^admin/supprimervieuxcomptes/$', views_admin.supprimervieuxcomptes,  name="supprimervieuxcomptes"),
+    url(r'^admin/envoyerMailVieuxComptes/$', views_admin.envoyerMailVieuxComptes,  name="envoyerMailVieuxComptes"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),

@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from .forms import Adhesion_permacatForm, Adhesion_assoForm, creerAction_articlenouveauForm
 from actstream import action
 from actstream.models import followers
+from datetime import datetime, timedelta
 
 def getMessage(action):
     message = action.data['message']
@@ -148,7 +149,7 @@ def get_articles_a_archiver():
     import pytz
     utc = pytz.UTC
     date_limite = utc.localize(datetime.today() - timedelta(days=90))
-    articles = Article.objects.filter(estArchive=False, start_time__lte=date_limite, end_time__lte=date_limite)
+    articles = Article.objects.filter(estArchive=False, start_time__lte=date_limite)
 
     liste = []
     for article in articles:
@@ -156,7 +157,7 @@ def get_articles_a_archiver():
             liste.append(article)
     liste2 = []
     from jardinpartage.models import Article as Article_jardin, Evenement as Evenement_jardin
-    articles = Article_jardin.objects.filter(estArchive=False, start_time__lte=date_limite, end_time__lte=date_limite)
+    articles = Article_jardin.objects.filter(estArchive=False, start_time__lte=date_limite)
     for article in articles:
         if article.start_time:
             liste2.append(article)
@@ -187,10 +188,10 @@ def archiverArticles(request):
     liste, liste2, liste3 = get_articles_a_archiver()
     for art in liste:
         art.estArchive = True
-        art.save()
+        art.save(sendMail=False)
     for art in liste2:
         art.estArchive = True
-        art.save()
+        art.save(sendMail=False)
     return redirect('voir_articles_a_archiver', )
 
 
@@ -410,9 +411,27 @@ def creerAction_articlenouveau(request):
     return render(request, 'admin/creerAction_articlenouveau.html', { "form": form,})
 
 
+def getVieuxComptes():
+    date_ajd = datetime.now().date()
+    profil_jamais = Profil.objects.filter(last_login__isnull=True)
+    profil_old = Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=380))
+    mail = {"titre": "Suppression de votre compte",
+            "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
+    }
+    mail_old = {"titre": "Suppression de votre compte",
+            "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
+    }
+    return profil_jamais, profil_old, mail, mail_old
 
 def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
+    profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
+    return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
-    profil_jamais = Profil.objects.filter()
+def envoyerMailVieuxComptes(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
+
+    return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})

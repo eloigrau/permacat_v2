@@ -414,10 +414,10 @@
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Fichiers </a>
+                    <a class="dropdown-item dropdown-toggle"  href="#">Documents </a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
                         <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Albums photo</a></li>
-                        <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Documents </a></li>
+                        <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Fichiers </a></li>
                     </ul>
                 </li>
 
@@ -431,6 +431,18 @@
 
         <li class="nav-item nav1"><a class="nav-link" href="{% url 'marche' %}"> {% fontawesome_icon 'shopping-basket' %} Annonces</a></li>
 
+        <li class="nav-item dropdown nav7">
+           <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
+             {% fontawesome_icon 'plus' %} Ajouter </i> </a>
+            <ul class="dropdown-menu dropdown-menu1 nav7-dropdown" aria-labelledby="navbarDropdownMenuLink">
+               <li> <a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}">Un article sur le forum</a></li>
+               <li> <a class="dropdown-item" href="{% url 'produit_proposer_entree' %}">Une petite annonce</a></li>
+               <li> <a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}">Un atelier</a></li>
+                 <li><a class="dropdown-item" href="{% url 'jardinpartage:ajouterNouvelArticle' %}"> Un article sur le blog des jardins partagés </a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug=none %}"> Un document </a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Une photo </a></li>
+            </ul>
+        </li>
         <li class="nav-item dropdown nav7">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
               {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} </a>

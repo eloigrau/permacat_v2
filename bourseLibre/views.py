@@ -185,7 +185,7 @@ def bienvenue(request):
         articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation')
 
         derniers = articles.annotate(
-            latest=Greatest('date_modification', 'date_creation')
+            latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
         ).order_by('-latest')
     return render(request, 'bienvenue.html', {'nomImage':nomImage, "nbNotif": nbNotif, "nbExpires":nbExpires, "evenements":evenements, "evenements_semaine":evenements_semaine,"evenements_semaine_passes":evenements_passes, "derniers_articles":derniers, 'votes':votes, 'invit_salons':invit_salons})
 

@@ -14,7 +14,7 @@
 {% block subtitle %}
 <div class="row align-items-center">
     <div class="col-md-4 offset-md-4 textcenter justify-content-center">
-        <h3>Documents</h3>
+        <h3>Fichiers</h3>
     </div>
     <div class="col-md-4 textcenter">
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
@@ -26,7 +26,7 @@
             <div class="modal-content">
               <div class="modal-header">
                   <div class="row justify-content-center">
-                   <h5 > Documents ?</h5>
+                   <h5 > Fichiers ?</h5>
                   </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -34,7 +34,7 @@
               </div>
               <div class="modal-body textleft">
                   <p>
-                      Ici vous pouvez ajouter ou consulter des documents (pdf, doc, etc.)
+                      Ici vous pouvez ajouter ou consulter des fichiers/documents (pdf, doc, etc.)
                       </p>
               </div>
             </div>
@@ -50,7 +50,7 @@
     <div class="btn-group">
         <a href="{% url 'photologue:ajouterDocument' article_slug='None' %}">
         <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter un document
+                <i class="fa fa-plus"></i> Ajouter un fichier/document
             </button>
             </a>&ensp;
 

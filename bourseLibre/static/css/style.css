@@ -323,7 +323,7 @@ border: 1px inset rgba(28,110,164,0.65);
 }
 .navbar-light .navbar-nav .nav-link {
     color: rgba(0,0,0,.95);
-   min-width:130px;
+   min-width: 100px;
 }
 
 .navbar-menu {
@@ -2341,3 +2341,14 @@ padding-bottom:10px;
 .sidebar:hover {
   left:0px;
 
+.hover-app{
+    display: none;
+}
+.hover-icon:hover + .hover-app{
+    display: block;
+}
+
+.myDIV:hover + .hide {
+  display: block;
+  color: red;
+}

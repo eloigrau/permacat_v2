@@ -304,7 +304,7 @@ section.p3 {
 background-image:linear-gradient(40deg, white, white);
 border: 1px inset rgba(28,110,164,0.65);
    border-radius: 0.4em;
-   line-height: 2.4em;
+   line-height: 2.2em;
     margin-bottom:15px;
 }
 .dropdown-menu {
@@ -496,7 +496,10 @@ border: 1px inset rgba(28,110,164,0.65);
 .nav9-dropdown{
     background-color: #56CC9D;
 }
-.bs-dark .nav9 > a{
+.bs-dark .nav9 > a:hover {
+    background-color: #56CC9D;
+}
+.bs-dark .nav9 > a:focus {
     background-color: #56CC9D;
 }
 
@@ -559,7 +562,7 @@ border: 1px inset rgba(28,110,164,0.65);
 .bs-dark {
 
   background-image:linear-gradient(90deg, white, white);
-   line-height: 2.4em;
+   line-height: 2.2em;
    }
 .bs-dark .dropdown-menu1 {
         right: auto;

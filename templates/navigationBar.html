@@ -433,20 +433,20 @@
 
         <li class="nav-item dropdown nav9">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
-             {% fontawesome_icon 'plus' %} Ajouter </i> </a>
+             {% fontawesome_icon 'plus' %} Ajouter </a>
             <ul class="dropdown-menu dropdown-menu1 nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
                <li> <a class="dropdown-item" href="{% url 'produit_proposer_entree' %}">Une petite annonce</a></li>
                <li> <a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}">Un article sur le forum</a></li>
-                 <li><a class="dropdown-item" href="{% url 'jardinpartage:ajouterNouvelArticle' %}"> Un article sur le blog des jardins partagés </a></li>
-                 <li><a class="dropdown-item" href="{% url 'creerSalon' %}">  Un Salon de discussion </a></li>
+                <li><a class="dropdown-item" href="{% url 'jardinpartage:ajouterNouvelArticle' %}"> Un article sur le blog des jardins partagés </a></li>
+                <li><a class="dropdown-item" href="{% url 'creerSalon' %}">  Un Salon de discussion </a></li>
                <li> <a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}">Un atelier</a></li>
-                 <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug=none %}"> Un document </a></li>
-                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Une photo </a></li>
+                <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug=none %}"> Un document </a></li>
+                <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Une photo </a></li>
             </ul>
         </li>
         <li class="nav-item dropdown nav7">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
-              {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} </a>
+              {% fontawesome_icon 'user' %} </a>
             <ul class="dropdown-menu dropdown-menu1 nav7-dropdown" aria-labelledby="navbarDropdownMenuLink">
                <li> <a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                 <li class="divider" role="separator"></li>

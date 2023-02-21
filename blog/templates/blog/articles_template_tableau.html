@@ -29,13 +29,14 @@
 
           <td style="width: 100%;" data-title="Titre">
             <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
-                <div class="titre_forum">{{article.titre}}</div>
-
+                <div class="titre_forum">{{article.titre}}
             {%if article.estArchive %}
               <span class="badge badge-light">
                    archivé
              </span>
                 {% endif %}
+                </div>
+
 
           {% if article.start_time %}
               <p>

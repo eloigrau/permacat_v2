@@ -383,7 +383,7 @@ class ListeArticles_asso(ListView):
 
         context['articles_archives'] = self.qs.filter(Q(estArchive=True, asso=self.asso))
         context['articles_epingles'] = self.qs.filter(Q(estEpingle=True, estArchive=False, asso=self.asso))
-        context['articles_partages'] = self.qs.filter(~Q(asso=self.asso))
+        context['articles_partages'] = self.qs.filter(~Q(asso=self.asso) & Q(estArchive=False))
 
         # qs = self.qs
         # if self.asso.abreviation == "public":

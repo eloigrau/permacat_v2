@@ -112,7 +112,17 @@
         <div class="col textcenter" >
               <h2>
             {% if article.estEpingle%}
-            <span class="fa fa-thumb-tack"> </span>
+            <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
+            {%endif%}
+            {% if article.estArchive%}
+            <span class="badge badge-Light"  title="Article archivé">
+            archivé
+            </span>
+            {%endif%}
+            {% if article.estModifiable%}
+            <span class="badge badge-info"  title="Article archivé">
+            modifiable
+            </span>
             {%endif%}
                   {{ article.titre }}
               </h2>
@@ -171,7 +181,7 @@
         {% endif %}
 {% if suffrages %}
       <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i>Votes</a>
-   {% endif %}   
+   {% endif %}
 <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
       <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
 

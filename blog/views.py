@@ -18,7 +18,7 @@ from bourseLibre.models import Suivis, Salon
 from bourseLibre.settings import NBMAX_ARTICLES
 from bourseLibre.forms import AdresseForm, AdresseForm2
 from bourseLibre.constantes import Choix as Choix_global
-
+from django.db.models.functions import Greatest, Lower
 from bourseLibre.views import testIsMembreAsso
 from ateliers.models import Atelier
 from photologue.models import Album
@@ -46,12 +46,17 @@ def accueil(request):
     assos = request.user.getListeAbreviationsAssosEtPublic()
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
 
-    derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__abreviation__in=assos)).order_by('-id') if x.est_autorise(request.user)]
-    derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__abreviation__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]
-    derniers_articles_modif = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(date_modification=F("date_creation")) & Q(asso__abreviation__in=assos)).order_by('date_modification') if x.est_autorise(request.user)]
+    #derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__abreviation__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
+    #derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__abreviation__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]
+    #derniers_articles_modif = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(date_modification=F("date_creation")) & Q(asso__abreviation__in=assos)).order_by('date_modification') if x.est_autorise(request.user)]
+    #derniers = sorted(set([x for x in itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8], derniers_articles[:8], )]), key=lambda x:x.date_modification if x.date_modification else x.date_creation)[::-1]
 
-    derniers = sorted(set([x for x in itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8], derniers_articles[:8], )]), key=lambda x:x.date_modification if x.date_modification else x.date_creation)[::-1]
+    QObject = request.user.getQObjectsAssoArticles()
+    articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation')
 
+    derniers = articles.annotate(
+        latest=Greatest('date_modification', 'date_creation')
+    ).order_by('-latest')
     #asso_list = [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.abreviation)] # ['public'] + [asso for asso in Choix_global.abreviationsAsso if self.request.user.est_autorise(asso)] + ['projets']
     asso_list = Choix_global.abreviationsNomsAssoEtPublic
     suivis = get_suivis_forum(request)

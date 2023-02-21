@@ -316,9 +316,9 @@ def suivre_articles(request, actor_only=True):
     suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_jardin')
 
     if suivi in following(request.user):
-        actions.unfollow(request.user, suivi, send_action=False)
+        actions.unfollow(request.user, suivi)
     else:
-        actions.follow(request.user, suivi, actor_only=actor_only, send_action=False)
+        actions.follow(request.user, suivi, actor_only=actor_only)
     return redirect('jardinpartage:index')
 
 

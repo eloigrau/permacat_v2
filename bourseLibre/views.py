@@ -66,6 +66,7 @@ from .views_notifications import getNbNewNotifications
 from bourseLibre.views_base import DeleteAccess
 from itertools import chain
 from .filters import ProfilCarteFilter
+from django.db.models.functions import Greatest, Lower
 
 
 def getEvenementsSemaine(request):
@@ -168,19 +169,24 @@ def bienvenue(request):
 
         QObject = request.user.getQObjectsAssoArticles()
         dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
-        derniers_articles = Article.objects.filter(
-            Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-id')
-        derniers_articles_comm = Article.objects.filter(
-            Q(date_modification__gt=dateMin) & Q(estArchive=False) & Q(dernierMessage__isnull=False) & QObject).order_by('date_dernierMessage')
-        derniers_articles_modif = Article.objects.filter(
-            Q(date_modification__gt=dateMin) & Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(
-                date_modification=F("date_creation")) & QObject).order_by('date_modification')
+        # derniers_articles = Article.objects.filter(
+        #     Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-id')
+        # derniers_articles_comm = Article.objects.filter(
+        #     Q(date_modification__gt=dateMin) & Q(estArchive=False) & Q(dernierMessage__isnull=False) & QObject).order_by('date_dernierMessage')
+        # derniers_articles_modif = Article.objects.filter(
+        #     Q(date_modification__gt=dateMin) & Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(
+        #         date_modification=F("date_creation")) & QObject).order_by('date_modification')
+        #
+        # derniers = sorted(set([x for x in
+        #                        itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8],
+        #                                        derniers_articles[:8], )]),
+        #                   key=lambda x: x.date_modification if x.date_modification else x.date_creation)[::-1]
 
-        derniers = sorted(set([x for x in
-                               itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8],
-                                               derniers_articles[:8], )]),
-                          key=lambda x: x.date_modification if x.date_modification else x.date_creation)[::-1]
+        articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation')
 
+        derniers = articles.annotate(
+            latest=Greatest('date_modification', 'date_creation')
+        ).order_by('-latest')
     return render(request, 'bienvenue.html', {'nomImage':nomImage, "nbNotif": nbNotif, "nbExpires":nbExpires, "evenements":evenements, "evenements_semaine":evenements_semaine,"evenements_semaine_passes":evenements_passes, "derniers_articles":derniers, 'votes':votes, 'invit_salons':invit_salons})
 
 class MyException(Exception):

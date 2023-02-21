@@ -1110,8 +1110,9 @@ def getOrCreateConversation(nom1, nom2):
     try:
         convers = Conversation.objects.get(slug=get_slug_from_names(nom1, nom2))
     except Conversation.DoesNotExist:
-        profil_1 = Profil.objects.get(username=nom1)
-        profil_2 = Profil.objects.get(username=nom2)
+        liste = sorted(nom1, nom2)
+        profil_1 = Profil.objects.get(username=liste[0])
+        profil_2 = Profil.objects.get(username=liste[1])
         convers, created = Conversation.objects.get_or_create(profil1=profil_1, profil2=profil_2)
 
     return convers

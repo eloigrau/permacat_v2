@@ -323,7 +323,7 @@ border: 1px inset rgba(28,110,164,0.65);
 }
 .navbar-light .navbar-nav .nav-link {
     color: rgba(0,0,0,.95);
-   min-width:140px;
+   min-width:130px;
 }
 
 .navbar-menu {

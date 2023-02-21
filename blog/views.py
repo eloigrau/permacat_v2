@@ -288,7 +288,9 @@ class ListeArticles(ListView):
             else:
                 qs = qs.order_by(self.params['ordreTri'])
         else:
-            qs = qs.order_by( '-date_creation', '-date_dernierMessage', 'categorie')
+            qs = qs.annotate(
+                latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
+                ).order_by('-latest')
 
         self.qs = qs
         return qs.filter(estArchive=False, estEpingle=False)
@@ -368,10 +370,12 @@ class ListeArticles_asso(ListView):
             else:
                 qs = qs.order_by(params['ordreTri'])
         else:
-            qs = qs.order_by( '-date_modification', '-date_creation',  'categorie')
+            qs = qs.annotate(
+                latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
+                ).order_by('-latest')
 
         self.qs = qs
-        return qs.filter(Q(estArchive=False, asso=self.asso))
+        return qs.filter(Q(estArchive=False, asso=self.asso, estEpingle=False))
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

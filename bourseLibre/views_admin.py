@@ -409,3 +409,10 @@ def creerAction_articlenouveau(request):
 
     return render(request, 'admin/creerAction_articlenouveau.html', { "form": form,})
 
+
+
+def supprimervieuxcomptes(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    profil_jamais = Profil.objects.filter()

@@ -114,13 +114,15 @@ def desinscription_newsletter(request):
         try:
 
             inscription = InscriptionNewsletter.objects.get(email=form.cleaned_data["email"])
+            inscription.delete()
+            msg = "Inscription à la newsletter de "+ form.cleaned_data['email'] +" supprimée"
             if request.user.is_authenticated:
                 if request.user.email == form.cleaned_data["email"]:
                     p = Profil.objects.get(email=form.cleaned_data["email"])
                     p.inscrit_newsletter = False
                     p.save()
-            inscription.delete()
-            msg = "Inscription à la newsletter de "+ form.cleaned_data['email'] +" supprimée"
+                    msg += "Inscription à la newsletter de "+ form.cleaned_data['email'] +" supprimée du profil"
+
         except Exception as e:
             msg = "Une erreur est survenue : " + str(e)
 

@@ -92,7 +92,7 @@ padding-top:50px;
     margin-bottom: 0.5rem;
 }
 .textaide{
- font-family: 'Chivo', sans-serif;
+ /*font-family: 'Chivo', sans-serif;*/
 font : normal;
     font-family : inherit;
     font-size : medium;
@@ -182,6 +182,12 @@ width:100%;
 .textnoir{
     color:black;
 }
+.textnoir:link{
+    color:black;
+}
+.textnoir:visited{
+    color:black;
+}
 .scaps {
 font-variant: small-caps;
 }
@@ -268,7 +274,7 @@ section.p3 {
     padding:0;
     }
 .navbar-brand {
-    font-family: 'Satisfy', cursive;
+ /*   font-family: 'Satisfy', cursive;*/
 }
 .btn-static {
   cursor: default;
@@ -2042,9 +2048,9 @@ a:hover, a:focus {
 
 table.comicGreen {
   /*font-family: "Comic Sans MS", cursive, sans-serif;
-  font-family: cursive, sans-serif;*/
+  font-family: cursive, sans-serif;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-
+*/
   border: 2px solid #4F7849;
   background-color: #EEEEEE;
   width: 100%;

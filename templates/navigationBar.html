@@ -401,9 +401,9 @@
                <li> <a class="dropdown-item" href="{% url 'faq' %}"> FAQ </a></li>
                 <li class="divider" role="separator"></li>
                <li> <a class="dropdown-item" href="{% url 'liens' %}"> Liens </a></li>
-                <li class="dropdown-submenu">
+                <li class="dropdown-submenu-right">
                     <a class="dropdown-item dropdown-toggle"  href="#">Outils externes</a>
-                    <ul class="dropdown-menu nav8-dropdown-submenu">
+                    <ul class="dropdown-menu nav8-dropdown-submenu dropdown-menu-right">
                         <li> <a class="dropdown-item" href="https://framatalk.org/permacat" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Visioconférence (Framatalk) </a></li>
                         <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Doc partagé (Framapad) </a></li>
                         <li> <a class="dropdown-item" href="https://lite.framacalc.org/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Tableau partagé (Framacalc) </a></li>
@@ -420,9 +420,9 @@
                 {% if request.user.is_superuser %}
                 {% load admin_urls %}
 
-                <li class="dropdown-submenu">
+                <li class="dropdown-submenu-right">
                     <a class="dropdown-item dropdown-toggle"  href="#">Admin </a>
-                    <ul class="dropdown-menu nav5-dropdown-submenu">
+                    <ul class="dropdown-menu nav5-dropdown-submenu dropdown-menu-right">
                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
                         <li><a class="dropdown-item" href="{% url 'jardins:accueil' %}">Plantes</a></li>
                        <li> <a class="dropdown-item" href="{% url 'voirEmails' %}"> voir Emails Alertes</a></li>

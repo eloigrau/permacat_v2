@@ -289,6 +289,12 @@ section.p3 {
     padding-top: 0;
     padding-bottom: 0;
 }
+.dropdown-submenu-right>.dropdown-menu {
+    top: 0;
+    left: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+}
 
 /* rotate caret on hover */
 .dropdown-menu > li > a:hover:after {

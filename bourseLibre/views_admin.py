@@ -413,8 +413,9 @@ def creerAction_articlenouveau(request):
 
 def getVieuxComptes():
     date_ajd = datetime.now().date()
+    date_limite = datetime(datetime.now().year - 1, datetime.now().month, day=datetime.now().day)
     profil_jamais = Profil.objects.filter(last_login__isnull=True)
-    profil_old = Profil.objects.filter(last_login__gte=date_ajd - timedelta(years=1))
+    profil_old = Profil.objects.filter(last_login__lt=date_limite)
     mail = {"titre": "Suppression de votre compte",
             "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
     }

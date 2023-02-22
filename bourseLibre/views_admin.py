@@ -452,6 +452,6 @@ def envoiNewsletter2023(request):
     contenu_txt = strip_tags(contenu_html)
     #emails = ("eloi.grau@gmail.com", )
     datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email,]) for email in emails ]
-    send_mass_html_mail(datatuple)
+    #send_mass_html_mail(datatuple)
     return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})
 

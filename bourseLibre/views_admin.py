@@ -441,7 +441,7 @@ def envoyerMailVieuxComptes(request):
 
 
 def getMailsNewsletter():
-    profils_1 = Profil.objects.filter(inscrit_newsletter=True)
+    #profils_1 = Profil.objects.filter(inscrit_newsletter=True)
     profils_2 = InscriptionNewsletter.objects.all()
 
     return set([x.email for x in profils_1] + [x.email for x in profils_2])

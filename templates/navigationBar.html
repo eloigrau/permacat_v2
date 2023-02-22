@@ -362,6 +362,11 @@
     </ul>
 
     <ul class="nav navbar-nav ">
+         <li class="nav-item nav4 5to4"><a class="nav-link hover-icon" href="{% url 'notifications_news' %}">
+
+             <i class="fa fa-bell" title="Notifications"></i> {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}</a>
+         </li>
+
        <li class="nav-item dropdown nav9">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
              <i class="fa fa-plus iconleft" title="Ajouter"></i> Ajouter </a>
@@ -375,11 +380,6 @@
                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Une photo </a></li>
             </ul>
         </li>
-         <li class="nav-item nav4 5to4"><a class="nav-link hover-icon" href="{% url 'notifications_news' %}">
-
-             <i class="fa fa-bell" title="Notifications"></i> {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}</a>
-         </li>
-
         <li class="nav-item dropdown nav7">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
               <i class="fa fa-user iconleft" title="Profil"></i>  </a></a>

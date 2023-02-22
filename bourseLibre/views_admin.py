@@ -444,14 +444,15 @@ def getMailsNewsletter():
     #profils_1 = Profil.objects.filter(inscrit_newsletter=True)
     profils_2 = InscriptionNewsletter.objects.all()
 
-    return set([x.email for x in profils_1] + [x.email for x in profils_2])
+    #return set([x.email for x in profils_1] + [x.email for x in profils_2])
+    return set([x.email for x in profils_2])
 
 def envoiNewsletter2023(request):
     titre, contenu_html = get_emailNexsletter2023()
     emails = getMailsNewsletter()
     contenu_txt = strip_tags(contenu_html)
     #emails = ("eloi.grau@gmail.com", )
-    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email,]) for email in emails ]
+    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email for email in emails ]) ]
     #send_mass_html_mail(datatuple)
     return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})
 

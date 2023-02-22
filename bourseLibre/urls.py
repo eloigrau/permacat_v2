@@ -197,6 +197,7 @@ urlpatterns = [
 
 
     url(r'^inscription_newsletter/$', views_inscriptions.inscription_newsletter, name='inscription_newsletter', ),
+    url(r'^desinscription_newsletter/$', views_inscriptions.desinscription_newsletter, name='desinscription_newsletter', ),
     path(r'admin/modifier_message/<int:id>/<str:type_msg>/<str:asso>',  login_required(views.ModifierMessageAgora.as_view()), name='modifierMessage'),
     url(r'^admin/voirEmails/$', views_admin.voirEmails,  name="voirEmails"),
     url(r'^admin/nettoyerActions/$', views_admin.nettoyerActions,  name="nettoyerActions"),

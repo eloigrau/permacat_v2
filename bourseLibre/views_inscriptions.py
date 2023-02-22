@@ -6,7 +6,7 @@ Created on 25 mai 2017
 '''
 from django.shortcuts import  render, redirect
 from django.core.exceptions import PermissionDenied
-from .forms import ContactForm, InscriptionNewsletterForm
+from .forms import ContactForm, InscriptionNewsletterForm, DesInscriptionNewsletterForm
 from .models import Profil, Choix, Asso, Suivis, InscriptionNewsletter, Salon
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -104,6 +104,14 @@ def inscription_newsletter(request):
     if form.is_valid():
         inscription = form.save(commit=False)
         inscription.save()
+        return render(request, 'merci.html', {'msg' :"Vous êtes inscrits à la newsletter"})
+    return render(request, 'registration/inscription_newsletter.html', {'form':form})
+
+def desinscription_newsletter(request):
+    form = DesInscriptionNewsletterForm(request.POST or None)
+    if form.is_valid():
+        inscription = InscriptionNewsletterForm.objects.get(email=form.email)
+        inscription.delete()
         return render(request, 'merci.html', {'msg' :"Vous êtes inscrits à la newsletter"})
     return render(request, 'registration/inscription_newsletter.html', {'form':form})
 

@@ -1,0 +1,21 @@
+
+{% extends 'base_profil.html' %}
+{% load static %}
+{% load i18n %}
+{% load fontawesome %}
+
+{% block subtitle %}
+
+    <h3>Se désinscrire à la Newsletter</h3>
+    <hr>
+    <p class="lead">Ne recevez plus la Newsletter de perma.cat</p>
+    <p>pour désactiver tous vos abonnements mails, {% if not request.user.is_authenticated %}connectez-vous puis {% endif %}<a href="{% url 'mesSuivis' %}" >gérez vos abonnements</a></p>
+    <p>{{msg}}</p>
+
+
+
+{% endblock %}
+{% block content %}
+        {% include 'form_template.html' %}
+
+{% endblock %}

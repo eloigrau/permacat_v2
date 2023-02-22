@@ -1,4 +1,12 @@
 {% extends 'base.html' %}
 {% block subtitle %}Merci !{% endblock %}
-{% block content %}<a href="{% url 'bienvenue' %}">
-                        <i class="fa fa-home"></i>{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-12 textcenter">
+<a href="{% url 'bienvenue' %}">
+                        <span class="fa fa-home"></span>
+
+    </div>
+</div>
+
+    {% endblock %}

@@ -431,6 +431,9 @@ class InscriptionNewsletterForm(forms.ModelForm):
 class DesInscriptionNewsletterForm(forms.ModelForm):
     email = forms.EmailField(required=True)
 
+    class Meta:
+        model = InscriptionNewsletter
+        fields = ['email']
 
 class Adhesion_permacatForm(forms.ModelForm):
 

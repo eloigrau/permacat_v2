@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404
 from actstream.models import Action, Follow
-from .models import Profil, Conversation, Suivis, Adresse
+from .models import Profil, Conversation, Suivis, Adresse, InscriptionNewsletter
 from .settings import LOCALL
 from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD
 from django.http import HttpResponseForbidden
@@ -14,6 +14,8 @@ from .forms import Adhesion_permacatForm, Adhesion_assoForm, creerAction_article
 from actstream import action
 from actstream.models import followers
 from datetime import datetime, timedelta
+from django.utils.html import strip_tags
+from .emails_templates import get_emailNexsletter2023
 
 def getMessage(action):
     message = action.data['message']
@@ -217,7 +219,7 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
     #EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
     data = []
     for subject, message, html_message, sender, recipient in datatuple:
-        if len(recipient) > 90:
+        if len(recipient) > 900:
             for i in range(0, len(recipient), 90):
                 data.append([subject, message, html_message, sender, recipient[i:i + 90]])
         else:
@@ -236,7 +238,6 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
         for subject, message, html_message, sender, recipient in data if recipient != [SERVER_EMAIL,]
     ]
     return connection.send_messages(messages)
-
 
 def envoyerEmailsRequete(request):
     if not request.user.is_superuser:
@@ -428,6 +429,7 @@ def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
+    #todo implementer suppression
     return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 def envoyerMailVieuxComptes(request):
@@ -436,3 +438,20 @@ def envoyerMailVieuxComptes(request):
     profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
 
     return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
+
+
+def getMailsNewsletter():
+    profils_1 = Profil.objects.filter(inscrit_newsletter=True)
+    profils_2 = InscriptionNewsletter.objects.all()
+
+    return set([x.email for x in profils_1] + [x.email for x in profils_2])
+
+def envoiNewsletter2023(request):
+    titre, contenu_html = get_emailNexsletter2023()
+    emails = getMailsNewsletter()
+    contenu_txt = strip_tags(contenu_html)
+
+    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, email) for email in emails ]
+    #send_mass_html_mail(datatuple)
+    return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})
+

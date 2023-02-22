@@ -450,7 +450,7 @@ def envoiNewsletter2023(request):
     titre, contenu_html = get_emailNexsletter2023()
     emails = getMailsNewsletter()
     contenu_txt = strip_tags(contenu_html)
-    emails = ("eloi.grau@gmail.com", )
+    #emails = ("eloi.grau@gmail.com", )
     datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email,]) for email in emails ]
     send_mass_html_mail(datatuple)
     return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})

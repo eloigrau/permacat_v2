@@ -120,6 +120,7 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'webpush',
+    'exo_mentions',
     #"django_minify_html",
     #'formtools',
     #'channels', 'chat',

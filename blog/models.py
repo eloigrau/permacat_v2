@@ -12,8 +12,9 @@ from datetime import datetime, timedelta
 
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
-
 import uuid
+import re
+username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)")
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
@@ -366,6 +367,9 @@ class Commentaire(models.Model):
     def get_absolute_url(self):
         return self.article.get_absolute_url() + "#comm_" + str(self.id)
 
+    def get_absolute_url_discussion(self):
+        return self.article.get_absolute_url() + "#idConversation"
+
     @property
     def get_edit_url(self):
         return reverse('blog:modifierCommentaireArticle',  kwargs={'id':self.id})
@@ -378,17 +382,33 @@ class Commentaire(models.Model):
             self.date_creation = timezone.now()
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.article.asso.abreviation))
             titre = "Article commenté"
-            message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.get_absolute_url())+ "'>" + str(self.article.titre) + "</a>'"
+            message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.get_absolute_url_discussion())+ "'>" + str(self.article.titre) + "</a>'"
             suiveurs = [suiv for suiv in followers(self.article) if
                       self.auteur_comm != suiv and self.article.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             self.article.date_dernierMessage = timezone.now()
             self.article.save(sendMail)
 
-
         retour = super(Commentaire, self).save(*args, **kwargs)
+
+        values = username_re.findall(self.commentaire)
+        if values:
+            for v in values:
+                try:
+                    p = Profil.objects.get(username__iexact=v)
+                    titre_mention = "Vous avez été mentionné dans un commentaire"
+                    msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
+                    msg_mention_notif = str(self.auteur_comm.username) + " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                                emails=[p.email, ])
+                    payload = {"head": titre_mention, "body": msg_mention_notif,
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                    send_user_notification(p, payload=payload, ttl=7200)
+                except Exception as e:
+                    pass
+
         if emails:
-            action.send(self, verb='emails', url=self.article.get_absolute_url(), titre=titre, message=message, emails=emails)
+            action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body":message,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
@@ -438,6 +458,9 @@ class Projet(models.Model):
 
     def get_absolute_url(self):
         return reverse('blog:lireProjet', kwargs={'slug':self.slug})
+
+    def get_absolute_url_discussion(self):
+        return self.get_absolute_url() + "#idConversation"
 
     def save(self, sendMail = True, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -503,6 +526,7 @@ class FicheProjet(models.Model):
     def get_absolute_url(self):
         return reverse('blog:lireProjet', kwargs={'slug':self.projet.slug})
 
+
     def est_autorise(self, user):
         if self.projet.asso.abreviation == "public":
             return True
@@ -525,6 +549,9 @@ class CommentaireProjet(models.Model):
     def get_absolute_url(self):
         return self.projet.get_absolute_url()
 
+    def get_absolute_url_discussion(self):
+        return self.projet.get_absolute_url() + "#idConversation"
+
     @property
     def get_edit_url(self):
         return reverse('blog:modifierCommentaireProjet',  kwargs={'id':self.id})
@@ -536,10 +563,27 @@ class CommentaireProjet(models.Model):
             titre = "[Permacat] Projet commenté"
             self.projet.date_dernierMessage = timezone.now()
             self.projet.save()
-            message = self.auteur_comm.username + " a commenté le projet '<a href='https://www.perma.cat" + self.projet.get_absolute_url() + "'>" + self.projet.titre + "</a>'"
+            message = self.auteur_comm.username + " a commenté le projet '<a href='https://www.perma.cat" + self.projet.get_absolute_url_discussion() + "'>" + self.projet.titre + "</a>'"
             emails = [suiv.email for suiv in followers(self.projet) if self.auteur_comm != suiv and self.est_autorise(suiv)]
 
-        retour =  super(CommentaireProjet, self).save(*args, **kwargs)
+        retour = super(CommentaireProjet, self).save(*args, **kwargs)
+
+        values = username_re.findall(self.commentaire)
+        if values:
+            for v in values:
+                try:
+                    p = Profil.objects.get(username__iexact=v)
+                    titre_mention = "Vous avez été mentionné dans un commentaire"
+                    msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> du projet '" + self.projet.titre +"'"
+                    msg_mention_notif = str(self.auteur_comm.username) + " vous a mentionné dans un commentaire du projet '" + self.projet.titre +"'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                                emails=[p.email, ])
+                    payload = {"head": titre_mention, "body": msg_mention_notif,
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                    send_user_notification(p, payload=payload, ttl=7200)
+                except Exception as e:
+                    pass
+
         if emails:
             action.send(self, verb='emails', url=self.projet.get_absolute_url(), titre=titre, message=message, emails=emails)
         return retour

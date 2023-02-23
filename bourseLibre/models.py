@@ -28,6 +28,8 @@ import simplejson
 from datetime import datetime
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
+import re
+username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)")
 
 
 def get_categorie_from_subcat(subcat):
@@ -1225,6 +1227,22 @@ class Message_salon(models.Model):
         super(Message_salon, self).save(*args, **kwargs)
         self.salon.date_dernierMessage = now()
         self.salon.save()
+
+        values = username_re.findall(self.message)
+        if values:
+            for v in values:
+                try:
+                    p = Profil.objects.get(username__iexact=v)
+                    titre_mention = "Vous avez été mentionné dans un commentaire"
+                    msg_mention = str(self.auteur.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url()+"'>dans un commentaire</a> du salon '" + self.salon.titre +"'"
+                    msg_mention_notif = str(self.auteur.username) + " vous a mentionné dans un commentaire du salon '" + self.salon.titre +"'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                                emails=[p.email, ])
+                    payload = {"head": titre_mention, "body": msg_mention_notif,
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                    send_user_notification(p, payload=payload, ttl=7200)
+                except Exception as e:
+                    pass
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)

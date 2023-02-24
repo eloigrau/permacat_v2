@@ -239,6 +239,7 @@ def notifications_news_regroup(request):
     maintenant = now()
     return render(request, 'notifications/notifications_last2.html', {'type_notif':type_notif,'dico':dicoTexte, "htmlArticles":htmlArticles, "htmlProjets":htmlProjets, "dateMin":dateMin, "maintenant":maintenant})
 
+
 @login_required
 def notifications(request):
     salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions = getNotifications(request)

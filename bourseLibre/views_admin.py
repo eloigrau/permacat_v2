@@ -466,8 +466,9 @@ def supprimerHitsAnciens(request):
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
 
 def supprimerActionsAnciens(request):
-    date = datetime.now().date() - timedelta(days=555)
+    date = datetime.now().date() - timedelta(days=365*2)
     hit_counts = Action.objects.filter(timestamp__lte=date)
-
+    for hit in hit_counts:
+        hit.delete()
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
 

@@ -384,5 +384,5 @@ def voirDerniersArticlesVus(request):
     #liste = {x: y for i, (x, y) in enumerate(liste.items()) if i <15}
     hit_count_perso = Hit.objects.filter(user=request.user.id).order_by('-created').distinct()[:20]
 
-    return render(request, 'notifications/notifications_visites.html', {'hit_count': liste, 'hit_count_perso': hit_count_perso, })#'hit_count_nb':hit_count_nb
+    return render(request, 'notifications/notifications_visites.html', {'hit_count': liste, 'hit_count_perso': hit_count_perso, 'hit_count_nb':hit_count_nb})
 

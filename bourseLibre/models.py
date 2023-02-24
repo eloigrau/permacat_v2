@@ -1238,6 +1238,7 @@ class Message_salon(models.Model):
                     msg_mention_notif = str(self.auteur.username) + " vous a mentionné dans un commentaire du salon '" + self.salon.titre +"'"
                     action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
                                 emails=[p.email, ])
+                    action.send(self, verb='mention_' + p.username, url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,)
                     payload = {"head": titre_mention, "body": msg_mention_notif,
                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
                     send_user_notification(p, payload=payload, ttl=7200)

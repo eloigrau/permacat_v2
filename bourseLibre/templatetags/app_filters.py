@@ -2,10 +2,12 @@ from django import template
 from django.forms import CheckboxInput
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
+from django.template.defaultfilters import stringfilter
 from bourseLibre.constantes import Choix
 from bourseLibre.models import Asso
 import random
 import string
+import re
 
 register = template.Library()
 
@@ -160,3 +162,10 @@ def raccourcirTempsStr(date):
     if splitted:
         return splitted[0]
     return new
+
+
+@register.filter(name='usermention', is_safe=True)
+@stringfilter
+def usermention(value):
+    value = re.sub(r'@(\w+)', r'<a href="/accounts/profil/\1/">@\1</a>', value)
+    return value

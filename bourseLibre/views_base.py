@@ -64,7 +64,7 @@ def statuts_fer(request):
 @login_required
 def profil_nom(request, user_username):
     try:
-        user = Profil.objects.get(username=user_username)
+        user = Profil.objects.get(username__iexact=user_username)
         distance = user.getDistance(request.user)
         return render(request, 'profil.html', {'user': user, 'distance':distance})
     except User.DoesNotExist:

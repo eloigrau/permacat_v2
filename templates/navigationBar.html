@@ -369,8 +369,9 @@
 
        <li class="nav-item dropdown nav9">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
-             <i class="fa fa-plus iconleft" title="Ajouter"></i> Ajouter </a>
+             <i class="fa fa-plus iconleft" title="Ajouter"></i> </a>
             <ul class="dropdown-menu dropdown-menu-right nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
+               <li> <a class="dropdown-item" >Ajouter : </a></li>
                <li> <a class="dropdown-item" href="{% url 'produit_proposer_entree' %}">Une petite annonce</a></li>
                <li> <a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}">Un article sur le forum</a></li>
                 <li><a class="dropdown-item" href="{% url 'jardinpartage:ajouterNouvelArticle' %}"> Un article sur le blog des jardins partagés </a></li>
@@ -503,7 +504,7 @@
                         <a class="dropdown-item dropdown-toggle"  href="#">Ramène Ta Graine</a>
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}"><i class='fa fa-asterisk iconleft ' ></i> Présentation </a></li>
-                          
+
                        <li> <a class="dropdown-item" href="{% url 'adhesion_asso' asso='rtg' %}"><i class='fa fa-euro-sign iconleft ' ></i> Cotisation en ligne </a></li>
                         </ul>
                     </li>

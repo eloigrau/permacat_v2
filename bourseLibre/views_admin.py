@@ -16,6 +16,7 @@ from actstream.models import followers
 from datetime import datetime, timedelta
 from django.utils.html import strip_tags
 from .emails_templates import get_emailNexsletter2023
+from hitcount.models import HitCount
 
 def getMessage(action):
     message = action.data['message']
@@ -456,3 +457,9 @@ def envoiNewsletter2023(request):
     #send_mass_html_mail(datatuple)
     return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})
 
+
+def supprimerHitsAnciens(request):
+    date = datetime.now().date() - timedelta(days=366)
+    hit_counts = HitCount.objects.filter(modified__lte=date)
+
+    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })

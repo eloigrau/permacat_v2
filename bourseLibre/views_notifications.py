@@ -362,10 +362,10 @@ def notif_cemois(request):
 def voirDerniersArticlesVus(request):
     date_ajd = datetime.now().date()
     hit_count = Hit.objects.filter(created__gte=date_ajd - timedelta(days=33)).order_by('-created').distinct()
-    dates = [date_ajd,  date_ajd - timedelta(days=date_ajd.weekday()),  date_ajd - timedelta(days=date_ajd.day - 1)]
-    hit_count_nb = [hit_count.filter(created__gte=date).count() for date in dates]
+    #dates = [date_ajd,  date_ajd - timedelta(days=date_ajd.weekday()),  date_ajd - timedelta(days=date_ajd.day - 1)]
+    #hit_count_nb = [hit_count.filter(created__gte=date).count() for date in dates]
 
-    hit_count_nb.append(Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=7)).count())
+    #hit_count_nb.append(Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=7)).count())
     liste = {}
     for i, x in enumerate(hit_count):
         if len(liste) < 15 and x.hitcount.content_object and not str(x.hitcount.content_object).startswith("visite_") :
@@ -384,5 +384,5 @@ def voirDerniersArticlesVus(request):
     #liste = {x: y for i, (x, y) in enumerate(liste.items()) if i <15}
     hit_count_perso = Hit.objects.filter(user=request.user.id).order_by('-created').distinct()[:20]
 
-    return render(request, 'notifications/notifications_visites.html', {'hit_count': liste, 'hit_count_perso': hit_count_perso, 'hit_count_nb':hit_count_nb})
+    return render(request, 'notifications/notifications_visites.html', {'hit_count': liste, 'hit_count_perso': hit_count_perso, })#'hit_count_nb':hit_count_nb
 

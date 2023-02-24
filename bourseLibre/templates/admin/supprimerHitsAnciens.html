@@ -1,0 +1,21 @@
+{% extends 'base_notifications.html' %}
+{% load activity_tags %}
+{% block subtitle %}
+<h4>Pb profils, adresses ({{profil_jamais|length}}, {{profil_old|length}})</h4>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+<div class="card-deck notif ">
+<div class="card notif3 d-md-flex">
+  <ul class="list-group list-group-flush " >
+{% for p in hit_counts %}
+      <li class="list-group-item "  style=""  >
+          <p>{{p}}</p>
+      </li>
+{%endfor%}
+
+  </ul>
+</div>
+</div>
+</div>
+{% endblock %}

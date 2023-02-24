@@ -214,6 +214,7 @@ urlpatterns = [
     url(r'^admin/supprimervieuxcomptes/$', views_admin.supprimervieuxcomptes,  name="supprimervieuxcomptes"),
     url(r'^admin/envoyerMailVieuxComptes/$', views_admin.envoyerMailVieuxComptes,  name="envoyerMailVieuxComptes"),
     url(r'^admin/envoiNewsletter2023/$', views_admin.envoiNewsletter2023,  name="envoiNewsletter2023"),
+    url(r'^admin/supprimerHitsAnciens/$', views_admin.supprimerHitsAnciens,  name="supprimerHitsAnciens"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),

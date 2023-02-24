@@ -35,7 +35,7 @@ class Choix():
         'type_prix': typePrixUnite,
     },
     }
-    monnaies = (('don', 'don'), ('troc', 'troc'), ('pret', 'prêt'), ('G1', 'G1'), ('Soudaqui', 'Soudaqui'), ('SEL', 'SEL'), ('JEU', 'JEU'),  ('HE', 'heureEntraide'),  ('Autre', 'Négociable'))
+    monnaies = (('don', 'Don'), ('troc', 'Troc'), ('pret', 'Prêt'), ('G1', 'G1'), ('Soudaqui', 'Soudaqui'), ('SEL', 'SEL'), ('JEU', 'JEU'),  ('HE', 'heureEntraide'),  ('Autre', 'Négociable'))
     monnaies_nonquantifiables = ['don', 'troc', 'pret', 'SEl', 'Autre']
 
     ordreTri = ['date', 'categorie', 'producteur']

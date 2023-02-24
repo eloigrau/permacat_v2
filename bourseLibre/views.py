@@ -235,8 +235,9 @@ def produit_proposer(request, type_produit):
         produit = type_form.save(commit=False)
         produit.user = request.user
         produit.categorie = type_produit
-
         produit.save()
+        for monnaie in type_form.cleaned_data["monnaies"]:
+            produit.monnaies.add(monnaie)
         url = produit.get_absolute_url()
         suffix = "_" + produit.asso.abreviation
         offreOuDemande = "offre" if produit.estUneOffre else "demande"
@@ -253,7 +254,7 @@ def produit_proposer(request, type_produit):
 class ProduitModifier(UpdateView):
     model = Produit
     template_name_suffix = '_modifier'
-    fields = ['date_debut', 'date_expiration', 'nom_produit', 'description', 'prix', 'unite_prix', 'souscategorie', 'estUneOffre', 'estPublic', 'type_prix']# 'souscategorie','etat','type_prix']
+    fields = ['date_debut', 'date_expiration', 'nom_produit', 'description', 'monnaies', 'prix', 'souscategorie', 'estUneOffre', 'estPublic']# 'souscategorie','etat','type_prix']
 
     widgets = {
         'date_debut': forms.DateInput(attrs={'type': "date"}),
@@ -767,16 +768,12 @@ class ListeProduit(ListView):
         if "souscategorie" in params:
             qs = qs.filter(Q(produit_aliment__souscategorie=params['souscategorie']) | Q(produit_vegetal__souscategorie=params['souscategorie']) | Q(produit_service__souscategorie=params['souscategorie'])  | Q(produit_objet__souscategorie=params['souscategorie']))
 
-        if "prixmax" in params:
-            qs = qs.filter(prix__lt=params['prixmax'])
-        if "prixmin" in params:
-            qs = qs.filter(prix__gtt=params['prixmin'])
+        # if "prixmax" in params:
+        #     qs = qs.filter(prix__lt=params['prixmax'])
+        # if "prixmin" in params:
+        #     qs = qs.filter(prix__gtt=params['prixmin'])
         if "monnaie" in params:
-            try:
-                nom_monnaie = [item[0] for item in Choix.monnaies if params['monnaie'] in item][0]
-                qs = qs.filter(unite_prix=nom_monnaie)
-            except:
-                pass
+            qs = qs.filter(monnaies__nom=params['monnaie'])
         if "gratuit" in params:
             qs = qs.filter(unite_prix='don')
         if "offre" in params:
@@ -862,7 +859,7 @@ def ajouterAuPanier(request, produit_id, quantite):#, **kwargs):
     #     profil = Profil.objects.get(user__id = request.user.id)
     #     panier = Panier(user=profil, )
     #     panier.save()
-    panier.add(produit, produit.unite_prix, quantite)
+    ##panier.add(produit, produit.unite_prix, quantite)
     return afficher_panier(request)
 
 @login_required

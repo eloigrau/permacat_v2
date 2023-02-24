@@ -2,27 +2,29 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Produit_vegetal, Adresse, \
     Asso, Profil, Message, MessageGeneral, Message_salon, InscriptionNewsletter, Adhesion_permacat, \
-    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso
+    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie
 from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from blog.models import Article
+from .constantes import Choix
 
 fieldsCommunsProduits = ['souscategorie', 'nom_produit',  'description', 'estUneOffre', 'asso',
-                 'prix',  'type_prix', 'date_debut', 'date_expiration', ]
+                         'monnaies', 'prix', 'date_debut', 'date_expiration', ]
 
 
 class ProduitCreationForm(forms.ModelForm):
     estUneOffre = forms.ChoiceField(choices=((1, "Offre"), (0, "Demande")), label='', required=True)
     asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True, label="Annonce publique ou réservée aux adhérents de l'asso :",)
+    monnaies = forms.ModelMultipleChoiceField(label='Monnaie(s)', required=False, queryset=Monnaie.objects.all(),
+                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
     class Meta:
         model = Produit
         exclude = ('user', )
 
-        fields = ['nom_produit', 'description', 'date_debut', 'date_expiration',
-                  'stock_initial', 'unite_prix', 'prix',]
+        fields = ['nom_produit', 'description', 'date_debut', 'estUneOffre',  'asso', 'date_expiration', 'monnaies', 'prix',]
         widgets = {
             'date_debut': forms.DateInput(
                 format=('%Y-%m-%d'),
@@ -55,6 +57,8 @@ class ProduitCreationForm(forms.ModelForm):
         return self.cleaned_data
 
 class ProduitModifierForm(ProduitCreationForm):
+    monnaies = forms.ModelMultipleChoiceField(label='Monnaie(s)', required=False, queryset=Monnaie.objects.all(),
+                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
     def __init__(self, *args, **kwargs):
         super(ProduitModifierForm, self).__init__(*args, **kwargs)
@@ -186,7 +190,7 @@ class Produit_offresEtDemandes_modifier_form(ProduitModifierForm):
     class Meta:
         model = Produit_offresEtDemandes
         fields = [ 'nom_produit',  'description', 'asso',
-                'unite_prix', 'prix', 'date_debut', 'date_expiration', ]
+                'monnaies', 'prix', 'date_debut', 'date_expiration', ]
         widgets = {
             'date_debut': forms.DateInput(
                 format=('%Y-%m-%d'),

@@ -29,7 +29,7 @@ from datetime import datetime
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
-username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)")
+username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
 
 def get_categorie_from_subcat(subcat):
@@ -525,6 +525,19 @@ class Adhesion_asso(models.Model):
     def __str__(self):
         return self.user.username + " le " + str(self.date_cotisation) + " " + str(self.montant) + " " + str(self.moyen) + "(" + self.asso.nom + ")"
 
+class Monnaie(models.Model):
+    nom = models.CharField(
+        max_length=50,
+        choices=Choix.monnaies,
+        default='don', verbose_name="Monnaie"
+    )
+    slug = models.SlugField(max_length=100)
+    estQuantifiable = models.BooleanField()
+
+    def __str__(self):
+        return self.nom
+
+
 class Produit(models.Model):  # , BaseProduct):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE,)
     date_creation = models.DateTimeField(verbose_name="Date de parution", editable=False)
@@ -537,11 +550,11 @@ class Produit(models.Model):  # , BaseProduct):
 
     stock_initial = models.FloatField(default=1, verbose_name="Quantité disponible", max_length=250, validators=[MinValueValidator(1), ])
     stock_courant = models.FloatField(default=1, max_length=250, validators=[MinValueValidator(0), ])
-    prix = models.DecimalField(max_digits=8, decimal_places=2, default=0, blank=True, validators=[MinValueValidator(0), ])
+    prix = models.CharField(max_length=150, verbose_name="Tarif", blank=True)
     unite_prix = models.CharField(
         max_length=8,
         choices=Choix.monnaies,
-        default='lliure', verbose_name="monnaie"
+        default='don', verbose_name="monnaie"
     )
 
     CHOIX_CATEGORIE = (('aliment', 'aliment'),('vegetal', 'végétal'), ('service', 'service'), ('objet', 'objet'), ('liste', 'liste des offres et demandes'))
@@ -555,6 +568,8 @@ class Produit(models.Model):  # , BaseProduct):
     estPublique = models.BooleanField(default=False, verbose_name='Publique (cochez) ou Interne (décochez) [réservé aux membres permacat]')
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     objects = InheritanceManager()
+
+    monnaies = models.ManyToManyField(Monnaie, related_name="produit_monnaie", verbose_name="Monnaies : ", blank=True)
 
     @property
     def slug(self):
@@ -610,26 +625,18 @@ class Produit(models.Model):  # , BaseProduct):
     def get_type_prix(self):
         return Produit.objects.get_subclass(id=self.id).type_prix
 
-    def get_unite_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.unite_prix
-        elif self.get_prix() == 0:
-            return ""
-        else:
-            return Produit.objects.get_subclass(id=self.id).get_unite_prix()
-            # return prod.get_unite_prix()
+    @property
+    def get_monnaies(self):
+        return ", ".join([str(x) for x in self.monnaies.all()])
 
     def get_prixEtUnite(self):
-        prod_cat = Produit.objects.get_subclass(id=self.id)
-        if isinstance(prod_cat, Produit):
-            return str(self.get_prix()) + " " + self.get_unite_prix()
-        return prod_cat.get_prixEtUnite()
+        return str(self.get_prix) + " " + self.get_monnaies
 
+    @property
     def get_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return 0
-        else:
-            return round(self.prix, 2)
+        if not self.prix:
+            return ""
+        return self.prix
 
     def get_nom_class(self):
         return "Produit"
@@ -669,23 +676,6 @@ class Produit_aliment(Produit):  # , BaseProduct):
     #   choices=Choix.choix[type]['etat'],
     #    default=Choix.choix[type]['etat'][0][0]
     #)
-    type_prix = models.CharField(
-        max_length=20,
-        choices=Choix.choix[type]['type_prix'],
-        default=Choix.choix[type]['type_prix'][0][0], verbose_name="par"
-    )
-    def get_unite_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.unite_prix
-        else:
-            return self.unite_prix + "/" + self.get_type_prix_display()
-
-    def get_prixEtUnite(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        elif self.get_prix() == 0:
-            return ""
-        return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
         return "aliment"
@@ -702,24 +692,6 @@ class Produit_vegetal(Produit):  # , BaseProduct):
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix[type]['souscategorie'][0][0]
     )
-    type_prix = models.CharField(
-        max_length=20,
-        choices=Choix.choix[type]['type_prix'],
-        default=Choix.choix[type]['type_prix'][0][0], verbose_name="par"
-    )
-
-    def get_unite_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.unite_prix
-        else:
-            return self.unite_prix + "/" + self.get_type_prix_display()
-
-    def get_prixEtUnite(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        elif self.get_prix() == 0:
-            return ""
-        return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
         return"vegetal"
@@ -736,29 +708,6 @@ class Produit_service(Produit):  # , BaseProduct):
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix["service"]['souscategorie'][0][0]
     )
-    #etat = models.CharField(
-    #    max_length=20,
-    #   choices=Choix.choix["service"]['etat'],
-    #   default=Choix.choix["service"]['etat'][0][0]
-    #)
-    type_prix = models.CharField(
-        max_length=20,
-        choices=Choix.choix["service"]['type_prix'],
-        default=Choix.choix["service"]['type_prix'][0][0], verbose_name="par"
-    )
-
-    def get_unite_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        else:
-            return self.unite_prix + "/" + self.get_type_prix_display()
-
-    def get_prixEtUnite(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        elif self.get_prix() == 0:
-            return ""
-        return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
         return "service"
@@ -775,30 +724,9 @@ class Produit_objet(Produit):  # , BaseProduct):
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix[type]['souscategorie'][0][0]
     )
-    #etat = models.CharField(
-    #   max_length=20,
-    #    choices=Choix.choix[type]['etat'],
-    #   default=Choix.choix[type]['etat'][0][0]
-    #)
-    type_prix = models.CharField(
-        max_length=20,
-        choices=Choix.choix[type]['type_prix'],
-        default=Choix.choix[type]['type_prix'][0][0], verbose_name="par"
-    )
 
-    def get_unite_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        else:
-            return self.unite_prix + "/" + self.get_type_prix_display()
-
-    def get_prixEtUnite(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        elif self.get_prix() == 0:
-            return ""
-        return str(self.get_prix()) + " " + self.get_unite_prix()
-
+    def get_souscategorie(self):
+        return "objet"
 
 class Produit_offresEtDemandes(Produit):  # , BaseProduct):
     type = 'offresEtDemandes'
@@ -817,24 +745,6 @@ class Produit_offresEtDemandes(Produit):  # , BaseProduct):
     #    choices=Choix.choix[type]['etat'],
     #   default=Choix.choix[type]['etat'][0][0]
     #)
-    type_prix = models.CharField(
-        max_length=20,
-        choices=Choix.choix[type]['type_prix'],
-        default=Choix.choix[type]['type_prix'][0][0], verbose_name="par"
-    )
-
-    def get_unite_prix(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        else:
-            return self.unite_prix + "/" + self.get_type_prix_display()
-
-    def get_prixEtUnite(self):
-        if self.unite_prix in Choix.monnaies_nonquantifiables:
-            return self.get_unite_prix_display()
-        elif self.get_prix() == 0:
-            return ""
-        return str(self.get_prix()) + " " + self.get_unite_prix()
 
     def get_souscategorie(self):
         return "liste"
@@ -971,7 +881,7 @@ class Panier(models.Model):
     def total_quantite(self):
         result = {}
         for item in self.item_set.all():
-            unite = item.produit.get_unite_prix()
+            unite = item.produit.get_monnaies()
             #type_prix = item.produit.get_type_prix()
             if not unite in result.keys():
                 result[unite] = 0
@@ -988,7 +898,7 @@ class Panier(models.Model):
     def total_prix(self):
         result = {}
         for item in self.item_set.all():
-            unite = item.produit.get_unite_prix()
+            unite = item.produit.get_monnaies()
             if not unite in result.keys():
                 result[unite] = 0
             result[unite] += item.total_prix
@@ -1029,6 +939,7 @@ class ItemManager(models.Manager):
 
 
 class Item(models.Model):
+    # deprecated
     panier = models.ForeignKey(Panier, verbose_name=_('panier'), on_delete=models.CASCADE)
     quantite = models.DecimalField(verbose_name=_('quantite'),decimal_places=3,max_digits=6)
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)

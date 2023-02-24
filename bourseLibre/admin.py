@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .models import  Adresse, Produit, Panier, Item, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InvitationDansSalon, InscritSalon
+from .models import  Adresse, Produit, Panier, Item, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InvitationDansSalon, InscritSalon, Monnaie
 from blog.models import Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement, EvenementAcceuil, AdresseArticle
 from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
@@ -41,7 +41,7 @@ class Article_jardinAdmin(admin.ModelAdmin):
 class ProjetAdmin(admin.ModelAdmin):
     list_display = ('titre', 'estArchive', 'ficheprojet')
 class ProduitAdmin(admin.ModelAdmin):
-    list_display = ('nom_produit', 'categorie', 'estUneOffre', 'asso', 'unite_prix')
+    list_display = ('nom_produit', 'categorie', 'estUneOffre', 'asso')
 class Adhesion_permacatAdmin(admin.ModelAdmin):
     list_display = ('user', 'date_cotisation', 'montant')
 class AssoAdmin(admin.ModelAdmin):
@@ -61,6 +61,7 @@ admin.site.register(Asso, AssoAdmin)
 admin.site.register(Produit, ProduitAdmin)
 admin.site.register(Panier)
 admin.site.register(Item)
+admin.site.register(Monnaie)
 admin.site.register(MessageGeneral)
 admin.site.register(InscriptionNewsletter)
 admin.site.register(Adhesion_permacat, Adhesion_permacatAdmin)

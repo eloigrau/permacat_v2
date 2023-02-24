@@ -14,7 +14,7 @@ from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import uuid
 import re
-username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9_]+)")
+username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(w+)")
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),

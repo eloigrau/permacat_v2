@@ -23,7 +23,7 @@
     </div>
     <div class="card-footer">
         <p>
-          {{ produit.get_prixEtUnite }}
+          {{ produit.get_monnaies }}
         </p>
         <a href="{% url 'produit_detail' produit.id %}" class="btn btn-primary {%if produit.estUneOffre %}couleurOffre{%else%}couleurdemande{%endif%}"
            role="button">{%if produit.estUneOffre %}voir l'offre{%else%}voir la demande{%endif%} </a>
@@ -54,7 +54,7 @@
         </div>
         <div class="row align-items-end">
         <div class="col-sm-12 textcenter">
-            <p> {{ produit.get_prixEtUnite }}</p>
+            <p> {{ produit.get_monnaies }}</p>
                 <a href="{% url 'produit_detail' produit.id %}" class="btn btn-primary btn-sm"
                    role="button">voir en détail...</a>
             </div>

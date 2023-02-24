@@ -109,14 +109,27 @@
 					</td>
 				</tr>
 			{%endcomment%}
+				{%if produit.get_monnaies %}
 				<tr>
 					<td class="nomProprieteProduit">
-						Prix :
+						Monnaie{{produit.get_monnaies|pluralize:"s"}} :
 					</td>
 					<td class="proprieteProduit">
-						{{ produit.get_prixEtUnite }}
+						{{ produit.get_monnaies }}
 					</td>
-				</tr>{%comment%}
+				</tr>
+				{%endif %}
+				{%if produit.get_prix %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Tarif :
+					</td>
+					<td class="proprieteProduit">
+						{{ produit.get_prix }}
+					</td>
+				</tr>
+				{%endif %}
+				{%comment%}
 				<tr class="active">
 					<td class="nomProprieteProduit">
 						Stock :

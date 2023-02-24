@@ -460,6 +460,13 @@ def envoiNewsletter2023(request):
 
 def supprimerHitsAnciens(request):
     date = datetime.now().date() - timedelta(days=366)
-    hit_counts = HitCount.objects.filter(modified__lte=date)
+    hit_counts = HitCount.objects.filter(hit__created__lte=date)
 
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+
+def supprimerActionsAnciens(request):
+    date = datetime.now().date() - timedelta(days=366)
+    hit_counts = Action.objects.filter(hit__created__lte=date)
+
+    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+

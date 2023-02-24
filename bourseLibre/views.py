@@ -772,6 +772,7 @@ class ListeProduit(ListView):
         #     qs = qs.filter(prix__lt=params['prixmax'])
         # if "prixmin" in params:
         #     qs = qs.filter(prix__gtt=params['prixmin'])
+
         if "monnaie" in params:
             qs = qs.filter(monnaies__nom=params['monnaie'])
         if "gratuit" in params:

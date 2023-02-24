@@ -362,10 +362,10 @@ def notif_cemois(request):
 def voirDerniersArticlesVus(request):
     date_ajd = datetime.now().date()
     hit_count = Hit.objects.filter(created__gte=date_ajd - timedelta(days=33)).order_by('-created').distinct()
-    #dates = [date_ajd,  date_ajd - timedelta(days=date_ajd.weekday()),  date_ajd - timedelta(days=date_ajd.day - 1)]
-    #hit_count_nb = [hit_count.filter(created__gte=date).count() for date in dates]
+    dates = [date_ajd,  date_ajd - timedelta(days=date_ajd.weekday()),  date_ajd - timedelta(days=date_ajd.day - 1)]
+    hit_count_nb = [hit_count.filter(created__gte=date).count() for date in dates]
 
-    #hit_count_nb.append(Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=7)).count())
+    hit_count_nb.append(Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=7)).count())
     liste = {}
     for i, x in enumerate(hit_count):
         if len(liste) < 15 and x.hitcount.content_object and not str(x.hitcount.content_object).startswith("visite_") :

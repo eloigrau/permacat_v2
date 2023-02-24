@@ -8,13 +8,15 @@ def ajouterMonnaie(apps, schema_editor):
     # version than this migration expects. We use the historical version.
     from bourseLibre.constantes import Choix
     mon = apps.get_model('bourseLibre', 'Monnaie')
+    dicoMonnaies = {}
     for monnaie, nom in Choix.monnaies:
-        mon.objects.create(nom=nom, slug=monnaie, estQuantifiable=(monnaie not in Choix.monnaies_nonquantifiables))
+        dicoMonnaies[monnaie] = mon.objects.create(nom=nom, slug=monnaie, estQuantifiable=(monnaie not in Choix.monnaies_nonquantifiables))
+
     nomMonnaies = [x for x, y in Choix.monnaies]
     prod = apps.get_model('bourseLibre', 'Produit')
     for p in prod.objects.all():
         if p.unite_prix and p.unite_prix in nomMonnaies:
-            p.monnaies.add(p.unite_prix)
+            p.monnaies.add(dicoMonnaies[p.unite_prix])
             p.save()
 
 

@@ -1233,13 +1233,16 @@ class Message_salon(models.Model):
             for v in values:
                 try:
                     p = Profil.objects.get(username__iexact=v)
-                    titre_mention = "Vous avez été mentionné dans un commentaire"
+                    titre_mention = "Vous avez été mentionné dans un commentaire du salon '" + self.salon.titre + "'"
                     msg_mention = str(self.auteur.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url()+"'>dans un commentaire</a> du salon '" + self.salon.titre +"'"
-                    msg_mention_notif = str(self.auteur.username) + " vous a mentionné dans un commentaire du salon '" + self.salon.titre +"'"
-                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                    msg_mention_notif = " vous a mentionné dans un commentaire du salon '" + self.salon.titre + "'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention,
+                                message=msg_mention,
                                 emails=[p.email, ])
-                    action.send(self, verb='mention_' + p.username, url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,)
-                    payload = {"head": titre_mention, "body": msg_mention_notif,
+                    action.send(self.auteur, verb='mention_' + p.username, url=self.get_absolute_url(),
+                                description=msg_mention_notif, )
+
+                    payload = {"head": titre_mention, "body": str(self.auteur.username) + msg_mention_notif,
                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
                     send_user_notification(p, payload=payload, ttl=7200)
                 except Exception as e:

@@ -166,6 +166,7 @@ def lireAtelier(request, atelier):
                    "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url()}
         for suiv in suiveurs:
             send_user_notification(suiv, payload=payload, ttl=7200)
+
         return redirect(request.path)
 
     return render(request, 'ateliers/lireAtelier.html', {'atelier': atelier,  'form': form_comment, 'commentaires':commentaires, 'user_inscrit': user_inscrit, 'inscrits': inscrits},)

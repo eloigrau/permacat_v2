@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 import uuid
 import datetime as dt
-from bourseLibre.models import Profil, Suivis, Asso
+from bourseLibre.models import Profil, Suivis, Asso, username_re
 from actstream.models import followers
 from actstream import action
 from webpush import send_user_notification
@@ -156,6 +156,36 @@ class CommentaireAtelier(models.Model):
 
     def get_absolute_url(self):
         return self.atelier.get_absolute_url()
+
+    def get_absolute_url_discussion(self):
+        return self.atelier.get_absolute_url() + "#idConversation"
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        retour = super(CommentaireAtelier, self).save(*args, **kwargs)
+
+        values = username_re.findall(self.commentaire)
+        if values:
+            for v in values:
+                try:
+                    p = Profil.objects.get(username__iexact=v)
+                    titre_mention = "Vous avez été mentionné dans un commentaire de l'atelier '" + self.atelier.titre  +"'"
+                    msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'atelier '" + self.atelier.titre +"'"
+                    msg_mention_notif = " vous a mentionné dans un commentaire de l'atelier '" + self.atelier.titre +"'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention,
+                                message=msg_mention,
+                                emails=[p.email, ])
+                    action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+                                description=msg_mention_notif, )
+
+                    payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                    send_user_notification(p, payload=payload, ttl=7200)
+
+                except Exception as e:
+                    pass
+
+        return retour
 
 class InscriptionAtelier(models.Model):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE)

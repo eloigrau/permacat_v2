@@ -396,14 +396,15 @@ class Commentaire(models.Model):
             for v in values:
                 try:
                     p = Profil.objects.get(username__iexact=v)
-                    titre_mention = "Vous avez été mentionné dans un commentaire"
+                    titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
                     msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
-                    msg_mention_notif = str(self.auteur_comm.username) + " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
+                    msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
                     action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
                                 emails=[p.email, ])
-                    action.send(self, verb='mention_' + p.username, url=self.get_absolute_url(), titre=titre_mention,
-                                message=msg_mention, )
-                    payload = {"head": titre_mention, "body": msg_mention_notif,
+                    action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+                               description=msg_mention_notif, )
+
+                    payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
                     send_user_notification(p, payload=payload, ttl=7200)
                 except Exception as e:
@@ -575,15 +576,16 @@ class CommentaireProjet(models.Model):
             for v in values:
                 try:
                     p = Profil.objects.get(username__iexact=v)
-                    titre_mention = "Vous avez été mentionné dans un commentaire"
+                    titre_mention = "Vous avez été mentionné dans un commentaire du projet '" + self.projet.titre  +"'"
                     msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> du projet '" + self.projet.titre +"'"
-                    msg_mention_notif = str(self.auteur_comm.username) + " vous a mentionné dans un commentaire du projet '" + self.projet.titre +"'"
-                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                    msg_mention_notif = " vous a mentionné dans un commentaire du projet '" + self.projet.titre +"'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention,
+                                message=msg_mention,
                                 emails=[p.email, ])
-                    action.send(self, verb='mention_' + p.username, url=self.get_absolute_url(), titre=titre_mention,
-                                message=msg_mention, )
+                    action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+                                description=msg_mention_notif, )
 
-                    payload = {"head": titre_mention, "body": msg_mention_notif,
+                    payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
                     send_user_notification(p, payload=payload, ttl=7200)
                 except Exception as e:

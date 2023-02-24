@@ -124,11 +124,12 @@ def nettoyerFollows(request):
     follows = Follow.objects.filter(user=request.user)
     for action in follows:
         if not action.follow_object:
-            action.delete()
+            pass
+            #action.delete()
 
-        if isinstance(action.follow_object, Conversation):
+        #if isinstance(action.follow_object, Conversation):
             # print("follow supprimé " + action)
-            action.delete()
+            #action.delete()
 
     actions = Action.objects.all()
 

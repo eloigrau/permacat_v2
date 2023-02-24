@@ -548,6 +548,9 @@ border: 1px inset rgba(28,110,164,0.65);
 .bs-dark .dropdown-menu > dropdown-item :hover{
   background-color: grey;
 }
+.bs-dark .dropdown-menu > nohover :hover{
+  background-color: #ecfaeb;
+}
 
 .bs-dark .dropdown-menu > dropdown-item > .active{
   background-color: blue;

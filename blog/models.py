@@ -1,5 +1,5 @@
 from django.db import models
-from bourseLibre.models import Profil, Suivis, Asso, Adresse
+from bourseLibre.models import Profil, Suivis, Asso, Adresse, username_re
 from django.urls import reverse
 from django.utils import timezone, html
 from actstream import action
@@ -13,8 +13,6 @@ from datetime import datetime, timedelta
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import uuid
-import re
-username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(w+)")
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
@@ -394,7 +392,6 @@ class Commentaire(models.Model):
         values = username_re.findall(self.commentaire)
         if values:
             for v in values:
-                try:
                     p = Profil.objects.get(username__iexact=v)
                     titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
                     msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
@@ -407,8 +404,6 @@ class Commentaire(models.Model):
                     payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
                     send_user_notification(p, payload=payload, ttl=7200)
-                except Exception as e:
-                    pass
 
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)

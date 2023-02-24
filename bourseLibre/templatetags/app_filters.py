@@ -167,5 +167,5 @@ def raccourcirTempsStr(date):
 @register.filter(name='usermention', is_safe=True)
 @stringfilter
 def usermention(value):
-    value = re.sub(username_re, r'<a href="/accounts/profil/\1/">@\1</a>', value)
+    value = re.sub(username_re, r'<a href="/accounts/profil/\1/"> @\1</a>', value)
     return value

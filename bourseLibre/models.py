@@ -757,7 +757,7 @@ class Produit_objet(Produit):  # , BaseProduct):
 
     @mark_safe
     def get_categorie_icon_html(self):
-        return '<i class="fa fa-futbol"></i>'
+        return '<i class="fa fa-life-ring"></i>'
 
 class Produit_offresEtDemandes(Produit):  # , BaseProduct):
     type = 'offresEtDemandes'

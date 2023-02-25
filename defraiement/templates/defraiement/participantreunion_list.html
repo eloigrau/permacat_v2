@@ -74,7 +74,7 @@
 
     {% endfor %}
 </div>
-{%include 'pagination.html' %}
+{% include 'pagination_new.html' %}
 
 <p class="textcenter">
 <a href="{% url 'defraiement:recapitulatif'  asso_slug=asso_courante.abreviation %}">

@@ -118,6 +118,7 @@
 {%endblock%}
 {% block content %}
 
+{% include 'pagination_new.html' %}
 <div class="infinite-container">
     <div class="grid-container justify-content-center">
     {% for projet in projet_list %}
@@ -126,7 +127,7 @@
     </div>
     {% endfor %}
 </div>
-{%include 'pagination.html' %}
+{% include 'pagination_new.html' %}
 
 {% if list_archive %}
     <div class="textcenter">

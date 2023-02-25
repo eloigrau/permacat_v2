@@ -324,11 +324,12 @@
 
 {% endblock %}
 {% block contenu %}
+{% include 'pagination_new.html' %}
 <div class="card-deck listOffres infinite-container">
     {% for produit in produits_list %}
         {% include "bourseLibre/produit_template3.html" with produit=produit %}
     {% endfor %}
 </div>
-{%include 'pagination.html' %}
+{% include 'pagination_new.html' %}
 
 {% endblock %}

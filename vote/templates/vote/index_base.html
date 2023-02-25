@@ -137,6 +137,7 @@
 {%endblock%}
 {% block content %}
 
+{% include 'pagination_new.html' %}
 <div class="infinite-container">
     {% for suffrage in suffrage_list %}
     <div class="infinite-item">
@@ -149,7 +150,7 @@
     </div>
     {% endfor %}
 </div>
-{%include 'pagination.html' %}
+{% include 'pagination_new.html' %}
 
     {%if not request.user.adherent_pc %}
 <p><small>(vous n'avez pas encore accès aux suffrages "Permacat"... Rejoignez-nous ! :)</small></p>

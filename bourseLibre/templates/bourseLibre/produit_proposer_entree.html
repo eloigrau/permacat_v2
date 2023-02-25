@@ -1,4 +1,5 @@
 {% extends 'bourseLibre/base_produits.html' %}
+{% load fontawesome %}
 {% block title %} - Partager{% endblock %}
 {% block subtitle %}
 <h4>Vous proposez ou demandez un...</h4>
@@ -15,7 +16,7 @@
     <div class="col-sm-12 col_cat col_liste textcenter">
         <a href="{%url 'produit_proposer' type_produit='offresEtDemandes' %}">
         <div class="panel panel-primary ">
-                <div class="panel-heading textcenter"><h4>Liste d'offres et de demandes</h4></div>
+                <div class="panel-heading textcenter"><h4><i class="fa fa-list-check"></i>Liste d'offres et de demandes</h4></div>
             </div>
         </a>
     </div>
@@ -25,7 +26,7 @@
         <a href="{%url 'produit_proposer' type_produit='aliment' %}">
             <div class="panel-group">
                 <div class="panel panel-primary ">
-                    <div class="panel-heading textcenter"><h4>Aliment</h4></div>
+                    <div class="panel-heading textcenter"><h4><i class="fa fa-spoon"></i> Aliment</h4></div>
                     <div class="panel-body">
                         <ul>
                             <li>légumes</li>
@@ -43,7 +44,8 @@
         <a href="{%url 'produit_proposer' type_produit='vegetal' %}">
             <div class="panel-group">
                 <div class="panel panel-primary">
-                    <div class="panel-heading textcenter"><h4>Végétal</h4></div>
+                    <div class="panel-heading textcenter">
+                       <h4> <i class="fa fa-leaf"></i> Végétal</h4></div>
                     <div class="panel-body">
                         <ul>
                             <li>plantes</li>
@@ -63,7 +65,7 @@
         <a href="{%url 'produit_proposer' type_produit='service' %}">
             <div class="panel-group">
                 <div class="panel panel-primary">
-                    <div class="panel-heading textcenter"><h4>Service</h4></div>
+                    <div class="panel-heading textcenter"><h4><i class="fa fa-moon"></i> Service</h4></div>
                     <div class="panel-body">
                         <ul>
                             <li>Jardinage</li>
@@ -81,7 +83,7 @@
         <a href="{%url 'produit_proposer' type_produit='objet' %}">
             <div class="panel-group">
                 <div class="panel panel-primary">
-                    <div class="panel-heading textcenter"><h4>Objet</h4></div>
+                    <div class="panel-heading textcenter"><h4>  <i class="fa fa-chair"></i>Objet</h4></div>
                     <div class="panel-body">
                         <ul>
                             <li>Materiel</li>

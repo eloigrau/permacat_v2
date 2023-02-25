@@ -660,20 +660,14 @@ class Produit(models.Model):  # , BaseProduct):
 
 class Produit_aliment(Produit):  # , BaseProduct):
     type = 'aliment'
-    couleur = models.CharField(
-        max_length=20,
-        default=Choix.couleurs['aliment']
-    )
     souscategorie = models.CharField(
         max_length=20,
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix[type]['souscategorie'][0][0]
     )
-    #etat = models.CharField(
-    #    max_length=20,
-    #   choices=Choix.choix[type]['etat'],
-    #    default=Choix.choix[type]['etat'][0][0]
-    #)
+    @property
+    def get_couleur(self):
+        return Choix.couleurs[self.type]
 
     @property
     def get_categorie(self):
@@ -689,10 +683,6 @@ class Produit_aliment(Produit):  # , BaseProduct):
 
 class Produit_vegetal(Produit):  # , BaseProduct):
     type = 'vegetal'
-    couleur = models.CharField(
-        max_length=20,
-        default=Choix.couleurs['vegetal']
-    )
     souscategorie = models.CharField(
         max_length=20,
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
@@ -700,8 +690,13 @@ class Produit_vegetal(Produit):  # , BaseProduct):
     )
 
     @property
+    def get_couleur(self):
+        return Choix.couleurs[self.type]
+
+    @property
     def get_categorie(self):
-        return"vegetal"
+        return "vegetal"
+
 
     @property
     def get_souscategorie(self):
@@ -713,15 +708,15 @@ class Produit_vegetal(Produit):  # , BaseProduct):
 
 class Produit_service(Produit):  # , BaseProduct):
     type = 'service'
-    couleur = models.CharField(
-        max_length=20,
-        default=Choix.couleurs['service']
-    )
     souscategorie = models.CharField(
         max_length=20,
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix["service"]['souscategorie'][0][0]
     )
+
+    @property
+    def get_couleur(self):
+        return Choix.couleurs[self.type]
 
     @property
     def get_categorie(self):
@@ -737,15 +732,16 @@ class Produit_service(Produit):  # , BaseProduct):
 
 class Produit_objet(Produit):  # , BaseProduct):
     type = 'objet'
-    couleur = models.CharField(
-        max_length=20,
-        default=Choix.couleurs['objet']
-    )
+
     souscategorie = models.CharField(
         max_length=20,
         choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix[type]['souscategorie'][0][0]
     )
+
+    @property
+    def get_couleur(self):
+        return Choix.couleurs[type]
 
     @property
     def get_categorie(self):
@@ -761,15 +757,15 @@ class Produit_objet(Produit):  # , BaseProduct):
 
 class Produit_offresEtDemandes(Produit):  # , BaseProduct):
     type = 'offresEtDemandes'
-    couleur = models.CharField(
-        max_length=20,
-        default=Choix.couleurs['offresEtDemandes']
-    )
     souscategorie = models.CharField(
         max_length=20,
         choices=((cat, cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix[type]['souscategorie'][0]
     )
+
+    @property
+    def get_couleur(self):
+        return Choix.couleurs[type]
 
     @mark_safe
     def get_categorie_icon_html(self):
@@ -781,7 +777,7 @@ class Produit_offresEtDemandes(Produit):  # , BaseProduct):
 
     @property
     def get_categorie(self):
-        return "liste"
+        return "listeOffresEtDemandes"
 
 class ItemAlreadyExists(Exception):
     pass

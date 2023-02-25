@@ -2,7 +2,7 @@
 <div class="infinite-item">
     <div class="card-deck offre justify-content-between" onclick="window.location.href='{% url 'produit_detail' produit.id %}'" style="cursor: pointer">
 
-        <div class="card card-block textcenter offre2" style="border-width: 3px; {% if produit.est_perimee %} background-color:grey;{% else %} background-color:{{ produit.couleur }}; border-color:{%if produit.estUneOffre == True %} green {%else%}blueviolet{%endif%}{%endif%};">
+        <div class="card card-block textcenter offre2" style="border-width: 3px; {% if produit.est_perimee %} background-color:grey;{% else %} background-color:{{ produit.get_couleur }}; border-color:{%if produit.estUneOffre == True %} green {%else%}blueviolet{%endif%}{%endif%};">
             <div class="card-header offreentete justify-content-center">
                     <div class="col-xs-5 ">
                          {{produit.user.username|truncatechars:10}} ({% if produit.user.adresse.commune|truncatechars:10%}{{produit.user.adresse.commune|truncatechars:10}}{%else%}{{produit.user.adresse.code_postal}}{%endif%})

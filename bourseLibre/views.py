@@ -764,7 +764,10 @@ class ListeProduit(ListView):
         if "producteur" in params:
             qs = qs.filter(user__username=params['producteur'])
         if "categorie" in params:
-            qs = qs.filter(categorie=params['categorie'])
+            if params['categorie'] == "liste":
+                qs = qs.filter(categorie=params['categorie'])
+            else:
+                qs = qs.filter(categorie=params['categorie'])
         if "souscategorie" in params:
             qs = qs.filter(Q(produit_aliment__souscategorie=params['souscategorie']) | Q(produit_vegetal__souscategorie=params['souscategorie']) | Q(produit_service__souscategorie=params['souscategorie'])  | Q(produit_objet__souscategorie=params['souscategorie']))
 

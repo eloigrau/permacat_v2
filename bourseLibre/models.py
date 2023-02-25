@@ -657,21 +657,26 @@ class Produit(models.Model):  # , BaseProduct):
     def est_public(self):
         return self.asso.id == 1
 
+    @mark_safe
+    def get_categorie_icon_html(self):
+        return ''
 
 class Produit_aliment(Produit):  # , BaseProduct):
-    type = 'aliment'
+    type_produit = 'aliment'
     souscategorie = models.CharField(
         max_length=20,
-        choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
-        default=Choix.choix[type]['souscategorie'][0][0]
+        choices=((cat,cat) for cat in Choix.choix[type_produit]['souscategorie']),
+        default=Choix.choix[type_produit]['souscategorie'][0][0]
     )
-    @property
-    def get_couleur(self):
-        return Choix.couleurs[self.type]
+    
 
     @property
     def get_categorie(self):
         return "aliment"
+    
+    @property
+    def get_couleur(self):
+        return Choix.couleurs[self.get_categorie]
 
     @property
     def get_souscategorie(self):
@@ -682,16 +687,16 @@ class Produit_aliment(Produit):  # , BaseProduct):
         return '<i class="fa fa-spoon"></i>'
 
 class Produit_vegetal(Produit):  # , BaseProduct):
-    type = 'vegetal'
+    type_produit = 'vegetal'
     souscategorie = models.CharField(
         max_length=20,
-        choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
-        default=Choix.choix[type]['souscategorie'][0][0]
+        choices=((cat,cat) for cat in Choix.choix[type_produit]['souscategorie']),
+        default=Choix.choix[type_produit]['souscategorie'][0][0]
     )
 
     @property
     def get_couleur(self):
-        return Choix.couleurs[self.type]
+        return Choix.couleurs['vegetal']
 
     @property
     def get_categorie(self):
@@ -707,16 +712,16 @@ class Produit_vegetal(Produit):  # , BaseProduct):
         return '<i class="fa fa-leaf"></i>'
 
 class Produit_service(Produit):  # , BaseProduct):
-    type = 'service'
+    type_produit = 'service'
     souscategorie = models.CharField(
         max_length=20,
-        choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
+        choices=((cat,cat) for cat in Choix.choix[type_produit]['souscategorie']),
         default=Choix.choix["service"]['souscategorie'][0][0]
     )
 
     @property
     def get_couleur(self):
-        return Choix.couleurs[self.type]
+        return Choix.couleurs[self.get_categorie]
 
     @property
     def get_categorie(self):
@@ -731,17 +736,17 @@ class Produit_service(Produit):  # , BaseProduct):
         return '<i class="fa fa-moon"></i>'
 
 class Produit_objet(Produit):  # , BaseProduct):
-    type = 'objet'
+    type_produit = 'objet'
 
     souscategorie = models.CharField(
         max_length=20,
-        choices=((cat,cat) for cat in Choix.choix[type]['souscategorie']),
-        default=Choix.choix[type]['souscategorie'][0][0]
+        choices=((cat,cat) for cat in Choix.choix[type_produit]['souscategorie']),
+        default=Choix.choix[type_produit]['souscategorie'][0][0]
     )
 
     @property
     def get_couleur(self):
-        return Choix.couleurs[type]
+        return Choix.couleurs[self.get_categorie]
 
     @property
     def get_categorie(self):
@@ -756,16 +761,16 @@ class Produit_objet(Produit):  # , BaseProduct):
         return '<i class="fa fa-life-ring"></i>'
 
 class Produit_offresEtDemandes(Produit):  # , BaseProduct):
-    type = 'offresEtDemandes'
+    type_produit = 'offresEtDemandes'
     souscategorie = models.CharField(
         max_length=20,
-        choices=((cat, cat) for cat in Choix.choix[type]['souscategorie']),
-        default=Choix.choix[type]['souscategorie'][0]
+        choices=((cat, cat) for cat in Choix.choix[type_produit]['souscategorie']),
+        default=Choix.choix[type_produit]['souscategorie'][0]
     )
 
     @property
     def get_couleur(self):
-        return Choix.couleurs[type]
+        return Choix.couleurs[self.get_categorie]
 
     @mark_safe
     def get_categorie_icon_html(self):

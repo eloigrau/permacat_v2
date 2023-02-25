@@ -7,8 +7,8 @@
     <div class="col col-md-6">
 		<nav class="breadcrumb textepetit">
 		  <a class="breadcrumb-item glyphicon-chevron-right" href="{% url 'marche' %}">Au marché</a>
-		  <a class="breadcrumb-item glyphicon-chevron-right" href="/marche/lister/?categorie={{produit.categorie}}" >{{produit.categorie}}</a>
-		  <a class="breadcrumb-item glyphicon-chevron-right" href="/marche/lister/?souscategorie={{produit.souscategorie}}">{{produit.souscategorie}}</a>
+		  <a class="breadcrumb-item glyphicon-chevron-right" href="/marche/lister/?categorie={{produit.get_categorie}}" >{{produit.get_categorie}}</a>
+		  <a class="breadcrumb-item glyphicon-chevron-right" href="/marche/lister/?souscategorie={{produit.get_souscategorie}}">{{produit.get_souscategorie}}</a>
 		  <a class="breadcrumb-item glyphicon-chevron-right active" href="/marche/lister/?producteur={{produit.user.username}}">{{produit.user.username}}</a>
 		</nav>
     </div>
@@ -96,7 +96,7 @@
 						Catégorie :
 					</td>
 					<td class="proprieteProduit">
-						{% if produit.souscategorie %}{{ produit.souscategorie }}{%endif%}
+						{% if produit.get_souscategorie %}{{ produit.get_souscategorie }}{%endif%}
 					</td>
 				</tr>
 			

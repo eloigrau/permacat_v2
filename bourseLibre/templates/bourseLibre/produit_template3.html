@@ -14,7 +14,7 @@
 		{{ produit.asso.get_logo_nomgroupe_html_15|safe }}
                     </div>
                     <div class="col-xs-5">
-                        {{produit.souscategorie}}
+                        {{produit.get_categorie_icon_html}}{% if  produit.get_souscategorie %}- {{produit.get_souscategorie}}{% endif %}
                     </div>
 
             </div>

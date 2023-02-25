@@ -7,7 +7,7 @@
                 <img src="{{ produit.avatar.url }}" alt="avatar" style="width:128px;height:128px">
             </div>
             <div class="caption textcenter ">
-                <small> ({{% if produit.souscategorie %}{{ produit.souscategorie }}{%endif%})</small>
+                <small> ({{% if produit.get_souscategorie %}{{ produit.get_souscategorie }}{%endif%})</small>
                 <h2>{{ produit.nom_produit|truncatechars:12 }} </h2>
                 <p> par: {{ produit.user.username }}</p>
             </div>

@@ -5,6 +5,7 @@ import os
 import itertools
 from datetime import date
 
+from django.utils.safestring import mark_safe
 import django_filters
 import requests
 from actstream import actions, action
@@ -622,6 +623,7 @@ class Produit(models.Model):  # , BaseProduct):
     def get_absolute_url(self):
         return reverse('produit_detail', kwargs={'produit_id':self.id})
 
+
     def get_type_prix(self):
         return Produit.objects.get_subclass(id=self.id).type_prix
 
@@ -640,9 +642,6 @@ class Produit(models.Model):  # , BaseProduct):
 
     def get_nom_class(self):
         return "Produit"
-
-    def get_souscategorie(self):
-        return "standard"
 
 
     def get_message_demande(self):
@@ -663,7 +662,6 @@ class Produit_aliment(Produit):  # , BaseProduct):
     type = 'aliment'
     couleur = models.CharField(
         max_length=20,
-        choices=((Choix.couleurs['aliment'], Choix.couleurs['aliment']),),
         default=Choix.couleurs['aliment']
     )
     souscategorie = models.CharField(
@@ -677,14 +675,22 @@ class Produit_aliment(Produit):  # , BaseProduct):
     #    default=Choix.choix[type]['etat'][0][0]
     #)
 
-    def get_souscategorie(self):
+    @property
+    def get_categorie(self):
         return "aliment"
+
+    @property
+    def get_souscategorie(self):
+        return self.souscategorie
+
+    @mark_safe
+    def get_categorie_icon_html(self):
+        return '<i class="fa fa-spoon"></i>'
 
 class Produit_vegetal(Produit):  # , BaseProduct):
     type = 'vegetal'
     couleur = models.CharField(
         max_length=20,
-        choices=((Choix.couleurs['vegetal'], Choix.couleurs['vegetal']),),
         default=Choix.couleurs['vegetal']
     )
     souscategorie = models.CharField(
@@ -693,14 +699,22 @@ class Produit_vegetal(Produit):  # , BaseProduct):
         default=Choix.choix[type]['souscategorie'][0][0]
     )
 
-    def get_souscategorie(self):
+    @property
+    def get_categorie(self):
         return"vegetal"
+
+    @property
+    def get_souscategorie(self):
+        return self.souscategorie
+
+    @mark_safe
+    def get_categorie_icon_html(self):
+        return '<i class="fa fa-leaf"></i>'
 
 class Produit_service(Produit):  # , BaseProduct):
     type = 'service'
     couleur = models.CharField(
         max_length=20,
-        choices=((Choix.couleurs['service'], Choix.couleurs['service']),),
         default=Choix.couleurs['service']
     )
     souscategorie = models.CharField(
@@ -709,14 +723,22 @@ class Produit_service(Produit):  # , BaseProduct):
         default=Choix.choix["service"]['souscategorie'][0][0]
     )
 
-    def get_souscategorie(self):
+    @property
+    def get_categorie(self):
         return "service"
+
+    @property
+    def get_souscategorie(self):
+        return self.souscategorie
+
+    @mark_safe
+    def get_categorie_icon_html(self):
+        return '<i class="fa fa-moon"></i>'
 
 class Produit_objet(Produit):  # , BaseProduct):
     type = 'objet'
     couleur = models.CharField(
         max_length=20,
-        choices=((Choix.couleurs['objet'], Choix.couleurs['objet']),),
         default=Choix.couleurs['objet']
     )
     souscategorie = models.CharField(
@@ -725,14 +747,22 @@ class Produit_objet(Produit):  # , BaseProduct):
         default=Choix.choix[type]['souscategorie'][0][0]
     )
 
-    def get_souscategorie(self):
+    @property
+    def get_categorie(self):
         return "objet"
+
+    @property
+    def get_souscategorie(self):
+        return self.souscategorie
+
+    @mark_safe
+    def get_categorie_icon_html(self):
+        return '<i class="fa fa-futbol"></i>'
 
 class Produit_offresEtDemandes(Produit):  # , BaseProduct):
     type = 'offresEtDemandes'
     couleur = models.CharField(
         max_length=20,
-        choices=((Choix.couleurs['offresEtDemandes'], Choix.couleurs['offresEtDemandes']),),
         default=Choix.couleurs['offresEtDemandes']
     )
     souscategorie = models.CharField(
@@ -740,15 +770,16 @@ class Produit_offresEtDemandes(Produit):  # , BaseProduct):
         choices=((cat, cat) for cat in Choix.choix[type]['souscategorie']),
         default=Choix.choix[type]['souscategorie'][0]
     )
-    #etat = models.CharField(
-    #   max_length=20,
-    #    choices=Choix.choix[type]['etat'],
-    #   default=Choix.choix[type]['etat'][0][0]
-    #)
 
+    @mark_safe
+    def get_categorie_icon_html(self):
+        return '<i class="fa fa-hand-peace"></i>'
+
+    @property
     def get_souscategorie(self):
-        return "liste"
+        return ""
 
+    @property
     def get_categorie(self):
         return "liste"
 

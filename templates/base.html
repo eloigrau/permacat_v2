@@ -35,8 +35,7 @@
 
     <link href="{% static 'css/cookielaw.css'%}" rel="stylesheet" />
 
-    <meta name="viewport" content="width=device-width, initial-scale = 1.0"/><meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" sizes="192x192" href="{% static 'android-chrome-192x192.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
@@ -48,10 +47,10 @@
 
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
     <link href="{% static 'css/fontfamily.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
 
-<script src="{% static 'js/sorttable.js' %}"></script>
+    <script src="{% static 'js/sorttable.js' %}"></script>
     {%block header %}
     {%endblock%}
 
@@ -63,13 +62,14 @@
  <div class="contenucharge" id="contenucharge">
 <div class="container-fluid" id="top">
 	<div class="row rowprincipal">
-		<div class="colprincipal col-xs-12 col-sm-12 col-lg-12 ">
+		<div class="colprincipal">
             {% block navbar%}
             {% include 'navigationBar.html' %}
             {% endblock%}
 
         <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
             <div class="panel-heading">
+                {% block panel-heading %}
                 <div class="panel-title soustitre" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
                     <div class="row justify-content-sm-center">
                     <div class="col-sm-12 col-md-12 col-lg-12  textcenter">
@@ -85,12 +85,12 @@
                             {% endblock %}
                         </div>
 
-            {% block banniere %}
-            {% endblock%}
+                    {% block banniere %}
+                    {% endblock%}
                         </div>
                     </div>
                 </div>
-
+                {% endblock %}
                 {% block submenu%}{% endblock %}
                 <div class="panel-body panelsoustitre  ">
                 <div class="row justify-content-sm-center">

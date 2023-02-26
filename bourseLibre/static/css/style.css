@@ -259,6 +259,7 @@ section.p3 {
 .colprincipal{
     padding-left:2%;
     padding-right:2%;
+    width: 100%;
 }
 .navbar-header btn-warning, navbar-toggler{
     background-color:#ffc241;
@@ -429,7 +430,7 @@ border: 1px inset rgba(28,110,164,0.65);
 }
 
 .bs-dark .nav5 > a:hover {
-    background-color: #4dffb8;
+    background-color: #99ffbb;
 }
 .nav5-dropdown-submenu {
     background-color: #99ffbb;
@@ -447,42 +448,42 @@ border: 1px inset rgba(28,110,164,0.65);
     background-color: #ccffdd;
     text-align: left;
  }
+.bs-dark .nav5 > a:focus {
+    background-color: #99ffbb;
+}
+.nav5-dropdown{
+    background-color: #99ffbb;
+}
+.bs-dark .nav8 > a:focus {
+    background-color: #9fdf9f;
+}
+.bs-dark .nav8 > a:hover {
+    background-color: #9fdf9f;
+}
 .nav8-dropdown-subsubmenu {
     background-color: #b3e6b3;
     text-align: left;
  }
-.bs-dark .nav5 > a:focus {
-    background-color: #4dffb8;
-}
-.bs-dark .nav8 > a:focus {
-    background-color: #53c653;
-}
-.bs-dark .nav8 > a:hover {
-    background-color: #79d279;
-}
-.nav5-dropdown{
-    background-color: #66ff99;
-}
 
 
 .cardH5{
     background-color: #00FF55;
 }
 .card5 > li{
-    background-color: #66ff99;
+    background-color: #99ffbb;
 }
 
 .bs-dark .nav6 > a:hover {
-    background-color: #00FFE9;
+    background-color: #b3fff9;
 }
 .bs-dark .nav6 > a:focus {
-    background-color: #00FFE9;
+    background-color: #b3fff9;
 }
 .nav6-dropdown{
     background-color: #b3fff9;
 }
 .cardH6{
-    background-color: #00FFE9;
+    background-color: #b3fff9;
 }
 .card6 > li{
     background-color: #b3fff9;
@@ -950,6 +951,7 @@ a article_carte:active {
     .grid-container2 {
         grid-template-columns: 100% ;
     }
+
 }
 
 @media (max-width: 400px) {
@@ -962,11 +964,6 @@ a article_carte:active {
     .article_carte {
         max-width: 100%;
     }
-    .row{
-        margin-right: 1px;
-        margin-left: 1px;
-        padding: 1px;
-    }
 .contenu{
     /*margin-top: 2em;*/
     margin-bottom: 1em;
@@ -975,7 +972,11 @@ a article_carte:active {
     background:white;
 }
 .paddingbase{
-    padding: 1px;
+    padding: 0.5px;
+}
+.colprincipal{
+    padding-left:0px;
+    padding-right:0px;
 }
 .container-fluid {
     width: 100%;
@@ -984,21 +985,26 @@ a article_carte:active {
 }
 }
 
-@media (min-width: 768px) {
-    .grid-container {
-        grid-template-columns: 100% ;
-    }
-    .grid-container2 {
-        grid-template-columns: 100% ;
-    }
-
-}
 
 @media (max-width: 920px) {
 .col_cat{
 width: 100 %;
 }
 
+    .row{
+        margin-right: 1px;
+        margin-left: 1px;
+        padding: 1px;
+    }
+.panelsoustitre{
+    padding: 2px;
+    border-radius: 0.8em;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    margin-left: 1px;
+    margin-right: 1px;
+    background-color:#ffffef;
+}
 }
 @media (min-width: 600px) {
     .grid-container {
@@ -1217,12 +1223,25 @@ ul.errorlist{
     border-radius: 0.2em;
     margin: 5px;
 }
-    .row{
-        margin-right: 0px;
-        margin-left: 0px;
-        padding: 0px;
+    .grid-container {
+        grid-template-columns: 100% ;
+    }
+    .grid-container2 {
+        grid-template-columns: 100% ;
+    }
+.colprincipal{
+        padding-left:0px;
+        padding-right:0px;
     }
 
+.rowprincipal{
+    padding-left:2%;
+    padding-right:2%;
+        padding-left:0px;
+        padding-right:0px;
+        margin-left:0px;
+        margin-right:0px;
+        }
 .contenu{
     /*margin-top: 2em;*/
     margin-bottom: 0.1em;
@@ -1234,6 +1253,11 @@ ul.errorlist{
 
 .paddingbase{
     padding: 0.1px 0.1px 0.1px 0.1px;
+}
+.row{
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 0px;
 }
 
 .soustitre{

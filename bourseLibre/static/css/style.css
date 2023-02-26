@@ -414,10 +414,10 @@ border: 1px inset rgba(28,110,164,0.65);
 
 
 .bs-dark .nav4 > a:hover {
-    background-color: #3FFF00;
+    background-color: #79ff4d;
 }
 .bs-dark .nav4 > a:focus {
-    background-color: #3FFF00;
+    background-color: #79ff4d;
 }
 .nav4-dropdown{
     background-color: #8cff66;

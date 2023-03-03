@@ -63,9 +63,9 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
 def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
     if dateMinimum:
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
-            days=180) else datetime.now().date() - timedelta(days=90)
+            days=30) else datetime.now().date() - timedelta(days=10)
     else:
-        dateMin = (datetime.now() - timedelta(days=60)).replace(tzinfo=utc)
+        dateMin = (datetime.now() - timedelta(days=10)).replace(tzinfo=utc)
 
     actions = Action.objects.filter(Q(timestamp__gt=dateMin) & ( \
          Q(verb='article_nouveau') | Q(verb='article_message')|

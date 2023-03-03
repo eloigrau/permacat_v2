@@ -176,10 +176,10 @@
       <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left" ></i></a>
         {% endif %}
         {% if documents %}
-      <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i>Document{{documents|pluralize:",s"}}</a>
+      <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i>{{documents|pluralize:",s"}}</a>
         {% endif %}
 {% if suffrages %}
-      <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i>Votes</a>
+      <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i></a>
    {% endif %}
 <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
       <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
@@ -418,7 +418,7 @@
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class="fa fa-plus"></i>  Covoiturage</a>
         </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" target="_blank"><i class="fa fa-plus"></i>  Ajouter un suffrage</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" target="_blank"><i class="fa fa-plus"></i>  Ajouter un vote</a>
         </p>
 
           </div>

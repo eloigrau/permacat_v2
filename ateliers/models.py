@@ -9,7 +9,7 @@ from actstream.models import followers
 from actstream import action
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
-
+from bourseLibre.settings import DATE_INPUT_FORMAT
 
 class Choix():
     type_atelier = ('0','Permaculture'), ('1',"Bricolage"), ('2','Cuisine'), ('3','Bien-être'), ('4',"Musique"), ('6', 'Politique'), ('5', 'Autre...'), ('7', 'Activité Pro'),
@@ -96,7 +96,7 @@ class Atelier(models.Model):
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             titre = "Nouvel atelier proposé"
-            message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
+            message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(DATE_INPUT_FORMAT) +" a été proposé"
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:

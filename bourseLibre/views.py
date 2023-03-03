@@ -1257,7 +1257,7 @@ def modifierSalon(request, slug):
 
         message = Message_salon.objects.create(
             salon=salon,
-            message=request.user.username + " a modifié le salon",
+            message=request.user.username + " a modifié la description du salon",
             auteur=get_object_or_404(Profil, username="bot_permacat"),
             date_creation=now()).save()
 

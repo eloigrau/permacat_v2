@@ -602,14 +602,17 @@ class Produit(models.Model):  # , BaseProduct):
 
         if emails:
             if self.categorie=='liste':
-                message = "Nouvelle liste d'offres et demandes : [" + self.asso.nom + "] <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.nom_produit + "</a>"
+                message = "Liste d'offres et demandes : [" + self.asso.nom + "] <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.nom_produit + "</a>"
+                msg_notif = "Liste : [" + self.asso.nom + "] " + self.nom_produit
             else:
                 if self.estUneOffre:
-                    message = "Nouvelle petite annonce (offre) : ["+ self.asso.nom +"] <a href='https://www.perma.cat" + self.get_absolute_url() +"'>" + self.nom_produit + "</a>"
+                    message = "Nouvelle offre : ["+ self.asso.nom +"] <a href='https://www.perma.cat" + self.get_absolute_url() +"'>" + self.nom_produit + "</a>"
+                    msg_notif = "Offre ["+ self.asso.nom +"] " + self.nom_produit
                 else:
-                    message = "Nouvelle petite annonce (demande) : ["+ self.asso.nom +"] <a href='https://www.perma.cat" + self.get_absolute_url() +"'>" + self.nom_produit + "</a>"
+                    message = "Nouvelle demande : ["+ self.asso.nom +"] <a href='https://www.perma.cat" + self.get_absolute_url() +"'>" + self.nom_produit + "</a>"
+                    msg_notif = "Demande [" + self.asso.nom + "] " + self.nom_produit
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
-            payload = {"head": titre, "body": message,
+            payload = {"head": titre, "body": msg_notif,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
                 send_user_notification(suiv, payload=payload, ttl=7200)

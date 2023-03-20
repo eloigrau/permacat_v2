@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .models import  Adresse, Produit, Panier, Item, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InvitationDansSalon, InscritSalon, Monnaie
+from .models import Adresse, Produit, Panier, Item, Adhesion_asso, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InvitationDansSalon, InscritSalon, Monnaie
 from blog.models import Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement, EvenementAcceuil, AdresseArticle
 from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
@@ -65,6 +65,7 @@ admin.site.register(Monnaie)
 admin.site.register(MessageGeneral)
 admin.site.register(InscriptionNewsletter)
 admin.site.register(Adhesion_permacat, Adhesion_permacatAdmin)
+admin.site.register(Adhesion_asso)
 
 admin.site.register(Conversation)
 admin.site.register(Commentaire)

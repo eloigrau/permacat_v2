@@ -100,6 +100,13 @@ class Atelier(models.Model):
                 message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(DATE_INPUT_FORMAT) +" a été proposé"
             else:
                 message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
+        else:
+            titre = "Atelier modifié"
+            if self.start_time:
+                message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
+                    DATE_INPUT_FORMAT) + " a été modifié"
+            else:
+                message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:
@@ -107,7 +114,10 @@ class Atelier(models.Model):
             payload = {"head": titre, "body":message,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
-                send_user_notification(suiv, payload=payload, ttl=7200)
+                try:
+                    send_user_notification(suiv, payload=payload, ttl=7200)
+                except:
+                    pass
         return ret
 
 

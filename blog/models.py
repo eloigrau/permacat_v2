@@ -189,15 +189,15 @@ class Article(models.Model):
                 emails = [suiv.email for suiv in suiveurs]
         else:
             temps_depuiscreation = timezone.now() - self.date_creation
+            titre = "Article actualisé"
+            message = "L'article [" + str( self.asso.nom) + "] '<a href='" + url + "'>" + self.titre + "</a>' a été modifié"
+            message_notif = "L'article [" + str(self.asso.nom) + "] " + self.titre + " a été modifié"
+
             if temps_depuiscreation > timedelta(minutes=10):
-                titre = "Article actualisé"
-                message = "L'article [" + str(self.asso.nom) + "] '<a href='"+ url +"'>" + self.titre + "</a>' a été modifié"
-                message_notif = "L'article [" + str(self.asso.nom) + "] " + self.titre + " a été modifié"
                 suiveurs = [suiv for suiv in followers(self) if self.est_autorise(suiv)]
                 emails = [suiv.email for suiv in suiveurs]
 
         if emails:
-
             action.send(self, verb='emails', url=url, titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body": message_notif,
                        "icon": static('android-chrome-256x256.png'), "url": url}
@@ -393,18 +393,18 @@ class Commentaire(models.Model):
             values = username_re.findall(self.commentaire)
             if values:
                 for v in values:
-                        p = Profil.objects.get(username__iexact=v)
-                        titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
-                        msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
-                        msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
-                        action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
-                                    emails=[p.email, ])
-                        action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
-                                   description=msg_mention_notif, )
+                    p = Profil.objects.get(username__iexact=v)
+                    titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
+                    msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
+                    msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
+                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                                emails=[p.email, ])
+                    action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+                               description=msg_mention_notif, )
 
-                        payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
-                        send_user_notification(p, payload=payload, ttl=7200)
+                    payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                    send_user_notification(p, payload=payload, ttl=7200)
         except:
             pass
         

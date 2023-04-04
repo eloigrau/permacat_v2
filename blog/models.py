@@ -202,7 +202,10 @@ class Article(models.Model):
             payload = {"head": titre, "body": message_notif,
                        "icon": static('android-chrome-256x256.png'), "url": url}
             for suiv in suiveurs:
-                send_user_notification(suiv, payload=payload, ttl=7200)
+                try:
+                    send_user_notification(suiv, payload=payload, ttl=7200)
+                except:
+                    pass
 
     def save(self, sendMail=True, saveModif=True, forcerCreationMails=False, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -413,7 +416,10 @@ class Commentaire(models.Model):
             payload = {"head": titre, "body":message,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
-                send_user_notification(suiv, payload=payload, ttl=7200)
+                try:
+                    send_user_notification(suiv, payload=payload, ttl=7200)
+                except:
+                    pass
         return retour
 
 

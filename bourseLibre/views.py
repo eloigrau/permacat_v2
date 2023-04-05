@@ -1003,7 +1003,10 @@ def lireConversation(request, destinataire):
             action.send(request.user, verb='emails', url=url, titre=titre, message=msg, emails=emails)
             payload = {"head": titre, "body": msg,
                        "icon": static('android-chrome-256x256.png'), "url": url}
-            send_user_notification(profil_destinataire, payload=payload, ttl=7200)
+            try:
+                send_user_notification(profil_destinataire, payload=payload, ttl=7200)
+            except:
+                pass
             # try:
             #     send_mail(sujet, message, SERVER_EMAIL, [profil_destinataire.email, ], fail_silently=False,)
             # except Exception as inst:
@@ -1220,7 +1223,10 @@ def salon(request, slug):
         payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":url}
         for suiv in followers(suivis) :
             if request.user != suiv or request.user.is_superuser:
-                send_user_notification(suiv, payload=payload, ttl=7200)
+                try:
+                    send_user_notification(suiv, payload=payload, ttl=7200)
+                except:
+                    pass
         return redirect(request.path)
 
     return render(request, 'salon/salon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})

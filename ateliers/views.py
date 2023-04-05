@@ -165,7 +165,10 @@ def lireAtelier(request, atelier):
         payload = {"head": "atelier: '%s'" % atelier.titre, "body": message_notif,
                    "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url()}
         for suiv in suiveurs:
-            send_user_notification(suiv, payload=payload, ttl=7200)
+            try:
+                send_user_notification(suiv, payload=payload, ttl=7200)
+            except:
+                pass
 
         return redirect(request.path)
 

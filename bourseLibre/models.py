@@ -30,6 +30,7 @@ from datetime import datetime
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
+
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
 

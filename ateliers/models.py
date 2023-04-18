@@ -98,20 +98,26 @@ class Atelier(models.Model):
             titre = "Nouvel atelier proposé"
             if self.start_time:
                 message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(DATE_INPUT_FORMAT) +" a été proposé"
+                message_notif = "L'atelier ["+ self.asso.nom +"] '" + self.titre + "' le " + self.start_time.strftime(DATE_INPUT_FORMAT) +" a été proposé"
             else:
                 message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
+                message_notif = "L'atelier ["+ self.asso.nom +"] '" + self.titre + "' a été proposé"
         else:
             titre = "Atelier modifié"
             if self.start_time:
                 message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
                     DATE_INPUT_FORMAT) + " a été modifié"
+                message_notif = "L'atelier [" + self.asso.nom + "]' "+ self.titre + "' le " + self.start_time.strftime(
+                    DATE_INPUT_FORMAT) + " a été modifié"
             else:
                 message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
+                message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + "' le " + self.start_time.strftime(
+                    DATE_INPUT_FORMAT) + " a été modifié"
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
-            payload = {"head": titre, "body":message,
+            payload = {"head": titre, "body":message_notif,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
                 try:

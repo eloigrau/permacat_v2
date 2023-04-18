@@ -84,6 +84,7 @@ class Atelier(models.Model):
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
         emails, suiveurs = [], []
+        message_notif = ""
         if not self.id:
             self.date_creation = timezone.now()
 

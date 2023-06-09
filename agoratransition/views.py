@@ -51,7 +51,7 @@ def listeInscription(request, ):
     if request.user.is_superuser:
       listeMails.append({"type":'inscrits', "profils":InscriptionExposant.objects.all(), "titre":"Liste des inscrits : "})
 
-    return render(request, 'listeContacts.html', {"listeMails":listeMails, "asso":"" })
+    return render(request, 'asso/listeContacts.html', {"listeMails":listeMails, "asso":"" })
 
 
 class InscriptionsViewSet(viewsets.ModelViewSet):

@@ -390,7 +390,7 @@ def listeContacts_admin(request):
     else:
         listeMails = [ ]
 
-    return render(request, 'listeContacts.html', {"listeMails":listeMails})
+    return render(request, 'asso/listeContacts.html', {"listeMails":listeMails})
 
 @login_required
 def listeFollowers(request, asso):

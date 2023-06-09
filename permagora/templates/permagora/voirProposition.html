@@ -11,6 +11,7 @@
             <div class="site-section-heading" data-aos="fade-up" data-aos-delay="50">
               <h4 class="text-center">{{proposition.pole}} </h4>
               <h2 class="text-center">{{proposition.titre|safe}}</h2>
+                <p class="text-center"> le {{ proposition.date_creation | date:'DATE_FORMAT' }}</p>
                 {% comment %}
               <p class="text-center">
                   <a href="{% url 'permagora:ajouterVote_plus' proposition.slug %}?next={{request.path}}"> {% fontawesome_icon 'thumbs-up' %} {{proposition.compteur_plus}}</a> &nbsp

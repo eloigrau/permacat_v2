@@ -4,13 +4,11 @@
 {% load static %}
 {% load app_filters %}
 {% load avatar_tags %}
-{% load webpush_notifications %}
 {% load fontawesome %}
 {%endblock%}
 {%block header %}
 {% leaflet_js %}
 {% leaflet_css %}
-{% webpush_header %}
 {%endblock%}
 {% block title %} - {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.username }} {% endif %}
 {% endblock %}

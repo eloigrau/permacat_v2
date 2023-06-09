@@ -1,5 +1,11 @@
 {% extends 'base_notifications.html' %}
 {% load app_filters %}
+{% block headerDocument%}
+{% load webpush_notifications %}
+{%endblock%}
+{%block header %}
+{% webpush_header %}
+{%endblock%}
 {% block subtitle %}
 <h4>Mes Abonnements</h4>
 <p>Retrouvez ici toutes les pages auxquelles vous êtes abonné.e.s (c'est à dire les pages pour lesquelles vous recevez une info par mail). Cliquez sur "supprimer" pour ne plus recevoir de mail pour ces type d'infos</p>

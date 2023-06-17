@@ -111,17 +111,24 @@
 
 <div class="infinite-item ">
    <div class="row justify-content-center ">
-    <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelier" >
-            <div></div>
-            <div style="background-color:{{reunion.get_couleur}};
-    font-variant: small-caps;" > {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }} - {{ reunion.titre }}  </div>
+    <div class="col-sm-12 col-ms-10 col-lg-8 " >
+        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelieDefraiementList" >
+
+            <table style="width:100%; " >
+                <tr>
+            <td style="background-color:{{reunion.get_couleur}}; width:20%;
+    font-variant: small-caps;" > {{reunion.get_logo_nomgroupe_html|safe}} {{ reunion.get_categorie_display }}
+            </td>
+            <td style="background-color:{{reunion.get_couleur}}; width:40%;
+    font-variant: small-caps;" > {{ reunion.titre }}
+            </td>
             {% if reunion.start_time %}
-        <p class="textepetit">le {{ reunion.start_time|date:"DATE_FORMAT" }}</p>
+        <td class="textepetit " style=" width:20%; ">le {{ reunion.start_time|date:"DATE_FORMAT" }}</td>
         {% endif %}
 
-        <p class="textepetit"> {{reunion.participants.all | length}} participants, {{reunion.getDistanceTotale}}km</p>
-
+        <td class="textepetit" style=" width:20%; "> {{reunion.participants.all | length}} participants, {{reunion.getDistanceTotale}}km</td>
+           </tr>
+            </table>
         </a>
     </div>
    </div>

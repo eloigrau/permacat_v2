@@ -51,6 +51,7 @@ urlpatterns = [
     path(r'supprimerParticipantReunion/<str:slug_reunion>/<int:id_participantReunion>', login_required(views.SupprimerParticipantReunion.as_view(), login_url='/auth/login/'), name='supprimerParticipantReunion'),
 
     path(r'recapitulatif/<str:asso_slug>/', views.recapitulatif, name='recapitulatif'),
+    #path(r'recapitulatif/<str:asso_slug>/<int:annee>', views.recapitulatif_annee, name='recapitulatif_annee'),
     path(r'export_recapitulatif/<str:asso>/<str:type_reunion>/', views.export_recapitulatif, name='export_recapitulatif'),
 
     url(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),

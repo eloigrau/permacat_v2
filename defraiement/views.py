@@ -88,13 +88,17 @@ def recapitulatif(request, asso_slug):
     if type_reunion:
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion, ).order_by('start_time','categorie',)
     else:
+        type_reunion = "999"
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',)
+
+    annee = request.GET.get('annee')
+    if annee:
+        reunions = reunions.filter(start_time__year=annee)
 
     entete, lignes = getRecapitulatif_km(request, reunions, asso)
     asso_list = [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id")
                             if request.user.est_autorise(x.abreviation)]
     type_list = get_typereunion(asso_slug)
-    type_reunion = "tout"
     form = PrixMaxForm(request.POST or None)
     if form.is_valid():
         prixMax = form.cleaned_data["prixMax"]
@@ -111,7 +115,7 @@ def export_recapitulatif(request, asso, type_reunion="999"):
         raise PermissionDenied
     if type_reunion != "999":
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion).order_by('start_time','categorie',)
-    else :
+    else:
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',)
 
     # Create the HttpResponse object with the appropriate CSV header.
@@ -368,7 +372,6 @@ class ListeReunions(ListView):
         if "annee" in params:
             qs = qs.filter(start_time__year = params['annee'])
 
-
         if "categorie" in params:
             qs = qs.filter(categorie=params['categorie'])
 
@@ -401,18 +404,18 @@ class ListeReunions_asso(ListeReunions):
     paginate_by = 100
 
     def get_queryset(self):
-        params = dict(self.request.GET.items())
+        self.params = dict(self.request.GET.items())
         self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
         qs = Reunion.objects.filter(estArchive=False, asso=self.asso)
 
-        if "annee" in params:
-            qs = qs.filter(start_time__year = params['annee'])
+        if "annee" in self.params:
+            qs = qs.filter(start_time__year = self.params['annee'])
 
-        if "categorie" in params:
-            qs = qs.filter(categorie=params['categorie'])
+        if "categorie" in self.params:
+            qs = qs.filter(categorie=self.params['categorie'])
 
-        if "ordreTri" in params:
-            qs = qs.order_by(params['ordreTri'])
+        if "ordreTri" in self.params:
+            qs = qs.order_by(self.params['ordreTri'])
         else:
             qs = qs.order_by('-start_time', 'categorie', 'titre', )
 
@@ -428,6 +431,7 @@ class ListeReunions_asso(ListeReunions):
         cat = reu.values_list('categorie', flat=True).distinct()
         context['categorie_list'] = [x for x in Choix.type_reunion if x[0] in cat]
         context['ordreTriPossibles'] = Choix.ordre_tri_reunions
+        context['type_courant'] = self.params["categorie"] if "categorie" in self.params else ""
 
         return context
 

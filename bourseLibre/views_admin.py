@@ -219,6 +219,7 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
     """
     #import re
     #EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    #decoupage en tranches de 90 receveurs max par mail
     data = []
     for subject, message, html_message, sender, recipient in datatuple:
         if len(recipient) > 90:
@@ -460,7 +461,7 @@ def envoiNewsletter2023(request):
 
 
 def supprimerHitsAnciens(request):
-    date = datetime.now().date() - timedelta(days=366)
+    date = datetime.now().date() - timedelta(days=366*2)
     hit_counts = HitCount.objects.filter(hit__created__lte=date)
 
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })

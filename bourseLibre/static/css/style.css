@@ -1551,6 +1551,14 @@ font:          normal normal 22px/1 ;
 text-align:    center;
 }
 
+.boutonAtelieDefraiementList{
+background:    rgba(255, 255, 255, 0.6);
+border:        2px solid #b6d7a8;
+border-radius: 6px;
+width: 100%;
+display:       inline-block;
+}
+
 .boutonediter{
 padding:       1px 2px;
 display:       inline-block;

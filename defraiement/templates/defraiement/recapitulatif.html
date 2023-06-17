@@ -15,8 +15,16 @@
 {% endblock %}
 
 {% block content %}
-<h4  class="textcenter">Récapitulatif</h4>
+<h4  class="textcenter">Récapitulatif {% if 'annee' in request.GET %} ({{request.GET.annee}}) {% else%} (toutes années) {% endif%} </h4>
 
+<p class="textcenter">
+ <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante%}?" method="get" role = "search">
+     <span class="input-group-append">
+        <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
+        <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Année...">ok</button>
+    </span>
+ </form>
+</p>
 <hr>
 <nav class="navbar  navbar-expand-md navbar-light justify-content-center">
 <div class="row justify-content-center">

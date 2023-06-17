@@ -30,7 +30,7 @@ class Choix:
     }
 
 def get_typereunion(asso):
-    return [(str(i), y) for i, y in enumerate([x for x in Choix.type_reunion_asso[asso]])]
+    return [(i, j) for i, j in Choix.type_reunion if j in Choix.type_reunion_asso[asso]]
 
 
 class ParticipantReunion(models.Model):

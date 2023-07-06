@@ -81,7 +81,7 @@
             {% if graino.adresse.get_latitude %}
                 var lat = {{ graino.adresse.get_latitude }};
                 var lon = {{ graino.adresse.get_longitude }};
-                var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'jardins:graino_lire' graino.slug%}"> {{graino.titre}} </a>');
+                var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'jardins:grainotheque_lire' graino.slug%}"> {{graino.titre}} </a>');
                 marker.addTo(map);
             {% endif %}
         {%endfor%}

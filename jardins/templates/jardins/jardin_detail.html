@@ -76,6 +76,9 @@
 	<div class="row">
 		<div class="col-sm-12">
 		   <p> {{ jardin.description|safe }} </p>
+			{%if jardin.fonctionnement %}
+		   <p> {{ jardin.fonctionnement|safe }} </p>
+			{% endif %}
 		</div>
 	</div>
 	</div>
@@ -138,7 +141,7 @@
 						Identifiants permapotes
 					</td>
 					<td class="proprieteProduit">
-	  					<p>{{jardin.permapotes_id}}</p>
+	  					<p><a href="https://www.permapotes.com/fr/" target="_blank"  rel="noopener noreferrer nofollow"> {{jardin.permapotes_id}} </a></p>
 					</td>
 				</tr>
 				{% endif %}

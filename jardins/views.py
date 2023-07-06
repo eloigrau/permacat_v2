@@ -390,6 +390,8 @@ class AjouterGrainotheque(CreateView):
         self.object = form.save(self.request.user)
         action.send(self.request.user, verb='jardins_nouvelleGrainotheque_jp', action_object=self.object, url=self.object.get_absolute_url(),
                      description="a ajouté la Grainothèque: '%s'" % self.object.titre)
+        if not self.object.jardin:
+            return redirect("jardins:graintheque_ajouterAdresse", slug=self.object.slug)
         return HttpResponseRedirect(self.get_success_url())
 
 

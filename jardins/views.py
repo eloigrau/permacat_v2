@@ -304,6 +304,8 @@ class AjouterJardin(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(self.request.user)
+        action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
+                     description="a ajouté le Jardin: '%s'" % self.object.titre)
         return redirect("jardins:jardin_ajouterAdresse", slug=self.object.slug)
 
 @login_required
@@ -373,6 +375,8 @@ class AjouterGrainotheque(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(self.request.user)
+        action.send(self.request.user, verb='jardins_nouvelleGrainotheque_jp', action_object=self.object, url=self.object.get_absolute_url(),
+                     description="a ajouté la Grainothèque: '%s'" % self.object.titre)
         return HttpResponseRedirect(self.get_success_url())
 
 class GrainothequeDetailView(DetailView):
@@ -424,7 +428,7 @@ def inscriptionJardin(request, slug):
     if not InscriptionJardin.objects.filter(user=request.user, jardin=jardin):
         inscript = InscriptionJardin(user=request.user, jardin=jardin)
         inscript.save()
-        action.send(request.user, verb='jardins_inscription', action_object=jardin, url=jardin.get_absolute_url(),
+        action.send(request.user, verb='jardins_inscription_jp', action_object=jardin, url=jardin.get_absolute_url(),
                      description="s'est inscrit.e au jardin: '%s'" % jardin.titre)
 
     return redirect(jardin.get_absolute_url())
@@ -434,7 +438,7 @@ def annulerInscription(request, slug):
     jardin = get_object_or_404(Jardin, slug=slug)
     inscript = InscriptionJardin.objects.filter(user=request.user, jardin=jardin)
     inscript.delete()
-    action.send(request.user, verb='jardin_désinscription', action_object=jardin, url=jardin.get_absolute_url(),
+    action.send(request.user, verb='jardins_desinscription_jp', action_object=jardin, url=jardin.get_absolute_url(),
                  description="s'est désinscrit du jardin: '%s'" % jardin.titre)
     return redirect(jardin.get_absolute_url())
 

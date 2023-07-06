@@ -998,22 +998,18 @@ a article_carte:active {
 }
 
     .cartePleinePage{
-        height:90vh;
-        min-height:150px;
+        min-height:80vh;
     }
     .carteMiPage{
-        height:45vh;
-        min-height:150px;
+        min-height:40vh;
     }
 }
 
 .cartePleinePage{
-    height:90vh;
-    min-height:350px;
+    min-height:80vh;
 }
     .carteMiPage{
-        height:45vh;
-        min-height:200px;
+        min-height:40vh;
     }
 
 @media (max-width: 920px) {

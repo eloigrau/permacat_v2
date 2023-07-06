@@ -22,8 +22,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     suffrages = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suffrage_ajout_public') | Q(verb='suffrage_ajout'))).order_by(orderBy)
     albums = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='album_nouveau_public'))).order_by(orderBy)
     documents = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='document_nouveau_public'))).order_by(orderBy)
-    jardins = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_'))).order_by(orderBy)
-
+    jardins = Action.objects.none()
     for nomAsso in Choix_global.abreviationsAsso:
         if getattr(request.user, "adherent_" + nomAsso):
             salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='envoi_salon') & Q(verb__icontains=nomAsso)))
@@ -32,7 +31,8 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
             offres = offres | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='ajout_offre') & Q(verb__icontains=nomAsso)))
             albums = albums | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='album_nouveau') & Q(verb__icontains=nomAsso)))
             documents = documents | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='document_nouveau') & Q(verb__icontains=nomAsso)))
-            jardins = jardins | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_nouveau') & Q(verb__icontains=nomAsso)))
+            if nomAsso =='jp' :
+                jardins = jardins | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso)))
 
     salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith="envoi_salon") | Q(verb__startswith="invitation_salon")) & Q(description__contains=request.user.username))
     conversations = []
@@ -43,7 +43,8 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     suffrages = suffrages.distinct().order_by(orderBy)[:tampon]
     albums = albums.distinct().order_by(orderBy)[:tampon]
     documents = documents.distinct().order_by(orderBy)[:tampon]
-    jardins = jardins.distinct().order_by(orderBy)[:tampon]
+    if jardins:
+        jardins = jardins.distinct().order_by(orderBy)[:tampon]
 
     fiches = Action.objects.filter(verb__startswith='fiche').order_by(orderBy)[:tampon]
     ateliers = Action.objects.filter(Q(verb__startswith='atelier')|Q(verb='')).order_by(orderBy)[:tampon]
@@ -56,7 +57,8 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     salons = [art for i, art in enumerate(salons) if i == 0 or not (art.description == salons[i-1].description and art.actor == salons[i-1].actor ) ][:nbNotif]
     offres = [art for i, art in enumerate(offres) if i == 0 or not (art.description == offres[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
     albums = [art for i, art in enumerate(albums) if i == 0 or not (art.description == albums[i-1].description and art.actor == albums[i-1].actor ) ][:nbNotif]
-    jardins = [art for i, art in enumerate(jardins) if i == 0 or not (art.description == jardins[i-1].description and art.actor == jardins[i-1].actor ) ][:nbNotif]
+    if jardins:
+        jardins = [art for i, art in enumerate(jardins) if i == 0 or not (art.description == jardins[i-1].description and art.actor == jardins[i-1].actor ) ][:nbNotif]
     documents = [art for i, art in enumerate(documents) if i == 0 or not (art.description == documents[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
     inscription = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='inscript'))[:nbNotif]
     mentions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='mention_' + request.user.username))).order_by(orderBy)
@@ -76,7 +78,7 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
          Q(verb='article_modifier')|Q(verb='projet_nouveau') |
          Q(verb='projet_message')| Q(verb='projet_modifier')|
             Q(verb='envoi_salon')| Q(verb__icontains='public')|Q(verb__icontains='Public')|
-            Q(verb__startswith='fiche')|Q(verb__startswith='atelier')|Q(verb__startswith='jardins')|
+            Q(verb__startswith='fiche')|Q(verb__startswith='atelier')|Q(verb__startswith='jardins_')|
             Q(verb__startswith='documents_nouveau')|Q(verb__startswith='album_nouveau')|
             Q(verb__startswith="envoi_salon", description__contains=request.user.username)|
             Q(verb__startswith="invitation_salon", description__contains=request.user.username)|

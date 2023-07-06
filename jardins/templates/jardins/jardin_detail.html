@@ -159,6 +159,15 @@
 						Lieu
 					</td>
 					<td class="proprieteProduit">
+						{% if request.user.username == jardin.referent_jardin.username or request.user.username == jardin.auteur.username %}
+                  <div class="row textcenter">
+						<a href="{% url 'jardins:jardin_modifierAdresse' slug=jardin.slug %}">
+							<button type="button" class="btn btn-sm btn-warning">
+								<span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+							</button>
+						</a>
+						</div>
+						{% endif %}
 <div>
 	{% if user_inscrit or jardin.visibilite_adresse == '0' or jardin.visibilite_adresse == '1' %}
 	{% if jardin.adresse.latitude and jardin.adresse.longitude %}

@@ -182,7 +182,7 @@ class Jardin(models.Model):
         return self.titre
 
     def get_visibilite_display(self):
-        return str(self.get_visibilite_annuaire_display()) + " "+ str(self.get_visibilite_adresse_display())
+        return str(self.get_visibilite_annuaire_display()) + " / "+ str(self.get_visibilite_adresse_display())
 
 class Grainotheque(models.Model):
     categorie = models.CharField(max_length=3,

@@ -147,6 +147,15 @@
 						Lieu
 					</td>
 					<td class="proprieteProduit">
+						{% if request.user.username == grainotheque.referent_grainotheque.username or request.user.username == grainotheque.auteur.username %}
+                  <div class="row textcenter">
+						<a href="{% url 'jardins:grainotheque_modifierAdresse' slug=grainotheque.slug %}">
+							<button type="button" class="btn btn-sm btn-warning">
+								<span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+							</button>
+						</a>
+						</div>
+						{% endif %}
 <div>
 	{% if user_inscrit or grainotheque.jardin.visibilite == '0' or grainotheque.jardin.visibilite == '1' and  request.user.is_authenticated %}
 	{% if grainotheque.jardin.adresse.latitude and grainotheque.jardin.adresse.longitude %}

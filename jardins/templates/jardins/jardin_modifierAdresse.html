@@ -1,0 +1,123 @@
+{% extends 'base_plantes.html' %}
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load staticfiles %}
+{% endblock %}
+{% block header %}
+{{ form.media }}
+{% leaflet_js %}
+{% leaflet_css %}
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{%endblock%}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Modifier l'adresse du jardin </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row carteMiPage">
+  <div class="col-md-12" >
+      <style>
+    .leaflet-container {  /* all maps */
+        width:  100%;
+        height: 100%;
+    }
+    </style>
+      <script type="text/javascript">
+
+        function map_init_basic (map, options) {
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+
+        map.on('click', function(ev) {
+            $('#id_latitude').val(ev.latlng.lat);
+          $('#id_longitude').val(ev.latlng.lng);
+          if (typeof pin == "object") {
+            pin.setLatLng(ev.latlng);
+          } else {
+            pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true });
+            pin.addTo(map);
+            pin.on('drag',function(ev) {
+              $('#id_latitude').val(ev.latlng.lat);
+              $('#id_longitude').val(ev.latlng.lng);
+            });
+          }
+
+          var url = 'https://geo.api.gouv.fr/communes?lat=' + ev.latlng.lat + '&lon='+ev.latlng.lng;  // get the url of the `load_cities` view
+
+          $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                  $("#id_commune").val(data[0].nom);  // replace the contents of the city input with the data that came from the server
+                  $("#id_code_postal").val(data[0].code);  // replace the contents of the city input with the data that came from the server
+                  }
+            });
+        });
+}
+$('.example').leafletLocationPicker({
+  alwaysOpen: false,
+  {% comment %}
+  className: baseClassName,
+  location: yourmap.center,
+  {% endcomment %}
+  locationFormat: '{lat}{sep}{lng}',
+  locationMarker: true,
+  locationDigits: 6,
+  locationSep: ',',
+  position: 'topright',
+  layer: 'OSM',
+  height: 140,
+  width: 200,
+  event: 'click',
+  cursorSize: '30px',
+  map: yourmap,
+  onChangeLocation: $.noop,
+  mapContainer: "#yourmap"
+});
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
+
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+    <div class="col-sm-12 col-md-10 col-lg-9 text-center">
+    <form method="post">
+      {% csrf_token %}
+        <p>Cliquez sur la carte ou rentrez les nouvelles coordonnées GPS (latitude, longitude) :</p>
+
+     {% include 'form_template2.html' with form=form_adresse%}
+     <button type="cancel" onclick="window.history.back();" class="btn btn-warning ">Annuler</button>
+      <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées GPS</button>
+    </form>
+    </div>
+</div>
+
+{% comment %}
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+    <p>Vous pouvez ajouter la commune et/ou la latitude/longitude du jardin afin de vous situer sur la carte</p>
+<form method="post">
+  {% csrf_token %}
+ {% include 'form_template2.html' with form=form_adresse%}
+  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées</button>
+</form>
+</div>
+</div>
+{% endcomment %}
+{% endblock %}

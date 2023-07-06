@@ -322,6 +322,19 @@ def jardin_ajouterAdresse(request, slug):
     return render(request, 'jardins/jardin_ajouterAdresse.html', {'jardin':jardin, 'form_adresse':form_adresse })
 
 
+@login_required
+def jardin_modifierAdresse(request, slug):
+    jardin = get_object_or_404(Jardin, slug=slug)
+    form_adresse = AdresseForm4(request.POST or None)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        jardin.adresse = adresse
+        jardin.save()
+        return redirect(jardin)
+
+    return render(request, 'jardins/jardin_modifierAdresse.html', {'jardin':jardin, 'form_adresse':form_adresse })
+
 def carte_jardins(request):
     jardins = Jardin.objects.all().order_by("titre")
     nbProf = len(jardins)
@@ -378,6 +391,34 @@ class AjouterGrainotheque(CreateView):
         action.send(self.request.user, verb='jardins_nouvelleGrainotheque_jp', action_object=self.object, url=self.object.get_absolute_url(),
                      description="a ajouté la Grainothèque: '%s'" % self.object.titre)
         return HttpResponseRedirect(self.get_success_url())
+
+
+@login_required
+def grainotheque_ajouterAdresse(request, slug):
+    grainotheque = get_object_or_404(Grainotheque, slug=slug)
+    form_adresse = AdresseForm4(request.POST or None)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        grainotheque.adresse = adresse
+        grainotheque.save()
+        return redirect(grainotheque)
+
+    return render(request, 'jardins/grainotheque_ajouterAdresse.html', {'grainotheque':grainotheque, 'form_adresse':form_adresse })
+
+
+@login_required
+def grainotheque_modifierAdresse(request, slug):
+    grainotheque = get_object_or_404(Grainotheque, slug=slug)
+    form_adresse = AdresseForm4(request.POST or None)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        grainotheque.adresse = adresse
+        grainotheque.save()
+        return redirect(grainotheque)
+
+    return render(request, 'jardins/jardin_modifierAdresse.html', {'grainotheque':grainotheque, 'form_adresse':form_adresse })
 
 class GrainothequeDetailView(DetailView):
     model = Grainotheque

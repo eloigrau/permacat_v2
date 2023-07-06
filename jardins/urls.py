@@ -46,6 +46,7 @@ urlpatterns = [
 
     path(r'jardin/ajouter/', login_required(views.AjouterJardin.as_view()), name="jardin_ajouter"),
     path(r'jardin/jardin_ajouterAdresse/<str:slug>', views.jardin_ajouterAdresse, name="jardin_ajouterAdresse"),
+    path(r'jardin/modifierAdresse/<str:slug>', views.jardin_modifierAdresse, name="jardin_modifierAdresse"),
     path(r'jardin/modifier/<str:slug>', login_required(views.ModifierJardin.as_view()), name="jardin_modifier"),
     path(r'jardin/jardin_supprimer/<str:slug>', login_required(views.SupprimerJardin.as_view()), name="jardin_supprimer"),
     path(r'jardin/voir/<str:slug>', login_required(views.JardinDetailView.as_view()), name="jardin_lire"),
@@ -59,4 +60,6 @@ urlpatterns = [
     path(r'jardin/supprimer_grainotheque/<str:slug>', login_required(views.SupprimerGrainotheque.as_view()), name="grainotheque_supprimer"),
     path(r'grainotheque/voir/<str:slug>', login_required(views.GrainothequeDetailView.as_view()), name="grainotheque_lire"),
     path(r'grainotheque/ajouterGraine/<str:slug>', views.graino_ajouterGraine, name="graino_ajouterGraine"),
+    path(r'grainotheque/ajouterAdresse/<str:slug>', views.grainotheque_ajouterAdresse, name="grainotheque_ajouterAdresse"),
+    path(r'grainotheque/modifierAdresse/<str:slug>', views.grainotheque_modifierAdresse, name="grainotheque_modifierAdresse"),
     ]

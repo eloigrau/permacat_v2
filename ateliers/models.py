@@ -210,7 +210,7 @@ class CommentaireAtelier(models.Model):
 class InscriptionAtelier(models.Model):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE)
     atelier = models.ForeignKey(Atelier, on_delete=models.CASCADE)
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscritpion", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
 
     def __unicode__(self):
         return self.__str()

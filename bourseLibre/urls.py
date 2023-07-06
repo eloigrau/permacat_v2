@@ -73,6 +73,7 @@ urlpatterns = [
     path(r'citealtruiste/inscription/', views_inscriptions.inscription_citealt, name='inscription_citealt'),
     path(r'projetBzzz/inscription/', views_inscriptions.inscription_bzz2022, name='inscription_bzz2022'),
     path(r'viure/inscription/', views_inscriptions.inscription_viure, name='inscription_viure'),
+    path(r'jardins/inscription/', views_inscriptions.inscription_jp, name='inscription_jp'),
     url(r'^site/presentation/$', views_base.presentation_site, name='presentation_site'),
     url(r'^site/pourquoi/$', views_base.presentation_site_pkoi, name='presentation_site_pkoi'),
     url(r'^site/conseils/$', views_base.presentation_site_conseils, name='presentation_site_conseils'),
@@ -216,6 +217,7 @@ urlpatterns = [
     url(r'^admin/envoiNewsletter2023/$', views_admin.envoiNewsletter2023,  name="envoiNewsletter2023"),
     url(r'^admin/supprimerHitsAnciens/$', views_admin.supprimerHitsAnciens,  name="supprimerHitsAnciens"),
     url(r'^admin/supprimerActionsAnciens/$', views_admin.supprimerActionsAnciens,  name="supprimerActionsAnciens"),
+    url(r'^admin/transforBlogJpToForum/$', views_admin.transforBlogJpToForum,  name="transforBlogJpToForum"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),

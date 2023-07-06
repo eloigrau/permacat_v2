@@ -46,7 +46,7 @@ LONGITUDE_DEFAUT = '2.8954'
 #from django.contrib.gis.db import models as models_gis
 class Adresse(models.Model):
     rue = models.CharField(max_length=200, blank=True, null=True)
-    code_postal = models.CharField(max_length=5, blank=True, null=True, default="66000")
+    code_postal = models.CharField(max_length=5, blank=True, null=True, default="")
     commune = models.CharField(max_length=50, blank=True, null=True, default="")
     latitude = models.FloatField(blank=True, null=True, default=LATITUDE_DEFAUT)
     longitude = models.FloatField(blank=True, null=True, default=LONGITUDE_DEFAUT)
@@ -65,9 +65,9 @@ class Adresse(models.Model):
 
     def __str__(self):
         if self.commune:
-            return "("+str(self.id)+") " + self.commune
+            return "("+str(self.id)+") " + str(self.commune)
         else:
-            return "("+str(self.id)+") "+self.code_postal
+            return "("+str(self.id)+") "+ str(self.code_postal)
 
 
     def getDistance(self, adresse):
@@ -87,14 +87,14 @@ class Adresse(models.Model):
     def get_adresse_str(self):
         if self.commune:
             adress = ''
-            if self.rue:
-                adress += self.rue
-            if self.code_postal:
-                adress += ", " + self.code_postal
-            if self.commune:
-                adress += ", " + self.commune
             if self.telephone:
-                adress += " (" + self.telephone +")"
+                adress += "Tel : " + self.telephone +" ,"
+            if self.rue:
+                adress += self.rue + ", "
+            if self.code_postal:
+                adress += self.code_postal + ", "
+            if self.commune:
+                adress += self.commune
             return adress
         else:
             return str(self.latitude) + ", " + str(self.longitude)
@@ -204,6 +204,8 @@ class Asso(models.Model):
             return Profil.objects.filter(adherent_bzz2022=True).order_by("username")
         elif self.abreviation == "viure":
             return Profil.objects.filter(adherent_viure=True).order_by("username")
+        elif self.abreviation == "jp":
+            return Profil.objects.filter(adherent_jp=True).order_by("username")
         return []
 
     def getProfils_Annuaire(self):
@@ -225,6 +227,8 @@ class Asso(models.Model):
             return Profil.objects.filter(accepter_annuaire=True, adherent_viure=True).order_by("username")
         elif self.abreviation == "bzz2022":
             return Profil.objects.filter(accepter_annuaire=True, adherent_bzz2022=True).order_by("username")
+        elif self.abreviation == "jp":
+            return Profil.objects.filter(accepter_annuaire=True, adherent_jp=True).order_by("username")
         return []
 
 
@@ -405,6 +409,8 @@ class Profil(AbstractUser):
         elif self.adherent_viure and (nom_asso == "Viure" or nom_asso == "viure") :
             return True
         elif self.adherent_bzz2022 and (nom_asso == "bzz2022" or nom_asso == "bzz2022") :
+            return True
+        elif self.adherent_jp and (nom_asso == "jp" or nom_asso == "Jardins Partagés") :
             return True
         #elif self.adherent_gt and (nom_asso == "Gardiens de la Terre" or nom_asso == "gt") :
         #    return True

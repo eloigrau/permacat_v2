@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 #from django.core.mail import send_mass_mail, mail_admins
 from actstream import action
-
+from jardins.models import Jardin
 
 from actstream.models import followers
 #from bourseLibre.settings import SERVER_EMAIL, LOCALL
@@ -15,7 +15,8 @@ class Choix():
                   ('Agenda','Agenda'), ("todo", "A faire"), \
                    ('Documentation','Documentation'),  \
                  ('Autre','Autre'),
-    jardins_ptg = ('0', 'Tous les jardins'),('1', 'Jardi Per Tots'), ('2', 'Jardin de Palau'), ('3', 'Jardins de Lurçat'), ('4', 'Gardiens de la Terre'), ('5', 'Fermille'), ('6', 'Chez Claire')
+
+    jardins_ptg = ('0', 'Tous les jardins'),('1', 'Jardi Per Tots'), ('2', 'Jardin de Palau'), ('3', 'Jardins de Lurçat'), ('4', 'Gardiens de la Terre'), ('5', 'Fermille'), ('6', 'PPDM')
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",
@@ -56,6 +57,12 @@ class Choix():
 
     def get_logo_nomgroupe(abreviation):
         return 'img/logos/nom_jpt.png'
+
+    def getNomJardinFromNombre(nombre_str):
+        for index in Choix.jardins_ptg:
+            if index[0] == nombre_str:
+                return index[1]
+        return "Public"
 
 class Article(models.Model):
     categorie = models.CharField(max_length=30,         
@@ -108,7 +115,7 @@ class Article(models.Model):
                 message = "L'article '<a href='https://www.perma.cat" + self.get_absolute_url() +"'>" + self.titre + "</a>' des Jardins Partagés a été modifié "
                 emails = [suiv.email for suiv in followers(self) if self.est_autorise(suiv)]
 
-        retour =  super(Article, self).save(*args, **kwargs)
+        retour = super(Article, self).save(*args, **kwargs)
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
         return retour

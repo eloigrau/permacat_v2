@@ -72,13 +72,14 @@ body {
     /*background: url("/static/img/bckgnd-2.jpg") 0 0 no-repeat fixed;*/
     background-size: 100%;
     margin: auto;
-    width: 99%;
+    width: 100%;
     background-color:#2B2A33;
     padding-top: 5px;
     color:black;
      -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       text-rendering: optimizeLegibility;
+    /* font-family: "The Antiqua B",Georgia,Droid-serif,serif;*/
 }
 
 #top{
@@ -772,6 +773,18 @@ border: 1px inset rgba(28,110,164,0.65);
 .row .col-xs-2, .row .col-xs-10{display:inline-block; float: none}
 
 
+.table{
+  border-spacing: 0;
+  border-collapse: separate;
+  border-radius: 10px;
+  border: 0.8px solid black;
+}
+.leaflet-container{
+  border-spacing: 0;
+  border-collapse: separate;
+  border-radius: 10px;
+  border: 0.8px solid black;
+}
 .tablepanier{
     background-color:#87ceeb;
     color:black;
@@ -983,8 +996,25 @@ a article_carte:active {
     padding-right: 0px;
     padding-left: 0px;
 }
+
+    .cartePleinePage{
+        height:90vh;
+        min-height:150px;
+    }
+    .carteMiPage{
+        height:45vh;
+        min-height:150px;
+    }
 }
 
+.cartePleinePage{
+    height:90vh;
+    min-height:350px;
+}
+    .carteMiPage{
+        height:45vh;
+        min-height:200px;
+    }
 
 @media (max-width: 920px) {
 .col_cat{
@@ -1460,6 +1490,20 @@ table.greenTable tfoot .links a{
     min-height: 350px;
 }
 
+.desc_jardin {
+    border: 7px inset rgba(28,110,164,0.65);
+    border-radius: 0px 25px 25px 25px;
+    padding: 10px;
+    margin: 12px;
+    min-height: 100px;
+}
+.desc_graino {
+    border: 7px inset rgba(76,153,5,0.65);
+    border-radius: 0px 25px 25px 25px;
+    padding: 10px;
+    margin: 12px;
+    min-height: 100px;
+}
 .ensavoirplus {
     border: 7px inset #B37D00;
     border-radius: 0px 25px 25px 25px;/*

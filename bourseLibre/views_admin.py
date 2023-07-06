@@ -416,6 +416,8 @@ def creerAction_articlenouveau(request):
 
 
 def getVieuxComptes():
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     date_ajd = datetime.now().date()
     date_limite = datetime(datetime.now().year - 1, datetime.now().month, day=datetime.now().day)
     profil_jamais = Profil.objects.filter(last_login__isnull=True)
@@ -444,6 +446,8 @@ def envoyerMailVieuxComptes(request):
 
 
 def getMailsNewsletter():
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     #profils_1 = Profil.objects.filter(inscrit_newsletter=True)
     profils_2 = InscriptionNewsletter.objects.all()
 
@@ -451,6 +455,8 @@ def getMailsNewsletter():
     return set([x.email for x in profils_2])
 
 def envoiNewsletter2023(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     titre, contenu_html = get_emailNexsletter2023()
     emails = getMailsNewsletter()
     contenu_txt = strip_tags(contenu_html)
@@ -461,15 +467,48 @@ def envoiNewsletter2023(request):
 
 
 def supprimerHitsAnciens(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     date = datetime.now().date() - timedelta(days=366*2)
     hit_counts = HitCount.objects.filter(hit__created__lte=date)
 
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
 
 def supprimerActionsAnciens(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     date = datetime.now().date() - timedelta(days=365*2)
     hit_counts = Action.objects.filter(timestamp__lte=date)
     for hit in hit_counts:
         hit.delete()
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+
+
+def transforBlogJpToForum(request):
+    from blog.models import Article as Article_blog
+    from jardinpartage.models import Article as Article_jardin, Choix as Choix_jpt
+    from .models import Asso
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    asso_jp = Asso.objects.get(abreviation="jp")
+
+    for art in Article_jardin.objects.all():
+        if not Article_blog.objects.filter(slug=art.slug).exists():
+            new = Article_blog(
+                categorie=art.categorie,
+                titre="[" + Choix_jpt.getNomJardinFromNombre(art.jardin) + "] " + art.titre,
+                auteur=art.auteur,
+                slug=art.slug,
+                contenu=art.contenu,
+                date_creation=art.date_creation,
+                date_modification=art.date_modification,
+                estModifiable=art.estModifiable,
+                asso=asso_jp,
+                estArchive=art.estArchive,
+                start_time=art.start_time,
+                estEpingle=False
+            ).save(sendMail=False)
+
+    return redirect("blog:index_asso", asso='jp')
+
 

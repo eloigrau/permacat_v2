@@ -1,22 +1,37 @@
-{% extends 'base_fiches.html' %}
+{% extends 'base_plantes.html' %}
 {% load fontawesome %}
+
 
 {% block subtitle %}
 
 <div class="row">
     <div class="col textcenter">
-       <h3> Chercher une plante (espèce)</h3>
+       <h2> Chercher une plante (espèce)</h2>
     </div>
 </div>
-
+{% if request.user.is_authenticated %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <h4>Recherche rapide </h4>
+        <p>Tapez le début du nom commun dans la boite ci-dessous :</p>
+    </div>
+</div>
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         <form class="form-horizontal" role="form" action="{% url 'jardins:voir_plante_recherche' %}" method="get"
-	enctype="multipart/form-data">
-{% include 'form_template.html' with form=plant_form boutonAnnuler=true %}
-</form>
+            enctype="multipart/form-data">
+        <div class="row justify-content-center">
+            <div class="col-sm-10 textcenter">
+                {% include 'form_template2.html' with form=plant_form %}
+            </div>
+            <div class="col-sm-2 textcenter">
+                <button id ="btn-valider" type="submit" class="btn btn-primary">Voir la fiche</button>
+            </div>
+        </div>
+        </form>
     </div>
 </div>
+{% endif %}
 
 {% endblock %}
 {% block content %}
@@ -30,13 +45,30 @@
     </div>
 </div>
 {% endif %}
-
-
-{%include 'pagination_alphabet.html' %}
+<hr>
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-    <div class="textcenter justify-content-center">
-        <table>
+<h4>ou Rechercher dans la base de données</h4>
+        <p>Rechercher un mot ou une syllabe dans l'ensemble de la base de donnée (nom scientifique, nom commun, etc.)</p>
+     <form class="form-inline justify-content-center" action="{% url 'jardins:chercher_plante' %}" method="get" role = "search">
+        {% csrf_token %}
+            <input class="form-control fmr-sm-2" name="id_recherche" type="text" placeholder="Rechercher...">
+            <button class="btn navbar-btn btn-primary my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fontawesome_icon 'search' %}</button>
+        </div>
+     </form>
+</div>
+<hr>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <h4>ou recherche alphabétique</h4>
+        <p>Rechercher une plante par la première lettre de son nom commun</p>
+    </div>
+</div>
+{%include 'pagination_alphabet.html' %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter justify-content-center">
+        <table style="width:100%;">
     {% for plante in plantes_list %}
             <tr>
                 <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>

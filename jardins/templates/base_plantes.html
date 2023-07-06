@@ -1,4 +1,48 @@
-{% extends 'base.html' %}
+{% extends 'base_jardin.html' %}
+{% load static %}
+{% block surtitle %}
+Jardins et grainothèques
+{% endblock %}
+
 {% block titreBlog %}
 <h1>Aux Jardins de Perma.Cat</h1>
 {% endblock  %}
+
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+{% block navbar %}
+{% endblock %}
+{% block submenu %}
+<div class="sticky-top">
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl">
+        <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+        <div class="navbar-collapse collapse mx-auto" id="navbar2">
+            <ul class="navbar-nav mx-auto subnavbar">
+		<li class="nav-item"><a href="{% url 'jardins:accueil' %}"> Accueil</a></li>
+		<li class="nav-item"><a href="{% url 'jardins:carte_jardins' %}"> Jardins</a></li>
+		<li class="nav-item"><a href="{% url 'jardins:carte_graino' %}"> Grainothèques</a></li>
+                {% if request.user.adherent_jp %}
+		<li class="nav-item"><a href="{% url 'jardins:carte_jardiniers' %}"> Jardinier-es</a></li>
+		<li class="nav-item"><a href="{% url 'jardins:plantes' %}"> Plantes</a></li>
+		<li class="nav-item"><a href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Le Forum</a></li>
+                {% endif %}
+		<li class="nav-item"><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}" width="22" height="22" alt="Retour sur perma.cat"/></a>
+        </li>
+                {% comment %}
+        <li class="nav-item dropdown">
+           <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
+             <i class="fa fa-plus iconleft" title="Ajouter"></i>
+           </a>
+            <ul class="dropdown-menu dropdown-menu-right nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
+                <li class="nav-item"><a href="{% url 'jardins:jardin_ajouter'  %}"> Ajouter un jardin </a></li>
+                <li class="nav-item"><a href="{% url 'jardins:grainotheque_ajouter'  %}"> Ajouter une grainothèque </a></li>
+            </ul>
+        </li>
+                {% endcomment %}
+            </ul>
+        </div>
+    </nav>
+</div>
+
+{% endblock %}

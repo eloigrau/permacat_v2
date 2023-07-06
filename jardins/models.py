@@ -2,10 +2,15 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from taggit.managers import TaggableManager
+from bourseLibre.models import Profil, Adresse
 import uuid
 
 class Choix():
-    type_jardin = ('0', 'Partagé'), ('1', 'Privé')
+    type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé')
+    type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
+
+    visibilite_jardin_annuaire = ('0', 'Public (visible sans inscription)'), ('1', 'Inscrits (visible seulement aux inscrits)'), ('2', "Invisible dans l'annuaire et la carte")
+    visibilite_jardin_adresse = ('0', 'Adresse visible sans inscription'), ('1', 'Adresse visible seulement aux inscrits)'), ('2', 'Adresse invisible (carte)')
 
 class DBRang_inpn(models.Model):
     RG_LEVEL = models.IntegerField()
@@ -142,5 +147,120 @@ class Plante(models.Model):
         return [str(x) for x in self.infos_supp.split('; ') if x]
 
 
-class Jardin(models.Model):
+class Plante_recherche(models.Model):
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE)
+
+class Jardin(models.Model):
+    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_jardin")
+    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_jardin", blank=True, null=True)
+    adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
+    categorie = models.CharField(max_length=3,
+        choices=Choix.type_jardin,
+        default='', verbose_name="Type de jardin*")
+    visibilite_annuaire = models.CharField(max_length=3,
+        choices=Choix.visibilite_jardin_annuaire,
+        default='', verbose_name="Visibilité du jardin sur l'annuaire")
+    visibilite_adresse = models.CharField(max_length=30,
+        choices=Choix.visibilite_jardin_adresse,
+        default='', verbose_name="Visibilité de l'adresse du jardin (sur la carte)")
+    titre = models.CharField(max_length=250, verbose_name="Nom du jardin*")
+    date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
+    slug = models.SlugField(max_length=100)
+    description = models.TextField(null=True, blank=True, help_text="Décrivez le jardin en quelques mots")
+    fonctionnement = models.TextField(null=True, blank=True, help_text="Un descriptif du fonctionnement du jardin (horaires, participation, gestion de l'eau, ...)")
+    permapotes_id = models.CharField(max_length=250, verbose_name="Identifiants sur permapotes.com", null=True, )
+    horaires = models.TextField(null=True, help_text="Horaires d'ouverture (s'il y a lieu)")
+    parcellesIndividuelles = models.BooleanField(default=False, verbose_name="Parcelles Individuelles")
+    parcellesCollectives = models.BooleanField(default=False, verbose_name="Parcelles Collectives")
+    email_contact = models.EmailField( verbose_name="Email de contact*")
+    telephone = models.CharField(max_length=15, blank=True, verbose_name="Numéro de telephone de contact")
+
+    def get_absolute_url(self):
+        return reverse('jardins:jardin_lire', kwargs={'slug':self.slug})
+
+    def __str__(self):
+        return self.titre
+
+    def get_visibilite_display(self):
+        return str(self.get_visibilite_annuaire_display()) + " "+ str(self.get_visibilite_adresse_display())
+
+class Grainotheque(models.Model):
+    categorie = models.CharField(max_length=3,
+        choices=Choix.type_grainotheque,
+        default='', verbose_name="Type de grainotheque*")
+    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_grainotheque")
+    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", blank=True, null=True)
+    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, blank=True, null=True)
+    adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
+    date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
+    email_contact = models.EmailField( verbose_name="Email de contact*")
+
+    visibilite_annuaire = models.CharField(max_length=30,
+        choices= Choix.visibilite_jardin_annuaire,
+        default='', verbose_name="Visibilité de la grainothèque sur l'annuaire")
+    visibilite_adresse = models.CharField(max_length=30,
+        choices= Choix.visibilite_jardin_adresse,
+        default='', verbose_name="Visibilité de l'adresse de la grainotheque (sur la carte)")
+    titre = models.CharField(max_length=250,)
+    slug = models.SlugField(max_length=100)
+
+    description = models.TextField(null=True)
+
+
+    def __str__(self):
+        return self.titre
+
+    def get_absolute_url(self):
+        return reverse('jardins:grainotheque_lire', kwargs={'slug':self.slug})
+
+    def get_visibilite_display(self):
+        return str(self.get_visibilite_annuaire_display()) + " "+ str(self.get_visibilite_adresse_display())
+
+class InfoGraine(models.Model):
+    date_recolte = models.DateTimeField(verbose_name="Date de récolte", default=timezone.now)
+    duree_germinative = models.FloatField(verbose_name="Durée de conservation (années)", blank=True, default="5")
+    stock_quantite = models.CharField(max_length=120, blank=True, verbose_name="Quantité de graines (nombre ou grammes)",)
+    description = models.TextField(null=True, blank=True, help_text="Description (infos supplémentaires")
+
+    def __str__(self):
+        return str(self.description) + " " + str(self.stock_quantite) + " "+ str(self.duree_germinative)+ " "+ str(self.date_recolte)
+
+class Graine(models.Model):
+    grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
+    plante = models.ForeignKey(Plante, on_delete=models.CASCADE)
+    infos = models.OneToOneField(InfoGraine, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.plante) + " " + str(self.infos)
+
+    def get_absolute_url(self):
+        return reverse('jardins:grainotheque_lire', kwargs={'slug':self.grainotheque.slug})
+
+    @property
+    def get_str_html_header(self):
+        return "<thead><tr><th> Plante</th><th>Description</th><th>Stock</th><th>Durée germinative</th><th>Date de récolte</th></tr></thead>"
+
+    @property
+    def get_str_html(self):
+        return "<tr><td><a href='"+self.plante.get_absolute_url()+"'>"+str(self.plante) +"</a></td><td>" + str(self.infos.description) +"</td><td>" + str(self.infos.stock_quantite) + "</td><td>" + str(self.infos.duree_germinative) + "</td><td>" + str(self.infos.date_recolte.strftime('%d/%m/%Y')) +"</td></tr>"
+
+class InscriptionJardin(models.Model):
+    user = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="jardin_suiveur")
+    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, related_name="jardin_suivi")
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(
+            self.jardin)
+
+class InscriptionGrainotheque(models.Model):
+    user = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="grainotheque_suiveur")
+    grainotek = models.ForeignKey(Grainotheque, on_delete=models.CASCADE, related_name="grainotheque_suivi" )
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+
+    def __str__(self):
+        return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(
+            self.jardin)

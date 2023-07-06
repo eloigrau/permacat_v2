@@ -111,19 +111,19 @@
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}"><i class='fa fa-asterisk iconleft' ></i> Présentation </a></li>
 
-                            <li><a class="dropdown-item" href="https://festigraines.fr" target="_blank"><i class='fa fa-comments iconleft' ></i> Festigraines.fr </a></li>
+                            <li><a class="dropdown-item" href="https://festigraines.fr" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-comments iconleft' ></i> Festigraines.fr </a></li>
    {% if request.user.adherent_rtg %}
                             <li class="divider" role="separator"></li>
                             <li> <a class="dropdown-item" href="{% url 'carte'  asso='rtg' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire </a></li>
                             <li class="divider" role="separator"></li>
-                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/rtg_doctravail" target="_blank"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/rtg_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='rtg'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:lireArticle' slug='dossiersactions-en-cours'%}"><i class='fa fa-comments iconleft' ></i> Dossiers en cours </a></li>
                             <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='rtg' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
 
    {% endif %}
                               <li class="divider" role="separator"></li>
-                          <li> <a class="dropdown-item" href="https://1drv.ms/b/s!AgO84waSGnDoiDlHJeeJPxRRNJM_?e=ucgIvC" target="_blank"><i class='fa fa-info-circle iconleft' ></i>  Statuts  </a></li>
+                          <li> <a class="dropdown-item" href="https://1drv.ms/b/s!AgO84waSGnDoiDlHJeeJPxRRNJM_?e=ucgIvC" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-info-circle iconleft' ></i>  Statuts  </a></li>
                        <li> <a class="dropdown-item" href="{% url 'adhesion_asso' asso='rtg' %}"><i class='fa fa-euro-sign iconleft ' ></i> Adhésion en ligne </a></li>
 
                         </ul>
@@ -163,6 +163,9 @@
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle"  href="#">Jardins Partagés</a>
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
+                        <li> <a class="dropdown-item" href="{% url 'jardins:accueil' %}"><i class='fa fa-folder-open iconleft' ></i>  Jardins et grainothèques </a></li>
+                        <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"><i class='fa fa-comments iconleft ' ></i> Forum</a></li>
+                        {% comment %}
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index' %}"><i class='fa fa-folder-open iconleft' ></i>  Blog des jardins Partagés </a></li>
                         <li> <a class="dropdown-item" href="{% url 'jardins:plantes' %}"><i class='fa fa-folder-open iconleft' ></i>  Liste des plantes </a></li>
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=1 %}"><i class='fa fa-pagelines' ></i> Jardi Per tots</a></li>
@@ -170,13 +173,14 @@
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=3 %}"><i class='fa fa-pagelines' ></i> Jardin de Lurçat </a></li>
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=4 %}"><i class='fa fa-pagelines' ></i> Gardiens de la Terre </a></li>
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=5 %}"><i class='fa fa-pagelines' ></i> Fermille </a></li>
+                         {% endcomment %}
                         </ul>
                     </li>
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle"  href="#">PermAgora</a>
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso'  asso='scic' %}"><i class='fa fa-asterisk iconleft' ></i> Présentation </a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='scic'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='scic'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
                            <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>
                            <li> <a class="dropdown-item" href="{% url 'agora:acceuil' %}"><i class='fa fa-compass iconleft' ></i>  Journée Agora de la Transition  </a></li>
       {% if request.user.adherent_scic %}
@@ -184,7 +188,7 @@
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='scic' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                         <li><a class="dropdown-item" href="{% url 'admin_asso' asso='scic' %}"><i class='fa fa-database' ></i> Administration  </a></li>
                         <li class="divider" role="separator"></li>
-                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permagora_doctravail" target="_blank"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permagora_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
                     <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='scic' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
 
    {% endif %}
@@ -206,8 +210,8 @@
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='citealt' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                           <li> <a class="dropdown-item" href="{% url 'organisation_citealt' %}"><i class='fa fa-sitemap iconleft' ></i>  Organisation  </a></li>
                             <li class="divider" role="separator"></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='citealt'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
-                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/citealtruiste_doctravail" target="_blank"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='citealt'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/citealtruiste_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
                     </li>
@@ -219,8 +223,8 @@
                             <li class="divider" role="separator"></li>
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='viure' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                             <li class="divider" role="separator"></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='viure'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
-                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/viure_doctravail" target="_blank"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='viure'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/viure_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
                     </li>
@@ -232,8 +236,8 @@
                             <li class="divider" role="separator"></li>
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='bzz2022' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                             <li class="divider" role="separator"></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='bzz2022'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
-                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/projetbzzz_doctravail" target="_blank"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='bzz2022'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/projetbzzz_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
                     </li>
@@ -300,7 +304,7 @@
                                 <a class="dropdown-item dropdown-toggle"  href="#">{{projet.titre|couperTexte:40}}</a>
                                     <ul class="dropdown-menu nav8-dropdown-subsubmenu">
                                    <li> <a class="dropdown-item" href="{% url 'blog:lireProjet' slug=projet.slug %}"><i class='fa fa-folder-open' ></i>  Fiche Projet</a></li>
-                                   <li> <a class="dropdown-item" href="{% url 'blog:index' %}?categorie=Ecovillage"><i class='fa fa-comments' ></i>  Articles du forum</a></li>
+                                   <li> <a class="dropdown-item" href="{% url 'blog:index' %}?categorie=Ecovillage"><i class='fa fa-comments' ></i>  Forum</a></li>
                                 </ul>
                             </li>
                         {%else  %}
@@ -405,14 +409,14 @@
                 <li class="dropdown-submenu-right">
                     <a class="dropdown-item dropdown-toggle"  href="#">Outils externes</a>
                     <ul class="dropdown-menu nav8-dropdown-submenu dropdown-menu-right">
-                        <li> <a class="dropdown-item" href="https://framatalk.org/permacat" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Visioconférence (Framatalk) </a></li>
-                        <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Doc partagé (Framapad) </a></li>
-                        <li> <a class="dropdown-item" href="https://lite.framacalc.org/permacat_{% random_name 8 %}" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Tableau partagé (Framacalc) </a></li>
-                        <li> <a class="dropdown-item" href="https://framadate.org/create_poll.php?type=date&lang=fr" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Sondage date (Framadate) </a></li>
-                        <li> <a class="dropdown-item" href="https://framaforms.org/node/add/form1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Sondage (Framaforms) </a></li>
-                        <li> <a class="dropdown-item" href="https://www.balotilo.org/" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Vote (Balotilo) </a></li>
-                        <li> <a class="dropdown-item" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Covoiturage (togetzer) </a></li>
-                        <li> <a class="dropdown-item" href="https://pdf2png.com/fr/" target="_blank"><i class='fa fa-arrow-right iconleft' ></i>  Pdf to png (gratuit)</a></li>
+                        <li> <a class="dropdown-item" href="https://framatalk.org/permacat" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Visioconférence (Framatalk) </a></li>
+                        <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_{% random_name 8 %}" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Doc partagé (Framapad) </a></li>
+                        <li> <a class="dropdown-item" href="https://lite.framacalc.org/permacat_{% random_name 8 %}" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Tableau partagé (Framacalc) </a></li>
+                        <li> <a class="dropdown-item" href="https://framadate.org/create_poll.php?type=date&lang=fr" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Sondage date (Framadate) </a></li>
+                        <li> <a class="dropdown-item" href="https://framaforms.org/node/add/form1" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Sondage (Framaforms) </a></li>
+                        <li> <a class="dropdown-item" href="https://www.balotilo.org/" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Vote (Balotilo) </a></li>
+                        <li> <a class="dropdown-item" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Covoiturage (togetzer) </a></li>
+                        <li> <a class="dropdown-item" href="https://pdf2png.com/fr/" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Pdf to png (gratuit)</a></li>
                     </ul>
                 </li>
                 <li class="divider" role="separator"></li>
@@ -434,6 +438,7 @@
                         <li><a class="dropdown-item" href="{% url 'voir_articles_a_archiver' %}">Archiver articles</a></li>
                         <li><a class="dropdown-item" href="{% url 'vote:index' %}"><i class="fa fa-bullhorn iconleft"></i>  Liste des suffrages </a></li>
                        <li> <a class="dropdown-item" href="{% url 'nettoyerActions' %}"> nettoyerActions</a></li>
+                       <li> <a class="dropdown-item" href="{% url 'transforBlogJpToForum' %}"> transforBlogJpToForum</a></li>
                        <li> <a class="dropdown-item" href="{% url 'supprimervieuxcomptes' %}"> supprimervieuxcomptes</a></li>
                        <li> <a class="dropdown-item" href="{% url 'nettoyerFollows' %}"> nettoyerFollows</a></li>
                         <li> <a class="dropdown-item" href="{% url 'supprimerHitsAnciens' %}"> supprimerHitsAnciens</a></li>
@@ -512,6 +517,12 @@
                         </ul>
                     </li>
 
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle"  href="#">Jardins et Grainothèques</a>
+                        <ul class="dropdown-menu  nav5-dropdown-submenu">
+                        <li> <a class="dropdown-item" href="{% url 'jardins:accueil' %}"><i class='fa fa-folder-open iconleft' ></i>  Présentation </a></li>
+                      </ul>
+                    </li>
                     {% comment %}
                     <li class="dropdown-submenu">
                         <a class="dropdown-item dropdown-toggle"  href="#">Fermille</a>
@@ -526,6 +537,12 @@
 
                       </ul>
                     </li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle"  href="#">Cité Altruiste</a>
+                        <ul class="dropdown-menu  nav5-dropdown-submenu">
+                       <li> <a class="dropdown-item" href="{% url 'presentation_asso' asso='citealt' %}"><i class='fa fa-asterisk iconleft ' ></i> Présentation</a></li>
+                      </ul>
+                    </li>
                     {% endcomment %}
 
                     <li class="dropdown-submenu">
@@ -534,12 +551,6 @@
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso' asso='scic' %}"><i class='fa fa-asterisk iconleft ' ></i> Présentation</a></li>
 <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>
 
-                      </ul>
-                    </li>
-                    <li class="dropdown-submenu">
-                        <a class="dropdown-item dropdown-toggle"  href="#">Cité Altruiste</a>
-                        <ul class="dropdown-menu  nav5-dropdown-submenu">
-                       <li> <a class="dropdown-item" href="{% url 'presentation_asso' asso='citealt' %}"><i class='fa fa-asterisk iconleft ' ></i> Présentation</a></li>
                       </ul>
                     </li>
                     <li class="dropdown-submenu">

@@ -1,19 +1,35 @@
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, UpdateView, DeleteView
-from .models import Plante, DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur
+from django.shortcuts import render, redirect, reverse
+from django.core.exceptions import PermissionDenied
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
+from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
+    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
+from bourseLibre.views import testIsMembreAsso
+from bourseLibre.filters import ProfilCarteFilter
 from bourseLibre.settings.production import LOCALL
-from .forms import Plante_rechercheForm
+from bourseLibre.forms import AdresseForm4
+from bourseLibre.models import Asso, Profil
+from .forms import Plante_rechercheForm, GrainothequeForm, GrainothequeChangeForm, JardinForm, JardinChangeForm, \
+    GraineForm, InfoGraineForm, ContactParticipantsForm
+from .filters import JardinCarteFilter, GrainoCarteFilter
+from actstream import actions, action
+from webpush import send_user_notification
+from dal import autocomplete
+from bs4 import BeautifulSoup
+from bourseLibre.settings.production import SERVER_EMAIL
+from bourseLibre.views_admin import send_mass_html_mail
 
-@login_required
 def accueil(request):
     return render(request, "jardins/accueil.html", {'msg':"Tout est pret"})
 
+@login_required
+def accueil_admin(request):
+    return render(request, "jardins/accueil_admin.html", {'msg':"Tout est pret"})
 
 def get_dossier_db(nomfichier):
     if LOCALL:
@@ -218,14 +234,11 @@ class ListePlantes(ListView):
 
         return context
 
-
-@login_required
 def voir_plante(request, cd_nom):
     p = get_object_or_404(Plante, CD_NOM=int(cd_nom))
     return render(request, "jardins/plante.html", {"plante":p})
 
 
-@login_required
 def voir_plante_nom(request):
     cd_nom = int(request.GET["nom"])
     try:
@@ -235,17 +248,15 @@ def voir_plante_nom(request):
 
     return render(request, "jardins/plante.html", {"plante":p})
 
-@login_required
 def voir_plante_recherche(request):
     cd_nom = int(request.GET["plante"])
     try:
         p = Plante.objects.get(CD_NOM=int(cd_nom))
     except:
-        return render(request, "jardins/plante.html", {"msg":"plante introuvable"})
+        return render(request, "jardins/plante.html", {"msg":"plante introuvable (" + str(cd_nom) +")"})
 
     return render(request, "jardins/plante.html", {"plante":p})
 
-from dal import autocomplete
 
 class PlanteAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -270,3 +281,208 @@ def ajouter_plante(request):
         plante = form.save(commit=False)
 
     return render(request, "jardins/ajouter_plante.html", {"form":form, "plante":plante})
+
+@login_required
+def chercher_plante(request):
+    recherche = str(request.GET.get('id_recherche')).lower()
+    plante_list = []
+    if recherche:
+        plante_list = Plante.objects.filter(Q(CD_SUP__lower__icontains=recherche) |
+                                              Q(LB_NOM__lower__icontains=recherche) |
+                                              Q(NOM_COMPLET__icontains=recherche) |
+                                              Q(LB_AUTEUR__lower__icontains=recherche) |
+                                              Q(NOM_VERN__lower__icontains=recherche) |
+                                              Q(FR__lower__icontains=recherche)).distinct()
+
+    return render(request, 'jardins/plante_recherche.html', {'recherche':recherche, 'plante_list':plante_list,})
+
+
+class AjouterJardin(CreateView):
+    model = Jardin
+    form_class = JardinForm
+    template_name_suffix = '_ajouter'
+
+    def form_valid(self, form):
+        self.object = form.save(self.request.user)
+        return redirect("jardins:jardin_ajouterAdresse", slug=self.object.slug)
+
+@login_required
+def jardin_ajouterAdresse(request, slug):
+    jardin = get_object_or_404(Jardin, slug=slug)
+    form_adresse = AdresseForm4(request.POST or None)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        jardin.adresse = adresse
+        jardin.save()
+        return redirect(jardin)
+
+    return render(request, 'jardins/jardin_ajouterAdresse.html', {'jardin':jardin, 'form_adresse':form_adresse })
+
+
+def carte_jardins(request):
+    jardins = Jardin.objects.all().order_by("titre")
+    nbProf = len(jardins)
+
+    if not request.user.is_authenticated:
+        jardins = jardins.filter(visibilite_annuaire='0')
+    else:
+        jardins = jardins.filter(Q(visibilite_annuaire='0') | Q(visibilite_annuaire='1') )
+
+    if "lettre" in request.GET:
+        jardins = jardins.filter(titre__istartswith=request.GET["lettre"])
+
+    jardins_filtres = JardinCarteFilter(request.GET, queryset=jardins)
+
+    titre = "Carte/annuaire des jardins du 66 (%d/%d)*"%(len(jardins_filtres.qs), nbProf)
+
+    return render(request, 'jardins/carte_jardins.html', {'filter':jardins_filtres, 'titre': titre, } )
+
+def carte_graino(request):
+    graino = Grainotheque.objects.all().order_by("titre")
+    nbProf = len(graino)
+
+    if not request.user.is_authenticated:
+        graino = graino.filter(visibilite_annuaire='0')
+    else:
+        graino = graino.filter(Q(visibilite_annuaire='0') | Q(visibilite_annuaire='1') )
+
+    if "lettre" in request.GET:
+        graino = graino.filter(titre__istartswith=request.GET["lettre"])
+
+    graino_filtres = GrainoCarteFilter(request.GET, queryset=graino)
+
+    titre = "Carte/annuaire des grainothèques du 66 (%d/%d)*"%(len(graino_filtres.qs), nbProf)
+
+    return render(request, 'jardins/carte_graino.html', {'filter':graino_filtres, 'titre': titre, } )
+
+
+class JardinDetailView(DetailView):
+    model = Jardin
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_inscrit"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
+        context["jardins"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
+        return context
+
+class AjouterGrainotheque(CreateView):
+    model = Grainotheque
+    form_class = GrainothequeForm
+    template_name_suffix = '_ajouter'
+
+    def form_valid(self, form):
+        self.object = form.save(self.request.user)
+        return HttpResponseRedirect(self.get_success_url())
+
+class GrainothequeDetailView(DetailView):
+    model = Grainotheque
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["graines"] = Graine.objects.filter(grainotheque=self.object)
+        return context
+
+class ModifierJardin(UpdateView):
+    model = Jardin
+    form_class = JardinChangeForm
+    template_name_suffix = '_modifier'
+
+class SupprimerJardin(DeleteView):
+    model = Jardin
+    template_name_suffix = '_modifier'
+
+class ModifierGrainotheque(UpdateView):
+    model = Grainotheque
+    form_class = GrainothequeChangeForm
+    template_name_suffix = '_modifier'
+
+class SupprimerGrainotheque(DeleteView):
+    model = Grainotheque
+    template_name_suffix = '_modifier'
+
+@login_required
+def graino_ajouterGraine(request, slug):
+    graino = get_object_or_404(Grainotheque, slug=slug)
+    form = GraineForm(request.POST or None)
+    form_infos = InfoGraineForm(request.POST or None)
+    plant_form = Plante_rechercheForm(None)
+    if form_infos.is_valid():
+          #  return redirect("jardins:voir_plante", cd_nom=str(self.qs[0].CD_NOM))
+        infos = form_infos.save()
+        cd_nom = int(request.POST["plante"])
+        plante = Plante.objects.get(CD_NOM=int(cd_nom))
+        graine = form.save(graino, infos, plante)
+        return redirect(graino)
+
+    return render(request, 'jardins/grainotheque_ajouterGraine.html', {'graino':graino, 'plant_form':plant_form , 'form_infos':form_infos })
+
+
+@login_required
+def inscriptionJardin(request, slug):
+    jardin = get_object_or_404(Jardin, slug=slug)
+    if not InscriptionJardin.objects.filter(user=request.user, jardin=jardin):
+        inscript = InscriptionJardin(user=request.user, jardin=jardin)
+        inscript.save()
+        action.send(request.user, verb='jardins_inscription', action_object=jardin, url=jardin.get_absolute_url(),
+                     description="s'est inscrit.e au jardin: '%s'" % jardin.titre)
+
+    return redirect(jardin.get_absolute_url())
+
+@login_required
+def annulerInscription(request, slug):
+    jardin = get_object_or_404(Jardin, slug=slug)
+    inscript = InscriptionJardin.objects.filter(user=request.user, jardin=jardin)
+    inscript.delete()
+    action.send(request.user, verb='jardin_désinscription', action_object=jardin, url=jardin.get_absolute_url(),
+                 description="s'est désinscrit du jardin: '%s'" % jardin.titre)
+    return redirect(jardin.get_absolute_url())
+
+@login_required
+def contacterInscritsJardin(request, slug):
+
+    jardin = get_object_or_404(Jardin, slug=slug)
+    inscrits = [x.user.email for x in InscriptionJardin.objects.filter(jardin=jardin)]
+    form = ContactParticipantsForm(request.POST or None, )
+    try:
+        referent = Profil.objects.get(username=jardin.referent)
+        inscrits.append(referent.email)
+    except:
+        pass
+    if form.is_valid():
+        sujet = "[Jardins] Au sujet dU Jardin '" + jardin.titre + "' "
+        message_html = str(request.user.username) + " (" + str(
+            request.user.email) + ") a écrit le message suivant aux participants : \n"
+        message_html += form.cleaned_data['msg']
+        message_html += "\n (ne pas répondre à ce message)"
+        messagetxt = BeautifulSoup(message_html).get_text()
+        send_mass_html_mail([(sujet, messagetxt, message_html, SERVER_EMAIL, inscrits)], fail_silently=False)
+
+    return render(request, 'jardins/jardin_contacterParticipants.html',
+                  {'jardin': jardin, 'form': form, 'inscrits': inscrits})
+
+
+@login_required
+def carte_jardiniers(request):
+    asso = Asso.objects.get(abreviation="jp")
+    profils_total = asso.getProfils()
+    nbProf = len(profils_total)
+    profils = asso.getProfils_Annuaire()
+    if "lettre" in request.GET:
+        profils = profils.filter(username__istartswith=request.GET["lettre"])
+    profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
+
+    titre = "Carte/annuaire des membres du groupe " + asso.nom + " (%d/%d)*"%(len(profils_filtres.qs), nbProf)
+
+    try:
+        import simplejson
+        import requests
+        url = "https://presdecheznous.gogocarto.fr/api/elements.json?limit=500&bounds=1.75232%2C42.31794%2C3.24646%2C42.94034"
+
+        reponse = requests.get(url)
+        data = simplejson.loads(reponse.text)
+        ev = data["data"]
+    except:
+        ev = []
+
+    return render(request, 'jardins/carte_cooperateurs.html', {'filter':profils_filtres, 'titre': titre, 'data':ev, "asso":asso} )

@@ -14,6 +14,8 @@ class ProfilCarteFilter(django_filters.FilterSet):
                                                   label="Membre de la Cité Altruiste")
     adherent_viure = django_filters.BooleanFilter(field_name='adherent_viure', method='get_adherent_asso',
                                                   label="Membre du collectif Viure")
+    adherent_jp = django_filters.BooleanFilter(field_name='adherent_jp', method='get_adherent_asso',
+                                                  label="Membre des jardins partagés")
     compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_competencedesritpion_filter', label="Mot dans la compétence ou la description")
 
 
@@ -39,5 +41,6 @@ class ProfilCarteFilter(django_filters.FilterSet):
             "adherent_rtg": ['exact', ],
             "adherent_citealt": ['exact', ],
             "adherent_viure": ['exact', ],
+            "adherent_jp": ['exact', ],
         }
 

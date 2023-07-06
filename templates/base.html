@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Perma.Cat {% block title %} {% endblock %} </title>
+    <title>{% block surtitle %} Perma.Cat {% block title %} {% endblock %}{% endblock %} </title>
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type='text/css'/>
     {%comment %}
@@ -111,9 +111,11 @@
 </div>
 
 <footer>
+                {% block footer %}
     <p class="textcenter">
     <a href="#top" id="scroll-to-top" class="btn"><i class="fa fa-angle-up"></i></a></p>
     <p class="textcenter textepetit">&copy; PermaCat; {% now 'd/m/Y' %}</p>
+                {% endblock %}
 </footer>
 
 </body>

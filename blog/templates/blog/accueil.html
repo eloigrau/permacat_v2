@@ -52,6 +52,9 @@
           <div class="modal-header">
               <div class="row justify-content-center">
                <h5 > Abonnements au forum</h5>
+                  <p>Cliquez sur la cloche barrée pour vous abonner. Si la cloche n'est pas barrée, alors vous êtes abonné. Si la cloche n'est asp barrée, cliquez dessus pour vous désabonner.
+                  </p>
+                  <p>L'abonnement consiste à recevoir un mail à chaque nouvel article. Vous pouvez aussi recevoir une notification, en cliquant sur le bouton bleu de la page des <a href="{% url 'mesSuivis' %}">abonnements</a>.</p>
               </div>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -123,16 +126,6 @@
                 </a>
             </li>
         {% endfor %}
-
-        {% if request.user.adherent_jp %}
-            <li class="nav-item ">
-                <a href="{% url 'jardinpartage:index' %}">
-                    <button type="button" class="btn btn-info btn-menu-forum btn-block" >
-                        <h6>Jardins Ptg</h6>
-                    </button>
-                </a>
-            </li>
-        {% endif %}
 
         {% comment %}
             <li class="nav-item dropdown">

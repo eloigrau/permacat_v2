@@ -19,11 +19,14 @@
 
 <div class="row justify-content-center">
   <div class="col-sm-12 textcenter">
-      <p>Notifications sur navigateur (firefox/chrome) sur smartphone et ordi : {% webpush_button with_class="btn btn-info" %}</p>
+      <p>Recevoir les notifications sur navigateur (firefox/chrome) sur smartphone et ordi : {% webpush_button with_class="btn btn-info" %}</p>
   </div>
 </div>
         <p>Vous recevez des nouvelles par mail pour chaque nouveau :</p>
         <table class="table2 table table-condensed tableprofils table-striped sortable">
+                <thead>
+                </thead>
+                <tbody>
             {% for action in follows_base %}
                 {% if action %}
                 <tr>
@@ -32,6 +35,7 @@
                 </tr>
                 {%endif%}
             {%endfor%}
+                </tbody>
         </table>
     </div>
 </div>
@@ -43,6 +47,9 @@
         <h5>Abonnements aux Articles du forum </h5>
         <p>Vous recevez des nouvelles par mail pour les nouveaux articles des groupes suivants :</p>
         <table class="table2 table table-condensed tableprofils table-striped sortable">
+                <thead>
+                </thead>
+                <tbody>
             {% for action in follows_forum %}
                 {% if action %}
                 <tr>
@@ -51,6 +58,7 @@
                 </tr>
                 {%endif%}
             {%endfor%}
+            </tbody>
         </table>
     </div>
         {% endif %}
@@ -68,6 +76,9 @@
         <h5>Abonnements aux Salons de discussions </h5>
         <p>Vous recevez des nouvelles par mail pour les Salons de discussions suivants :</p>
         <table class="table2 table table-condensed tableprofils table-striped sortable">
+                <thead>
+                </thead>
+                <tbody>
             {% for action in follows_agora %}
                 {% if action %}
                 <tr>
@@ -76,6 +87,7 @@
                 </tr>
                 {%endif%}
             {%endfor%}
+                </tbody>
         </table>
     </div>
         {% endif %}
@@ -86,6 +98,9 @@
         <h5>Abonnements particuliers </h5>
         <p>Vous recevez des nouvelles par mail pour les articles ou projets suivants :</p>
         <table class="table2 table table-condensed tableprofils table-striped sortable">
+                <thead>
+                </thead>
+                <tbody>
             {% for action in follows_autres %}
                 {% if action %}
                 <tr>
@@ -94,6 +109,7 @@
                 </tr>
                 {%endif%}
             {%endfor%}
+                </tbody>
         </table>
     </div>
 <div class="row justify-content-center">

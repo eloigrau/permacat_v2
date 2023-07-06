@@ -1,0 +1,44 @@
+{% load app_filters %}
+{% load avatar_tags %}
+
+{% block header %}
+{% load static %}
+{% endblock %}
+
+{% block content %}
+{%include 'pagination_alphabet.html' %}
+
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th style="min-width:40%;">Nom</th>
+                <th>Type</th>
+                <th>Email</th>
+                <th>Commune</th>
+                <th>Distance</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for jardin in jardins %}
+        <tr>
+           <td style="width-min:30%;" class="titre_forum"><a href="{% url 'jardins:jardin_lire' jardin.slug %}">{{ jardin.titre }}</a></td>
+            <td><a href="{% url 'jardins:jardin_lire' jardin.slug  %}">{{ jardin.get_categorie_display }}</a></td>
+            <td>{{ jardin.email_contact }}</td>
+            <td>{%if jardin.adresse.commune %}{{ jardin.adresse.commune }} {% else %}-{% endif %}</td>
+            <td><a href="{% url 'jardins:jardin_lire' jardin.slug  %}">{{ jardin|distance:request.user }}</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+    <p class="textcenter textepetit">(*qui ont accepté d'apparaitre dans l'annuaire)</p>
+    <p class="textcenter textepetit">(**la distance est calculée à vol d'oiseau entre l'adresse indiquée sur votre profil, et l'adresse du jardin)</p>
+
+
+{% endblock %}

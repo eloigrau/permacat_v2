@@ -1,60 +1,88 @@
-{% extends 'base_fiches.html' %}
+{% extends 'base_plantes.html' %}
+{% load static %}
+
+{% block header %}
+<link href="{% static 'css/style_list.css'%}" rel="stylesheet" />
+{%endblock%}
+
 {% block subtitle %}
 
 <div class="row">
     <div class="col textcenter">
-       <h3> Jardins</h3>
+       <h2> Bienvenue sur le portail des jardins et des grainothèques du 66 </h2>
     </div>
 </div>
 
 {% endblock %}
 {% block content %}
 
+{% if request.user.is_anonymous %}
+			<p class="textcenter">
+				 <a class="btn btn-warning" href="{% url 'login'%}" disabled> Il faut être connecté pour pouvoir s'inscrire dans ce groupe</a>
+			</p>
+		{% else %}
+
+			{% if request.user.adherent_jp %}
+			<p class="textcenter">
+				 <a class="btn btn-warning" href="{% url 'inscription_jp' %}"> Je suis inscrit -> Je me désinscris du groupe en cliquant ici</a>
+			</p>
+			{% else %}
+                <p class="textcenter">
+                     <a class="btn btn-primary" href="{% url 'inscription_jp' %}">Vous ne faites pas partie du groupe -> Inscrivez-vous en cliquant ici</a>
+                </p>
+			{% endif %}
+		{% endif %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <h4>Inscrivez votre jardin et/ou votre grainothèque, ou contactez un jardin pour participer !</h4>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <ul class="check-list">
+            <li> Cette plateforme (gratuite et sans publicité) a pour but de créer le réseau en ligne des jardins du Pays Catalan.
+            </li>
+            <li> Elle a été développée bénévolement par PermAgora, dans le cadre de la collaboration avec PermaCat et le groupe de travail initié par le Pays Pyrenées Mediterannée, afin de contribuer au développement de la résilience alimentaire de notre territoire, par le développement de l'agro-écologie.
+            </li>
+                <li> Vous pouvez visualiser la <a href="{% url 'jardins:carte_graino'  %}">carte des grainothèques</a> ou <a href="{% url 'jardins:carte_jardins'  %}">celle des jardins</a>. Certains sont visibles par tous, mais certains ne sont visibles que par les inscrits, alors inscrivez-vous !
+            Certains jardins sont invisibles mais ils participent aussi au réseau ;)</li>
+            <li>Vous avez un jardin ou une grainothèque ? Inscrivez-les ici afin de pouvoir échanger avec d'autres. Ensemble on est plus forts !</li>
+            <li>Vous pouvez aussi vous inscrire à la newsletter afin de recevoir des informations par mail (quelques uns par an)</li>
+        </ul>
+    </div>
+</div>
+{% comment %}
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         <div class="btn-group btn-group-justified">
-         <a href="{% url 'jardins:plantes' %}">
+         <a href="{% url 'jardins:jardin_ajouter' %}">
         <button type="button" class="btn btn-success" >
-               Liste des plantes
+               Ajouter un jardin
             </button>
          </a>
-            {% if request.user.is_superuser %}
-         <a href="{% url 'jardins:import_db_inpn_0' %}?j_min=0&j_max=500000">
+         <a href="{% url 'jardins:carte_jardins' %}">
         <button type="button" class="btn btn-success" >
-               import DB Plantes
+              Voir les jardins
             </button>
          </a>
-         <a href="{% url 'jardins:import_db_inpn_1' %}">
+         <a href="{% url 'jardins:jardin_ajouter' %}">
         <button type="button" class="btn btn-success" >
-               import DB 1
+               Ajouter une Grainotheque
             </button>
          </a>
-         <a href="{% url 'jardins:import_db_inpn_2' %}">
-        <button type="button" class="btn btn-success" >
-               import DB 2
-            </button>
-         </a>
-         <a href="{% url 'jardins:import_db_inpn_3' %}">
-        <button type="button" class="btn btn-success" >
-               import DB 3
-            </button>
-         </a>
-         <a href="{% url 'jardins:import_db_inpn_4' %}">
-        <button type="button" class="btn btn-success" >
-               import DB 4
-            </button>
-         </a>
-            {% endif %}
     </div>
    </div>
+</div>
+{% endcomment %}
 
-   </div>
+{% if request.user.is_superuser %}
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         {{msg|safe}}
    </div>
-
-   </div>
+</div>
+{% endif %}
 
 {% endblock %}
 

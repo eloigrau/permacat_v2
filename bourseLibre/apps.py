@@ -14,6 +14,7 @@ class BourseLibreConfig(AppConfig):
         from photologue.models import Document
         from photologue.models import Album
         from permagora.models import Commentaire_charte, PropositionCharte, Message_permagora
+        from jardins.models import Jardin as Jardin_partage, Grainotheque
         registry.register(self.get_model('Profil'))
         registry.register(self.get_model('MessageGeneral'))
         registry.register(self.get_model('Message_salon'))
@@ -45,3 +46,7 @@ class BourseLibreConfig(AppConfig):
         registry.register(Commentaire_charte)
         registry.register(PropositionCharte)
         registry.register(Message_permagora)
+        registry.register(Jardin_partage)
+        registry.register(Grainotheque)
+
+

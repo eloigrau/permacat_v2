@@ -1,5 +1,17 @@
 {% extends 'base_defraiement.html' %}
 
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load staticfiles %}
+{% endblock %}
+{% block header %}
+{{ form.media }}
+{% leaflet_js %}
+{% leaflet_css %}
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{%endblock%}
 {% block subtitle %}
 <div class="row justify-content-center">
 	<div class="col col-md-12 textcenter"><h3>Ajouter l'adresse de la réunion '{{reunion.titre}}'</h3>
@@ -8,6 +20,61 @@
 </div>
 {% endblock  %}
 {% block content %}
+
+<div class="row cartePleinePage">
+  <div class="col-md-12" >
+      <style>
+
+    .leaflet-container {  /* all maps */
+        width:  98%;
+        height: 98%;
+    }
+    </style>
+      <script type="text/javascript">
+
+        function map_init_basic (map, options) {
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+
+        map.on('click', function(ev) {
+            $('#id_latitude').val(ev.latlng.lat);
+          $('#id_longitude').val(ev.latlng.lng);
+          if (typeof pin == "object") {
+            pin.setLatLng(ev.latlng);
+          } else {
+            pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true });
+            pin.addTo(map);
+            pin.on('drag',function(ev) {
+              $('#id_latitude').val(ev.latlng.lat);
+              $('#id_longitude').val(ev.latlng.lng);
+            });
+          }
+        });
+}
+$('.example').leafletLocationPicker({
+  alwaysOpen: false,
+  {% comment %}
+  className: baseClassName,
+  location: yourmap.center,
+  {% endcomment %}
+  locationFormat: '{lat}{sep}{lng}',
+  locationMarker: true,
+  locationDigits: 6,
+  locationSep: ',',
+  position: 'topright',
+  layer: 'OSM',
+  height: 140,
+  width: 200,
+  event: 'click',
+  cursorSize: '30px',
+  map: yourmap,
+  onChangeLocation: $.noop,
+  mapContainer: "#yourmap"
+});
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
+
 {% if error_message %}
 <p>
 	<strong>{{ error_message }}</strong>
@@ -17,9 +84,7 @@
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
 <form method="post">
   {% csrf_token %}
- {% include 'form_template2.html'%}
-  {% csrf_token %}
-    <p>Rentrez les coordonnées GPS (latitude, longitude) :</p>
+    <p>Cliquez sur la carte ou rentrez les coordonnées GPS (latitude, longitude) :</p>
 
  {% include 'form_template2.html' with form=form_adresse2%}
   <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées GPS</button>

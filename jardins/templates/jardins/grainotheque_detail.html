@@ -1,0 +1,191 @@
+{% extends 'base_plantes.html' %}
+
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{%endblock%}
+
+{%block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+
+{% block subtitle %}
+
+ <div class="row rowcentre">
+        <div class="col-sm-12 textcenter">
+            {%if request.user.is_superuser or request.user.username == grainotheque.referent or request.user == grainotheque.auteur  %}
+            <div class = "btn-group">
+            <a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_modifier' slug=grainotheque.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 &nbsp;Modifier
+               </button></a>
+            </div>
+            {% endif %}
+            {%if request.user.is_superuser or request.user == grainotheque.auteur  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_supprimer' slug=grainotheque.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                 &nbsp;Supprimer l'atelier
+               </button></a>
+            {% endif %}
+        </div>
+ </div>
+<div class="row">
+    <div class="col textcenter">
+       <h3> La grainothèque "{{grainotheque}}" </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="contenu desc_graino">
+	<div class="row">
+		<div class="col-sm-12 textcenter">
+			{% if graines %}
+			<h4>Liste des graines :</h4>
+			<table  class="table table-condensed ">
+				{{ graines.0.get_str_html_header | safe }}
+				<tbody>
+				{% for graine in graines %}
+		   			{{ graine.get_str_html | safe}}
+				{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+			<p>
+
+        <a href="{% url 'jardins:graino_ajouterGraine' slug=grainotheque.slug %}">
+        <button type="button" class="btn btn-success" >
+                <i class="fa fa-plus"></i> Ajouter des graines
+            </button>
+            </a>
+			</p>
+		</div>
+	</div>
+
+</div>
+
+	<div class="row">
+		<div class="col-sm-12 textcenter">
+	<table class="table table-condensed ">
+			<tbody>
+				<tr>
+					<td class="nomProprieteProduit">
+						Nom
+					</td>
+					<td class="proprieteProduit">
+						{{ grainotheque.titre }}
+					</td>
+				</tr>
+				{% if grainotheque.jardin %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Jardin associé
+					</td>
+					<td class="proprieteProduit">
+						<a href="{{ grainotheque.jardin.get_absolute_url }}">{{ grainotheque.jardin }} </a>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Description
+					</td>
+					<td class="proprieteProduit">
+						{{ grainotheque.description|safe }}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Type de grainothèque
+					</td>
+					<td class="proprieteProduit">
+						{{ grainotheque.get_categorie_display }}
+					</td>
+				</tr>
+				{% if grainotheque.email_contact %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Email de contact
+					</td>
+					<td class="proprieteProduit">
+						<a href="mailto:{{ grainotheque.email_contact }}">{{ grainotheque.email_contact }}</a>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Référent
+					</td>
+					<td class="proprieteProduit">
+						<a href="{% url 'profil' grainotheque.auteur.id %}">{{grainotheque.auteur.username}}</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Visibilité
+					</td>
+					<td class="proprieteProduit">
+	  					<p>{{grainotheque.get_visibilite_display}}</p>
+					</td>
+				<tr>
+
+				{% if request.user.is_superuser %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Adresse -su*
+					</td>
+					<td class="proprieteProduit">
+	 				 <p>{{grainotheque.adresse.get_adresse_str}} / {{grainotheque.adresse.getLatLon}}</p>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Lieu
+					</td>
+					<td class="proprieteProduit">
+<div>
+	{% if user_inscrit or grainotheque.jardin.visibilite == '0' or grainotheque.jardin.visibilite == '1' and  request.user.is_authenticated %}
+	{% if grainotheque.jardin.adresse.latitude and grainotheque.jardin.adresse.longitude %}
+       <style>
+
+            .leaflet-container {  /* all maps */
+                width:  100%;
+                height: 100%;
+            }
+            </style>
+              <script type="text/javascript">
+                function map_init_basic (map, options) {
+
+          var greenIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+                var lat = {{grainotheque.jardin.adresse.get_latitude}};
+                var lon = {{grainotheque.jardin.adresse.get_longitude}};
+                L.marker([lat, lon], {icon: greenIcon}).addTo(map);
+                map.panTo(new L.LatLng(lat, lon));
+            }
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+		{% endif %}
+{% endif %}
+</div>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+		</div>
+	</div>
+{% endblock %}

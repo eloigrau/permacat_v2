@@ -77,8 +77,6 @@
             </span>
 		</p>
         <p class="infos  textepetit">rédigé le {{ atelier.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil' atelier.auteur.id %}">{{atelier.auteur.username}}</a>, dernière modification le {{ atelier.date_modification|date:"DATE_FORMAT" }}
-
-
             <span class="badge badge-Light">
             {% get_hit_count for atelier as nbvues %}
             {{ nbvues }} vue{{nbvues|pluralize:"s"}}
@@ -131,7 +129,6 @@
 
 
                 {% else %}
-
 <form>
    <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire" onclick="clicked();" value="S'inscrire à l'atelier">
 </form>

@@ -47,8 +47,8 @@ class Choix():
      #               (2, _("Je suis déjà membre de l'association Permacat")))
 
 
-    abreviationsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022"]
-    abreviationsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022")]
+    abreviationsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp"]
+    abreviationsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés")]
     abreviationsNomsAssoEtPublic = [('public', "Public"), ] + abreviationsNomsAsso
 
     suivisPossibles = ["articles_public"] + ['articles_jardin', 'projets', 'produits', 'conversations', 'documents', 'albums', 'ateliers', 'suffrages', 'salon_accueil']

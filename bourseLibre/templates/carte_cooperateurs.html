@@ -39,7 +39,7 @@
 
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="https://docs.google.com/spreadsheets/d/19tiVQYasscCukeNaS_fxfOwcztk4ZjE5AWR1vWlMZEw/edit#gid=1682331242" target="_blank">
+        <a href="https://docs.google.com/spreadsheets/d/19tiVQYasscCukeNaS_fxfOwcztk4ZjE5AWR1vWlMZEw/edit#gid=1682331242" target="_blank" rel="noopener noreferrer nofollow">
          <button type="button" class="btn btn-primary">
                 Voir le fichier Ressourcerie 66 de la Cité Altruiste
             </button>
@@ -52,7 +52,7 @@
 
 <hr>
 
-<div class="row" style="min-height:600px;">
+<div class="row cartePleinePage" id="carte">
   <div class="col-md-12" >
       <style>
 
@@ -123,10 +123,10 @@
 </div>
 
 <hr>
-<div class="row">
+<div class="row" id="annuaire">
     <div class="col-sm-12 textcenter">
 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
-Filtrer la liste / rechercher...
+Filtrer / rechercher...
 </button>
 <!-- Modal -->
 <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -183,6 +183,9 @@ Filtrer la liste / rechercher...
               <div>
           {{ filter.form.adherent_scic.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_scic %}</label>
+              </div>
+          {{ filter.form.adherent_jp.label_tag }}
+            <label class="checkbox-inline">{% render_field filter.form.adherent_jp %}</label>
               </div>
               {% endif %}
             </div>

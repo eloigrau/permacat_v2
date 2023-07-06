@@ -226,13 +226,13 @@ class AdresseForm(forms.ModelForm):
         return adresse
 
 class AdresseForm2(forms.ModelForm):
-    telephone = forms.CharField(label="Téléphone", required=False)
+    telephone = forms.CharField(label="Contact (tel/mail/...)", required=False)
     latitude = forms.FloatField(label="Latitude", initial="42,2", required=True)
     longitude = forms.FloatField(label="Longitude", initial="2,2", required=True)
 
     class Meta:
         model = Adresse
-        exclude = ('rue', 'commune', 'code_postal', 'pays')
+        fields = ('latitude', 'longitude', 'commune', 'code_postal', 'telephone')
 
     def save(self, *args, **kwargs):
         #self.cleaned_data['latitude'] = float(self.cleaned_data['latitude'])
@@ -251,6 +251,22 @@ class AdresseForm3(forms.ModelForm):
     def save(self, *args, **kwargs):
         #self.cleaned_data['latitude'] = float(self.cleaned_data['latitude'])
         adresse = super(AdresseForm3, self).save(commit=False)
+        adresse.save()
+        return adresse
+
+class AdresseForm4(forms.ModelForm):
+    latitude = forms.FloatField(label="Latitude", initial="", required=False)
+    longitude = forms.FloatField(label="Longitude", initial="", required=False)
+
+    class Meta:
+        model = Adresse
+        fields = ['commune', 'code_postal',  'latitude', 'longitude']
+
+    def save(self, *args, **kwargs):
+        adresse = super(AdresseForm4, self).save(commit=False)
+        if not adresse.latitude or not adresse.longitude or adresse.latitude == 42.2 or adresse.longitude == 2.2:
+            adresse.set_latlon_from_adresse()
+
         adresse.save()
         return adresse
 

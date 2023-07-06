@@ -45,6 +45,5 @@ urlpatterns = [
 
     url(r'ajouterEvenement/$', views.ajouterEvenement, name='ajouterEvenement'),
     path(r'ajouterEvenementArticle/<str:slug_article>', views.ajouterEvenementArticle, name='ajouterEvenementArticle'),
-    path(r'ajouterSalonArticle/<str:slug_article>', views.ajouterEvenementArticle, name='ajouterEvenementArticle'),
 
 ]

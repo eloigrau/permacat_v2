@@ -140,7 +140,7 @@ def inscription_permagora(request):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_scic')
         actions.unfollow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_permagora', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe PermAgora")
+                    description="s'est retiré.e du groupe PermAgora")
     else:
         request.user.adherent_scic = True
         request.user.save()
@@ -160,7 +160,7 @@ def inscription_citealt(request):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_citealt')
         actions.unfollow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_citealt', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe Cité Altruiste")
+                    description="s'est retiré.e du groupe Cité Altruiste")
     else:
         request.user.adherent_citealt = True
         request.user.save()
@@ -180,7 +180,7 @@ def inscription_viure(request):
         actions.unfollow(request.user, suivi, send_action=False)
         url = reverse('presentation_asso', kwargs={'asso': 'viure'})
         action.send(request.user, verb='inscription_viure', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe Viure")
+                    description="s'est retiré.e du groupe Viure")
     else:
         request.user.adherent_viure = True
         request.user.save()
@@ -200,7 +200,7 @@ def inscription_bzz2022(request):
         actions.unfollow(request.user, suivi, send_action=False)
         url = reverse('presentation_asso', kwargs={'asso': 'bzz2022'})
         action.send(request.user, verb='inscription_bzz2022', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe Bzzz")
+                    description="s'est retiré.e du groupe Bzzz")
     else:
         request.user.adherent_bzz2022 = True
         request.user.save()
@@ -209,6 +209,25 @@ def inscription_bzz2022(request):
         action.send(request.user, verb='inscription_bzz2022', target=asso, url=request.user.get_absolute_url(),
                     description="s'est inscrit.e dans le groupe Bzzz")
     return redirect('presentation_asso', asso='bzz2022')
+
+@login_required
+def inscription_jp(request):
+    asso=Asso.objects.get(abreviation='jp')
+    if request.user.adherent_jp:
+        request.user.adherent_jp = False
+        request.user.save()
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_jp')
+        actions.unfollow(request.user, suivi, send_action=False)
+        action.send(request.user, verb='inscription_jp', target=asso, url=request.user.get_absolute_url(),
+                    description="s'est retiré.e du groupe des Jardins Partagés")
+    else:
+        request.user.adherent_citealt = True
+        request.user.save()
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_citealt')
+        actions.follow(request.user, suivi, send_action=False)
+        action.send(request.user, verb='inscription_citealt', target=asso, url=request.user.get_absolute_url(),
+                    description="s'est inscrit.e dans le groupe des Jardins Partagés")
+    return redirect('jardins:acceuil', asso='jp')
 
 @login_required
 def contacter_newsletter(request):

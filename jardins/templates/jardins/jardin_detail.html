@@ -1,0 +1,219 @@
+{% extends 'base_plantes.html' %}
+
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{%endblock%}
+
+{%block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+
+{% block subtitle %}
+
+ <div class="row rowcentre">
+        <div class="col-sm-12 textcenter">
+            {%if request.user.is_superuser or request.user.username == jardin.referent or request.user == jardin.auteur  %}
+            <div class = "btn-group">
+            <a href="{%if request.user.is_authenticated %}{% url 'jardins:jardin_modifier' slug=jardin.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 &nbsp;Modifier
+               </button></a>
+            </div>
+            {% endif %}
+            {%if request.user.is_superuser or request.user == jardin.auteur  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:jardin_supprimer' slug=jardin.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                 &nbsp;Supprimer le Jardin
+               </button></a>
+            {% endif %}
+        </div>
+ </div>
+<div class="row">
+    <div class="col textcenter">
+       <h3> Le Jardin {{jardin}} </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+ <div class="row rowcentre inscrit_atelier">
+        <div class="col-sm-12 textcenter">
+            {%if request.user.is_authenticated %}
+                 {% if request.user.username == jardin.referent_jardin.username or request.user.username == jardin.auteur.username %}
+                    <p>Tu es le référent de ce jardin :
+                    <a href="{% url 'jardins:contacterInscritsJardin' slug=jardin.slug %}">
+                       <button type="button" class="btn btn-warning btn-sm">
+                            Contacter les gens inscrits à ce jardin
+                       </button>
+                    </a>
+					</p>
+                 {% elif user_inscrit %}
+                    <p>Tu es inscrit.e à ce jardin
+                    <a href="{% url 'jardins:annulerInscription' slug=jardin.slug %}">
+                       <button type="button" class="btn btn-warning btn-sm">
+                            Se désinscrire
+                       </button>
+                    </a>
+					</p>
+
+
+                {% else %}
+<form>
+   <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire" onclick="clicked();" value="Suivre ce jardin">
+</form>
+                {% endif %}
+            {% else %}
+            <p><a href="/auth/login/" >Connectez-vous pour suivre ce jardin</a></p>
+            {% endif %}
+        </div>
+ </div>
+<hr>
+<div class="contenu desc_jardin">
+	<div class="row">
+		<div class="col-sm-12">
+		   <p> {{ jardin.description|safe }} </p>
+		</div>
+	</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12 textcenter">
+	<table class="table table-condensed ">
+			<tbody>
+				<tr>
+					<td class="nomProprieteProduit">
+						Nom du jardin
+					</td>
+					<td class="proprieteProduit">
+						{{ jardin.titre }}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Type de jardin
+					</td>
+					<td class="proprieteProduit">
+						{{ jardin.get_categorie_display }}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Email
+					</td>
+					<td class="proprieteProduit">
+						<a href="mailto:{{ jardin.email_contact }}">{{ jardin.email_contact }}</a>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Référent
+					</td>
+					<td class="proprieteProduit">
+						{% if request.user.is_authenticated %}
+						<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
+						<a href="{% url 'agora_conversation' user.username %}" class="btn btn-success btn-sm">
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+            			</a>
+						{% else %}
+							{{jardin.auteur.username}}
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+						Visibilité
+					</td>
+					<td class="proprieteProduit">
+	  					<p>{{jardin.get_visibilite_display}}</p>
+					</td>
+				<tr>
+				{% if user_inscrit %}
+				{% if jardin.permapotes_id %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Identifiants permapotes
+					</td>
+					<td class="proprieteProduit">
+	  					<p>{{jardin.permapotes_id}}</p>
+					</td>
+				</tr>
+				{% endif %}
+				{% endif %}
+				{% if request.user.is_superuser %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Adresse -su*
+					</td>
+					<td class="proprieteProduit">
+	 				 <p>{{jardin.adresse.get_adresse_str}} / {{jardin.adresse.getLatLon}}</p>
+	 				 <p>vis_annuaire {{jardin.visibilite_annuaire}} / vis_adresse {{jardin.visibilite_adresse}}</p>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Lieu
+					</td>
+					<td class="proprieteProduit">
+<div>
+	{% if user_inscrit or jardin.visibilite_adresse == '0' or jardin.visibilite_adresse == '1' %}
+	{% if jardin.adresse.latitude and jardin.adresse.longitude %}
+       <style>
+
+            .leaflet-container {  /* all maps */
+                width:  100%;
+                height: 100%;
+            }
+            </style>
+              <script type="text/javascript">
+                function map_init_basic (map, options) {
+
+          var greenIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+                var lat = {{jardin.adresse.get_latitude}};
+                var lon = {{jardin.adresse.get_longitude}};
+                L.marker([lat, lon], {icon: greenIcon}).addTo(map);
+                map.panTo(new L.LatLng(lat, lon));
+            }
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+		{% else %}
+			{% if request.user == jardin.referent or request.user.is_superuser %}
+		  	<a href="{% url 'jardins:jardin_ajouterAdresse' slug=jardin.slug %}">Ajouter une adresse</a>
+			{% endif %}
+		{% endif %}
+{% endif %}
+</div>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+
+		</div>
+	</div>
+
+
+<script type="text/javascript">
+    function clicked() {
+        if (confirm('Etes-vous sûr.e de vouloir suivre ce jardin ?')) {
+           location.href='{% url 'jardins:inscriptionJardin' slug=jardin.slug %}';
+           }else{
+           location.href='{{jardin.get_absolute_url}}#idTitre';
+       }
+    }
+</script>
+{% endblock %}

@@ -1311,3 +1311,5 @@ class InscriptionNewsletter(models.Model):
     #         return Article.objects.filter(asso="2")
     #     elif self.nom == "ame":
     #         return Article.objects.filter(asso="3")
+
+

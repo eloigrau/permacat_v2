@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
-    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine
+    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
@@ -23,8 +23,13 @@ from dal import autocomplete
 from bs4 import BeautifulSoup
 from bourseLibre.settings.production import SERVER_EMAIL
 from bourseLibre.views_admin import send_mass_html_mail
+from hitcount.models import HitCount
+from hitcount.views import HitCountMixin
 
 def accueil(request):
+    obj, created = GenericModel.objects.get_or_create(type_article='jardins_accueil', message="")
+    hit_count = HitCount.objects.get_for_object(obj)
+    hit_count_response = HitCountMixin.hit_count(request, hit_count)
     return render(request, "jardins/accueil.html", {'msg':"Tout est pret"})
 
 @login_required

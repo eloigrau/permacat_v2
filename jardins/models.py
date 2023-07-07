@@ -271,3 +271,16 @@ class InscriptionGrainotheque(models.Model):
     def __str__(self):
         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(
             self.jardin)
+
+class GenericModel(models.Model):
+    type_article = models.CharField(max_length=10)
+    message = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return self.type_article
+
+    def get_absolute_url(self):
+        return reverse("jardins:accueil")

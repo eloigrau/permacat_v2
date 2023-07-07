@@ -12,7 +12,7 @@
 {% if request.user.is_authenticated %}
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-        <h4>Recherche rapide </h4>
+        <h4>1/ Recherche rapide </h4>
         <p>Tapez le début du nom commun dans la boite ci-dessous :</p>
     </div>
 </div>
@@ -48,7 +48,7 @@
 <hr>
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-<h4>ou Rechercher dans la base de données</h4>
+<h4>ou 2/ Rechercher dans la base de données</h4>
         <p>Rechercher un mot ou une syllabe dans l'ensemble de la base de donnée (nom scientifique, nom commun, etc.)</p>
      <form class="form-inline justify-content-center" action="{% url 'jardins:chercher_plante' %}" method="get" role = "search">
         {% csrf_token %}
@@ -60,7 +60,7 @@
 <hr>
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-        <h4>ou recherche alphabétique</h4>
+        <h4>ou 3/ Recherche alphabétique</h4>
         <p>Rechercher une plante par la première lettre de son nom commun</p>
     </div>
 </div>

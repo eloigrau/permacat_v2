@@ -142,6 +142,10 @@ class Plante(models.Model):
 
 
     @property
+    def has_info_supp(self):
+        return len(self.infos_supp) > 1
+
+    @property
     def get_info_supp_html2(self):
         if not self.infos_supp:
             return

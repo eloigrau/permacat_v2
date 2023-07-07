@@ -48,7 +48,7 @@
 			<table  class="table table-condensed ">
 				<thead><tr><th style="width:30%;"> Plante</th><th style="width:50%;">Description</th><th>Stock</th><th>Date de récolte</th>
 					{%if request.user.is_superuser or request.user == grainotheque.auteur  %}<th>Edit</th>{% endif %}
-				</tr></thead>"
+				</tr></thead>
 				<tbody>
 				{% for graine in graines %}
 		   			<tr>
@@ -62,7 +62,7 @@
 							<a class="boutonediter" href="{{ graine.infos.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
 							</td>
 						{% endif %}
-					</tr>"
+					</tr>
 
 				{% endfor %}
 				</tbody>

@@ -57,6 +57,7 @@ urlpatterns = [
 
     path(r'grainotheque/ajouter/', login_required(views.AjouterGrainotheque.as_view()), name="grainotheque_ajouter"),
     path(r'grainotheque/modifier/<str:slug>', login_required(views.ModifierGrainotheque.as_view()), name="grainotheque_modifier"),
+    path(r'grainotheque/editInfosGraine/<int:pk>', login_required(views.ModifierInfoGraine.as_view()), name="grainotheque_editInfosGraine"),
     path(r'jardin/supprimer_grainotheque/<str:slug>', login_required(views.SupprimerGrainotheque.as_view()), name="grainotheque_supprimer"),
     path(r'grainotheque/voir/<str:slug>', login_required(views.GrainothequeDetailView.as_view()), name="grainotheque_lire"),
     path(r'grainotheque/ajouterGraine/<str:slug>', views.graino_ajouterGraine, name="graino_ajouterGraine"),

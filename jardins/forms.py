@@ -118,7 +118,7 @@ class GraineForm(forms.ModelForm):
 class InfoGraineForm(forms.ModelForm):
     class Meta:
         model = InfoGraine
-        fields = [ 'date_recolte', 'duree_germinative', 'stock_quantite', 'description',]
+        fields = [ 'date_recolte', 'stock_quantite', 'description',]
         widgets = {
             'description': SummernoteWidget(),
             'date_recolte': forms.DateInput(

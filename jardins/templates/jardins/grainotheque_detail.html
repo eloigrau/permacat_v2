@@ -26,14 +26,14 @@
             {%if request.user.is_superuser or request.user == grainotheque.auteur  %}
 				<a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_supprimer' slug=grainotheque.slug %}{% endif %}">
                <button type="button" class="btn btn-sm btn-danger">
-                 &nbsp;Supprimer l'atelier
+                 &nbsp;Supprimer la grainothèque
                </button></a>
             {% endif %}
         </div>
  </div>
-<div class="row">
-    <div class="col textcenter">
-       <h3> La grainothèque "{{grainotheque}}" </h3>
+<div class="row titre_fiche">
+	<div class="col textcenter" >
+       <h3> {{grainotheque}} </h3>
     </div>
 </div>
 
@@ -46,10 +46,24 @@
 			{% if graines %}
 			<h4>Liste des graines :</h4>
 			<table  class="table table-condensed ">
-				{{ graines.0.get_str_html_header | safe }}
+				<thead><tr><th style="width:30%;"> Plante</th><th style="width:50%;">Description</th><th>Stock</th><th>Date de récolte</th>
+					{%if request.user.is_superuser or request.user == grainotheque.auteur  %}<th>Edit</th>{% endif %}
+				</tr></thead>"
 				<tbody>
 				{% for graine in graines %}
-		   			{{ graine.get_str_html | safe}}
+		   			<tr>
+						<td><a href="{{ graine.plante.get_absolute_url}}">{{graine.plante}}</a></td>
+						<td>{{ graine.infos.description | safe}}
+                </td>
+						<td>{{ graine.infos.stock_quantite }}</td>
+						<td>{{ graine.infos.date_recolte|date:'d/m/Y'}}</td>
+						 {%if request.user.is_superuser or request.user == grainotheque.auteur  %}
+						<td>
+							<a class="boutonediter" href="{{ graine.infos.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+							</td>
+						{% endif %}
+					</tr>"
+
 				{% endfor %}
 				</tbody>
 			</table>
@@ -157,8 +171,8 @@
 						</div>
 						{% endif %}
 <div>
-	{% if user_inscrit or grainotheque.jardin.visibilite == '0' or grainotheque.jardin.visibilite == '1' and  request.user.is_authenticated %}
-	{% if grainotheque.jardin.adresse.latitude and grainotheque.jardin.adresse.longitude %}
+	{% if grainotheque.visibilite_adresse == '0' or grainotheque.visibilite_adresse == '1' %}
+	{% if grainotheque.adresse.latitude and grainotheque.adresse.longitude %}
        <style>
 
             .leaflet-container {  /* all maps */
@@ -180,8 +194,8 @@
             popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
 
-                var lat = {{grainotheque.jardin.adresse.get_latitude}};
-                var lon = {{grainotheque.jardin.adresse.get_longitude}};
+                var lat = {{grainotheque.adresse.get_latitude}};
+                var lon = {{grainotheque.adresse.get_longitude}};
                 L.marker([lat, lon], {icon: greenIcon}).addTo(map);
                 map.panTo(new L.LatLng(lat, lon));
             }

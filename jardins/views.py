@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
-    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur
+    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
@@ -429,6 +429,11 @@ class GrainothequeDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["graines"] = Graine.objects.filter(grainotheque=self.object)
         return context
+
+class ModifierInfoGraine(UpdateView):
+    model = InfoGraine
+    form_class = InfoGraineForm
+    template_name_suffix = '_modifier'
 
 class ModifierJardin(UpdateView):
     model = Jardin

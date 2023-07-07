@@ -165,15 +165,15 @@
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
                         <li> <a class="dropdown-item" href="{% url 'jardins:accueil' %}"><i class='fa fa-folder-open iconleft' ></i>  Jardins et grainothèques </a></li>
                         <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"><i class='fa fa-comments iconleft ' ></i> Forum</a></li>
-                        {% comment %}
-                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index' %}"><i class='fa fa-folder-open iconleft' ></i>  Blog des jardins Partagés </a></li>
-                        <li> <a class="dropdown-item" href="{% url 'jardins:plantes' %}"><i class='fa fa-folder-open iconleft' ></i>  Liste des plantes </a></li>
-                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=1 %}"><i class='fa fa-pagelines' ></i> Jardi Per tots</a></li>
-                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=2 %}"><i class='fa fa-pagelines' ></i> Jardin de Palau </a></li>
-                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=3 %}"><i class='fa fa-pagelines' ></i> Jardin de Lurçat </a></li>
-                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=4 %}"><i class='fa fa-pagelines' ></i> Gardiens de la Terre </a></li>
-                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=5 %}"><i class='fa fa-pagelines' ></i> Fermille </a></li>
-                         {% endcomment %}
+                        {% if request.user.is_superuser %}
+                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index' %}"><i class='fa fa-folder-open iconleft' ></i>  SU Blog des jardins Partagés </a></li>
+                        <li> <a class="dropdown-item" href="{% url 'jardins:plantes' %}"><i class='fa fa-folder-open iconleft' ></i>   SU Liste des plantes </a></li>
+                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=1 %}"><i class='fa fa-pagelines' ></i>  SU Jardi Per tots</a></li>
+                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=2 %}"><i class='fa fa-pagelines' ></i>  SU Jardin de Palau </a></li>
+                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=3 %}"><i class='fa fa-pagelines' ></i>  SU Jardin de Lurçat </a></li>
+                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=4 %}"><i class='fa fa-pagelines' ></i>  SU Gardiens de la Terre </a></li>
+                        <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=5 %}"><i class='fa fa-pagelines' ></i>  SU Fermille </a></li>
+                         {% endif %}
                         </ul>
                     </li>
                     <li class="dropdown-submenu">

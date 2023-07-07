@@ -132,6 +132,7 @@ class Plante(models.Model):
         except:
             return ""
 
+    @property
     def get_absolute_url(self):
         return reverse('jardins:voir_plante', kwargs={'cd_nom':self.CD_NOM})
 
@@ -224,6 +225,12 @@ class InfoGraine(models.Model):
 
     def __str__(self):
         return str(self.description) + " " + str(self.stock_quantite) + " "+ str(self.duree_germinative)+ " "+ str(self.date_recolte)
+
+    def get_edit_url(self):
+        return reverse('jardins:grainotheque_editInfosGraine', kwargs={'pk':self.pk})
+
+    def get_absolute_url(self):
+        return reverse('jardins:grainotheque_lire', kwargs={'slug':self.graine.grainotheque.slug})
 
 class Graine(models.Model):
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)

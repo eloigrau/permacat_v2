@@ -18,16 +18,25 @@ Jardins et grainothèques
             <span class="navbar-toggler-icon"></span>
          </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
-            <ul class="navbar-nav mx-auto subnavbar">
-		<li class="nav-item"><a href="{% url 'jardins:accueil' %}"> Accueil</a></li>
-		<li class="nav-item"><a href="{% url 'jardins:carte_jardins' %}"> Jardins</a></li>
-		<li class="nav-item"><a href="{% url 'jardins:carte_graino' %}"> Grainothèques</a></li>
+    <ul class="navbar-nav mx-auto subnavbar align-items-center">
+		<li class="nav-item">
+                <a href="{% url 'jardins:accueil' %}">
+            <div class="row row_banniere_ordi" >
+                <img  src="{% static 'img/banniere/jardin_ordi.png' %}"  height="60" alt="Logo_jardins"/>
+            </div>
+            <div class="row row_banniere_smartphone">
+                    <img class="img_banniere_smartp" src="{% static 'img/banniere/jardin_smart.png' %}" height="60" alt="Logo_jardins"/>
+            </div>
+            </a>
+        </li>
+		<li class="nav-item"><a href="{% url 'jardins:carte_jardins' %}"> Les Jardins</a></li>
+		<li class="nav-item"><a href="{% url 'jardins:carte_graino' %}"> Les Grainothèques</a></li>
                 {% if request.user.adherent_jp %}
-		<li class="nav-item"><a href="{% url 'jardins:carte_jardiniers' %}"> Jardinier-es</a></li>
-		<li class="nav-item"><a href="{% url 'jardins:plantes' %}"> Plantes</a></li>
+		<li class="nav-item"><a href="{% url 'jardins:carte_jardiniers' %}"> Les Jardinier-es</a></li>
+		<li class="nav-item"><a href="{% url 'jardins:plantes' %}"> Les Plantes</a></li>
 		<li class="nav-item"><a href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Le Forum</a></li>
                 {% endif %}
-		<li class="nav-item"><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}" width="22" height="22" alt="Retour sur perma.cat"/></a>
+		<li class="nav-item"><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}"  height="44" alt="Retour sur perma.cat"/></a>
         </li>
                 {% comment %}
         <li class="nav-item dropdown">

@@ -171,7 +171,8 @@
 						</div>
 						{% endif %}
 <div>
-	{% if grainotheque.visibilite_adresse == '0' or grainotheque.visibilite_adresse == '1' %}
+	{% if adresse_visible %}
+
 	{% if grainotheque.adresse.latitude and grainotheque.adresse.longitude %}
        <style>
 

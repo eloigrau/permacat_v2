@@ -384,6 +384,7 @@ class JardinDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["user_inscrit"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
         context["jardins"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
+        context["adresse_visible"] = self.object.visibilite_adresse == '0' or (self.object.visibilite_adresse == '1' and self.request.user.is_authenticated)
         return context
 
 class AjouterGrainotheque(CreateView):
@@ -396,7 +397,7 @@ class AjouterGrainotheque(CreateView):
         action.send(self.request.user, verb='jardins_nouvelleGrainotheque_jp', action_object=self.object, url=self.object.get_absolute_url(),
                      description="a ajouté la Grainothèque: '%s'" % self.object.titre)
         if not self.object.jardin:
-            return redirect("jardins:graintheque_ajouterAdresse", slug=self.object.slug)
+            return redirect("jardins:grainotheque_ajouterAdresse", slug=self.object.slug)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -433,6 +434,7 @@ class GrainothequeDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["graines"] = Graine.objects.filter(grainotheque=self.object)
+        context["adresse_visible"] = self.object.visibilite_adresse == '0' or (self.object.visibilite_adresse == '1' and self.request.user.is_authenticated)
         return context
 
 class ModifierInfoGraine(UpdateView):

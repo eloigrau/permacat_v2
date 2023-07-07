@@ -172,7 +172,7 @@
 						</div>
 						{% endif %}
 <div>
-	{% if user_inscrit or jardin.visibilite_adresse == '0' or jardin.visibilite_adresse == '1' %}
+	{% if adresse_visible %}
 	{% if jardin.adresse.latitude and jardin.adresse.longitude %}
        <style>
 

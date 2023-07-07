@@ -1,5 +1,6 @@
 from django import forms
 from .models import Plante_recherche, Jardin, Grainotheque, Choix, Graine, InfoGraine
+from bourseLibre.models import Profil
 from django.utils.text import slugify
 from local_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
 from django.urls import reverse
@@ -31,6 +32,10 @@ class JardinForm(forms.ModelForm):
             'description': SummernoteWidget(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(GrainothequeForm, self).__init__(*args, **kwargs)
+        self.fields["referent"].choices = [(x.id, x) for x in Profil.objects.filter(adherent_jp=True).order_by("username")]
+
     def save(self, userProfile, ):
         instance = super(JardinForm, self).save(commit=False)
 
@@ -61,15 +66,25 @@ class JardinChangeForm(forms.ModelForm):
             'description': SummernoteWidget(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(GrainothequeForm, self).__init__(*args, **kwargs)
+        self.fields["referent"].choices = [(x.id, x) for x in Profil.objects.filter(adherent_jp=True).order_by("username")]
+
 
 
 class GrainothequeForm(forms.ModelForm):
+
+
     class Meta:
         model = Grainotheque
-        fields = [ 'titre', 'description', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
+        fields = [ 'titre', 'description', 'referent', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
         widgets = {
             'description': SummernoteWidget(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(GrainothequeForm, self).__init__(*args, **kwargs)
+        self.fields["referent"].choices = [(x.id, x) for x in Profil.objects.filter(adherent_jp=True).order_by("username")]
 
     def save(self, userProfile, ):
         instance = super(GrainothequeForm, self).save(commit=False)
@@ -95,10 +110,14 @@ class GrainothequeForm(forms.ModelForm):
 class GrainothequeChangeForm(forms.ModelForm):
     class Meta:
         model = Grainotheque
-        fields = [ 'titre', 'description', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
+        fields = [ 'titre', 'description', 'referent', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
         widgets = {
             'description': SummernoteWidget(),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(GrainothequeForm, self).__init__(*args, **kwargs)
+        self.fields["referent"].choices = [(x.id, x) for x in Profil.objects.filter(adherent_jp=True).order_by("username")]
 
 
 

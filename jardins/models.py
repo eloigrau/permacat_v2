@@ -273,7 +273,7 @@ class InscriptionGrainotheque(models.Model):
             self.jardin)
 
 class GenericModel(models.Model):
-    type_article = models.CharField(max_length=10)
+    type_article = models.CharField(max_length=100)
     message = models.TextField(null=True, blank=True)
 
     def __unicode__(self):

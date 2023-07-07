@@ -27,7 +27,7 @@ from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
 
 def accueil(request):
-    obj, created = GenericModel.objects.get_or_create(type_article='jardins_accueil', message="")
+    obj, created = GenericModel.objects.get_or_create(type_article='Jardins et Grainothèques', message="")
     hit_count = HitCount.objects.get_for_object(obj)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
     return render(request, "jardins/accueil.html", {'msg':"Tout est pret"})

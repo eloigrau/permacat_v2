@@ -143,7 +143,7 @@ class Plante(models.Model):
 
     @property
     def has_info_supp(self):
-        return len(self.infos_supp) > 1
+        return len(self.infos_supp.split('; ')) > 2
 
     @property
     def get_info_supp_html2(self):

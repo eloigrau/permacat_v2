@@ -221,10 +221,11 @@ def import_grainotheque_rtg_2(request):
         i += 1
         if i > 500:
             break
+        msg += "<p>("+str(plante)+") "+ "</p>"
 
        # except Exception as e:
       #      msg += "<p>("+str(i)+") " + str(e) +  "//" + str(ligne)+ "</p>"
-    msg += "<p>("+str(i)+") "+ "</p>"
+    msg += "<p>total ("+str(i)+") "+ "</p>"
     return render(request, "jardins/accueil_admin.html", {"msg":msg + str(i)})
 
 class ListePlantes(ListView):

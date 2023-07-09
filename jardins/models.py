@@ -70,7 +70,7 @@ class RTG_import(models.Model):
     genre = models.CharField(max_length=50)
     espece = models.CharField(max_length=50)
     annee = models.CharField(max_length=10)
-    stock = models.CharField(max_length=10)
+    stock = models.CharField(max_length=50)
     lieu_recolte = models.CharField(max_length=120)
     observations = models.CharField(max_length=120)
 

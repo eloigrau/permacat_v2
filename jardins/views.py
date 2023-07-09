@@ -35,9 +35,6 @@ def accueil(request):
 def accueil_admin(request):
     return render(request, "jardins/accueil_admin.html", {'msg':"Tout est pret"})
 
-@login_required
-def accueil_admin2(request):
-    return render(request, "jardins/accueil_admin.html", {'msg':"Tout est pret"})
 
 def get_dossier_db(nomfichier):
     if LOCALL:
@@ -192,13 +189,12 @@ def import_db_inpn_4(request):
 def import_grainotheque_rtg_1(request):
     filename = get_dossier_db("inventaireRTG.csv")
     msg = "import rtg OK"
-    importer = True
+    importer_fic = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
-    if importer:
+    if importer_fic:
         grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
         RTG_import.objects.all().delete()
         with open(filename, 'r', newline='\n') as data:
-            i = 0
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
@@ -213,10 +209,9 @@ def import_grainotheque_rtg_1(request):
                                Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
 
                 except Exception as e:
-                    msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"
-                i += 1
+                    msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
             data.close()
-    return render(request, "jardins/accueil_admin.html", {"msg":msg})
+    return redirect("jardins:acceuil_admin", )
 
 class ListePlantes(ListView):
     model = Plante

@@ -203,7 +203,7 @@ def import_grainotheque_rtg_1(request):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         ligne = RTG_import(**line).save()
-                        plante = ligne.get_plante()
+                        plante = ligne.get_plante_bdd()
                         infos = ligne.get_InfoGraine()
                         # if len(plante) > 0:
                         #    if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():

@@ -91,7 +91,7 @@ class RTG_import(models.Model):
         super(RTG_import, self).save()
         return self
 
-    def get_plante(self):
+    def get_plante_bdd(self):
         p = Plante.objects.filter(Q(NOM_VERN__icontains=self.nom) | Q(LB_NOM__icontains=self.nom) | Q(NOM_COMPLET__icontains=self.nom))
         if len(p) == 0:
             nom = self.nom.split(" ")[0]
@@ -102,7 +102,7 @@ class RTG_import(models.Model):
         return p
 
     def get_InfoGraine(self):
-        liste_plantes = self.get_plante()
+        liste_plantes = self.get_plante_bdd()
         if len(liste_plantes) > 1:
             liste_plantes = liste_plantes[1:]
             plantes = ", ".join(["<a href='" + p.get_absolute_url + "'>" + p.LB_NOM + "</a>" for p in liste_plantes[1:]])

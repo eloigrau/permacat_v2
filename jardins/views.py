@@ -205,12 +205,12 @@ def import_grainotheque_rtg_1(request):
                         ligne = RTG_import(**line).save()
                         plante = ligne.get_plante_bdd()
                         infos = ligne.get_InfoGraine()
-                        # if len(plante) > 0:
-                        #    if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
-                        #        Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
-                        # else:
-                        #    if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
-                        #        Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
+                        if len(plante) > 0:
+                           if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
+                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
+                        else:
+                           if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
+                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
 
                 except Exception as e:
                     msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"

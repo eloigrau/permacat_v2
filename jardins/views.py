@@ -467,8 +467,8 @@ def grainotheque_supprimerGraines(request, slug):
 
     grainotheque = get_object_or_404(Grainotheque, slug=slug)
 
-    #for g in Graine.objects.filter(grainotheque=grainotheque):
-       #g.delete()
+    for g in Graine.objects.filter(grainotheque=grainotheque):
+       g.delete()
 
     return redirect("jardins:grainotheque_lire", slug=slug)
 

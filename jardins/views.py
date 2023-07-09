@@ -211,7 +211,7 @@ def import_grainotheque_rtg_1(request):
                 except Exception as e:
                     msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
             data.close()
-    return redirect("jardins:acceuil_admin", )
+    return redirect("jardins:accueil_admin", )
 
 class ListePlantes(ListView):
     model = Plante

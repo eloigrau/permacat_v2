@@ -215,7 +215,7 @@ def import_grainotheque_rtg_2(request):
         #try:
         plantess = ligne.get_plante_bdd()
         infos = ligne.get_InfoGraine()
-        if not Graine.objects.filter(nom=ligne.nom, grainotheque__pk=grainotheque.pk,plante__pk=plantess[0].pk,).exists():
+        if not Graine.objects.filter(nom=ligne.nom, grainotheque__pk=grainotheque.pk,infos__description=infos.description).exists():
             if len(plantess) > 0:
                 g = Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plantess[0], infos=infos)
             else:

@@ -26,6 +26,7 @@ urlpatterns = [
 
     ## plantes
     url(r'^accueil_admin/$', views.accueil_admin, name="accueil_admin"),
+    url(r'^accueil_admin2/$', views.accueil_admin2, name="accueil_admin2"),
     url(r'^import_db_inpn_0/$', views.import_db_inpn_0, name="import_db_inpn_0"),
     url(r'^import_db_inpn_1/$', views.import_db_inpn_1, name="import_db_inpn_1"),
     url(r'^import_db_inpn_2/$', views.import_db_inpn_2, name="import_db_inpn_2"),

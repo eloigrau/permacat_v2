@@ -35,6 +35,10 @@ def accueil(request):
 def accueil_admin(request):
     return render(request, "jardins/accueil_admin.html", {'msg':"Tout est pret"})
 
+@login_required
+def accueil_admin2(request):
+    return render(request, "jardins/accueil_admin.html", {'msg':"Tout est pret"})
+
 def get_dossier_db(nomfichier):
     if LOCALL:
         return "/home/tchenrezi/Téléchargements/bdd_rtg/" + nomfichier
@@ -194,23 +198,24 @@ def import_grainotheque_rtg_1(request):
         grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
         RTG_import.objects.all().delete()
         with open(filename, 'r', newline='\n') as data:
-            i= 0
+            i = 0
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         ligne = RTG_import(**line).save()
                         plante = ligne.get_plante()
                         infos = ligne.get_InfoGraine()
-                        if len(plante) > 0:
-                           if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
-                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
-                        else:
-                           if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
-                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
+                        # if len(plante) > 0:
+                        #    if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
+                        #        Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
+                        # else:
+                        #    if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
+                        #        Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
 
                 except Exception as e:
                     msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"
                 i += 1
+            data.close()
     return render(request, "jardins/accueil_admin.html", {"msg":msg})
 
 class ListePlantes(ListView):

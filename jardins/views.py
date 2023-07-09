@@ -186,9 +186,9 @@ def import_db_inpn_4(request):
 
 @login_required
 def import_grainotheque_rtg(request):
-    filename = get_dossier_db("Inventaire grainothèque au 01-04-23.csv")
+    filename = get_dossier_db("RTG - Inventaire grainothèque au 01-04-23.csv")
     msg = "import rtg OK"
-    importer = False
+    importer = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer:
         #RTG_import.objects.all().delete()

@@ -206,20 +206,18 @@ def import_grainotheque_rtg_1(request):
 @login_required
 def import_grainotheque_rtg_2(request):
     grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
-    importer = RTG_import.objects.all()
-    msg = "import rtg ("+ str(len(importer)) + ")"
+    msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
     i = 0
-    for ligne in importer:
+    for ligne in RTG_import.objects.all():
         #try:
         plante = ligne.get_plante()
         infos = ligne.get_InfoGraine()
         if len(plante) > 0:
             if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
-                g = Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
+                Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
         else:
             if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
-                g = Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
-        g.save()
+                Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
         i += 1
         if i > 500:
             break

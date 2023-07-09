@@ -77,7 +77,7 @@ class GrainothequeForm(forms.ModelForm):
 
     class Meta:
         model = Grainotheque
-        fields = [ 'titre', 'categorie', 'description', 'referent', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
+        fields = [ 'titre', 'categorie', 'description', 'referent', 'email_contact', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -110,7 +110,7 @@ class GrainothequeForm(forms.ModelForm):
 class GrainothequeChangeForm(forms.ModelForm):
     class Meta:
         model = Grainotheque
-        fields = ['titre', 'categorie', 'description', 'referent', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
+        fields = ['titre', 'categorie', 'description', 'referent', 'email_contact', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
         widgets = {
             'description': SummernoteWidget(),
         }

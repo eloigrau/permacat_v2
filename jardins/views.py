@@ -1,21 +1,20 @@
 from django.shortcuts import render, redirect, reverse
 from django.core.exceptions import PermissionDenied
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
-from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
-    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
-from bourseLibre.views import testIsMembreAsso
 from bourseLibre.filters import ProfilCarteFilter
 from bourseLibre.settings.production import LOCALL
 from bourseLibre.forms import AdresseForm4
 from bourseLibre.models import Asso, Profil
 from .forms import Plante_rechercheForm, GrainothequeForm, GrainothequeChangeForm, JardinForm, JardinChangeForm, \
     GraineForm, InfoGraineForm, ContactParticipantsForm
+from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
+    DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel, RTG_import
 from .filters import JardinCarteFilter, GrainoCarteFilter
 from actstream import actions, action
 from webpush import send_user_notification
@@ -38,7 +37,7 @@ def accueil_admin(request):
 
 def get_dossier_db(nomfichier):
     if LOCALL:
-        return "/home/tchenrezi/Téléchargements/TAXREF_v16_2022/" + nomfichier
+        return "/home/tchenrezi/Téléchargements/bdd_rtg/" + nomfichier
 
     return os.path.abspath(os.path.join(PROJECT_ROOT, "../../../", nomfichier))
 
@@ -121,8 +120,8 @@ def import_db_inpn_1(request):
         DBRang_inpn.objects.all().delete()
         with open(filename, 'r', encoding='latin-1' ) as data:
             for i, line in enumerate(csv.DictReader(data, delimiter=';')):
-                    if not DBRang_inpn.objects.filter(RG_LEVEL=line["RG_LEVEL"]).exists():
-                        DBRang_inpn(**line).save()
+                if not DBRang_inpn.objects.filter(RG_LEVEL=line["RG_LEVEL"]).exists():
+                    DBRang_inpn(**line).save()
     except Exception as e:
             msg += "<p>" + str(e) + "</p>"
 
@@ -155,7 +154,6 @@ def import_db_inpn_3(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-
     try:
         msg = "import habitat OK"
         filename = get_dossier_db("habitats_note.csv")
@@ -186,6 +184,39 @@ def import_db_inpn_4(request):
 
     return render(request, "jardins/accueil.html", {"msg":"import vern OK"})
 
+@login_required
+def import_grainotheque_rtg(request):
+    filename = get_dossier_db("Inventaire grainothèque au 01-04-23.csv")
+    msg = "import rtg OK"
+    importer = False
+    fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
+    if importer:
+        #RTG_import.objects.all().delete()
+        with open(filename, 'r', newline='\n') as data:
+            i= 0
+            for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
+                try:
+                    if not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
+                        RTG_import(**line).save()
+                except Exception as e:
+                    msg += "<p>("+str(i)+") " + str(e) +  "//" + str(line)+ "</p>"
+                i += 1
+
+    grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
+    for ligne in RTG_import.objects.all():
+        #try:
+        plante = ligne.get_plante()
+        infos = ligne.get_InfoGraine()
+        if len(plante) > 0:
+            if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
+                Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).save()
+        else:
+           Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos).save()
+
+       # except Exception as e:
+      #      msg += "<p>("+str(i)+") " + str(e) +  "//" + str(ligne)+ "</p>"
+
+    return render(request, "jardins/accueil_admin.html", {"msg":msg})
 
 class ListePlantes(ListView):
     model = Plante

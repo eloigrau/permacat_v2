@@ -1,9 +1,11 @@
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+import datetime
 from taggit.managers import TaggableManager
 from bourseLibre.models import Profil, Adresse
 import uuid
+from django.db.models import Q
 
 class Choix():
     type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé')
@@ -61,14 +63,73 @@ class DB_importeur(models.Model):
         return str(self.lg_debut) + " fin " + str(self.lg_fin)
 
 
+class RTG_import(models.Model):
+    maj_lettre = models.CharField(max_length=2)
+    nom = models.CharField(max_length=120)
+    famille = models.CharField(max_length=50)
+    genre = models.CharField(max_length=50)
+    espece = models.CharField(max_length=50)
+    annee = models.CharField(max_length=10)
+    stock = models.CharField(max_length=10)
+    lieu_recolte = models.CharField(max_length=120)
+    observations = models.CharField(max_length=120)
+
+    def get_daterecolte(self):
+        date = ""
+        try:
+            an = int(self.annee)
+            if an:
+                date = datetime.date(an, 1, 1)
+        except:
+            date = ""
+        return date
+
+    def __str__(self):
+        return str(self.nom) + " (" + str(self.annee) + ")"
+
+    def get_plante(self):
+        p = Plante.objects.filter(Q(NOM_VERN__icontains=self.nom) | Q(LB_NOM__icontains=self.nom) | Q(NOM_COMPLET__icontains=self.nom))
+        if len(p) == 0:
+            nom = self.nom.split(" ")[0]
+            if len(nom) > 3:
+                p = Plante.objects.filter(
+                    Q(NOM_VERN__icontains=nom) | Q(LB_NOM__icontains=nom) | Q(NOM_COMPLET__icontains=nom))
+
+        return p
+
+    def get_InfoGraine(self):
+        liste_plantes = self.get_plante()
+        if len(liste_plantes) > 1:
+            liste_plantes = liste_plantes[1:]
+            plantes = ", ".join(["<a href='" + p.get_absolute_url + "'>" + p.LB_NOM + "</a>" for p in liste_plantes[1:]])
+        else:
+            plantes = ""
+        description = ""
+        if self.lieu_recolte:
+            description += "<p>Lieu de recolte : " + self.lieu_recolte + "</p>"
+        if self.observations:
+            description += "<p>Observations : " + self.observations + "</p>"
+        if plantes:
+            description += "<p>Plantes possibles : " + plantes + "</p>"
+
+        if self.get_daterecolte():
+            infos = InfoGraine(date_recolte=self.get_daterecolte(),
+                                stock_quantite=self.stock,
+                                description=description)
+        else:
+            infos = InfoGraine(stock_quantite=self.stock,
+                                description=description)
+        infos.save()
+        return infos
+
 class Plante(models.Model):
     REGNE = models.CharField(max_length=15)
-    PHYLUM = models.CharField(max_length=30)
+    PHYLUM = models.CharField(max_length=30, blank=True)
     CLASSE = models.CharField(max_length=50)
     ORDRE = models.CharField(max_length=50)
     FAMILLE = models.CharField(max_length=50)
-    SOUS_FAMILLE = models.CharField(max_length=50)
-    TRIBU = models.CharField(max_length=50)
+    SOUS_FAMILLE = models.CharField(max_length=50, blank=True)
+    TRIBU = models.CharField(max_length=50, blank=True)
     GROUP1_INPN = models.CharField(max_length=20)
     GROUP2_INPN = models.CharField(max_length=20)
     GROUP3_INPN = models.CharField(max_length=20)
@@ -83,27 +144,27 @@ class Plante(models.Model):
     NOM_COMPLET_HTML = models.TextField(null=True)
     NOM_VALIDE = models.CharField(max_length=250)
     NOM_VERN = models.CharField(max_length=350)
-    NOM_VERN_ENG = models.CharField(max_length=250)
+    NOM_VERN_ENG = models.CharField(max_length=250, blank=True)
     HABITAT = models.CharField(max_length=40)
-    FR = models.CharField(max_length=2)
-    GF = models.CharField(max_length=2)
-    MAR = models.CharField(max_length=2)
-    GUA = models.CharField(max_length=2)
-    SM = models.CharField(max_length=2)
-    SB = models.CharField(max_length=2)
-    SPM = models.CharField(max_length=2)
-    MAY = models.CharField(max_length=2)
-    EPA = models.CharField(max_length=2)
-    REU = models.CharField(max_length=2)
-    SA = models.CharField(max_length=2)
-    TA = models.CharField(max_length=2)
-    TAAF = models.CharField(max_length=2)
-    PF = models.CharField(max_length=2)
-    NC = models.CharField(max_length=2)
-    WF = models.CharField(max_length=2)
-    CLI = models.CharField(max_length=2)
-    URL = models.CharField(max_length=200)
-    infos_supp = models.TextField(null=True)
+    FR = models.CharField(max_length=2, blank=True)
+    GF = models.CharField(max_length=2, blank=True)
+    MAR = models.CharField(max_length=2, blank=True)
+    GUA = models.CharField(max_length=2, blank=True)
+    SM = models.CharField(max_length=2, blank=True)
+    SB = models.CharField(max_length=2, blank=True)
+    SPM = models.CharField(max_length=2, blank=True)
+    MAY = models.CharField(max_length=2, blank=True)
+    EPA = models.CharField(max_length=2, blank=True)
+    REU = models.CharField(max_length=2, blank=True)
+    SA = models.CharField(max_length=2, blank=True)
+    TA = models.CharField(max_length=2, blank=True)
+    TAAF = models.CharField(max_length=2, blank=True)
+    PF = models.CharField(max_length=2, blank=True)
+    NC = models.CharField(max_length=2, blank=True)
+    WF = models.CharField(max_length=2, blank=True)
+    CLI = models.CharField(max_length=2, blank=True)
+    URL = models.CharField(max_length=200, blank=True)
+    infos_supp = models.TextField(null=True, blank=True)
 
 
     def __str__(self):
@@ -143,6 +204,8 @@ class Plante(models.Model):
 
     @property
     def has_info_supp(self):
+        if not self.infos_supp:
+            return False
         return len(self.infos_supp.split('; ')) > 2
 
     @property
@@ -237,12 +300,13 @@ class InfoGraine(models.Model):
         return reverse('jardins:grainotheque_lire', kwargs={'slug':self.graine.grainotheque.slug})
 
 class Graine(models.Model):
+    nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine",)
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
-    plante = models.ForeignKey(Plante, on_delete=models.CASCADE)
+    plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True)
     infos = models.OneToOneField(InfoGraine, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.plante) + " " + str(self.infos)
+        return str(self.nom)
 
     def get_absolute_url(self):
         return reverse('jardins:grainotheque_lire', kwargs={'slug':self.grainotheque.slug})

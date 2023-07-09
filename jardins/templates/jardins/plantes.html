@@ -61,20 +61,28 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         <h4>ou 3) Recherche alphabétique</h4>
-        <p>Rechercher une plante par la première lettre de son nom commun</p>
+        <p>Rechercher une plante par la première lettre de son nom</p>
     </div>
 </div>
 {%include 'pagination_alphabet.html' %}
 
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter justify-content-center">
-        <table style="width:100%;">
-    {% for plante in plantes_list %}
-            <tr>
-                <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
-                <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
-            </tr>
-    {% endfor %}
+        <table class="table sortable" style="width:100%;">
+            <thead>
+                <tr>
+                    <td><i>Nom(s) vernaculaire(s)</i></td>
+                    <td><i>Nom scientifique</i></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plante in plantes_list %}
+                    <tr>
+                        <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                        <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
             </table>
     </div>
 </div>

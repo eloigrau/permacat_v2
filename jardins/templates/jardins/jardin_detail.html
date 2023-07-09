@@ -74,7 +74,7 @@
 <hr>
 <div class="contenu desc_jardin">
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-sm-12 col-md-10 col-lg-8">
 		   <p> {{ jardin.description|safe }} </p>
 			{%if jardin.fonctionnement %}
 		   <p> {{ jardin.fonctionnement|safe }} </p>
@@ -87,14 +87,6 @@
 		<div class="col-sm-12 textcenter">
 	<table class="table table-condensed ">
 			<tbody>
-				<tr>
-					<td class="nomProprieteProduit">
-						Nom du jardin
-					</td>
-					<td class="proprieteProduit">
-						{{ jardin.titre }}
-					</td>
-				</tr>
 				<tr>
 					<td class="nomProprieteProduit">
 						Type de jardin
@@ -113,19 +105,37 @@
 				</tr>
 				<tr>
 					<td class="nomProprieteProduit">
-						Référent
+						Auteur
 					</td>
 					<td class="proprieteProduit">
 						{% if request.user.is_authenticated %}
-						<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
-						<a href="{% url 'agora_conversation' user.username %}" class="btn btn-success btn-sm">
-             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
-            			</a>
+							<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
+							<a href="{% url 'agora_conversation' jardin.auteur.username %}" class="btn btn-success btn-sm">
+							 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+							</a>
 						{% else %}
 							{{jardin.auteur.username}}
 						{% endif %}
 					</td>
 				</tr>
+
+				{% if jardin.referent %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Référent
+					</td>
+					<td class="proprieteProduit">
+						{% if request.user.is_authenticated %}
+						<a href="{% url 'profil' jardin.referent.id %}">{{jardin.referent.username}}</a> &nbsp
+						<a href="{% url 'agora_conversation' jardin.referent.username %}" class="btn btn-success btn-sm">
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+            			</a>
+						{% else %}
+							{{jardin.referent.username}}
+						{% endif %}
+					</td>
+				</tr>
+				{% endif %}
 				<tr>
 					<td class="nomProprieteProduit">
 						Visibilité

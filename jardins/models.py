@@ -87,6 +87,10 @@ class RTG_import(models.Model):
     def __str__(self):
         return str(self.nom) + " (" + str(self.annee) + ")"
 
+    def save(self,):
+        super(RTG_import, self).save()
+        return self
+
     def get_plante(self):
         p = Plante.objects.filter(Q(NOM_VERN__icontains=self.nom) | Q(LB_NOM__icontains=self.nom) | Q(NOM_COMPLET__icontains=self.nom))
         if len(p) == 0:

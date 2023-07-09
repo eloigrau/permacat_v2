@@ -191,42 +191,27 @@ def import_grainotheque_rtg_1(request):
     importer = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer:
+        grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
         RTG_import.objects.all().delete()
         with open(filename, 'r', newline='\n') as data:
             i= 0
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
-                        RTG_import(**line).save()
+                        ligne = RTG_import(**line).save()
+                        plante = ligne.get_plante()
+                        infos = ligne.get_InfoGraine()
+                        if len(plante) > 0:
+                           if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
+                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
+                        else:
+                           if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
+                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
+
                 except Exception as e:
                     msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"
                 i += 1
     return render(request, "jardins/accueil_admin.html", {"msg":msg})
-
-@login_required
-def import_grainotheque_rtg_2(request):
-    grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
-    msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
-    i = 0
-    for ligne in RTG_import.objects.all():
-        #try:
-        plante = ligne.get_plante()
-        infos = ligne.get_InfoGraine()
-        #if len(plante) > 0:
-        #    if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
-        #        Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
-        #else:
-         #   if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos).exists():
-         #       Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
-        i += 1
-        if i > 500:
-            break
-        msg += "<p>("+str(plante)+") "+ "</p>"
-
-       # except Exception as e:
-      #      msg += "<p>("+str(i)+") " + str(e) +  "//" + str(ligne)+ "</p>"
-    msg += "<p>total ("+str(i)+") "+ "</p>"
-    return render(request, "jardins/accueil_admin.html", {"msg":msg + str(i)})
 
 class ListePlantes(ListView):
     model = Plante

@@ -51,7 +51,7 @@
 		<div class="col-sm-12 textcenter">
 			{% if graines %}
 			<h4>Liste des graines ({{graines|length}}):</h4>
-			<table  class="table table-condensed ">
+			<table  class="table table-condensed sorted">
 				<thead><tr><th style="width:20%;"> Nom</th><th style="width:20%;"> Plante</th><th style="width:50%;">Description</th><th>Stock</th><th>Date de récolte</th>
 					{%if request.user.is_superuser or request.user == grainotheque.auteur  %}<th>Edit</th>{% endif %}
 				</tr></thead>

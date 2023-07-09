@@ -199,7 +199,6 @@ def import_grainotheque_rtg_1(request):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         ligne = RTG_import(**line).save()
-
                 except Exception as e:
                     msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
             data.close()

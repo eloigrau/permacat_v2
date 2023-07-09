@@ -188,7 +188,7 @@ def import_db_inpn_4(request):
 def import_grainotheque_rtg(request):
     filename = get_dossier_db("inventaireRTG.csv")
     msg = "import rtg OK"
-    importer = True
+    importer = False
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer:
         #RTG_import.objects.all().delete()
@@ -211,7 +211,8 @@ def import_grainotheque_rtg(request):
             if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
                 Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).save()
         else:
-           Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos).save()
+            if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos):
+                Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos).save()
 
        # except Exception as e:
       #      msg += "<p>("+str(i)+") " + str(e) +  "//" + str(ligne)+ "</p>"
@@ -466,8 +467,8 @@ def grainotheque_supprimerGraines(request, slug):
 
     grainotheque = get_object_or_404(Grainotheque, slug=slug)
 
-    for g in Graine.objects.filter(grainotheque=grainotheque):
-       g.delete()
+    #for g in Graine.objects.filter(grainotheque=grainotheque):
+     #  g.delete()
 
     return redirect("jardins:grainotheque_lire", slug=slug)
 

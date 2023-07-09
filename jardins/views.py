@@ -211,7 +211,7 @@ def import_grainotheque_rtg_2(request):
 
     msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
 
-    InfoGraine.objects.filter(grainotheque__pk=grainotheque.pk).delete()
+    InfoGraine.objects.filter(graine__grainotheque__pk=grainotheque.pk).delete()
     for ligne in RTG_import.objects.all():
         #try:
         plantess = ligne.get_plante_bdd()

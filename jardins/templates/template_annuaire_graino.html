@@ -22,27 +22,27 @@
             </tr>
         </thead>
         <tbody>
-        {% for jardin in jardins %}
+        {% for grainotheque in grainotheques %}
         <tr>
-           <td style="width-min:30%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' jardin.slug %}">{{ jardin.titre }}</a></td>
-            <td><a href="{% url 'jardins:grainotheque_lire' jardin.slug  %}">{{ jardin.email_contact }}</a></td>
+           <td style="width-min:30%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug %}">{{ grainotheque.titre }}</a></td>
+            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
             {% if not request.user.is_authenticated %}
-                {% if jardin.visibilite_adresse == 0 %}
-                <td>{%if jardin.adresse.commune %}{{ jardin.adresse.commune }} {% else %}-{% endif %}</td>
-                <td style="">{%if jardin.adresse.code_postal %}{{ jardin.adresse.code_postal }}{% else %}-{% endif %}</td>
+                {% if grainotheque.visibilite_adresse == '0' %}
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
+                <td>{%if grainotheque.adresse.code_postal %}{{ grainotheque.adresse.code_postal }}{% else %}-{% endif %}</td>
                 {% else %}
-                <td> - </td><td> - </td>1
+                <td> - </td><td> - </td>
                 {% endif %}
             {% else %}
-                {% if jardin.visibilite_adresse == 0 or jardin.visibilite_adresse == 1 %}
-                <td>{%if jardin.adresse.commune %}{{ jardin.adresse.commune }} {% else %}-{% endif %}</td>
-                <td style="">{%if jardin.adresse.code_postal %}{{ jardin.adresse.code_postal }}{% else %}-{% endif %}</td>
+                {% if grainotheque.visibilite_adresse == '0' or grainotheque.visibilite_adresse == '1' %}
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
+                <td>{%if grainotheque.adresse.code_postal %}{{ grainotheque.adresse.code_postal }}{% else %}-{% endif %}</td>
                 {% else %}
                 <td> - </td><td> - </td>
                 {% endif %}
             {% endif %}
 
-            <td><a href="{% url 'jardins:grainotheque_lire' jardin.slug  %}">{{ jardin|distance:request.user }}</a></td>
+            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.adresse|distance:request.user }}</a></td>
         </tr>
         {% endfor %}
         </tbody>

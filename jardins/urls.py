@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^import_db_inpn_3/$', views.import_db_inpn_3, name="import_db_inpn_3"),
     url(r'^import_db_inpn_4/$', views.import_db_inpn_4, name="import_db_inpn_4"),
     url(r'^import_grainotheque_rtg_1/$', views.import_grainotheque_rtg_1, name="import_grainotheque_rtg_1"),
+    url(r'^import_grainotheque_rtg_2/$', views.import_grainotheque_rtg_2, name="import_grainotheque_rtg_2"),
     path(r'plantes/', views.ListePlantes.as_view(), name="plantes"),
     path(r'voir_plante/<str:cd_nom>', views.voir_plante, name="voir_plante"),
     path(r'voir_plante_nom/', views.voir_plante_nom, name="voir_plante_nom"),

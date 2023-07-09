@@ -6,6 +6,7 @@ from taggit.managers import TaggableManager
 from bourseLibre.models import Profil, Adresse
 import uuid
 from django.db.models import Q
+import pytz
 
 class Choix():
     type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé')
@@ -75,11 +76,12 @@ class RTG_import(models.Model):
     observations = models.CharField(max_length=120)
 
     def get_daterecolte(self):
+        utc = pytz.UTC
         date = ""
         try:
             an = int(self.annee)
             if an:
-                date = datetime.date(an, 1, 1)
+                date = datetime.datetime(an, 1, 1, tzinfo=utc)
         except:
             date = ""
         return date

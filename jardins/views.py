@@ -199,13 +199,6 @@ def import_grainotheque_rtg_1(request):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         ligne = RTG_import(**line).save()
-                        plantes = ligne.get_plante_bdd()
-                        infos = ligne.get_InfoGraine()
-                        if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque,).exists():
-                            if len(plantes) > 0:
-                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, plante=plantes[0], infos=infos)
-                            else:
-                               Graine.objects.create(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
 
                 except Exception as e:
                     msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
@@ -216,11 +209,11 @@ def import_grainotheque_rtg_1(request):
 @login_required
 def import_grainotheque_rtg_2(request):
     grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
-    importer = RTG_import.objects.all()
-    msg = "import rtg ("+ str(len(importer)) + ")"
-    for ligne in importer:
+
+    msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
+    for ligne in RTG_import.objects.all():
         #try:
-        plante = ligne.get_plante()
+        plante = ligne.get_plante_bdd()
         infos = ligne.get_InfoGraine()
         if len(plante) > 0:
             if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
@@ -231,7 +224,7 @@ def import_grainotheque_rtg_2(request):
         g.save()
 
        # except Exception as e:
-      #      msg += "<p>("+str(i)+") " + str(e) +  "//" + str(ligne)+ "</p>"
+        msg += "<p>("+str(ligne)+ str(plante) + "</p>"
 
     return render(request, "jardins/accueil_admin.html", {"msg":msg})
 

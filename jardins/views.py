@@ -212,7 +212,7 @@ def import_grainotheque_rtg_2(request):
     msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
 
     #InfoGraine.objects.all(graine__grainotheque__pk=grainotheque.pk).delete()
-    for grain in Graine.objects.all():
+    for grain in InfoGraine.objects.all():
         if grain.grainotheque.pk == grainotheque.pk:
             grain.delete()
 

@@ -91,7 +91,7 @@ class RTG_import(models.Model):
         p = Plante.objects.filter(Q(NOM_VERN__icontains=self.nom) | Q(LB_NOM__icontains=self.nom) | Q(NOM_COMPLET__icontains=self.nom))
         if len(p) == 0:
             nom = self.nom.split(" ")[0]
-            if len(nom) > 3:
+            if len(nom) > 4:
                 p = Plante.objects.filter(
                     Q(NOM_VERN__icontains=nom) | Q(LB_NOM__icontains=nom) | Q(NOM_COMPLET__icontains=nom))
 

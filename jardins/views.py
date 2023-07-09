@@ -215,7 +215,7 @@ def import_grainotheque_rtg_2(request):
         #try:
         plantess = ligne.get_plante_bdd()
         infos = ligne.get_InfoGraine()
-        if not Graine.objects.filter(nom=ligne.nom, grainotheque__id=grainotheque.id,plante__id=plantess[0].id,).exists():
+        if not Graine.objects.filter(nom=ligne.nom, grainotheque__pk=grainotheque.pk,plante__pk=plantess[0].pk,).exists():
             if len(plantess) > 0:
                 g = Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plantess[0], infos=infos)
             else:
@@ -223,7 +223,7 @@ def import_grainotheque_rtg_2(request):
             g.save()
 
        # except Exception as e:
-        msg += "<p>("+str(ligne)+ str(plante) + "</p>"
+        msg += "<p>("+str(ligne)+ str(plantess) + "</p>"
 
     return render(request, "jardins/accueil_admin.html", {"msg":msg})
 

@@ -185,10 +185,10 @@ def import_db_inpn_4(request):
     return render(request, "jardins/accueil.html", {"msg":"import vern OK"})
 
 @login_required
-def import_grainotheque_rtg(request):
+def import_grainotheque_rtg_1(request):
     filename = get_dossier_db("inventaireRTG.csv")
     msg = "import rtg OK"
-    importer = False
+    importer = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer:
         RTG_import.objects.all().delete()
@@ -201,7 +201,11 @@ def import_grainotheque_rtg(request):
                 except Exception as e:
                     msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"
                 i += 1
+    return render(request, "jardins/accueil_admin.html", {"msg":msg})
 
+@login_required
+def import_grainotheque_rtg_2(request):
+    msg = "import rtg OK"
     grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
     for ligne in RTG_import.objects.all():
         #try:
@@ -209,10 +213,11 @@ def import_grainotheque_rtg(request):
         infos = ligne.get_InfoGraine()
         if len(plante) > 0:
             if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).exists():
-                Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos).save()
+                g = Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plante[0], infos=infos)
         else:
             if not Graine.objects.filter(nom=ligne.nom, grainotheque=grainotheque, infos=infos):
-                Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos).save()
+                g = Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
+        g.save()
 
        # except Exception as e:
       #      msg += "<p>("+str(i)+") " + str(e) +  "//" + str(ligne)+ "</p>"

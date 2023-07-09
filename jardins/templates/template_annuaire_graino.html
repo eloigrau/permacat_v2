@@ -15,34 +15,32 @@
         <thead class="thead-inverse">
             <tr>
                 <th style="min-width:40%;">Nom</th>
+                <th>Type</th>
                 <th>Email</th>
                 <th>Commune</th>
-                <th>Code postal</th>
                 <th>Distance</th>
             </tr>
         </thead>
         <tbody>
         {% for grainotheque in grainotheques %}
         <tr>
-           <td style="width-min:30%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug %}">{{ grainotheque.titre }}</a></td>
-            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
+           <td style="width-min:50%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug %}">{{ grainotheque.titre }}</a></td>
+            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.get_categorie_display }}</a></td>
+           <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
             {% if not request.user.is_authenticated %}
                 {% if grainotheque.visibilite_adresse == '0' %}
                 <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
-                <td>{%if grainotheque.adresse.code_postal %}{{ grainotheque.adresse.code_postal }}{% else %}-{% endif %}</td>
-                {% else %}
-                <td> - </td><td> - </td>
+                 {% else %}
+                <td> - </td>
                 {% endif %}
             {% else %}
                 {% if grainotheque.visibilite_adresse == '0' or grainotheque.visibilite_adresse == '1' %}
                 <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
-                <td>{%if grainotheque.adresse.code_postal %}{{ grainotheque.adresse.code_postal }}{% else %}-{% endif %}</td>
                 {% else %}
-                <td> - </td><td> - </td>
+                <td> - </td>
                 {% endif %}
             {% endif %}
-
-            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.adresse|distance:request.user }}</a></td>
+            <td>{{ grainotheque.adresse|distance:request.user }}</td>
         </tr>
         {% endfor %}
         </tbody>

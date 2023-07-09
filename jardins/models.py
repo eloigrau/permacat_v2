@@ -195,7 +195,7 @@ class Grainotheque(models.Model):
         default='', verbose_name="Type de grainotheque*")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_grainotheque")
     referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", blank=True, null=True)
-    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, blank=True, null=True)
+    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, verbose_name="Jardin associé",blank=True, null=True)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
     email_contact = models.EmailField( verbose_name="Email de contact*")

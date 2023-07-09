@@ -210,6 +210,8 @@ def import_grainotheque_rtg_2(request):
     grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
 
     msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
+
+    InfoGraine.objects.filter(grainotheque__pk=grainotheque.pk).delete()
     for ligne in RTG_import.objects.all():
         #try:
         plantess = ligne.get_plante_bdd()

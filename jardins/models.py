@@ -309,7 +309,7 @@ class Graine(models.Model):
     nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine",)
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True)
-    infos = models.OneToOneField(InfoGraine, on_delete=models.)
+    infos = models.OneToOneField(InfoGraine, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.nom)

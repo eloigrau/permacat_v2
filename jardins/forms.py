@@ -116,7 +116,7 @@ class GrainothequeChangeForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(GrainothequeForm, self).__init__(*args, **kwargs)
+        super(GrainothequeChangeForm, self).__init__(*args, **kwargs)
         self.fields["referent"].choices = [(x.id, x) for x in Profil.objects.filter(adherent_jp=True).order_by("username")]
 
 

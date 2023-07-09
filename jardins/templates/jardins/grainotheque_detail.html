@@ -29,6 +29,12 @@
                  &nbsp;Supprimer la grainothèque
                </button></a>
             {% endif %}
+            {%if request.user.is_superuser  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_supprimerGraines' slug=grainotheque.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                 &nbsp;Supprimer les graines
+               </button></a>
+            {% endif %}
         </div>
  </div>
 <div class="row titre_fiche">

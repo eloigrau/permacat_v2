@@ -64,4 +64,5 @@ urlpatterns = [
     path(r'grainotheque/ajouterGraine/<str:slug>', views.graino_ajouterGraine, name="graino_ajouterGraine"),
     path(r'grainotheque/ajouterAdresse/<str:slug>', views.grainotheque_ajouterAdresse, name="grainotheque_ajouterAdresse"),
     path(r'grainotheque/modifierAdresse/<str:slug>', views.grainotheque_modifierAdresse, name="grainotheque_modifierAdresse"),
+    path(r'grainotheque/supprimerGraines/<str:slug>', views.grainotheque_supprimerGraines, name="grainotheque_supprimerGraines"),
     ]

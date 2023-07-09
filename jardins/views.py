@@ -186,7 +186,7 @@ def import_db_inpn_4(request):
 
 @login_required
 def import_grainotheque_rtg(request):
-    filename = get_dossier_db("inventire_rtg.csv")
+    filename = get_dossier_db("inventaireRTG.csv")
     msg = "import rtg OK"
     importer = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
@@ -196,10 +196,10 @@ def import_grainotheque_rtg(request):
             i= 0
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:
-                    if not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
+                    if len(line["nom"])>4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         RTG_import(**line).save()
                 except Exception as e:
-                    msg += "<p>("+str(i)+") " + str(e) +  "//" + str(line)+ "</p>"
+                    msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"
                 i += 1
 
     grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
@@ -458,6 +458,18 @@ def grainotheque_modifierAdresse(request, slug):
         return redirect(grainotheque)
 
     return render(request, 'jardins/jardin_modifierAdresse.html', {'grainotheque':grainotheque, 'form_adresse':form_adresse })
+
+@login_required
+def grainotheque_supprimerGraines(request, slug):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    grainotheque = get_object_or_404(Grainotheque, slug=slug)
+
+    for g in Graine.objects.filter(grainotheque=grainotheque):
+       g.delete()
+
+    return redirect("jardins:grainotheque_lire", slug=slug)
 
 class GrainothequeDetailView(DetailView):
     model = Grainotheque

@@ -193,20 +193,60 @@ def import_grainotheque_rtg_1(request):
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer_fic:
         grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
+        InfoGraine.objects.all().delete()
+        Graine.objects.filter(grainotheque__pk=grainotheque.pk).delete()
         RTG_import.objects.all().delete()
         with open(filename, 'r', newline='\n') as data:
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:
                     if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         ligne = RTG_import(**line).save()
+                        plantess = ligne.get_plante_bdd()
+                        infos = ligne.get_InfoGraine()
+                        if not Graine.objects.filter(nom=ligne.nom, grainotheque__pk=grainotheque.pk,infos__description=infos.description).exists():
+                            if len(plantess) > 0:
+                                g = Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plantess[0], infos=infos)
+                            else:
+                                g = Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
+                            g.save()
                 except Exception as e:
                     msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
             data.close()
-    return render(request, "jardins/accueil.html", {"msg":msg})
-    return redirect("jardins:accueil_admin", )
+    return render(request, "jardins/accueil_admin.html", {"msg":msg})
 
 @login_required
 def import_grainotheque_rtg_2(request):
+    filename = get_dossier_db("inventaireRTG2.csv")
+    msg = "import rtg OK"
+    importer_fic = True
+    fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
+    if importer_fic:
+        grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
+        InfoGraine.objects.all().delete()
+        Graine.objects.filter(grainotheque__pk=grainotheque.pk).delete()
+        RTG_import.objects.all().delete()
+        with open(filename, 'r', newline='\n') as data:
+            for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
+                try:
+                    if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
+                        ligne = RTG_import(**line).save()
+                        plantess = ligne.get_plante_bdd()
+                        infos = ligne.get_InfoGraine()
+                        if not Graine.objects.filter(nom=ligne.nom, grainotheque__pk=grainotheque.pk,infos__description=infos.description).exists():
+                            if len(plantess) > 0:
+                                g = Graine(nom=ligne.nom, grainotheque=grainotheque, plante=plantess[0], infos=infos)
+                            else:
+                                g = Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
+                            g.save()
+                except Exception as e:
+                    msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
+            data.close()
+    return render(request, "jardins/accueil_admin.html", {"msg":msg})
+
+
+
+@login_required
+def import_grainotheque_rtg_3(request):
     grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
 
     msg = "import rtg ("+ str(len(RTG_import.objects.all())) + ")"
@@ -214,7 +254,6 @@ def import_grainotheque_rtg_2(request):
     #InfoGraine.objects.all(graine__grainotheque__pk=grainotheque.pk).delete()
     InfoGraine.objects.all().delete()
     Graine.objects.filter(grainotheque__pk=grainotheque.pk).delete()
-
 
     for ligne in RTG_import.objects.all():
         #try:

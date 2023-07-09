@@ -188,15 +188,15 @@ def import_db_inpn_4(request):
 def import_grainotheque_rtg(request):
     filename = get_dossier_db("inventaireRTG.csv")
     msg = "import rtg OK"
-    importer = False
+    importer = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer:
-        #RTG_import.objects.all().delete()
+        RTG_import.objects.all().delete()
         with open(filename, 'r', newline='\n') as data:
             i= 0
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:
-                    if len(line["nom"])>4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
+                    if len(line["nom"]) > 4 and not RTG_import.objects.filter(nom=line["nom"], annee=line["annee"], observations=line["observations"],lieu_recolte=line["lieu_recolte"],).exists():
                         RTG_import(**line).save()
                 except Exception as e:
                     msg += "<p>("+str(i)+") " + str(e) + "//" + str(line)+ "</p>"
@@ -467,8 +467,8 @@ def grainotheque_supprimerGraines(request, slug):
 
     grainotheque = get_object_or_404(Grainotheque, slug=slug)
 
-    #for g in Graine.objects.filter(grainotheque=grainotheque):
-     #  g.delete()
+    for g in Graine.objects.filter(grainotheque=grainotheque):
+       g.delete()
 
     return redirect("jardins:grainotheque_lire", slug=slug)
 

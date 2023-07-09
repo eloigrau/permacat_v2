@@ -224,7 +224,7 @@ def import_grainotheque_rtg_2(request):
             g.save()
 
        # except Exception as e:
-        msg += "<p>("+str(ligne)+ str(plantess) + "</p>"
+        #msg += "<p>("+str(ligne)+ str(plantess) + "</p>"
 
     return render(request, "jardins/accueil_admin.html", {"msg":msg})
 

@@ -133,6 +133,13 @@ function copyToClipboard(text) {
     });
 }
 
+function copyToClipboardElement(element) {
+    navigator.clipboard.writeText($(element).text()).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+}
 
 function toggle_visibility(id) {
    var e = document.getElementById(id);

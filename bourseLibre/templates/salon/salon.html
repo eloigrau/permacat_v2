@@ -94,8 +94,8 @@
                     </ul>
 
                     <p>Liste des mails :
-                       <div id="listeMails"> {% for i in inscrits %}{{i.email}} {%if not forloop.last %}, {%endif%} {% endfor %}</div>
-                        <div class="textcenter">  <button onclick="copyToClipboard('#listeMails')">Copier</button> </div>
+                       <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}</div>
+                        <div class="textcenter">  <button onclick="copyToClipboardElement('#listeMails')">Copier</button> </div>
                     </p>
 
                 </div>
@@ -179,15 +179,5 @@
     }
 </script>
 
-
-<script>
-function copyToClipboard(element) {
-  var $temp = $("<input>");
-  $("body").append($temp);
-  $temp.val($(element).text()).select();
-  document.execCommand("copy");
-  $temp.remove();
-}
-</script>
 {% endblock %}
 

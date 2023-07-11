@@ -40,7 +40,8 @@ def get_dossier_db(nomfichier):
     if LOCALL:
         return "/home/tchenrezi/Téléchargements/bdd_rtg/" + nomfichier
 
-    return os.path.abspath(os.path.join(PROJECT_ROOT, "../../../", nomfichier))
+    #return os.path.abspath(os.path.join(PROJECT_ROOT, "../../../", nomfichier))
+    return os.path.abspath(os.path.join(PROJECT_ROOT, "../static/jardins/", nomfichier))
 
 @login_required
 def import_db_inpn_0(request):
@@ -187,8 +188,8 @@ def import_db_inpn_4(request):
 
 @login_required
 def import_grainotheque_rtg_1(request):
-    filename = get_dossier_db("inventaireRTG.csv")
-    msg = "import rtg OK"
+    filename = get_dossier_db("inventaireRTG1.csv")
+    msg = "import rtg1 OK"
     importer_fic = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer_fic:
@@ -217,14 +218,11 @@ def import_grainotheque_rtg_1(request):
 @login_required
 def import_grainotheque_rtg_2(request):
     filename = get_dossier_db("inventaireRTG2.csv")
-    msg = "import rtg OK"
+    msg = "import rtg2 OK"
     importer_fic = True
     fieldnames = 'maj_lettre', 'nom', 'famille', 'genre', 'espece', 'annee', 'stock', 'lieu_recolte', 'observations'
     if importer_fic:
         grainotheque, cree = Grainotheque.objects.get_or_create(slug='ramene-ta-graine')
-        InfoGraine.objects.all().delete()
-        Graine.objects.filter(grainotheque__pk=grainotheque.pk).delete()
-        RTG_import.objects.all().delete()
         with open(filename, 'r', newline='\n') as data:
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
                 try:

@@ -210,6 +210,9 @@ def import_grainotheque_rtg_1(request):
                             else:
                                 g = Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
                             g.save()
+                        else:
+                            msg += "<p>deja present" + str(ligne.nom)+ " "+ str(line) + "</p>"
+
                 except Exception as e:
                     msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
             data.close()
@@ -236,6 +239,8 @@ def import_grainotheque_rtg_2(request):
                             else:
                                 g = Graine(nom=ligne.nom, grainotheque=grainotheque, infos=infos)
                             g.save()
+                        else:
+                            msg += "<p>deja present" + str(ligne.nom)+ " "+ str(line) + "</p>"
                 except Exception as e:
                     msg += "<p>" + str(e) + "//" + str(line)+ "</p>"
             data.close()

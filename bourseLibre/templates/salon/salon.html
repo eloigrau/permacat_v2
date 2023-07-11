@@ -46,8 +46,10 @@
                       </div>
                         <div class="modal-body textleft">
                           <p>Le salon de discussion est un espace où on peut discuter en petit groupe pour s'exprimer librement, un peu comme un groupe "whatsapp" ou "telegram"...</p>
-                            <p>Chaque "Salon" est indépendant. Il est soit ouvert à toustes (public) soit sur invitation (privé), c'est à dire qu'un salon "privé" n'est accessible et visible que par les membres du salon (sur invitation d'un des membres), tandis que les salons "publics" peuvent etre consultés et commentés par tous les inscrits.</p>
-                            <p>Il est possible de rattacher un salon de discussion à un article du forum : pour cela il fut "ajouter un salon" depuis la page de l'article (sous le titre).</p>
+                            <p>Chaque "Salon" est indépendant. Il est soit ouvert à toustes (public) soit sur invitation (privé). Un salon "privé" n'est accessible et visible que par les membres du salon (sur invitation d'un des membres), tandis que les salons "publics" peuvent etre consultés et commentés par tous les inscrits.</p>
+                            <p>Il est possible de rattacher un salon de discussion à un article du forum : pour cela il faut "ajouter un salon" depuis la page de l'article (sous le titre).</p>
+                            {% if not salon.estPublic %}<p>Pour voir les participants au salon privé et en inviter d'autres, il faut cliquer sur le bouton bleu "Salon de discussion Privé"</p>
+                            {% endif %}
                         </div>
                     </div>
                   </div>
@@ -90,6 +92,20 @@
                         <li><a href="{{i.get_absolute_url}}">{{i}}</a></li>
                     {% endfor %}
                     </ul>
+
+                    <p>Liste des mails :
+                       <div id="listeMails"> {% for i in inscrits %}{{i.email}} {%if not forloop.last %}, {%endif%} {% endfor %}</div>
+                        <div class="textcenter">  <button onclick="copyToClipboard('#listeMails')">Copier</button> </div>
+                    </p>
+
+                </div>
+                <div class="modal-body textleft">
+                  <h6> Invités :  </h6>
+                    <ul>
+                    {% for i in invites %}
+                        <li><a href="{{i.get_absolute_url}}">{{i}}</a></li>
+                    {% endfor %}
+                    </ul>
                       <p class="textright">
                             <a href="{% url 'inviterDansSalon' slug_salon=salon.slug %}">
                                 <button type="button" class="btn btn-success" > <i class="fa fa-plus"></i>  inviter...
@@ -100,14 +116,6 @@
                                 </button>
                             </a>
                       </p>
-                </div>
-                <div class="modal-body textleft">
-                  <h6> Invités :  </h6>
-                    <ul>
-                    {% for i in invites %}
-                        <li><a href="{{i.get_absolute_url}}">{{i}}</a></li>
-                    {% endfor %}
-                    </ul>
                 </div>
             </div>
           </div>
@@ -169,6 +177,17 @@
            return false;
        }
     }
+</script>
+
+
+<script>
+function copyToClipboard(element) {
+  var $temp = $("<input>");
+  $("body").append($temp);
+  $temp.val($(element).text()).select();
+  document.execCommand("copy");
+  $temp.remove();
+}
 </script>
 {% endblock %}
 

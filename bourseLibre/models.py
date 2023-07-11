@@ -1132,7 +1132,7 @@ class InscritSalon(models.Model):
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
 
     def __str__(self):
-        return "Salon '" + self.salon + "' - " + self.profil.username
+        return str(self.salon) + "' - " + self.profil.username
 
 class InvitationDansSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
@@ -1141,7 +1141,7 @@ class InvitationDansSalon(models.Model):
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
 
     def __str__(self):
-        return "Salon '" + self.salon + "' - invitant : " + self.profil_invitant.username + " - invité : " + self.profil_invite.username
+        return str(self.salon) + "' - invitant : " + self.profil_invitant.username + " - invité : " + self.profil_invite.username
 
     @property
     def texte(self):

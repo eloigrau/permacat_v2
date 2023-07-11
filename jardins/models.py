@@ -314,6 +314,9 @@ class Graine(models.Model):
     def __str__(self):
         return str(self.nom)
 
+    def get_edit_url(self):
+        return reverse('jardins:graino_modifierGraine', kwargs={'pk':self.pk, "slug_graino":self.grainotheque.slug})
+
     def get_absolute_url(self):
         return reverse('jardins:grainotheque_lire', kwargs={'slug':self.grainotheque.slug})
 

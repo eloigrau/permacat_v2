@@ -63,6 +63,7 @@ urlpatterns = [
     path(r'jardin/supprimer_grainotheque/<str:slug>', login_required(views.SupprimerGrainotheque.as_view()), name="grainotheque_supprimer"),
     path(r'grainotheque/voir/<str:slug>', login_required(views.GrainothequeDetailView.as_view()), name="grainotheque_lire"),
     path(r'grainotheque/ajouterGraine/<str:slug>', views.graino_ajouterGraine, name="graino_ajouterGraine"),
+    path(r'grainotheque/modifierGraine/<str:slug_graino>/<int:pk>', views.graino_modifierGraine, name="graino_modifierGraine"),
     path(r'grainotheque/ajouterAdresse/<str:slug>', views.grainotheque_ajouterAdresse, name="grainotheque_ajouterAdresse"),
     path(r'grainotheque/modifierAdresse/<str:slug>', views.grainotheque_modifierAdresse, name="grainotheque_modifierAdresse"),
     path(r'grainotheque/supprimerGraines/<str:slug>', views.grainotheque_supprimerGraines, name="grainotheque_supprimerGraines"),

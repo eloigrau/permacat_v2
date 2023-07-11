@@ -124,7 +124,7 @@ class GrainothequeChangeForm(forms.ModelForm):
 class GraineForm(forms.ModelForm):
     class Meta:
         model = Graine
-        fields = []
+        fields = ['nom', ]
 
     def save(self, graino, infos, plante):
         instance = super(GraineForm, self).save(commit=False)

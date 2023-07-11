@@ -1,4 +1,7 @@
 {% extends 'base_plantes.html' %}
+{%block header%}
+{{ form.media }}
+{%endblock%}
 {% block subtitle %}
 
 <div class="row">
@@ -24,7 +27,8 @@
             enctype="multipart/form-data">
             <div class="row justify-content-center">
                 <div class="col-sm-12 textcenter">
-                <h4 class="textcenter">Plante :</h4>
+                    {% include 'form_template2.html' with form=form %}
+                <h4 class="textcenter">Associer à une plante de la BDD :</h4>
                     {% include 'form_template2.html' with form=plant_form %}
                 </div>
             </div>

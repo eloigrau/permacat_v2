@@ -81,6 +81,14 @@ def couperTexte(value, nb):
         return value[:nb-3] + "..."
     return value
 
+@register.filter(is_safe=True)
+def couperTexte_avecbouton_150(value, id):
+    nb = 150
+    if len(value) > nb:
+        #r = value[:nb-3] + "<button type='button' class ='btn btn-sm' onclick='toggle_visibility(\"graine_"+str(id)+"\");' data-toggle='tooltip' data-placement='bottom' title='Voir plus...' > </button><div id='graine_"+str(id)+"' style='display:none;'> "+value[nb-3:]+" </div>"
+        r = "<button type='button' class ='btn btn-sm' onclick='toggle_visibility(\"graine_"+str(id)+"\");' data-toggle='tooltip' data-placement='bottom' title='Voir plus...' > <i class='fa fa-plus'> d'infos</i>  </button><div id='graine_"+str(id)+"' style='display:none;'> "+value+" </div>"
+        return r
+    return value
 
 @register.filter(is_safe=True)
 def adherent_asso(user, asso):

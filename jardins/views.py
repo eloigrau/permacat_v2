@@ -541,6 +541,8 @@ class ModifierInfoGraine(UpdateView):
     form_class = InfoGraineForm
     template_name_suffix = '_modifier'
 
+
+
 class ModifierJardin(UpdateView):
     model = Jardin
     form_class = JardinChangeForm
@@ -557,7 +559,7 @@ class ModifierGrainotheque(UpdateView):
 
 class SupprimerGrainotheque(DeleteView):
     model = Grainotheque
-    template_name_suffix = '_modifier'
+    template_name_suffix = '_supprimer'
 
 @login_required
 def graino_ajouterGraine(request, slug):
@@ -565,16 +567,30 @@ def graino_ajouterGraine(request, slug):
     form = GraineForm(request.POST or None)
     form_infos = InfoGraineForm(request.POST or None)
     plant_form = Plante_rechercheForm(None)
-    if form_infos.is_valid():
+    if form.is_valid() and form_infos.is_valid():
           #  return redirect("jardins:voir_plante", cd_nom=str(self.qs[0].CD_NOM))
         infos = form_infos.save()
-        cd_nom = int(request.POST["plante"])
-        plante = Plante.objects.get(CD_NOM=int(cd_nom))
+        plante = Plante.objects.get(CD_NOM=int(request.POST["plante"]))
         graine = form.save(graino, infos, plante)
         return redirect(graino)
 
-    return render(request, 'jardins/grainotheque_ajouterGraine.html', {'graino':graino, 'plant_form':plant_form , 'form_infos':form_infos })
+    return render(request, 'jardins/grainotheque_ajouterGraine.html', {'graino':graino, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
 
+
+@login_required
+def graino_modifierGraine(request, slug_graino, pk):
+    graine = Graine.objects.get(pk=pk)
+    graino = get_object_or_404(Grainotheque, slug=slug_graino)
+    form = GraineForm(request.POST or None, instance=graine)
+    form_infos = InfoGraineForm(request.POST or None, instance=graine.infos)
+    plant_form = Plante_rechercheForm(None)
+    if form.is_valid() and form_infos.is_valid():
+        infos = form_infos.save()
+        plante = Plante.objects.get(CD_NOM=int(request.POST["plante"]))
+        graine = form.save(graino, infos, plante)
+        return redirect(graino)
+
+    return render(request, 'jardins/grainotheque_ajouterGraine.html', {'graino':graino, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
 
 @login_required
 def inscriptionJardin(request, slug):

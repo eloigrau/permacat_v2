@@ -334,7 +334,7 @@ class InscriptionJardin(models.Model):
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
 
     def __unicode__(self):
-        return self.__str()
+        return self.__str__()
 
     def __str__(self):
         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(

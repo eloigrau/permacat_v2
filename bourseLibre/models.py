@@ -1131,6 +1131,9 @@ class InscritSalon(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
 
+    def __str__(self):
+        return "Salon '" + self.salon + "' - " + self.profil.username
+
 class InvitationDansSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     profil_invitant = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="invitant")

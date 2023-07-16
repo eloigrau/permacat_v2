@@ -62,7 +62,7 @@
 						{% endfor %}
 					</p>
 					{% else %}
-					<p>Ou <a href="{% url 'jardins:jardin_ajouterSalon' slug=jardin.slug%}">créez un salon de discussion consacré au jardin</a></p>
+						<p>Ou <a href="{% url 'jardins:jardin_ajouterSalon' slug=jardin.slug%}">créez un salon de discussion consacré au jardin</a></p>
 					{% endif %}
 				 {% elif user_inscrit %}
                     <p>Tu es inscrit.e à ce jardin

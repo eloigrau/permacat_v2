@@ -51,7 +51,20 @@
                        </button>
                     </a>
 					</p>
-                 {% elif user_inscrit %}
+					{% if salons %}
+					<p> Ou aller au salon de discussion :
+						{% for s in salons %}
+						<a href="{% url 'salon' slug=s.slug %}">
+						   <button type="button" class="btn btn-info btn-sm">
+							   {{s.titre}}
+						   </button>
+						</a>
+						{% endfor %}
+					</p>
+					{% else %}
+					<p>Ou <a href="{% url 'jardins:jardin_ajouterSalon' slug=jardin.slug%}">créez un salon de discussion consacré au jardin</a></p>
+					{% endif %}
+				 {% elif user_inscrit %}
                     <p>Tu es inscrit.e à ce jardin
                     <a href="{% url 'jardins:annulerInscription' slug=jardin.slug %}">
                        <button type="button" class="btn btn-warning btn-sm">
@@ -72,21 +85,29 @@
         </div>
  </div>
 <hr>
-<div class="contenu desc_jardin">
-	<div class="row">
-		<div class="col-sm-12 col-md-10 col-lg-8">
-		   <p> {{ jardin.description|safe }} </p>
-			{%if jardin.fonctionnement %}
-		   <p> {{ jardin.fonctionnement|safe }} </p>
-			{% endif %}
-		</div>
-	</div>
-	</div>
-
 	<div class="row">
 		<div class="col-sm-12 textcenter">
 	<table class="table table-condensed ">
 			<tbody>
+		<tr><td colspan="2" style="background:#80bfff;" ><h5>Infos</h5></td>
+				<tr>
+					<td class="nomProprieteProduit">
+						Description
+					</td>
+					<td class="proprieteProduit">
+						{{ jardin.description|safe }}
+					</td>
+				</tr>
+				{%if jardin.fonctionnement %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Fonctionnement
+					</td>
+					<td class="proprieteProduit">
+						{{ jardin.fonctionnement|safe }}
+					</td>
+				</tr>
+				{% endif %}
 				<tr>
 					<td class="nomProprieteProduit">
 						Type de jardin
@@ -95,47 +116,8 @@
 						{{ jardin.get_categorie_display }}
 					</td>
 				</tr>
-				<tr>
-					<td class="nomProprieteProduit">
-						Email
-					</td>
-					<td class="proprieteProduit">
-						<a href="mailto:{{ jardin.email_contact }}">{{ jardin.email_contact }}</a>
-					</td>
-				</tr>
-				<tr>
-					<td class="nomProprieteProduit">
-						Auteur
-					</td>
-					<td class="proprieteProduit">
-						{% if request.user.is_authenticated %}
-							<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
-							<a href="{% url 'agora_conversation' jardin.auteur.username %}" class="btn btn-success btn-sm">
-							 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
-							</a>
-						{% else %}
-							{{jardin.auteur.username}}
-						{% endif %}
-					</td>
-				</tr>
 
-				{% if jardin.referent %}
-				<tr>
-					<td class="nomProprieteProduit">
-						Référent
-					</td>
-					<td class="proprieteProduit">
-						{% if request.user.is_authenticated %}
-						<a href="{% url 'profil' jardin.referent.id %}">{{jardin.referent.username}}</a> &nbsp
-						<a href="{% url 'agora_conversation' jardin.referent.username %}" class="btn btn-success btn-sm">
-             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
-            			</a>
-						{% else %}
-							{{jardin.referent.username}}
-						{% endif %}
-					</td>
-				</tr>
-				{% endif %}
+
 				<tr>
 					<td class="nomProprieteProduit">
 						Visibilité
@@ -238,4 +220,59 @@
        }
     }
 </script>
+
+
+
+<div class="row">
+	<div class="col-sm-12 textcenter">
+	<table class="table table-condensed ">
+		<tbody>
+		<tr><td colspan="2" style="background:#80bfff;" ><h5>Contact</h5></td>
+			</tr>
+
+				<tr>
+					<td class="nomProprieteProduit">
+						Email
+					</td>
+					<td class="proprieteProduit">
+						<a href="mailto:{{ jardin.email_contact }}">{{ jardin.email_contact }}</a>
+					</td>
+				</tr>
+				{% if jardin.referent %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Référent
+					</td>
+					<td class="proprieteProduit">
+						{% if request.user.is_authenticated %}
+						<a href="{% url 'profil' jardin.referent.id %}">{{jardin.referent.username}}</a> &nbsp
+						<a href="{% url 'agora_conversation' jardin.referent.username %}" class="btn btn-success btn-sm">
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+            			</a>
+						{% else %}
+							{{jardin.referent.username}}
+						{% endif %}
+					</td>
+				</tr>
+				{% endif %}
+		<tr>
+					<td class="nomProprieteProduit">
+						Auteur
+					</td>
+					<td class="proprieteProduit">
+						{% if request.user.is_authenticated %}
+							<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
+							<a href="{% url 'agora_conversation' jardin.auteur.username %}" class="btn btn-success btn-sm">
+							 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+							</a>
+						{% else %}
+							{{jardin.auteur.username}}
+						{% endif %}
+					</td>
+				</tr>
+		</tbody>
+	</table>
+
+	</div>
+</div>
 {% endblock %}

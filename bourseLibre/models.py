@@ -1088,6 +1088,8 @@ class Salon(models.Model):
     estPublic = models.BooleanField(verbose_name="Salon public ou privé (public si coché)", default=False)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Le salon doit être associé à un article existant (sinon créez un article avec une date)", blank=True, null=True)
+    jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
+                                help_text="Le salon peut être associé à un jardin", blank=True, null=True)
 
     #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 

@@ -10,9 +10,9 @@ from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.filters import ProfilCarteFilter
 from bourseLibre.settings.production import LOCALL
 from bourseLibre.forms import AdresseForm4
-from bourseLibre.models import Asso, Profil
+from bourseLibre.models import Asso, Profil, Salon
 from .forms import Plante_rechercheForm, GrainothequeForm, GrainothequeChangeForm, JardinForm, JardinChangeForm, \
-    GraineForm, InfoGraineForm, ContactParticipantsForm
+    GraineForm, InfoGraineForm, ContactParticipantsForm, SalonJardinForm
 from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
     DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel, RTG_import
 from .filters import JardinCarteFilter, GrainoCarteFilter
@@ -413,6 +413,14 @@ def jardin_ajouterAdresse(request, slug):
 
     return render(request, 'jardins/jardin_ajouterAdresse.html', {'jardin':jardin, 'form_adresse':form_adresse })
 
+def jardin_ajouterSalon(request, slug):
+    form = SalonJardinForm(request.POST or None)
+    jardin = get_object_or_404(Jardin, slug=slug)
+    if form.is_valid():
+        salon = form.save(request, jardin)
+        return redirect(salon)
+
+    return render(request, 'jardins/jardin_ajouterSalon.html', {'form': form, 'jardin':jardin})
 
 @login_required
 def jardin_modifierAdresse(request, slug):
@@ -472,6 +480,7 @@ class JardinDetailView(DetailView):
         context["user_inscrit"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
         context["jardins"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
         context["adresse_visible"] = self.object.visibilite_adresse == '0' or (self.object.visibilite_adresse == '1' and self.request.user.is_authenticated)
+        context["salons"] = Salon.objects.filter(jardin=self.object)
         return context
 
 class AjouterGrainotheque(CreateView):

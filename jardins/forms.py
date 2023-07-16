@@ -1,6 +1,6 @@
 from django import forms
 from .models import Plante_recherche, Jardin, Grainotheque, Choix, Graine, InfoGraine
-from bourseLibre.models import Profil
+from bourseLibre.models import Profil,InscritSalon, Salon
 from django.utils.text import slugify
 from local_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
 from django.urls import reverse
@@ -80,6 +80,21 @@ class JardinChangeForm(forms.ModelForm):
         listeChoix.insert(0, ("", "----------------"))
         self.fields['referent'].choices = listeChoix
         self.fields['referent'].required = False
+
+class SalonJardinForm(forms.ModelForm):
+
+    class Meta:
+        model = Salon
+        fields = ['titre', 'estPublic' ]
+
+    def save(self, request, jardin):
+        instance = super(SalonJardinForm, self).save(commit=False)
+        instance.jardin = jardin
+        instance.estPublic = False
+        instance.save()
+        inscrit = InscritSalon(salon=instance, profil=request.user)
+        inscrit.save()
+        return instance
 
 class GrainothequeForm(forms.ModelForm):
 

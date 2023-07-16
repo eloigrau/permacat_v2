@@ -151,17 +151,24 @@
 </div>
 {%endif%}
 
-{% if salon.article%}
 <div class="row">
     <div class="col-md-12">
-        <a href="{{salon.article.get_absolute_url }}">
-            <button type="button" class="btn btn-secondary btn-sm ">
-            Article associé : {{salon.article.titre}}
-        </button>
-        </a>
+    {% if salon.article%}
+            <a href="{{salon.article.get_absolute_url }}">
+                <button type="button" class="btn btn-secondary btn-sm ">
+                Article associé : {{salon.article.titre}}
+            </button>
+            </a>
+    {%endif%}
+    {% if salon.jardin%}
+            <a href="{{salon.jardin.get_absolute_url }}">
+                <button type="button" class="btn btn-secondary btn-sm ">
+                Jardin associé : {{salon.jardin.titre}}
+            </button>
+            </a>
+    {%endif%}
     </div>
 </div>
-{%endif%}
 
 {% endblock %}
 {% block content %}

@@ -9,7 +9,7 @@ from django.db.models import Q
 import pytz
 
 class Choix():
-    type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé')
+    type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé'), ('', 'Jardin Professionnel (maraichage, arboriculture, etc. à usage pro)')
     type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
 
     visibilite_jardin_annuaire = ('0', "Public (visible dans l'annuaire sans inscription)"), ('1', 'Inscrits (visible dans seulement par les inscrits au site)'), ('2', "Invisible dans l'annuaire")
@@ -226,17 +226,17 @@ class Plante_recherche(models.Model):
 
 class Jardin(models.Model):
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_jardin")
-    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_jardin", blank=True, null=True)
+    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_jardin",verbose_name="Référent (si ce n'est pas vous)",  blank=True, null=True)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
     categorie = models.CharField(max_length=3,
         choices=Choix.type_jardin,
         default='', verbose_name="Type de jardin*")
     visibilite_annuaire = models.CharField(max_length=3,
         choices=Choix.visibilite_jardin_annuaire,
-        default='', verbose_name="Visibilité du jardin sur l'annuaire")
+        default='', verbose_name="Visibilité du jardin sur l'annuaire*")
     visibilite_adresse = models.CharField(max_length=30,
         choices=Choix.visibilite_jardin_adresse,
-        default='', verbose_name="Visibilité de l'adresse du jardin (sur la carte)")
+        default='', verbose_name="Visibilité de l'adresse du jardin (sur la carte)*")
     titre = models.CharField(max_length=250, verbose_name="Nom du jardin*")
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
     slug = models.SlugField(max_length=100)
@@ -263,7 +263,7 @@ class Grainotheque(models.Model):
         choices=Choix.type_grainotheque,
         default='', verbose_name="Type de grainotheque*")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_grainotheque")
-    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", blank=True, null=True)
+    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", verbose_name="Référent (si ce n'est pas vous)", blank=True, null=True)
     jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, verbose_name="Jardin associé",blank=True, null=True)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
@@ -271,15 +271,14 @@ class Grainotheque(models.Model):
 
     visibilite_annuaire = models.CharField(max_length=30,
         choices= Choix.visibilite_jardin_annuaire,
-        default='', verbose_name="Visibilité de la grainothèque sur l'annuaire")
+        default='', verbose_name="Visibilité de la grainothèque sur l'annuaire*")
     visibilite_adresse = models.CharField(max_length=30,
         choices= Choix.visibilite_jardin_adresse,
-        default='', verbose_name="Visibilité de l'adresse de la grainotheque (sur la carte)")
+        default='', verbose_name="Visibilité de l'adresse de la grainothèque (sur la carte)*")
     titre = models.CharField(max_length=250,)
     slug = models.SlugField(max_length=100)
 
-    description = models.TextField(null=True)
-
+    description = models.TextField(null=True, blank=True, help_text="Un descriptif bref de la grianothèque et son fonctionnement")
 
     def __str__(self):
         return self.titre

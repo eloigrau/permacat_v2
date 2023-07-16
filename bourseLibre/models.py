@@ -1306,14 +1306,18 @@ class InscriptionNewsletter(models.Model):
             self.date_inscription = now()
         return super(InscriptionNewsletter, self).save(*args, **kwargs)
 
-    # def getArticles(self):
-    #     if self.nom == "public":
-    #         return Article.objects.filter(asso="0")
-    #     if self.nom == "permacat":
-    #         return Article.objects.filter(asso="1")
-    #     elif self.nom == "rtg":
-    #         return Article.objects.filter(asso="2")
-    #     elif self.nom == "ame":
-    #         return Article.objects.filter(asso="3")
+
+class InscriptionNewsletterGenerique(models.Model):
+    nom = models.CharField(max_length=20, blank=False)
+    email = models.EmailField()
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return str(self.nom) + str(self.email)
 
 
+class InscriptionNewsletterAsso(InscriptionNewsletterGenerique):
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)

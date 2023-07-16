@@ -13,7 +13,7 @@
 
 {% block subtitle %}
 
- <div class="row rowcentre">
+ <div class="row rowcentre" id="titre">
         <div class="col-sm-12 textcenter">
             {%if request.user.is_superuser or request.user.username == jardin.referent or request.user == jardin.auteur  %}
             <div class = "btn-group">
@@ -85,7 +85,7 @@
         </div>
  </div>
 <hr>
-	<div class="row">
+	<div class="row" id="description">
 		<div class="col-sm-12 textcenter">
 	<table class="table table-condensed ">
 			<tbody>
@@ -223,7 +223,7 @@
 
 
 
-<div class="row">
+<div class="row" id="contact">
 	<div class="col-sm-12 textcenter">
 	<table class="table table-condensed ">
 		<tbody>

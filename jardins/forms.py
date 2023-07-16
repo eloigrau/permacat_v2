@@ -25,6 +25,8 @@ class Plante_rechercheForm(forms.ModelForm):
 
 
 class JardinForm(forms.ModelForm):
+    referent = forms.ChoiceField(label='Référent(.e) du jardin')
+
     class Meta:
         model = Jardin
         fields = ['titre', 'email_contact', "referent", 'telephone', 'categorie',  'visibilite_annuaire', 'visibilite_adresse', 'description',  'fonctionnement', ]
@@ -66,6 +68,8 @@ class JardinForm(forms.ModelForm):
 
 
 class JardinChangeForm(forms.ModelForm):
+    referent = forms.ChoiceField(label='Référent(.e) du jardin')
+
     class Meta:
         model = Jardin
         fields = ['titre', 'email_contact', 'telephone', 'categorie', 'visibilite_annuaire', 'visibilite_adresse',
@@ -97,7 +101,7 @@ class SalonJardinForm(forms.ModelForm):
         return instance
 
 class GrainothequeForm(forms.ModelForm):
-
+    referent = forms.ChoiceField(label='Référent(.e) de la grainothèque')
 
     class Meta:
         model = Grainotheque
@@ -140,6 +144,8 @@ class GrainothequeForm(forms.ModelForm):
 
 
 class GrainothequeChangeForm(forms.ModelForm):
+    referent = forms.ChoiceField(label='Référent(.e) de la grainothèque')
+
     class Meta:
         model = Grainotheque
         fields = ['titre', 'categorie', 'description', 'referent', 'email_contact', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]

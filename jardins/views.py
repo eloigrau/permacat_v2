@@ -391,8 +391,10 @@ def chercher_plante(request):
 
 class AjouterJardin(CreateView):
     model = Jardin
-    form_class = JardinForm
     template_name_suffix = '_ajouter'
+
+    def get_form(self):
+        return JardinForm(current_user=self.request.user, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save(self.request.user)
@@ -485,8 +487,10 @@ class JardinDetailView(DetailView):
 
 class AjouterGrainotheque(CreateView):
     model = Grainotheque
-    form_class = GrainothequeForm
     template_name_suffix = '_ajouter'
+
+    def get_form(self):
+        return GrainothequeForm(current_user=self.request.user, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save(self.request.user)
@@ -554,8 +558,10 @@ class ModifierInfoGraine(UpdateView):
 
 class ModifierJardin(UpdateView):
     model = Jardin
-    form_class = JardinChangeForm
     template_name_suffix = '_modifier'
+
+    def get_form(self):
+        return JardinChangeForm(current_user=self.request.user, **self.get_form_kwargs())
 
 class SupprimerJardin(DeleteView):
     model = Jardin
@@ -565,6 +571,9 @@ class ModifierGrainotheque(UpdateView):
     model = Grainotheque
     form_class = GrainothequeChangeForm
     template_name_suffix = '_modifier'
+
+    def get_form(self):
+        return GrainothequeChangeForm(current_user=self.request.user, **self.get_form_kwargs())
 
 class SupprimerGrainotheque(DeleteView):
     model = Grainotheque

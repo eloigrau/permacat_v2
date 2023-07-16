@@ -230,19 +230,19 @@ class Jardin(models.Model):
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
     categorie = models.CharField(max_length=3,
         choices=Choix.type_jardin,
-        default='', verbose_name="Type de jardin*")
+        default='0', verbose_name="Type de jardin*")
     visibilite_annuaire = models.CharField(max_length=3,
         choices=Choix.visibilite_jardin_annuaire,
-        default='', verbose_name="Visibilité du jardin sur l'annuaire*")
+        default='0', verbose_name="Visibilité du jardin sur l'annuaire*")
     visibilite_adresse = models.CharField(max_length=30,
         choices=Choix.visibilite_jardin_adresse,
-        default='', verbose_name="Visibilité de l'adresse du jardin (sur la carte)*")
+        default='0', verbose_name="Visibilité de l'adresse du jardin (sur la carte)*")
     titre = models.CharField(max_length=250, verbose_name="Nom du jardin*")
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
     slug = models.SlugField(max_length=100)
     description = models.TextField(null=True, blank=True, help_text="Décrivez le jardin en quelques mots")
     fonctionnement = models.TextField(null=True, blank=True, help_text="Un descriptif du fonctionnement du jardin (horaires, participation, gestion de l'eau, ...)")
-    permapotes_id = models.CharField(max_length=250, verbose_name="Identifiants sur permapotes.com", null=True, )
+    permapotes_id = models.CharField(max_length=250, verbose_name="Identifiants sur permapotes.com", null=True, blank=True)
     horaires = models.TextField(null=True, help_text="Horaires d'ouverture (s'il y a lieu)")
     parcellesIndividuelles = models.BooleanField(default=False, verbose_name="Parcelles Individuelles")
     parcellesCollectives = models.BooleanField(default=False, verbose_name="Parcelles Collectives")
@@ -261,7 +261,7 @@ class Jardin(models.Model):
 class Grainotheque(models.Model):
     categorie = models.CharField(max_length=3,
         choices=Choix.type_grainotheque,
-        default='', verbose_name="Type de grainotheque*")
+        default='0', verbose_name="Type de grainotheque*")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_grainotheque")
     referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", verbose_name="Référent (si ce n'est pas vous)", blank=True, null=True)
     jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, verbose_name="Jardin associé",blank=True, null=True)
@@ -271,10 +271,10 @@ class Grainotheque(models.Model):
 
     visibilite_annuaire = models.CharField(max_length=30,
         choices= Choix.visibilite_jardin_annuaire,
-        default='', verbose_name="Visibilité de la grainothèque sur l'annuaire*")
+        default='0', verbose_name="Visibilité de la grainothèque sur l'annuaire*")
     visibilite_adresse = models.CharField(max_length=30,
         choices= Choix.visibilite_jardin_adresse,
-        default='', verbose_name="Visibilité de l'adresse de la grainothèque (sur la carte)*")
+        default='0', verbose_name="Visibilité de l'adresse de la grainothèque (sur la carte)*")
     titre = models.CharField(max_length=250,)
     slug = models.SlugField(max_length=100)
 

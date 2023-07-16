@@ -25,29 +25,25 @@ class Plante_rechercheForm(forms.ModelForm):
 
 
 class JardinForm(forms.ModelForm):
-    referent = forms.ChoiceField(label='Référent(.e) du jardin')
+    #referent = forms.ChoiceField(label='Référent(.e) du jardin', required=False)
 
     class Meta:
         model = Jardin
-        fields = ['titre', 'email_contact', "referent", 'telephone', 'categorie',  'visibilite_annuaire', 'visibilite_adresse', 'description',  'fonctionnement', ]
+        fields = ['titre', 'email_contact', 'telephone', 'categorie',  'visibilite_annuaire', 'visibilite_adresse', 'description',  'fonctionnement', ]
         widgets = {
             'description': SummernoteWidget(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, current_user, *args, **kwargs):
         super(JardinForm, self).__init__(*args, **kwargs)
-        listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username'))]
-        listeChoix.insert(0, ("", "----------------"))
-        self.fields['referent'].choices = listeChoix
-        self.fields['referent'].required = False
+   #     self.fields['referent'].choices = [(current_user.id, current_user), ] + [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username')) if u != current_user]
+
+   # def is_valid(self, *args, **kwargs):
+    #    return super(JardinForm, self).is_valid(*args, **kwargs)
 
     def save(self, userProfile, ):
+        #self.cleaned_data['referent'] = Profil.objects.get(id=self.cleaned_data['referent'])
         instance = super(JardinForm, self).save(commit=False)
-        try:
-            referent = int(self.cleaned_data['referent'])
-            instance.referent = dict(self.fields['referent'].choices)[referent].username
-        except:
-            pass
 
         max_length = Jardin._meta.get_field('slug').max_length
         instance.slug = orig = slugify(instance.titre)[:max_length]
@@ -68,7 +64,7 @@ class JardinForm(forms.ModelForm):
 
 
 class JardinChangeForm(forms.ModelForm):
-    referent = forms.ChoiceField(label='Référent(.e) du jardin')
+   # referent = forms.ChoiceField(label='Référent(.e) du jardin', required=False)
 
     class Meta:
         model = Jardin
@@ -78,12 +74,10 @@ class JardinChangeForm(forms.ModelForm):
             'description': SummernoteWidget(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, current_user, *args, **kwargs):
         super(JardinChangeForm, self).__init__(*args, **kwargs)
-        listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username'))]
-        listeChoix.insert(0, ("", "----------------"))
-        self.fields['referent'].choices = listeChoix
-        self.fields['referent'].required = False
+        #self.fields['referent'].choices = [(current_user.id, current_user), ] + [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username')) if u != current_user]
+
 
 class SalonJardinForm(forms.ModelForm):
 
@@ -101,32 +95,25 @@ class SalonJardinForm(forms.ModelForm):
         return instance
 
 class GrainothequeForm(forms.ModelForm):
-    referent = forms.ChoiceField(label='Référent(.e) de la grainothèque')
+    #referent = forms.ChoiceField(label='Référent(.e) de la grainothèque', required=False)
 
     class Meta:
         model = Grainotheque
-        fields = [ 'titre', 'categorie', 'description', 'referent', 'email_contact', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
+        fields = [ 'titre', 'categorie', 'description', 'email_contact', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
         widgets = {
             'description': SummernoteWidget(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, current_user, *args, **kwargs):
         super(GrainothequeForm, self).__init__(*args, **kwargs)
-        listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username'))]
-        listeChoix.insert(0, ("", "----------------"))
-        self.fields['referent'].choices = listeChoix
-        self.fields['referent'].required = False
+        #self.fields['referent'].choices = [(current_user.id, current_user), ] + [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username')) if u != current_user]
+
 
     def save(self, userProfile, ):
         instance = super(GrainothequeForm, self).save(commit=False)
 
         max_length = Grainotheque._meta.get_field('slug').max_length
         instance.slug = orig = slugify(instance.titre)[:max_length]
-        try:
-            referent = int(self.cleaned_data['referent'])
-            instance.referent = dict(self.fields['referent'].choices)[referent].username
-        except:
-            pass
 
         for x in itertools.count(1):
             if not Grainotheque.objects.filter(slug=instance.slug).exists():
@@ -144,21 +131,19 @@ class GrainothequeForm(forms.ModelForm):
 
 
 class GrainothequeChangeForm(forms.ModelForm):
-    referent = forms.ChoiceField(label='Référent(.e) de la grainothèque')
+    #referent = forms.ChoiceField(label='Référent(.e) de la grainothèque', required=False)
 
     class Meta:
         model = Grainotheque
-        fields = ['titre', 'categorie', 'description', 'referent', 'email_contact', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
+        fields = ['titre', 'categorie', 'description', 'email_contact', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
         widgets = {
             'description': SummernoteWidget(),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, current_user, *args, **kwargs):
         super(GrainothequeChangeForm, self).__init__(*args, **kwargs)
-        listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username'))]
-        listeChoix.insert(0, ("", "----------------"))
-        self.fields['referent'].choices = listeChoix
-        self.fields['referent'].required = False
+       # self.fields['referent'].choices = [(current_user.id, current_user), ] + [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username')) if u != current_user]
+
 
 class GraineForm(forms.ModelForm):
     class Meta:

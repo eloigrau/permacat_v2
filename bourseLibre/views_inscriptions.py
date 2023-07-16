@@ -223,11 +223,11 @@ def inscription_jp(request):
     else:
         request.user.adherent_citealt = True
         request.user.save()
-        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_citealt')
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_jp')
         actions.follow(request.user, suivi, send_action=False)
-        action.send(request.user, verb='inscription_citealt', target=asso, url=request.user.get_absolute_url(),
+        action.send(request.user, verb='inscription_jp', target=asso, url=request.user.get_absolute_url(),
                     description="s'est inscrit.e dans le groupe des Jardins Partagés")
-    return redirect('jardins:acceuil', asso='jp')
+    return redirect('jardins:accueil')
 
 @login_required
 def contacter_newsletter(request):

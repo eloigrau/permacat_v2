@@ -221,7 +221,7 @@ def inscription_jp(request):
         action.send(request.user, verb='inscription_jp', target=asso, url=request.user.get_absolute_url(),
                     description="s'est retiré.e du groupe des Jardins Partagés")
     else:
-        request.user.adherent_citealt = True
+        request.user.adherent_jp = True
         request.user.save()
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_jp')
         actions.follow(request.user, suivi, send_action=False)

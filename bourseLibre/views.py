@@ -356,11 +356,15 @@ def listeContacts(request, asso):
         listeMails.append({"type":'user_adherent', "profils":Profil.objects.filter(adherent_pc=True), "titre":"su : Liste des adhérents Permacat: "})
 
     listeMails.append({"type":'user_adherent_ajour' , "profils":asso.getProfils_cotisationAJour(), "titre":"Liste des adhérents : à jour de leur cotisation "})
+
     listeMails.append(
-      {"type":'user_adherent', "profils":Profil.objects.filter(adherent_pc=True), "titre":"Liste des membres du groupe " + asso.nom},
+      {"type":'user_adherent', "profils":asso.getProfils(), "titre":"Liste des membres PermaCat " + asso.nom},
     )
     listeMails.append(
-      {"type":'sympathisants', "profils":asso.getEmails_sympathisants(), "titre":"Liste des sympathisants " + asso.nom},
+      {"type":'user_adherent', "profils":asso.getProfils_sympathisants(), "titre":"Liste des sympathisants " + asso.nom},
+    )
+    listeMails.append(
+      {"type":'emails', "emails":asso.getEmails_sympathisants(), "titre":"Liste des sympathisants " + asso.nom},
     )
     return render(request, 'asso/listeContacts.html', {"listeMails":listeMails, "asso":asso })
 

@@ -185,6 +185,9 @@ class Asso(models.Model):
     def getEmails_sympathisants(self):
         return [p.email for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
 
+    def getProfils_sympathisants(self):
+        return [p for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
+
     def getProfils_cotisationAJour(self):
         return [p for p in self.getProfils() if p.isCotisationAJour(self.abreviation)]
 
@@ -1329,7 +1332,7 @@ class InscriptionNewsletterGenerique(models.Model):
         return self.__str()
 
     def __str__(self):
-        return str(self.nom) + str(self.email)
+        return str(self.nom_newsletter) + ": " + str(self.email)
 
 
 class InscriptionNewsletterAsso(InscriptionNewsletterGenerique):

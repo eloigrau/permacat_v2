@@ -309,7 +309,7 @@ BASE_URL = "https://www.perma.cat"
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
 STATIC_ADD_ROOT = os.path.join(BASE_DIR, 'static_files_ajoutes/')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 MEDIA_URL = '/media/'

@@ -175,6 +175,9 @@ urlpatterns = [
     url(r'^conversations/(?P<destinataire1>[\w.@+-]+)/(?P<destinataire2>[\w.@+-]+)$', login_required(views.lireConversation_2noms), name='lireConversation_2noms'),
     url(r'^conversations/$', login_required(views.ListeConversations.as_view()), name='conversations'),
     url(r'^conversations/chercher/$', login_required(views.chercherConversation), name='chercher_conversation'),
+    url(r'^conversations/profil_ac/$', login_required(views.ProfilAutocomplete.as_view(), login_url='/auth/login/'), name='profil_ac'),
+    path(r'conversations/profil_autocomplete_recherche/', views.profil_autocomplete_recherche, name="profil_autocomplete_recherche"),
+
     url(r'^suivre_conversation/$', views_inscriptions.suivre_conversations, name='suivre_conversations'),
     url(r'^suivre_produits/$', views_inscriptions.suivre_produits, name='suivre_produits'),
     url(r'^sereabonner/$', views_inscriptions.sereabonner, name='sereabonner'),

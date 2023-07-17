@@ -13,7 +13,7 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
-    SalonForm, Message_salonForm, ModifierSalonDesciptionForm
+    SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
     Adhesion_asso, Adhesion_permacat
@@ -57,7 +57,7 @@ from bourseLibre.settings import LOCALL
 from bourseLibre.constantes import Choix as Choix_global
 from django.utils.timezone import now
 import pytz
-
+from dal import autocomplete
 from webpush import send_user_notification
 
 CharField.register_lookup(Lower, "lower")
@@ -1045,12 +1045,33 @@ class ListeConversations(ListView):
 
 def chercherConversation(request):
     form = ChercherConversationForm(request.user, request.POST or None,)
+    profil_autocomplete_form = Profil_rechercheForm(None)
     if form.is_valid():
         destinataire = Profil.objects.get(id=int(form.cleaned_data['destinataire']))
         return redirect('agora_conversation', destinataire=destinataire)
-    else:
-        return render(request, 'chercher_conversation.html', {'form': form})
 
+    return render(request, 'chercher_conversation.html', {'form': form, 'profil_autocomplete_form':profil_autocomplete_form})
+
+def profil_autocomplete_recherche(request):
+    try:
+        destinataire = Profil.objects.get(id=int(request.GET["profil"]))
+    except:
+        return redirect('conversations')
+
+    return redirect('agora_conversation', destinataire=destinataire)
+
+class ProfilAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Profil.objects.none()
+
+        qs = Profil.objects.filter().order_by("username")
+
+        if self.q:
+            qs = qs.filter(Q(username__istartswith=self.q) | Q(username__contains=self.q)).order_by("username")
+
+        return qs
 
 @login_required
 def getNbProduits_expires(request):

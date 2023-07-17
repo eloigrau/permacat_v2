@@ -444,6 +444,12 @@ class Profil(AbstractUser):
         from permagora.models import Signataire
         return Signataire.objects.filter(auteur=self).exists()
 
+
+class Profil_recherche(models.Model):
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
+
+
+
 def envoyerMailBienvenue(user):
     titre = "[Permacat] Inscription sur le site"
     pseudo = user.username

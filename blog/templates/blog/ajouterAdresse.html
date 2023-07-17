@@ -67,6 +67,7 @@ $('.example').leafletLocationPicker({
   alwaysOpen: false,
   {% comment %}
   className: baseClassName,
+  map: yourmap,
   location: yourmap.center,
   {% endcomment %}
   locationFormat: '{lat}{sep}{lng}',
@@ -79,7 +80,6 @@ $('.example').leafletLocationPicker({
   width: 200,
   event: 'click',
   cursorSize: '30px',
-  map: yourmap,
   onChangeLocation: $.noop,
   mapContainer: "#yourmap"
 });

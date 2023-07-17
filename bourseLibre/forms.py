@@ -2,12 +2,13 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Produit_vegetal, Adresse, \
     Asso, Profil, Message, MessageGeneral, Message_salon, InscriptionNewsletter, Adhesion_permacat, \
-    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie
+    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche
 from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from blog.models import Article
+from dal import autocomplete
 from .constantes import Choix
 
 fieldsCommunsProduits = ['souscategorie', 'nom_produit',  'description', 'estUneOffre', 'asso',
@@ -530,3 +531,18 @@ class InviterDansSalonForm(forms.Form):
     def __init__(self, salon, *args, **kwargs):
         super(InviterDansSalonForm, self).__init__(*args, **kwargs)
         self.fields['profil_invite'].choices = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username')) if salon.estPublic or not salon.est_autorise(u)]
+
+
+
+class Profil_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Profil_recherche
+        fields = ("profil", )
+        widgets = {
+            'profil': autocomplete.ModelSelect2(url='profil_ac')
+        }
+
+    def save(self):
+        instance = super(Profil_rechercheForm, self).save()
+        return instance

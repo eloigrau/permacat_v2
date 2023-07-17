@@ -6,7 +6,7 @@
 </h4>
 {%endblock%}
 {% block content %}
-
+<p class="textcenter">Choisir parmi la liste des incrits : (tapez la première lettre pour accéder plus rapidement)</p>
 <div class="row align-items-center">
 <div class="col-sm-12 textcenter">
 <form method="post">
@@ -16,6 +16,15 @@
   <button type="submit" class="btn btn-primary">OK</button>
 </form>
 </div></div>
-
+<p class="textcventer">Ou chercher : </p>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <form class="form-horizontal" role="form" action="{% url 'profil_autocomplete_recherche' %}" method="get"
+            enctype="multipart/form-data">
+                {% include 'form_template2.html' with form=profil_autocomplete_form %}
+                <button id ="btn-valider" type="submit" class="btn btn-primary">OK</button>
+        </form>
+    </div>
+</div>
 
 {% endblock %}

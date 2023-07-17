@@ -221,6 +221,7 @@ urlpatterns = [
     url(r'^admin/supprimerHitsAnciens/$', views_admin.supprimerHitsAnciens,  name="supprimerHitsAnciens"),
     url(r'^admin/supprimerActionsAnciens/$', views_admin.supprimerActionsAnciens,  name="supprimerActionsAnciens"),
     url(r'^admin/transforBlogJpToForum/$', views_admin.transforBlogJpToForum,  name="transforBlogJpToForum"),
+    url(r'^admin/movePermagoraInscritsToNewsletter/$', views_admin.movePermagoraInscritsToNewsletter,  name="movePermagoraInscritsToNewsletter"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),

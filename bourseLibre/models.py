@@ -182,6 +182,9 @@ class Asso(models.Model):
             return False
         return True
 
+    def getEmails_sympathisants(self):
+        return [p.email for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
+
     def getProfils_cotisationAJour(self):
         return [p for p in self.getProfils() if p.isCotisationAJour(self.abreviation)]
 
@@ -1316,9 +1319,11 @@ class InscriptionNewsletter(models.Model):
 
 
 class InscriptionNewsletterGenerique(models.Model):
-    nom = models.CharField(max_length=20, blank=False)
+    nom_newsletter = models.CharField(max_length=30, blank=False)
     email = models.EmailField()
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="profil_newsletter",
+                                 verbose_name="Profil du membre (si inscrit)", blank=True, null=True)
 
     def __unicode__(self):
         return self.__str()

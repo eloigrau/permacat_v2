@@ -483,6 +483,9 @@ border: 1px inset rgba(28,110,164,0.65);
 .nav6-dropdown{
     background-color: #b3fff9;
 }
+.nav6-dropdown-submenu{
+    background-color: #e6fffd;
+}
 .cardH6{
     background-color: #b3fff9;
 }

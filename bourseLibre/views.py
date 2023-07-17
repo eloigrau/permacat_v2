@@ -350,14 +350,17 @@ def listeContacts(request, asso):
     if not isinstance(asso, Asso):
         raise PermissionDenied
     listeMails = []
-    if request.user.is_superuser:
+    if request.user.is_superuser and asso.abreviation=="pc":
         listeMails.append( {"type":'user_newsletter', "profils":Profil.objects.filter(inscrit_newsletter=True), "titre":"su : Liste des inscrits à la newsletter : "})
         listeMails.append({"type":'anonym_newsletter', "profils":InscriptionNewsletter.objects.all(), "titre":"su : Liste des inscrits anonymes à la newsletter : "})
         listeMails.append({"type":'user_adherent', "profils":Profil.objects.filter(adherent_pc=True), "titre":"su : Liste des adhérents Permacat: "})
 
     listeMails.append({"type":'user_adherent_ajour' , "profils":asso.getProfils_cotisationAJour(), "titre":"Liste des adhérents : à jour de leur cotisation "})
     listeMails.append(
-      {"type":'user_adherent', "profils":Profil.objects.filter(adherent_pc=True), "titre":"Liste des adhérents " + asso.nom},
+      {"type":'user_adherent', "profils":Profil.objects.filter(adherent_pc=True), "titre":"Liste des membres du groupe " + asso.nom},
+    )
+    listeMails.append(
+      {"type":'sympathisants', "profils":asso.getEmails_sympathisants(), "titre":"Liste des sympathisants " + asso.nom},
     )
     return render(request, 'asso/listeContacts.html', {"listeMails":listeMails, "asso":asso })
 

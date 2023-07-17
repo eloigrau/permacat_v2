@@ -406,9 +406,9 @@
                <li> <a class="dropdown-item" href="{% url 'faq' %}"> FAQ </a></li>
                 <li class="divider" role="separator"></li>
                <li> <a class="dropdown-item" href="{% url 'liens' %}"> Liens </a></li>
-                <li class="dropdown-submenu-right">
+                <li class="dropdown-submenu-right ">
                     <a class="dropdown-item dropdown-toggle"  href="#">Outils externes</a>
-                    <ul class="dropdown-menu nav8-dropdown-submenu dropdown-menu-right">
+                    <ul class="dropdown-menu nav6-dropdown-submenu dropdown-menu-right">
                         <li> <a class="dropdown-item" href="https://framatalk.org/permacat" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Visioconférence (Framatalk) </a></li>
                         <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_{% random_name 8 %}" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Doc partagé (Framapad) </a></li>
                         <li> <a class="dropdown-item" href="https://lite.framacalc.org/permacat_{% random_name 8 %}" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Tableau partagé (Framacalc) </a></li>
@@ -428,7 +428,7 @@
 
                 <li class="dropdown-submenu-right">
                     <a class="dropdown-item dropdown-toggle"  href="#">Admin </a>
-                    <ul class="dropdown-menu nav5-dropdown-submenu dropdown-menu-right">
+                    <ul class="dropdown-menu nav6-dropdown-submenu dropdown-menu-right">
                         <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
                        <li> <a class="dropdown-item" href="{% url 'voirEmails' %}"> voir Emails Alertes</a></li>
                        <li> <a class="dropdown-item" href="https://www.perma.cat/gestion/bourseLibre/profil/?o=-3"> Utilisateurs </a></li>
@@ -438,12 +438,13 @@
                         <li><a class="dropdown-item" href="{% url 'voir_articles_a_archiver' %}">Archiver articles</a></li>
                         <li><a class="dropdown-item" href="{% url 'vote:index' %}"><i class="fa fa-bullhorn iconleft"></i>  Liste des suffrages </a></li>
                        <li> <a class="dropdown-item" href="{% url 'nettoyerActions' %}"> nettoyerActions</a></li>
-                       <li> <a class="dropdown-item" href="{% url 'transforBlogJpToForum' %}"> transforBlogJpToForum</a></li>
+                       <li> <a class="dropdown-item" href="{% url 'movePermagoraInscritsToNewsletter' %}"> movePermagoraInscritsToNewsletter</a></li>
                        <li> <a class="dropdown-item" href="{% url 'supprimervieuxcomptes' %}"> supprimervieuxcomptes</a></li>
                        <li> <a class="dropdown-item" href="{% url 'nettoyerFollows' %}"> nettoyerFollows</a></li>
                         <li> <a class="dropdown-item" href="{% url 'supprimerHitsAnciens' %}"> supprimerHitsAnciens</a></li>
                         <li> <a class="dropdown-item" href="{% url 'supprimerActionsAnciens' %}"> supprimerActionsAnciens</a></li>
                        {% comment %}
+                       <li> <a class="dropdown-item" href="{% url 'transforBlogJpToForum' %}"> transforBlogJpToForum</a></li>
                        <li> <a class="dropdown-item" href="{% url 'envoiNewsletter2023' %}"> envoiNewsletter2023</a></li>
                        <li> <a class="dropdown-item" href="{% url 'voirPbProfils' %}"> voirPbProfils</a></li>
                          <li> <a class="dropdown-item" href="{% url 'creerAction_articlenouveau' %}"> creerAction_articlenouveau</a></li>

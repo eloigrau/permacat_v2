@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from actstream.models import Action, Follow
-from .models import Profil, Conversation, Suivis, Adresse, InscriptionNewsletter
+from .models import Profil, Adhesion_asso, Suivis, Adresse, InscriptionNewsletter, InscriptionNewsletterAsso, Asso
 from .settings import LOCALL
 from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD
 from django.http import HttpResponseForbidden
@@ -17,6 +18,7 @@ from datetime import datetime, timedelta
 from django.utils.html import strip_tags
 from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
+
 
 def getMessage(action):
     message = action.data['message']
@@ -125,11 +127,11 @@ def nettoyerFollows(request):
     for action in follows:
         if not action.follow_object:
             pass
-            #action.delete()
+            # action.delete()
 
-        #if isinstance(action.follow_object, Conversation):
-            # print("follow supprimé " + action)
-            #action.delete()
+        # if isinstance(action.follow_object, Conversation):
+        # print("follow supprimé " + action)
+        # action.delete()
 
     actions = Action.objects.all()
 
@@ -217,9 +219,9 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
     If auth_user is None, use the EMAIL_HOST_USER setting.
     If auth_password is None, use the EMAIL_HOST_PASSWORD setting.
     """
-    #import re
-    #EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
-    #decoupage en tranches de 90 receveurs max par mail
+    # import re
+    # EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    # decoupage en tranches de 90 receveurs max par mail
     data = []
     for subject, message, html_message, sender, recipient in datatuple:
         if len(recipient) > 90:
@@ -238,9 +240,10 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
                                bcc=recipient,
                                alternatives=[(html_message, 'text/html')],
                                connection=connection)
-        for subject, message, html_message, sender, recipient in data if recipient != [SERVER_EMAIL,]
+        for subject, message, html_message, sender, recipient in data if recipient != [SERVER_EMAIL, ]
     ]
     return connection.send_messages(messages)
+
 
 def envoyerEmailsRequete(request):
     if not request.user.is_superuser:
@@ -251,12 +254,14 @@ def envoyerEmailsRequete(request):
     supprimerActionsStartedFollowing()
     return redirect('voirEmails', )
 
+
 def envoyerEmailsTest(request):
     listeMails = []
     for i in range(2):
         listeMails.append(("titre", "messagetxt", "message_" + str(i), SERVER_EMAIL, [j for j in range(205)]))
 
     send_mass_html_mail(listeMails, fail_silently=False)
+
 
 def envoyerEmails():
     print('Récupération des mails')
@@ -375,23 +380,24 @@ def voirPbProfils(request):
     return render(request, 'admin/voirPbProfils.html', {'pb_profils': pb_profils, 'pb_adresses': pb_adresses})
 
 
-
 def ajouterAdhesion(request, abreviationAsso):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    if abreviationAsso == 'pc' :
+    if abreviationAsso == 'pc':
         form = Adhesion_permacatForm(request.POST or None)
-    elif abreviationAsso == 'scic' :
+    elif abreviationAsso == 'scic':
         form = Adhesion_assoForm(abreviationAsso, request.POST or None)
 
     if form.is_valid():
         form.save()
         return redirect('listeContacts', abreviationAsso)
 
-    return render(request, 'asso/adhesion_ajouter.html', { "form": form,})
+    return render(request, 'asso/adhesion_ajouter.html', {"form": form, })
 
-    return render(request, 'erreur.html', {'msg':"Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
+    return render(request, 'erreur.html', {
+        'msg': "Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
+
 
 def creerAction_articlenouveau(request):
     if not request.user.is_superuser:
@@ -407,12 +413,13 @@ def creerAction_articlenouveau(request):
                 article.asso.nom) + "] : '<a href='https://www.perma.cat" + article.get_absolute_url() + "'>" + article.titre + "</a>'"
             emails = [suiv.email for suiv in followers(suivi) if article.auteur != suiv and article.est_autorise(suiv)]
             if emails:
-                action.send(article, verb='emails', url=article.get_absolute_url(), titre=titre, message=message, emails=emails)
+                action.send(article, verb='emails', url=article.get_absolute_url(), titre=titre, message=message,
+                            emails=emails)
             return redirect("bienvenue")
     else:
         form = creerAction_articlenouveauForm()
 
-    return render(request, 'admin/creerAction_articlenouveau.html', { "form": form,})
+    return render(request, 'admin/creerAction_articlenouveau.html', {"form": form, })
 
 
 def getVieuxComptes():
@@ -424,35 +431,40 @@ def getVieuxComptes():
     profil_old = Profil.objects.filter(last_login__lt=date_limite)
     mail = {"titre": "Suppression de votre compte",
             "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
-    }
+            }
     mail_old = {"titre": "Suppression de votre compte",
-            "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
-    }
+                "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
+                }
     return profil_jamais, profil_old, mail, mail_old
+
 
 def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
-    #todo implementer suppression
-    return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
+    # todo implementer suppression
+    return render(request, 'admin/voirProfil_anciens.html',
+                  {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
+
 
 def envoyerMailVieuxComptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
 
-    return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
+    return render(request, 'admin/voirProfil_anciens.html',
+                  {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 
 def getMailsNewsletter():
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    #profils_1 = Profil.objects.filter(inscrit_newsletter=True)
+    # profils_1 = Profil.objects.filter(inscrit_newsletter=True)
     profils_2 = InscriptionNewsletter.objects.all()
 
-    #return set([x.email for x in profils_1] + [x.email for x in profils_2])
+    # return set([x.email for x in profils_1] + [x.email for x in profils_2])
     return set([x.email for x in profils_2])
+
 
 def envoiNewsletter2023(request):
     if not request.user.is_superuser:
@@ -460,28 +472,30 @@ def envoiNewsletter2023(request):
     titre, contenu_html = get_emailNexsletter2023()
     emails = getMailsNewsletter()
     contenu_txt = strip_tags(contenu_html)
-    #emails = ("eloi.grau@gmail.com", )
-    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email for email in emails ]) ]
-    #send_mass_html_mail(datatuple)
-    return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})
+    # emails = ("eloi.grau@gmail.com", )
+    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email for email in emails])]
+    # send_mass_html_mail(datatuple)
+    return render(request, 'admin/voirMailsNewletter.html',
+                  {"titre": titre, "contenu_txt": contenu_txt, "contenu_html": contenu_html, "emails": emails})
 
 
 def supprimerHitsAnciens(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    date = datetime.now().date() - timedelta(days=366*2)
+    date = datetime.now().date() - timedelta(days=366 * 2)
     hit_counts = HitCount.objects.filter(hit__created__lte=date)
 
-    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
+
 
 def supprimerActionsAnciens(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    date = datetime.now().date() - timedelta(days=365*2)
+    date = datetime.now().date() - timedelta(days=365 * 2)
     hit_counts = Action.objects.filter(timestamp__lte=date)
     for hit in hit_counts:
         hit.delete()
-    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
 
 
 def transforBlogJpToForum(request):
@@ -512,3 +526,14 @@ def transforBlogJpToForum(request):
     return redirect("blog:index_asso", asso='jp')
 
 
+def movePermagoraInscritsToNewsletter(request):
+    users = Profil.objects.filter(adherent_scic=True)
+    asso = Asso.objects.get(abreviation="scic")
+
+    for u in users:
+        InscriptionNewsletterAsso.objects.create(asso=asso, nom_newsletter="sympathisants", profil=u, email=u.email, )
+        if not Adhesion_asso.objects.get(user=u, asso=asso):
+            u.adherent_scic = False
+            u.save()
+
+    return redirect('listeContacts', "scic")

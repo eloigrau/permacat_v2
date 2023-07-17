@@ -96,9 +96,10 @@ def liens(request):
         'https://alternatiba.eu/alternatiba66/',
     ],
         "sites locaux " :[
-        'https://www.permaterra.fr/',
         'https://tram66.org/',
+        'https://www.permaterra.fr/',
         'http://terre-avenirs-peyrestortes.org/',
+        'https://www.passage66.com/',
         'https://www.facebook.com/ramenetagraine/',
         'https://www.facebook.com/fermille/',
         'https://sel66.net',
@@ -106,8 +107,6 @@ def liens(request):
         'https://cce-66.wixsite.com/mysite',
         'https://jardindenat.wixsite.com/website',
         'https://www.permapat.com',
-        'https://ecocharte.herokuapp.com',
-        'https://pacteacvi.herokuapp.com',
         'https://www.tropique-du-papillon.com',
         'http://www.pepiniere-passiflore.com/'
         'http://lagalline.net',

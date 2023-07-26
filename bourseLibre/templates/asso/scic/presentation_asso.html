@@ -28,7 +28,7 @@
 <hr>
 		{% if request.user.is_anonymous %}
 			<p class="textcenter">
-				 <a class="btn btn-warning" href="{% url 'login'%}²²" disabled> Il faut être connecté pour pouvoir s'inscrire dans ce groupe</a>
+				 <a class="btn btn-warning" href="{% url 'login'%}" disabled> Il faut être connecté pour pouvoir s'inscrire dans ce groupe</a>
 			</p>
 		{% else %}
 			{% if request.user.adherent_scic %}
@@ -41,6 +41,9 @@
 				</p>
 			{% endif %}
 		{% endif %}
+			<p class="textcenter">
+				 <a class="btn btn-warning" href="{% url 'login'%}" > S'inscrire à la newsletter par mail</a>
+			</p>
 	</div>
 </div>
 {% endblock %}

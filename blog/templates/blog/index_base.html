@@ -201,33 +201,6 @@
 
 {% block contenu %}
 
-<hr>
-<div class="container" >
-<div class="row justify-content-center" >
-<nav class="navbar  navbar-expand-md navbar-light justify-content-center">
-        <div class="navbar-header">
-             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" type="button" data-toggle="collapse" data-target="#navbarGroupes" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
-              {% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </button>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarGroupes">
-            <ul class="nav navbar-nav justify-content-center ">
-            {% for  asso_id, asso_nom in asso_list %}
-                <li class="nav-item  ">
-                      <a  href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
-                          <button type="button" class="btn  btn-block {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}" >
-                              <h6>{{asso_nom}}</h6>
-                       </button>
-                    </a>
-                </li>
-            {% endfor %}
-            </ul>
-
-</div>
-</nav>
-</div>
-</div>
-<hr>
-
 {% if categorie_list %}
 <div class="row justify-content-center" >
 <nav class="navbar navbar-expand-md navbar-light">

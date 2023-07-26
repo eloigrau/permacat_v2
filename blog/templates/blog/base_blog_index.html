@@ -1,20 +1,19 @@
 {% extends 'blog/base_blog.html' %}
 
-{% comment %}
 {% block submenu %}
-<div class="sticky-top_test">
-    <nav class="navbar navbar-light bs-dark navbar-expand-xl bg-dark navbar-dark">
-        <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse " id="navbar2">
-            <ul class="navbar-nav subnavbar">
+<div class="container" >
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-md" >
+        <div class="navbar-header">
+             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <h6>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </h6> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_asso">
+            <ul class="navbar-nav subnavbar2">
                 {% for  asso_id, asso_nom in asso_list %}
-                <li class="nav-item  ">
+                <li class="nav-item  btn {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
                       <a  href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
-                          <button type="button" class="btn {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}" >
                               <h6>{{asso_nom}}</h6>
-                       </button>
                     </a>
                 </li>
                 {% endfor %}
@@ -22,5 +21,6 @@
         </div>
     </nav>
 </div>
+</div>
 {% endblock %}
-{% endcomment %}
+

@@ -12,8 +12,7 @@ class Choix():
     type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé'), ('', 'Jardin Professionnel (maraichage, arboriculture, etc. à usage pro)')
     type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
 
-    visibilite_jardin_annuaire = ('0', "Public (visible dans l'annuaire sans inscription)"), ('1', 'Inscrits (visible dans seulement par les inscrits au site)'), ('2', "Invisible dans l'annuaire")
-    visibilite_jardin_adresse = ('0', 'Adresse visible sans inscription'), ('1', 'Adresse visible seulement par les inscrits'), ('2', 'Adresse invisible (carte)')
+    visibilite_jardin_annuaire = ('0', "Public (visible sans inscription)"), ('1', 'Inscrits (visible seulement par les inscrits au site)'), ('2', "Invisible ")
 
 class DBRang_inpn(models.Model):
     RG_LEVEL = models.IntegerField()

@@ -1059,7 +1059,7 @@ width: 100 %;
     }
 }
 
-@media (min-width: 1600px) {
+@media screen and (min-width: 1600px) {
     .grid-container {
         grid-template-columns: 24% 24% 24% 24%;
     }
@@ -1229,7 +1229,7 @@ ul.errorlist{
   tr,
   td {
     display: block;
-    width: auto!important;
+    width: 100%;
   }
  table.comicGreen,
   tbody,
@@ -1868,7 +1868,7 @@ caption {
 				Mobile Responsiveness
    ============================*/
 
-@media(max-width: 960px) {
+@media screen and  (max-width: 960px) {
 
 
     #calendar .event {
@@ -1876,7 +1876,7 @@ caption {
     }
  }
 
-@media(max-width: 768px) {
+@media screen and (max-width: 768px) {
 
 	#calendar .weekdays, #calendar .other-month{
 		display: none;
@@ -1946,7 +1946,7 @@ caption {
 .panel-forum{
     padding-top:5px;
 }
-@media(max-width: 400px) {
+@media screen and (max-width: 400px) {
 .btn-menu-forum{
     min-width: 10px;
 }

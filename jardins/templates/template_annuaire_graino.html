@@ -28,13 +28,13 @@
             <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.get_categorie_display }}</a></td>
            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
             {% if not request.user.is_authenticated %}
-                {% if grainotheque.visibilite_adresse == '0' %}
+                {% if grainotheque.visibilite_annuaire == '0' %}
                 <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
                  {% else %}
                 <td> - </td>
                 {% endif %}
             {% else %}
-                {% if grainotheque.visibilite_adresse == '0' or grainotheque.visibilite_adresse == '1' %}
+                {% if grainotheque.visibilite_annuaire == '0' or grainotheque.visibilite_annuaire == '1' %}
                 <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
                 {% else %}
                 <td> - </td>

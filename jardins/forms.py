@@ -29,7 +29,7 @@ class JardinForm(forms.ModelForm):
 
     class Meta:
         model = Jardin
-        fields = ['titre', 'email_contact', 'telephone', 'categorie',  'visibilite_annuaire', 'visibilite_adresse', 'description',  'fonctionnement', ]
+        fields = ['titre', 'email_contact', 'telephone', 'categorie',  'visibilite_annuaire', 'description',  'fonctionnement', ]
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -68,7 +68,7 @@ class JardinChangeForm(forms.ModelForm):
 
     class Meta:
         model = Jardin
-        fields = ['titre', 'email_contact', 'telephone', 'categorie', 'visibilite_annuaire', 'visibilite_adresse',
+        fields = ['titre', 'email_contact', 'telephone', 'categorie', 'visibilite_annuaire',
                   'description', 'fonctionnement', 'permapotes_id']
         widgets = {
             'description': SummernoteWidget(),
@@ -99,7 +99,7 @@ class GrainothequeForm(forms.ModelForm):
 
     class Meta:
         model = Grainotheque
-        fields = [ 'titre', 'categorie', 'description', 'email_contact', 'jardin', 'visibilite_annuaire', 'visibilite_adresse',]
+        fields = [ 'titre', 'categorie', 'description', 'email_contact', 'jardin', 'visibilite_annuaire',]
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -135,7 +135,7 @@ class GrainothequeChangeForm(forms.ModelForm):
 
     class Meta:
         model = Grainotheque
-        fields = ['titre', 'categorie', 'description', 'email_contact', 'visibilite_annuaire', 'visibilite_adresse', 'jardin',]
+        fields = ['titre', 'categorie', 'description', 'email_contact', 'visibilite_annuaire', 'jardin',]
         widgets = {
             'description': SummernoteWidget(),
         }

@@ -234,9 +234,6 @@ class Jardin(models.Model):
     visibilite_annuaire = models.CharField(max_length=3,
         choices=Choix.visibilite_jardin_annuaire,
         default='0', verbose_name="Visibilité du jardin sur l'annuaire*")
-    visibilite_adresse = models.CharField(max_length=30,
-        choices=Choix.visibilite_jardin_adresse,
-        default='0', verbose_name="Visibilité de l'adresse du jardin (sur la carte)*")
     titre = models.CharField(max_length=250, verbose_name="Nom du jardin*")
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
     slug = models.SlugField(max_length=100)
@@ -256,7 +253,7 @@ class Jardin(models.Model):
         return self.titre
 
     def get_visibilite_display(self):
-        return str(self.get_visibilite_annuaire_display()) + " / "+ str(self.get_visibilite_adresse_display())
+        return str(self.get_visibilite_annuaire_display())
 
 class Grainotheque(models.Model):
     categorie = models.CharField(max_length=3,
@@ -272,9 +269,6 @@ class Grainotheque(models.Model):
     visibilite_annuaire = models.CharField(max_length=30,
         choices= Choix.visibilite_jardin_annuaire,
         default='0', verbose_name="Visibilité de la grainothèque sur l'annuaire*")
-    visibilite_adresse = models.CharField(max_length=30,
-        choices= Choix.visibilite_jardin_adresse,
-        default='0', verbose_name="Visibilité de l'adresse de la grainothèque (sur la carte)*")
     titre = models.CharField(max_length=250,)
     slug = models.SlugField(max_length=100)
 
@@ -287,7 +281,7 @@ class Grainotheque(models.Model):
         return reverse('jardins:grainotheque_lire', kwargs={'slug':self.slug})
 
     def get_visibilite_display(self):
-        return str(self.get_visibilite_annuaire_display()) + " "+ str(self.get_visibilite_adresse_display())
+        return str(self.get_visibilite_annuaire_display())
 
 class InfoGraine(models.Model):
     date_recolte = models.DateTimeField(verbose_name="Date de récolte", default=timezone.now)

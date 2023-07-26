@@ -479,9 +479,9 @@ class JardinDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_inscrit"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
-        context["jardins"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
-        context["adresse_visible"] = self.object.visibilite_adresse == '0' or (self.object.visibilite_adresse == '1' and self.request.user.is_authenticated)
+        if self.request.user.is_authenticated:
+            context["user_inscrit"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
+        context["adresse_visible"] = self.object.visibilite_annuaire == '0' or (self.object.visibilite_annuaire == '1' and self.request.user.is_authenticated)
         context["salons"] = Salon.objects.filter(jardin=self.object)
         return context
 
@@ -546,7 +546,7 @@ class GrainothequeDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["graines"] = Graine.objects.filter(grainotheque=self.object)
-        context["adresse_visible"] = self.object.visibilite_adresse == '0' or (self.object.visibilite_adresse == '1' and self.request.user.is_authenticated)
+        context["adresse_visible"] = self.object.visibilite_annuaire == '0' or (self.object.visibilite_annuaire == '1' and self.request.user.is_authenticated)
         return context
 
 class ModifierInfoGraine(UpdateView):

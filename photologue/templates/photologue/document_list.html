@@ -5,9 +5,13 @@
 {% load activity_tags %}
 
 {% block panel-heading %} {%endblock%}
-{%block header %}
+{% block header %}
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
+{% comment %}
+<script src="{% static 'js/expand-cards.js' %}"></script>
+<link href="{% static 'css/expand-cards.css' %}" type='text/css' rel="stylesheet" />
+{% endcomment %}
 {%endblock%}
 
 {% block title %}Documents/Fichiers{% endblock %}

@@ -514,6 +514,10 @@ class Projet(models.Model):
     def has_ficheprojet(self):
         return hasattr(self, "ficheprojet")
 
+    @property
+    def get_logo_nomgroupe_html(self, ):
+        return self.asso.get_logo_nomgroupe_html_taille(taille=15)
+
 class FicheProjet(models.Model):
     projet = models.OneToOneField(Projet, on_delete=models.CASCADE, primary_key=True,)
     date_creation = models.DateTimeField(verbose_name="Date de création", auto_now_add=True)

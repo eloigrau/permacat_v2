@@ -15,6 +15,10 @@
 		<li class="nav-item"><a href="{% url 'notificationsParDate'  %}"> Notifications par date</a></li>
     <li class="nav-item"><a href="{% url 'notifications'  %}"> Notifications par type</a></li>
     <li class="nav-item"><a href="{% url 'articles_visites'  %}"> Dernières Visites</a></li>
+                {% if request.user.is_superuser %}
+                <li> <a class="dropdown-item" href="https://www.perma.cat/gestion/hitcount/hit/"> Hits </a></li>
+                {% endif %}
+
             </ul>
         </div>
     </nav>

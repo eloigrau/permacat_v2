@@ -9,17 +9,17 @@
 <div class="card notif3 d-md-flex">
   <ul class="list-group list-group-flush " >
 
-      <li class="list-group-item "  style=""  >jamais</li>
+      <li class="list-group-item "    >jamais</li>
 {% for p in profil_jamais %}
-      <li class="list-group-item "  style=""  >
+      <li class="list-group-item "    >
           <a href="https://www.perma.cat/gestion/bourseLibre/profil/{{p.id}}/change/">{{p}} {{p.email}}</a>
           <p>last login : {{p.last_login}}</p>
       </li>
 {%endfor%}
 
-      <li class="list-group-item "  style=""  >Anciens</li>
+      <li class="list-group-item "    >Anciens</li>
 {% for p in profil_old %}
-      <li class="list-group-item "  style=""  >
+      <li class="list-group-item "    >
           <a href="https://www.perma.cat/gestion/bourseLibre/profil/{{p.id}}/change/">{{p}} {{p.email}} </a>
           <p>last login : {{p.last_login}}</p>
       </li>

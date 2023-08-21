@@ -19,11 +19,11 @@
                  <a href="{% url 'ateliers:suivre_ateliers' %}">
                 {% if request.user|is_following:suivis %}
                 <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez ici pour arreter de recevoir un mail à chaque nouvel atelier">
-                     {% fontawesome_icon 'bell' %}
+                     {% fontawesome_icon 'bell' title='abonnement'  %}
                 </button>
                 {% else %}
                 <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez ici pour recevoir un mail à chaque nouvel atelier">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fontawesome_icon 'bell-slash' title='abonnement' %}title='abonnement'  %}
                 </button>
                 {% endif %}
                  </a>

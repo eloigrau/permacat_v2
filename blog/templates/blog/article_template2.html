@@ -43,10 +43,10 @@
          <span class="badge badge-light">
 
                 {% if request.user|is_following:article %}
-                    {% fontawesome_icon 'bell' %}
+                    {% fontawesome_icon 'bell' title='abnnement' %}
 
                     {% else %}
-                    {% fontawesome_icon 'bell-slash' %}
+                    {% fontawesome_icon 'bell-slash' title='abnnement' %}
                 {% endif %}
                  &nbsp;&nbsp;
                 {%if article.estArchive %}

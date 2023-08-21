@@ -260,7 +260,7 @@ class Asso(models.Model):
         return self.get_logo_nomgroupe_html_taille(15)
 
     def get_logo_nomgroupe_html_taille(self, taille=25):
-        return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px' alt='"+self.nom+"'/>"
 
 class Profil(AbstractUser):
     username_validator = ASCIIUsernameValidator()

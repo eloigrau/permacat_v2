@@ -278,12 +278,12 @@ class ListeArticles(ListView):
 
         if "ordreTri" in self.params:
             if self.params['ordreTri'] == "-date_dernierMessage":
-                qs = qs.filter(date_dernierMessage__isnull=False)
+                qs = qs.filter(date_dernierMessage__isnull=False).order_by(self.params['ordreTri'])
             elif self.params['ordreTri'] == "-date_modification":
-                qs = qs.filter(date_modification__isnull=False)
+                qs = qs.filter(date_modification__isnull=False).order_by(self.params['ordreTri'])
             elif self.params['ordreTri'] == "-start_time":
-                qs = qs.filter(start_time__isnull=False)
-            if self.params['ordreTri'] == "titre":
+                qs = qs.filter(start_time__isnull=False).order_by(self.params['ordreTri'])
+            elif self.params['ordreTri'] == "titre":
                 qs = qs.extra(select={'lower_name':'lower(titre)'}).order_by('lower_name')
             else:
                 qs = qs.order_by(self.params['ordreTri'])

@@ -107,7 +107,7 @@ $('.example').leafletLocationPicker({
 <form id="myForm" method="post">
   {% csrf_token %}
  {% include 'form_template2.html'%}
-    <p>Coordonnées GPS (<a href="https://support.google.com/maps/answer/18539?hl=fr&co=GENIE.Platform%3DAndroid" target="_blank">latitude, longitude</a>) :</p>
+    <p>Coordonnées GPS (<a href="https://support.google.com/maps/answer/18539?hl=fr&co=GENIE.Platform%3DAndroid" target="_blank" rel="noopener noreferrer nofollow">latitude, longitude</a>) :</p>
 
  {% include 'form_template2.html' with form=form_adresse2%}
   <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées GPS</button>

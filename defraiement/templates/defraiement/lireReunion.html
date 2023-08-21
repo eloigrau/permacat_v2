@@ -76,7 +76,7 @@
            </button>
         </a>
         {% else %}
-            <p><b>Adresse : </b><a href="https://www.google.com/maps/search/?api=1&query={{reunion.adresse.get_adresse_str}}" target="_blank">{{ reunion.adresse.get_adresse_str}} </a>
+            <p><b>Adresse : </b><a href="https://www.google.com/maps/search/?api=1&query={{reunion.adresse.get_adresse_str}}" target="_blank" rel="noopener noreferrer nofollow">{{ reunion.adresse.get_adresse_str}} </a>
                     <a href="{% url 'defraiement:modifierAdresseReunion' slug=reunion.slug %}">
                        <button type="button" class="btn btn-s btn-success ">
                             <i class="fa fa-arrow-right"></i> Modifier l'adresse

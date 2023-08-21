@@ -9,6 +9,7 @@ class ArticleFilter(django_filters.FilterSet):
         widget=forms.CheckboxSelectMultiple)
     titre = django_filters.CharFilter(lookup_expr='icontains',)
     contenu = django_filters.CharFilter(lookup_expr='icontains', )
+    comment = django_filters.CharFilter(method='filtrer_commentaires', label="Chercher les articles dont les discussions contiennent")
     estArchive = django_filters.BooleanFilter(field_name='estArchive', method='filtrer_archive')
     auteur = django_filters.ModelChoiceFilter(field_name='auteur', queryset=Profil.objects.all().extra(\
     select={'lower_name':'lower(username)'}).order_by('lower_name'), )
@@ -23,6 +24,9 @@ class ArticleFilter(django_filters.FilterSet):
     def get_past_n_days(self, queryset, field_name, value):
         time_threshold = datetime.now() - timedelta(days=int(value))
         return queryset.filter(date_creation__gte=time_threshold)
+
+    def filtrer_commentaires(self, queryset, field_name, value):
+        return queryset.filter(commentaire__commentaire__icontains=value)
 
     class Meta:
         model = Article

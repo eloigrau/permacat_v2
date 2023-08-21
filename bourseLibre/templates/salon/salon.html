@@ -11,7 +11,7 @@
             <div class="col-md-4 textleft ">
                  <a href="{% url 'salon_accueil' %}">
                     <button type="button" class="btn  btn-info" >
-                       {% fontawesome_icon 'home' %}
+                       {% fontawesome_icon 'home' title='home' %}
                     </button>
                     </a>
             </div>
@@ -21,11 +21,11 @@
             <a href="{% url 'suivre_salon' slug_salon=salon.slug%}">
                 {% if request.user|is_following:suivis %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
-                     {% fontawesome_icon 'bell' %}
+                     {% fontawesome_icon 'bell' title='abnnement' %}
                 </button>
                 {% else %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fontawesome_icon 'bell-slash' title='abnnement' %}
                 </button>
                 {% endif %}
             </a>

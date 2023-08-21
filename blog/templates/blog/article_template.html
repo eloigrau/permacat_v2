@@ -23,12 +23,12 @@
                 </span>&nbsp;
                 {% if request.user|is_following:article %}
                 <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant cet article par mail">
-                     {% fontawesome_icon 'bell' %}
+                     {% fontawesome_icon 'bell' title='abonnement' %}
                 </span>
 
                 {% else %}
                 <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant cet article par mail">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fontawesome_icon 'bell-slash' title='abonnement' %}title='abonnement'  %}
                 </span>
                 {% endif %}
               </div>

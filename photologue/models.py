@@ -337,6 +337,10 @@ class Document(models.Model):
     def getHitNumber(self,):
         return HitCount.objects.get_for_object(self).hits
 
+    @property
+    def get_logo_nomgroupe_html(self,):
+        return self.asso.get_logo_nomgroupe_html_taille(taille=15)
+
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,

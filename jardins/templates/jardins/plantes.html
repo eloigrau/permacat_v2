@@ -53,7 +53,7 @@
      <form class="form-inline justify-content-center" action="{% url 'jardins:chercher_plante' %}" method="get" role = "search">
         {% csrf_token %}
             <input class="form-control fmr-sm-2" name="id_recherche" type="text" placeholder="Rechercher...">
-            <button class="btn navbar-btn btn-primary my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fontawesome_icon 'search' %}</button>
+            <button class="btn navbar-btn btn-primary my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fontawesome_icon 'search' title='chercher' %}</button>
         </div>
      </form>
 </div>
@@ -61,7 +61,7 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
 <h4>ou 3) Rechercher un arbre</h4>
-        <p><a href="http://www.reconnaitre-les-arbres.fr/recherche/pages/fiche_plante.php?" target="_blank"> Site web avec des fiches pour les arbres</a></p>
+        <p><a href="http://www.reconnaitre-les-arbres.fr/recherche/pages/fiche_plante.php?" target="_blank" rel="noopener noreferrer nofollow"> Site web avec des fiches pour les arbres</a></p>
 </div>
 <hr>
 <div class="row justify-content-center">

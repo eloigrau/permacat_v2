@@ -18,7 +18,7 @@
                   {% comment %}  <input class="form-control " name="id_recherche" placeholder="Recherche rapide..." type="text">{% endcomment %}
            <span class="input-group-append">
                <input class="form-control fmr-sm-2" name="id_recherche" type="text" placeholder="Recherche rapide...">
-    <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fontawesome_icon 'search' %}</button>
+    <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fontawesome_icon 'search' title='chercher' %}</button>
             </span>
                         </div>
              </div>
@@ -28,7 +28,7 @@
 
         <a href="{% url 'blog:filtrer_articles' %}">
             <button type="button" class="btn  btn-success" >
-               {% fontawesome_icon 'search' %}&nbsp; Recherche avancée...
+               {% fontawesome_icon 'search' title='chercher' %}&nbsp; Recherche avancée...
             </button>
         </a>
      </div>
@@ -43,7 +43,7 @@
 <div class="col-sm-12 col-md-12 col-lg-4">
 
     <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#suivre" title="En savoir plus...">
-     {% fontawesome_icon 'bell' %}
+     {% fontawesome_icon 'bell' title='abnnement' %}
     </button>
     <!-- Modal -->
     <div class="modal fade" id="suivre" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -65,11 +65,11 @@
                 <p> <a href="{% url 'blog:suivre_articles' asso_abreviation=abreviation %}">
                     {% if request.user|is_following:suivi %}
                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir un mail à chaque nouvel article '{{nom_asso}}'">
-                    {% fontawesome_icon 'bell' %} Articles '{{nom_asso}}'
+                    {% fontawesome_icon 'bell' title='abonnement' %}Articles '{{nom_asso}}'
                     </button>
                     {% else %}
                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir un mail à chaque nouvel article '{{nom_asso}}'">
-                         {% fontawesome_icon 'bell-slash' %} Articles '{{nom_asso}}'
+                         {% fontawesome_icon 'bell-slash' title='abonnement' %}Articles '{{nom_asso}}'
                     </button>
                     {% endif %}
                 </a></p>

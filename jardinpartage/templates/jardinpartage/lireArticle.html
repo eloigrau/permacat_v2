@@ -41,11 +41,11 @@
         <a href="{% url 'jardinpartage:suivre_article' article.slug %}">
             {% if request.user|is_following:article %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arreter de recevoir des notifications concernant cet article par mail">
-                 {% fontawesome_icon 'bell' %} Suivi
+                 {% fontawesome_icon 'bell' title='abonnement' %}Suivi
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant cet article par mail">
-                 {% fontawesome_icon 'bell-slash' %} Non suivi
+                 {% fontawesome_icon 'bell-slash' title='abonnement' %}Non suivi
             </button>
             {% endif %}
         </a>
@@ -160,7 +160,7 @@
 
         {% if actions %}
             <button type="button" class="btn" data-toggle="modal" data-target="#historique">
-              {% fontawesome_icon 'bell' %} Historique
+              {% fontawesome_icon 'bell' title='abonnement' %}Historique
             </button>
             <!-- Modal -->
             <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

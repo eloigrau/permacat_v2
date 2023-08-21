@@ -39,11 +39,15 @@ class Choix:
                   ('Agenda','Agenda'), ("todo", "A faire"), \
                    ('Documentation','Documentation'),  \
                  ('Autre','Autre'),
+    type_annonce_scic = ('Annonce','Annonce'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
+                        ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
+                        ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
+
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,
         "pc": type_annonce_base,
-        "scic": type_annonce_base,
+        "scic": type_annonce_scic,
         "fer": type_annonce_base,
         "rtg": type_annonce_base,
         "viure": type_annonce_viure,
@@ -52,7 +56,7 @@ class Choix:
         "jp": type_annonce_jp,
     }
 
-    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp
+    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",
@@ -108,8 +112,6 @@ class Choix:
                          #"date du dernier commentaire":'-date_dernierMessage',
                          "Type de projet":'categorie', "statut du projet":"statut",
                          'auteur':'auteur', 'titre':'titre'}
-
-    groupes_logo_nom = {'public': 'img/logos/nom_public.png', 'pc': 'img/logos/nom_public.png',}
 
     def get_couleur(categorie):
         try:

@@ -26,11 +26,11 @@
 
             {% if request.user|is_following:suivis %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
-                 {% fontawesome_icon 'bell' %}
+                 {% fontawesome_icon 'bell' title='abnnement' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
-                 {% fontawesome_icon 'bell-slash' %}
+                 {% fontawesome_icon 'bell-slash' title='abnnement' %}
             </button>
             {% endif %}
                 </a>

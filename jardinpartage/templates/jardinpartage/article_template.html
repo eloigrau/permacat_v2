@@ -11,11 +11,11 @@
     </span>
     {% if request.user|is_following:article %}
     <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant cet article par mail">
-         {% fontawesome_icon 'bell' %}
+         {% fontawesome_icon 'bell' title='abnnement' %}
     </span>
     {% else %}
     <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant cet article par mail">
-         {% fontawesome_icon 'bell-slash' %}
+         {% fontawesome_icon 'bell-slash' title='abnnement' %}
     </span>
     {% endif %}
       <p class="textsmall "> {% if article.start_time and article.end_time %} du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }} {% else %}{% if article.start_time %} le {{ article.start_time|date:"DATE_FORMAT" }}{% endif %}{% endif %} </p>

@@ -549,8 +549,7 @@
 
 .titre_forum{
     font-size: 1.1em;
-    font-weight: 500;
-    font-variant: small-caps;
-    color:#404040;
+    font-weight: 400;
+    color:#1a1a1a;
     font-family: Montserrat,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }

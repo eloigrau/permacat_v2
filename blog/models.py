@@ -33,10 +33,10 @@ class Choix:
     type_annonce_projets = ('Altermarché', 'Altermarché'),  ('Ecovillage', 'Ecovillage'), \
                    ('Jardin', 'Jardins partagés'), ('ChantPossible', 'Ecolieu Chant des possibles'), ('BD_Fred', 'Les BD de Frédéric') , ('bzzz', 'Projet Bzzzz') #('KitPerma', 'Kit Perma Ecole'),
     type_annonce_bzz2022 = ('AgendaBzz', 'AgendaBzz'),  ('Documentation', 'Documentation'), ('rendez-vous', 'Rendez-vous'),
-    type_annonce_jp = ('Discu','Information'), ('Organisation', 'Organisation'), ('Potager','Au potager'), \
+    type_annonce_jp_base = ('Discu','Information'), ('Organisation', 'Organisation'), ('Potager','Au potager'), \
                    ('Documentation','Documentation'), ('Autre','Autre'),
 
-    type_annonce_jp = type_annonce_jp + tuple([('jardin_' + str(i), 'Jardin_' + str(i)) for i in range(100)])
+    type_annonce_jp = type_annonce_jp_base + tuple([('jardin_' + str(i), 'Jardin_' + str(i)) for i in range(100)])
 
     type_annonce_scic = ('Annonce','Annonce'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
@@ -132,7 +132,7 @@ class Choix:
 
     def get_type_annonce_asso(asso):
         if asso =="jp":
-            return [('jardin_' + str(i.id), i.titre) for i in Jardin.objects.all()]
+            return Choix.type_annonce_jp_base + tuple([('jardin_' + str(i.id), i.titre) for i in Jardin.objects.all()])
         try:
             return Choix.type_annonce_asso[asso]
         except:

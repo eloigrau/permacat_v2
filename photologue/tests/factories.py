@@ -35,7 +35,7 @@ class AlbumFactory(factory.django.DjangoModelFactory):
     slug = factory.LazyAttribute(lambda a: slugify(a.title))
 
     @factory.sequence
-    def date_added(n):
+    def date_creation(n):
         # Have to cater projects being non-timezone aware.
         if settings.USE_TZ:
             sample_date = datetime.datetime(
@@ -81,7 +81,7 @@ class PhotoFactory(ImageModelFactory):
     image = factory.django.ImageField(from_path=LANDSCAPE_IMAGE_PATH)
 
     @factory.sequence
-    def date_added(n):
+    def date_creation(n):
         # Have to cater projects being non-timezone aware.
         if settings.USE_TZ:
             sample_date = datetime.datetime(

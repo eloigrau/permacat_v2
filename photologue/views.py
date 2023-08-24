@@ -45,7 +45,7 @@ class AlbumListView(ListView):
         return context
 
 class AlbumDetailView(DetailView):
-    queryset = Album.objects.on_site().order_by("-date_added")
+    queryset = Album.objects.on_site().order_by("-date_creation")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,7 +55,7 @@ class AlbumDetailView(DetailView):
 
 class AlbumDateView:
     queryset = Album.objects.on_site()
-    date_field = 'date_added'
+    date_field = 'date_creation'
     allow_empty = True
 
 
@@ -123,7 +123,7 @@ class DocListView(ListView):
 
 class PhotoDateView:
     queryset = Photo.objects.on_site()
-    date_field = 'date_added'
+    date_field = 'date_creation'
     allow_empty = True
 
 

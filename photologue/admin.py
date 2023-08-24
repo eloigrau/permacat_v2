@@ -25,11 +25,11 @@ class AlbumAdminForm(forms.ModelForm):
 
 
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ('title', 'asso', 'date_added', 'photo_count')
-    list_filter = ['date_added', 'asso']
+    list_display = ('title', 'asso', 'date_creation', 'photo_count')
+    list_filter = ['date_creation', 'asso']
     if MULTISITE:
         list_filter.append('sites')
-    date_hierarchy = 'date_added'
+    date_hierarchy = 'date_creation'
     prepopulated_fields = {'slug': ('title',)}
     form = AlbumAdminForm
     if MULTISITE:
@@ -135,8 +135,8 @@ class PhotoAdminForm(forms.ModelForm):
 
 
 class PhotoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date_added',  'image')
-    list_filter = ['date_added',]
+    list_display = ('title', 'date_creation',  'image')
+    list_filter = ['date_creation',]
     if MULTISITE:
         list_filter.append('sites')
     search_fields = ['title', 'slug', 'caption']

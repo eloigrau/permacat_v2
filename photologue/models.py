@@ -163,7 +163,7 @@ class TagField(models.CharField):
 
 
 class Album(models.Model):
-    date_added = models.DateTimeField(_('date published'),
+    date_creation = models.DateTimeField(_('date published'),
                                       default=now)
     title = models.CharField(_('title'),
                              max_length=250,
@@ -190,8 +190,8 @@ class Album(models.Model):
     objects = AlbumQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
+        ordering = ['-date_creation']
+        get_latest_by = 'date_creation'
         verbose_name = _('album')
         verbose_name_plural = _('albums')
 
@@ -629,7 +629,7 @@ class Photo(ImageModel):
                             max_length=250,
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
     caption = models.TextField(_('caption'), blank=True)
-    date_added = models.DateTimeField(_('date added'), default=now)
+    date_creation = models.DateTimeField(_('date added'), default=now)
     sites = models.ManyToManyField(Site, verbose_name=_('sites'),blank=True)
 
 
@@ -638,8 +638,8 @@ class Photo(ImageModel):
     objects = PhotoQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
+        ordering = ['-date_creation']
+        get_latest_by = 'date_creation'
         verbose_name = _("photo")
         verbose_name_plural = _("photos")
 

@@ -5,7 +5,7 @@
 <div>
     
     <h2><a href="{{ album.get_absolute_url }}">{{ album.title }}</a></h2>
-    <p class="muted"><small>{% trans "Published" %} {{ album.date_added }}</small></p>
+    <p class="muted"><small>{% trans "Published" %} {{ album.date_creation }}</small></p>
     {% if album.description %}<p>{{ album.description|safe }}</p>{% endif %}
     
     {% for photo in album.sample %}

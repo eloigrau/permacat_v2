@@ -46,6 +46,8 @@ from django.views.decorators.debug import sensitive_variables
 from django.db.models import Q, CharField, F
 from django.db.models.functions import Lower
 from django.utils.html import strip_tags
+from hitcount.models import HitCount
+from hitcount.views import HitCountMixin
 
 from actstream import actions, action
 from actstream.models import Action, Follow, following, followers, actor_stream,  any_stream, user_stream, action_object_stream, model_stream, target_stream
@@ -832,6 +834,10 @@ class ListeProduit(ListView):
             context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"])
 
         context['suivi'], created = Suivis.objects.get_or_create(nom_suivi="produits")
+
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='visite_annonces')
+        hit_count = HitCount.objects.get_for_object(suivi)
+        hit_count_response = HitCountMixin.hit_count(self.request, hit_count)
         return context
 
 class ListeProduit_offres(ListeProduit):

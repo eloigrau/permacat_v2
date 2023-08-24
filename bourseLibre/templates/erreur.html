@@ -1,3 +1,15 @@
 {% extends 'base.html' %}
-{% block subtitle %}Une erreur s'est produite : {{msg}}
+{% block subtitle %}
+Une erreur s'est produite : {{msg}}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+<p class="textcenter">
+ <a href="{% url 'bienvenue' %}">
+        <button type="button" class="btn btn-primary" >Retourner à la page d'acceuil</button>
+ </a>
+</p>
+</div>
+</div>
+{% endbloc
 {% endblock %}

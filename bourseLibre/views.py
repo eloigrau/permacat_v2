@@ -1144,25 +1144,25 @@ def mesPublications(request, type_action):
     if type_action == "parDate":
         return render(request, 'notifications/mesActions.html', {})
     elif type_action == "articles" :
-        liste = Article.objects.filter(auteur=request.user)
+        liste = Article.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "commentaires" :
-        liste = Commentaire.objects.filter(auteur_comm=request.user)
+        liste = Commentaire.objects.filter(auteur_comm=request.user).order_by('-date_creation')
     elif type_action == "annonces" :
-        liste = Produit.objects.filter(user=request.user)
+        liste = Produit.objects.filter(user=request.user).order_by('-date_creation')
     elif type_action == "ateliers" :
-        liste = Atelier.objects.filter(auteur=request.user)
+        liste = Atelier.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "projets" :
-        liste = Projet.objects.filter(auteur=request.user)
+        liste = Projet.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "documents" :
-        liste = Document.objects.filter(auteur=request.user)
+        liste = Document.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "album" :
-        liste = Album.objects.filter(auteur=request.user)
+        liste = Album.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "suffrages" :
-        liste = Suffrage.objects.filter(auteur=request.user)
+        liste = Suffrage.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "jardins" :
-        liste = Jardin.objects.filter(auteur=request.user)
+        liste = Jardin.objects.filter(auteur=request.user).order_by('-date_creation')
     elif type_action == "grainotheque" :
-        liste = Grainotheque.objects.filter(auteur=request.user)
+        liste = Grainotheque.objects.filter(auteur=request.user).order_by('-date_creation')
 
     return render(request, 'notifications/mesPublications.html', {"titre":type_action, 'liste':liste})
 

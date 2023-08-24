@@ -282,8 +282,8 @@ class AdresseForm5(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         adresse = super(AdresseForm5, self).save(commit=False)
-        if not adresse.latitude or not adresse.longitude:
-            adresse.set_latlon_from_adresse()
+        #if not adresse.latitude or not adresse.longitude:
+        #   adresse.set_latlon_from_adresse()
 
         adresse.save()
         return adresse

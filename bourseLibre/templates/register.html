@@ -32,11 +32,11 @@
 <div class="jumbotron">
     <div class="row justify-content-sm-center">
         <div class="col-sm-12 col-md-10 col-lg-8 ">
-            <form role="form" action="" method="post" enctype="multipart/form-data">
+            <form role="form" action="" method="post" enctype="multipart/form-data" id="myForm">
           {% csrf_token %}
                 {%include 'form_template2.html' with form=form_profil%}
                 <hr>
-                <p>Cliquez sur la carte pour vous situer dans l'annuaire <small>
+                <p>Cliquez sur la carte pour vous situer <small>
                         (aucune obligation mais ça facilite beaucoup les échanges, vous pouvez être approximatif sur la localisation ;)</small> :</p>
 <p>
 <div class="row carteMiPage">

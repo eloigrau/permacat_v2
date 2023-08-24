@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from jardins.models import Jardin
 import uuid
 
 class Choix:
@@ -20,9 +21,8 @@ class Choix:
                    ('Documentation','Documentation'),  ('covoit','Covoiturage'), \
                     ('Point', 'Idée / Point de vue'),  ('Recette', 'Recette'), ('BonPlan','Bon Plan / achat groupé'), \
                      ('Divers','Divers')
-    type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), (
-    'coordination', "Coordination"), ('reunion', "Réunions"), ('manifestations', 'Manifestations'),
-    ('projets', 'Projets écocides')
+    type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('coordination', "Coordination"), ('reunion', "Réunions"), \
+                         ('manifestations', 'Manifestations'), ('projets', 'Projets écocides')
 
     type_annonce_citealt_orga = ('orga1', "Cercle Organisation"), ('orga2', "Cercle Informatique"), ('orga3', "Cercle Communication"), ('orga4', "Cercle Animation"),  ('orga5', "Cercle Médiation")
     type_annonce_citealt_themes = ('theme1', "Cercle Education"), ('theme2', "Cercle Ecolieux"), ('theme3', "Cercle Santé"), ('theme4', "Cercle Echanges"),  ('theme5', "Cercle Agriculture"),  ('theme6', "Cercle Célébration")
@@ -32,12 +32,14 @@ class Choix:
 
     type_annonce_projets = ('Altermarché', 'Altermarché'),  ('Ecovillage', 'Ecovillage'), \
                    ('Jardin', 'Jardins partagés'), ('ChantPossible', 'Ecolieu Chant des possibles'), ('BD_Fred', 'Les BD de Frédéric') , ('bzzz', 'Projet Bzzzz') #('KitPerma', 'Kit Perma Ecole'),
-    type_annonce_bzz2022 =   ('AgendaBzz', 'AgendaBzz'),  ('Documentation', 'Documentation'), ('rendez-vous', 'Rendez-vous'),
+    type_annonce_bzz2022 = ('AgendaBzz', 'AgendaBzz'),  ('Documentation', 'Documentation'), ('rendez-vous', 'Rendez-vous'),
     type_annonce_jp = ('Discu','Information'), ('Organisation', 'Organisation'), \
                   ('Potager','Au potager'), ('PPAM','PPAM'), ('Arbres','Les arbres au jardin'), \
                   ('Agenda','Agenda'), ("todo", "A faire"), \
                    ('Documentation','Documentation'),  \
                  ('Autre','Autre'),
+
+    type_annonce_jp = tuple([('jardin_' + str(i), 'Jardin_' + str(i)) for i in range(100)])
 
     type_annonce_scic = ('Annonce','Annonce'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
@@ -132,6 +134,8 @@ class Choix:
         return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
 
     def get_type_annonce_asso(asso):
+        if asso =="jp":
+            return [('jardin_' + str(i.id), i.titre) for i in Jardin.objects.all()]
         try:
             return Choix.type_annonce_asso[asso]
         except:
@@ -259,6 +263,17 @@ class Article(models.Model):
     @property
     def get_logo_categorie(self):
         return Choix.get_logo(self.categorie)
+
+
+    @property
+    def get_categorie_display2(self):
+        if self.asso.abreviation == 'jp':
+            try:
+                return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
+            except:
+                pass
+
+        return self.get_categorie_display
 
     @property
     def get_logo_nomgroupe(self):

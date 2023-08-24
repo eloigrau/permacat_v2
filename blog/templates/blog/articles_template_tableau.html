@@ -27,7 +27,7 @@
           </td>
             <td data-title="Dossier" class="center">
                 <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}#ref-titre" >
-                <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display }} </span>
+                <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
                 </a>
             </td>
           <td style="width: 95%;" data-title="Titre">

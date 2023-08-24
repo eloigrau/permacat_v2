@@ -8,7 +8,7 @@
    <div class="row textcenter">
     <div class="col-sm-3" >
 {{ atelier.get_logo_nomgroupe_html|safe }} /
-            <span class="badge badge-primary" data-toggle="tooltip" data-placement="bottom" title="Categorie">
+            <span class="badge badge-primary" style="background-color:{{atelier.get_couleur}}; color : #666666;" data-toggle="tooltip" data-placement="bottom" title="Categorie">
                 {{ atelier.get_categorie_display }}
             </span>
     </div>

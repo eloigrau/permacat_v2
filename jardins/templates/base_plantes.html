@@ -1,5 +1,7 @@
 {% extends 'base_jardin.html' %}
 {% load static %}
+ {% block panel-heading %}{%endblock%}
+{% block div-container-global %} style="padding-top:0;{% endblock%}
 {% block surtitle %}
 Jardins et grainothèques
 {% endblock %}
@@ -22,21 +24,21 @@ Jardins et grainothèques
 		<li class="nav-item">
                 <a href="{% url 'jardins:accueil' %}">
             <div class="row row_banniere_ordi" >
-                <img  src="{% static 'img/banniere/jardin_ordi.png' %}"  height="60" alt="Logo_jardins"/>
+                <img  src="{% static 'img/banniere/jardin_ordi.png' %}"  height="50" alt="Logo_jardins"/>
             </div>
             <div class="row row_banniere_smartphone">
-                    <img class="img_banniere_smartp" src="{% static 'img/banniere/jardin_smart.png' %}" height="60" alt="Logo_jardins"/>
+                    <img class="img_banniere_smartp" src="{% static 'img/banniere/jardin_smart.png' %}" height="50" alt="Logo_jardins"/>
             </div>
             </a>
         </li>
-		<li class="nav-item"><a href="{% url 'jardins:carte_jardins' %}"> Les Jardins</a></li>
-		<li class="nav-item"><a href="{% url 'jardins:carte_graino' %}"> Les Grainothèques</a></li>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:carte_jardins' %}"> Les Jardins</a></li>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:carte_graino' %}"> Les Grainothèques</a></li>
                 {% if request.user.adherent_jp %}
-		<li class="nav-item"><a href="{% url 'jardins:carte_jardiniers' %}"> Les Jardinier-es</a></li>
-		<li class="nav-item"><a href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Le Forum</a></li>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:carte_jardiniers' %}"> Les Jardinier-es</a></li>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Le Forum</a></li>
                 {% endif %}
-		<li class="nav-item"><a href="{% url 'jardins:plantes' %}"> Les Plantes</a></li>
-		<li class="nav-item"><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}"  height="44" alt="Retour sur perma.cat"/></a>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:plantes' %}"> Les Plantes</a></li>
+		<li class="nav-item "><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}"  height="44" alt="Retour sur perma.cat"/></a>
         </li>
                 {% comment %}
         <li class="nav-item dropdown">
@@ -44,8 +46,8 @@ Jardins et grainothèques
              <i class="fa fa-plus iconleft" title="Ajouter"></i>
            </a>
             <ul class="dropdown-menu dropdown-menu-right nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
-                <li class="nav-item"><a href="{% url 'jardins:jardin_ajouter'  %}"> Ajouter un jardin </a></li>
-                <li class="nav-item"><a href="{% url 'jardins:grainotheque_ajouter'  %}"> Ajouter une grainothèque </a></li>
+                <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:jardin_ajouter'  %}"> Ajouter un jardin </a></li>
+                <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:grainotheque_ajouter'  %}"> Ajouter une grainothèque </a></li>
             </ul>
         </li>
                 {% endcomment %}

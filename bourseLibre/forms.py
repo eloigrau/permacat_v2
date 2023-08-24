@@ -265,7 +265,24 @@ class AdresseForm4(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         adresse = super(AdresseForm4, self).save(commit=False)
-        if not adresse.latitude or not adresse.longitude or adresse.latitude == 42.2 or adresse.longitude == 2.2:
+        if not adresse.latitude or not adresse.longitude:
+            adresse.set_latlon_from_adresse()
+
+        adresse.save()
+        return adresse
+
+class AdresseForm5(forms.ModelForm):
+    latitude = forms.FloatField(label="Latitude", initial="", required=False)
+    longitude = forms.FloatField(label="Longitude", initial="", required=False)
+    telephone = forms.CharField(label="Téléphone", required=False)
+
+    class Meta:
+        model = Adresse
+        fields = ['commune', 'code_postal',  'latitude', 'longitude', 'telephone']
+
+    def save(self, *args, **kwargs):
+        adresse = super(AdresseForm5, self).save(commit=False)
+        if not adresse.latitude or not adresse.longitude:
             adresse.set_latlon_from_adresse()
 
         adresse.save()
@@ -280,13 +297,15 @@ class ProfilCreationForm(UserCreationForm):
     email = forms.EmailField(label="Email*",)
 
     #statut_adhesion = forms.ChoiceField(choices=Choix.statut_adhesion, label='', required=True)
-    adherent_pc = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Permacat'")
-    adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Ramène Ta Graine'")
-    adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'PermAgora'")
+    adherent_pc = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'Permacat'")
+    adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'Ramène Ta Graine'")
+    adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'PermAgora'")
+    adherent_jp = forms.BooleanField(required=False, label="Je suis intéressé.e par les jardins partagés")
     #adherent_fer = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Fermille'")
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
-    accepter_annuaire = forms.BooleanField(required=False, label="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous les inscrits")
+    accepter_annuaire = forms.BooleanField(required=False, initial=True, label="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous les inscrits")
+    inscrit_newsletter = forms.BooleanField(required=False, initial=True, label="J'accepte de recevoir des emails de Perma.cat")
     accepter_conditions = forms.BooleanField(required=True, label="J'ai lu et j'accepte les Conditions Générales d'Utilisation du site*",  )
     pseudo_june = forms.CharField(label="Pseudonyme dans le réseau de la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
 
@@ -298,7 +317,7 @@ class ProfilCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = Profil
-        fields = ['username', 'password1',  'password2', 'first_name', 'last_name', 'email', 'site_web', 'description', 'competences', 'pseudo_june', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure',  'adherent_bzz2022', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
+        fields = ['username', 'password1',  'password2', 'email', 'first_name', 'last_name', 'site_web', 'description', 'competences', 'pseudo_june', 'adherent_jp', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure', 'adherent_bzz2022', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
         exclude = ['slug', ]
 
     def clean(self):

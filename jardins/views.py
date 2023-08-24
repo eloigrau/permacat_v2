@@ -427,7 +427,7 @@ def jardin_ajouterSalon(request, slug):
 @login_required
 def jardin_modifierAdresse(request, slug):
     jardin = get_object_or_404(Jardin, slug=slug)
-    form_adresse = AdresseForm4(request.POST or None)
+    form_adresse = AdresseForm4(request.POST or None, instance=jardin.adresse)
 
     if form_adresse.is_valid():
         adresse = form_adresse.save()
@@ -435,7 +435,7 @@ def jardin_modifierAdresse(request, slug):
         jardin.save()
         return redirect(jardin)
 
-    return render(request, 'jardins/jardin_modifierAdresse.html', {'jardin':jardin, 'form_adresse':form_adresse })
+    return render(request, 'jardins/jardin_modifierAdresse.html', {'adresse':jardin.adresse, 'form_adresse':form_adresse })
 
 def carte_jardins(request):
     jardins = Jardin.objects.all().order_by("titre")
@@ -518,7 +518,7 @@ def grainotheque_ajouterAdresse(request, slug):
 @login_required
 def grainotheque_modifierAdresse(request, slug):
     grainotheque = get_object_or_404(Grainotheque, slug=slug)
-    form_adresse = AdresseForm4(request.POST or None)
+    form_adresse = AdresseForm4(request.POST or None, instance=grainotheque.adresse)
 
     if form_adresse.is_valid():
         adresse = form_adresse.save()
@@ -526,7 +526,7 @@ def grainotheque_modifierAdresse(request, slug):
         grainotheque.save()
         return redirect(grainotheque)
 
-    return render(request, 'jardins/jardin_modifierAdresse.html', {'grainotheque':grainotheque, 'form_adresse':form_adresse })
+    return render(request, 'jardins/grainotheque_modifierAdresse.html', {'adresse':grainotheque.adresse, 'form_adresse':form_adresse })
 
 @login_required
 def grainotheque_supprimerGraines(request, slug):

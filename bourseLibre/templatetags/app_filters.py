@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from django.template.defaultfilters import stringfilter
 from bourseLibre.constantes import Choix
-from bourseLibre.models import Asso, username_re
+from bourseLibre.models import Asso, username_re, Profil
 import random
 import string
 import re
@@ -172,10 +172,19 @@ def raccourcirTempsStr(date):
     return new
 
 
+def testeEtRemplaceMentionProfil(test):
+    if Profil.objects.filter(username__iexact=test).exists():
+        return '<a href="/accounts/profil/'+ test + '/"> '+test +'</a>'
+    return test
+
 @register.filter(name='usermention', is_safe=True)
 @stringfilter
 def usermention(value):
-    value = re.sub(username_re, r'<a href="/accounts/profil/\1/"> @\1</a>', value)
+    profils = [v for v in username_re.findall(value) if Profil.objects.filter(username__iexact=v).exists()]
+    for p in profils:
+        value = value.replace('@' + p,  '<a href="/accounts/profil/'+ p + '/">@'+ p +'</a>')
+    #value = re.sub(username_re, testeEtRemplaceMentionProfil, value)
+    #value = re.sub(username_re, r'<a href="/accounts/profil/\1/"> @\1</a>', value)
     return value
 
 

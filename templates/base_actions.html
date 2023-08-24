@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+{% block panel-heading %} {%endblock%}
+
+{% block submenu %}
+
+<div class="sticky-top">
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl bg-dark navbar-dark">
+        <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+        <div class="navbar-collapse collapse mx-auto" id="navbar2">
+            <ul class="navbar-nav mx-auto subnavbar_actions">
+		<li class="nav-item nav-actions"><a class="dropdown-item"  href="{% url 'mesActions'  %}">Dernières Actions</a></li>
+		<li class="nav-item nav-actions"><a class="dropdown-item"  href="{% url 'mesPublications' type_action='articles'  %}"> Articles</a></li>
+        <li class="nav-item nav-actions"><a class="dropdown-item"  href="{% url  'mesPublications' type_action='commentaires'   %}"> Commentaires </a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='annonces'   %}"> Annonces</a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='ateliers'   %}"> Ateliers</a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='projets'  %}"> Projets</a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='documents'  %}"> Documents</a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='album'  %}"> Albums</a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='suffrages'  %}"> Suffrage</a></li>
+        <li class="nav-item nav-actions "><a class="dropdown-item"  href="{% url  'mesPublications' type_action='projets'  %}"> Projets</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+
+{% endblock %}

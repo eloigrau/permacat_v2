@@ -7,8 +7,8 @@ from actstream.models import followers
 from taggit.managers import TaggableManager
 from photologue.models import Album
 from django.utils.text import slugify
-from jardinpartage.models import Choix as Choix_jpt
 from datetime import datetime, timedelta
+from django.utils.safestring import mark_safe
 
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -279,6 +279,8 @@ class Article(models.Model):
         return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
     def est_autorise(self, user):
+        if user == self.auteur:
+            return True
         if self.asso.abreviation == "public" or self.partagesAsso.filter(abreviation="public"):
             return True
         adhesion = getattr(user, "adherent_" + self.asso.abreviation)
@@ -368,6 +370,10 @@ class Commentaire(models.Model):
     def __unicode__(self):
         return self.__str__()
 
+    @property
+    def titre(self):
+        return mark_safe(self.commentaire[:150])
+
     def __str__(self):
         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.article)
 
@@ -398,25 +404,26 @@ class Commentaire(models.Model):
 
         retour = super(Commentaire, self).save(*args, **kwargs)
 
-        try:
-            values = username_re.findall(self.commentaire)
-            if values:
-                for v in values:
-                    p = Profil.objects.get(username__iexact=v)
-                    titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
-                    msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
-                    msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
-                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
-                                emails=[p.email, ])
-                    action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
-                               description=msg_mention_notif, )
+        values = username_re.findall(self.commentaire)
+        if values:
+            for v in values:
+                try:
+                    if Profil.objects.filter(username__iexact=v).exists():
+                        p = Profil.objects.get(username__iexact=v)
+                        titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
+                        msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
+                        msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
+                        action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                                    emails=[p.email, ])
+                        action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+                                   description=msg_mention_notif, )
 
-                    payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
-                    send_user_notification(p, payload=payload, ttl=7200)
-        except:
-            pass
-        
+                        payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
+                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                        send_user_notification(p, payload=payload, ttl=7200)
+                except:
+                    pass
+
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body":message,
@@ -505,6 +512,8 @@ class Projet(models.Model):
             return Choix.couleurs_annonces["Autre"]
 
     def est_autorise(self, user):
+        if user == self.auteur:
+            return True
         if self.asso.abreviation == "public":
             return True
 

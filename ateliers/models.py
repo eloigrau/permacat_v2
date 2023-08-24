@@ -144,6 +144,8 @@ class Atelier(models.Model):
 
 
     def est_autorise(self, user):
+        if user == self.auteur:
+            return True
         if self.asso.abreviation == "public":
             return True
 

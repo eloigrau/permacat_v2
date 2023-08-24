@@ -132,8 +132,16 @@ width:100%;
 .navbarcontainer{
 }
 .subnavbar > li{
- padding-left:30px;
-  padding-right:30px;
+ padding-left:20px;
+  padding-right:20px;
+}
+.subnavbar_actions > li{
+     padding-left:0em;
+     padding-right:0em;
+}
+.subnavbar_jardins > li{
+     padding-left:1.5em;
+     padding-right:1.5em;
 }
 
 .scrolled-down{
@@ -424,7 +432,7 @@ border: 1px inset rgba(28,110,164,0.65);
     background-color: #8cff66;
 }
 .cardH4{
-    background-color: #3EEFF00;
+    background-color: #EEFF00;
 }
 .card4 > li{
     background-color: #8cff66;
@@ -466,7 +474,28 @@ border: 1px inset rgba(28,110,164,0.65);
     text-align: left;
  }
 
-
+.bs-dark .nav-notif > a:hover {
+    background-color: #79d33dff;
+}
+.bs-dark .nav-notif > a:focus {
+    background-color: #79e33dff;
+}
+.bs-dark .nav-jardin > a:hover {
+    background-color: #79d33dff;
+    border-radius: 0.6em;
+}
+.bs-dark .nav-jardin > a:focus {
+    background-color: #79e33dff;
+    border-radius: 0.8em;
+}
+.bs-dark .nav-actions > a:hover {
+    background-color: #79d33dff;
+    border-radius: 0.1em;
+}
+.bs-dark .nav-actions> a:focus {
+    background-color: #79e33dff;
+    border-radius: 0.2em;
+}
 .cardH5{
     background-color: #00FF55;
 }

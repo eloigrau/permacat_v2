@@ -47,8 +47,9 @@
 
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
 
-    <link href="{% static 'css/fontfamily.css' %}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link href="{% static 'css/fontfamily.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'css/style_list.css'%}" type="text/css" rel="stylesheet" />
 
     <script src="{% static 'js/sorttable.js' %}"></script>
     {%block header %}
@@ -60,7 +61,7 @@
 <body>
  <div class="loader" id="loader">Chargement de Perma.Cat</div>
  <div class="contenucharge" id="contenucharge">
-<div class="container-fluid" id="top">
+<div class="container-fluid" id="top" {% block div-container-global %} {% endblock%}>
 	<div class="row rowprincipal">
 		<div class="colprincipal">
             {% block navbar%}
@@ -91,12 +92,12 @@
                     </div>
                 </div>
                 {% endblock %}
+                    <div class="anchor_blank" id="ref-titre"></div>
                 {% block submenu%}{% endblock %}
                     {% block banniere2 %}
                     {% endblock%}
                 <div class="panel-body panelsoustitre  ">
                 <div class="row justify-content-sm-center">
-                    <div class="anchor_blank" id="ref-titre"></div>
                     <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
                             {% block subtitle %}{% endblock %}
                 </div></div>

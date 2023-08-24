@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 from django.utils.html import strip_tags
 from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
+from actstream.models import following
 
 
 def getMessage(action):
@@ -422,7 +423,7 @@ def creerAction_articlenouveau(request):
     return render(request, 'admin/creerAction_articlenouveau.html', {"form": form, })
 
 
-def getVieuxComptes():
+def getVieuxComptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     date_ajd = datetime.now().date()
@@ -441,7 +442,7 @@ def getVieuxComptes():
 def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
+    profil_jamais, profil_old, mail, mail_old = getVieuxComptes(request)
     # todo implementer suppression
     return render(request, 'admin/voirProfil_anciens.html',
                   {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
@@ -450,13 +451,13 @@ def supprimervieuxcomptes(request):
 def envoyerMailVieuxComptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
+    profil_jamais, profil_old, mail, mail_old = getVieuxComptes(request)
 
     return render(request, 'admin/voirProfil_anciens.html',
                   {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 
-def getMailsNewsletter():
+def getMailsNewsletter(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     # profils_1 = Profil.objects.filter(inscrit_newsletter=True)
@@ -470,7 +471,7 @@ def envoiNewsletter2023(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     titre, contenu_html = get_emailNexsletter2023()
-    emails = getMailsNewsletter()
+    emails = getMailsNewsletter(request)
     contenu_txt = strip_tags(contenu_html)
     # emails = ("eloi.grau@gmail.com", )
     datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email for email in emails])]
@@ -527,6 +528,8 @@ def transforBlogJpToForum(request):
 
 
 def movePermagoraInscritsToNewsletter(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     users = Profil.objects.filter(adherent_scic=True)
     asso = Asso.objects.get(abreviation="scic")
 
@@ -537,3 +540,19 @@ def movePermagoraInscritsToNewsletter(request):
             u.save()
 
     return redirect('listeContacts', "scic")
+
+
+def reinitialiserAbonnementsPermAgora(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_scic')
+    m = ""
+    for p in Profil.objects.filter(adherent_scic=False):
+        if suivi in following(p):
+            actions.unfollow(p, suivi, send_action=False)
+            m += "<p>"+p.username+" ne suit plus les articles permagora"+"</p>"
+
+    for s in Suivis.objects.filter(nom_suivi__startswith='agora'):
+        s.delete()
+    return render(request, 'admin/admin_message.html', {"msg": m})

@@ -33,7 +33,6 @@ import re
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
-
 def get_categorie_from_subcat(subcat):
     for type_produit, dico in Choix.choix.items():
         if str(subcat) in dico['souscategorie']:
@@ -142,13 +141,13 @@ class Adresse(models.Model):
                     self.latitude = LATITUDE_DEFAUT
                     self.longitude = LONGITUDE_DEFAUT
 
-        self.save()
-
+    @property
     def get_latitude(self):
         if not self.latitude:
             return LATITUDE_DEFAUT
         return str(self.latitude).replace(",",".")
 
+    @property
     def get_longitude(self):
         if not self.longitude:
             return LONGITUDE_DEFAUT
@@ -275,7 +274,7 @@ class Profil(AbstractUser):
     date_registration = models.DateTimeField(verbose_name="Date de création", editable=False)
     pseudo_june = models.CharField(_('pseudo Monnaie Libre'), blank=True, default=None, null=True, max_length=50)
 
-    inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=False)
+    inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=True)
     #statut_adhesion = models.IntegerField(choices=Choix.statut_adhesion, default="0")
     adherent_pc = models.BooleanField(verbose_name="Je suis adhérent de Permacat", default=False)
     adherent_rtg = models.BooleanField(verbose_name="Je suis adhérent de Ramene Ta Graine", default=False)
@@ -285,7 +284,7 @@ class Profil(AbstractUser):
     adherent_citealt = models.BooleanField(verbose_name="Je fais partie de 'la Cité Altruiste'", default=False)
     adherent_viure = models.BooleanField(verbose_name="Je fais partie du collectif 'Viure'", default=False)
     adherent_bzz2022 = models.BooleanField(verbose_name="Je fais partie du collectif 'Bzzz'", default=False)
-    accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=False, null=False)
+    accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
     adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
 
@@ -498,22 +497,14 @@ def envoyerMailBienvenue(user):
 def create_user_profile(sender, instance, created, **kwargs):
     if created :
         if instance.inscrit_newsletter:
-            for suiv in Choix.suivisPossibles:
-                suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
-                actions.follow(instance, suivi, actor_only=True, send_action=False)
-            for abreviation in Choix.abreviationsAsso + ['public', ]:
-                if instance.est_autorise(abreviation):
-                    suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_"+abreviation)
-                    actions.follow(instance, suivi, actor_only=True, send_action=False)
-                    suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_"+abreviation)
-                    actions.follow(instance, suivi, actor_only=True, send_action=False)
-                    suivi, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
-                    actions.follow(instance, suivi, actor_only=True, send_action=False)
+            from .utils import reabonnerProfil_base
+            reabonnerProfil_base(instance)
+
         action.send(instance, verb='inscription', url=instance.get_absolute_url(),
                     description="s'est inscrit.e sur le site")
         envoyerMailBienvenue(instance)
-        if instance.is_superuser:
-            Panier.objects.create(user=instance)
+        #if instance.is_superuser:
+            #Panier.objects.create(user=instance)
 
 
 class Adhesion_permacat(models.Model):
@@ -594,6 +585,10 @@ class Produit(models.Model):  # , BaseProduct):
     @property
     def slug(self):
         return slugify(self.nom_produit)
+
+    @property
+    def titre(self):
+        return self.nom_produit
 
     @property
     def est_perimee(self):

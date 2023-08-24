@@ -138,7 +138,7 @@
 						{% if request.user.is_authenticated %}
 						<a href="{% url 'profil' grainotheque.auteur.id %}">{{grainotheque.auteur.username}}</a> &nbsp
 						<a href="{% url 'agora_conversation' user.username %}" class="btn btn-success btn-sm">
-             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
             			</a>
 						{% else %}
 							{{grainotheque.auteur.username}}
@@ -154,7 +154,7 @@
 						{% if request.user.is_authenticated %}
 						<a href="{% url 'profil' grainotheque.referent.id %}">{{grainotheque.referent.username}}</a> &nbsp
 						<a href="{% url 'agora_conversation' grainotheque.referent.username %}" class="btn btn-success btn-sm">
-             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
             			</a>
 						{% else %}
 							{{grainotheque.referent.username}}
@@ -200,7 +200,7 @@
 
 	{% if grainotheque.adresse.latitude and grainotheque.adresse.longitude %}
 
-    <style>leaflet-container {width:  100%;min-height: 90vh;}</style>
+    <style>.leaflet-container {width:  100%}</style>
               <script type="text/javascript">
                 function map_init_basic (map, options) {
 

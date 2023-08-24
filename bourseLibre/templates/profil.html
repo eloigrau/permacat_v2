@@ -49,7 +49,7 @@
             </a>
             {%endif%}
         <a href="{% url 'marche' %}?producteur={{ user.username }}" class="btn btn-success">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp; {%if  user.username != request.user.username %}Ses {%else%}Mes {%endif%}propositions
+                <span class="glyphicon glyphicon-plus"></span>&nbsp; {%if  user.username != request.user.username %}Ses {%else%}Mes {%endif%}annonces
             </a>
     </div>
   </div>

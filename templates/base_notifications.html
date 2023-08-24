@@ -11,12 +11,12 @@
          </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar">
-		<li class="nav-item"><a href="{% url 'notifications_news'  %}">Dernières Notifications</a></li>
-		<li class="nav-item"><a href="{% url 'notificationsParDate'  %}"> Notifications par date</a></li>
-    <li class="nav-item"><a href="{% url 'notifications'  %}"> Notifications par type</a></li>
-    <li class="nav-item"><a href="{% url 'articles_visites'  %}"> Dernières Visites</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notifications_news'  %}">Dernières Notifications</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notificationsParDate'  %}"> Notifications par date</a></li>
+        <li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notifications'  %}"> Notifications par type</a></li>
+        <li class="nav-item nav-notif "><a class="dropdown-item"  href="{% url 'articles_visites'  %}"> Dernières Visites</a></li>
                 {% if request.user.is_superuser %}
-                <li> <a class="dropdown-item" href="https://www.perma.cat/gestion/hitcount/hit/"> Hits </a></li>
+                <li class="nav-item nav4"> <a class="dropdown-item" href="https://www.perma.cat/gestion/hitcount/hit/"> Hits </a></li>
                 {% endif %}
 
             </ul>

@@ -4,7 +4,7 @@ Created on 25 mai 2017
 
 @author: tchenrezi
 '''
-from django.shortcuts import  render, redirect
+from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from .forms import ContactForm, InscriptionNewsletterForm, DesInscriptionNewsletterForm
 from .models import Profil, Choix, Asso, Suivis, InscriptionNewsletter, Salon
@@ -19,6 +19,7 @@ from actstream.models import Follow, following
 from bourseLibre.settings.production import SERVER_EMAIL
 from bourseLibre.settings import LOCALL
 from .views import testIsMembreAsso, testIsMembreSalon
+from .utils import reabonnerProfil_base
 CharField.register_lookup(Lower, "lower")
 
 @login_required
@@ -48,19 +49,7 @@ def suivre_produits(request, actor_only=True):
 
 @login_required
 def sereabonner(request,):
-    for suiv in Choix.suivisPossibles:
-        suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
-
-        if not suivi in following(request.user):
-            actions.follow(request.user, suivi, send_action=False)
-
-    for abreviation in Choix.abreviationsAsso + ['public']:
-        if request.user.est_autorise(abreviation):
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
-            actions.follow(request.user, suivi, send_action=False)
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
-            actions.follow(request.user, suivi, send_action=False)
-
+    reabonnerProfil_base(request.user)
     return redirect('mesSuivis')
 
 @login_required

@@ -9,7 +9,7 @@ import itertools
 from django.shortcuts import HttpResponseRedirect, render, redirect, get_object_or_404#, render, redirect, render_to_response,
 from django.core.exceptions import PermissionDenied
 from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, Produit_objet_CreationForm, \
-    Produit_service_CreationForm, ContactForm, AdresseForm, ProfilCreationForm, MessageForm, MessageGeneralForm, \
+    Produit_service_CreationForm, ContactForm, AdresseForm, AdresseForm5, ProfilCreationForm, MessageForm, MessageGeneralForm, \
     ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
@@ -59,14 +59,12 @@ from django.utils.timezone import now
 import pytz
 from dal import autocomplete
 from webpush import send_user_notification
-
-CharField.register_lookup(Lower, "lower")
-
 from .views_notifications import getNbNewNotifications
 from bourseLibre.views_base import DeleteAccess
 from itertools import chain
 from .filters import ProfilCarteFilter
 from django.db.models.functions import Greatest, Lower
+CharField.register_lookup(Lower, "lower")
 
 
 def getEvenementsSemaine(request):
@@ -272,10 +270,10 @@ class ProduitModifier(UpdateView):
             return Produit_service_modifier_form
         elif self.object.categorie == 'objet':
             return Produit_objet_modifier_form
-        elif self.object.categorie == 'offresEtDemandes':
+        elif self.object.categorie == 'listeOffresEtDemandes':
             return Produit_offresEtDemandes_modifier_form
         else:
-            raise Exception('Type de produit inconnu (aliment, vegetal, service ou  objet)')
+            raise Exception('Type de produit inconnu (aliment, vegetal, service ou  objet) : ' + str(self.object.categorie))
 
     def get_queryset(self):
         return self.model.objects.select_subclasses()
@@ -675,18 +673,16 @@ class profil_modifier_user(UpdateView):
         return super(profil_modifier_user, self).post(request, **kwargs)
 
 
-class profil_modifier_adresse(UpdateView):
-    model = Adresse
-    form_class = AdresseForm
-    template_name_suffix = '_modifier'
+@login_required
+def profil_modifier_adresse(request):
+    form_adresse = AdresseForm5(request.POST or None, instance=request.user.adresse)
 
-    def get_object(self):
-        return self.request.user.adresse
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        return redirect(request.user)
 
-    def post(self, request, **kwargs):
-        self.object = self.get_object()
-        self.object.save(recalc=True)
-        return super(profil_modifier_adresse, self).post(request, **kwargs)
+    return render(request, 'registration/profil_modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':request.user.adresse })
+
 
 class profil_modifier(UpdateView):
     model = Profil
@@ -726,7 +722,7 @@ def register(request):
     if request.user.is_authenticated:
         return render(request, "erreur.html", {"msg":"Vous êtes déjà inscrit.e et authentifié.e !"})
     
-    form_adresse = AdresseForm(request.POST or None)
+    form_adresse = AdresseForm5(request.POST or None)
     form_profil = ProfilCreationForm(request.POST or None)
     if form_adresse.is_valid() and form_profil.is_valid():
         adresse = form_adresse.save()
@@ -735,7 +731,7 @@ def register(request):
         #if profil_courant.statut_adhesion == 2:
         #    profil_courant.is_active=False
         profil_courant.save()
-        Panier.objects.create(user=profil_courant)
+        #Panier.objects.create(user=profil_courant)
         return render(request, 'userenattente.html')
 
     return render(request, 'register.html', {"form_adresse": form_adresse,"form_profil": form_profil,})
@@ -1114,14 +1110,13 @@ def mesSuivis(request):
     for action in follows:
         if not action.follow_object:
             action.delete()
-        elif 'articles' in str(action.follow_object) and not str(action.follow_object) == "articles_jardin":
+        elif 'articles' in str(action.follow_object):
             follows_forum.append(action)
-        elif 'agora' in str(action.follow_object):
-            #follows_agora.append(action)
-            pass
         elif 'salon' in str(action.follow_object) and not 'salon_accueil' in str(action.follow_object):
             follows_agora.append(action)
         elif str(action.follow_object) in Choix.suivisPossibles:
+            follows_base.append(action)
+        elif str(action.follow_object) in Choix.suivisPossibles_groupes:
             follows_base.append(action)
         else:
             follows_autres.append(action)
@@ -1140,10 +1135,41 @@ def supprimerAction(request, actionid):
 
 
 @login_required
+def mesPublications(request, type_action):
+    from photologue.models import Document, Album
+    from blog.models import Commentaire
+    from jardins.models import Jardin, Grainotheque
+
+    liste = []
+    if type_action == "parDate":
+        return render(request, 'notifications/mesActions.html', {})
+    elif type_action == "articles" :
+        liste = Article.objects.filter(auteur=request.user)
+    elif type_action == "commentaires" :
+        liste = Commentaire.objects.filter(auteur_comm=request.user)
+    elif type_action == "annonces" :
+        liste = Produit.objects.filter(user=request.user)
+    elif type_action == "ateliers" :
+        liste = Atelier.objects.filter(auteur=request.user)
+    elif type_action == "projets" :
+        liste = Projet.objects.filter(auteur=request.user)
+    elif type_action == "documents" :
+        liste = Document.objects.filter(auteur=request.user)
+    elif type_action == "album" :
+        liste = Album.objects.filter(auteur=request.user)
+    elif type_action == "suffrages" :
+        liste = Suffrage.objects.filter(auteur=request.user)
+    elif type_action == "jardins" :
+        liste = Jardin.objects.filter(auteur=request.user)
+    elif type_action == "grainotheque" :
+        liste = Grainotheque.objects.filter(auteur=request.user)
+
+    return render(request, 'notifications/mesPublications.html', {"titre":type_action, 'liste':liste})
+
+
+@login_required
 def mesActions(request):
     return render(request, 'notifications/mesActions.html', {})
-
-
 
 @login_required
 def agora(request, asso):

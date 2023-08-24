@@ -2,17 +2,15 @@
 {% load activity_tags %}
 
 {% block subtitle %}
-<h4>Mes actions sur le site</h4>
+<h4>Mes {{titre}} ({{liste|length}}): </h4>
 
 {% endblock %}
 {% block content %}
 
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-
-{% activity_stream 'actor' user %}
-{% for action in stream %}
-    {% include "notifications/notifications_template.html" with action=action %}
+{% for action in liste %}
+            <li  class="list-group-item" ><a href="{{action.get_absolute_url}}">{{action.titre}}</a></li>
 {% endfor %}
     </div>
 </div>

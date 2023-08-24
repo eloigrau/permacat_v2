@@ -181,9 +181,7 @@
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso'  asso='scic' %}"><i class='fa fa-asterisk iconleft' ></i> Présentation </a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='scic'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
-                           <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>
-                           <li> <a class="dropdown-item" href="{% url 'agora:acceuil' %}"><i class='fa fa-compass iconleft' ></i>  Journée Agora de la Transition  </a></li>
-      {% if request.user.adherent_scic %}
+                 {% if request.user.adherent_scic %}
                             <li class="divider" role="separator"></li>
                            <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle"  href="#">Documents de travail</a>
@@ -197,10 +195,13 @@
                             </li>
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='scic' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                         <li><a class="dropdown-item" href="{% url 'admin_asso' asso='scic' %}"><i class='fa fa-database' ></i> Administration  </a></li>
-                        <li class="divider" role="separator"></li>
                     <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='scic' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
 
+                              <li class="divider" role="separator"></li>
    {% endif %}
+                           <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>
+                           <li> <a class="dropdown-item" href="{% url 'agora:acceuil' %}"><i class='fa fa-compass iconleft' ></i>  Journée Agora de la Transition  </a></li>
+
                               <li class="divider" role="separator"></li>
                           <li> <a class="dropdown-item" href="https://www.perma.cat/static/permagora/docs_admin/Statuts-Ri-Charte-PermAgora_final.bb187a297c61.pdf" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-info-circle iconleft' ></i>  Statuts  </a></li>
                        <li> <a class="dropdown-item" href="{% url 'adhesion_asso' asso='scic' %}"><i class='fa fa-euro-sign iconleft ' ></i> Adhésion en ligne </a></li>
@@ -371,29 +372,26 @@
         <li class="nav-item nav3 4to3"><a class="nav-link" href="{% url 'cal:agenda' %}"> Agenda</a></li>
         <li class="nav-item nav1"><a class="nav-link" href="{% url 'marche' %}">  Annonces</a></li>
 
+       <li class="nav-item dropdown nav9">
+           <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
+            Publier </a>
+            <ul class="dropdown-menu dropdown-menu-left nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Un Article sur le forum</a></li>
+                <li><a class="dropdown-item" href="{% url 'produit_proposer_entree' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Une Petite Annonce</a></li>
+                <li><a class="dropdown-item" href="{% url 'creerSalon' %}">  <i class="fa fa-plus iconleft" title="Ajouter"></i>  Un Salon de discussion </a></li>
+                <li><a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i> Un Atelier</a></li>
+                <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug='None' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Un Document / Fichier</a></li>
+                <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Une Photo / Image </a></li>
+            </ul>
+        </li>
 
     </ul>
 
     <ul class="nav navbar-nav ">
          <li class="nav-item nav4 5to4"><a class="nav-link hover-icon" href="{% url 'notifications_news' %}">
-
              <i class="fa fa-bell" title="Notifications"></i> {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}</a>
          </li>
 
-       <li class="nav-item dropdown nav9">
-           <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
-             <i class="fa fa-plus iconleft" title="Ajouter"></i> </a>
-            <ul class="dropdown-menu dropdown-menu-right nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
-               <li> <a class="dropdown-item textright nohover textepetit" >Ajouter : </a></li>
-               <li> <a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}">Un Article sur le forum</a></li>
-               <li> <a class="dropdown-item" href="{% url 'produit_proposer_entree' %}">Une Petite Annonce</a></li>
-                <li><a class="dropdown-item" href="{% url 'jardinpartage:ajouterNouvelArticle' %}"> Un Article sur le blog des Jardins Partagés </a></li>
-                <li><a class="dropdown-item" href="{% url 'creerSalon' %}">  Un Salon de discussion </a></li>
-               <li> <a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}">Un Atelier</a></li>
-                <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug='None' %}"> Un Document / Fichier</a></li>
-                <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Une Photo / Image </a></li>
-            </ul>
-        </li>
         <li class="nav-item dropdown nav7">
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
               <i class="fa fa-user iconleft" title="Profil"></i>  </a></a>
@@ -401,6 +399,7 @@
                <li> <a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                 <li class="divider" role="separator"></li>
                  <li><a class="dropdown-item" href="{% url 'mesSuivis' %}"> Abonnements </a></li>
+                 <li><a class="dropdown-item" href="{% url 'mesActions' %}"> Publications </a></li>
                 <li class="divider" role="separator"></li>
                <li> <a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
             </ul>
@@ -452,6 +451,7 @@
                        <li> <a class="dropdown-item" href="{% url 'nettoyerFollows' %}"> nettoyerFollows</a></li>
                         <li> <a class="dropdown-item" href="{% url 'supprimerHitsAnciens' %}"> supprimerHitsAnciens</a></li>
                         <li> <a class="dropdown-item" href="{% url 'supprimerActionsAnciens' %}"> supprimerActionsAnciens</a></li>
+                        <li> <a class="dropdown-item" href="{% url 'reinitialiserAbonnementsPermAgora' %}"> reinitialiserAbonnementsPermAgora</a></li>
                        {% comment %}
                        <li> <a class="dropdown-item" href="{% url 'transforBlogJpToForum' %}"> transforBlogJpToForum</a></li>
                        <li> <a class="dropdown-item" href="{% url 'envoiNewsletter2023' %}"> envoiNewsletter2023</a></li>

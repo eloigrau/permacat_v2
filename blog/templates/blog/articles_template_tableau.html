@@ -22,11 +22,14 @@
         {% for article in article_list %}
         <tr >
           <td data-title="Groupe" class="center" style="vertical-align: middle;">
-              <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}#ref-titre" >{{ article.get_logo_nomgroupe_html|safe }}</a>
+              <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}#ref-titre" >{{ article.get_logo_nomgroupe_html|safe }}</a>
               {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> {% endif %}
           </td>
-            <td data-title="Dossier" class="center"><span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display }} </span>&nbsp;</td>
-
+            <td data-title="Dossier" class="center">
+                <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}#ref-titre" >
+                <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display }} </span>
+                </a>
+            </td>
           <td style="width: 95%;" data-title="Titre">
             <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
                 <div class="titre_forum">{{article.titre}}
@@ -51,12 +54,14 @@
             {% endif %}
                 </a>
           </td>
-<td  data-title="abonnement"><span class="badge badge-light">
+<td  data-title="abonnement">
+    <span class="badge badge-light">
                 {% if request.user|is_following:article %}
-                    {% fontawesome_icon 'bell' title='abnnement' %}
+                    {% fontawesome_icon 'bell' %}
                     {% else %}
-                    {% fontawesome_icon 'bell-slash' title='abnnement' %}
+                    {% fontawesome_icon 'bell-slash' %}
                 {% endif %}&nbsp;
+
                 {%if article.date_modification %}
             {%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %} &nbsp;
                  Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}

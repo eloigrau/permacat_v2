@@ -1,4 +1,4 @@
-{% extends 'base_profil.html' %}
+
 {% block headerDocument%}
 {% load leaflet_tags %}
 {% load static %}
@@ -11,44 +11,16 @@
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
 <script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {%endblock%}
-{% load widget_tweaks %}
 
-{% block title %} - S'enregistrer{% endblock %}
-{%block message%}
-{%endblock%}
-{% block subtitle %}
-    <div class="row justify-content-sm-center">
-        <h3>Inscription sur le site</h3>
-    </div>
-    <div class="row justify-content-sm-center">
-        <div class="col-sm-12">
-        <h4>Renseignez les informations suivantes pour vous inscrire </h4>
-        <p>(les champs avec (*) sont obligatoires)</p>
-            </div>
-    </div>
-{% endblock %}
-{% block content %}
-
-<div class="jumbotron">
-    <div class="row justify-content-sm-center">
-        <div class="col-sm-12 col-md-10 col-lg-8 ">
-            <form role="form" action="" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-                {%include 'form_template2.html' with form=form_profil%}
-                <hr>
-                <p>Cliquez sur la carte pour vous situer dans l'annuaire <small>
-                        (aucune obligation mais ça facilite beaucoup les échanges, vous pouvez être approximatif sur la localisation ;)</small> :</p>
-<p>
 <div class="row carteMiPage">
   <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;min-height: 50vh;}</style>
+    <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
       <script type="text/javascript">
 
         function map_init_basic (map, options) {
-        map.panTo(new L.LatLng(42.62914, 2.49939));
 
-        map.on('click', function(ev) {
-                  var leafIcon = L.icon({
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+          var leafIcon = L.icon({
             iconUrl: '{% static 'img/leafgreen.png' %}',
             shadowUrl: '{% static 'img/leafshadow.png' %}',
 
@@ -58,18 +30,17 @@
             shadowAnchor: [4, 62],  // the same for the shadow
             popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
+        var lat = {{adresse.get_latitude}};
+        var lon = {{adresse.get_longitude}};
+        pin = L.marker([lat, lon],{ riseOnHover:true,draggable:true,icon: leafIcon });
+        pin.addTo(map);
+        map.panTo(new L.LatLng(lat, lon));
+
+        map.on('click', function(ev) {
+
             $('#id_latitude').val(ev.latlng.lat);
           $('#id_longitude').val(ev.latlng.lng);
-          if (typeof pin == "object") {
             pin.setLatLng(ev.latlng);
-          } else {
-            pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true,icon: leafIcon });
-            pin.addTo(map);
-            pin.on('drag',function(ev) {
-              $('#id_latitude').val(ev.latlng.lat);
-              $('#id_longitude').val(ev.latlng.lng);
-            });
-          }
 
           var url = 'https://geo.api.gouv.fr/communes?lat=' + ev.latlng.lat + '&lon='+ev.latlng.lng;  // get the url of the `load_cities` view
 
@@ -106,20 +77,21 @@ $('.example').leafletLocationPicker({
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
 </div>
-                </p>
-                {%include 'form_template2.html' with form=form_adresse%}
-                <hr>
-<div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
-          <button type="submit" class="btn btn-success">S'enregistrer et intégrer le réseau !</button>
-</div>
-</div>
 
-        </form>
-        </div>
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+    <div class="col-sm-12 col-md-10 col-lg-9 text-center">
+    <form method="post">
+      {% csrf_token %}
+        <p>Cliquez sur la carte ou rentrez les nouvelles coordonnées GPS (latitude, longitude) :</p>
+
+     {% include 'form_template2.html' with form=form_adresse%}
+     <button type="cancel" onclick="window.history.back();" class="btn btn-warning ">Annuler</button>
+      <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider l'adresse</button>
+    </form>
     </div>
 </div>
-
-
-    {% endblock %}
-

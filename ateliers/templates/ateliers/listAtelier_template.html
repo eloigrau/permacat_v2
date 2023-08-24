@@ -1,15 +1,13 @@
 <div class="infinite-container ">
     {% for atelier in atelier_list %}
-{% ifchanged atelier.atelier.categorie %}
+{% ifchanged atelier.categorie %}
 {% if not forloop.first  %}<hr> {% endif %}{% endifchanged %}
 <div class="infinite-item ">
    <div class="row justify-content-center ">
     <div class="col-sm-12 col-ms-10 textcenter " >
         <a  href="{% url 'ateliers:lireAtelier' slug=atelier.slug %}" class="boutonAtelier" >
-
-            <div style="background-color:{{atelier.atelier.get_couleur}};
-    font-variant: small-caps;" >
-   <div class="row ">
+            <div style="font-variant: small-caps;" >
+   <div class="row textcenter">
     <div class="col-sm-3" >
 {{ atelier.get_logo_nomgroupe_html|safe }} /
             <span class="badge badge-primary" data-toggle="tooltip" data-placement="bottom" title="Categorie">

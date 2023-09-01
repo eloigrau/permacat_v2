@@ -272,7 +272,7 @@ class ProduitModifier(UpdateView):
             return Produit_service_modifier_form
         elif self.object.categorie == 'objet':
             return Produit_objet_modifier_form
-        elif self.object.categorie == 'listeOffresEtDemandes':
+        elif self.object.categorie == 'offresEtDemandes':
             return Produit_offresEtDemandes_modifier_form
         else:
             raise Exception('Type de produit inconnu (aliment, vegetal, service ou  objet) : ' + str(self.object.categorie))

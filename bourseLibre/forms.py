@@ -9,7 +9,9 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from blog.models import Article
 from dal import autocomplete
-from .constantes import Choix
+#from .constantes import Choix
+#from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
+
 
 fieldsCommunsProduits = ['souscategorie', 'nom_produit',  'description', 'estUneOffre', 'asso',
                          'monnaies', 'prix', 'date_debut', 'date_expiration', ]

@@ -5,7 +5,6 @@
 {% load staticfiles %}
 {% endblock %}
 {% block header %}
-{{ form.media }}
 {% leaflet_js %}
 {% leaflet_css %}
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
@@ -108,21 +107,4 @@ $('.example').leafletLocationPicker({
     </div>
 </div>
 
-{% comment %}
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
-<div class="row justify-content-sm-center">
-<div class="col-sm-12 col-md-10 col-lg-9 text-center">
-    <p>Vous pouvez ajouter la commune et/ou la latitude/longitude du jardin afin de vous situer sur la carte</p>
-<form method="post">
-  {% csrf_token %}
- {% include 'form_template2.html' with form=form_adresse%}
-  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées</button>
-</form>
-</div>
-</div>
-{% endcomment %}
 {% endblock %}

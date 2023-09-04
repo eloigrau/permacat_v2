@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     'dal_select2',
     'webpush',
     'exo_mentions',
+     #'emoji_picker',
     #"django_minify_html",
     #'formtools',
     #'channels', 'chat',

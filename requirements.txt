@@ -6,6 +6,7 @@ dj-database-url==0.5.0
 Django==2.2.28
 django-activity-stream==0.7.0
 django-acme-challenge==1.2
+django-autocomplete-light==3.9.4
 django-anymail==8.6
 django-avatar==5.0.0
 django-bootstrap==0.2.4

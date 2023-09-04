@@ -1,4 +1,16 @@
 {% extends 'base_defraiement.html' %}
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load staticfiles %}
+{% endblock %}
+{% block header %}
+{{ form.media }}
+{% leaflet_js %}
+{% leaflet_css %}
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{%endblock%}
 
 {% block subtitle %}
 <div class="row justify-content-center">
@@ -19,18 +31,77 @@
   {% csrf_token %}
     <p>Nom du participant : </p>
  {% include 'form_template2.html' with form=form %}
-    {% comment %}
-    <p>a) Soit remplir son adresse : </p>
- {% include 'form_template2.html' with form=form_adresse%}
-  <button type="submit" name="adressebtn" class="btn btn-primary">Valider l'adresse</button>
-
-    <hr>
-    {% endcomment %}
   {% csrf_token %}
-    <p>Donnez les coordonnées GPS (latitude, longitude) :</p>
+    <p>Cliquez sur la carte ou donnez les coordonnées GPS (latitude, longitude) :</p>
+<div class="row carteMiPage">
+  <div class="col-md-12" >
+    <style>.leaflet-container {width:  100%;min-height: 50vh;}</style>
+      <script type="text/javascript">
 
+        function map_init_basic (map, options) {
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+
+        map.on('click', function(ev) {
+                  var leafIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+            $('#id_latitude').val(ev.latlng.lat);
+          $('#id_longitude').val(ev.latlng.lng);
+          if (typeof pin == "object") {
+            pin.setLatLng(ev.latlng);
+          } else {
+            pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true,icon: leafIcon });
+            pin.addTo(map);
+            pin.on('drag',function(ev) {
+              $('#id_latitude').val(ev.latlng.lat);
+              $('#id_longitude').val(ev.latlng.lng);
+            });
+          }
+
+          var url = 'https://geo.api.gouv.fr/communes?lat=' + ev.latlng.lat + '&lon='+ev.latlng.lng;  // get the url of the `load_cities` view
+
+          $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                  $("#id_commune").val(data[0].nom);  // replace the contents of the city input with the data that came from the server
+                  $("#id_code_postal").val(data[0].code);  // replace the contents of the city input with the data that came from the server
+                  }
+            });
+        });
+}
+$('.example').leafletLocationPicker({
+  alwaysOpen: false,
+  {% comment %}
+  className: baseClassName,
+  location: yourmap.center,
+  map: yourmap,
+  {% endcomment %}
+  locationFormat: '{lat}{sep}{lng}',
+  locationMarker: true,
+  locationDigits: 6,
+  locationSep: ',',
+  position: 'topright',
+  layer: 'OSM',
+  height: 140,
+  width: 200,
+  event: 'click',
+  cursorSize: '30px',
+  onChangeLocation: $.noop,
+  mapContainer: "#yourmap"
+});
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
  {% include 'form_template2.html' with form=form_adresse2%}
-  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées GPS</button>
+  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider le participant</button>
 </form>
 </div>
 </div>

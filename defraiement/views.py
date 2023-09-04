@@ -11,7 +11,7 @@ from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
 from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm
 from .models import Reunion, ParticipantReunion, Choix, get_typereunion
-from bourseLibre.forms import AdresseForm, AdresseForm3
+from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 import itertools
 import csv
 from django.http import HttpResponse
@@ -197,7 +197,7 @@ class ModifierReunion(UpdateView):
 
 def ajouterAdresseReunion(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
-    form_adresse = AdresseForm3(request.POST or None)
+    form_adresse = AdresseForm4(request.POST or None)
 
     if form_adresse.is_valid():
         adresse = form_adresse.save()
@@ -205,7 +205,7 @@ def ajouterAdresseReunion(request, slug):
         reunion.save()
         return redirect(reunion)
 
-    return render(request, 'defraiement/ajouterAdresseReunionAdresseReunion.html', {'reunion':reunion, 'form_adresse':form_adresse })
+    return render(request, 'defraiement/ajouterAdresseReunion.html', {'reunion':reunion, 'form_adresse2':form_adresse })
 
 def ajouterAdresseReunionChezParticipant(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
@@ -221,18 +221,18 @@ def ajouterAdresseReunionChezParticipant(request, slug):
 def modifierAdresseReunion(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
     #form_adresse = AdresseForm(request.POST or None, instance=reunion)
-    form_adresse2 = AdresseForm3(request.POST or None)
+    form_adresse = AdresseForm4(request.POST or None)
 
-    if form_adresse2.is_valid():#form_adresse.is_valid() or
+    if form_adresse.is_valid():#form_adresse.is_valid() or
         # if 'adressebtn' in request.POST:
         #     adresse = form_adresse.save()
         # else:
-        adresse = form_adresse2.save()
+        adresse = form_adresse.save()
         reunion.adresse = adresse
         reunion.save()
         return redirect(reunion)
 
-    return render(request, 'defraiement/modifierAdresseReunion.html', {'reunion':reunion, 'form_adresse2':form_adresse2 }) # 'form_adresse':form_adresse,
+    return render(request, 'defraiement/modifierAdresseReunion.html', {'reunion':reunion, 'form_adresse':form_adresse }) # 'form_adresse':form_adresse,
 
 class SupprimerParticipant(DeleteAccess, DeleteView):
     model = ParticipantReunion
@@ -255,7 +255,7 @@ class SupprimerReunion(DeleteAccess, DeleteView):
 def ajouterParticipant(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
     form = ParticipantReunionForm(request.POST or None, )
-    form_adresse2 = AdresseForm3(request.POST or None)
+    form_adresse2 = AdresseForm4(request.POST or None)
     if form.is_valid() and form_adresse2.is_valid():
         adresse = form_adresse2.save()
         part = form.save(adresse, asso)
@@ -308,18 +308,18 @@ def ajouterParticipantsReunion(request, slug_reunion):
 def ajouterAdresseReunion(request, slug):
     reunion = Reunion.objects.get(slug=slug)
     #form_adresse = AdresseForm(request.POST or None)
-    form_adresse2 = AdresseForm3(request.POST or None)
+    form_adresse = AdresseForm4(request.POST or None)
 
-    if form_adresse2.is_valid(): #form_adresse.is_valid() or
+    if form_adresse.is_valid(): #form_adresse.is_valid() or
         # if 'adressebtn' in request.POST:
         #     adresse = form_adresse.save()
         # else:
-        adresse = form_adresse2.save()
+        adresse = form_adresse.save()
         reunion.adresse = adresse
         reunion.save()
         return redirect(reunion)
 
-    return render(request, 'defraiement/ajouterAdresseReunion.html', {'reunion':reunion, 'form_adresse2':form_adresse2 }) #'form_adresse':form_adresse,
+    return render(request, 'defraiement/ajouterAdresseReunion.html', {'reunion':reunion, 'form_adresse':form_adresse }) #'form_adresse':form_adresse,
 
 
 

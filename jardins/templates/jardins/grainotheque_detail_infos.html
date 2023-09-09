@@ -15,6 +15,14 @@
 		<div class="col-sm-12 textcenter">
 	<table class="table table-condensed ">
 			<tbody>
+				<tr>
+					<td class="nomProprieteJardin">
+						Type de grainothèque
+					</td>
+					<td class="proprieteJardin">
+						{{ grainotheque.get_categorie_display }}
+					</td>
+				</tr>
 				{% if grainotheque.jardin %}
 				<tr>
 					<td class="nomProprieteJardin">
@@ -31,14 +39,6 @@
 					</td>
 					<td class="proprieteJardin">
 						{{ grainotheque.description|safe }}
-					</td>
-				</tr>
-				<tr>
-					<td class="nomProprieteJardin">
-						Type de grainothèque
-					</td>
-					<td class="proprieteJardin">
-						{{ grainotheque.get_categorie_display }}
 					</td>
 				</tr>
 				{% if grainotheque.email_contact %}
@@ -85,25 +85,7 @@
 					</td>
 				</tr>
 						{% endif %}
-				<tr>
-					<td class="nomProprieteJardin">
-						Visibilité
-					</td>
-					<td class="proprieteJardin">
-	  					<p>{{grainotheque.get_visibilite_display}}</p>
-					</td>
-				<tr>
 
-				{% if request.user.is_superuser %}
-				<tr>
-					<td class="nomProprieteJardin">
-						Adresse -su*
-					</td>
-					<td class="proprieteJardin">
-	 				 <p>{{grainotheque.adresse.get_adresse_str}} / {{grainotheque.adresse.getLatLon}}</p>
-					</td>
-				</tr>
-				{% endif %}
 				<tr>
 					<td class="nomProprieteJardin">
 						Lieu
@@ -119,7 +101,7 @@
 						</div>
 						{% endif %}
 <div>
-	{% if adresse_visible %}
+{% if adresse_visible %}
 
 	{% if grainotheque.adresse.latitude and grainotheque.adresse.longitude %}
 
@@ -145,12 +127,30 @@
             }
         </script>
         {% leaflet_map "yourmap" callback="window.map_init_basic" %}
-		{% endif %}
+	{% endif %}
 {% endif %}
 </div>
 					</td>
 				</tr>
+				<tr>
+					<td class="nomProprieteJardin">
+						Visibilité
+					</td>
+					<td class="proprieteJardin">
+	  					<p>{{grainotheque.get_visibilite_display}}</p>
+					</td>
+				<tr>
 
+				{% if request.user.is_superuser %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Adresse -su*
+					</td>
+					<td class="proprieteJardin">
+	 				 <p>{{grainotheque.adresse.get_adresse_str}} / {{grainotheque.adresse.getLatLon}}</p>
+					</td>
+				</tr>
+				{% endif %}
 			</tbody>
 		</table>
 		</div>

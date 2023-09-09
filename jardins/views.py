@@ -483,6 +483,7 @@ class JardinDetailView(DetailView):
             context["user_inscrit"] = InscriptionJardin.objects.filter(user=self.request.user, jardin=self.object).exists()
         context["adresse_visible"] = self.object.visibilite_annuaire == '0' or (self.object.visibilite_annuaire == '1' and self.request.user.is_authenticated)
         context["salons"] = Salon.objects.filter(jardin=self.object)
+        context["grainotheques"] = Grainotheque.objects.filter(jardin=self.object)
         return context
 
 class AjouterGrainotheque(CreateView):
@@ -496,7 +497,13 @@ class AjouterGrainotheque(CreateView):
         self.object = form.save(self.request.user)
         action.send(self.request.user, verb='jardins_nouvelleGrainotheque_jp', action_object=self.object, url=self.object.get_absolute_url(),
                      description="a ajouté la Grainothèque: '%s'" % self.object.titre)
-        if not self.object.jardin:
+        if self.object.jardin:
+            adresse = self.object.jardin.adresse
+            adresse.pk = None
+            adresse.save()
+            self.object.adresse = adresse
+            self.object.save()
+        else:
             return redirect("jardins:grainotheque_ajouterAdresse", slug=self.object.slug)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -554,8 +561,6 @@ class ModifierInfoGraine(UpdateView):
     form_class = InfoGraineForm
     template_name_suffix = '_modifier'
 
-
-
 class ModifierJardin(UpdateView):
     model = Jardin
     template_name_suffix = '_modifier'
@@ -565,7 +570,11 @@ class ModifierJardin(UpdateView):
 
 class SupprimerJardin(DeleteView):
     model = Jardin
-    template_name_suffix = '_modifier'
+    template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return reverse('jardins:carte_jardins')
+
 
 class ModifierGrainotheque(UpdateView):
     model = Grainotheque
@@ -578,6 +587,9 @@ class ModifierGrainotheque(UpdateView):
 class SupprimerGrainotheque(DeleteView):
     model = Grainotheque
     template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return reverse('jardins:carte_graino')
 
 @login_required
 def graino_ajouterGraine(request, slug):

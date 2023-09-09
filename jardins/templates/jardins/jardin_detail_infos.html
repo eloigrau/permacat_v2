@@ -14,7 +14,15 @@
 	<div class="col-sm-12 textcenter">
 	<table class="table table-condensed ">
 			<tbody>
-		<tr><td colspan="2" style="background:#80bfff;" ><h5>Infos</h5></td>
+				<tr>
+					<td class="nomProprieteJardin">
+						Type de jardin
+					</td>
+					<td class="proprieteJardin">
+						{{ jardin.get_categorie_display }}
+					</td>
+				</tr>
+				{%if jardin.description %}
 				<tr>
 					<td class="nomProprieteJardin">
 						Description
@@ -23,6 +31,7 @@
 						{{ jardin.description|safe }}
 					</td>
 				</tr>
+				{% endif %}
 				{%if jardin.fonctionnement %}
 				<tr>
 					<td class="nomProprieteJardin">
@@ -33,24 +42,18 @@
 					</td>
 				</tr>
 				{% endif %}
+
+				{% if grainotheques %}
 				<tr>
 					<td class="nomProprieteJardin">
-						Type de jardin
+						Grainothèque{{grainotheques|pluralize:"s"}})
 					</td>
 					<td class="proprieteJardin">
-						{{ jardin.get_categorie_display }}
+						{% for g in grainotheques %}<a href="{{ g.get_absolute_url }}">{{ g }}  </a>{%if not forloop.last%}, {%endif%} {% endfor %}
 					</td>
 				</tr>
+				{% endif %}
 
-
-				<tr>
-					<td class="nomProprieteJardin">
-						Visibilité
-					</td>
-					<td class="proprieteJardin">
-	  					<p>{{jardin.get_visibilite_display}}</p>
-					</td>
-				<tr>
 				{% if user_inscrit %}
 				{% if jardin.permapotes_id %}
 				<tr>
@@ -62,17 +65,6 @@
 					</td>
 				</tr>
 				{% endif %}
-				{% endif %}
-				{% if request.user.is_superuser %}
-				<tr>
-					<td class="nomProprieteJardin">
-						Adresse -su*
-					</td>
-					<td class="proprieteJardin">
-	 				 <p>{{jardin.adresse.get_adresse_str}} / {{jardin.adresse.getLatLon}}</p>
-	 				 <p>vis_annuaire {{jardin.visibilite_annuaire}}</p>
-					</td>
-				</tr>
 				{% endif %}
 				<tr>
 					<td class="nomProprieteJardin">
@@ -123,6 +115,25 @@
 					</td>
 				</tr>
 
+				<tr>
+					<td class="nomProprieteJardin">
+						Visibilité
+					</td>
+					<td class="proprieteJardin">
+	  					<p>{{jardin.get_visibilite_display}}</p>
+					</td>
+				<tr>
+				{% if request.user.is_superuser %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Adresse -su*
+					</td>
+					<td class="proprieteJardin">
+	 				 <p>{{jardin.adresse.get_adresse_str}} / {{jardin.adresse.getLatLon}}</p>
+	 				 <p>vis_annuaire {{jardin.visibilite_annuaire}}</p>
+					</td>
+				</tr>
+				{% endif %}
 			</tbody>
 		</table>
 		</div>

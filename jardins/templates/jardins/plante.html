@@ -22,6 +22,9 @@
         &nbsp<i class="fa fa-link" aria-hidden="true"></i> </p>
         <hr>
 </div></div>
+
+{% endblock %}
+{% block content %}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-9 col-lg-7 textcenter">
     <table class="table table-condensed ">
@@ -44,14 +47,16 @@
             {% endif %}
         </tbody>
     </table >
+        {% comment %}
         <p> Habitat: {{plante.get_habitat}}</td></tr></p>
+        {% endcomment %}
 </div></div>
 {% if plante.has_info_supp %}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-9 col-lg-7 textcenter">
             <p>(Cf :
                 {% for p in plante.get_info_supp_html2 %}
-                <a href="{{p}}">{{forloop.counter}}</a>,
+                <a href="{{p}}">{{forloop.counter}}</a>{%if not forloop.last%}, {%endif%}
             {% endfor %})
             </p>
     </div>
@@ -60,13 +65,19 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-8 col-lg-6 textcenter">
-
+        {% if jardins %}
+        <p>Présente dans les jardins : {% for jardin in jardins %} <a href="{{jardin.get_absolute_url}}">{{jardin.titre}}</a>
+            {% if not forloop.last %}, {% endif %} {% endfor %}
+        </p>
+        {%endif%}
+        {% if grainotheques %}
+        <p>Présente dans les grainothèques : {% for g in grainotheques %} <a href="{{g.get_absolute_url}}">{{g.titre}}</a>
+            {% if not forloop.last %}, {% endif %} {% endfor %}
+        </p>
+        {%endif%}
     </div>
 </div>
 
-
-{% endblock %}
-{% block content %}
 
 {% endblock %}
 

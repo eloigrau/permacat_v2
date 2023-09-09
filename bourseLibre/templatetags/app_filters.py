@@ -142,10 +142,8 @@ def distance(user1, user2):
     elif dist == None:
         return "-"
 
-    if dist < 10:
-        if dist < 1:
-            return "1"
-        dist_int = int(dist + 0.5)
+    if dist < 1:
+        return "1"
 
     return str(int(dist + 0.5))
 

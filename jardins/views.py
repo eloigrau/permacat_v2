@@ -328,7 +328,11 @@ class ListePlantes(ListView):
 
 def voir_plante(request, cd_nom):
     p = get_object_or_404(Plante, CD_NOM=int(cd_nom))
-    return render(request, "jardins/plante.html", {"plante":p})
+    plantesDeJardins = p.plantedejardin_plante.all()
+    jardins = set(j.jardin for j in plantesDeJardins )
+    graines = p.graine_set.all()
+    grainotheques = set(j.grainotheque for j in graines )
+    return render(request, "jardins/plante.html", {"plante":p, "jardins":jardins, "grainotheques":grainotheques})
 
 
 def voir_plante_nom(request):

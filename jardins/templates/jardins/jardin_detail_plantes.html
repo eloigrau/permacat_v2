@@ -13,7 +13,7 @@
 				{% for pdj in plantes %}
 		   			<tr>
 						<td>{{pdj.nom}}</td>
-						<td>{% if pdj.plante %}<a href="{{ pdj.plante.get_absolute_url}}">{{pdj.plante}}</a>{% endif %}</td>
+						<td>{% if pdj.plante %}<a href="{{ pdj.plante.get_absolute_url}}">{{pdj.plante.LB_NOM}}</a>{% endif %}</td>
 						<td>{{ pdj.infos | safe | couperTexte_avecbouton_150:pdj.id}} </td>
 						 {%if request.user.is_superuser or request.user == jardin.auteur  or request.user == jardin.referent  %}
 						<td>

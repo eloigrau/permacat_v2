@@ -1503,6 +1503,24 @@ table.greenTable tfoot .links a{
     font-variant: small-caps;
 }
 
+.titre_jardin{
+    padding: 10px;
+    margin: 10px;
+
+    font-family: Georgia, serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    word-spacing: 1px;
+    color: #000000;
+    font-weight: 700;
+    text-decoration: none;
+    font-style: normal;
+    font-variant: small-caps;
+    text-transform: none;
+    border: 5px double #D9D9D9;
+    border-radius: 25px;
+    background-color: #b5e883;
+}
 .fiche_index{
     border: 3px inset ;
     border-radius: 0px 25px 25px 0px;

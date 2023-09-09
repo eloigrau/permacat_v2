@@ -14,7 +14,7 @@
 				{% for graine in graines %}
 		   			<tr>
 						<td>{{graine.nom}}</td>
-						<td>{% if graine.plante %}<a href="{{ graine.plante.get_absolute_url}}">{{graine.plante}}</a>{% endif %}</td>
+						<td>{% if graine.plante %}<a href="{{ graine.plante.get_absolute_url}}">{{graine.plante.LB_NOM}}</a>{% endif %}</td>
 						<td>{{ graine.infos.description | safe | couperTexte_avecbouton_150:graine.id}} </td>
 						<td>{{ graine.infos.stock_quantite }}</td>
 						<td>{{ graine.infos.date_recolte|date:'d/m/Y'}}</td>

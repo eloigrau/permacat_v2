@@ -13,7 +13,7 @@ class Choix():
     type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
 
     visibilite_jardin_annuaire = ('0', "Public (visible sans inscription)"), ('1', 'Inscrits (visible seulement par les inscrits au site)'), ('2', "Invisible ")
-    type_plante = ('0', 'Arbre'), ('1', 'Arbuste'), ('2', 'Plante potagère'), ('3', 'Aromatique / médicinale'), ('4', 'Herbacée'), ('5', 'Liane'), ('6', 'Ornementale'),
+    type_plante = ('0', 'Arbre'), ('1', 'Arbuste'), ('2', 'Arbuste'), ('3', 'Plante potagère'), ('4', 'Aromatique / médicinale'),  ('5', 'Petit fruit'), ('6', 'Herbacée'),  ('7', 'Herbacée'), ('8', 'Liane'), ('9', 'Ornementale'),
 
 class DBRang_inpn(models.Model):
     RG_LEVEL = models.IntegerField()

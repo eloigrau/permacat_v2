@@ -2500,9 +2500,14 @@ padding-bottom:10px;
   display: block;
   color: red;
 }
+}
 
 .leaflet-container {  /* all maps */
     min-height:0.6vh;
-    width:  100%;
-    height: 100%;
+    width:  99%;
+    height: 99%;
+}
+
+.select2-selection--single{
+min-height:40px;
 }

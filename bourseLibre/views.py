@@ -27,6 +27,7 @@ from datetime import date, timedelta, datetime
 from django.http import HttpResponse
 from django import forms
 from django.http import Http404
+from django.utils import timezone
 
 from blog.models import Article, Projet, EvenementAcceuil, Evenement
 from ateliers.models import Atelier
@@ -1207,13 +1208,11 @@ def testIsMembreSalon(request, slug):
 @login_required
 def salon_accueil(request):
     salons_su = []
-    if request.user.is_superuser:
-        salons_su = Salon.objects.all().order_by("titre")
-
-    salons_prives = [s.salon for s in InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by("salon__titre")]
+    salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by("salon__titre")
+    salons_prives = [s.salon for s in salons_inscrit]
     salons_publics = Salon.objects.filter(estPublic=True).order_by("titre")
     dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=pytz.UTC)
-    salons_recents = Salon.objects.filter(date_dernierMessage__lte=dateMin).order_by("titre")[:10]
+    salons_recents = [s.salon for s in salons_inscrit.filter(Q(salon__date_dernierMessage__lte=dateMin) | Q(salon__date_creation__lte=dateMin)).order_by(Lower("salon__titre"))]
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
 
@@ -1270,6 +1269,8 @@ def salon(request, slug):
         message = form.save(commit=False)
         message.auteur = request.user
         message.salon = salon
+        salon.date_dernierMessage = timezone.now()
+        salon.save()
         message.save()
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
         url = message.get_absolute_url()

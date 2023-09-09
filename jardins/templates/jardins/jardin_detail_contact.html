@@ -1,0 +1,133 @@
+<div class="row" id="contact">
+	<div class="col-sm-12 textcenter">
+	<table class="table table-condensed ">
+		<tbody>
+		<tr><td colspan="2" style="background:#80bfff;" ><h5>Contact</h5></td>
+			</tr>
+
+				<tr>
+					<td class="nomProprieteJardin">
+						Email
+					</td>
+					<td class="proprieteJardin">
+						<a href="mailto:{{ jardin.email_contact }}">{{ jardin.email_contact }}</a>
+					</td>
+				</tr>
+				{% if jardin.referent %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Référent
+					</td>
+					<td class="proprieteJardin">
+						{% if request.user.is_authenticated %}
+						<a href="{% url 'profil' jardin.referent.id %}">{{jardin.referent.username}}</a> &nbsp
+						<a href="{% url 'agora_conversation' jardin.referent.username %}" class="btn btn-success btn-sm">
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
+            			</a>
+						{% else %}
+							{{jardin.referent.username}}
+						{% endif %}
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Auteur
+					</td>
+					<td class="proprieteJardin">
+						{% if request.user.is_authenticated %}
+							<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
+							<a href="{% url 'agora_conversation' jardin.auteur.username %}" class="btn btn-success btn-sm">
+							 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
+							</a>
+						{% else %}
+							{{jardin.auteur.username}}
+						{% endif %}
+					</td>
+				</tr>
+		{%if request.user.is_authenticated %}
+                 {% if request.user.username == jardin.referent_jardin.username or request.user.username == jardin.auteur.username %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Vous êtes référent :
+					</td>
+					<td class="proprieteJardin">
+						                    <a href="{% url 'jardins:contacterInscritsJardin' slug=jardin.slug %}">
+                       <button type="button" class="btn btn-success btn-sm">
+                            Contacter les gens inscrits à ce jardin par mail
+                       </button>
+                    </a>
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteJardin">
+						Salons de discussion :
+					</td>
+					<td class="proprieteJardin">
+						{% for s in salons %}
+						<a href="{% url 'salon' slug=s.slug %}">
+						   <button type="button" class="btn btn-info btn-sm">
+							   {{s.titre}}
+						   </button>
+						</a>
+						{% endfor %}
+						<p>
+						<a href="{% url 'jardins:jardin_ajouterSalon' slug=jardin.slug%}">
+						   <button type="button" class="btn btn-success btn-sm">
+							<i class="fa fa-plus"></i> ajoutez un salon de discussion consacré au jardin
+						   </button>
+						</a>
+						</p>
+					</td>
+				</tr>
+
+
+				 {% elif user_inscrit %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Inscription :
+					</td>
+
+					<td class="proprieteJardin">
+						<a href="{% url 'jardins:annulerInscription' slug=jardin.slug %}">
+						   <button type="button" class="btn btn-warning btn-sm">
+								Se désinscrire
+						   </button>
+						</a>
+					</td>
+				<tr>
+					<td class="nomProprieteJardin">
+						Salons :
+					</td>
+					<td class="proprieteJardin">
+						Accéder au salon (ou demandez l'invitation au référent ci-dessus)
+						{% for s in salons %}
+						<a href="{% url 'salon' slug=s.slug %}">
+						   <button type="button" class="btn btn-info btn-sm">
+							   {{s.titre}}
+						   </button>
+						</a>
+                		{% endfor %}
+
+					</td>
+				</tr>
+
+                {% else %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Inscription :
+					</td>
+					<td class="proprieteJardin">
+						<input type="button" class="btn btn-success btn-lg" id="btn-sinscrire" onclick="clicked();" value="Suivre ce jardin">
+					</td>
+				</tr>
+                {% endif %}
+
+                {% else %}
+					<p><a href="/auth/login/" >Connectez-vous à la plateforme Perma.Cat pour pouvoir suivre ce jardin</a></p>
+                {% endif %}
+		</tbody>
+	</table>
+
+	</div>
+</div>

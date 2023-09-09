@@ -1,0 +1,139 @@
+
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{%endblock%}
+
+{%block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+
+<div class="row" id="description">
+	<div class="col-sm-12 textcenter">
+	<table class="table table-condensed ">
+			<tbody>
+		<tr><td colspan="2" style="background:#80bfff;" ><h5>Infos</h5></td>
+				<tr>
+					<td class="nomProprieteJardin">
+						Description
+					</td>
+					<td class="proprieteJardin">
+						{{ jardin.description|safe }}
+					</td>
+				</tr>
+				{%if jardin.fonctionnement %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Fonctionnement
+					</td>
+					<td class="proprieteJardin">
+						{{ jardin.fonctionnement|safe }}
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Type de jardin
+					</td>
+					<td class="proprieteJardin">
+						{{ jardin.get_categorie_display }}
+					</td>
+				</tr>
+
+
+				<tr>
+					<td class="nomProprieteJardin">
+						Visibilité
+					</td>
+					<td class="proprieteJardin">
+	  					<p>{{jardin.get_visibilite_display}}</p>
+					</td>
+				<tr>
+				{% if user_inscrit %}
+				{% if jardin.permapotes_id %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Identifiants permapotes
+					</td>
+					<td class="proprieteJardin">
+	  					<p><a href="https://www.permapotes.com/fr/" target="_blank"  rel="noopener noreferrer nofollow"> {{jardin.permapotes_id}} </a></p>
+					</td>
+				</tr>
+				{% endif %}
+				{% endif %}
+				{% if request.user.is_superuser %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Adresse -su*
+					</td>
+					<td class="proprieteJardin">
+	 				 <p>{{jardin.adresse.get_adresse_str}} / {{jardin.adresse.getLatLon}}</p>
+	 				 <p>vis_annuaire {{jardin.visibilite_annuaire}}</p>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Lieu
+					</td>
+					<td class="proprieteJardin">
+						{% if request.user.username == jardin.referent_jardin.username or request.user.username == jardin.auteur.username %}
+                  <div class="row textcenter">
+						<a href="{% url 'jardins:jardin_modifierAdresse' slug=jardin.slug %}">
+							<button type="button" class="btn btn-sm btn-warning">
+								<span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+							</button>
+						</a>
+						</div>
+						{% endif %}
+<div>
+	{% if adresse_visible %}
+	{% if jardin.adresse.latitude and jardin.adresse.longitude %}
+    <style>.leaflet-container {width:  100%;}</style>
+              <script type="text/javascript">
+                function map_init_basic (map, options) {
+
+          var greenIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+                var lat = {{jardin.adresse.get_latitude}};
+                var lon = {{jardin.adresse.get_longitude}};
+                L.marker([lat, lon], {icon: greenIcon}).addTo(map);
+                map.panTo(new L.LatLng(lat, lon));
+            }
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+		{% else %}
+			{% if request.user == jardin.referent or request.user.is_superuser %}
+		  	<a href="{% url 'jardins:jardin_ajouterAdresse' slug=jardin.slug %}">Ajouter une adresse</a>
+			{% endif %}
+		{% endif %}
+{% endif %}
+</div>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+		</div>
+	</div>
+
+<script type="text/javascript">
+    function clicked() {
+        if (confirm('Etes-vous sûr.e de vouloir suivre ce jardin ?')) {
+           location.href='{% url 'jardins:inscriptionJardin' slug=jardin.slug %}';
+           }else{
+           location.href='{{jardin.get_absolute_url}}#idTitre';
+       }
+    }
+</script>

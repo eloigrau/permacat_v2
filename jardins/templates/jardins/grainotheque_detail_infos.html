@@ -1,0 +1,157 @@
+{% load app_filters %}
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{%endblock%}
+
+{%block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+
+
+	<div class="row">
+		<div class="col-sm-12 textcenter">
+	<table class="table table-condensed ">
+			<tbody>
+				{% if grainotheque.jardin %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Jardin associé
+					</td>
+					<td class="proprieteJardin">
+						<a href="{{ grainotheque.jardin.get_absolute_url }}">{{ grainotheque.jardin }} </a>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Description
+					</td>
+					<td class="proprieteJardin">
+						{{ grainotheque.description|safe }}
+					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteJardin">
+						Type de grainothèque
+					</td>
+					<td class="proprieteJardin">
+						{{ grainotheque.get_categorie_display }}
+					</td>
+				</tr>
+				{% if grainotheque.email_contact %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Email de contact
+					</td>
+					<td class="proprieteJardin">
+						<a href="mailto:{{ grainotheque.email_contact }}">{{ grainotheque.email_contact }}</a>
+					</td>
+				</tr>
+				{% endif %}
+				{% if grainotheque.referent != request.user %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Auteur
+					</td>
+					<td class="proprieteJardin">
+						{% if request.user.is_authenticated %}
+						<a href="{% url 'profil' grainotheque.auteur.id %}">{{grainotheque.auteur.username}}</a> &nbsp
+						<a href="{% url 'agora_conversation' user.username %}" class="btn btn-success btn-sm">
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
+            			</a>
+						{% else %}
+							{{grainotheque.auteur.username}}
+						{% endif %}
+					</td>
+				</tr>
+				{% endif %}
+				{% if grainotheque.referent %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Référent
+					</td>
+					<td class="proprieteJardin">
+						{% if request.user.is_authenticated %}
+						<a href="{% url 'profil' grainotheque.referent.id %}">{{grainotheque.referent.username}}</a> &nbsp
+						<a href="{% url 'agora_conversation' grainotheque.referent.username %}" class="btn btn-success btn-sm">
+             			 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
+            			</a>
+						{% else %}
+							{{grainotheque.referent.username}}
+						{% endif %}
+					</td>
+				</tr>
+						{% endif %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Visibilité
+					</td>
+					<td class="proprieteJardin">
+	  					<p>{{grainotheque.get_visibilite_display}}</p>
+					</td>
+				<tr>
+
+				{% if request.user.is_superuser %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Adresse -su*
+					</td>
+					<td class="proprieteJardin">
+	 				 <p>{{grainotheque.adresse.get_adresse_str}} / {{grainotheque.adresse.getLatLon}}</p>
+					</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<td class="nomProprieteJardin">
+						Lieu
+					</td>
+					<td class="proprieteJardin">
+						{% if request.user.username == grainotheque.referent_grainotheque.username or request.user.username == grainotheque.auteur.username %}
+                  <div class="row textcenter">
+						<a href="{% url 'jardins:grainotheque_modifierAdresse' slug=grainotheque.slug %}">
+							<button type="button" class="btn btn-sm btn-warning">
+								<span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+							</button>
+						</a>
+						</div>
+						{% endif %}
+<div>
+	{% if adresse_visible %}
+
+	{% if grainotheque.adresse.latitude and grainotheque.adresse.longitude %}
+
+    <style>.leaflet-container {width:  100%}</style>
+              <script type="text/javascript">
+                function map_init_basic (map, options) {
+
+          var greenIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+                var lat = {{grainotheque.adresse.get_latitude}};
+                var lon = {{grainotheque.adresse.get_longitude}};
+                L.marker([lat, lon], {icon: greenIcon}).addTo(map);
+                map.panTo(new L.LatLng(lat, lon));
+            }
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+		{% endif %}
+{% endif %}
+</div>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+		</div>
+	</div>

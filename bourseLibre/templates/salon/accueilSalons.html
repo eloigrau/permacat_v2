@@ -84,50 +84,44 @@
         </div>
 <hr>
 {% endif %}
-{% if salons_su %}
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-                <h5 class="textcenter">Salons SU :</h5>
-            {% for salon in salons_su %}
-               <div class="row justify-content-center ">
-                <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-                    <p><a  href="{{salon.get_absolute_url}}" class="boutonSalon" > {{ salon.titre }}
-                    </a></p>
-                </div>
-               </div>
-            {% endfor %}
-            </div>
-        </div>
-<hr>
-{% endif %}
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-                <h5 class="textcenter">Salons publics :</h5>
-            {% for salon in salons_publics %}
-               <div class="row justify-content-center ">
-                <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-                    <p><a  href="{{salon.get_absolute_url}}" class="boutonSalon" > {{ salon.titre }}
-                    </a></p>
-                </div>
-               </div>
-            {% endfor %}
-            </div>
 
-       </div>
-<hr>
+<div class="anchor_blank" id="idContenu"></div>
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#recents" data-toggle="tab">Récents </a>
+    <a class="nav-item nav-link" href="#publics" data-toggle="tab"> Publics</a>
+    <a class="nav-item nav-link" href="#prives" data-toggle="tab"> Privés</a>
+</nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="recents">
         <div class="row justify-content-center">
             <div class="col-sm-12">
-                <h5 class="textcenter">Salons privés :</h5>
+            {% for salon in salons_recents %}
+                {% include 'salon/template_salonBouton.html' %}
+            {% endfor %}
+            </div>
+       </div>
+    </div>
+  <div class="tab-pane fade show active" id="publics">
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+            {% for salon in salons_publics %}
+                {% include 'salon/template_salonBouton.html' %}
+            {% endfor %}
+            </div>
+       </div>
+    </div>
+  <div class="tab-pane fade" id="prives">
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
             {% for salon in salons_prives %}
-               <div class="row justify-content-center ">
-                <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-                    <p><a  href="{{salon.get_absolute_url}}" class="boutonSalon" > {{ salon.titre }}
-                    </a></p>
-                </div>
-               </div>
+                {% include 'salon/template_salonBouton.html' %}
             {% endfor %}
             </div>
         </div>
+  </div>
+</div>
+
 </div>
 {% endblock %}
 

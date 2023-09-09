@@ -1212,10 +1212,12 @@ def salon_accueil(request):
 
     salons_prives = [s.salon for s in InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by("salon__titre")]
     salons_publics = Salon.objects.filter(estPublic=True).order_by("titre")
+    dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=pytz.UTC)
+    salons_recents = Salon.objects.filter(date_dernierMessage__lte=dateMin).order_by("titre")
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
 
-    return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_su":salons_su, "invit":invit, "suivis":suivis})
+    return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis})
 
 
 class ListeSalons(ListView):
@@ -1282,7 +1284,7 @@ def salon(request, slug):
 
         payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":url}
         for suiv in followers(suivis) :
-            if request.user != suiv or request.user.is_superuser:
+            if request.user != suiv:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)
                 except:

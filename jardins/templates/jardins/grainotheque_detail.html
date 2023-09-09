@@ -50,22 +50,17 @@
 {% block content %}
 
 <div class="anchor_blank" id="idContenu"></div>
-    <nav class="nav nav-tabs justify-content-center">
-      	<a class="nav-item nav-link active" href="#infos" data-toggle="tab">Infos </a>
-      	<a class="nav-item nav-link" href="#graines" data-toggle="tab"> Graines</a>
-    </nav>
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#infos" data-toggle="tab">Infos </a>
+    <a class="nav-item nav-link" href="#graines" data-toggle="tab"> Graines</a>
+</nav>
 
 <div class="tab-content">
   <div class="tab-pane fade show active" id="infos">
-        <div class="">
-   {% include 'jardins/grainotheque_detail_infos.html' %}
-  </div>
-</div>
-  <div class="tab-pane fade" id="graines">
-    <div class="">
-   {% include 'jardins/grainotheque_detail_graines.html' %}
-
+            {% include 'jardins/grainotheque_detail_infos.html' %}
     </div>
+  <div class="tab-pane fade" id="graines">
+        {% include 'jardins/grainotheque_detail_graines.html' %}
   </div>
 </div>
 

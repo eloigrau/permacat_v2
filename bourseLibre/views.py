@@ -1213,7 +1213,7 @@ def salon_accueil(request):
     salons_prives = [s.salon for s in InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by("salon__titre")]
     salons_publics = Salon.objects.filter(estPublic=True).order_by("titre")
     dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=pytz.UTC)
-    salons_recents = Salon.objects.filter(date_dernierMessage__lte=dateMin).order_by("titre")
+    salons_recents = Salon.objects.filter(date_dernierMessage__lte=dateMin).order_by("titre")[:10]
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
 

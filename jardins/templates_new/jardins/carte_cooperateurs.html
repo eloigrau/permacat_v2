@@ -15,19 +15,15 @@
 {% endblock %}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
-{% block subtitle %}
-<div class="row textcenter">
-  <div class="col-sm-12 textcenter">
-    <h4> {{titre}}</h4>
-  </div>
+
+
+{% block titreJardin %}
+<div class="col-lg-9 pt-5 text-center text-lg-start">
+    <h1 class="display-4 text-white mb-4 animated ">{{titre}} </h1>
 </div>
-
-
-<p class="textcenter textepetit">(* les personnes qui ont accepté d'apparaitre dans l'annuaire sont indiquées par une feuille ; les marqueurs gris concernent les colibris qui se sont inscrit sur "<a href="{% url 'carto:carte' %}" >presdecheznous.fr</a>" )</p>
-
 {% endblock %}
-{% block content %}
 
+{% block content %}
 <div class="row cartePleinePage" >
   <div class="col-md-12" >
     <style>.leaflet-container {width:  100%;min-height: 90vh;}</style>
@@ -45,6 +41,14 @@
             popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
 
+          var greyIcon = L.icon({
+                iconUrl: '{% static 'img/marker-icon-grey.png' %}',
+                shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
           var greenIcon = L.icon({
               iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
               shadowUrl: '{% static 'img/marker-shadow.png' %}',
@@ -54,6 +58,18 @@
               shadowSize: [41, 41]
         });
 
+        {% for ev in data %}
+            try{
+                var lat = {{ev.geo.latitude|to_numeric}};
+                var lon = {{ev.geo.longitude|to_numeric}};
+                {% with site=ev.website|safe %}
+                var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{%url 'carto:carte' %}#lieu_{{forloop.counter}}" > <b>{{ev.name}}</b></a>');
+                marker.addTo(map);
+                {% endwith %}
+            }
+            catch(err){ ;
+            }
+        {%endfor%}
         {% for profil in filter.qs %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};

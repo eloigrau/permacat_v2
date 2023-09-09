@@ -66,7 +66,7 @@ class Adresse(models.Model):
         if self.commune:
             return "("+str(self.id)+") " + str(self.commune)
         else:
-            return "("+str(self.id)+") "+ str(self.code_postal)
+            return "("+str(self.id)+") " + str(self.code_postal)
 
 
     def getDistance(self, adresse):

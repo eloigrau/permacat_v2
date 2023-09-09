@@ -134,7 +134,7 @@ def filtrerNotifSalon(nomSuivis):
 def distance(user1, user2):
     dist = None
     try:
-        dist = user1.getDistance(user2)
+        dist = user1.adresse.getDistance(user2.adresse)
     except:
         pass
     if dist == 0:
@@ -144,12 +144,10 @@ def distance(user1, user2):
 
     if dist < 10:
         if dist < 1:
-            return "01 km"
+            return "1"
         dist_int = int(dist + 0.5)
-        if dist_int < 10:
-            return "0" + str(int(dist + 0.5)) + " km"
 
-    return str(int(dist + 0.5)) + " km"
+    return str(int(dist + 0.5))
 
 @register.filter
 def get_item_dict(dictionary, key):

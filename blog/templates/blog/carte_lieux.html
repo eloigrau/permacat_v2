@@ -62,7 +62,7 @@
                 var lat = {{lieu.adresse.latitude|to_numeric}};
                 var lon = {{lieu.adresse.longitude|to_numeric}};
                 {% block markers %}
-                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} </b>');
+                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b>');
                   marker.addTo(map);
                 {% endblock %}
             }

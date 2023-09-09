@@ -1,0 +1,122 @@
+{% extends 'base_plantes.html' %}
+{% load fiches_filters %}
+{% load blog_filters %}
+{% load fontawesome %}
+{% block subtitle %}
+
+
+{% endblock %}
+            {% block navbar%}
+{%if not request.user.is_authenticated %}
+{% else %}
+            {% include 'navigationBar.html' %}
+{% endif %}
+            {% endblock%}
+{% block content %}
+
+ <div class="row justify-content-center">
+
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-8">
+        <p class="infos  textepetit textcenter "><a href="{%if request.user.is_authenticated %}{% url 'fiches:index'  %}?categorie={{fiche.categorie}}{% endif %}">{{ fiche.get_categorie_display }}</a>, {{ fiche.date_creation|date:"DATE_FORMAT" }}
+
+        </p>
+    </div>
+        <div class="col-sm-2 textright">
+            <a href="{%if request.user.is_authenticated %}{% url 'fiches:modifierFiche' slug=fiche.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 &nbsp;Modifier
+               </button></a>
+        </div>
+     </div>
+    <div class="row titre_fiche" style="background-color:{{fiche.get_couleur}};">
+        <div class="col textcenter" >
+              <h2> {{ fiche.numero }}. {{ fiche.titre }}</h2>
+        </div>
+    </div>
+    <div class="row-sm-12 justify-content-center">
+        <div class="col-sm-12  fiche_tags">
+            <p class="textright"> 
+                {% if fiche.tags.names  %}<em>Mots-clés:</em>
+           {% for tag in fiche.tags.names %}
+            {{tag}}{%if not forloop.last%}, {%endif%}
+           {% endfor %}
+           {% endif %}  </p>
+        </div>
+    </div>
+  
+    <nav class="nav nav-tabs">
+      <a class="nav-item nav-link active" href="#p1" data-toggle="tab">Fiche pratique</a>
+      <a class="nav-item nav-link" href="#ateliers" data-toggle="tab">Ateliers</a>
+      <a class="nav-item nav-link" href="#p3" data-toggle="tab">Discussion</a>
+      <a class="nav-item nav-link" href="#p4" data-toggle="tab">En savoir plus...</a>
+    </nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="p1">
+    <div class="contenu fiche">
+        {% if fiche.objectif%}
+        <div class="row">
+            <div class="col">
+                <p class="fiche_objectif">Objectif : {{ fiche.objectif |safe}}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col">
+               {{ fiche.contenu |safe}}
+            </div>
+        </div>
+    </div>
+  </div>
+
+<div class="tab-pane fade" id="ateliers">
+    <div class="contenu atelier">
+        <div class="col textcenter">
+            {%if request.user.is_authenticated %}
+            <a href="{% url 'fiches:ajouterAtelier' fiche_slug=fiche.slug%}">
+               <button type="button" class="btn btn-sm btn-warning">
+                <i class="fa fa-plus"></i> Ajouter un atelier
+               </button></a>
+            {% endif %}
+        </div>
+    {% for atelier in ateliers %}
+        <div class="row atelier_list" id="atelier{{atelier.slug}}">
+        <div class="col">
+            {% include 'fiches/atelier_template.html' with atelier=atelier %}
+        </div>
+        </div>
+        {% if not forloop.last %}
+    <hr>{% endif %}
+    {% endfor %}
+    </div>
+</div>
+
+<div class="tab-pane fade" id="p3">
+
+    <div class="discussion_fiche">
+
+        {% include 'commentaires.html' %}
+  </div>
+</div>
+
+
+
+    <div class="tab-pane fade" id="p4">
+        <div class="contenu ensavoirplus">
+            <div class="row">
+                <div class="col">
+                   {{ fiche.en_savoir_plus |safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}

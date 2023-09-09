@@ -825,6 +825,10 @@ border: 1px inset rgba(28,110,164,0.65);
     background-color: #ffffcc;
     color:black;
 }
+.tablejardins{
+    background-color: #f2ffe6;
+    color:black;
+}
 .tablevotes{
     background-color: #ffffcc;
     width: 50%;
@@ -1207,6 +1211,12 @@ td.proprieteProduit{
 }
 td.nomProprieteProduit{
     background-color:Gray;
+}
+td.proprieteJardin{
+    background-color:#ffffef;
+}
+td.nomProprieteJardin{
+    background-color:#e6ffcc;
 }
 
 .textepetit{

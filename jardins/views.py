@@ -451,7 +451,7 @@ def carte_jardins(request):
 
     jardins_filtres = JardinCarteFilter(request.GET, queryset=jardins)
 
-    titre = "Carte/annuaire des jardins du 66 (%d/%d)*"%(len(jardins_filtres.qs), nbProf)
+    titre = "Carte des jardins"
 
     return render(request, 'jardins/carte_jardins.html', {'filter':jardins_filtres, 'titre': titre, } )
 
@@ -469,7 +469,7 @@ def carte_graino(request):
 
     graino_filtres = GrainoCarteFilter(request.GET, queryset=graino)
 
-    titre = "Carte/annuaire des grainothèques du 66 (%d/%d)*"%(len(graino_filtres.qs), nbProf)
+    titre = "Carte des grainothèques "
 
     return render(request, 'jardins/carte_graino.html', {'filter':graino_filtres, 'titre': titre, } )
 
@@ -545,7 +545,7 @@ class GrainothequeDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["graines"] = Graine.objects.filter(grainotheque=self.object)
+        context["graines"] = Graine.objects.filter(grainotheque=self.object).order_by("nom")
         context["adresse_visible"] = self.object.visibilite_annuaire == '0' or (self.object.visibilite_annuaire == '1' and self.request.user.is_authenticated)
         return context
 
@@ -664,17 +664,6 @@ def carte_jardiniers(request):
         profils = profils.filter(username__istartswith=request.GET["lettre"])
     profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
 
-    titre = "Carte/annuaire des membres du groupe " + asso.nom + " (%d/%d)*"%(len(profils_filtres.qs), nbProf)
+    titre = "Carte des Jardinier-es"
 
-    try:
-        import simplejson
-        import requests
-        url = "https://presdecheznous.gogocarto.fr/api/elements.json?limit=500&bounds=1.75232%2C42.31794%2C3.24646%2C42.94034"
-
-        reponse = requests.get(url)
-        data = simplejson.loads(reponse.text)
-        ev = data["data"]
-    except:
-        ev = []
-
-    return render(request, 'jardins/carte_cooperateurs.html', {'filter':profils_filtres, 'titre': titre, 'data':ev, "asso":asso} )
+    return render(request, 'jardins/carte_cooperateurs.html', {'filter':profils_filtres, 'titre': titre, "asso":asso} )

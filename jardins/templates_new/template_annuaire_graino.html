@@ -1,9 +1,5 @@
 {% load app_filters %}
-{% load avatar_tags %}
-
-{% block header %}
 {% load static %}
-{% endblock %}
 
 {% block content %}
 {%include 'pagination_alphabet.html' %}
@@ -11,7 +7,7 @@
    <div class="row">
     <div class="col-md-12">
         <div style="overflow-x:auto;">
-    <table class="table table-condensed tablejardin table-striped sortable">
+    <table class="table table-condensed tablejardins table-striped sortable">
         <thead class="thead-inverse">
             <tr>
                 <th style="min-width:40%;">Nom</th>
@@ -40,7 +36,7 @@
                 <td> - </td>
                 {% endif %}
             {% endif %}
-            <td>{{ grainotheque|distance:request.user }}</td>
+            <td>{{ grainotheque.adresse|distance:request.user }}</td>
         </tr>
         {% endfor %}
         </tbody>
@@ -49,7 +45,6 @@
     </div>
     </div>
 
-    <p class="textcenter textepetit">(*qui ont accepté d'apparaitre dans l'annuaire)</p>
     <p class="textcenter textepetit">(**la distance est calculée en km à vol d'oiseau entre l'adresse indiquée sur votre profil, et l'adresse du jardin)</p>
 
 

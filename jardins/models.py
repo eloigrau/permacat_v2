@@ -254,6 +254,9 @@ class Jardin(models.Model):
     def get_visibilite_display(self):
         return str(self.get_visibilite_annuaire_display())
 
+    def getDistance(self, adresse):
+        return self.adresse.getDistance(adresse)
+
 class Grainotheque(models.Model):
     categorie = models.CharField(max_length=3,
         choices=Choix.type_grainotheque,

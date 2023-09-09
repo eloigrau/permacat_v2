@@ -2163,7 +2163,7 @@ a:hover, a:focus {
     text-align:center;
 }
 .nav-tabs .nav-link {
-    color: gray;
+    color: #2224b0;
     border: 0;
     border-bottom: 0px solid grey;
 }
@@ -2171,10 +2171,11 @@ a:hover, a:focus {
 .nav-tabs .nav-link:hover {
     border: 0;
     border-bottom: 1px solid grey;
+    background-color: #eeeefc;
 }
 
 .nav-tabs .nav-link.active {
-    color: #000000;
+    color: #0087ff;
     border: 0;
     border-radius: 0;
     border-bottom: 2px solid blue;

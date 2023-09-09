@@ -172,9 +172,8 @@ class Plante(models.Model):
     URL = models.CharField(max_length=200, blank=True)
     infos_supp = models.TextField(null=True, blank=True)
 
-
     def __str__(self):
-        return self.NOM_VERN
+        return self.NOM_VERN + " ("+self.LB_NOM +")"
 
     @property
     def get_nom_espece(self):

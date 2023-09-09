@@ -12,8 +12,8 @@ from bourseLibre.settings.production import LOCALL
 from bourseLibre.forms import AdresseForm4
 from bourseLibre.models import Asso, Profil, Salon
 from .forms import Plante_rechercheForm, GrainothequeForm, GrainothequeChangeForm, JardinForm, JardinChangeForm, \
-    GraineForm, InfoGraineForm, ContactParticipantsForm, SalonJardinForm
-from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, \
+    GraineForm, InfoGraineForm, ContactParticipantsForm, SalonJardinForm, PlanteDeJardinForm, InfoPlanteForm
+from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, PlanteDeJardin, InfoPlante, \
     DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel, RTG_import
 from .filters import JardinCarteFilter, GrainoCarteFilter
 from actstream import actions, action
@@ -484,6 +484,7 @@ class JardinDetailView(DetailView):
         context["adresse_visible"] = self.object.visibilite_annuaire == '0' or (self.object.visibilite_annuaire == '1' and self.request.user.is_authenticated)
         context["salons"] = Salon.objects.filter(jardin=self.object)
         context["grainotheques"] = Grainotheque.objects.filter(jardin=self.object)
+        context["plantes"] = PlanteDeJardin.objects.filter(jardin=self.object).order_by("nom")
         return context
 
 class AjouterGrainotheque(CreateView):
@@ -576,6 +577,55 @@ class SupprimerJardin(DeleteView):
         return reverse('jardins:carte_jardins')
 
 
+@login_required
+def jardin_ajouterPlante(request, slug):
+    jardin = get_object_or_404(Jardin, slug=slug)
+    form = PlanteDeJardinForm(request.POST or None)
+    form_infos = InfoPlanteForm(request.POST or None)
+    plant_form = Plante_rechercheForm(None)
+    if form.is_valid() and form_infos.is_valid():
+          #  return redirect("jardins:voir_plante", cd_nom=str(self.qs[0].CD_NOM))
+        infos = form_infos.save()
+        plante = Plante.objects.get(CD_NOM=int(request.POST["plante"]))
+        planteDeJardin = form.save(jardin, infos, plante)
+        return redirect(jardin)
+
+    return render(request, 'jardins/jardin_ajouterPlante.html', {'jardin':jardin, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
+
+
+@login_required
+def jardin_modifierPlante(request, slug_jardin, pk):
+    plante = PlanteDeJardin.objects.get(pk=pk)
+    jardin = get_object_or_404(Jardin, slug=slug_jardin)
+    form = PlanteDeJardinForm(request.POST or None, instance=plante)
+    form_infos = InfoPlanteForm(request.POST or None, instance=plante.infos)
+    plant_form = Plante_rechercheForm(None)
+    if form.is_valid() and form_infos.is_valid():
+        infos = form_infos.save()
+        plante = Plante.objects.get(CD_NOM=int(request.POST["plante"]))
+        planteDeJardin = form.save(jardin, infos, plante)
+        return redirect(jardin)
+
+    return render(request, 'jardins/jardin_modifierPlante.html', {'jardin':jardin, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
+
+
+@login_required
+def jardin_supprimerPlantes(request, slug_jardin):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    jardin = get_object_or_404(Jardin, slug=slug_jardin)
+
+    for g in PlanteDeJardin.objects.filter(jardin=jardin):
+       g.delete()
+
+    return redirect("jardins:grainotheque_lire", slug=slug_jardin)
+
+class ModifierInfoPlante(UpdateView):
+    model = InfoPlante
+    form_class = InfoPlanteForm
+    template_name_suffix = '_modifier'
+
 class ModifierGrainotheque(UpdateView):
     model = Grainotheque
     form_class = GrainothequeChangeForm
@@ -620,7 +670,7 @@ def graino_modifierGraine(request, slug_graino, pk):
         graine = form.save(graino, infos, plante)
         return redirect(graino)
 
-    return render(request, 'jardins/grainotheque_ajouterGraine.html', {'graino':graino, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
+    return render(request, 'jardins/grainotheque_modifierGraine.html', {'graino':graino, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
 
 @login_required
 def inscriptionJardin(request, slug):

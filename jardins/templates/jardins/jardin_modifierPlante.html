@@ -1,0 +1,41 @@
+{% extends 'base_plantes.html' %}
+{%block header%}
+{{ form.media }}
+{%endblock%}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Modifier une plante du jardin "{{jardin}}" </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+
+    <form class="form-horizontal" role="form" action="{% url 'jardins:voir_plante_recherche' %}" method="get"
+            enctype="multipart/form-data">
+    </form>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+            enctype="multipart/form-data">
+            <div class="row justify-content-center">
+                <div class="col-sm-12 textcenter">
+                    {% include 'form_template2.html' with form=form %}
+                <h4 class="textcenter">Associer à une plante de la BDD :</h4>
+                    {% include 'form_template2.html' with form=plant_form %}
+                </div>
+            </div>
+              {% csrf_token %}
+                <h4 class="textcenter">Infos complémentaires :</h4>
+                {% include 'form_template.html' with form=form_infos %}
+        </form>
+    </div>
+</div>
+{% endblock %}

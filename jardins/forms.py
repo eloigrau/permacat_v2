@@ -1,11 +1,8 @@
 from django import forms
-from .models import Plante_recherche, Jardin, Grainotheque, Choix, Graine, InfoGraine
-from bourseLibre.models import Profil,InscritSalon, Salon
+from .models import Plante_recherche, Jardin, Grainotheque, PlanteDeJardin, InfoPlante, Graine, InfoGraine
+from bourseLibre.models import Profil, InscritSalon, Salon
 from django.utils.text import slugify
-from local_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, SummernoteInplaceWidget
-from django.urls import reverse
-from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from local_summernote.widgets import SummernoteWidget
 from dal import autocomplete
 import re
 import itertools
@@ -171,6 +168,27 @@ class InfoGraineForm(forms.ModelForm):
                               }),
         }
 
+
+class PlanteDeJardinForm(forms.ModelForm):
+    class Meta:
+        model = PlanteDeJardin
+        fields = ['nom', ]
+
+    def save(self, jardin, infos, plante):
+        instance = super(PlanteDeJardinForm, self).save(commit=False)
+        instance.jardin = jardin
+        instance.infos = infos
+        instance.plante = plante
+        instance.save()
+        return instance
+
+class InfoPlanteForm(forms.ModelForm):
+    class Meta:
+        model = InfoPlante
+        fields = ['type_plante', 'description', ]
+        widgets = {
+            'description': SummernoteWidget(),
+        }
 
 class ContactParticipantsForm(forms.Form):
     msg = forms.CharField(label="Message", widget=SummernoteWidget)

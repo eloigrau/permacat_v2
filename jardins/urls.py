@@ -53,6 +53,10 @@ urlpatterns = [
     path(r'jardin/modifier/<str:slug>', login_required(views.ModifierJardin.as_view()), name="jardin_modifier"),
     path(r'jardin/jardin_supprimer/<str:slug>', login_required(views.SupprimerJardin.as_view()), name="jardin_supprimer"),
     path(r'jardin/voir/<str:slug>', views.JardinDetailView.as_view(), name="jardin_lire"),
+    path(r'jardin/ajouterPlante/<str:slug>', views.jardin_ajouterPlante, name="jardin_ajouterPlante"),
+    path(r'jardin/modifierPlante/<str:slug_jardin>/<int:pk>', views.jardin_modifierPlante, name="jardin_modifierPlante"),
+    path(r'jardin/supprimerPlante/<str:slug_jardin>', views.jardin_supprimerPlantes, name="jardin_supprimerPlantes"),
+    path(r'jardin/editInfosPlante/<int:pk>', login_required(views.ModifierInfoPlante.as_view()), name="jardin_editInfosPlante"),
 
     path(r'jardin/inscription/<str:slug>', views.inscriptionJardin, name='inscriptionJardin'),
     path(r'jardin/annulerInscription/<str:slug>', views.annulerInscription, name='annulerInscription'),

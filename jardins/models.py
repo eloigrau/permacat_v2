@@ -13,6 +13,7 @@ class Choix():
     type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
 
     visibilite_jardin_annuaire = ('0', "Public (visible sans inscription)"), ('1', 'Inscrits (visible seulement par les inscrits au site)'), ('2', "Invisible ")
+    type_plante = ('0', 'Arbre'), ('1', 'Arbuste'), ('2', 'Plante potagère'), ('3', 'Aromatique / médicinale'), ('4', 'Herbacée'), ('5', 'Liane'), ('6', 'Ornementale'),
 
 class DBRang_inpn(models.Model):
     RG_LEVEL = models.IntegerField()
@@ -304,7 +305,7 @@ class Graine(models.Model):
     nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine",)
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True)
-    infos = models.OneToOneField(InfoGraine, on_delete=models.CASCADE)
+    infos = models.ForeignKey(InfoGraine, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.nom)
@@ -322,6 +323,49 @@ class Graine(models.Model):
     @property
     def get_str_html(self):
         return "<tr><td><a href='"+self.plante.get_absolute_url()+"'>"+str(self.plante) +"</a></td><td>" + str(self.infos.description) +"</td><td>" + str(self.infos.stock_quantite) + "</td><td>" + str(self.infos.duree_germinative) + "</td><td>" + str(self.infos.date_recolte.strftime('%d/%m/%Y')) +"</td></tr>"
+
+
+class InfoPlante(models.Model):
+    description = models.TextField(null=True, blank=True, help_text="Description (infos supplémentaires")
+    type_plante = models.CharField(max_length=3,
+        choices=Choix.type_plante,
+        default='0', verbose_name="Type de plante")
+
+    def __str__(self):
+        return str(self.description) + " " + self.get_type_plante_display()
+
+    def get_edit_url(self):
+        return reverse('jardins:jardin_editInfosPlante', kwargs={'pk':self.pk})
+
+    def get_absolute_url(self):
+        return reverse('jardins:jardin_lire', kwargs={'slug':self.graine.grainotheque.slug})
+
+
+class PlanteDeJardin(models.Model):
+    nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la plante",)
+    plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True,  related_name="plantedejardin_plante")
+    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, null=True, related_name="plantedejardin_jardin")
+    infos = models.ForeignKey(InfoPlante, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.nom) +" "+ str(self.infos)
+
+
+    def get_edit_url(self):
+        return reverse('jardins:jardin_modifierPlante', kwargs={'pk':self.pk, "slug_jardin":self.jardin.slug})
+
+    def get_absolute_url(self):
+        return reverse('jardins:jardin_lire', kwargs={'slug':self.jardin.slug})
+
+    @property
+    def get_str_html_header(self):
+        return "<thead><tr><th> Plante</th><th>Espèce</th><th>Description</th></tr></thead>"
+
+    @property
+    def get_str_html(self):
+        return "<tr><td>"+str(self.nom) +"<td><a href='"+self.plante.get_absolute_url()+"'>"+str(self.plante) +"</a></td><td>" + str(self.infos) +"</td></tr>"
+
+
 
 class InscriptionJardin(models.Model):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="jardin_suiveur")

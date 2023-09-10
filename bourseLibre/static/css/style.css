@@ -2177,7 +2177,6 @@ a:hover, a:focus {
 .nav-tabs .nav-link.active {
     color: #0087ff;
     border: 0;
-    border-radius: 0;
     border-bottom: 2px solid blue;
 }
 

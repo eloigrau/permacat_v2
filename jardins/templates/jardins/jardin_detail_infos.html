@@ -46,7 +46,7 @@
 				{% if grainotheques %}
 				<tr>
 					<td class="nomProprieteJardin">
-						Grainothèque{{grainotheques|pluralize:"s"}})
+						Grainothèque{{grainotheques|pluralize:"s"}} associée{{grainotheques|pluralize:"s"}}
 					</td>
 					<td class="proprieteJardin">
 						{% for g in grainotheques %}<a href="{{ g.get_absolute_url }}">{{ g }}  </a>{%if not forloop.last%}, {%endif%} {% endfor %}

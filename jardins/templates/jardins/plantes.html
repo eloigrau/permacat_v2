@@ -39,13 +39,14 @@
   <div class="tab-pane fade show active" id="alpha">
       <div class="row justify-content-center">
         <div class="col-sm-12 textcenter">
-            <p>Rechercher une plante par la première lettre de son nom commun</p>
+            <p>Rechercher une plante par la première lettre de son nom commun (cliquez sur la lettre ci dessous)</p>
         </div>
     </div>
     {%include 'pagination_alphabet.html' %}
 
     <div class="row justify-content-center">
         <div class="col-sm-12 textcenter justify-content-center">
+            {% if plantes_list %}
             <table class="table sortable" style="width:100%;">
                 <thead>
                     <tr>
@@ -62,6 +63,7 @@
                     {% endfor %}
                 </tbody>
                 </table>
+            {% endif %}
         </div>
     </div>
   </div>

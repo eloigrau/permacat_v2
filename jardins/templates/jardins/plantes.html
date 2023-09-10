@@ -11,13 +11,67 @@
     </div>
 </div>
 {% if request.user.is_authenticated %}
+{% endif %}
+
+{% endblock %}
+{% block content %}
+
+{%if msg %}
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-        <h4>1) Recherche rapide </h4>
-        <p>Tapez un mot ou une syllabe du nom de la plante :</p>
+        {{msg}}
     </div>
 </div>
-<div class="row justify-content-center">
+{% endif %}
+
+<div class="anchor_blank" id="idContenu"></div>
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link" href="#alpha" data-toggle="tab"> Alphabétique</a>
+{% if request.user.is_authenticated %}
+    <a class="nav-item nav-link active" href="#rapide" data-toggle="tab">Rapide </a>
+{% endif %}
+    <a class="nav-item nav-link" href="#appro" data-toggle="tab"> Approfondie</a>
+    <a class="nav-item nav-link" href="#arbres" data-toggle="tab"> Arbres</a>
+    <a class="nav-item nav-link" href="#jardins" data-toggle="tab"> Jardins</a>
+</nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade" id="alpha">
+      <div class="row justify-content-center">
+        <div class="col-sm-12 textcenter">
+            <p>Rechercher une plante par la première lettre de son nom commun</p>
+        </div>
+    </div>
+    {%include 'pagination_alphabet.html' %}
+
+    <div class="row justify-content-center">
+        <div class="col-sm-12 textcenter justify-content-center">
+            <table class="table sortable" style="width:100%;">
+                <thead>
+                    <tr>
+                        <td><i>Nom(s) vernaculaire(s)</i></td>
+                        <td><i>Nom scientifique</i></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for plante in plantes_list %}
+                        <tr>
+                            <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                            <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+        </div>
+    </div>
+  </div>
+  <div class="tab-pane fade show active" id="rapide">
+    <div class="row justify-content-center">
+        <div class="col-sm-12 textcenter">
+            <p>Tapez un mot ou une syllabe du nom de la plante :</p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         <form class="form-horizontal" role="form" action="{% url 'jardins:voir_plante_recherche' %}" method="get"
             enctype="multipart/form-data">
@@ -31,68 +85,32 @@
         </div>
         </form>
     </div>
-</div>
-{% endif %}
-
-{% endblock %}
-{% block content %}
-
-<div class="row justify-content-center">
-   </div>
-{%if msg %}
-<div class="row justify-content-center">
-    <div class="col-sm-12 textcenter">
-        {{msg}}
     </div>
 </div>
-{% endif %}
-<hr>
-<div class="row justify-content-center">
-    <div class="col-sm-12 textcenter">
-<h4>ou 2) Rechercher dans la base de données</h4>
+  <div class="tab-pane fade" id="appro">
+      <div class="row justify-content-center">
+        <div class="col-sm-12 textcenter">
         <p>Rechercher un mot ou une syllabe dans l'ensemble de la base de donnée (nom scientifique, nom commun, etc.)</p>
      <form class="form-inline justify-content-center" action="{% url 'jardins:chercher_plante' %}" method="get" role = "search">
         {% csrf_token %}
             <input class="form-control fmr-sm-2" name="id_recherche" type="text" placeholder="Rechercher...">
             <button class="btn navbar-btn btn-primary my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fontawesome_icon 'search' title='chercher' %}</button>
-        </div>
      </form>
-</div>
-<hr>
-<div class="row justify-content-center">
-    <div class="col-sm-12 textcenter">
-<h4>ou 3) Rechercher un arbre</h4>
-        <p><a href="http://www.reconnaitre-les-arbres.fr/recherche/pages/fiche_plante.php?" target="_blank" rel="noopener noreferrer nofollow"> Site web avec des fiches pour les arbres</a></p>
-</div>
-<hr>
-<div class="row justify-content-center">
-    <div class="col-sm-12 textcenter">
-        <h4>ou 4) Recherche alphabétique</h4>
-        <p>Rechercher une plante par la première lettre de son nom</p>
     </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="arbres">
+          <div class="row justify-content-center">
+        <div class="col-sm-12 textcenter">
+                <p>Accéder à cesuper site sur les arbres : <a href="http://www.reconnaitre-les-arbres.fr/recherche/pages/fiche_plante.php?" target="_blank" rel="noopener noreferrer nofollow"> http://www.reconnaitre-les-arbres.fr</a></p>
+        </div>
+        </div>
+  </div>
+  <div class="tab-pane fade" id="jardin">
+  </div>
 </div>
-{%include 'pagination_alphabet.html' %}
 
-<div class="row justify-content-center">
-    <div class="col-sm-12 textcenter justify-content-center">
-        <table class="table sortable" style="width:100%;">
-            <thead>
-                <tr>
-                    <td><i>Nom(s) vernaculaire(s)</i></td>
-                    <td><i>Nom scientifique</i></td>
-                </tr>
-            </thead>
-            <tbody>
-                {% for plante in plantes_list %}
-                    <tr>
-                        <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
-                        <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-            </table>
-    </div>
-</div>
+
 
 {% endblock %}
 

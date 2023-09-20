@@ -312,6 +312,11 @@ class ListePlantes(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
+        if self.request.user.is_authenticated:
+            context['plantesDesJardins'] = PlanteDeJardin.objects.filter(Q(jardin__visibilite_annuaire="0") | Q(jardin__visibilite_annuaire="1"))
+        else:
+            context['plantesDesJardins'] = PlanteDeJardin.objects.filter(jardin__visibilite_annuaire="0")
+
         if "recherche" in self.request.GET:
             context['recherche'] = self.request.GET["recherche"]
         else:

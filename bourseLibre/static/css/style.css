@@ -1937,6 +1937,8 @@ caption {
 
 .btn-choixgroupe{
     display: block;
+	min-height:50px;
+
 }
 	#calendar .weekdays, #calendar .other-month{
 		display: none;
@@ -2004,6 +2006,7 @@ caption {
 }
 .btn-choixgroupe{
     display:inline-block;
+	min-height:80px;
 }
 
 .panel-forum{

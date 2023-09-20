@@ -108,7 +108,29 @@
         </div>
         </div>
   </div>
-  <div class="tab-pane fade" id="jardin">
+  <div class="tab-pane fade" id="jardins">
+          <div class="row justify-content-center">
+              <h4>Liste des plantes de nos jardins</h4>
+        <div class="col-sm-12 textcenter">
+                <table class="table sortable table-condensed tablejardin table-striped sortable" style="width:100%;">
+                <thead>
+                    <tr>
+                        <td class="textcenter"><i>Nom(s) vernaculaire(s)</i></td>
+                        <td class="textcenter"><i>Nom scientifique</i></td>
+                        <td class="textcenter"><i>Jardin</i></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for planteDeJardin in plantesDesJardins %}
+                        <tr>
+                            <td class="" ><a class="" href="{{ planteDeJardin.get_absolute_url }}">{{planteDeJardin.plante.NOM_VERN}}</a></td>
+                            <td class="" ><a href="{{ planteDeJardin.get_absolute_url }}">{{planteDeJardin.plante.LB_NOM}}</a></td>
+                            <td class="" ><a href="{{ planteDeJardin.jardin.get_absolute_url }}">{{planteDeJardin.jardin.titre}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>        </div>
+        </div>
   </div>
 </div>
 

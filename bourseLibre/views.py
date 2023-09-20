@@ -1223,7 +1223,7 @@ class ListeSalons(ListView):
     model = Salon
     context_object_name = "salons_list"
     template_name = "salon/index.html"
-    paginate_by = 20
+    paginate_by = 30
 
     def get_queryset(self):
         self.params = dict(self.request.GET.items())

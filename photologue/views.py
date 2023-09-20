@@ -108,6 +108,8 @@ class DocListView(ListView):
 
     def get_queryset(self):
         qs = Document.objects.all().order_by("-date_creation")
+        if "asso" in  self.request.GET:
+            qs = qs.filter(asso__abreviation=self.request.GET["asso"])
 
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):

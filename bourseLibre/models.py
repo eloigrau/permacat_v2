@@ -284,6 +284,7 @@ class Profil(AbstractUser):
     adherent_citealt = models.BooleanField(verbose_name="Je fais partie de 'la Cité Altruiste'", default=False)
     adherent_viure = models.BooleanField(verbose_name="Je fais partie du collectif 'Viure'", default=False)
     adherent_bzz2022 = models.BooleanField(verbose_name="Je fais partie du collectif 'Bzzz'", default=False)
+    adherent_conf66 = models.BooleanField(verbose_name="Je suis adhérent à la confédération Paysanne 66", default=False)
     accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
     adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
@@ -353,7 +354,8 @@ class Profil(AbstractUser):
             return self.adherent_viure
         elif asso == "bzz2022":
             return self.adherent_bzz2022
-
+        elif asso == "conf66":
+            return self.adherent_conf66
 
     @property
     def statutMembre_str_asso(self, asso):
@@ -362,41 +364,47 @@ class Profil(AbstractUser):
                 return "membre actif de Permacat"
             else:
                 return "Non membre de Permacat"
-        if asso == "rtg":
+        elif asso == "rtg":
             if self.adherent_rtg:
                 return "membre actif de 'Ramene Ta Graine'"
             else:
                 return "Non membre de 'Ramene Ta Graine'"
-        if asso == "fer":
+        elif asso == "fer":
             if self.adherent_fer:
                 return "membre actif de 'Fermille'"
             else:
                 return "Non membre de 'Fermille'"
-        if asso == "jp":
+        elif asso == "jp":
             if self.adherent_jp:
                 return "membre actif des 'Jardins Partagés'"
             else:
                 return "Non membre des 'Jardins Partagés'"
-        if asso == "scic":
+        elif asso == "scic":
             if self.adherent_scic:
                 return "membre actif de 'PermAgora'"
             else:
                 return "Non membre de 'PermAgora'"
-        if asso == "citealt":
+        elif asso == "citealt":
             if self.adherent_citealt:
                 return "membre actif de la 'Cité Altruiste'"
             else:
                 return "Non membre de la 'Cité Altruiste'"
-        if asso == "viure":
+        elif asso == "viure":
             if self.adherent_viure:
                 return "membre actif du Collectif Viure'"
             else:
                 return "Non membre du Collectif Viure'"
-        if asso == "bzz2022":
+        elif asso == "bzz2022":
             if self.adherent_bzz2022:
                 return "membre actif du Collectif Bzzz'"
             else:
                 return "Non membre du Collectif Bzzz'"
+        elif asso == "conf66":
+            if self.adherent_conf66:
+                return "adhérent de la Confédération Paysanne 66"
+            else:
+                return "Non adhérent de la Confédération Paysanne 66"
+
 
     def estMembre_str(self, nom_asso):
         if nom_asso == "Public" or nom_asso == "public":
@@ -416,6 +424,8 @@ class Profil(AbstractUser):
         elif self.adherent_bzz2022 and (nom_asso == "bzz2022" or nom_asso == "bzz2022") :
             return True
         elif self.adherent_jp and (nom_asso == "jp" or nom_asso == "Jardins Partagés") :
+            return True
+        elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
             return True
         #elif self.adherent_gt and (nom_asso == "Gardiens de la Terre" or nom_asso == "gt") :
         #    return True

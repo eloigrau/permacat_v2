@@ -12,7 +12,7 @@
             <ul class="navbar-nav subnavbar2">
                 {% for  asso_id, asso_nom in asso_list %}
                 <a  href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
-                    <li class="nav-item  btn {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>

@@ -3,7 +3,6 @@ from blog.models import Article
 from django.urls import reverse
 from django.utils import timezone
 import uuid
-import datetime as dt
 from bourseLibre.models import Profil, Suivis, Asso, username_re
 from actstream.models import followers
 from actstream import action
@@ -12,7 +11,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from bourseLibre.settings import DATE_INPUT_FORMAT
 
 class Choix():
-    type_atelier = ('0','Permaculture'), ('1',"Bricolage"), ('2','Cuisine'), ('3','Bien-être'), ('4',"Musique"), ('6', 'Politique'), ('8', 'Culture'), ('7', 'Activité Pro'), ('5', 'Autre...'),
+    type_atelier = ('0','Permaculture'), ('1',"Bricolage"), ('2','Cuisine'), ('3','Bien-être'), ('4',"Musique"), ('6', 'Politique'), ('8', 'Culture'), ('7', 'Activité Pro'), ('9', 'Informatique'), ('5', 'Autre...'),
     couleurs_ateliers = {
         '2':'#4DC490', '1':'#C0EDA0', '3':'#00AA8B', '0':'#FCE79C',
         '5':"#d1ecdc",'3':"#fcf6bd", '4':"#d0f4de", '9':"#fff2a0", '7':"#ffac99",

@@ -185,6 +185,12 @@
         </tr>
         {% endif %}
 
+       {% if request.user.adherent_conf66 or request.user == user %}
+	    <tr>
+		<td style="width:250px">Adhérent Confédération Paysanne *:</td>
+		<td>{{user.adherent_conf66|translateOuiNon}}</td>
+	    </tr>
+        {% endif %}
         <tr>
             <td style="width:200px">Apparait dans l'annuaire et coordonnées sont visibles: </td>
             <td>{{user.accepter_annuaire|translateOuiNon }}

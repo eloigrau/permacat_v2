@@ -42,6 +42,7 @@ class Choix:
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
                         ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
 
+    type_annonce_conf66 = ('Annonce','Annonce'), ('Administratif','Administratif'), ("Suivi de dossier", "Suivi de dossier"), ("Eau","Eau"), ("Evenement", "Evenement"), ("Infos", "Informations diverses")
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,
@@ -53,9 +54,10 @@ class Choix:
         "citealt": type_annonce_base + type_annonce_citealt,
         "bzz2022": type_annonce_bzz2022,
         "jp": type_annonce_jp,
+        "conf66":type_annonce_conf66
     }
 
-    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic
+    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",

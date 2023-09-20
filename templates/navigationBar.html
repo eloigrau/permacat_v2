@@ -39,6 +39,7 @@
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
 
                          <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='pc'%}#ref-titre"><i class='fa fa-comments iconleft ' ></i> Articles du forum</a></li>
+                         <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=pc#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
     {% endif %}
 
                             <li><a class="dropdown-item" href="{% url 'fiches:acceuil' %}"><i class="fa fa-book iconleft"></i>  Kit PermaEcole </a></li>
@@ -120,6 +121,7 @@
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='rtg'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:lireArticle' slug='dossiersactions-en-cours'%}"><i class='fa fa-comments iconleft' ></i> Dossiers en cours </a></li>
                             <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='rtg' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
+                         <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=rtg#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
 
    {% endif %}
                               <li class="divider" role="separator"></li>
@@ -196,7 +198,7 @@
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='scic' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                         <li><a class="dropdown-item" href="{% url 'admin_asso' asso='scic' %}"><i class='fa fa-database' ></i> Administration  </a></li>
                     <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='scic' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
-
+                         <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=scic#ref-titre"><i class='fa fa-comments iconleft ' ></i> Documents</a></li>
                               <li class="divider" role="separator"></li>
    {% endif %}
                            <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>
@@ -248,6 +250,19 @@
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='bzz2022'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/projetbzzz_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+   {% endif %}
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle"  href="#">Confédération Paysanne</a>
+                        <ul class="dropdown-menu  nav5-dropdown-submenu">
+                       <li> <a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}"><i class='fa fa-asterisk iconleft' ></i> Présentation </a></li>
+                         {% if request.user.adherent_conf66 %}
+                            <li class="divider" role="separator"></li>
+                          <li> <a class="dropdown-item" href="{% url 'carte'  asso='conf66' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
+                            <li class="divider" role="separator"></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/conf66_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
                     </li>

@@ -1935,6 +1935,9 @@ caption {
 
 @media screen and (max-width: 768px) {
 
+.btn-choixgroupe{
+    display: block;
+}
 	#calendar .weekdays, #calendar .other-month{
 		display: none;
 	}
@@ -1998,6 +2001,9 @@ caption {
 }
 .btn-menu-forum{
     min-width: 100px;
+}
+.btn-choixgroupe{
+    display:inline-block;
 }
 
 .panel-forum{

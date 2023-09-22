@@ -183,6 +183,12 @@ class SupprimerArticle(DeleteAccess, DeleteView):
     def get_object(self):
         return Article.objects.get(slug=self.kwargs['slug'])
 
+    def get_success_url(self, *args, **kwargs):
+        suffix = "_" + self.object.asso.abreviation
+        action.send(self.request.user, verb='suppression_article'+suffix,
+                     description="a supprimé l'article: '%s'" % self.object.titre)
+        return super(SupprimerArticle, self).get_success_url(*args, **kwargs)
+
 
 @login_required
 def lireArticle(request, slug):

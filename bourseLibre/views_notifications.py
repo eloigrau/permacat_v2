@@ -22,6 +22,8 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     suffrages = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suffrage_ajout_public') | Q(verb='suffrage_ajout'))).order_by(orderBy)
     albums = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='album_nouveau_public'))).order_by(orderBy)
     documents = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='document_nouveau_public'))).order_by(orderBy)
+    suppressions =  Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suppression_article_public'))).order_by(orderBy)
+
     jardins = Action.objects.none()
     for nomAsso in Choix_global.abreviationsAsso:
         if getattr(request.user, "adherent_" + nomAsso):
@@ -31,6 +33,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
             offres = offres | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='ajout_offre') & Q(verb__icontains=nomAsso)))
             albums = albums | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='album_nouveau') & Q(verb__icontains=nomAsso)))
             documents = documents | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='document_nouveau') & Q(verb__icontains=nomAsso)))
+            suppressions = suppressions | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='suppressions') & Q(verb__icontains=nomAsso)))
             if nomAsso =='jp' :
                 jardins = jardins | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso)))
 
@@ -43,6 +46,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     suffrages = suffrages.distinct().order_by(orderBy)[:tampon]
     albums = albums.distinct().order_by(orderBy)[:tampon]
     documents = documents.distinct().order_by(orderBy)[:tampon]
+    suppressions = suppressions.distinct().order_by(orderBy)[:tampon]
     if jardins:
         jardins = jardins.distinct().order_by(orderBy)[:tampon]
 
@@ -57,13 +61,14 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     salons = [art for i, art in enumerate(salons) if i == 0 or not (art.description == salons[i-1].description and art.actor == salons[i-1].actor ) ][:nbNotif]
     offres = [art for i, art in enumerate(offres) if i == 0 or not (art.description == offres[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
     albums = [art for i, art in enumerate(albums) if i == 0 or not (art.description == albums[i-1].description and art.actor == albums[i-1].actor ) ][:nbNotif]
+
     if jardins:
         jardins = [art for i, art in enumerate(jardins) if i == 0 or not (art.description == jardins[i-1].description and art.actor == jardins[i-1].actor ) ][:nbNotif]
     documents = [art for i, art in enumerate(documents) if i == 0 or not (art.description == documents[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
     inscription = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='inscript'))[:nbNotif]
     mentions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='mention_' + request.user.username))).order_by(orderBy)
 
-    return salons, articles, projets, offres, conversations, fiches, ateliers, inscription, suffrages, albums, documents, mentions, jardins
+    return salons, articles, projets, offres, conversations, fiches, ateliers, inscription, suffrages, albums, documents, mentions, jardins, suppressions
 
 @login_required
 def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
@@ -71,7 +76,7 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
             days=30) else datetime.now().date() - timedelta(days=10)
     else:
-        dateMin = (datetime.now() - timedelta(days=10)).replace(tzinfo=utc)
+        dateMin = (datetime.now() - timedelta(days=7)).replace(tzinfo=utc)
 
     actions = Action.objects.filter(Q(timestamp__gt=dateMin) & ( \
          Q(verb='article_nouveau') | Q(verb='article_message')|
@@ -83,7 +88,8 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
             Q(verb__startswith="envoi_salon", description__contains=request.user.username)|
             Q(verb__startswith="invitation_salon", description__contains=request.user.username)|
             Q(verb__startswith='inscription')|
-            Q(verb__startswith='mention_' + request.user.username)))
+            Q(verb__startswith='mention_' + request.user.username)|
+            Q(verb__startswith='suppression' + request.user.username)))
     if request.user.adherent_pc:
         actions = actions | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__icontains='Permacat') | Q(verb__icontains='permacat')| Q(verb__icontains='pc')))
     if request.user.adherent_rtg:
@@ -100,6 +106,8 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
         actions = actions | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__icontains='bzz2022')))
     if request.user.adherent_jp:
         actions = actions | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__icontains='jp')))
+    if request.user.adherent_conf66:
+        actions = actions | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__icontains='conf66')))
 
     actions = actions.distinct().order_by(orderBy)
 
@@ -116,7 +124,7 @@ def getNbNewNotifications_test(request):
 @login_required
 def getNbNewNotifications_test2(request):
     try:
-        dateLimite = datetime.now().date() - timedelta(days=15)
+        dateLimite = datetime.now().date() - timedelta(days=7)
         dateMin = request.user.date_notifications.date() if request.user.date_notifications.date() > dateLimite else dateLimite
 
         actions = getNotificationsParDate(request, dateMinimum=dateMin)
@@ -148,7 +156,7 @@ def raccourcirTempsStr(date):
 
 @login_required
 def notifications_news_regroup(request):
-    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins = getNotifications(request, nbNotif=500)
+    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions = getNotifications(request, nbNotif=500)
 
     dicoTexte = {}
     dicoTexte['dicoarticles'] = {}
@@ -240,7 +248,7 @@ def notifications_news_regroup(request):
 
 
     dicoTexte['listautres'] = []
-    for action in list(chain(suffrages, conversations, salons, offres, ateliers, fiches, albums, documents, mentions, jardins)):
+    for action in list(chain(suffrages, conversations, salons, offres, ateliers, fiches, albums, documents, mentions, jardins, suppressions)):
         if dateMin < action.timestamp:
             dicoTexte['listautres'].append(action)
 
@@ -250,7 +258,7 @@ def notifications_news_regroup(request):
 
 @login_required
 def notifications(request):
-    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins = getNotifications(request)
+    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions = getNotifications(request)
     return render(request, 'notifications/notifications.html', {'salons': salons, 'articles': articles,'projets': projets, 'offres':offres, 'conversations':conversations, 'fiches':fiches, 'ateliers':ateliers, 'inscriptions':inscriptions, 'suffrages':suffrages})
 
 @login_required

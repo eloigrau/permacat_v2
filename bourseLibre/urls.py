@@ -207,6 +207,7 @@ urlpatterns = [
     url(r'^admin/voirEmails/$', views_admin.voirEmails,  name="voirEmails"),
     url(r'^admin/nettoyerActions/$', views_admin.nettoyerActions,  name="nettoyerActions"),
     url(r'^admin/nettoyerFollows/$', views_admin.nettoyerFollows,  name="nettoyerFollows"),
+    url(r'^admin/nettoyerFollowsValide/$', views_admin.nettoyerFollowsValide,  name="nettoyerFollowsValide"),
     url(r'^admin/nettoyerHistoriqueAdmin/$', views_admin.nettoyerHistoriqueAdmin,  name="nettoyerHistoriqueAdmin"),
     url(r'^admin/envoyerEmailsRequete/$', views_admin.envoyerEmailsRequete,  name="envoyerEmailsRequete"),
     url(r'^admin/envoyerEmailsTest/$', views_admin.envoyerEmailsTest,  name="envoyerEmailsTest"),

@@ -102,10 +102,10 @@ def nettoyerActions(request):
         return HttpResponseForbidden()
     actions = Action.objects.all()
     for action in actions:
-        try:
+       # try:
             print(action)
-        except:
-            action.delete()
+        #except:
+        #    action.delete()
     return redirect("bienvenue")
 
 
@@ -124,20 +124,26 @@ def abonnerAdherentsCiteAlt(request, ):
 def nettoyerFollows(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.filter(user=request.user)
+    follows = Follow.objects.all()
+    nombre = 0
     for action in follows:
         if not action.follow_object:
-            pass
-            # action.delete()
+            #action.delete()
+            nombre += 1
 
-        # if isinstance(action.follow_object, Conversation):
-        # print("follow supprimé " + action)
-        # action.delete()
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, })
 
-    actions = Action.objects.all()
+def nettoyerFollowsValide(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    follows = Follow.objects.all()
+    nombre = 0
+    for action in follows:
+        if not action.follow_object:
+            action.delete()
+            nombre += 1
 
-    return render(request, 'admin/voirActions.html', {'actions': actions, })
-
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, })
 
 def nettoyerHistoriqueAdmin(request):
     if not request.user.is_superuser:
@@ -483,8 +489,10 @@ def envoiNewsletter2023(request):
 def supprimerHitsAnciens(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    date = datetime.now().date() - timedelta(days=366 * 2)
+    date = datetime.now().date() - timedelta(days=int(366 * 1.2))
     hit_counts = HitCount.objects.filter(hit__created__lte=date)
+    for hit in hit_counts:
+        hit.delete()
 
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
 
@@ -492,7 +500,7 @@ def supprimerHitsAnciens(request):
 def supprimerActionsAnciens(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    date = datetime.now().date() - timedelta(days=365 * 2)
+    date = datetime.now().date() - timedelta(days=int(366 * 1.2))
     hit_counts = Action.objects.filter(timestamp__lte=date)
     for hit in hit_counts:
         hit.delete()

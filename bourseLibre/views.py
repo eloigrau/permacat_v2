@@ -1009,9 +1009,10 @@ def lireConversation(request, destinataire):
         if profil_destinataire in followers(suivi):
             titre = "Message Privé"
             msg = request.user.username + " vous a envoyé un <a href='https://www.perma.cat"+  url+"'>" + "message</a>"
+            msg_notif = request.user.username + " vous a envoyé un message"
             emails = [profil_destinataire.email, ]
             action.send(request.user, verb='emails', url=url, titre=titre, message=msg, emails=emails)
-            payload = {"head": titre, "body": msg,
+            payload = {"head": titre, "body": msg_notif,
                        "icon": static('android-chrome-256x256.png'), "url": url}
             try:
                 send_user_notification(profil_destinataire, payload=payload, ttl=7200)
@@ -1258,7 +1259,7 @@ def salon(request, slug):
     inscrits = salon.getInscrits()
     invites = salon.getInvites()
     messages = Message_salon.objects.filter(salon=salon).order_by("date_creation")
-    paginator = Paginator(messages, 15) # Show 10 contacts per page.
+    paginator = Paginator(messages, 40) # Show 10 contacts per page.
     if not 'page' in request.GET:
         page_number = paginator.num_pages
     else:
@@ -1284,7 +1285,7 @@ def salon(request, slug):
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message, emails=emails)
 
         payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":url}
-        for suiv in followers(suivis) :
+        for suiv in followers(suivis):
             if request.user != suiv:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)

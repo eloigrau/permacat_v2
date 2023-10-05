@@ -162,7 +162,7 @@ def lireAtelier(request, atelier):
         suiveurs = [Profil.objects.get(username=atelier.auteur), ] + [x.user for x in InscriptionAtelier.objects.filter(atelier=atelier)]
         emails = [suiv.email for suiv in suiveurs]
         message = "L'atelier <a href='https://www.perma.cat" + atelier.get_absolute_url() + "'>%s</a> a été commenté" %atelier.titre
-        message_notif = "L'atelier %s a été commenté" % atelier.titre
+        message_notif = "L'atelier %s a été commenté par %s" % (atelier.titre, request.user.username)
         action.send(request.user, verb='emails', url=atelier.get_absolute_url(),
                     titre="a commenté l'atelier: '%s'" % atelier.titre,  message=message, emails=emails)
         payload = {"head": "atelier: '%s'" % atelier.titre, "body": message_notif,

@@ -33,7 +33,7 @@
         </div>
 
             <div class=" col-sm-10 col-md-9 col-lg-10 message  ">
-                    <p>{{ mess.message|safe }}</p>
+                    <p>{{ mess.message|safe|usermention }}</p>
             </div>
     </div>
     {% endif %}

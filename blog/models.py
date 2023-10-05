@@ -410,6 +410,7 @@ class Commentaire(models.Model):
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.article.asso.abreviation))
             titre = "Article commenté"
             message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.get_absolute_url_discussion())+ "'>" + str(self.article.titre) + "</a>'"
+            message_notif = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] : '" + str(self.article.titre) + "'"
             suiveurs = [suiv for suiv in followers(self.article) if
                       self.auteur_comm != suiv and self.article.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
@@ -440,7 +441,7 @@ class Commentaire(models.Model):
 
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
-            payload = {"head": titre, "body":message,
+            payload = {"head": titre, "body":message_notif,
                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
             for suiv in suiveurs:
                 try:

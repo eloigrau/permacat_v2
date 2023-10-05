@@ -198,7 +198,7 @@
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='scic' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                         <li><a class="dropdown-item" href="{% url 'admin_asso' asso='scic' %}"><i class='fa fa-database' ></i> Administration  </a></li>
                     <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='scic' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
-                         <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=scic#ref-titre"><i class='fa fa-comments iconleft ' ></i> Documents</a></li>
+                         <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=scic#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
                               <li class="divider" role="separator"></li>
    {% endif %}
                            <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>
@@ -223,6 +223,7 @@
                           <li> <a class="dropdown-item" href="{% url 'organisation_citealt' %}"><i class='fa fa-sitemap iconleft' ></i>  Organisation  </a></li>
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='citealt'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                             <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=citealt#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/citealtruiste_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
@@ -236,6 +237,8 @@
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='viure' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='viure'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                             <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=viure#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
+
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/viure_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
@@ -249,6 +252,8 @@
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='bzz2022' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='bzz2022'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                                 <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=bzz2022#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
+
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/projetbzzz_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
    {% endif %}
                         </ul>
@@ -259,11 +264,12 @@
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}"><i class='fa fa-asterisk iconleft' ></i> Présentation </a></li>
                          {% if request.user.adherent_conf66 %}
                             <li class="divider" role="separator"></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
+                             <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='conf66' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>
                             <li class="divider" role="separator"></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
-                     <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/conf66_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
-   {% endif %}
+                            <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/conf66_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document de travail </a></li>
+                        {% endif %}
                         </ul>
                     </li>
                 </ul>
@@ -441,6 +447,7 @@
                         <li> <a class="dropdown-item" href="https://www.balotilo.org/" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Vote (Balotilo) </a></li>
                         <li> <a class="dropdown-item" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Covoiturage (togetzer) </a></li>
                         <li> <a class="dropdown-item" href="https://pdf2png.com/fr/" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Pdf to png (gratuit)</a></li>
+                        <li> <a class="dropdown-item" href="https://html-cleaner.com/" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-arrow-right iconleft' ></i>  Html Cleaner</a></li>
                     </ul>
                 </li>
                 <li class="divider" role="separator"></li>

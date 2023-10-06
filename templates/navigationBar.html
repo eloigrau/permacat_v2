@@ -40,6 +40,8 @@
 
                          <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='pc'%}#ref-titre"><i class='fa fa-comments iconleft ' ></i> Articles du forum</a></li>
                          <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=pc#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_projets'%}?asso=pc#ref-titre"><i class='fa fa-file iconleft ' ></i> Projets</a></li>
+
     {% endif %}
 
                             <li><a class="dropdown-item" href="{% url 'fiches:acceuil' %}"><i class="fa fa-book iconleft"></i>  Kit PermaEcole </a></li>
@@ -199,6 +201,7 @@
                         <li><a class="dropdown-item" href="{% url 'admin_asso' asso='scic' %}"><i class='fa fa-database' ></i> Administration  </a></li>
                     <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='scic' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
                          <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=scic#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
+                         <li><a class="dropdown-item" href="{% url 'blog:index_projets'%}?asso=scic#ref-titre"><i class='fa fa-file iconleft ' ></i> Projets</a></li>
                               <li class="divider" role="separator"></li>
    {% endif %}
                            <li> <a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i class='fa fa-compass iconleft' ></i>  Plateforme de l'Agora </a></li>

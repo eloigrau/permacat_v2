@@ -188,7 +188,7 @@
 					</td>
 				</tr>
 
-					{% if atelier.referent and atelier.referent != "0" %}
+					{% if atelier.referent and atelier.referent != "----------------" %}
 				<tr>
 					<td class="nomProprieteAtelier">
 						Référent :
@@ -231,6 +231,7 @@
 					{% endif %}
 
 				<tr>
+                     {% if user_inscrit %}
 					<td class="nomProprieteAtelier">
 						Inscrits :
 					</td>
@@ -239,6 +240,17 @@
                         <a href="{% url 'profil_nom' i %}">{{i}}</a>{%if not forloop.last%}, {% endif %}
 					    {% endfor %}
 					</td>
+                    {% else %}
+					<td class="nomProprieteAtelier">
+						Inscription à l'atelier
+					</td>
+					<td class="proprieteAtelier">
+<form>
+   <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
+</form>
+					</td>
+
+                    {%endif%}
 				</tr>
 			</tbody>
 		</table>

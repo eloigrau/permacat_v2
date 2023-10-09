@@ -19,6 +19,7 @@ from django.utils.html import strip_tags
 from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
 from actstream.models import following
+from bourseLibre.settings import DEBUG
 
 
 def getMessage(action):
@@ -242,13 +243,24 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
         password=EMAIL_HOST_PASSWORD,
         fail_silently=fail_silently,
     )
-    messages = [
-        EmailMultiAlternatives(subject, message, sender, to=[SERVER_EMAIL, ],
-                               bcc=recipient,
-                               alternatives=[(html_message, 'text/html')],
-                               connection=connection)
-        for subject, message, html_message, sender, recipient in data if recipient != [SERVER_EMAIL, ]
-    ]
+    messages= []
+    for subject, message, html_message, sender, recipient in data :
+        if recipient and recipient != [SERVER_EMAIL, ]:
+            if len(recipient) == 1:
+                messages.append(
+                    EmailMultiAlternatives(subject, message, sender, to=recipient,
+                                           alternatives=[(html_message, 'text/html')],
+                                           connection=connection)
+                )
+            else:
+                messages.append(
+                    EmailMultiAlternatives(subject, message, sender, to=[SERVER_EMAIL, ],
+                                           bcc=recipient,
+                                           alternatives=[(html_message, 'text/html')],
+                                           connection=connection)
+                )
+    if DEBUG:
+        return
     return connection.send_messages(messages)
 
 
@@ -257,8 +269,9 @@ def envoyerEmailsRequete(request):
         return HttpResponseForbidden()
     listeMails = getListeMailsAlerte()
     send_mass_html_mail(listeMails, fail_silently=False)
-    supprimerActionsEmails()
-    supprimerActionsStartedFollowing()
+
+    #supprimerActionsEmails()
+    #supprimerActionsStartedFollowing()
     return redirect('voirEmails', )
 
 

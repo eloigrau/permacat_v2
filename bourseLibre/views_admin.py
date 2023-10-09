@@ -270,8 +270,8 @@ def envoyerEmailsRequete(request):
     listeMails = getListeMailsAlerte()
     send_mass_html_mail(listeMails, fail_silently=False)
 
-    #supprimerActionsEmails()
-    #supprimerActionsStartedFollowing()
+    supprimerActionsEmails()
+    supprimerActionsStartedFollowing()
     return redirect('voirEmails', )
 
 

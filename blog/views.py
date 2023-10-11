@@ -350,7 +350,7 @@ class ListeArticles_asso(ListView):
     model = Article
     context_object_name = "article_list"
     template_name = "blog/index.html"
-    paginate_by = 3
+    paginate_by = 25
 
     def get_queryset(self):
         params = dict(self.request.GET.items())

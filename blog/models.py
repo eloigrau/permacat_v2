@@ -42,7 +42,7 @@ class Choix:
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
                         ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
 
-    type_annonce_conf66 = ('Annonce','Annonce'), ('Administratif','Administratif'), ("Suivi de dossier", "Suivi de dossier"), ("Eau","Eau"), ("Evenement", "Evenement"), ("Infos", "Informations diverses")
+    type_annonce_conf66 = ('Annonce', 'Annonce'), ('administratif', 'Administratif'), ("elevage", "Elevage"), ("apiculture","Apiculture"), ("maraichage", "Maraichage"), ("arboriculture", "Arboriculture"), ("arboriculture", "Arboriculture"), ("Commission", "Commission"), ("Infos", "Infos diverses")
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,

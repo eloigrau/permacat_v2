@@ -310,6 +310,7 @@ class ListeArticles(ListView):
         context['articles_archives'] = self.qs.filter(Q(estArchive=True)).distinct()#.order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
 
         context['asso_list'] = Choix_global.abreviationsNomsAssoEtPublic#[(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+        context['dossiers_list'] = Choix.type_annonce_base#[(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
         context['typeFiltre'] = "aucun"
         context['suivis'] = get_suivis_forum(self.request)
         context['ordreTriPossibles'] = Choix.ordre_tri_articles
@@ -349,7 +350,7 @@ class ListeArticles_asso(ListView):
     model = Article
     context_object_name = "article_list"
     template_name = "blog/index.html"
-    paginate_by = 0
+    paginate_by = 30
 
     def get_queryset(self):
         params = dict(self.request.GET.items())

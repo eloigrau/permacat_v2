@@ -2,6 +2,29 @@
 
 {% block submenu %}
 <div class="container">
+{% comment %}
+{%if not asso_courante %}
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-md" >
+        <div class="navbar-header">
+             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <h6>{% if dossier_courant %} Dossier : {{dossier_courant}} {% else %} Choisir un Dossier Public {% endif %} </h6> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_dossier">
+            <ul class="navbar-nav subnavbar2">
+                {% for  dossier_id, dossier_nom in dossiers_list %}
+                <a  href="{% url 'blog:index_asso' asso='public'%}?categorie={{dossier_id}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn {%if dossier_courant == dossier_nom %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{dossier_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+{% endif %}
+{% endcomment %}
 <div class="row justify-content-center" >
     <nav class="navbar navbar-expand-md" >
         <div class="navbar-header">

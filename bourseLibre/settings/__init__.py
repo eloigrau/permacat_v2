@@ -501,7 +501,7 @@ AVATAR_MAX_AVATARS_PER_USER = 5
 AVATAR_EXPOSE_USERNAMES = False
 
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
-HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 500 }
+HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
 #on met ça a la fin pour importer les settings de production sur le serveur
 try:

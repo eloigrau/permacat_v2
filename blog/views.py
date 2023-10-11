@@ -350,7 +350,7 @@ class ListeArticles_asso(ListView):
     model = Article
     context_object_name = "article_list"
     template_name = "blog/index.html"
-    paginate_by = 30
+    paginate_by = 3
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -431,6 +431,7 @@ class ListeArticles_asso(ListView):
             context['typeFiltre'] = "auteur"
         if 'categorie' in self.request.GET:
             context['typeFiltre'] = "categorie"
+            context['urlCategorie'] = "&categorie=" + self.request.GET['categorie']
             try:
                 context['categorie_courante'] = [x[1] for x in Choix.type_annonce if x[0] == self.request.GET['categorie']][0]
             except:

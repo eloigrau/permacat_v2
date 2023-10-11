@@ -45,7 +45,7 @@ from django.core.paginator import Paginator
 @login_required
 def accueil(request):
     assos = request.user.getListeAbreviationsAssosEtPublic()
-    dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
+    dateMin = (datetime.now() - timedelta(days=20)).replace(tzinfo=pytz.UTC)
 
     #derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__abreviation__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
     #derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__abreviation__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]

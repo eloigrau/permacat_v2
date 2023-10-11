@@ -96,8 +96,14 @@
     });
 
     {% if ancre %}
-     window.location = '#idConversation'
-    $("#navtab_{{ancre}}").trigger('click')
+         window.location = '#idConversation'
+        $("#navtab_{{ancre}}").trigger('click')
+    {% endif %}
+
+
+    {% if request.GET.ancre %}
+         window.location = '#idConversation'
+        $("#navtab_{{request.GET.ancre}}").trigger('click')
     {% endif %}
 
     var messageBody = document.querySelector('#contenucommentaires');

@@ -244,15 +244,18 @@ def lireArticle(request, slug):
                 article.dernierMessage += "..."
             form.save()
             article.save(sendMail=False, saveModif=False)
-            url = article.get_absolute_url()+"#idConversation"
             suffix = "_" + article.asso.abreviation
             if discu.slug == 'discussion-generale':
+                url = article.get_absolute_url()+"#idConversation"
                 desc = "a réagi à l'article: '%s'" % article.titre
-            else:
-                desc = "a réagi à l'article: (%s) '%s'" % (discu.titre, article.titre)
-
-            action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
+                action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
                         description=desc, discussion=discu.titre)
+            else:
+                url = article.get_absolute_url()+"?ancre=" + discu.slug +"#idConversation"
+                desc = "a réagi à l'article: (%s) '%s'" % (discu.titre, article.titre)
+                action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
+                            description=desc, discussion=discu.titre)
+
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,"suffrages":suffrages}

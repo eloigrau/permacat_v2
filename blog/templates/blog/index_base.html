@@ -167,12 +167,12 @@
                 <li class="list-group-item py-1">
                       <a  href="#article_list">
                           <button type="button" class="btn  btn-block btn-light btn-sm" >
-                              <p>Articles du groupe :</p>
+                              <p>Articles du groupe</p>
                        </button>
                     </a>
                 </li>
 {%endif%}
-{% if articles_partages %}
+{% if page_partages_obj %}
                 <li class="list-group-item py-1">
                       <a  href="#articles_partages">
                           <button type="button" class="btn  btn-block btn-light btn-sm" >
@@ -308,12 +308,12 @@
                 <li class="nav-item  ">
                       <a  href="#article_list">
                           <button type="button" class="btn  btn-block btn-light btn-sm" >
-                              <p>Articles du groupe :</p>
+                              <p>Articles du groupe</p>
                        </button>
                     </a>
                 </li>
 {%endif%}
-{% if articles_partages %}
+{% if page_partages_obj %}
                 <li class="nav-item  ">
                       <a  href="#articles_partages">
                           <button type="button" class="btn  btn-block btn-light btn-sm" >
@@ -387,7 +387,7 @@
     {% endif %}
 
 
-{% if articles_partages %}
+{% if page_partages_obj %}
 
 <div class="anchor_blank"  id="articles_partages"></div>
     <div class="row justify-content-center" >
@@ -396,11 +396,13 @@
         </div>
     </div>
 <div class="row justify-content-center">
+{% include 'pagination_forum_partages.html' %}
     <div class="col-sm-12">
     <div class="infinite-container2">
-        {% include "blog/articles_template_tableau.html" with article_list=articles_partages %}
+        {% include "blog/articles_template_tableau.html" with article_list=page_partages_obj %}
     </div>
     </div>
+{% include 'pagination_forum_partages.html' %}
 </div>
 
 <hr>

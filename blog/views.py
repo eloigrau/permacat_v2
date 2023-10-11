@@ -34,6 +34,7 @@ from django.utils.text import slugify
 from bourseLibre.views_base import DeleteAccess
 from photologue.models import Document
 from vote.models import Suffrage
+from django.core.paginator import Paginator
 
 # @login_required
 # def forum(request):
@@ -390,8 +391,14 @@ class ListeArticles_asso(ListView):
 
         context['articles_archives'] = self.qs.filter(Q(estArchive=True, asso=self.asso))
         context['articles_epingles'] = self.qs.filter(Q(estEpingle=True, estArchive=False, asso=self.asso))
-        context['articles_partages'] = self.qs.filter(~Q(asso=self.asso) & Q(estArchive=False))
+        paginator = Paginator(self.qs.filter(~Q(asso=self.asso) & Q(estArchive=False)), 20)
 
+        if not 'page_partages' in self.request.GET:
+            page_number = 1
+        else:
+            page_number = self.request.GET.get('page_partages')
+        context['page_partages_obj'] = paginator.get_page(page_number)
+        #context['articles_partages'] = paginator.get_page(page_number)
         # qs = self.qs
         # if self.asso.abreviation == "public":
         #     qs = qs.exclude(Q(asso__abreviation="pc")|Q(asso__abreviation="rtg")|Q(asso__abreviation="fer")|Q(asso__abreviation="gt")|Q(asso__abreviation="scic")|Q(asso__abreviation="citealt")|Q(asso__abreviation="viure")|Q(asso__abreviation="bzz2022"))
@@ -439,6 +446,8 @@ class ListeArticles_asso(ListView):
                     context['categorie_courante'] = [x[1] for x in Choix.type_annonce_projets if x[0] == self.request.GET['categorie']][0]
                 except:
                     context['categorie_courante'] = ""
+        else:
+            context['urlCategorie'] = ""
 
         if 'archives' in self.request.GET:
             context['typeFiltre'] = "archives"

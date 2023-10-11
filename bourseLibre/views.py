@@ -971,7 +971,7 @@ def chercher_produits(request):
 def lireConversation(request, destinataire):
     conversation = getOrCreateConversation(request.user.username, destinataire)
     messages = Message.objects.filter(conversation=conversation).order_by("date_creation")
-    paginator = Paginator(messages, 10) # Show 10 contacts per page.
+    paginator = Paginator(messages, 30) # Show 10 contacts per page.
     if not 'page' in request.GET:
         page_number = paginator.num_pages
     else:

@@ -1,0 +1,26 @@
+  {% if page_partages_obj.paginator.num_pages > 1 %}
+<div class="pagination">
+        {% if page_partages_obj.has_previous %}
+        <a class="pagination-action" href="?page_partages=1{{urlOrdreTri}}{{urlCategorie}}#articles_partages">
+            <i class='fa fa-chevrons-left fa-sm' aria-hidden="true"></i> </a>
+        <a class="pagination-action" href="?page_partages={{ page_partages_obj.previous_page_number }}{{urlOrdreTri}}{{urlCategorie}}#articles_partages">
+            <i class='fa fa-chevron-left fa-sm' aria-hidden="true"></i>
+        </a>
+        {% endif %}
+        {% for num in page_partages_obj.paginator.page_range %}
+            {% if page_partages_obj.number == num %}
+                <span class="pagination-number pagination-current">{{ num }}</span>
+            {% elif num > page_partages_obj.number|add:'-4' and num < page_partages_obj.number|add:'4' %}
+                <a class="pagination-number" href="?page_partages={{ num }}{{urlOrdreTri}}{{urlCategorie}}#articles_partages">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_partages_obj.has_next %}
+            <a class="pagination-action" href="?page_partages={{ page_partages_obj.next_page_number }}{{urlOrdreTri}}{{urlCategorie}}#articles_partages">
+                <i class='fa fa-chevron-right fa-sm' aria-hidden="true"></i>
+            </a>
+            <a class="pagination-action" href="?page_partages={{ page_partages_obj.paginator.num_pages }}{{urlOrdreTri}}{{urlCategorie}}#articles_partages">
+                <i class='fa fa-chevrons-right fa-sm' aria-hidden="true"></i>
+            </a>
+        {% endif %}
+    </div>
+{% endif %}

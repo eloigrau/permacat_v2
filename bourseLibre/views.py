@@ -941,7 +941,7 @@ def chercher_articles(request):
         from blog.models import Commentaire
         from taggit.models import Tag
         #from jardinpartage.models import Article as ArticleJardin, Commentaire as CommJardin
-        tags = Tag.objects.filter(slug__lower__icontains=recherche).values_list('name', flat=True)
+        tags = Tag.objects.filter(slug__icontains=recherche).values_list('name', flat=True)
         articles_list = Article.objects.filter(Q(tags__name__in=tags) |Q(titre__lower__icontains=recherche)).distinct()
         #articles_jardin_list = ArticleJardin.objects.filter(Q(titre__lower__icontains=recherche) | Q(contenu__icontains=recherche), ).distinct()
         #commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()

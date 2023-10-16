@@ -1,6 +1,6 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
-from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, Discussion, Choix
+from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, Discussion, Choix, Theme
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -11,6 +11,8 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from photologue.models import Album
 from django.core.exceptions import ValidationError
 import re
+#from dal import autocomplete
+#from taggit.models import Tag
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -77,9 +79,13 @@ class ArticleForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
+    themes = forms.ModelMultipleChoiceField(label='Tags :', required=False, queryset=Theme.objects.all(),
+                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
+
+
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'estModifiable', 'estEpingle','tags']
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'tags', 'themes', 'estModifiable', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
@@ -92,6 +98,9 @@ class ArticleForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
+           # 'tags': autocomplete.TaggitSelect2(
+           #     'blog:tag_autocomplete'
+            #),
         }
 
     def save(self, userProfile, sendMail=True, forcerCreationMails=False):
@@ -135,9 +144,11 @@ class ArticleChangeForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
+    themes = forms.ModelMultipleChoiceField(label='Tags :', required=False, queryset=Theme.objects.all(),
+                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'album', 'start_time', 'tags', 'estModifiable', 'estArchive', 'estEpingle']
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'tags', 'themes', 'estModifiable', 'estArchive', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(

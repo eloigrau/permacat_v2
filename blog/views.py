@@ -35,6 +35,8 @@ from bourseLibre.views_base import DeleteAccess
 from photologue.models import Document
 from vote.models import Suffrage
 from django.core.paginator import Paginator
+from dal import autocomplete
+from taggit.models import Tag
 
 # @login_required
 # def forum(request):
@@ -82,6 +84,7 @@ def ajouterArticle(request):
         for asso in form.cleaned_data["partagesAsso"]:
             article.partagesAsso.add(asso)
         article.save(sendMail=True, forcerCreationMails=True)
+        form.save_m2m()
         url = article.get_absolute_url() + "#ref-titre"
         suffix = "_" + article.asso.abreviation
         action.send(request.user, verb='article_nouveau'+suffix, action_object=article, url=url,
@@ -1048,4 +1051,15 @@ def ajaxListeArticles(request):
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
 
 
+class TagAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated():
+            return Tag.objects.none()
 
+        qs = Tag.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+
+        return qs

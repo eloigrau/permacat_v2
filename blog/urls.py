@@ -83,5 +83,7 @@ urlpatterns = [
     path('ajax/load-categories/', views.ajax_categories, name='ajax_categories'),
     url(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),
 
+    path('ac/tag_autocomplete/', views.TagAutocomplete, name='tag_autocomplete'),
+
 
 ]

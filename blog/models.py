@@ -140,6 +140,12 @@ class Choix:
         except:
             return Choix.type_annonce
 
+class Theme(models.Model):
+    nom = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nom
+
 class Article(models.Model):
     categorie = models.CharField(max_length=30,         
         choices= Choix.type_annonce,
@@ -168,6 +174,9 @@ class Article(models.Model):
     album = models.ForeignKey(Album, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Album photo associé",  )
 
     partagesAsso = models.ManyToManyField(Asso, related_name="asso_partages", verbose_name="Partagé avec :", blank=True)
+
+    themes = models.ManyToManyField(Theme, related_name="themes", verbose_name="Thèmes :", blank=True)
+
 
     class Meta:
         ordering = ('-date_creation', )

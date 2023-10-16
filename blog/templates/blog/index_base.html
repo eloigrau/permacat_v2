@@ -181,7 +181,7 @@
                     </a>
                 </li>
 {%endif%}
-{% if articles_archives %}
+{% if page_archives_obj %}
                 <li class="list-group-item py-1">
                       <a  href="#articles_archives">
                           <button type="button" class="btn  btn-block btn-light btn-sm" >
@@ -322,7 +322,7 @@
                     </a>
                 </li>
 {%endif%}
-{% if articles_archives %}
+{% if page_archives_obj %}
                 <li class="nav-item  ">
                       <a  href="#articles_archives">
                           <button type="button" class="btn  btn-block btn-light btn-sm" >
@@ -407,7 +407,7 @@
 
 <hr>
 {% endif %}
-        {% if articles_archives %}
+{% if page_archives_obj %}
 <div class="anchor_blank"  id="articles_archives"></div>
         <div class="textcenter">
 
@@ -419,16 +419,15 @@
         <hr>
 
         <div  id="archives" style='display:none;'>
-             {% include "blog/articles_template_tableau.html" with article_list=articles_archives %}
-{% comment %}
-            <div class="grid-container justify-content-center ">
-                {% for article in articles__archive %}
-                <div class="infinite-item my-auto mx-auto mx-auto">
-                {% include "blog/article_template2.html" with article=article %}
+            <div class="row justify-content-center">
+            {% include 'pagination_forum_archives.html' %}
+                <div class="col-sm-12">
+                <div class="infinite-container2">
+                    {% include "blog/articles_template_tableau.html" with article_list=page_archives_obj %}
                 </div>
-                {% endfor %}
+                </div>
+            {% include 'pagination_forum_archives.html' %}
             </div>
-{% endcomment %}
         </div>
     {% endif %}
 

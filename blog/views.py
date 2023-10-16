@@ -398,16 +398,21 @@ class ListeArticles_asso(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-
-        context['articles_archives'] = self.qs.filter(Q(estArchive=True, asso=self.asso))
         context['articles_epingles'] = self.qs.filter(Q(estEpingle=True, estArchive=False, asso=self.asso))
         paginator = Paginator(self.qs.filter(~Q(asso=self.asso) & Q(estArchive=False)), 20)
-
         if not 'page_partages' in self.request.GET:
             page_number = 1
         else:
             page_number = self.request.GET.get('page_partages')
         context['page_partages_obj'] = paginator.get_page(page_number)
+
+        paginator_archives = Paginator(self.qs.filter(Q(estArchive=True, asso=self.asso)), 20)
+        if not 'page_archives' in self.request.GET:
+            page_number = 1
+        else:
+            page_number = self.request.GET.get('page_archives')
+        context['page_archives_obj'] = paginator_archives.get_page(page_number)
+
         #context['articles_partages'] = paginator.get_page(page_number)
         # qs = self.qs
         # if self.asso.abreviation == "public":

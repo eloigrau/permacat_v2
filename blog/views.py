@@ -368,7 +368,7 @@ class ListeArticles_asso(ListView):
         self.asso = Asso.objects.get(abreviation=self.kwargs['asso'])
         self.q_objects = self.request.user.getQObjectsAssoArticles()
         #qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation) & self.q_objects).distinct()
-        qs = Article.objects.filter((Q(asso__abreviation=self.asso.abreviation) | Q(partagesAsso__abreviation=self.asso.abreviation) | Q(partagesAsso__abreviation="public")) & self.q_objects).distinct()
+        qs = Article.objects.filter(self.q_objects & (Q(asso__abreviation=self.asso.abreviation) | Q(partagesAsso__abreviation=self.asso.abreviation) | Q(partagesAsso__abreviation="public"))).distinct()
         self.categorie = None
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])

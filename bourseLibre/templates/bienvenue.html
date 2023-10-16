@@ -130,9 +130,6 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 
 				<div class="card" >
 				  <div class="card-header  textcenter">
-					  <b><a href="{% url 'cal:agenda' %}">{% fontawesome_icon 'calendar' %} Agenda</a></b>
-				  </div>
-				  <div class="card-header  textcenter">
 						<b>	Cette semaine :</b>
 				  </div>
 					<ul class="list-group list-group-flush textcenter">
@@ -178,17 +175,12 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">
-						  <b><a href="{% url 'blog:acceuil' %}">{% fontawesome_icon 'comments' %} Forum</a></b>
+						  <b><a href="{% url 'blog:acceuil' %}"> Forum</a></b> -
+						  <b><a href="{% url 'marche' %}">Annonces</a></b> -
+						  <b><a href="{% url 'ateliers:index_ateliers' %}">Ateliers</a></b> -
+						  <b><a href="{% url 'cal:agenda' %}">Agenda</a></b>
 					  </div>
 					</div>
-					<hr>
-					<div class="row" >
-					  <div class="col-sm-12 textcenter">
-						  <b><a href="{% url 'jardinpartage:index' %}">{% fontawesome_icon 'pagelines' %} Jardins Partagés</a></b>
-					  </div>
-					</div>
-				<hr>
-
 		{% endif %}
 
 	</div>

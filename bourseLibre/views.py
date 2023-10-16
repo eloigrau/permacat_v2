@@ -169,7 +169,7 @@ def bienvenue(request):
                 votes.append([vote, len(Vote.objects.filter(suffrage=vote, auteur=request.user))])
 
         QObject = request.user.getQObjectsAssoArticles()
-        dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
+        dateMin = (datetime.now() - timedelta(days=20)).replace(tzinfo=pytz.UTC)
         # derniers_articles = Article.objects.filter(
         #     Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-id')
         # derniers_articles_comm = Article.objects.filter(

@@ -3,10 +3,11 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy, reverse
 from django.utils.html import strip_tags
-from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, Evenement,Asso, AdresseArticle, FicheProjet
+from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
+    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
-    DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm
+    DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -204,6 +205,7 @@ def lireArticle(request, slug):
     salons = [s for s in salons if s.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
+    documents_partages = DocumentPartage.objects.filter(article=article)
 
     if not article.est_autorise(request.user):
         return render(request, 'notMembre.html', {"asso": str(article.asso)})
@@ -227,7 +229,7 @@ def lireArticle(request, slug):
                             discussions}
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre": discu.slug}
+                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "documents_partages":documents_partages, "ancre": discu.slug}
 
     elif form.is_valid() and 'message_discu' in request.POST:
         discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#",""))
@@ -261,10 +263,10 @@ def lireArticle(request, slug):
 
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-               'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,"suffrages":suffrages}
+               'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,"suffrages":suffrages, "documents_partages":documents_partages, }
 
     else:
-        context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers, 'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages }
+        context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers, 'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "documents_partages":documents_partages,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required
@@ -905,6 +907,25 @@ def ajouterEvenementArticle(request, slug_article):
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+
+@login_required
+def ajouterDocumentPartage(request, slug_article):
+    form = DocumentPartageArticleForm(request.POST or None)
+    article = Article.objects.get(slug=slug_article)
+
+    if form.is_valid():
+        form.save(article)
+        return redirect(article)
+
+    return render(request, 'blog/ajouterDocumentPartage.html', {'form': form, "article": article})
+
+@login_required
+def supprimerDocumentPartage(request, slug_docpartage):
+    doc = DocumentPartage.objects.get(slug=slug_docpartage)
+    article = doc.article
+    doc.delete()
+    return reverse(article)
+
 
 @login_required
 def ajouterSalonArticle(request, slug_article):

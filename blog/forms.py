@@ -1,6 +1,7 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
-from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, Discussion, Choix, Theme
+from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
+    DocumentPartage, Discussion, Choix, Theme
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -481,3 +482,28 @@ class AdresseArticleForm(forms.ModelForm):
         instance.adresse = adresse
         instance.save()
         return instance
+
+class DocumentPartageArticleForm(forms.ModelForm):
+    class Meta:
+        model = DocumentPartage
+        fields = ['nom', ]
+
+    def save(self, article):
+        instance = super(DocumentPartageArticleForm, self).save(commit=False)
+
+        max_length = DocumentPartage._meta.get_field('slug').max_length
+        instance.slug = orig = slugify(instance.nom)[:max_length]
+
+        for x in itertools.count(1):
+            if not DocumentPartage.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.article = article
+        instance.save()
+        return instance
+
+
+

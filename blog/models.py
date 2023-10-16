@@ -325,6 +325,16 @@ class Article(models.Model):
         else:
             return derniere_date
 
+class DocumentPartage(models.Model):
+    nom = models.CharField(verbose_name="url de la page", max_length=100, null=True, blank=False, default="")
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+    slug = models.SlugField(max_length=100)
+
+    def __str__(self):
+        return "(" + str(self.nom) + ") "+ str(self.url)
+
+    def get_url(self):
+        return "https://semestriel.framapad.org/p/" + self.slug
 
 class Evenement(models.Model):
     titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",

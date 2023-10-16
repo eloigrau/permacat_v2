@@ -150,7 +150,7 @@
            {% endfor %}
             </p>
            {% endif %}
-             {% if article.themes  %}
+             {% if article.themes.all  %}
             <p class="textcenter">
                <em>Thème{{article.themes.all|pluralize:"s"}}:</em>
            {% for tag in article.themes.all %}
@@ -186,6 +186,9 @@
         {% endif %}
         {% if documents %}
       <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i></a>
+        {% endif %}
+        {% if documents_partages %}
+      <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i></a>
         {% endif %}
 {% if suffrages %}
       <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i></a>
@@ -275,6 +278,27 @@
         <p>
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                    <a class="btn btn-sm btn-success textleft" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un fichier</a>
+            {% endif%}
+        </p>
+    </div>
+  </div>
+    </div>
+  </div>
+<div class="tab-pane fade" id="documents_partages">
+    <div class="contenu atelier">
+<div class="row justify-content-center">
+<div class="col-sm-12 textcenter">
+        {% for document in documents_partages %}
+        <p>
+            <a href="{{document.get_url}}" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.nom }} </a>
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=document.slug%}"> <i class="fa fa-times"></i> </a>
+            {% endif %}
+        </p>
+        {% endfor%}
+        <p>
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                   <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un Document partagé</a>
             {% endif%}
         </p>
     </div>
@@ -417,6 +441,9 @@
         </p>
        <p>
            <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un fichier</a>
+       </p>
+       <p>
+           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document partagé</a>
        </p>
         <p>
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>

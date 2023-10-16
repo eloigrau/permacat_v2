@@ -290,7 +290,7 @@
 <div class="col-sm-12 textcenter">
         {% for document in documents_partages %}
         <p>
-            <a href="{{document.get_url}}" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.nom }} </a>
+            <a href="{{document.get_url}}" target="_blank" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.nom }} </a>
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                 <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=document.slug%}"> <i class="fa fa-times"></i> </a>
             {% endif %}

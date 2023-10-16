@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 from webpush import send_user_notification
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from jardins.models import Jardin
+from django.core.validators import MinLengthValidator
 import uuid
 
 class Choix:
@@ -326,7 +327,7 @@ class Article(models.Model):
             return derniere_date
 
 class DocumentPartage(models.Model):
-    nom = models.CharField(verbose_name="url de la page", max_length=100, null=True, blank=False, default="")
+    nom = models.CharField(verbose_name="Nom du document", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
     slug = models.SlugField(max_length=100)
 

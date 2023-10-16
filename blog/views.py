@@ -924,7 +924,7 @@ def supprimerDocumentPartage(request, slug_docpartage):
     doc = DocumentPartage.objects.get(slug=slug_docpartage)
     article = doc.article
     doc.delete()
-    return reverse(article)
+    return redirect(article.get_absolute_url())
 
 
 @login_required

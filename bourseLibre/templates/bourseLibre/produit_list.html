@@ -224,7 +224,13 @@
                 </button>
             </a>
             </li>
-
+          <li class="list-group-item py-1">
+            <a href="?producteur={{request.user}}">
+                <button type="button" class="btn btn-primary">
+                    <i class="fa fa-user"></i> &nbsp;Mes annonces
+                </button>
+            </a>
+            </li>
             <li class="list-group-item py-1">
              <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
@@ -294,16 +300,6 @@
 
                 </div>
           </li>
- <li class="list-group-item py-1">
-              <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuOrdreTri2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                   Trier par...
-               </button>
-                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri2">
-                {% for ordre in ordreTriPossibles %}
-                 <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
-                    {% endfor %}
-                </div>
-          </li>
             <li class="list-group-item py-1">
                 <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuDistance2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    Rayon
@@ -314,6 +310,16 @@
                     {% endfor %}
                 </div>
             </li>
+ <li class="list-group-item py-1">
+              <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuOrdreTri2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   Trier par...
+               </button>
+                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri2">
+                {% for ordre in ordreTriPossibles %}
+                 <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
+                    {% endfor %}
+                </div>
+          </li>
           <li class="list-group-item py-1">
             <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_produits' %}" method="get" role = "search">
                     {% csrf_token %}

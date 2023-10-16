@@ -142,13 +142,22 @@
 
         <div class="row-sm-12 justify-content-center">
         <div class="col-sm-12  fiche_tags">
+            {% if article.tags.names  %}<
             <p class="textcenter">
-                {% if article.tags.names  %}<em>Mots-clés:</em>
+                em>Mots-clés:</em>
            {% for tag in article.tags.names %}
             {{tag}}{%if not forloop.last%}, {%endif%}
            {% endfor %}
-           {% endif %}
             </p>
+           {% endif %}
+             {% if article.themes  %}
+            <p class="textcenter">
+               <em>Thème{{article.themes.all|pluralize:"s"}}:</em>
+           {% for tag in article.themes.all %}
+                <a href="{% url 'blog:index' %}?theme={{tag}}">{{tag}}</a>{%if not forloop.last%}, {%endif%}
+           {% endfor %}
+            </p>
+           {% endif %}
         </div>
     </div>
 

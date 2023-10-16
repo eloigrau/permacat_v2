@@ -288,6 +288,8 @@ class ListeArticles(ListView):
             qs = qs.filter(auteur__username=self.params['auteur'])
         if "categorie" in self.params:
             qs = qs.filter(categorie=self.params['categorie'])
+        if "theme" in self.params:
+            qs = qs.filter(themes__nom__in=[self.params['theme'], ])
 
         if "ordreTri" in self.params:
             if self.params['ordreTri'] == "-date_dernierMessage":

@@ -79,13 +79,13 @@ class ArticleForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
-    themes = forms.ModelMultipleChoiceField(label='Tags :', required=False, queryset=Theme.objects.all(),
+    themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
 
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'tags', 'themes', 'estModifiable', 'estEpingle', ]
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'themes', 'tags', 'estModifiable', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
@@ -144,11 +144,11 @@ class ArticleChangeForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
-    themes = forms.ModelMultipleChoiceField(label='Tags :', required=False, queryset=Theme.objects.all(),
+    themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'tags', 'themes', 'estModifiable', 'estArchive', 'estEpingle', ]
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'themes', 'tags', 'estModifiable', 'estArchive', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(

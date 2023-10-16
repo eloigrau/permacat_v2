@@ -259,8 +259,8 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
                                            alternatives=[(html_message, 'text/html')],
                                            connection=connection)
                 )
-    if DEBUG:
-        return
+    #if DEBUG:
+    #    return
     return connection.send_messages(messages)
 
 

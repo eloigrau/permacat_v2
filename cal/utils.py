@@ -131,7 +131,7 @@ class Calendar(LocaleTextCalendar):
 
     # formats a month as a table
     # filter events by year and month
-    def formatmonth(self, request, withyear=True):
+    def formatmonth(self, request, withyear=True, asso_abreviation=None):
        # events = chain(Article.objects.filter(start_time__year=self.year, start_time__month=self.month), Projet.objects.filter(start_time__year=self.year, start_time__month=self.month))
 
         events_arti = Article.objects.filter(start_time__year=self.year, start_time__month=self.month)
@@ -141,6 +141,10 @@ class Calendar(LocaleTextCalendar):
         events_autre = Evenement.objects.filter(start_time__year=self.year, start_time__month=self.month)
         events_autre_jardin = Evenement_jardin.objects.filter(start_time__year=self.year, start_time__month=self.month)
         events_vote = None#Suffrage.objects.filter(start_time__year=self.year, start_time__month=self.month)
+        if asso_abreviation:
+            events_arti = events_arti.filter(asso__abreviation=asso_abreviation)
+            events_atel = events_atel.filter(asso__abreviation=asso_abreviation)
+            events_proj = events_proj.filter(asso__abreviation=asso_abreviation)
 
         cal = '<table  class=" table-condensed" id="calendar">\n'
         #cal += self.formatmonthname(self.year, self.month, withyear=withyear)+'\n'

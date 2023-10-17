@@ -16,8 +16,7 @@
     </div>
 {% endblock  %}
 {% block subtitle %}
-
-        <div class="row justify-content-center">
+<div class="row justify-content-center">
             <div class="col-sm-12">
                 <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
                  {% fontawesome_icon 'question-circle' %}
@@ -43,6 +42,31 @@
                 </div>
         </div>
     </div>
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-md" >
+        <div class="navbar-header">
+             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <h6>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </h6> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_asso">
+            <ul class="navbar-nav subnavbar2">
+                <a  href="{% url 'cal:agenda' %}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
+                          <h6>Tout</h6>
+                    </li>
+                </a>
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'cal:agenda' %}?asso={{asso_ab}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn {%if asso_courante_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+
 {% endblock %}
 
 {% block content %}

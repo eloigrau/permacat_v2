@@ -1936,11 +1936,11 @@ caption {
 
 @media screen and (max-width: 768px) {
 
-.btn-choixgroupe{
-    display: block;
-	min-height:50px;
-
-}
+    .btn-choixgroupe{
+        display: block;
+        min-height:50px;
+        width: 100%;
+    }
 	#calendar .weekdays, #calendar .other-month{
 		display: none;
 	}

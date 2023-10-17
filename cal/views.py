@@ -45,7 +45,7 @@ def agenda(request):
     # Instantiate our calendar class with today's year and date
     cal = Calendar(d.year, d.month)
 
-    asso_list = Choix_global.abreviationsNomsAssoEtPublic  # [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+    asso_list = [(x.abreviation, x.nom) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.abreviation)]
 
     if 'asso' in request.GET:
         asso_abreviation = request.GET['asso']
@@ -65,5 +65,5 @@ def agenda(request):
                                                'prev_month':prev_month(d), 'next_month':next_month(d),
                                                'asso_list':asso_list,
                                                'asso_courante':asso_courante,
-                                               'asso_courante_abreviation':asso_abreviation
+                                               'asso_abreviation':asso_abreviation
                                                })

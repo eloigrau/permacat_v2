@@ -57,7 +57,7 @@
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
                 <a  href="{% url 'cal:agenda' %}?asso={{asso_ab}}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn {%if asso_courante_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>

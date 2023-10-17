@@ -121,6 +121,15 @@ class DocListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="documents")
+        context['asso_list'] = [(x.abreviation, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+
+        if 'asso' in self.request.GET:
+            context['asso_abreviation'] = self.request.GET['asso']
+            context['asso_courante'] = Asso.objects.get(abreviation= context['asso_abreviation']).nom
+        else:
+            context['asso_courante'] = None
+            context['asso_abreviation'] = None
+
         return context
 
 class PhotoDateView:

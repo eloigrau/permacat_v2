@@ -11,13 +11,7 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 {%endblock%}
 
 {%block banniere %}
-	<div class="row row_banniere_ordi" >
-		<div class="col col-xs-12 d-flex justify-content-around">
-            <img  src="{% static 'img/banniere/accueil_ordi.png' %}" width="224" height="120" alt="Logo_accueil"/>
-            <img  src="{% static 'img/banniere/accueil.png' %}" height="120" alt="Logo_accueil"/>
-        </div>
-    </div>
-	<div class="row row_banniere_smartphone">
+	<div class="row ">
 		<div class="col col-xs-12 d-flex justify-content-center">
             <img class="img_banniere_smartp" src="{% static 'img/banniere/accueil_smart.png' %}" height="120" alt="Logo_accueil"/>
         </div>
@@ -28,7 +22,7 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 {%if request.user.is_authenticated %}
 <div class="row align-items-center row_banniere_ordi">
 	<div class="col-md-12">
-		<h4 class = "textcenter rowbienvenue">{% trans "Benvingut " %}  {{request.user.username}} !</h4>
+		<h4 class = "textcenter rowbienvenue">{% trans "Bon dia " %}  {{request.user.username}} !</h4>
 	</div>
 </div>
 {% endif %}

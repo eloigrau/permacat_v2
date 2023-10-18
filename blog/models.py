@@ -594,6 +594,9 @@ class FicheProjet(models.Model):
 
         return getattr(user, "adherent_" + self.projet.asso.abreviation)
 
+    @property
+    def titre(self):
+        return self.projet.titre
 
 class CommentaireProjet(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)

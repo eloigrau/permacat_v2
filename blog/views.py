@@ -106,12 +106,17 @@ class ModifierArticle(UpdateView):
         self.object = form.save(sendMail=False, commit=False, )
         self.object.date_modification = now()
         self.object.save(sendMail=form.changed_data!=['estArchive'])
+        #self.form.
+
         url = self.object.get_absolute_url()
         suffix = "_" + self.object.asso.abreviation
         if not self.object.estArchive:
+            desc = "a modifié l'article [%s]: '%s'" %(self.object.asso, self.object.titre)
+            if 'description_modif' in form.changed_data:
+                desc += " > " + form.cleaned_data['description_modif'] + " <"
             if self.object.date_modification - self.object.date_creation > timedelta(minutes=10):
                 action.send(self.request.user, verb='article_modifier'+suffix, action_object=self.object, url=url,
-                             description="a modifié l'article [%s]: '%s'" %(self.object.asso, self.object.titre))
+                             description=desc)
         elif form.changed_data == ['estArchive']:
             action.send(self.request.user, verb='article_modifier'+suffix + "-archive", action_object=self.object, url=url,
                          description="a archivé l'article [%s]: '%s'" %(self.object.asso, self.object.titre))
@@ -215,6 +220,8 @@ def lireArticle(request, slug):
     dates = Evenement.objects.filter(article=article).order_by("-start_time")
 
     actions = action_object_stream(article)
+    #modifs = ModificationArticle.objects.filter(article=article)
+
     hit_count = HitCount.objects.get_for_object(article)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
     form_discussion = DiscussionForm(request.POST or None, prefix="newdiscussionform")

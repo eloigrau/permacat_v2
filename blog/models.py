@@ -326,6 +326,15 @@ class Article(models.Model):
         else:
             return derniere_date
 
+# class ModificationArticle(models.Model):
+#     description = models.CharField(verbose_name="Explication de la modification", max_length=500, null=True, blank=True)
+#     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+#     date_creation = models.DateTimeField(verbose_name="Date de la modif", default=timezone.now)
+#
+#     def __str__(self):
+#         return "(" + str(self.date_creation) + " : " +  self.article + ") "+ str(self.description)
+
+
 class DocumentPartage(models.Model):
     nom = models.CharField(verbose_name="Nom du document", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )

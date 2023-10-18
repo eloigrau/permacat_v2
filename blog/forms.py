@@ -147,6 +147,8 @@ class ArticleChangeForm(forms.ModelForm):
 
     themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
+    description_modif = forms.CharField(label='Infos sur la modification', required=False, )
+
     class Meta:
         model = Article
         fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'themes', 'tags', 'estModifiable', 'estArchive', 'estEpingle', ]
@@ -166,6 +168,8 @@ class ArticleChangeForm(forms.ModelForm):
 
     def save(self, sendMail=True, commit=True):
         instance = super(ArticleChangeForm, self).save(commit=commit)
+        #ModificationArticle.objects.create(article=instance, description=self.cleaned_data['description_modif'])
+
         for asso in Asso.objects.all():
             if asso in self.cleaned_data["partagesAsso"]:
                 instance.partagesAsso.add(asso)
@@ -177,6 +181,13 @@ class ArticleChangeForm(forms.ModelForm):
             elif instance.themes.filter(nom=theme.nom).exists():
                 instance.themes.remove(theme)
         return instance
+
+#
+# class ModificationArticleForm(forms.ModelForm):
+#     class Meta:
+#         model = ModificationArticle
+#         fields = ['description',]
+
 
 class ArticleAddAlbum(forms.ModelForm):
     album = forms.ModelChoiceField(queryset=Album.objects.all(), required=True,

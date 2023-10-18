@@ -132,13 +132,24 @@
 	    <tr>
 		<td style="width:250px">Adhérent Permacat *:</td>
 		<td>{{user.adherent_pc|translateOuiNon}}{%if user.adherent_pc and request.user.is_superuser %}, cotisation à jour : {% if user.isCotisationAJour_pc %} oui {% else %}
-        <a href="{% url 'adhesion_asso' asso='pc' %}"> non </a>{% endif %}{% endif %}</td>
+        <a href="{% url 'adhesion_asso' asso='pc' %}"> non </a>{% endif %}{% endif %}
+
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='pc' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a></td>
 	    </tr>
         {% endif %}
     {%if request.user.adherent_rtg or request.user == user %}
 	    <tr>
 		<td style="width:250px">Adhérent Ramene Ta Graine *:</td>
-		<td>{{user.adherent_rtg|translateOuiNon}}</td>
+		<td>{{user.adherent_rtg|translateOuiNon}}
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='rtg' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a></td>
 	    </tr>
     {% endif %}
     {%if request.user.adherent_fer or request.user == user %}
@@ -151,7 +162,13 @@
 	    <tr>
 		<td style="width:250px">Adhérent PermAgora *:</td>
 		<td>{{user.adherent_scic|translateOuiNon}}{%if user.adherent_scic and request.user.is_superuser %}, cotisation à jour : {% if user.isCotisationAJour_scic %} oui {% else %}
-      <a href="{% url 'adhesion_asso' asso='scic' %}"> non </a>{% endif %}{% endif %}</td>
+      <a href="{% url 'adhesion_asso' asso='scic' %}"> non </a>{% endif %}{% endif %}
+
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='scic' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a></td>
 	    </tr>
     {% endif %}
     {%if request.user.adherent_citealt or request.user == user %}
@@ -189,7 +206,6 @@
 	    <tr>
 		<td style="width:250px">Adhérent Confédération Paysanne *:</td>
 		<td>{{user.adherent_conf66|translateOuiNon}}
-
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='conf66' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe

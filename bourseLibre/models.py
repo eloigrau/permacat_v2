@@ -234,6 +234,8 @@ class Asso(models.Model):
             return Profil.objects.filter(accepter_annuaire=True, adherent_bzz2022=True).order_by("username")
         elif self.abreviation == "jp":
             return Profil.objects.filter(accepter_annuaire=True, adherent_jp=True).order_by("username")
+        elif self.abreviation == "conf66":
+            return Profil.objects.filter(accepter_annuaire=True, adherent_conf66=True).order_by("username")
         return []
 
 

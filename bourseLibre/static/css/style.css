@@ -85,7 +85,7 @@ body {
 
 @media screen and (max-width: 475px) {
     body{
-        background: url("/static/img/background/bckgrnd-2-grain-lg-2.jpg") 0 0 no-repeat fixed;
+        background: url("/static/img/background/bckgrnd-2-grain-lg.jpg") 0 0 no-repeat fixed;
     }
 }
 #top{

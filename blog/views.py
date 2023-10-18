@@ -598,8 +598,8 @@ class ModifierFicheProjet(UpdateView):
         self.object.save()
         if not self.object.projet.estArchive:
             url = self.object.get_absolute_url()
-            suffix = "_" + self.object.asso.abreviation
-            action.send(self.request.user, verb='projet_modifier'+suffix+"ficheProet", action_object=self.object, url=url,
+            suffix = "_" + self.object.projet.asso.abreviation
+            action.send(self.request.user, verb='projet_modifier'+suffix+"ficheProjet", action_object=self.object, url=url,
                          description="a modifié la fiche du projet: '%s'" % self.object.projet.titre)
         #envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
         return HttpResponseRedirect(self.get_success_url())

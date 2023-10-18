@@ -152,9 +152,9 @@
            {% endif %}
              {% if article.themes.all  %}
             <p class="textcenter">
-               <em>Thème{{article.themes.all|pluralize:"s"}}:</em>
+               <em>Thème{{article.themes.all|pluralize:"s"}}: </em>
            {% for tag in article.themes.all %}
-                <a href="{% url 'blog:index' %}?theme={{tag}}">{{tag}}</a>{%if not forloop.last%}, {%endif%}
+                <a href="{% url 'blog:index' %}?theme={{tag}}"> {{tag}}</a>{%if not forloop.last%}, {%endif%}
            {% endfor %}
             </p>
            {% endif %}

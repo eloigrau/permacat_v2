@@ -188,7 +188,14 @@
        {% if request.user.adherent_conf66 or request.user == user %}
 	    <tr>
 		<td style="width:250px">Adhérent Confédération Paysanne *:</td>
-		<td>{{user.adherent_conf66|translateOuiNon}}</td>
+		<td>{{user.adherent_conf66|translateOuiNon}}
+
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='conf66' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a>
+        </td>
 	    </tr>
         {% endif %}
         <tr>

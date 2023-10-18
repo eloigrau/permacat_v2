@@ -577,3 +577,15 @@ def reinitialiserAbonnementsPermAgora(request):
     for s in Suivis.objects.filter(nom_suivi__startswith='agora'):
         s.delete()
     return render(request, 'admin/admin_message.html', {"msg": m})
+
+
+def inscrireProfilAuGroupe(request, id_profil, asso_abreviation):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    p = Profil.objects.get(id=id_profil)
+    setattr(p, "adherent_" + asso_abreviation, True)
+    p.save()
+    suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + asso_abreviation)
+    actions.follow(p, suivi, send_action=False)
+    return redirect(p.get_absolute_url())

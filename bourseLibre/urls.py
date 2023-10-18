@@ -225,6 +225,7 @@ urlpatterns = [
     url(r'^admin/transforBlogJpToForum/$', views_admin.transforBlogJpToForum,  name="transforBlogJpToForum"),
     url(r'^admin/movePermagoraInscritsToNewsletter/$', views_admin.movePermagoraInscritsToNewsletter,  name="movePermagoraInscritsToNewsletter"),
     url(r'^admin/reinitialiserAbonnementsPermAgora/$', views_admin.reinitialiserAbonnementsPermAgora,  name="reinitialiserAbonnementsPermAgora"),
+    path('admin/inscrireProfilAuGroupe/<int:id_profil>/<str:asso_abreviation>', views_admin.inscrireProfilAuGroupe,  name="inscrireProfilAuGroupe"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),

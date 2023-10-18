@@ -113,7 +113,7 @@ class ModifierArticle(UpdateView):
         if not self.object.estArchive:
             desc = "a modifié l'article [%s]: '%s'" %(self.object.asso, self.object.titre)
             if 'description_modif' in form.changed_data:
-                desc += " > " + form.cleaned_data['description_modif'] + " <"
+                desc += " > " + form.cleaned_data['description_modif'] + " "
             if self.object.date_modification - self.object.date_creation > timedelta(minutes=10):
                 action.send(self.request.user, verb='article_modifier'+suffix, action_object=self.object, url=url,
                              description=desc)

@@ -147,7 +147,7 @@ class ArticleChangeForm(forms.ModelForm):
 
     themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
-    description_modif = forms.CharField(label='Infos sur la modification', required=False, )
+    description_modif = forms.CharField(label="Description courte de la modification de l'article", required=False, )
 
     class Meta:
         model = Article

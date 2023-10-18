@@ -69,7 +69,8 @@
 }
 
 body {
-    background: url("/static/img/bckgnd-2.jpg") 0 0 fixed;
+    /*background: url("/static/img/bckgnd-2.jpg") 0 0 no-repeat fixed;*/
+    background: url("/static/img/background/bckgrnd-2-grain.jpg") 0 0 no-repeat fixed;
     background-size: 100%;
     margin: auto;
     width: 100%;
@@ -82,6 +83,11 @@ body {
     /* font-family: "The Antiqua B",Georgia,Droid-serif,serif;*/
 }
 
+@media screen and (max-width: 475px) {
+    body{
+        background: url("/static/img/background/bckgrnd-2-grain-lg-2.jpg") 0 0 no-repeat fixed;
+    }
+}
 #top{
 padding-top:50px;
 }

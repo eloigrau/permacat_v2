@@ -1076,9 +1076,10 @@ def ajaxListeArticles(request):
     try:
         asso_id = request.GET.get('asso')
         nomAsso = Asso.objects.get(id=asso_id).abreviation
-        if not getattr(request.user, "adherent_" + nomAsso):
+        if getattr(request.user, "adherent_" + nomAsso):
             qs = Article.objects.filter(estArchive=False, asso__abreviation=nomAsso)
-        nomAsso = Asso.objects.get(id=asso_id).abreviation
+        else:
+            qs = Article.objects.none()
         return render(request, 'blog/ajax/listeArticles.html',
                       {'qs': qs})
     except:

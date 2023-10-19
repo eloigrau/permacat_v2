@@ -387,7 +387,7 @@ class Evenement(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.article.get_logo_nomgroupe_html
+        return self.article.get_logo_nomgroupe_html_taille(taille=15)
 
 
 class Discussion(models.Model):

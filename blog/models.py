@@ -389,6 +389,7 @@ class Evenement(models.Model):
     def get_logo_nomgroupe_html(self):
         return self.article.get_logo_nomgroupe_html
 
+
 class Discussion(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     titre = models.CharField(blank=False, max_length=32, verbose_name="Titre de la discussion")

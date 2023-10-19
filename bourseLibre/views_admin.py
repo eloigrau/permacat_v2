@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from actstream.models import Action, Follow
 from .models import Profil, Adhesion_asso, Suivis, Adresse, InscriptionNewsletter, InscriptionNewsletterAsso, Asso
-from .settings import LOCALL
+from ateliers.models import Atelier
 from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD
 from django.http import HttpResponseForbidden
 from django.core.mail.message import EmailMultiAlternatives
@@ -175,6 +175,13 @@ def get_articles_a_archiver():
     for article in articles:
         if article.start_time:
             liste2.append(article)
+
+    liste4 = []
+    ateliers = Atelier.objects.filter(estArchive=False, start_time__lte=date_limite)
+    for a in ateliers:
+        if a.start_time:
+            liste4.append(a)
+
     liste3 = []
     for art in liste:
         eve = Evenement.objects.filter(start_time__lt=date_limite, end_time__lte=date_limite, article=art)
@@ -186,26 +193,25 @@ def get_articles_a_archiver():
         if eve:
             liste3.append(art)
 
-    return liste, liste2, liste3
+    return liste, liste2, liste3, liste4
 
 
 def voir_articles_a_archiver(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    liste, liste2, liste3 = get_articles_a_archiver()
-    return render(request, 'admin/voirArchivage.html', {'liste': liste, 'liste2': liste2, 'liste3': liste3})
+    listes = get_articles_a_archiver()
+    return render(request, 'admin/voirArchivage.html', {'listes': listes})
 
 
 def archiverArticles(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    liste, liste2, liste3 = get_articles_a_archiver()
-    for art in liste:
-        art.estArchive = True
-        art.save(sendMail=False)
-    for art in liste2:
-        art.estArchive = True
-        art.save(sendMail=False)
+    listes = get_articles_a_archiver()
+    for liste in listes:
+        for art in liste:
+            art.estArchive = True
+            art.save(sendMail=False)
+
     return redirect('voir_articles_a_archiver', )
 
 

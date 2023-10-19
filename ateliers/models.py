@@ -79,7 +79,7 @@ class Atelier(models.Model):
     def get_absolute_url(self):
         return reverse('ateliers:lireAtelier', kwargs={'slug':self.slug}) + "#idTitreAtelier"
 
-    def save(self, *args, **kwargs):
+    def save(self, sendMail=True, *args, **kwargs):
         ''' On save, update timestamps '''
         emails, suiveurs = [], []
         message_notif = ""
@@ -93,7 +93,10 @@ class Atelier(models.Model):
 
             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
-            emails = [suiv.email for suiv in suiveurs]
+            if sendMail:
+                emails = [suiv.email for suiv in suiveurs]
+            else:
+                emails = []
             titre = "Nouvel atelier proposé"
             if self.start_time:
                 message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(DATE_INPUT_FORMAT) +" a été proposé"
@@ -102,16 +105,17 @@ class Atelier(models.Model):
                 message = "L'atelier ["+ self.asso.nom +"]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
                 message_notif = "L'atelier ["+ self.asso.nom +"] '" + self.titre + "' a été proposé"
         else:
-            titre = "Atelier modifié"
-            if self.start_time:
-                message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
-                    DATE_INPUT_FORMAT) + " a été modifié"
-                message_notif = "L'atelier [" + self.asso.nom + "]' "+ self.titre + "' le " + self.start_time.strftime(
-                    DATE_INPUT_FORMAT) + " a été modifié"
-            else:
-                message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
-                message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + "' le " + self.start_time.strftime(
-                    DATE_INPUT_FORMAT) + " a été modifié"
+            if sendMail:
+                titre = "Atelier modifié"
+                if self.start_time:
+                    message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
+                        DATE_INPUT_FORMAT) + " a été modifié"
+                    message_notif = "L'atelier [" + self.asso.nom + "]' "+ self.titre + "' le " + self.start_time.strftime(
+                        DATE_INPUT_FORMAT) + " a été modifié"
+                else:
+                    message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
+                    message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + "' le " + self.start_time.strftime(
+                        DATE_INPUT_FORMAT) + " a été modifié"
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:

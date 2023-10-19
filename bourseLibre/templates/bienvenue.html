@@ -20,7 +20,7 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 
 {% block subtitle %}
 {%if request.user.is_authenticated %}
-<div class="row align-items-center row_banniere_ordi">
+<div class="row align-items-center">
 	<div class="col-md-12">
 		<h4 class = "textcenter rowbienvenue">{% trans "Bon dia " %}  {{request.user.username}} !</h4>
 	</div>

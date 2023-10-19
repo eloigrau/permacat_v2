@@ -88,11 +88,11 @@
         <a href="{% url 'blog:suivre_article' article.slug %}">
             {% if request.user|is_following:article %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arreter de recevoir des notifications concernant cet article par mail">
-                 {% fontawesome_icon 'bell' title='abnnement' %}
+                 {% fontawesome_icon 'bell' title='abonnement' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant cet article par mail">
-                 {% fontawesome_icon 'bell-slash' title='abnnement' %}
+                 {% fontawesome_icon 'bell-slash' title='abonnement' %}
             </button>
             {% endif %}
         </a>
@@ -151,12 +151,6 @@
             </p>
            {% endif %}
              {% if article.themes.all  %}
-            <p class="textcenter">
-               <em>Thème{{article.themes.all|pluralize:"s"}}: </em>
-           {% for tag in article.themes.all %}
-                <a href="{% url 'blog:index' %}?theme={{tag}}"> {{tag}}</a>{%if not forloop.last%}, {%endif%}
-           {% endfor %}
-            </p>
            {% endif %}
         </div>
     </div>
@@ -397,6 +391,14 @@
                     - modifiable
                 {%endif%}
             </h6>
+            {% if article.themes.all %}
+                <p class="textcenter">
+                   <em>Thème{{article.themes.all|pluralize:"s"}}: </em>
+               {% for tag in article.themes.all %}
+                    <a href="{% url 'blog:index' %}?theme={{tag}}"> {{tag}}</a>{%if not forloop.last%}, {%endif%}
+               {% endfor %}
+                </p>
+            {% endif %}
             <div class="row textcenter">
                 <div class="col-sm-12">
           {%for action in actions %}

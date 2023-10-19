@@ -1076,10 +1076,13 @@ def ajaxListeArticles(request):
     try:
         asso_id = request.GET.get('asso')
         nomAsso = Asso.objects.get(id=asso_id).abreviation
+        if not getattr(request.user, "adherent_" + nomAsso):
+            qs = Article.objects.filter(estArchive=False, asso__abreviation=nomAsso)
+        nomAsso = Asso.objects.get(id=asso_id).abreviation
         return render(request, 'blog/ajax/listeArticles.html',
-                      {'categories': Choix.get_type_annonce_asso(nomAsso)})
+                      {'qs': qs})
     except:
-        qs = Article.objects.all()
+        qs = Article.objects.filter(estArchive=False)
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(request.user, "adherent_" + nomAsso):
                 qs = qs.exclude(asso__abreviation=nomAsso)

@@ -142,7 +142,7 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 						 		<div class=''><span  style='font-variant: small-caps ;'>{{jour|date:"l d F"}}</span></div>
 
 							{% for ev in liste_ev %}
-								<p><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html_15|safe}}</span> {{ev.titre}}</a> </p>
+								<p><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
 							{% endfor %}
 							</li>
 						{% endfor %}
@@ -156,7 +156,7 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 						{%endif%}
 						 		<div class=''><span  style='font-variant: small-caps ;'>{{jour|date:"l d F"}}</span></div>
 							{% for ev in liste_ev %}
-						<p><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html_15|safe}}</span> {{ev.titre}}</a> </p>
+						<p><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
 							{% endfor %}
 							</li>
 						{% endfor %}

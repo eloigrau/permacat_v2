@@ -16,7 +16,7 @@ import itertools
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
     type_reunion_asso = {
-        "rtg": ["Réunion équipe", 'Troc de Graine', 'Atelier', 'Rencontre', 'Réunion FestiGraines', 'Autre'],
+        "rtg": ["Réunion équipe", 'Troc de Graine', 'Atelier', 'Rencontre', 'FestiGraines', 'Visite de Jardin', 'Autre'],
         "scic": ['Cercle Ancrage', 'Cercle thématique', 'Cercle Education', 'Cercle Jardins', 'Evenement', 'Divers',]
       }
 

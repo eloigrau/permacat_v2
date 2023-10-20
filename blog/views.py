@@ -428,7 +428,7 @@ class ListeArticles_asso(ListView):
         #     pass
         # else:
         #     qs = qs.filter(asso__abreviation=self.asso.abreviation)
-        context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.type_annonce_asso[self.asso.abreviation]]
+        context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.get_type_annonce_asso(self.asso.abreviation)]
 
         proj = Projet.objects.filter(estArchive=False)
         for nomAsso in Choix_global.abreviationsAsso:

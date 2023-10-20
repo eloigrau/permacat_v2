@@ -69,7 +69,7 @@
 }
 
 body {
-    /*background: url("/static/img/bckgnd-2.jpg") 0 0 no-repeat fixed;*/
+    /*background: url("/static/img/background/bckgnd-2.jpg") 0 0 no-repeat fixed;*/
     background: url("/static/img/background/bckgrnd-2-grain.jpg") 0 0 no-repeat fixed;
     background-size: 100%;
     margin: auto;
@@ -1922,7 +1922,7 @@ caption {
   font-weight: bold;
 	text-align: center;
 	padding: 10px 6px;
-	background: #aef0a8;
+	background: #f2ccaa;
    border-radius: 0.4em;
     border: 0.5px solid brown;
 

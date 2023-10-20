@@ -35,6 +35,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
                 # Use proper language setting automatically (default)
 
             "toolbar": [
+                ['insert', ['emoji']],
                 ['style', ['bold', 'italic', 'underline', 'clear', 'style', ]],
                 ['fontsize', ['fontsize']],
                 ['fontSizes', ['8', '9', '10', '11', '12', '14', '18', '22', '24', '36']],
@@ -54,6 +55,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
                     ['link', ['linkDialogShow', 'unlink']]
                 ],
                 "air": [
+                ['insert', ['emoji']],
                 ['style', ['bold', 'italic', 'underline', 'clear', 'style', ]],
                 ['fontsize', ['fontsize']],
                 ['fontSizes', ['8', '9', '10', '11', '12', '14', '18', '22', '24', '36']],

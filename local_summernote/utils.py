@@ -58,6 +58,7 @@ SUMMERNOTE_THEME_FILES = {
     'bs3': {
         'base_css': (
             'summernote/bootstrap.min.css',
+            'tam-emoji/css/emoji.css',
         ),
         'base_js': (
             'summernote/jquery-3.3.1.min.js',
@@ -73,11 +74,15 @@ SUMMERNOTE_THEME_FILES = {
             'summernote/jquery.fileupload.js',
             'summernote/summernote.min.js',
             'summernote/ResizeSensor.js',
+            'tam-emoji/js/tam-emoji.js',
+            #'tam-emoji/js/tam-emoji.min.js',
+            'tam-emoji/js/config.js'
         ),
     },
     'bs4': {
         'base_css': (
             'summernote/bootstrap.min.413.css',
+            'tam-emoji/css/emoji.css',
         ),
         'base_js': (
             'summernote/jquery-3.3.1.min.js',
@@ -103,6 +108,7 @@ SUMMERNOTE_THEME_FILES = {
         'default_css': (
             'summernote/summernote-lite.css',
             'summernote/local_summernote.css',
+            'tam-emoji/css/emoji.css',
         ),
         'default_js': (
             'summernote/jquery.ui.widget.js',
@@ -110,6 +116,9 @@ SUMMERNOTE_THEME_FILES = {
             'summernote/jquery.fileupload.js',
             'summernote/summernote-lite.min.js',
             'summernote/ResizeSensor.js',
+            'tam-emoji/js/tam-emoji.js',
+            #'tam-emoji/js/tam-emoji.min.js',
+            'tam-emoji/js/config.js'
         ),
     },
 }

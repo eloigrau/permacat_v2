@@ -32,9 +32,11 @@
 <meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
-<link href="https://fonts.googleapis.com/css?family=Chivo:400,700|Playfair+Display:700" rel="stylesheet">
+    <link href="{% static 'tam-emoji/css/emoji.css' %}" rel="stylesheet" type='text/css'>
 
-<script src="{% static 'js/sorttable.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Chivo:400,700|Playfair+Display:700" rel="stylesheet">
+
+    <script src="{% static 'js/sorttable.js' %}"></script>
 
 {% webpush_header %}
     {%block header %}
@@ -60,7 +62,7 @@
             {% endblock%}
 
         <div class="panel">
-            <div class="panel-title soustitre" >
+            <div class="panel-title soustitre article" >
                 <div class="row justify-content-sm-center">
                 <div class="col-sm-12 col-md-11 col-lg-10  textcenter" id="ref-titre">
                    {%block message%}

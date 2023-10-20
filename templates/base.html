@@ -21,6 +21,7 @@
     <link href="{% static 'css/fontgapi.css' %}" rel="stylesheet" type='text/css'>
     {%endcomment %}
     <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}" type='text/css'/>
+
     <script src="{% static 'js/jquery-latest.min.js' %}" type="text/javascript"></script>
 
 	<script src="{% static 'js/tether.min.js' %}"  type="text/javascript"></script>
@@ -47,8 +48,10 @@
     <link href="{% static 'css/fontfamily.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'css/style_list.css'%}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'tam-emoji/css/emoji.css' %}" rel="stylesheet" type='text/css'>
 
     <script src="{% static 'js/sorttable.js' %}"></script>
+
     {%block header %}
     {%endblock%}
 
@@ -68,7 +71,7 @@
         <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
             <div class="panel-heading">
                 {% block panel-heading %}
-                <div class="panel-title soustitre" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
+                <div class="panel-title soustitre article" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
                     <div class="row justify-content-sm-center">
                     <div class="col-sm-12 col-md-12 col-lg-12  textcenter">
                         <div class="row ">
@@ -93,12 +96,12 @@
                 {% block submenu%}{% endblock %}
                     {% block banniere2 %}
                     {% endblock%}
-                <div class="panel-body panelsoustitre  ">
+                <div class="panel-body panelsoustitre">
                 <div class="row justify-content-sm-center">
                     <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
                             {% block subtitle %}{% endblock %}
                 </div></div>
-                <div class="panel-body bodycontenu ">
+                <div class="panel-body bodycontenu contenu article">
                     {% block content %}{% endblock %}
                 </div>
             </div>

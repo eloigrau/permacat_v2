@@ -114,7 +114,7 @@
                         <ul class="dropdown-menu  nav5-dropdown-submenu">
                        <li> <a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}"><i class='fa fa-asterisk iconleft' ></i> Présentation </a></li>
 
-                            <li><a class="dropdown-item" href="https://festigraines.fr" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-comments iconleft' ></i> Festigraines.fr </a></li>
+                            {% comment %} <li><a class="dropdown-item" href="https://festigraines.fr" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-comments iconleft' ></i> Festigraines.fr </a></li>{% endcomment %}
    {% if request.user.adherent_rtg %}
                             <li class="divider" role="separator"></li>
                             <li> <a class="dropdown-item" href="{% url 'carte'  asso='rtg' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire </a></li>

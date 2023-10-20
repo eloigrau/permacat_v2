@@ -142,15 +142,13 @@
 
         <div class="row-sm-12 justify-content-center">
         <div class="col-sm-12  fiche_tags">
-            {% if article.tags.names  %}<
+            {% if article.tags.names  %}
             <p class="textcenter">
-                em>Mots-clés:</em>
+                <em>Mots-clés:</em>
            {% for tag in article.tags.names %}
             {{tag}}{%if not forloop.last%}, {%endif%}
            {% endfor %}
             </p>
-           {% endif %}
-             {% if article.themes.all  %}
            {% endif %}
         </div>
     </div>
@@ -192,11 +190,13 @@
     </nav>
 
 <div class="tab-content">
-  <div class="tab-pane fade show active" id="contenu">
-        <div class="contenu fiche">
-   {{ article.contenu |safe}}
-  </div>
-</div>
+    <div class="tab-pane fade show active " id="contenu">
+        <div class="row justify-content-center">
+        <div class="col contenu fiche">
+            {{ article.contenu |safe}}
+        </div>
+        </div>
+    </div>
 
   <div class="tab-pane fade" id="album">
         <div class="contenu atelier">

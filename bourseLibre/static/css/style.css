@@ -913,10 +913,11 @@ border: 1px inset rgba(28,110,164,0.65);
 }
 
 .banniere{
-border-color: #333;
-box-shadow: 0 10px 10px 0px grey;
+    border-color: #333;
+    box-shadow: 0 10px 10px 0px grey;
     border-radius: 0.3em;
     border:1.5px grey solid;
+    margin-bottom:15px;
 }
 
 .article{
@@ -1604,6 +1605,7 @@ table.greenTable tfoot .links a{
     padding: 10px;
     margin: 12px;
     min-height: 350px;
+    max-width:1100px;
 }
 
 

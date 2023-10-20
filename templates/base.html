@@ -98,15 +98,16 @@
                 {% block submenu%}{% endblock %}
                     {% block banniere2 %}
                     {% endblock%}
-                <div class="panel-body panelsoustitre  contenu article">
-                <div class="row justify-content-sm-center">
-                    <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
-                            {% block subtitle %}{% endblock %}
-                </div></div>
-                <div class="panel-body bodycontenu ">
-                    {% block content %}{% endblock %}
+                <div class="panel-body banniere panelsoustitre  ">
+                    <div class="row justify-content-sm-center">
+                        <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
+                                {% block subtitle %}{% endblock %}
+                        </div>
+                    </div>
+                    <div class="panel-body bodycontenu">
+                        {% block content %}{% endblock %}
+                    </div>
                 </div>
-            </div>
         </div>
 </div>
 

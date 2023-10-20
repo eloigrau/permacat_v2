@@ -130,7 +130,7 @@ class Choix:
     def get_logo_nomgroupe(abreviation):
         return 'img/logos/nom_'+abreviation+'.png'
 
-    def get_logo_nomgroupe_html(abreviation, taille=25):
+    def get_logo_nomgroupe_html(abreviation, taille=21):
         return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
 
     def get_type_annonce_asso(asso):
@@ -267,7 +267,7 @@ class Article(models.Model):
 
     @property
     def get_partagesAssoLogo(self):
-        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=20) for p in self.get_partagesAsso])))
+        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=18) for p in self.get_partagesAsso])))
 
     @property
     def get_logo_categorie(self):
@@ -290,9 +290,9 @@ class Article(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.get_logo_nomgroupe_html_taille(25)
+        return self.get_logo_nomgroupe_html_taille(21)
 
-    def get_logo_nomgroupe_html_taille(self, taille=25):
+    def get_logo_nomgroupe_html_taille(self, taille=21):
         return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
     @property

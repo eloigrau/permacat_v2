@@ -912,9 +912,13 @@ border: 1px inset rgba(28,110,164,0.65);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.badge {
+    border: 1px solid gray;
+}
+
 .banniere{
     border-color: #333;
-    box-shadow: 0 10px 10px 0px grey;
+    box-shadow: 0 3px 10px 0px grey;
     border-radius: 0.3em;
     border:1.5px grey solid;
     margin-bottom:15px;
@@ -2536,4 +2540,18 @@ padding-bottom:10px;
 
 .select2-selection--single{
 min-height:40px;
+}
+
+
+.span-groupe{
+    box-shadow: 0 3px 3px 0px grey;
+}
+
+.titre-article-accueil{
+    box-shadow: 0 0px 10px 0px grey;
+    border-radius: 0.3em
+}
+
+.titre-article-forum{
+    box-shadow: 0 5px 10px 0px grey;
 }

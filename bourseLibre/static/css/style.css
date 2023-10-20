@@ -1609,7 +1609,7 @@ table.greenTable tfoot .links a{
     padding: 10px;
     margin: 12px;
     min-height: 350px;
-    max-width:1100px;
+    max-width: 1200px;
 }
 
 
@@ -2558,5 +2558,6 @@ min-height:40px;
     background-image: radial-gradient(#f5ffd6, #ebf2d3);
     /*background: linear-gradient(90deg, rgba(112,219,255,1) 0%, rgba(230,247,247,1) 12%, rgba(125,231,133,1) 50%, rgba(230,247,247,1) 88%, rgba(176,189,255,1) 100%);
     background-image: radial-gradient(#eef2ff, #ccdee8);
+    background-image: radial-gradient(#f5ffd6, #ebf2d3);
     */
     }

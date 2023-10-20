@@ -15,23 +15,31 @@
 {% endblock %}
 
 {% block content %}
-<h4  class="textcenter">Récapitulatif {% if 'annee' in request.GET %} ({{request.GET.annee}}) {% else%} (toutes années) {% endif%} </h4>
-
+<div class="anchor_blank" id="ref-annee"></div>
 <p class="textcenter">
- <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante%}?" method="get" role = "search">
+<a href="?{{ request.GET.urlencode }}&annee=2022#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2022' %} btn-warning {%else%}btn-info{%endif%} ">2022</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%} ">2023</button></a>
+ {% comment %}
+<form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante%}?" method="get" role = "search">
      <span class="input-group-append">
         <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Année...">ok</button>
     </span>
  </form>
+{% endcomment %}
 </p>
+<h4  class="textcenter">Récapitulatif {% if 'annee' in request.GET %} ({{request.GET.annee}}) {% else%} (toutes années) {% endif%} </h4>
+
+
 <hr>
 <nav class="navbar  navbar-expand-md navbar-light justify-content-center">
 <div class="row justify-content-center">
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
                 <li class="nav-item  ">
-                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}">
+                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                           <button type="button" class="btn  btn-block {%if type_courant == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                               <h6>Tout</h6>
                        </button>
@@ -39,7 +47,7 @@
                 </li>
             {% for type_id, type_nom  in type_list %}
                 <li class="nav-item  ">
-                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante  %}?type_reunion={{type_id}}">
+                      <a  href="?{{ request.GET.urlencode }}&type_reunion={{type_id}}">
                           <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
                               <h6>{{type_nom}}</h6>
                        </button>
@@ -77,7 +85,8 @@
 
 <hr>
 <div class="row-sm-12">
-<div class="col-sm-12">
+<div class="col-sm-12 textcenter">
+    <h6>Calculer les frais en euros :</h6>
 	<form id="reunionForm" class="form-horizontal" role="form" action="" method="post"
 		enctype="multipart/form-data">
 		{% csrf_token %} <input type="hidden" name="Reunion"

@@ -57,24 +57,31 @@
         </div>
     </div>
 </div>
+<hr>
+
+{%endblock%}
+{% block content %}
+<div class="anchor_blank" id="ref-annee"></div>
 <p class="textcenter">
+<a href="?{{ request.GET.urlencode }}&annee=2022#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2022' %} btn-warning {%else%}btn-info{%endif%}">2022</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%}">2023</button></a>
+ {% comment %}
  <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation%}?" method="get" role = "search">
      <span class="input-group-append">
         <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">ok</button>
     </span>
  </form>
+{% endcomment %}
 </p>
-<hr>
-
-{%endblock%}
-{% block content %}
 <nav class="navbar  navbar-expand-md navbar-light justify-content-center">
 <div class="row justify-content-center">
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
             <li class="nav-item  ">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}">
+                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                       <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>Tout</h6>
                       </button>
@@ -82,7 +89,7 @@
             </li>
         {% for type_id, type_nom  in categorie_list %}
             <li class="nav-item  ">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation  %}?categorie={{type_id}}">
+                  <a  href="?{{ request.GET.urlencode }}&categorie={{type_id}}">
                       <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>{{type_nom}}</h6>
                    </button>

@@ -912,6 +912,13 @@ border: 1px inset rgba(28,110,164,0.65);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.banniere{
+border-color: #333;
+box-shadow: 0 10px 10px 0px grey;
+    border-radius: 0.3em;
+    border:1.5px grey solid;
+}
+
 .article{
 border-color: #333;
 box-shadow: 0 10px 10px 0px grey;
@@ -1297,6 +1304,7 @@ ul.errorlist{
     padding: 1px;
     border-radius: 0.2em;
     margin: 5px;
+    margin-bottom: 15px;
 }
     .grid-container {
         grid-template-columns: 100% ;

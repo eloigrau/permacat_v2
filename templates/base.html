@@ -71,7 +71,7 @@
         <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
             <div class="panel-heading">
                 {% block panel-heading %}
-                <div class="panel-title soustitre contenu article" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
+                <div class="panel-title soustitre contenu banniere" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
                     <div class="row justify-content-sm-center">
                     <div class="col-sm-12 col-md-12 col-lg-12  textcenter">
                         <div class="row ">
@@ -92,11 +92,13 @@
                     </div>
                 </div>
                 {% endblock %}
+            </div>
+            <div class="panel-body">
                     <div class="anchor_blank" id="ref-titre"></div>
                 {% block submenu%}{% endblock %}
                     {% block banniere2 %}
                     {% endblock%}
-                <div class="panel-body panelsoustitre">
+                <div class="panel-body panelsoustitre  contenu article">
                 <div class="row justify-content-sm-center">
                     <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
                             {% block subtitle %}{% endblock %}
@@ -104,7 +106,6 @@
                 <div class="panel-body bodycontenu ">
                     {% block content %}{% endblock %}
                 </div>
-            </div>
             </div>
         </div>
 </div>

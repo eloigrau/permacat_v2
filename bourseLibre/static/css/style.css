@@ -2545,13 +2545,18 @@ min-height:40px;
 
 .span-groupe{
     box-shadow: 0 3px 3px 0px grey;
+    background-color: #e2f4a9;
 }
 
 .titre-article-accueil{
-    box-shadow: 0 0px 10px 0px grey;
-    border-radius: 0.3em
+    /*background-image: linear-gradient(90deg, #d5e5a3, #eaffa9, #d5e5a3);*/
+    background-image: radial-gradient(#e6f9ac, #d5e5a3);
 }
 
 .titre-article-forum{
-    box-shadow: 0 5px 10px 0px grey;
-}
+    box-shadow: 0 1px 6px 0px grey;
+    background-image: radial-gradient(#f5ffd6, #ebf2d3);
+    /*background: linear-gradient(90deg, rgba(112,219,255,1) 0%, rgba(230,247,247,1) 12%, rgba(125,231,133,1) 50%, rgba(230,247,247,1) 88%, rgba(176,189,255,1) 100%);
+    background-image: radial-gradient(#eef2ff, #ccdee8);
+    */
+    }

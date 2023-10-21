@@ -114,7 +114,18 @@ class Choix:
                          #"date du dernier commentaire":'-date_dernierMessage',
                          "Type de projet":'categorie', "statut du projet":"statut",
                          'auteur':'auteur', 'titre':'titre'}
-
+    logo_asso = {
+        "public": "nom_public.webp",
+        "pc": "nom_pc.png",
+        "scic": "nom_scic.png",
+        "fer": "nom_fer.png",
+        "rtg": "nom_rtg.png",
+        "viure": "nom_viure.webp",
+        "citealt": "nom_citealt.webp",
+        "bzz2022": "nom_bzz2022.webp",
+        "jp": "nom_jp.webp",
+        "conf66":"nom_conf66.png"
+    }
     def get_couleur(categorie):
         try:
             return Choix.couleurs_annonces[categorie]
@@ -128,9 +139,10 @@ class Choix:
             return ""
 
     def get_logo_nomgroupe(abreviation):
-        return 'img/logos/nom_'+abreviation+'.png'
+        return 'img/logos/'+ Choix.logo_asso[abreviation]
+        #return 'img/logos/nom_'+abreviation+'.png'
 
-    def get_logo_nomgroupe_html(abreviation, taille=21):
+    def get_logo_nomgroupe_html(abreviation, taille=22):
         return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
 
     def get_type_annonce_asso(asso):
@@ -267,7 +279,7 @@ class Article(models.Model):
 
     @property
     def get_partagesAssoLogo(self):
-        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=18) for p in self.get_partagesAsso])))
+        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=17) for p in self.get_partagesAsso])))
 
     @property
     def get_logo_categorie(self):

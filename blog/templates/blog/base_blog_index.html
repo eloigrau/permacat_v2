@@ -14,7 +14,7 @@
             <ul class="navbar-nav subnavbar2">
                 {% for  dossier_id, dossier_nom in dossiers_list %}
                 <a  href="{% url 'blog:index_asso' asso='public'%}?categorie={{dossier_id}}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn {%if dossier_courant == dossier_nom %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if dossier_courant == dossier_nom %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{dossier_nom}}</h6>
                     </li>
                 </a>

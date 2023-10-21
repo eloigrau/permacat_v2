@@ -84,7 +84,7 @@
                 </div>
 
                 <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#suivre" title="S'abonner...">
-     {% fontawesome_icon 'bell' title='abnnement' %}
+     {% fontawesome_icon 'bell' title='abonnement' %}
     </button>
     <!-- Modal -->
     <div class="modal fade" id="suivre" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -202,7 +202,7 @@
 {% block contenu %}
 <hr>
 <div class="row justify-content-center" >
-    <nav class="navbar navbar-expand-lg justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center">
         <div class="navbar-header">
              <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
              <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
@@ -211,7 +211,7 @@
             <ul class="navbar-nav subnavbar2">
                 {% for  asso_id, asso_nom in asso_list %}
                 <a  href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>

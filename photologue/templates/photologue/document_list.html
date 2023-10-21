@@ -92,13 +92,13 @@
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2">
                 <a  href="{% url 'photologue:doc-list' %}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
                           <h6>Tout</h6>
                     </li>
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
                 <a  href="{% url 'photologue:doc-list' %}?asso={{asso_ab}}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>

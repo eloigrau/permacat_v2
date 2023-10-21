@@ -1330,9 +1330,10 @@ ul.errorlist{
         margin-left:0px;
         margin-right:0px;
         }
+
 .contenu{
     /*margin-top: 2em;*/
-    margin-bottom: 0.1em;
+    margin-bottom: 0.5em;
     border-radius: 0.02em;
     padding: 0.2px 0.2px 0.2px 0.2px;
     background: white;

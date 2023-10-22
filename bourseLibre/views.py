@@ -1217,9 +1217,14 @@ def salon_accueil(request):
     salons_recents = [s.salon for s in salons_inscrit.filter(Q(salon__date_dernierMessage__gte=dateMin) | Q(salon__date_creation__gte=dateMin)).order_by(Lower("salon__titre"))]
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
-    inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) + list(salons_publics.values('tags').distinct())))
-    inner_qs.remove(None)
-    tags = Tag.objects.filter(id__in=inner_qs)
+    try:
+        inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) + list(salons_publics.values('tags').distinct())))
+        inner_qs.remove(None)
+        tags = Tag.objects.filter(id__in=inner_qs)
+    except Exception as e:
+        action.send(request.user, verb='erreur', description="Erreur %s" % str(e))
+        tags = []
+
     return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })
 
 

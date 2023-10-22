@@ -112,7 +112,9 @@ function get_salons_fromtag(badge, url_tag) {
     <a class="nav-item nav-link active" href="#recents" data-toggle="tab">Récents </a>
     <a class="nav-item nav-link" href="#publics" data-toggle="tab"> Publics</a>
     <a class="nav-item nav-link" href="#prives" data-toggle="tab"> Privés</a>
+    {% if tags %}
     <a class="nav-item nav-link" href="#motscles" data-toggle="tab"> Par mot-clés</a>
+    {% endif %}
 </nav>
 
 <div class="tab-content">

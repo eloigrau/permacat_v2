@@ -1224,7 +1224,7 @@ def salon_accueil(request):
         inner_qs.remove(None)
         tags = Tag.objects.filter(id__in=inner_qs)
     except Exception as e:
-        action.send(request.user, verb='erreur', description="Erreur %s %s " % (str(e), traceback.format_exc()))
+        action.send(request.user, verb='erreur', description="Erreur %s %s \n %s" % (str(e), traceback.format_exc(), str(inner_qs)))
         tags = []
 
     return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })

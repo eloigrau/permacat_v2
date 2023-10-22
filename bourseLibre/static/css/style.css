@@ -1241,6 +1241,9 @@ td.proprieteJardin{
 td.nomProprieteJardin{
     background-color:#e6ffcc;
 }
+td.nomProprieteSalon{
+    background-color:#ded8ff;
+}
 
 .textepetit{
     font-size:0.8em;

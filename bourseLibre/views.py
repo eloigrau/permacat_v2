@@ -1335,7 +1335,7 @@ def modifierSalon(request, slug):
 
     form = ModifierSalonDesciptionForm(request.POST or None, instance=salon)
     if form.is_valid():
-        salon = form.save()
+        salon = form.save(commit=False)
 
         message = Message_salon.objects.create(
             salon=salon,

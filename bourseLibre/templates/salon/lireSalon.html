@@ -91,7 +91,7 @@
         <table class="table table-condensed ">
             <tbody>
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Description :
                         </td>
                         <td class="textleft">
@@ -122,7 +122,7 @@
                     </tr>
                     {% if salon.article%}
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Article associé :
                         </td>
                         <td class="textcenter">
@@ -136,7 +136,7 @@
                     {%endif%}
                     {% if salon.jardin%}
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Jardin associé :
                         </td>
                         <td class="textcenter">
@@ -150,12 +150,12 @@
                     {%endif%}
                     {% if salon.tags%}
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Mots clés :
                         </td>
                         <td class="textcenter">
                                {% for tag in salon.tags.names %}
-                            <span class="badge badge-Light">{{tag}}</span>{%if not forloop.last%}, {%endif%}
+                            <span class="badge badge-Light">{{tag}}</span> 
                                {% endfor %}
                         </td>
                     </tr>
@@ -173,7 +173,7 @@
         <table class="table table-condensed ">
             <tbody>
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Membres du salon
                         </td>
                         <td class="textleft">
@@ -183,7 +183,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Mails
                         </td>
                         <td class="textleft">
@@ -193,7 +193,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="nomProprieteJardin">
+                        <td class="nomProprieteSalon">
                             Invités
                         </td>
                         <td class="textleft">

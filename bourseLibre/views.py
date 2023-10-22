@@ -28,6 +28,7 @@ from django.http import HttpResponse
 from django import forms
 from django.http import Http404
 from django.utils import timezone
+from taggit.models import Tag
 
 from blog.models import Article, Projet, EvenementAcceuil, Evenement
 from ateliers.models import Atelier
@@ -1216,8 +1217,10 @@ def salon_accueil(request):
     salons_recents = [s.salon for s in salons_inscrit.filter(Q(salon__date_dernierMessage__gte=dateMin) | Q(salon__date_creation__gte=dateMin)).order_by(Lower("salon__titre"))]
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
-
-    return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis})
+    inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) + list(salons_publics.values('tags').distinct())))
+    inner_qs.remove(None)
+    tags = Tag.objects.filter(id__in=inner_qs)
+    return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })
 
 
 class ListeSalons(ListView):
@@ -1293,7 +1296,7 @@ def salon(request, slug):
                     pass
         return redirect(request.path)
 
-    return render(request, 'salon/salon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})
+    return render(request, 'salon/lireSalon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})
 
 @login_required
 def creerSalon(request):
@@ -1307,6 +1310,7 @@ def creerSalon(request):
             message = request.user.username + " a créé le salon",
             auteur = get_object_or_404(Profil, username="bot_permacat"),
             date_creation=now()).save()
+        form.save_m2m()
 
         if salon.estPublic:
             url = reverse('salon', kwargs={'slug':salon.slug})
@@ -1331,13 +1335,14 @@ def modifierSalon(request, slug):
             auteur=get_object_or_404(Profil, username="bot_permacat"),
             date_creation=now()).save()
 
+        form.save_m2m()
+
         if salon.estPublic:
             url = reverse('salon', kwargs={'slug':salon.slug})
             action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 
         return redirect(salon.get_absolute_url())
     return render(request, 'salon/modifierSalon.html', {'form': form, 'salon':salon})
-
 
 class ModifierSalonClass(UpdateView):
     model = Salon

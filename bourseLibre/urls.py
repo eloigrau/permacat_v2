@@ -228,6 +228,7 @@ urlpatterns = [
     path('admin/inscrireProfilAuGroupe/<int:id_profil>/<str:asso_abreviation>', views_admin.inscrireProfilAuGroupe,  name="inscrireProfilAuGroupe"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
+    path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),
 ]
 

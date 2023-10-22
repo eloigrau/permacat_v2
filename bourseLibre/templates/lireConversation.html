@@ -54,7 +54,11 @@ Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% 
 </script>
 
 <hr>
-<h5>Répondre : </h5>
+{% if not page_obj %}
+<h5>Commencer la discussion :</h5>
+{% else %}
+<h5>Répondre :</h5>
+{% endif %}
 <div>
     <input type="hidden" name="Nouveau Message" value="{{ message }}">
 

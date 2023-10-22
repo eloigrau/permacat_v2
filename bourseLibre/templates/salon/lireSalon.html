@@ -1,0 +1,241 @@
+{% extends 'base_asso.html' %}
+{% load fontawesome %}
+{% load blog_filters %}
+{% load activity_tags %}
+{%block message%}{%endblock%}
+{%block title%}- Salon de discussion {{salon.titre}}{%endblock%}
+{% block subtitle %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="row ">
+            <div class="col-md-4 textleft ">
+                 <a href="{% url 'salon_accueil' %}">
+                    <button type="button" class="btn  btn-info" >
+                       {% fontawesome_icon 'home' title='home' %}
+                    </button>
+                    </a>
+            </div>
+            <div class="col-md-4 ">
+            </div>
+            <div class="col-md-4 textright">
+            <a href="{% url 'suivre_salon' slug_salon=salon.slug%}">
+                {% if request.user|is_following:suivis %}
+                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
+                     {% fontawesome_icon 'bell' title='abnnement' %}
+                </button>
+                {% else %}
+                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
+                     {% fontawesome_icon 'bell-slash' title='abnnement' %}
+                </button>
+                {% endif %}
+            </a>
+                <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+                 {% fontawesome_icon 'question-circle' %}
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog textaide" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                          <div class="row justify-content-center">
+                           <h5 > Qu'est ce qu'un salon de discussion ?</h5>
+                          </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                        <div class="modal-body textleft">
+                          <p>Le salon de discussion est un espace où on peut discuter en petit groupe pour s'exprimer librement, un peu comme un groupe "whatsapp" ou "telegram"...</p>
+                            <p>Chaque "Salon" est indépendant. Il est soit ouvert à toustes (public) soit sur invitation (privé). Un salon "privé" n'est accessible et visible que par les membres du salon (sur invitation d'un des membres), tandis que les salons "publics" peuvent etre consultés et commentés par tous les inscrits.</p>
+                            <p>Il est possible de rattacher un salon de discussion à un article du forum : pour cela il faut "ajouter un salon" depuis la page de l'article (sous le titre).</p>
+                            {% if not salon.estPublic %}<p>Pour voir les participants au salon privé et en inviter d'autres, il faut cliquer sur le bouton bleu "Salon de discussion Privé"</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center ">
+            <div class="col-sm-12 col-md-10 col-lg-8 titre_salon">
+                <h4> {{salon.titre}}</h4>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="anchor_blank" id="idContenu"></div>
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#discussion" data-toggle="tab"><i class="fa fa-comments" aria-hidden="true"></i> </a>
+    <a class="nav-item nav-link" href="#infos" data-toggle="tab"> <i class="fa fa-info"></i></a>
+{% if not salon.estPublic %}
+    <a class="nav-item nav-link" href="#membres" data-toggle="tab"> <i class="fa fa-users icon-left"></i></a>
+{% endif %}
+</nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="discussion">
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+{% include 'salon.html'%}
+            </div>
+       </div>
+    </div>
+  <div class="tab-pane fade" id="infos">
+    <div class="row" id="contact">
+        <div class="col-sm-12 textcenter">
+        <table class="table table-condensed ">
+            <tbody>
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Description :
+                        </td>
+                        <td class="textleft">
+                    {% if salon.description%}
+                            <div class="row">
+                            <div class="col-sm-12 textcenter">
+                            {{salon.description|safe}}
+                            </div></div>
+
+                            <div class="row">
+                            <div class="col-sm-12 textcenter">
+                                <a href="{% url 'modifierSalon' slug=salon.slug %}">
+                                    <button type="button" class="btn btn-sm btn-warning" > Modifier </button>
+                                </a>
+                            </div>
+                            </div>
+                            {%else%}
+                    <div class="row">
+                    <div class="col-sm-12 textcenter">
+                        <a href="{% url 'modifierSalon' slug=salon.slug %}">
+                            <button type="button" class="btn btn-sm btn-warning" > Ajouter une description
+                            </button>
+                        </a>
+                    </div>
+                    </div>
+                    {%endif%}
+                        </td>
+                    </tr>
+                    {% if salon.article%}
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Article associé :
+                        </td>
+                        <td class="textcenter">
+                        <a href="{{salon.article.get_absolute_url }}">
+                            <button type="button" class="btn btn-secondary btn-sm ">
+                            {{salon.article.titre}}
+                        </button>
+                        </a>
+                        </td>
+                    </tr>
+                    {%endif%}
+                    {% if salon.jardin%}
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Jardin associé :
+                        </td>
+                        <td class="textcenter">
+                        <a href="{{salon.jardin.get_absolute_url }}">
+                            <button type="button" class="btn btn-secondary btn-sm ">
+                            {{salon.jardin.titre}}
+                        </button>
+                        </a>
+                        </td>
+                    </tr>
+                    {%endif%}
+                    {% if salon.tags%}
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Mots clés :
+                        </td>
+                        <td class="textcenter">
+                               {% for tag in salon.tags.names %}
+                            <span class="badge badge-Light">{{tag}}</span>{%if not forloop.last%}, {%endif%}
+                               {% endfor %}
+                        </td>
+                    </tr>
+                    {%endif%}
+            </tbody>
+        </table>
+        </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="membres">
+
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+
+        <table class="table table-condensed ">
+            <tbody>
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Membres du salon
+                        </td>
+                        <td class="textleft">
+                            {% for i in inscrits %}
+                                <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last%}, {%endif%}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Mails
+                        </td>
+                        <td class="textleft">
+                             <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}</div>
+                        <div class="textcenter">  <button onclick="copyToClipboardElement('#listeMails')">Copier</button> </div>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="nomProprieteJardin">
+                            Invités
+                        </td>
+                        <td class="textleft">
+                        {% for i in invites %}
+                        <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last %}, {%endif%}
+                        {% endfor %}
+                      <p class="textright">
+                            <a href="{% url 'inviterDansSalon' slug_salon=salon.slug %}">
+                                <button type="button" class="btn btn-success" > <i class="fa fa-plus"></i>  Inviter une personne
+                                </button>
+                            </a>
+                            <a href="{% url 'sortirDuSalon' slug_salon=salon.slug %}">
+                                <button type="button" class="btn btn-danger"  onclick="clicked();" id="boutonSortir" > <i class="fa fa-minus"></i>  sortir du salon
+                                </button>
+                            </a>
+                      </p>
+                        </td>
+                    </tr>
+
+            </tbody>
+        </table>
+
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+
+{% endblock %}
+{% block content %}
+
+
+<script type="text/javascript">
+    function clicked() {
+       if (confirm("Etes vous sûr.e de vouloir quitter ce salon (vous ne pourrez plus y accéder à moins que quelqu'un vous re-invite")) {
+            const btn = document.querySelector('#boutonSortir');
+           btn.submit();
+       } else {
+           return false;
+       }
+    }
+</script>
+
+{% endblock %}
+

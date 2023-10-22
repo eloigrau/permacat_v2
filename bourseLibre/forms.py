@@ -524,7 +524,7 @@ class creerAction_articlenouveauForm(forms.Form):
 class SalonForm(forms.ModelForm):
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic', 'description' ]
+        fields = ['titre', 'estPublic', 'description', 'tags' ]
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -537,6 +537,13 @@ class SalonForm(forms.ModelForm):
         inscrit.save()
         return instance
 
+class ModifierSalonForm(forms.ModelForm):
+    class Meta:
+        model = Salon
+        fields = ['titre', 'estPublic', 'description', 'tags' ]
+        widgets = {
+            'description': SummernoteWidget(),
+        }
 
 class ModifierSalonDesciptionForm(forms.ModelForm):
 

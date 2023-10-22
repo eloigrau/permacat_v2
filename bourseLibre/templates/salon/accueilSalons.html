@@ -2,6 +2,8 @@
 {% load fontawesome %}
 {% load blog_filters %}
 {% load activity_tags %}
+
+
 {%block message%}{%endblock%}
 {%block title%}- Salons de discussion {%endblock%}
 {% block subtitle %}
@@ -56,67 +58,86 @@
 </div>
 {% endblock %}
 {% block content %}
+
+<script>
+
+function get_salons_fromtag(badge, url_tag) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#salons_tagges").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
 <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-sm-12 textcenter">
-                <a href="{% url 'creerSalon' %}">
-                <button type="button" class="btn btn-success" >
-                    <i class="fa fa-plus"></i> Créer un nouveau salon
-                </button>
-                </a>
-            </div>
-        </div>
-    <hr>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <a href="{% url 'creerSalon' %}">
+        <button type="button" class="btn btn-success" >
+            <i class="fa fa-plus"></i> Créer un nouveau salon
+        </button>
+        </a>
+    </div>
+</div>
+<hr>
 
 {% if invit %}
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-                <h5 class="textcenter">Invitations :</h5>
-            {% for invitation in invit %}
-               <div class="row justify-content-center ">
-                <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-                    <p><a  href="{{invitation.salon.get_absolute_url}}" class="boutonSalon_invitation" > {{ invitation.texte }}
-                    </a></p>
-                </div>
-               </div>
-            {% endfor %}
-            </div>
+<div class="row justify-content-center">
+    <div class="col-sm-12">
+        <h5 class="textcenter">Invitations :</h5>
+    {% for invitation in invit %}
+       <div class="row justify-content-center ">
+        <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
+            <p><a  href="{{invitation.salon.get_absolute_url}}" class="boutonSalon_invitation" > {{ invitation.texte }}
+            </a></p>
         </div>
+       </div>
+    {% endfor %}
+    </div>
+</div>
 <hr>
 {% endif %}
+
 
 <div class="anchor_blank" id="idContenu"></div>
 <nav class="nav nav-tabs justify-content-center">
     <a class="nav-item nav-link active" href="#recents" data-toggle="tab">Récents </a>
     <a class="nav-item nav-link" href="#publics" data-toggle="tab"> Publics</a>
     <a class="nav-item nav-link" href="#prives" data-toggle="tab"> Privés</a>
+    <a class="nav-item nav-link" href="#motscles" data-toggle="tab"> Par mot-clés</a>
 </nav>
 
 <div class="tab-content">
   <div class="tab-pane fade show active" id="recents">
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-            {% for salon in salons_recents %}
-                {% include 'salon/template_salonBouton.html' %}
-            {% endfor %}
-            </div>
-       </div>
+       {% include 'salon/salons_list_template.html' with salons=salons_recents%}
     </div>
-  <div class="tab-pane fade show active" id="publics">
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-            {% for salon in salons_publics %}
-                {% include 'salon/template_salonBouton.html' %}
-            {% endfor %}
-            </div>
-       </div>
+  <div class="tab-pane fade" id="publics">
+       {% include 'salon/salons_list_template.html' with salons=salons_publics%}
     </div>
   <div class="tab-pane fade" id="prives">
+       {% include 'salon/salons_list_template.html' with salons=salons_prives%}
+  </div>
+  <div class="tab-pane fade" id="motscles">
+      <p class="textcenter">Selectionner un mot clé : </p>
+        <div class="row justify-content-center">
+            <div class="col-sm-12 textcenter">
+            {% for tag in tags %}
+                <button class="btn badge badge-info" onclick="get_salons_fromtag(this, '{% url 'ajax_salonsParTag' tag=tag %}')">{{ tag }}</button>
+            {% endfor %}
+            </div>
+        </div>
         <div class="row justify-content-center">
             <div class="col-sm-12">
-            {% for salon in salons_prives %}
-                {% include 'salon/template_salonBouton.html' %}
-            {% endfor %}
+                <div id="salons_tagges">
+                </div>
             </div>
         </div>
   </div>
@@ -124,4 +145,3 @@
 
 </div>
 {% endblock %}
-

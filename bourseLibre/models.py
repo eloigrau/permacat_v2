@@ -28,6 +28,7 @@ from .settings.production import SERVER_EMAIL
 import simplejson
 from datetime import datetime
 from webpush import send_user_notification
+from taggit.managers import TaggableManager
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
 
@@ -1110,7 +1111,8 @@ class Salon(models.Model):
     jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
                                 help_text="Le salon peut être associé à un jardin", blank=True, null=True)
 
-    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True, related_name="tag_salon")
+
 
     class Meta:
         ordering = ('titre',)

@@ -1,7 +1,8 @@
-from .models import Produit
+from .models import Produit, Salon
 
 from django.shortcuts import render
 from rest_framework import viewsets
+from django.contrib.auth.decorators import login_required
 #from rest_framework import permissions
 from .serializers import ProduitSerializer
 
@@ -29,3 +30,8 @@ def ajax_annonces(request):
         return render(request, 'ajax/annonces_list.html', {})
     qs = Produit.objects.filter(asso__abreviation="public").select_subclasses()
     return render(request, 'ajax/annonces_list.html', {"qs":qs})
+
+@login_required
+def salonsParTag(request, tag):
+    salons = Salon.objects.filter(tags__name__in=[tag, ]).distinct()
+    return render(request, 'salon/salons_list_template_motcle.html', {'salons': salons, 'tag':tag})

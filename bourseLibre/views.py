@@ -1222,7 +1222,7 @@ def salon_accueil(request):
         inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) +
                             list( salons_publics.values_list('tags').distinct())))
         inner_qs.remove(None)
-        inner_qs.remove([None, ])
+        inner_qs.remove((None, ))
         tags = Tag.objects.filter(id__in=inner_qs)
     except Exception as e:
         action.send(request.user, verb='erreur', description="Erreur %s %s \n %s" % (str(e), traceback.format_exc(), str(inner_qs)))

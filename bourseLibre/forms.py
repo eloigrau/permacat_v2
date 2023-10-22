@@ -549,7 +549,7 @@ class ModifierSalonDesciptionForm(forms.ModelForm):
 
     class Meta:
         model = Salon
-        fields = ['titre', 'description' ]
+        fields = ['titre', 'description', 'tags']
         widgets = {
             'description': SummernoteWidget(),
         }

@@ -126,9 +126,9 @@
 <hr>
 
 <div class="row ">
-<div class="col-sm-12 textcenter">
+<div class="col-sm-12 textcenter ">
 	    {% for photo in album.public %}
-	        <a href="{{ photo.get_absolute_url }}">
+	        <span class="helper"></span> <a href="{{ photo.get_absolute_url }}">
 	             <img src="{{ photo.get_thumbnail_url }}" class="thumbnail" alt="{{ photo.title }}">
 	        </a>
 	    {% endfor %}

@@ -2587,3 +2587,6 @@ min-height:40px;
     height: 100%;
     vertical-align: middle;
 }
+.thumbnail{
+    max-height: 95vh;
+}

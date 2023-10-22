@@ -32,6 +32,9 @@ class AlbumListView(ListView):
     def get_queryset(self):
         qs = Album.objects.on_site()
 
+        if 'asso' in self.request.GET:
+            qs = qs.filter(asso__abreviation=self.request.GET["asso"])
+
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):
                 qs = qs.exclude(asso__abreviation=nomAsso)
@@ -42,6 +45,11 @@ class AlbumListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="albums")
+        context['asso_list'] = self.request.user.getListeAbreviationsNomsAssoEtPublic()  # [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+
+        if 'asso' in self.request.GET:
+            context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"]).nom
+            context['asso_courante_abreviation'] = self.request.GET["asso"]
         return context
 
 class AlbumDetailView(DetailView):
@@ -100,7 +108,6 @@ class PhotoDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['album'] = self.object.get_album()
         return context
-
 
 
 class DocListView(ListView):

@@ -285,7 +285,18 @@
             <ul class="dropdown-menu dropdown-menu1 nav8-dropdown" aria-labelledby="navbarDropdownMenuLink">
          <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> Salons </a></li>
                  <li><a class="dropdown-item" href="{% url 'conversations' %}"> Messagerie</a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Documents / Fichiers</a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Albums photo</a></li>
                 <li class="divider" role="separator"></li>
+                <li class="dropdown-submenu">
+                    <a class="dropdown-item dropdown-toggle"  href="#">Ateliers </a>
+                    <ul class="dropdown-menu nav8-dropdown-submenu">
+                        <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"><i class='fa fa-folder-open iconleft' ></i>  Voir les ateliers </a></li>
+                        {% for atelier in liste_ateliers %}
+                        <li><a class=" dropdown-item " href="{%url 'ateliers:lireAtelier' slug=atelier.slug %}"><span>{{atelier.titre}} {% if atelier.start_time %}({{ atelier.start_time|date:"d/m" }}){% endif %} </span></a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
                 <li class="dropdown-submenu">
                     <a class="dropdown-item dropdown-toggle"  href="#">Projets</a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
@@ -373,22 +384,7 @@
                     </ul>
                 </li>
                 {% endcomment %}
-                <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Ateliers </a>
-                    <ul class="dropdown-menu nav8-dropdown-submenu">
-                        <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"><i class='fa fa-folder-open iconleft' ></i>  Voir les ateliers </a></li>
-                        {% for atelier in liste_ateliers %}
-                        <li><a class=" dropdown-item " href="{%url 'ateliers:lireAtelier' slug=atelier.slug %}"><span>{{atelier.titre}} {% if atelier.start_time %}({{ atelier.start_time|date:"d/m" }}){% endif %} </span></a></li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Documents </a>
-                    <ul class="dropdown-menu nav8-dropdown-submenu">
-                        <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Albums photo</a></li>
-                        <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Fichiers </a></li>
-                    </ul>
-                </li>
+
 
             </ul>
         </li>

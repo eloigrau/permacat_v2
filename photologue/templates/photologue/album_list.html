@@ -66,7 +66,27 @@
 {% endblock %}
 {% block content %}
 
-
+<hr>
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center">
+        <div class="navbar-header">
+             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_asso">
+            <ul class="navbar-nav subnavbar2">
+                {% for  asso_id, asso_nom in asso_list %}
+                <a  href="{% url 'photologue:album-list' %}?asso={{asso_id}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+<hr>
 
     {% if object_list %}
 {% include 'pagination_new.html' %}
@@ -75,13 +95,13 @@
             <div class="col-md-4 ">
                  <p class="infos  textepetit justify-content-center textcenter">
 
+                     <span>{{ album.asso.get_logo_nomgroupe_html|safe}}</span>
             <a href="{% url 'profil' album.auteur.id %}">
-                <span class="badge badge-Light">
-                posté par  {{ album.auteur.username }},
+                <span class="badge badge-light">
+                posté par  {{ album.auteur.username }}
                 </span>
             </a>
             <span class="badge badge-Light">le {{ album.date_creation }}</span>
-            <span class="badge badge-success"> {{ album.asso }}</span>
              {% if album.estModifiables %}
             <span class="badge badge-Light"> modifiable </span>
              {% endif %}

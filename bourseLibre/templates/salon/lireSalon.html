@@ -66,6 +66,8 @@
     </div>
 </div>
 
+{% endblock %}
+{% block content %}
 <div class="anchor_blank" id="idContenu"></div>
 <nav class="nav nav-tabs justify-content-center">
     <a class="nav-item nav-link active" href="#discussion" data-toggle="tab"><i class="fa fa-comments" aria-hidden="true"></i> </a>
@@ -77,7 +79,7 @@
 
 <div class="tab-content">
   <div class="tab-pane fade show active" id="discussion">
-        <div class="row justify-content-center">
+        <div class="row">
             <div class="col-sm-12">
 {% include 'salon.html'%}
             </div>
@@ -185,8 +187,8 @@
                             Mails
                         </td>
                         <td class="textleft">
-                             <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}</div>
-                        <div class="textcenter">  <button onclick="copyToClipboardElement('#listeMails')">Copier</button> </div>
+                             <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}
+                                 &nbsp;<button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier</button>
 
                         </td>
                     </tr>
@@ -218,12 +220,6 @@
     </div>
 </div>
 </div>
-
-
-
-
-{% endblock %}
-{% block content %}
 
 
 <script type="text/javascript">

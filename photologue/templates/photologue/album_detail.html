@@ -14,6 +14,9 @@
 <div class="col-md-6 textcenter">
         <h5>{{ album.title }}
  <small><button class="btn btn-light" id="copyButton" ><i class="fa fa-link"></i></button></small></h5>
+     <p class="">
+    {{ album.asso.get_logo_nomgroupe_html|safe }}
+     </p>
      <p class="infos  textepetit">
 
             <a href="{% url 'profil' object.auteur.id %}">
@@ -22,7 +25,6 @@
                 </span>
             </a>
             <span class="badge badge-Light">le {{ album.date_creation }}</span>
-            <span class="badge badge-success"> {{ album.asso }}</span>
                       {% if album.estModifiables %}
             <span class="badge badge-Light"> modifiable </span>
              {% endif %}
@@ -85,7 +87,7 @@
 
 
 <div class="row justify-content-center">
-<div class="col-sm-12 col-md-8 col-lg-6 textcenter">
+<div class="col-sm-12 col-md-10 col-lg-8 textcenter carousel_album">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
 	    {% for photo in album.public %}

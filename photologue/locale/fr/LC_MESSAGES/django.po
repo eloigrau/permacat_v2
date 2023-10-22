@@ -678,7 +678,7 @@ msgstr "Filtrer par année."
 #: templates/photologue/album_archive.html:32
 #: templates/photologue/album_list.html:26
 msgid "No galleries were found"
-msgstr "Aucun album trouvé."
+msgstr "Aucun album pour l'instant."
 
 #: templates/photologue/album_archive_day.html:4
 #: templates/photologue/album_archive_day.html:9
@@ -690,7 +690,7 @@ msgstr "Galeries du %(show_day)s"
 #: templates/photologue/album_archive_month.html:32
 #: templates/photologue/album_archive_year.html:32
 msgid "No galleries were found."
-msgstr "Aucun album trouvé."
+msgstr "Aucun album pour l'instant."
 
 #: templates/photologue/album_archive_day.html:22
 msgid "View all galleries for month"

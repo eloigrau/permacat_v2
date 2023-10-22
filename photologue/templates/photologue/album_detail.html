@@ -87,7 +87,7 @@
 
 
 <div class="row justify-content-center">
-<div class="col-sm-12 col-md-9 col-lg-7 textcenter">
+<div class="col-sm-12 col-md-10 col-lg-8 textcenter carousel_album">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
 	    {% for photo in album.public %}
@@ -96,9 +96,9 @@
   </ol>
   <div class="carousel-inner">
 	    {% for photo in album.public %}
-    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} carousel_album ">
-	       <span class="helper"></span>  <a href="{{ photo.get_absolute_url }}">
-	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} img_album" src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
+    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
+	        <span class="helper"></span><a href="{{ photo.get_absolute_url }}">
+	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
 	        </a>
     </div>
           {% endfor %}
@@ -128,7 +128,7 @@
 <div class="row ">
 <div class="col-sm-12 textcenter">
 	    {% for photo in album.public %}
-	        <span class="helper"></span> <a href="{{ photo.get_absolute_url }}">
+	        <a href="{{ photo.get_absolute_url }}">
 	             <img src="{{ photo.get_thumbnail_url }}" class="thumbnail" alt="{{ photo.title }}">
 	        </a>
 	    {% endfor %}

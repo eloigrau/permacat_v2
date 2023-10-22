@@ -96,9 +96,9 @@
   </ol>
   <div class="carousel-inner">
 	    {% for photo in album.public %}
-    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} arousel_album ">
+    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} carousel_album ">
 	        <a href="{{ photo.get_absolute_url }}">
-	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
+	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} img_album" src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
 	        </a>
     </div>
           {% endfor %}

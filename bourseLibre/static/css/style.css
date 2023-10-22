@@ -2590,3 +2590,6 @@ min-height:40px;
 .thumbnail{
     max-height: 95vh;
 }
+.img{
+    max-height: 95vh;
+}

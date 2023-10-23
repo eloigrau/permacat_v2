@@ -2586,6 +2586,9 @@ min-height:40px;
     max-height:90vh;
     max-width:98vw;
 }
+.carousel_album2{
+    min-height:60vh;
+}
 .helper {
     display: inline-block;
     height: 100%;

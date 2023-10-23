@@ -87,7 +87,7 @@
 
 
 <div class="row justify-content-center">
-<div class="col-sm-11 col-md-8 col-lg-5 textcenter">
+<div class="col-sm-11 col-md-8 col-lg-5 textcenter carousel_album">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
 	    {% for photo in album.public %}
@@ -98,7 +98,7 @@
 	    {% for photo in album.public %}
     <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
 	        <a href="{{ photo.get_absolute_url }}">
-	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
+	             <img class="{% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
 	        </a>
     </div>
           {% endfor %}

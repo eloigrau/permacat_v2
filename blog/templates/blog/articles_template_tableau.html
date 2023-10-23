@@ -33,6 +33,9 @@
           <td class="expand"  data-title="Titre">
             <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
                 <div class="titre_forum">{{article.titre}}
+            {%if article.estModifiable %}
+                <span class="fa fa-edit"  title="Article modifiable">    </span>
+            {% endif %}
                 </div>
 
 
@@ -47,9 +50,6 @@
               </span>
             {% endif %}
 
-            {%if article.estModifiable %}
-                <span class="fa fa-edit"  title="Article modifiable">    </span>
-            {% endif %}
             {%if article.estArchive %}
               <span class="badge badge-light">
                    archivé

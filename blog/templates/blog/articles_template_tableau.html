@@ -47,14 +47,12 @@
               </span>
             {% endif %}
 
+            {%if article.estModifiable %}
+                <span class="fa fa-edit"  title="Article modifiable">    </span>
+            {% endif %}
             {%if article.estArchive %}
               <span class="badge badge-light">
                    archivé
-             </span>
-            {% endif %}
-            {%if article.estModifiable %}
-              <span class="badge badge-light">
-                   modifiable
              </span>
             {% endif %}
               </p>

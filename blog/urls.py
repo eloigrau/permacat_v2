@@ -83,6 +83,11 @@ urlpatterns = [
     url(r'voirCarteLieux/(?P<id_article>[0-9]+)$', views.voirCarteLieux, name='voirCarteLieux'),
 
     path('ajax/load-categories/', views.ajax_categories, name='ajax_categories'),
+    path('ajax/articlesArchives/<str:asso>/', views.articlesArchives, name='articlesArchives'),
+    path('ajax/articlesPartages/<str:asso>/', views.articlesPartages, name='articlesPartages'),
+    path('ajax/articlesParTag/<str:asso>/<str:tag>/', views.articlesParTag, name='articlesParTag'),
+    path('ajax/get_articles_pardossier/', views.get_articles_pardossier, name='get_articles_pardossier'),
+    path('ajax/get_tags_articles/', views.get_tags_articles, name='get_tags_articles'),
     url(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),
 
     path('ac/tag_autocomplete/', views.TagAutocomplete, name='tag_autocomplete'),

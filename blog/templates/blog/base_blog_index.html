@@ -1,8 +1,10 @@
 {% extends 'blog/base_blog.html' %}
 
+    {% block sidebar_menu %}
+{% endblock %}
+{% comment %}
 {% block submenu %}
 <div class="container">
-{% comment %}
 {%if not asso_courante %}
 <div class="row justify-content-center" >
     <nav class="navbar navbar-expand-md" >
@@ -24,8 +26,8 @@
     </nav>
 </div>
 {% endif %}
-{% endcomment %}
 
 </div>
 {% endblock %}
+{% endcomment %}
 

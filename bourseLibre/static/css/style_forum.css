@@ -13,6 +13,19 @@
   margin-bottom: 2rem;
   background-color: #ffffff;
 }
+
+.table_forum > thead > tr > td.shrink,
+.table_forum > tbody > tr > td.shrink,
+.table_forum > tfoot > tr > td.shrink{
+    min-width: 150px;
+}
+
+
+.table_forum > thead > tr > td.expand,
+.table_forum > tbody > tr > td.expand,
+.table_forum > tfoot > tr > td.expand{
+    width: 100%;
+}
 .table_forum > thead > tr,
 .table_forum > tbody > tr,
 .table_forum > tfoot > tr {

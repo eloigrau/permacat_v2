@@ -283,11 +283,6 @@
             </a>
 
             <ul class="dropdown-menu dropdown-menu1 nav8-dropdown" aria-labelledby="navbarDropdownMenuLink">
-         <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> Salons </a></li>
-                 <li><a class="dropdown-item" href="{% url 'conversations' %}"> Messagerie</a></li>
-                 <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Documents / Fichiers</a></li>
-                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Albums photo</a></li>
-                <li class="divider" role="separator"></li>
                 <li class="dropdown-submenu">
                     <a class="dropdown-item dropdown-toggle"  href="#">Ateliers </a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
@@ -371,6 +366,12 @@
                     </li>
                     </ul>
                 </li>
+         <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> Salons </a></li>
+                 <li><a class="dropdown-item" href="{% url 'conversations' %}"> Messagerie</a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Documents / Fichiers</a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Albums photo</a></li>
+                <li class="divider" role="separator"></li>
+
                 {% comment %}
                 <li class="dropdown-submenu">
                     <a class="dropdown-item dropdown-toggle"  href="#">Jardins Partagés</a>

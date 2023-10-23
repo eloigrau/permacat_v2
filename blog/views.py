@@ -105,8 +105,8 @@ class ModifierArticle(UpdateView):
     def form_valid(self, form):
         self.object = form.save(sendMail=False, commit=False, )
         self.object.date_modification = now()
-        self.object.save(sendMail=form.changed_data!=['estArchive'])
-        #self.form.
+        self.object.save(sendMail=form.changed_data != ['estArchive'])
+        form.save_m2m()
 
         url = self.object.get_absolute_url()
         suffix = "_" + self.object.asso.abreviation
@@ -373,9 +373,13 @@ class ListeArticles_asso(ListView):
     def get_queryset(self):
         params = dict(self.request.GET.items())
         self.asso = Asso.objects.get(abreviation=self.kwargs['asso'])
-        self.q_objects = self.request.user.getQObjectsAssoArticles()
+        #self.q_objects = self.request.user.getQObjectsAssoArticles()
         #qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation) & self.q_objects).distinct()
-        qs = Article.objects.filter(self.q_objects & (Q(asso__abreviation=self.asso.abreviation) | Q(partagesAsso__abreviation=self.asso.abreviation) | Q(partagesAsso__abreviation="public"))).distinct()
+        if self.request.user.est_autorise(self.asso.abreviation):
+            qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation, estArchive=False, )).distinct()
+        else:
+            qs = Article.objects.none()
+
         self.categorie = None
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])
@@ -400,25 +404,25 @@ class ListeArticles_asso(ListView):
                 ).order_by('-latest')
 
         self.qs = qs
-        return qs.filter(Q(estArchive=False, asso=self.asso, estEpingle=False))
+        return qs.filter(Q(estEpingle=False))
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['articles_epingles'] = self.qs.filter(Q(estEpingle=True, estArchive=False, asso=self.asso))
-        paginator = Paginator(self.qs.filter(~Q(asso=self.asso) & Q(estArchive=False)), 20)
-        if not 'page_partages' in self.request.GET:
-            page_number = 1
-        else:
-            page_number = self.request.GET.get('page_partages')
-        context['page_partages_obj'] = paginator.get_page(page_number)
-
-        paginator_archives = Paginator(self.qs.filter(Q(estArchive=True, asso=self.asso)), 20)
-        if not 'page_archives' in self.request.GET:
-            page_number = 1
-        else:
-            page_number = self.request.GET.get('page_archives')
-        context['page_archives_obj'] = paginator_archives.get_page(page_number)
+        context['articles_epingles'] = self.qs.filter(estEpingle=True)
+        # paginator = Paginator(self.qs.filter(~Q(asso=self.asso) & Q(estArchive=False)), 20)
+        # if not 'page_partages' in self.request.GET:
+        #     page_number = 1
+        # else:
+        #     page_number = self.request.GET.get('page_partages')
+        # context['page_partages_obj'] = paginator.get_page(page_number)
+        #
+        # paginator_archives = Paginator(self.qs.filter(Q(estArchive=True, asso=self.asso)), 20)
+        # if not 'page_archives' in self.request.GET:
+        #     page_number = 1
+        # else:
+        #     page_number = self.request.GET.get('page_archives')
+        # context['page_archives_obj'] = paginator_archives.get_page(page_number)
 
         #context['articles_partages'] = paginator.get_page(page_number)
         # qs = self.qs
@@ -482,6 +486,59 @@ class ListeArticles_asso(ListView):
 
         return context
 
+
+
+@login_required
+def articlesPartages(request, asso):
+    asso = testIsMembreAsso(request, asso)
+    q_objects = request.user.getQObjectsAssoArticles()
+    article_list = Article.objects.filter(q_objects & ~Q(asso=asso) & Q(estArchive=False))
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
+
+
+@login_required
+def articlesArchives(request, asso):
+    asso = testIsMembreAsso(request, asso)
+    article_list = Article.objects.filter(asso=asso, estArchive=True)
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
+
+@login_required
+def articlesParTag(request, asso, tag):
+    asso = testIsMembreAsso(request, asso)
+    q_objects = request.user.getQObjectsAssoArticles()
+    article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'tag':tag})
+
+@login_required
+def get_articles_pardossier(request):
+    q_objects = Q()
+    if "asso" in request.GET:
+        asso = testIsMembreAsso(request, request.GET['asso'])
+        q_objects = Q(asso=asso) & request.user.getQObjectsAssoArticles()
+
+    if "categorie" in request.GET:
+        q_objects = q_objects & Q(estArchive=False, categorie=request.GET['categorie'])
+    else:
+        q_objects = q_objects & Q(estArchive=False)
+
+    article_list = Article.objects.filter(q_objects).distinct()
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'categorie_courante':request.GET['categorie']})
+
+@login_required
+def get_tags_articles(request):
+    tags = []
+    if "asso" in request.GET:
+        asso = testIsMembreAsso(request, request.GET['asso'])
+        q_objects = request.user.getQObjectsAssoArticles()
+        inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).values_list('tags', flat=True).distinct()))
+    else:
+        inner_qs = set(list(Article.objects.filter(estArchive=False).values_list('tags', flat=True).distinct()))
+
+    inner_qs.remove(None)
+    if inner_qs:
+        tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.abreviation, 'tag':t}), t)
+                for t in Tag.objects.filter(id__in=inner_qs)]
+    return render(request, 'blog/ajax/listeTags_template.html', {'tags': tags})
 
 
 # @login_required

@@ -40,7 +40,7 @@
             <p class="textright"> 
                 {% if fiche.tags.names  %}<em>Mots-clés:</em>
            {% for tag in fiche.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
+            <span class="badge badge-info"> {{tag}}</span>
            {% endfor %}
            {% endif %}  </p>
         </div>

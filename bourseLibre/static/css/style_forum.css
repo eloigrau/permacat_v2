@@ -108,6 +108,12 @@
   background-color: rgba(0, 0, 0, 0.12);
 }
 @media screen and (max-width: 768px) {
+
+.table_forum > thead > tr > td.shrink,
+.table_forum > tbody > tr > td.shrink,
+.table_forum > tfoot > tr > td.shrink{
+    min-width: 100%;
+}
   .table-responsive-vertical > .table_forum {
     margin-bottom: 0;
     background-color: transparent;

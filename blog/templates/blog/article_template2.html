@@ -22,7 +22,7 @@
             {% if article.album %}
             {% with photo=article.album.get_photo_sample %}
                 {%if photo %}
-                <img src="{{ photo.0.get_thumbnail_url }}" class="thumbnail" alt="{{ photo.0.title }}">
+                <img src="{{ photo.0.get_thumbnail_url }}" class="thumbnail img_album" alt="{{ photo.0.title }}">
                 {% endif %}
             {% endwith %}
             {% endif %}

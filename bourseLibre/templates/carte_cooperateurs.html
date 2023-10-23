@@ -162,30 +162,32 @@ Filtrer / rechercher...
               {% endif %}
               {% if asso.abreviation != "citealt" and request.user.adherent_citealt %}
               <div>
-          {{ filter.form.adherent_citealt.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.adherent_citealt %}</label>
+                  {{ filter.form.adherent_citealt.label_tag }}
+                    <label class="checkbox-inline">{% render_field filter.form.adherent_citealt %}</label>
               </div>
               {% endif %}
               {% if asso.abreviation != "viure" and request.user.adherent_viure %}
               <div>
-          {{ filter.form.adherent_viure.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.adherent_viure %}</label>
+                  {{ filter.form.adherent_viure.label_tag }}
+                    <label class="checkbox-inline">{% render_field filter.form.adherent_viure %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "scic"  and request.user.adherent_scic %}
+         {% if asso.abreviation != "scic"  and request.user.adherent_scic %}
               <div>
-          {{ filter.form.adherent_scic.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.adherent_scic %}</label>
+                {{ filter.form.adherent_scic.label_tag }}
+                <label class="checkbox-inline">{% render_field filter.form.adherent_scic %}</label>
               </div>
-              {% endif %}
-              {% if asso.abreviation != "jp" and request.user.adherent_jp %}
-          {{ filter.form.adherent_jp.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.adherent_jp %}</label>
+          {% endif %}
+          {% if asso.abreviation != "jp" and request.user.adherent_jp %}
+              <div>
+                {{ filter.form.adherent_jp.label_tag }}
+                <label class="checkbox-inline">{% render_field filter.form.adherent_jp %}</label>
               </div>
               {% endif %}
               {% if asso.abreviation != "conf66" and request.user.adherent_conf66 %}
-          {{ filter.form.adherent_conf66.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.adherent_conf66 %}</label>
+              <div>
+                  {{ filter.form.adherent_conf66.label_tag }}
+                    <label class="checkbox-inline">{% render_field filter.form.adherent_conf66 %}</label>
               </div>
               {% endif %}
             </div>

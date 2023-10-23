@@ -2585,6 +2585,7 @@ min-height:40px;
 .carousel_album{
     min-height:90vh;
     max-height:90vh;
+    max-width:90vh;
 }
 .helper {
     display: inline-block;

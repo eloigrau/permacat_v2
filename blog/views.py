@@ -368,7 +368,7 @@ class ListeArticles_asso(ListView):
     model = Article
     context_object_name = "article_list"
     template_name = "blog/index.html"
-    paginate_by = 5
+    paginate_by = 20
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -491,8 +491,7 @@ class ListeArticles_asso(ListView):
 @login_required
 def articlesPartages(request, asso):
     asso = testIsMembreAsso(request, asso)
-    q_objects = request.user.getQObjectsAssoArticles()
-    article_list = Article.objects.filter(q_objects & ~Q(asso=asso) & Q(estArchive=False))
+    article_list = Article.objects.filter(Q(partagesAsso__abreviation=asso.abreviation) & ~Q(asso=asso) & Q(estArchive=False))
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
 
 

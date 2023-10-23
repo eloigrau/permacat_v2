@@ -538,6 +538,10 @@ function get_tags_articles(url_tag) {
      {% if request.GET.ancre_navtab %}
         $("#navtab_{{request.GET.ancre_navtab}}").trigger('click');
     {% endif %}
+
+     {% if request.GET.categorie %}
+        get_articles_pardossier('{% url 'blog:get_articles_pardossier' %}?asso={{asso_courante}}&categorie={{request.GET.categorie}}', '{{request.GET.categorie}}')
+    {% endif %}
 });
 </script>
 

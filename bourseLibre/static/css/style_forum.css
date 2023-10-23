@@ -17,8 +17,7 @@
 .table_forum > thead > tr > td.shrink,
 .table_forum > tbody > tr > td.shrink,
 .table_forum > tfoot > tr > td.shrink{
-    min-width: 150px;
-    max-width: 250px;
+    min-width: 180px;
 }
 
 

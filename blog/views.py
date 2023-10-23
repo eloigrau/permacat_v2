@@ -516,7 +516,7 @@ def articlesParTag(request, asso, tag):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
         return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso':asso})
-    q_objects = request.user.getQObjectsAssoArticles()
+    q_objects = Q(asso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation=asso.abreviation)| Q(asso__abreviation='public')| Q(partagesAsso__abreviation='public')
     article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'tag':tag})
 

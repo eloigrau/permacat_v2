@@ -536,9 +536,12 @@ def get_articles_pardossier(request):
 def get_tags_articles(request):
     tags = []
     if "asso" in request.GET:
-        asso = testIsMembreAsso(request, request.GET['asso'])
-        q_objects = request.user.getQObjectsAssoArticles()
-        inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).values_list('tags', flat=True).distinct()))
+        asso = testIsMembreAsso_bool(request, request.GET['asso'])
+        if asso:
+            q_objects = Q(asso=asso) | Q(partagesAsso__abreviation=asso.abreviation)
+            inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).values_list('tags', flat=True).distinct()))
+        else:
+            inner_qs = []
     else:
         inner_qs = set(list(Article.objects.filter(estArchive=False).values_list('tags', flat=True).distinct()))
 
@@ -1131,6 +1134,7 @@ def ajax_categories(request):
     try:
         asso_id = request.GET.get('asso')
         nomAsso = Asso.objects.get(id=asso_id).abreviation
+
         return render(request, 'blog/ajax/categories_dropdown_list_options.html',
                       {'categories': Choix.get_type_annonce_asso(nomAsso)})
     except:

@@ -183,7 +183,7 @@ class UploadZipForm(forms.Form):
 class AlbumForm(forms.ModelForm):
     asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
                               label="Album public ou réservé aux adhérents de l'asso :", )
-    article = forms.ModelChoiceField(queryset=Article.objects.all(), required=False, empty_label=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False), required=False, empty_label=True,
                               label="Associer l'album à un article du forum ?",)
 
     class Meta:
@@ -267,7 +267,7 @@ class PhotoChangeForm(forms.ModelForm):
 
 
 class DocumentAssocierArticleForm(forms.Form):
-    article = forms.ModelChoiceField(queryset=Article.objects.all().order_by('titre'), required=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False).order_by('titre'), required=True,
                               label="Document public ou réservé aux adhérents de l'asso :", )
 
 class DocumentForm(forms.ModelForm):

@@ -47,6 +47,10 @@
 {% endif %}
 
     </p>
+
+     {% if reunion.article %}
+            <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre}}</a></p>
+{% endif %}
         </div>
     </div>
  	<div class="row">

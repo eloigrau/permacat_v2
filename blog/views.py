@@ -7,7 +7,8 @@ from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet,
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
-    DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm
+    DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
+    AssocierReunionArticleForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -23,6 +24,7 @@ from django.db.models.functions import Greatest, Lower
 from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
 from ateliers.models import Atelier
 from photologue.models import Album
+from defraiement.models import Reunion
 from django.views.decorators.csrf import csrf_exempt
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
@@ -211,6 +213,7 @@ def lireArticle(request, slug):
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
     documents_partages = DocumentPartage.objects.filter(article=article)
+    reunions = Reunion.objects.filter(article=article)
 
     if not article.est_autorise(request.user):
         return render(request, 'notMembre.html', {"asso": str(article.asso)})
@@ -236,7 +239,8 @@ def lireArticle(request, slug):
                             discussions}
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "documents_partages":documents_partages, "ancre": discu.slug}
+                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons,
+                       "documents_partages":documents_partages, "reunions":reunions,"ancre": discu.slug}
 
     elif form.is_valid() and 'message_discu' in request.POST:
         discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#",""))
@@ -270,10 +274,12 @@ def lireArticle(request, slug):
 
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-               'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,"suffrages":suffrages, "documents_partages":documents_partages, }
+               'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
+                   "suffrages":suffrages, "documents_partages":documents_partages, "reunions":reunions, }
 
     else:
-        context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers, 'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "documents_partages":documents_partages,  }
+        context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
+                   'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "documents_partages":documents_partages, "reunions":reunions,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required
@@ -1004,6 +1010,39 @@ def supprimerDocumentPartage(request, slug_docpartage):
     doc = DocumentPartage.objects.get(slug=slug_docpartage)
     article = doc.article
     doc.delete()
+    return redirect(article.get_absolute_url())
+
+
+@login_required
+def ajouterReunionArticle(request, slug_article):
+    form = ReunionArticleForm(request.POST or None)
+    article = Article.objects.get(slug=slug_article)
+
+    if form.is_valid():
+        form.save(article)
+        return redirect(article)
+
+    return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
+
+
+
+@login_required
+def associerReunionArticle(request, slug_article):
+    art = Article.objects.get(slug=slug_article)
+    form = AssocierReunionArticleForm(request.POST or None)
+    if form.is_valid():
+        reunion = form.cleaned_data["reunion"]
+        reunion.article = art
+        reunion.save()
+        return redirect(reunion)
+
+    return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": art})
+
+@login_required
+def supprimerReunionArticle(request, slug_article):
+    article = Article.objects.get(slug=slug_article)
+    reu = reu.article
+    reu.delete()
     return redirect(article.get_absolute_url())
 
 

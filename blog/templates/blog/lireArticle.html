@@ -176,6 +176,9 @@
         {% if ateliers %}
       <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left" ></i></a>
         {% endif %}
+        {% if reunions %}
+      <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-users icon-left"></i></a>
+        {% endif %}
         {% if documents %}
       <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i></a>
         {% endif %}
@@ -299,7 +302,30 @@
   </div>
     </div>
   </div>
-
+<div class="tab-pane fade" id="reunions">
+    <div class="contenu atelier">
+<div class="row justify-content-center">
+<div class="col-sm-12 textcenter">
+        {% for reunion in reunions %}
+        <p>
+            <a href="{{reunion.get__absolute_url}}" target="_blank" > {{ reunion.titre }} </a>
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerReunionArticle' slug_reunion=reunion.slug%}"> <i class="fa fa-times"></i> </a>
+            {% endif %}
+        </p>
+        {% endfor%}
+        <p>
+            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                   <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion</a>
+            {% endif%}
+             {%if request.user.is_superuser %}
+                <a class="btn btn-sm btn-success textleft" href="{% url 'blog:associerReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Associer une réunion</a>
+            {% endif%}
+        </p>
+    </div>
+  </div>
+    </div>
+  </div>
   <div class="tab-pane fade " id="ateliers">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
         <div class="contenu atelier">
@@ -437,6 +463,9 @@
         {% endif %}
         <p>
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a>
+        </p>
+        <p>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion</a>
         </p>
         <p>
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion</a>

@@ -108,7 +108,7 @@ class Reunion(models.Model):
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
     date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
+    article = models.ForeignKey(Article,  verbose_name="article lié", on_delete=models.CASCADE, null=True, blank=True)
     estArchive = models.BooleanField(default=False, verbose_name="Archiver la réunion")
     participants = models.ManyToManyField(ParticipantReunion,
                                 help_text="Le participant doit etre associé à une reunion existante (sinon créez d'abord la reunion)")

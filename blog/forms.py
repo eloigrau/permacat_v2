@@ -8,6 +8,7 @@ from local_summernote.widgets import SummernoteWidget
 from django.urls import reverse
 from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
 from bourseLibre.models import Asso, Choix as choix_globaux
+from defraiement.models import Reunion
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from photologue.models import Album
 from django.core.exceptions import ValidationError
@@ -524,4 +525,39 @@ class DocumentPartageArticleForm(forms.ModelForm):
         return instance
 
 
+class ReunionArticleForm(forms.ModelForm):
 
+
+    class Meta:
+        model = Reunion
+        fields = ['categorie', 'titre', 'description', 'start_time']
+        widgets = {
+            'contenu': SummernoteWidget(),
+            'start_time': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+        }
+
+    def save(self, article):
+        instance = super(ReunionArticleForm, self).save(commit=False)
+        max_length = DocumentPartage._meta.get_field('slug').max_length
+        instance.slug = orig = slugify(instance.titre)[:max_length]
+
+        for x in itertools.count(1):
+            if not Reunion.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.article = article
+        instance.asso = article.asso
+        instance.save()
+        return instance
+
+
+class AssocierReunionArticleForm(forms.Form):
+    reunion = forms.ModelChoiceField(queryset=Reunion.objects.order_by('-start_time'), required=True,
+                              label="Réunion à associer à l'article", )

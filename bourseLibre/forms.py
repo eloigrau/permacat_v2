@@ -517,7 +517,7 @@ class nouvelleDateForm(forms.Form):
     date = forms.DateTimeField(initial=timezone.now(), widget=forms.SelectDateWidget(years=years))
 
 class creerAction_articlenouveauForm(forms.Form):
-    article = forms.ModelChoiceField(queryset=Article.objects.all().order_by('titre'), required=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False).order_by('titre'), required=True,
                               label="Article", )
 
 

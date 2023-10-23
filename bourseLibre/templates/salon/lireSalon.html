@@ -154,9 +154,9 @@
                             Mots clés :
                         </td>
                         <td class="textcenter">
-                               {% for tag in salon.tags.names %}
-                            <span class="badge badge-Light">{{tag}}</span> 
-                               {% endfor %}
+                           {% for tag in salon.tags.names %}
+                                <span class="badge badge-info">{{tag}}</span>
+                           {% endfor %}
                         </td>
                     </tr>
                     {%endif%}
@@ -187,8 +187,8 @@
                             Mails
                         </td>
                         <td class="textleft">
-                             <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}
-                                 &nbsp;<button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier</button>
+                             <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}</div>
+                        <div class="textright">  <button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier</button> </div>
 
                         </td>
                     </tr>

@@ -398,20 +398,33 @@ def chercher_plante(request):
     return render(request, 'jardins/plante_recherche.html', {'recherche':recherche, 'plante_list':plante_list,})
 
 
+def ajouterJardin_intro(request):
+    if request.user.is_authenticated:
+        return redirect('jardins:jardin_ajouter')
+    else:
+        return render(request, 'jardins/jardin_ajouterAnonyme.html', )
+
+
 class AjouterJardin(CreateView):
     model = Jardin
     template_name_suffix = '_ajouter'
 
     def get_form(self):
-        return JardinForm(current_user=self.request.user, **self.get_form_kwargs())
+        return JardinForm(**self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save(self.request.user)
-        action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
+        if self.request.user.is_anonymous:
+            bot = Profil.objects.get(username='bot_permacat')
+            action.send(bot, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
+                     description="Quelqu'un a ajouté le Jardin: '%s'" % self.object.titre)
+        else:
+            action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
                      description="a ajouté le Jardin: '%s'" % self.object.titre)
+
         return redirect("jardins:jardin_ajouterAdresse", slug=self.object.slug)
 
-@login_required
+
 def jardin_ajouterAdresse(request, slug):
     jardin = get_object_or_404(Jardin, slug=slug)
     form_adresse = AdresseForm4(request.POST or None)

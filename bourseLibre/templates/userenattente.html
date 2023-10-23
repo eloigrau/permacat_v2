@@ -20,7 +20,7 @@ Vous pouvez consulter les annonces, le forum, en publier, et discuter avec les a
 <li dir="auto">en toute circonstance, gardez le sourire :)</li>
 </ul>
 <p class="textcenter">
- <a href="{% url 'login' %}">
+ <a href="{% url 'login' %}?{{request.GET.urlencode}}">
         <button type="button" class="btn btn-primary" >
                Se connecter...
             </button>

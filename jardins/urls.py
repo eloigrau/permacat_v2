@@ -46,7 +46,8 @@ urlpatterns = [
     path(r'jardiniers/carte/', views.carte_jardiniers, name="carte_jardiniers"),
     path(r'grainotheques/carte/', views.carte_graino, name="carte_graino"),
 
-    path(r'jardin/ajouter/', login_required(views.AjouterJardin.as_view()), name="jardin_ajouter"),
+    path(r'jardin/ajouterJardin_intro/', views.ajouterJardin_intro, name="ajouterJardin_intro"),
+    path(r'jardin/ajouter/', views.AjouterJardin.as_view(), name="jardin_ajouter"),
     path(r'jardin/jardin_ajouterAdresse/<str:slug>', views.jardin_ajouterAdresse, name="jardin_ajouterAdresse"),
     path(r'jardin/jardin_ajouterSalon/<str:slug>', views.jardin_ajouterSalon, name="jardin_ajouterSalon"),
     path(r'jardin/modifierAdresse/<str:slug>', views.jardin_modifierAdresse, name="jardin_modifierAdresse"),

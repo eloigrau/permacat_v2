@@ -31,15 +31,10 @@ class JardinForm(forms.ModelForm):
             'description': SummernoteWidget(),
         }
 
-    def __init__(self, current_user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(JardinForm, self).__init__(*args, **kwargs)
-   #     self.fields['referent'].choices = [(current_user.id, current_user), ] + [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username')) if u != current_user]
-
-   # def is_valid(self, *args, **kwargs):
-    #    return super(JardinForm, self).is_valid(*args, **kwargs)
 
     def save(self, userProfile, ):
-        #self.cleaned_data['referent'] = Profil.objects.get(id=self.cleaned_data['referent'])
         instance = super(JardinForm, self).save(commit=False)
 
         max_length = Jardin._meta.get_field('slug').max_length
@@ -55,7 +50,11 @@ class JardinForm(forms.ModelForm):
         if len(re.findall(r"[A-Z]", instance.titre)) > 8:
             instance.titre = instance.titre.title()
 
-        instance.auteur = userProfile
+        if userProfile.is_anonymous:
+            bot = Profil.objects.get(username='bot_permacat')
+            instance.auteur = bot
+        else:
+            instance.auteur = userProfile
         instance.save()
         return instance
 

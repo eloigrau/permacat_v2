@@ -33,12 +33,20 @@
 					</td>
 					<td class="proprieteJardin">
 						{% if request.user.is_authenticated %}
-							<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
-							<a href="{% url 'agora_conversation' jardin.auteur.username %}" class="btn btn-success btn-sm">
-							 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
-							</a>
+							{% if jardin.auteur.username == 'bot_permacat' %}
+								<p>Anonyme</p>
+							{% else %}
+								<a href="{% url 'profil' jardin.auteur.id %}">{{jardin.auteur.username}}</a> &nbsp
+								<a href="{% url 'agora_conversation' jardin.auteur.username %}" class="btn btn-success btn-sm">
+								 <span class="glyphicon glyphicons-conversation"></span> Envoyer un message privé
+								</a>
+							{% endif %}
 						{% else %}
-							{{jardin.auteur.username}}
+							{% if jardin.auteur.username == 'bot_permacat' %}
+								<p>Anonyme</p>
+							{% else %}
+								{{jardin.auteur.username}}
+							{% endif %}
 						{% endif %}
 					</td>
 				</tr>

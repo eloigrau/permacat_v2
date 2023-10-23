@@ -492,7 +492,8 @@ def articlesPartages(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
         return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso': asso})
-    article_list = Article.objects.filter(Q(partagesAsso__abreviation=asso.abreviation) & ~Q(asso=asso) & Q(estArchive=False))
+    q_object = Q(partagesAsso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation='public')& ~Q(asso=asso) & Q(estArchive=False)
+    article_list = Article.objects.filter(q_object)
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
 
 

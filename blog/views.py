@@ -384,7 +384,6 @@ class ListeArticles_asso(ListView):
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])
         if "categorie" in params:
-            qs = qs.filter(categorie=params['categorie'])
             self.categorie = params['categorie']
 
         if "ordreTri" in params:

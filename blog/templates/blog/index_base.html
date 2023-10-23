@@ -253,7 +253,7 @@ function get_articles_pardossier(url_tag, categorie) {
         }
     });
     $('#titreDossier').html("Dossier : " + categorie);
-    $('#btn-categorie').toggleClass("btn-warning");
+    $('#btn-categorie').addClass("btn-warning");
 }
 
 function get_tags_articles(url_tag) {
@@ -273,11 +273,13 @@ function get_tags_articles(url_tag) {
 }
 </script>
 <hr>
+
+<div class="anchor_blank" id="ref-navbargroupe"></div>
 <div class="row justify-content-center" >
     <nav class="navbar navbar-expand-lg justify-content-center">
         <div class="navbar-header">
              <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
-             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
+             <h6>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </h6> </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2">
@@ -412,11 +414,11 @@ function get_tags_articles(url_tag) {
 
 <div class="anchor_blank" id="idContenu"></div>
 <nav class="nav nav-tabs justify-content-center">
-    <a class="nav-item nav-link active" href="#art_groupe" data-toggle="tab"> Du Groupe</a>
-    <a class="nav-item nav-link" href="#art_dossier"  data-toggle="tab"> Par dossier</a>
-    <a class="nav-item nav-link" href="#art_motscles" onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{asso_courante}}')" data-toggle="tab"> Par mot clé</a>
-    <a class="nav-item nav-link" href="#art_partage" onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab"> Partagés</a>
-    <a class="nav-item nav-link" href="#art_archive" onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab"> Archivés</a>
+    <a class="nav-item nav-link active" href="#art_groupe" data-toggle="tab" id="navtab_groupe"> Du Groupe</a>
+    <a class="nav-item nav-link" href="#art_dossier"  data-toggle="tab" id="navtab_dossier"> Par dossier</a>
+    <a class="nav-item nav-link" href="#art_motscles" onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{asso_courante}}')" data-toggle="tab"  id="navtab_tags"> Par mot clé</a>
+    <a class="nav-item nav-link" href="#art_partage" onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab" id="navtab_oartages"> Partagés</a>
+    <a class="nav-item nav-link" href="#art_archive" onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab" id="navtab_archives"> Archivés</a>
 </nav>
 
 <div class="tab-content">
@@ -483,7 +485,7 @@ function get_tags_articles(url_tag) {
             </a>
             <div class="dropdown-menu"  aria-labelledby="menuDossier"  id="idmenuDossier">
             {% for categorie_id, cat_nom, cat_coul in categorie_list %}
-                   <a class="dropdown-item"  onclick="get_articles_pardossier('{% url 'blog:get_articles_pardossier' %}?asso={{asso_courante}}&categorie={{categorie_id}}', '{{cat_nom}})')">
+                   <a class="dropdown-item"  onclick="get_articles_pardossier('{% url 'blog:get_articles_pardossier' %}?asso={{asso_courante}}&categorie={{categorie_id}}', '{{cat_nom}}')">
                        {{cat_nom}}
                 </a>
             {% endfor %}
@@ -531,6 +533,13 @@ function get_tags_articles(url_tag) {
 </div>
 
 
+<script>
+ $(document).ready(function() {
+     {% if request.GET.ancre_navtab %}
+        $("#navtab_{{request.GET.ancre_navtab}}").trigger('click');
+    {% endif %}
+});
+</script>
 
 {% endblock %}
 {% endblock %}

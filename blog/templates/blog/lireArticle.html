@@ -82,12 +82,12 @@
                 <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}#ref-titre" >{{ article.get_logo_nomgroupe_html|safe }}</a>
             </span>
     {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> </td>{% endif %}
-            / <span class="badge badge-success" style="background-color:{{article.get_couleur}}" ><a href="{% url 'blog:index'  %}?categorie={{article.categorie}}" >{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %} {{ article.get_categorie_display2 }}</a>
+            / <span class="badge badge-success" style="background-color:{{article.get_couleur}}" ><a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe" >{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %} {{ article.get_categorie_display2 }}</a>
             </span> -
 
         <a href="{% url 'blog:suivre_article' article.slug %}">
             {% if request.user|is_following:article %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arreter de recevoir des notifications concernant cet article par mail">
+            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arrêter de recevoir des notifications concernant cet article par mail">
                  {% fontawesome_icon 'bell' title='abonnement' %}
             </button>
             {% else %}
@@ -96,7 +96,7 @@
             </button>
             {% endif %}
         </a>
-                    <button class="btn btn-light btn-sm" onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
+        <button class="btn btn-light btn-sm" onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
 
 
              {% if request.user.is_superuser %}
@@ -465,8 +465,6 @@
 
 {% include 'commentaires_discussions.html' %}
 </div>
-
-
 
 
 {% endblock %}

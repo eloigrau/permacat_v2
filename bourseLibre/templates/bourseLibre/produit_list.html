@@ -1,6 +1,7 @@
 {% extends 'bourseLibre/base_produits.html' %}
 {% load fontawesome %}
 {% load activity_tags %}
+{% load blog_filters %}
 
 {%block subtitle%}
 <div class="row justify-content-center">
@@ -203,7 +204,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
                 {% for ordre in ordreTriPossibles %}
-                 <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
+                 <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri }}&ordre={{ordre}}">{{ordre}}</a>
                     {% endfor %}
                 </div>
             </li>

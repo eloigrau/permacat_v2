@@ -74,8 +74,8 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique):
         lignes.append(part)
     distancesTotales = [int(r.getDistanceTotale * coef_distanceTotale + 0.5) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [sum(distancesTotales), ])
-    lignes.append(["prix max : " + prixMax, "bareme kilometrique max :" + tarifKilometrique,
-                   "barème calculé :" + str(round(coef_distanceTotale/2.0, 3)), ] + ["" for r in reunions[2:]] + ["", ])
+    lignes.append(["prix max : " + prixMax, "bareme kilometrique max : " + tarifKilometrique,
+                   "barème calculé : " + str(round(coef_distanceTotale/2.0, 3)), ] + ["" for r in reunions[2:]] + ["", ])
 
     return entete, lignes
 

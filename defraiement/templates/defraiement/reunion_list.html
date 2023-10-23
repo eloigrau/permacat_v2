@@ -1,6 +1,7 @@
 {% extends 'base_defraiement.html' %}
 {% load static %}
 {% load fontawesome %}
+{% load blog_filters %}
 
 {% load activity_tags %}
 {%block header %}
@@ -109,7 +110,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
                 {% for ordreTri,type  in ordreTriPossibles.items %}
-                 <a class="dropdown-item"  href="?ordreTri={{type}}">{{ordreTri}}</a>
+                 <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri }}&ordreTri={{type}}">{{ordreTri}}</a>
                     {% endfor %}
                 </div>
     </div></div>

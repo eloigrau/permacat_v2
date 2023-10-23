@@ -212,32 +212,12 @@ class Asso(models.Model):
             return Profil.objects.filter(adherent_viure=True).order_by("username")
         elif self.abreviation == "jp":
             return Profil.objects.filter(adherent_jp=True).order_by("username")
-        return []
+        elif self.abreviation == "conf66":
+            return Profil.objects.filter(adherent_conf66=True).order_by("username")
+        return  Profil.objects.none()
 
     def getProfils_Annuaire(self):
-        if self.abreviation == "public":
-            return Profil.objects.filter(accepter_annuaire=True).order_by("username")
-        elif self.abreviation == "pc":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_pc=True).order_by("username")
-        elif self.abreviation == "rtg":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_rtg=True).order_by("username")
-        elif self.abreviation == "fer":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_fer=True).order_by("username")
-        #elif self.abreviation == "gt":
-        #    return Profil.objects.filter(accepter_annuaire=True, adherent_gt=True).order_by("username")
-        elif self.abreviation == "scic":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_scic=True).order_by("username")
-        elif self.abreviation == "citealt":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_citealt=True).order_by("username")
-        elif self.abreviation == "viure":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_viure=True).order_by("username")
-        elif self.abreviation == "bzz2022":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_bzz2022=True).order_by("username")
-        elif self.abreviation == "jp":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_jp=True).order_by("username")
-        elif self.abreviation == "conf66":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_conf66=True).order_by("username")
-        return []
+        return self.getProfils().filter(accepter_annuaire=True)
 
 
     def get_absolute_url(self):

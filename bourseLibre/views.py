@@ -524,7 +524,7 @@ def carte(request, asso):
     if asso.abreviation != "public":
         titre = "Carte/annuaire des membres du groupe %s (%d visibles sur %d inscrits)*"%(asso.nom, len(profils_filtres.qs), nbProf)
     else:
-        titre = "Carte/annuaire des inscrits du site (%d/%d)*"%(len(profils_filtres.qs), nbProf)
+        titre = "Carte/annuaire des inscrits du site (%d visibles sur %d inscrits)*"%(len(profils_filtres.qs), nbProf)
 
     try:
         import simplejson

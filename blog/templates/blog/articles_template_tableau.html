@@ -33,16 +33,11 @@
           <td class="expand"  data-title="Titre">
             <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
                 <div class="titre_forum">{{article.titre}}
-            {%if article.estArchive %}
-              <span class="badge badge-light">
-                   archivé
-             </span>
-                {% endif %}
                 </div>
 
 
-          {% if article.start_time %}
               <p>
+          {% if article.start_time %}
               <span class="badge badge-success">
               {% if article.end_time %}
               du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }}
@@ -50,8 +45,14 @@
               le {{ article.start_time|date:"DATE_FORMAT" }}
               {% endif %}
               </span>
-              </p>
             {% endif %}
+
+                {%if article.estArchive %}
+                  <span class="badge badge-light">
+                       archivé
+                 </span>
+                {% endif %}
+              </p>
                 </a>
           </td>
             <td  data-title="Infos" class="shrink">

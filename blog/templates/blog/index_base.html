@@ -413,16 +413,6 @@ function get_tags_articles(url_tag) {
 
 
 <div class="anchor_blank" id="idContenu"></div>
-<nav class="nav nav-tabs justify-content-center">
-    <a class="nav-item nav-link active" href="#art_groupe" data-toggle="tab" id="navtab_groupe"> Du Groupe</a>
-    <a class="nav-item nav-link" href="#art_dossier"  data-toggle="tab" id="navtab_dossier"> Par dossier</a>
-    <a class="nav-item nav-link" href="#art_motscles" onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{asso_courante}}')" data-toggle="tab"  id="navtab_tags"> Par mot clé</a>
-    <a class="nav-item nav-link" href="#art_partage" onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab" id="navtab_oartages"> Partagés</a>
-    <a class="nav-item nav-link" href="#art_archive" onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab" id="navtab_archives"> Archivés</a>
-</nav>
-
-<div class="tab-content">
-  <div class="tab-pane fade show active" id="art_groupe">
 
 {% if not user_membreAsso %}
     <div class="row justify-content-center">
@@ -430,7 +420,19 @@ function get_tags_articles(url_tag) {
             (Vous n'êtes pas membre de ce groupe, vous pouvez accéder uniquement aux articles du groupe qu'ils ont partagé avec un groupe auquel vous appartenez.)
         </div>
     </div>
+{% else%}
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#art_groupe" data-toggle="tab" id="navtab_groupe"> Du Groupe</a>
+    <a class="nav-item nav-link" href="#art_dossier"  data-toggle="tab" id="navtab_dossier"> Par dossier</a>
+    <a class="nav-item nav-link" href="#art_motscles" onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{asso_courante}}')" data-toggle="tab"  id="navtab_tags"> Par mot clé</a>
+    <a class="nav-item nav-link" href="#art_partage" onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab" id="navtab_oartages"> Partagés</a>
+    <a class="nav-item nav-link" href="#art_archive" onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab" id="navtab_archives"> Archivés</a>
+</nav>
 {% endif%}
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="art_groupe">
+
 
 <div class="anchor_blank"  id="articles_epingles"></div>
     {%if articles_epingles%}

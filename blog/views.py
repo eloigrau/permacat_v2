@@ -20,7 +20,7 @@ from bourseLibre.settings import NBMAX_ARTICLES
 from bourseLibre.forms import AdresseForm, AdresseForm2
 from bourseLibre.constantes import Choix as Choix_global
 from django.db.models.functions import Greatest, Lower
-from bourseLibre.views import testIsMembreAsso
+from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
 from ateliers.models import Atelier
 from photologue.models import Album
 from django.views.decorators.csrf import csrf_exempt
@@ -490,20 +490,26 @@ class ListeArticles_asso(ListView):
 
 @login_required
 def articlesPartages(request, asso):
-    asso = testIsMembreAsso(request, asso)
+    asso = testIsMembreAsso_bool(request, asso)
+    if not asso:
+        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso': asso})
     article_list = Article.objects.filter(Q(partagesAsso__abreviation=asso.abreviation) & ~Q(asso=asso) & Q(estArchive=False))
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
 
 
 @login_required
 def articlesArchives(request, asso):
-    asso = testIsMembreAsso(request, asso)
+    asso = testIsMembreAsso_bool(request, asso)
+    if not asso:
+        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso':asso})
     article_list = Article.objects.filter(asso=asso, estArchive=True)
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
 
 @login_required
 def articlesParTag(request, asso, tag):
-    asso = testIsMembreAsso(request, asso)
+    asso = testIsMembreAsso_bool(request, asso)
+    if not asso:
+        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso':asso})
     q_objects = request.user.getQObjectsAssoArticles()
     article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'tag':tag})
@@ -512,7 +518,10 @@ def articlesParTag(request, asso, tag):
 def get_articles_pardossier(request):
     q_objects = Q()
     if "asso" in request.GET:
-        asso = testIsMembreAsso(request, request.GET['asso'])
+        asso = testIsMembreAsso_bool(request, request.GET['asso'])
+        if not asso:
+            return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'categorie_courante':request.GET['categorie']})
+
         q_objects = Q(asso=asso) & request.user.getQObjectsAssoArticles()
 
     if "categorie" in request.GET:

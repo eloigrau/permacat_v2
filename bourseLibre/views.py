@@ -212,6 +212,21 @@ def testIsMembreAsso(request, asso):
     return Asso.objects.get(nom="Public")
 
 
+def testIsMembreAsso_bool(request, asso):
+    if asso == "public":
+        return Asso.objects.get(nom="Public")
+
+    assos = Asso.objects.filter(Q(nom=asso) | Q(abreviation=asso))
+    if assos:
+        assos = assos[0]
+
+        if not assos.is_membre(request.user) and not request.user.is_superuser:
+            return None
+        return assos
+
+    return Asso.objects.get(nom="Public")
+
+
 
 @login_required
 def produit_proposer(request, type_produit):

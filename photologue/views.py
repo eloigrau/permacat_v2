@@ -5,7 +5,7 @@ from django.views.generic import ListView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from .models import Photo, Album, Document
 from django.shortcuts import render, redirect
-from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentAssocierArticleForm
+from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm,DocumentFormAsso, DocumentAssocierArticleForm
 from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -305,7 +305,10 @@ def telechargerDocument(request, slug):
 @login_required
 def ajouterDocument(request, article_slug=None):
     if request.method == 'POST':
-        form = DocumentForm(request, request.POST, request.FILES)
+        if article_slug and article_slug != 'None':
+            form = DocumentFormAsso(request.POST, request.FILES)
+        else:
+            form = DocumentForm(request, request.POST, request.FILES)
         if form.is_valid():
             if article_slug and article_slug != 'None':
                 article = Article.objects.get(slug=article_slug)
@@ -320,7 +323,10 @@ def ajouterDocument(request, article_slug=None):
                 return redirect(article)
             return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
     else:
-        form = DocumentForm(request) # A empty, unbound form
+        if article_slug and article_slug != 'None':
+            form = DocumentFormAsso()
+        else:
+            form = DocumentForm(request) # A empty, unbound form
 
     # Render list page with the documents and the form
     return render(request, 'photologue/document_ajouter.html', { "form": form})

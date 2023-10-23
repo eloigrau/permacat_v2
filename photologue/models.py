@@ -343,7 +343,7 @@ class Document(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self,):
-        return self.asso.get_logo_nomgroupe_html_taille(taille=15)
+        return self.asso.get_logo_nomgroupe_html_taille(taille=20)
 
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),

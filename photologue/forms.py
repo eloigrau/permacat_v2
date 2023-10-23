@@ -273,7 +273,7 @@ class DocumentAssocierArticleForm(forms.Form):
 class DocumentForm(forms.ModelForm):
     doc = forms.FileField(
         label='Choisir un fichier',
-        help_text='max. 20 megabytes'
+        help_text='max. 20 Mo'
     )
 
     asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
@@ -302,6 +302,43 @@ class DocumentForm(forms.ModelForm):
         instance.auteur = request.user
         if article:
             instance.article = article
+            instance.article = article
+
+        if commit:
+            instance.save()
+
+
+        return instance
+
+
+class DocumentFormAsso(forms.ModelForm):
+    doc = forms.FileField(
+        label='Choisir un fichier',
+        help_text='max. 20 Mo'
+    )
+
+    class Meta:
+        model = Document
+        fields = [ 'titre', 'doc', 'tags']
+
+    def __init__(self, *args, **kwargs):
+        super(DocumentFormAsso, self).__init__(*args, **kwargs)
+
+    def save(self, request, article, commit=True):
+        instance = super(DocumentFormAsso, self).save(commit=False)
+        max_length = Photo._meta.get_field('slug').max_length
+        instance.slug = orig = slugify(instance.titre)[:max_length]
+
+        for x in itertools.count(1):
+            if not Photo.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.auteur = request.user
+        instance.article = article
+        instance.asso = article.asso
 
         if commit:
             instance.save()

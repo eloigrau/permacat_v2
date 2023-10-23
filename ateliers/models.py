@@ -163,7 +163,7 @@ class Atelier(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self, ):
-        return self.asso.get_logo_nomgroupe_html_taille(taille=15)
+        return self.asso.get_logo_nomgroupe_html_taille(taille=20)
 
 class CommentaireAtelier(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)

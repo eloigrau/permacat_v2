@@ -527,7 +527,6 @@ class DocumentPartageArticleForm(forms.ModelForm):
 
 class ReunionArticleForm(forms.ModelForm):
 
-
     class Meta:
         model = Reunion
         fields = ['categorie', 'titre', 'description', 'start_time']

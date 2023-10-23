@@ -25,7 +25,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.contrib import admin
-from .settings import MEDIA_ROOT
+from .settings import MEDIA_ROOT, MEDIA_URL
+
+from django.views.static import serve
 
 admin.sites.site_header ="Admin"
 admin.sites.site_title ="Admin Permacat"
@@ -230,8 +232,15 @@ urlpatterns = [
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),
-]
 
+
+]
+@login_required
+def protected_serve(request, path, document_root=None, show_indexes=False):
+    return serve(request, path, document_root, show_indexes)
+
+
+urlpatterns += [url(r'^media/(?P<path>.*)$', protected_serve,{'document_root': MEDIA_ROOT}), ]
 urlpatterns += [
     url(r'^robots\.txt$', TemplateView.as_view(template_name="bourseLibre/robots.txt", content_type='text/plain')),
 ]

@@ -43,7 +43,7 @@ class Choix:
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
                         ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
 
-    type_annonce_conf66 = ('Annonce', 'Annonce'), ("Infos", "Infos diverses"), ('administratif', 'Administratif'), ('evenement', 'Evènement'), ("elevage", "Elevage"), ("apiculture","Apiculture"), ("maraichage", "Maraichage"), ("arboriculture", "Arboriculture"), ("viticulture", "Viticulture"), ("Commission", "Commission")
+    type_annonce_conf66 = ('Annonce', 'Annonce'), ("Infos", "Infos diverses"), ('administratif', 'Administratif'), ('evenement', 'Evènement'), ("elevage", "Elevage"), ("ppam","PPAM"), ("maraichage", "Maraichage"), ("arboriculture", "Arboriculture"), ("viticulture", "Viticulture"), ("Commission", "Commission")
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,
@@ -97,8 +97,15 @@ class Choix:
     'groupe4':'#ff000032',
     'groupe5':'#ff000030',
     'groupe6':'#ff000028',
-
-
+    'Annonce':"#4B9130",
+    "Infos":"#A8EF8E",
+    'administratif':"#8CCB75",
+    'evenement':"#ACEADB",
+    "elevage":"#80D8C4",
+    "maraichage":"#59998B",
+    "arboriculture":"#86A136",
+    "Commission":"#DFF994",
+    "ppam":"#C9E182",
     }
     couleurs_projets = {
         'Part':"#d0e8da", 'AGO':"#dcc0de", 'Projlong':"#d1d0dc", 'Projcourt':"#ffc09f", 'Projponct':"#e4f9d4",
@@ -142,7 +149,7 @@ class Choix:
         return 'img/logos/'+ Choix.logo_asso[abreviation]
         #return 'img/logos/nom_'+abreviation+'.png'
 
-    def get_logo_nomgroupe_html(abreviation, taille=22):
+    def get_logo_nomgroupe_html(abreviation, taille=25):
         return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
 
     def get_type_annonce_asso(asso):
@@ -302,16 +309,16 @@ class Article(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.get_logo_nomgroupe_html_taille(21)
+        return self.get_logo_nomgroupe_html_taille(24)
 
-    def get_logo_nomgroupe_html_taille(self, taille=21):
+    def get_logo_nomgroupe_html_taille(self, taille=24):
         return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
     @property
     def get_logo_nomgroupespartages_html(self):
-        return self.get_logo_nomgroupes_partages_html_taille(15)
+        return self.get_logo_nomgroupes_partages_html_taille(14)
 
-    def get_logo_nomgroupes_partages_html_taille(self, taille=15):
+    def get_logo_nomgroupes_partages_html_taille(self, taille=14):
         return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
     def est_autorise(self, user):

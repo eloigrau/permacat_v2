@@ -494,7 +494,7 @@ def envoyerMailVieuxComptes(request):
     #send_mass_html_mail(listeMails, fail_silently=False)
 
     return render(request, 'admin/voirProfil_anciens.html',
-                  {"listeMails1": mail_old, "listeMails2": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
+                  {"listeMails": listeMails, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 
 def getMailsNewsletter(request):

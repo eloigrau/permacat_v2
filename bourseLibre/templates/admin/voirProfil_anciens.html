@@ -31,7 +31,7 @@
 
 <div class="row justify-content-center">
 <div class="card-deck notif ">
-{% for mail in listeMails1 %}
+{% for mail in listeMails %}
 <div class="card notif3 d-md-flex">
   <ul class="list-group list-group-flush " >
       <li class="list-group-item "    >
@@ -49,25 +49,7 @@
 </div>
 </div>
 
-<div class="row justify-content-center">
-<div class="card-deck notif ">
-{% for mail in listeMails2 %}
-<div class="card notif3 d-md-flex">
-  <ul class="list-group list-group-flush " >
-      <li class="list-group-item "    >
-        {{mail.0|safe}}
-      </li>
-      <li class="list-group-item "    >
-        {{mail.2|safe}}
-      </li>
-      <li class="list-group-item "    >
-        {{mail.4|safe}} et {{mail.1|safe}} et {{mail.3|safe}}
-      </li>
-  </ul>
-</div>
-{%endfor%}
-</div>
-</div>
+
 <div class="row justify-content-center"
  <button class="btn btn-success" type="button"><a href="{% url 'envoyerMailVieuxComptes'  %}">Envoyer mail maintenant</a></button>
  </div>

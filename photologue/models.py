@@ -172,7 +172,7 @@ class Album(models.Model):
                             unique=True,
                             max_length=250,
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
-    description = models.TextField(_('description'),
+    description = models.TextField(_('Description'),
                                    blank=True)
 
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)

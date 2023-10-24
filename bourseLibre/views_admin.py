@@ -19,6 +19,7 @@ from django.utils.html import strip_tags
 from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
 from actstream.models import following
+from django.db.models import Q
 from bourseLibre.settings import DEBUG
 
 
@@ -448,38 +449,52 @@ def creerAction_articlenouveau(request):
     return render(request, 'admin/creerAction_articlenouveau.html', {"form": form, })
 
 
-def getVieuxComptes(request):
+def getVieuxComptes(request, avertissement=False):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    date_ajd = datetime.now().date()
-    date_limite = datetime(datetime.now().year - 1, datetime.now().month, day=datetime.now().day)
-    profil_jamais = Profil.objects.filter(last_login__isnull=True)
-    profil_old = Profil.objects.filter(last_login__lt=date_limite)
-    mail = {"titre": "Suppression de votre compte",
-            "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
+    if avertissement:
+        date_limite = datetime(datetime.now().year - 1, datetime.now().month - 1, day=datetime.now().day)
+    else:
+        date_limite = datetime(datetime.now().year - 1, datetime.now().month, day=datetime.now().day)
+    profil_jamais = Profil.objects.filter(Q(last_login__isnull=True) & ~Q(username='bot_permacat'))
+    profil_old = Profil.objects.filter(Q(last_login__lt=date_limite) & ~Q(username='bot_permacat'))
+    mail_jamais = {"titre": "[Perma.Cat] Suppression de votre compte",
+            "contenu_html": "<p>Bonjour,</p> <br><p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.</p> "+ \
+                      " <p>Le site a beaucoup évolué depuis votre inscription, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez.</p> <br><p>Fins Aviat !</p>",
+            "contenu": "Bonjour, il semble que vous ne vous êtes jamais connecté.e à www.perma.cat. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.  "+ \
+                      " Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez. Fins Aviat !",
             }
-    mail_old = {"titre": "Suppression de votre compte",
-                "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
-                }
-    return profil_jamais, profil_old, mail, mail_old
+    mail_old = {"titre": "[Perma.Cat] Suppression de votre compte",
+                "contenu_html": "<p>Bonjour,</p> <br><p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.</p> " +\
+                           "<p>Le site a beaucoup évolué depuis votre dernière venue, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez.</p><br> <p>Fins Aviat !</p>",
+               "contenu": "Bonjour, il semble que vous ne vous êtes jamais connecté.e à www.perma.cat. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.  " + \
+                          " Le site a beaucoup évolué depuis votre inscription, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez. Fins Aviat !",
 
+    }
+    return profil_jamais, profil_old, mail_jamais, mail_old
 
 def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    profil_jamais, profil_old, mail, mail_old = getVieuxComptes(request)
+    profil_jamais, profil_old, mail, mail_old = getVieuxComptes(request, avertissement=False)
     # todo implementer suppression
     return render(request, 'admin/voirProfil_anciens.html',
                   {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
-
 def envoyerMailVieuxComptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    profil_jamais, profil_old, mail, mail_old = getVieuxComptes(request)
+    profil_jamais, profil_old, mail_jamais, mail_old = getVieuxComptes(request, avertissement=True)
+    listeMails = [] #subject, message, html_message, sender, recipient
+
+    listeMails.append([mail_jamais['titre'], mail_jamais['contenu'], mail_jamais['contenu_html'], SERVER_EMAIL, [p.email for p in profil_jamais]])
+
+    listeMails.append([mail_old['titre'], mail_old['contenu'], mail_old['contenu_html'], SERVER_EMAIL, [p.email for p in profil_old]])
+
+    #send_mass_html_mail(listeMails, fail_silently=False)
 
     return render(request, 'admin/voirProfil_anciens.html',
-                  {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
+                  {"listeMails1": mail_old, "listeMails2": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 
 def getMailsNewsletter(request):

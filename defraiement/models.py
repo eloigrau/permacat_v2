@@ -97,10 +97,10 @@ class ParticipantReunion(models.Model):
 class Reunion(models.Model):
     categorie = models.CharField(max_length=30,
                                  choices=(Choix.type_reunion),
-                                 default='0', verbose_name="categorie")
+                                 default='0', verbose_name="Dossier")
     titre = models.CharField(verbose_name="Titre de la rencontre", max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True, verbose_name="Description / compte rendu")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
     start_time = models.DateField(verbose_name="Date de la rencontre", help_text="(jj/mm/an)",
                                   default=timezone.now, blank=True, null=True)

@@ -1,5 +1,5 @@
 from django.db import models
-from bourseLibre.models import Profil, Suivis, Asso, Adresse, username_re
+from bourseLibre.models import Profil, Suivis, Asso, Adresse, username_re, Salon
 from django.urls import reverse
 from django.utils import timezone, html
 from actstream import action
@@ -361,6 +361,15 @@ class Article(models.Model):
 #     def __str__(self):
 #         return "(" + str(self.date_creation) + " : " +  self.article + ") "+ str(self.description)
 
+class AssociationSalonArticle(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, verbose_name="Salon lié" )
+
+    class Meta:
+        unique_together = ('article', 'salon',)
+
+    def __str__(self):
+        return str(self.salon) + " - "+ str(self.article)
 
 class DocumentPartage(models.Model):
     nom = models.CharField(verbose_name="Nom du document", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])

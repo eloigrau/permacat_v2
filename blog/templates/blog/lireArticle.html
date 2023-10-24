@@ -163,13 +163,13 @@
       <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left" ></i></a>
         {% endif %}
         {% if reunions %}
-      <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-users icon-left"></i></a>
+      <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
         {% endif %}
         {% if documents %}
-      <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i></a>
+      <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-file icon-left"></i></a>
         {% endif %}
         {% if documents_partages %}
-      <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-files icon-left"></i><i class="fa fa-file icon-left"></i></a>
+      <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-share icon-left"></i></a>
         {% endif %}
 {% if suffrages %}
       <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i></a>
@@ -191,6 +191,11 @@
   <div class="tab-pane fade" id="album">
         <div class="contenu atelier">
 
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Album : </h4>
+            </div>
+        </div>
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-8 col-lg-6 textcenter">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -251,6 +256,13 @@
     <div class="contenu atelier">
 <div class="row justify-content-center">
 <div class="col-sm-12 textcenter">
+
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Documents : </h4>
+            </div>
+        </div>
         {% for document in documents %}
         <p>
             <a href="{{document.doc.url}}" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.titre }} </a>
@@ -272,6 +284,12 @@
     <div class="contenu atelier">
 <div class="row justify-content-center">
 <div class="col-sm-12 textcenter">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Documents partagés (framapad): </h4>
+            </div>
+        </div>
         {% for document in documents_partages %}
         <p>
             <a href="{{document.get_url}}" target="_blank" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.nom }} </a>
@@ -293,6 +311,12 @@
     <div class="contenu atelier">
 <div class="row justify-content-center">
 <div class="col-sm-12 textcenter">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Réunions : </h4>
+            </div>
+        </div>
         {% for reunion in reunions %}
         <p>
             <a href="{{reunion.get__absolute_url}}" target="_blank" > {{ reunion.titre }} </a>
@@ -316,6 +340,12 @@
   <div class="tab-pane fade " id="ateliers">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
         <div class="contenu atelier">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Ateliers : </h4>
+            </div>
+        </div>
         {% for atelier in ateliers %}
         <p>
                 <a href="{{atelier.get_absolute_url}}"> <i class="fa fa-arrow-right"></i>  Atelier du {{atelier.start_time |date:"l d F Y"}} : {{atelier.titre}}</a>
@@ -336,6 +366,12 @@
 <div class="tab-pane fade " id="dates">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu atelier">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Dates supplémentaires : </h4>
+            </div>
+        </div>
               {%for date in dates %}
              <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
 
@@ -354,6 +390,12 @@
 <div class="tab-pane fade " id="lieux">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu atelier">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Lieux : </h4>
+            </div>
+        </div>
               {%for lieu in lieux %}
                 <p> {{lieu}}
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
@@ -373,8 +415,14 @@
 <div class="tab-pane fade " id="salons">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu atelier">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Salons de discussions : </h4>
+            </div>
+        </div>
               {%for salon in salons %}
-            <p><a href="{{salon.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> {{salon.titre}}</a></p>
+            <p><a href="{{salon.get_absolute_url}}"> {{salon.titre}}</a></p>
               {%endfor%}
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
             <hr>
@@ -389,6 +437,11 @@
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu atelier">
 
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Informations générales : </h4>
+            </div>
+        </div>
     {% if article.tags.names  %}
         <div class="row-sm-12 justify-content-center">
         <div class="col-sm-12 ">
@@ -423,6 +476,12 @@
                {% endfor %}
                 </p>
             {% endif %}
+            <hr>
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Historique: </h4>
+            </div>
+        </div>
             <div class="row textcenter">
                 <div class="col-sm-12">
                   {%for action in actions %}
@@ -435,8 +494,15 @@
   </div>
 
 <div class="tab-pane fade " id="suffrages">
+
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu discussion_fiche">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Suffrages liés : </h4>
+            </div>
+        </div>
               {%for suffrage in suffrages %}
             <p><a href="{{suffrage.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> {{suffrage.titre}}</a></p>
               {%endfor%}
@@ -451,6 +517,12 @@
   <div class="tab-pane fade " id="plus">
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu discussion_fiche">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Ajouter à l'article : </h4>
+            </div>
+        </div>
         <p>
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a>
         </p>

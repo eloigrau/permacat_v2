@@ -4,11 +4,11 @@ from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy, reverse
 from django.utils.html import strip_tags
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
-    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage
+    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
-    AssocierReunionArticleForm
+    AssocierReunionArticleForm, AssociationSalonArticleForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -209,7 +209,8 @@ def lireArticle(request, slug):
     documents = Document.objects.filter(article=article).order_by('date_creation')
     lieux = AdresseArticle.objects.filter(article=article).order_by('titre')
     salons = Salon.objects.filter(article=article).order_by('titre')
-    salons = [s for s in salons if s.est_autorise(request.user)]
+    salons_article = AssociationSalonArticle.objects.filter(article=article).order_by('salon__titre')
+    salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if s.salon.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
     documents_partages = DocumentPartage.objects.filter(article=article)
@@ -1049,12 +1050,24 @@ def supprimerReunionArticle(request, slug_article):
 @login_required
 def ajouterSalonArticle(request, slug_article):
     form = SalonArticleForm(request.POST or None)
+    article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        ev = form.save(request, slug_article)
+        ev = form.save(request, article)
         return redirect(ev.article)
 
-    return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+    return render(request, 'blog/ajouterSalon.html', {'form': form, 'article':article, })
+
+@login_required
+def associerSalonArticle(request, slug_article):
+    form = AssociationSalonArticleForm(request, request.POST or None)
+    article = Article.objects.get(slug=slug_article)
+
+    if form.is_valid():
+        ev = form.save(article)
+        return redirect(article)
+
+    return render(request, 'blog/associerSalon.html', {'form': form, 'article':article})
 
 class SupprimerEvenementArticle(DeleteAccess, DeleteView):
     model = Evenement

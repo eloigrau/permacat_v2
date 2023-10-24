@@ -1,7 +1,7 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
 from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
-    DocumentPartage, Discussion, Choix, Theme
+    DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -12,6 +12,7 @@ from defraiement.models import Reunion
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from photologue.models import Album
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 import re
 #from dal import autocomplete
 #from taggit.models import Tag
@@ -191,6 +192,24 @@ class ArticleChangeForm(forms.ModelForm):
 #         model = ModificationArticle
 #         fields = ['description',]
 
+
+class AssociationSalonArticleForm(forms.ModelForm):
+
+    class Meta:
+        model = AssociationSalonArticle
+        fields = ['salon',]
+
+    def save(self, article):
+        instance = super(AssociationSalonArticleForm, self).save(commit=False)
+        instance.article = article
+        instance.save()
+        return instance
+
+    def __init__(self, request, *args, **kwargs):
+        super(AssociationSalonArticleForm, self).__init__(*args, **kwargs)
+        salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by( "salon__titre")
+        salons = [x for x in Salon.objects.filter(estPublic=True).order_by("titre")] + [s.salon for s in salons_inscrit]
+        self.fields["salon"].choices = [(x.id, x.titre) for x in salons]
 
 class ArticleAddAlbum(forms.ModelForm):
     album = forms.ModelChoiceField(queryset=Album.objects.all(), required=True,
@@ -480,11 +499,9 @@ class SalonArticleForm(forms.ModelForm):
         model = Salon
         fields = ['titre', 'estPublic' ]
 
-    def save(self, request, slug_article):
+    def save(self, request, article):
         instance = super(SalonArticleForm, self).save(commit=False)
-        article = Article.objects.get(slug=slug_article)
         instance.article = article
-        instance.asso = article.asso
         instance.save()
         inscrit = InscritSalon(salon=instance, profil=request.user)
         inscrit.save()

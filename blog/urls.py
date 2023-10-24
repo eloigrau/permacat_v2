@@ -75,6 +75,7 @@ urlpatterns = [
     url(r'transfereArticlesJardin/$', views.changerArticles_jardin, name='transfereArticlesJardin'),
     path(r'ajouterEvenementArticle/<str:slug_article>', views.ajouterEvenementArticle, name='ajouterEvenementArticle'),
     path(r'ajouterSalonArticle/<str:slug_article>', views.ajouterSalonArticle, name='ajouterSalonArticle'),
+    path(r'associerSalonArticle/<str:slug_article>', views.associerSalonArticle, name='associerSalonArticle'),
     url(r'^supprimerEvenementArticle/(?P<slug_article>[-\w]+)-(?P<id_evenementArticle>[0-9]+)$', login_required(views.SupprimerEvenementArticle.as_view(), login_url='/auth/login/'), name='supprimerEvenementArticle'),
     url(r'ajouterAdresseArticle/(?P<id_article>[0-9]+)$', views.ajouterAdresseArticle, name='ajouterAdresseArticle'),
     url(r'ajouterDocumentPartage/(?P<slug_article>[-\w]+)$', views.ajouterDocumentPartage, name='ajouterDocumentPartage'),

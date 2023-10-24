@@ -1,7 +1,7 @@
 {% extends 'blog/base_blog.html' %}
 {% block title %} - Modifier l'article{% endblock %}
 {% block subtitle %}
-<h3>Modifier l'article</h3>
+<h3>Modifier l'article {{form.instance.categorie}}</h3>
 {% endblock %}
 {% block content %}
 
@@ -38,6 +38,21 @@ $(document).ready(function () {
 			 	}
 			 });
 		}
+
+      var asso_node = $("#id_asso");
+      var url = $("#articleForm").attr("ajax_categories-url");  // get the url of the `load_cities` view
+      var asso = asso_node.val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request
+        data: {
+          'asso': asso,
+          'categorie_courante': '{{form.instance.categorie}}'
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_categorie").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
 
 	 if (asso != "1"){
 		  $("#id_partagesAsso").parent().removeClass("cache");

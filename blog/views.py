@@ -1169,13 +1169,20 @@ def filtrer_articles(request):
 
     return render(request, 'blog/article_filter.html', {'filter': f})
 
+def ajax_getNomcategorie(request):
+    asso_id = request.GET.get('categorie')
+
 def ajax_categories(request):
     try:
         asso_id = request.GET.get('asso')
         nomAsso = Asso.objects.get(id=asso_id).abreviation
+        if "categorie_courante" in request.GET:
+            cat = request.GET["categorie_courante"]
+        else:
+            cat = None
 
         return render(request, 'blog/ajax/categories_dropdown_list_options.html',
-                      {'categories': Choix.get_type_annonce_asso(nomAsso)})
+                      {'categories': Choix.get_type_annonce_asso(nomAsso), 'categorie_courante':cat})
     except:
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'categories': Choix.get_type_annonce_asso("defaut")})
 

@@ -159,6 +159,15 @@ class Choix:
         except:
             return Choix.type_annonce
 
+    def get_categorie_from_id(id_cat):
+        try:
+            return [x[1] for x in Choix.type_annonce if x[0] == id_cat][0]
+        except:
+            try:
+                return [x[1] for x in Choix.type_annonce_jp_base if x[0] == id_cat][0]
+            except:
+                return "dossier inconnu"
+
 class Theme(models.Model):
     nom = models.CharField(max_length=20)
 

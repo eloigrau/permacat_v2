@@ -493,7 +493,7 @@ function get_tags_articles(url_tag) {
         <li class="nav-item dropdown">
             <a class="nav-item btn-block" id="menuDossier" data-toggle="dropdown">
                 <button class="btn  {% if dossier_courant %}btn-warning{% else %}btn-info {% endif %} dropdown-toggle" id="btn-categorie">
-                    <h6 id="titreDossier"> {% if dossier_courant %} Dossier : {{categorie_courante}} {% else %} Choisir un dossier {% endif %}</h6></button>
+                    <h6 id="titreDossier"> {% if dossier_courant %} Dossier : {{categorie_courante|getCategorie_display}} {% else %} Choisir un dossier {% endif %}</h6></button>
                 </button>
             </a>
             <div class="dropdown-menu"  aria-labelledby="menuDossier"  id="idmenuDossier">

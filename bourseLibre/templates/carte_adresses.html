@@ -57,27 +57,46 @@
               shadowSize: [41, 41]
         });
 
-        {% for lieu in lieux %}
+        {% for adresse in lieux %}
             try{
-                var lat = {{lieu.adresse.latitude|to_numeric}};
-                var lon = {{lieu.adresse.longitude|to_numeric}};
+                var lat = {{adresse.latitude|to_numeric}};
+                var lon = {{adresse.longitude|to_numeric}};
                 {% block markers %}
-                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b>');
+                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{adresse.get_adresse_str}} ({{adresse.latitude|to_numeric|slice:":10"}}, {{adresse.longitude|to_numeric|slice:":9"}})</b>');
                   marker.addTo(map);
                 {% endblock %}
             }
-            catch(err){
+            catch(err){ ;
             }
         {%endfor%}
         {% if lieux|length >= 1 %}
-        map.panTo(new L.LatLng(lat, lon));
+          map.panTo(new L.LatLng(lat, lon));
         {%else%}
-        map.panTo(new L.LatLng(42.62914, 2.49939));
+          map.panTo(new L.LatLng(42.62914, 2.49939));
         {%endif%}
     }
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+    <table class="table table-condensed ">
+        <tbody>
+        {% for adresse in lieux %}
+            <tr>
+                <td class="proprieteJardin">
+                  Adresse :
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    <a href="https://maps.google.com/maps?q={{ adresse.getLatLon_html }}&entry=gps" target="_blank" rel="noopener noreferrer nofollow">{{ adresse.getLatLon_html }} - {{ adresse.code_postal }} {{ adresse.commune }}</a>
+                </td>
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+  </div>
 </div>
 
 {% endblock %}

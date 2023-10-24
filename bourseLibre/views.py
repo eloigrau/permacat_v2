@@ -9,7 +9,7 @@ import itertools
 from django.shortcuts import HttpResponseRedirect, render, redirect, get_object_or_404#, render, redirect, render_to_response,
 from django.core.exceptions import PermissionDenied
 from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, Produit_objet_CreationForm, \
-    Produit_service_CreationForm, ContactForm, AdresseForm, AdresseForm5, ProfilCreationForm, MessageForm, MessageGeneralForm, \
+    Produit_service_CreationForm, ContactForm, AdresseForm4, AdresseForm5, ProfilCreationForm, MessageForm, MessageGeneralForm, \
     ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
@@ -988,13 +988,12 @@ def chercher_produits(request):
 def lireConversation(request, destinataire):
     conversation = getOrCreateConversation(request.user.username, destinataire)
     messages = Message.objects.filter(conversation=conversation).order_by("date_creation")
-    paginator = Paginator(messages, 30) # Show 10 contacts per page.
+    paginator = Paginator(messages, 25) # Show 10 contacts per page.
     if not 'page' in request.GET:
         page_number = paginator.num_pages
     else:
         page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
 
     message_defaut = None
     id_panier = request.GET.get('panier')
@@ -1044,6 +1043,28 @@ def lireConversation(request, destinataire):
 
     return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':destinataire})
 
+@login_required
+def partagerPosition(request, slug_conversation):
+    form_adresse = AdresseForm4(request.POST or None)
+    conversation = Conversation.objects.get(slug=slug_conversation)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        mess = request.user.username + "<a href='" + reverse('voirLieu', kwargs={'id_lieu':adresse.id}) + "#ref-titre'>" +  " a partagé une position </a>"
+        message = Message(message=mess, conversation=conversation, auteur=request.user)
+        message.save()
+
+        return redirect(conversation)
+
+    return render(request, 'ajouterLieuConversation.html', {'form': form_adresse, 'destinataire':conversation.get_destinataire(request)})
+
+
+
+@login_required
+def voirLieu(request, id_lieu):
+    lieux = [Adresse.objects.get(id=id_lieu), ]
+    titre = ""
+    return render(request, 'carte_adresses.html', {'titre':titre, "lieux":lieux})
 
 
 @login_required

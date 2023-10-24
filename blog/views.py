@@ -1169,8 +1169,6 @@ def filtrer_articles(request):
 
     return render(request, 'blog/article_filter.html', {'filter': f})
 
-def ajax_getNomcategorie(request):
-    asso_id = request.GET.get('categorie')
 
 def ajax_categories(request):
     try:

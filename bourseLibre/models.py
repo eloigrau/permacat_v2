@@ -155,7 +155,11 @@ class Adresse(models.Model):
         return str(self.longitude).replace(",",".")
 
     def getLatLon(self):
-        return str(self.latitude) + ", " + str(self.longitude)
+        return str(round(self.latitude, 8)) + ", " + str(round(self.longitude, 8))
+
+    @property
+    def getLatLon_html(self):
+        return self.getLatLon()
 
 class Asso(models.Model):
     nom = models.CharField(max_length=100)
@@ -1044,10 +1048,9 @@ class Conversation(models.Model):
     def __str__(self):
         return "Conversation entre " + self.profil1.username + " et " + self.profil2.username
 
+    @property
     def titre(self):
         return self.__str__()
-
-    titre = property(titre)
 
     @property
     def auteur_1(self):
@@ -1057,10 +1060,16 @@ class Conversation(models.Model):
     def auteur_2(self):
         return self.profil2.username
 
+    def get_destinataire(self, request):
+        if request.user == self.profil1:
+            return self.profil2
+        else:
+            return self.profil1
+
+
     @property
     def messages(self):
         return self.__str__()
-
 
     def get_absolute_url(self):
         return reverse('lireConversation_2noms', kwargs={'destinataire1': self.profil1.username, 'destinataire2': self.profil2.username})

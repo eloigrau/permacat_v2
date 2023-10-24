@@ -59,16 +59,23 @@
                 </a>
           </td>
             <td  data-title="Infos" class="shrink">
-                <p class="textcenter"><span class="badge badge-light" style=""
-title='Posté par {{article.auteur}} le {{ article.date_creation|date:"d/m" }}
-{%if article.date_modification %} Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{% endif %}
-{% if request.user|is_following:article %} Vous êtes abonné.e à cet article {% else %} Vous n"êtes pas abonné.e à cet article{% endif %}'>
-                            {% if request.user|is_following:article %}
-                                {% fontawesome_icon 'bell' %}
-                                {% else %}
-                                {% fontawesome_icon 'bell-slash' %}
-                            {% endif %}
-                  </span>
+                <span class="badge badge-light" style=" display: inline-block;">
+                {% if request.user|is_following:article %}
+                    {% fontawesome_icon 'bell' %}
+                    {% else %}
+                    {% fontawesome_icon 'bell-slash' %}
+                {% endif %}&nbsp;
+                {%if article.date_modification %}
+                    {%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %} &nbsp;
+                         Modifié le {{ article.date_modification|date:"DATE_FORMAT" }}
+                    {%else%}&nbsp;
+                        Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
+                    {%endifnotequal%}
+                {%else%}&nbsp;
+                    Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
+                {% endif %}
+                </span>
+                <p class="textcenter">
                     {% include 'blog/listeTags_view_template.html' with tags=article.tags.names %}
                 </p>
             </td>

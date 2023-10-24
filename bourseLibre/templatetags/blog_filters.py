@@ -1,6 +1,6 @@
 from django import template
 import re
-
+from blog.models import Choix
 from hitcount.models import Hit
 
 register = template.Library()
@@ -35,6 +35,9 @@ def sansOrdreTri(value):
     newvalue = newvalue.replace('page=', 'old=')
     return newvalue
 
+@register.filter(is_safe=True)
+def getCategorie_display(cat):
+    return Choix.get_categorie_from_id(cat)
 # @register.filter(is_safe=True)
 # def dejavu(article, user):
 #     newvalue = Hit.objects.filter(hitcount_content_object=article, user=user)

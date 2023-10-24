@@ -199,6 +199,8 @@ urlpatterns = [
     path(r'sortirDuSalon/<str:slug_salon>', views.sortirDuSalon, name='sortirDuSalon'),
     url(r'^activity/', include('actstream.urls')),
 
+    path('partagerPosition/<str:slug_conversation>', views.partagerPosition, name='partagerPosition'),
+    path('voirLieu/<str:id_lieu>', views.voirLieu, name='voirLieu'),
 #    path(r'wiki_ecovillage_notifications/', include('django_nyt.urls')),
 #    path(r'wiki_ecovillage/', include('wiki.urls')),
 

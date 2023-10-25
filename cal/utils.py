@@ -145,7 +145,7 @@ class Calendar(LocaleTextCalendar):
             events_arti = events_arti.filter(Q(asso__abreviation=asso_abreviation) | Q(partagesAsso__abreviation=asso_abreviation))
             events_atel = events_atel.filter(asso__abreviation=asso_abreviation)
             events_proj = events_proj.filter(asso__abreviation=asso_abreviation)
-            events_autre = events_autre.filter(Q(article__asso__abreviation=asso_abreviation) | Q(particle__partagesAsso__abreviation=asso_abreviation))
+            events_autre = events_autre.filter(Q(article__asso__abreviation=asso_abreviation) | Q(article__partagesAsso__abreviation=asso_abreviation))
 
         cal = '<table  class=" table-condensed" id="calendar">\n'
         #cal += self.formatmonthname(self.year, self.month, withyear=withyear)+'\n'

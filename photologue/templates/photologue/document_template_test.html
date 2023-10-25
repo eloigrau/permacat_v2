@@ -29,10 +29,8 @@
         <h5>{{ doc.titre }}</h5>
         {% if doc.tags.names %}
             <p class="card-text">
-            <small><em>Mots-clés :</em>
-                    {% for tag in doc.tags.names %}
-                    {{tag}}{%if not forloop.last%}, {%endif%}
-                   {% endfor %}
+            <small><em>Mots-clés : </em>
+                {% include 'listeTags_view_template.html' with tags=doc.tags.names %}
             </small>
             </p>
         {% endif%}
@@ -62,10 +60,8 @@
           <ul class="task-list">
         {% if doc.tags.names %}
                       <li>
-            <small><em>Mots-clés :</em>
-                    {% for tag in doc.tags.names %}
-                    {{tag}}{%if not forloop.last%}, {%endif%}
-                   {% endfor %}
+            <small><em>Mots-clés : </em>
+                {% include 'listeTags_view_template.html' with tags=doc.tags.names %}
             </small></li>
         {% endif%}
                       <li>

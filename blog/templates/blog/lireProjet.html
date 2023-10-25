@@ -20,7 +20,7 @@
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell-slash' title='abonnement' %}Non suivi
+                 {% fontawesome_icon 'bell-slash' %}Non suivi
             </button>
             {% endif %}
         </a>
@@ -164,20 +164,22 @@
     {% endcomment %}
 <hr>
  {% if projet.tags.names %}
-<div class="row">
-<div class="col-sm-12">
-    <p><em>Mots-clés :</em>
-            {% for tag in projet.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
-           {% endfor %}
-    </p>
-</div>
-</div>
-    <hr>
+
 {% endif%}
     <div class="col-sm-12 paddingbase">
 		<table class="table table-condensed ">
 			<tbody>
+             {% if projet.tags.names %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Mots-clés :
+					</td>
+					<td class="proprieteProduit">
+						{% include 'listeTags_view_template.html' with tags=projet.tags.names %}
+					</td>
+				</tr>
+{% endif%}
+
                     {% if projet.coresponsable%}
 				<tr>
 					<td class="nomProprieteProduit">

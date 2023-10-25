@@ -80,13 +80,7 @@
 {% if object.tags.names %}
 <div class="row">
 <div class="col-md-8 offset-md-2">
-    {% if object.tags.names %}
-      <p><em>Mots-clés :</em>
-            {% for tag in object.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
-           {% endfor %}
-    </p>
-       {% endif %}
+      <p><em>Mots-clés : </em> {% include 'listeTags_view_template.html' with tags=object.tags.names %} </p>
 </div>
 </div>
 {% endif%}

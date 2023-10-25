@@ -1144,6 +1144,9 @@ class Salon(models.Model):
     def getInvites(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
+    def getArticles(self):
+        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
+
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)

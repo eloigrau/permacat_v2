@@ -8,7 +8,7 @@
 <div class="row ">
 
 <div class="col-md-3 textcenter">
-        <a href="{% url 'photologue:album-list' %}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Tous les albums</a>
+    <a href="{% url 'photologue:album-list' %}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Tous les albums</a>
 </div>
 
 <div class="col-md-6 textcenter">
@@ -25,15 +25,13 @@
                 </span>
             </a>
             <span class="badge badge-Light">le {{ album.date_creation }}</span>
-                      {% if album.estModifiables %}
+            {% if album.estModifiables %}
             <span class="badge badge-Light"> modifiable </span>
-             {% endif %}
+            {% endif %}
             </p>
         {% if album.tags.names %}
-    <p><em>Mots-clés :</em>
-            {% for tag in album.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
-           {% endfor %}
+    <p><em>Mots-clés : </em>
+        {% include 'listeTags_view_template.html' with tags=album.tags.names %}
     </p>
     {% endif%}
         {% if articles %}

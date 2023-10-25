@@ -120,17 +120,27 @@
                     {%endif%}
                         </td>
                     </tr>
-                    {% if salon.article%}
+                    {% if salon.article or jointure_articles %}
                     <tr>
                         <td class="nomProprieteSalon">
                             Article associé :
                         </td>
                         <td class="textcenter">
-                        <a href="{{salon.article.get_absolute_url }}">
+                        {% if salon.article %}
+                            <a href="{{salon.article.get_absolute_url }}">
+                                <button type="button" class="btn btn-secondary btn-sm ">
+                                {{salon.article.titre}}
+                            </button>
+                            </a>
+                        {%endif%}
+
+                        {% for jointure in jointure_articles %}
+                        <a href="{{jointure.article.get_absolute_url }}">
                             <button type="button" class="btn btn-secondary btn-sm ">
-                            {{salon.article.titre}}
+                            {{jointure.article.titre}}
                         </button>
                         </a>
+                        {% endfor %}
                         </td>
                     </tr>
                     {%endif%}
@@ -181,6 +191,8 @@
                                 <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last%}, {%endif%}
                             {% endfor %}
                         </td>
+                        <td class="textleft">
+                        </td>
                     </tr>
                     <tr>
                         <td class="nomProprieteSalon">
@@ -188,8 +200,11 @@
                         </td>
                         <td class="textleft">
                              <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}</div>
-                        <div class="textright">  <button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier</button> </div>
+                        <div class="textright">   </div>
 
+                        </td>
+                        <td class="textright">
+                            <button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier</button>
                         </td>
                     </tr>
                     <tr>
@@ -200,16 +215,17 @@
                         {% for i in invites %}
                         <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last %}, {%endif%}
                         {% endfor %}
-                      <p class="textright">
+
                             <a href="{% url 'inviterDansSalon' slug_salon=salon.slug %}">
                                 <button type="button" class="btn btn-success" > <i class="fa fa-plus"></i>  Inviter une personne
                                 </button>
                             </a>
+                        </td>
+                        <td class="textright">
                             <a href="{% url 'sortirDuSalon' slug_salon=salon.slug %}">
                                 <button type="button" class="btn btn-danger"  onclick="clicked();" id="boutonSortir" > <i class="fa fa-minus"></i>  sortir du salon
                                 </button>
                             </a>
-                      </p>
                         </td>
                     </tr>
 
@@ -224,7 +240,7 @@
 
 <script type="text/javascript">
     function clicked() {
-       if (confirm("Etes vous sûr.e de vouloir quitter ce salon (vous ne pourrez plus y accéder à moins que quelqu'un vous re-invite")) {
+       if (confirm("Etes vous sûr.e de vouloir quitter ce salon (vous ne pourrez plus y accéder à moins que quelqu'un vous re-invite) ?")) {
             const btn = document.querySelector('#boutonSortir');
            btn.submit();
        } else {

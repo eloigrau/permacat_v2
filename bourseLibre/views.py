@@ -29,9 +29,8 @@ from django import forms
 from django.http import Http404
 from django.utils import timezone
 from taggit.models import Tag
-import traceback
 
-from blog.models import Article, Projet, EvenementAcceuil, Evenement
+from blog.models import Article, Projet, EvenementAcceuil, Evenement, AssociationSalonArticle
 from ateliers.models import Atelier
 from vote.models import Suffrage, Vote
 from jardinpartage.models import Article as Article_jardin
@@ -47,7 +46,6 @@ from django.views.decorators.debug import sensitive_variables
 
 #from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, CharField, F
-from django.db.models.functions import Lower
 from django.utils.html import strip_tags
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
@@ -57,8 +55,6 @@ from actstream.models import Action, Follow, following, followers, actor_stream,
 
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ObjectDoesNotExist
-from bourseLibre.settings.production import SERVER_EMAIL
-from bourseLibre.settings import LOCALL
 from bourseLibre.constantes import Choix as Choix_global
 from django.utils.timezone import now
 import pytz
@@ -1302,6 +1298,7 @@ def salon(request, slug):
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_" + str(salon.slug))
     inscrits = salon.getInscrits()
     invites = salon.getInvites()
+    jointure_articles = AssociationSalonArticle.objects.filter(salon=salon).order_by('salon__titre')
     messages = Message_salon.objects.filter(salon=salon).order_by("date_creation")
     paginator = Paginator(messages, 40) # Show 10 contacts per page.
     if not 'page' in request.GET:
@@ -1337,7 +1334,7 @@ def salon(request, slug):
                     pass
         return redirect(request.path)
 
-    return render(request, 'salon/lireSalon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "page_obj":page_obj})
+    return render(request, 'salon/lireSalon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "jointure_articles":jointure_articles, "page_obj":page_obj})
 
 @login_required
 def creerSalon(request):

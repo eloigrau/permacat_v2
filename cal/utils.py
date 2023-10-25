@@ -142,7 +142,7 @@ class Calendar(LocaleTextCalendar):
         events_autre_jardin = Evenement_jardin.objects.filter(start_time__year=self.year, start_time__month=self.month)
         events_vote = None#Suffrage.objects.filter(start_time__year=self.year, start_time__month=self.month)
         if asso_abreviation:
-            events_arti = events_arti.filter(Q(asso__abreviation=asso_abreviation) | Q(partagesAsso__abreviation=asso_abreviation)| Q(article__partagesAsso__abreviation='public'))
+            events_arti = events_arti.filter(Q(asso__abreviation=asso_abreviation) | Q(partagesAsso__abreviation=asso_abreviation)| Q(partagesAsso__abreviation='public'))
             events_atel = events_atel.filter(asso__abreviation=asso_abreviation)
             events_proj = events_proj.filter(asso__abreviation=asso_abreviation)
             events_autre = events_autre.filter(Q(article__asso__abreviation=asso_abreviation) | Q(article__partagesAsso__abreviation=asso_abreviation)| Q(article__partagesAsso__abreviation='public'))

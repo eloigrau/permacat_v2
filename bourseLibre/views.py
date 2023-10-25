@@ -1345,9 +1345,9 @@ def creerSalon(request):
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
         request.user.groups.add(group)
         message = Message_salon.objects.create(
-            salon = salon,
-            message = request.user.username + " a créé le salon",
-            auteur = get_object_or_404(Profil, username="bot_permacat"),
+            salon=salon,
+            message=request.user.username + " a créé le salon",
+            auteur=get_object_or_404(Profil, username="bot_permacat"),
             date_creation=now()).save()
         form.save_m2m()
         suivre_salon(request, salon.slug)

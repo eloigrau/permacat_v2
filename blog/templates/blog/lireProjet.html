@@ -6,34 +6,7 @@
 {% load activity_tags %}
 {% block subtitle %}
 <div class="row">
-    <div class="col-md-2">
-
-    </div>
-    <div class="col-md-8">
-        <p class="infos textepetit"> <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}" ><span class="badge" style="background-color:{{projet.get_couleur}}"> {{ projet.get_categorie_display }}</span> </a>, rédigé par <a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>, <span class="badge badge-light"> le {{ projet.date_creation|date:"DATE_FORMAT" }} </span>
-
-
-        <a href="{% url 'blog:suivre_projet' projet.slug %}">
-            {% if request.user|is_following:projet %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell' title='abonnement' %}
-            </button>
-            {% else %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell-slash' %}
-            </button>
-            {% endif %}
-        </a>
-            {% if request.user.is_superuser %}
-        <a href="{% url 'blog:suiveursProjet' projet.slug %}">
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir qui est abonné tifications concernant cet article par mail">
-                 {% fontawesome_icon 'list' %}
-            </button>
-        </a>
-            {% endif %}
-        </p>
-    </div>
-    <div class="col-md-2">
+    <div class="col-sm-12 textcenter">
         {%if projet.auteur == request.user or request.user.is_superuser%}
 		<div class="btn-group">
 
@@ -52,25 +25,38 @@
 
 {% endblock %}
 {% block content %}
-<div class="">
 
-<div class="row " id="contenu_projet">
-	<div class="col-sm-6">
-            <span class="badge {% if projet.estPublic%}badge-success{%else%}  badge-warning{%endif%}">
-                Projet {{projet.asso}}
-            </span>
 
-            {% if article.estArchive%}
-            <span class="badge badge-Light">
-                archivé
-            </span>
-            {%endif%}
+<div class="row" id="contenu_projet">
+	<div class="col-sm-12 textcenter">
+        {{projet.asso.get_logo_nomgroupe_html|safe }}
+        <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}" > / <span class="badge" style="background-color:{{projet.get_couleur}}"> {{ projet.get_categorie_display }}</span> </a>
+             -
+        <a href="{% url 'blog:suivre_projet' projet.slug %}">
+            {% if request.user|is_following:projet %}
+                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
+                     {% fontawesome_icon 'bell' title='abonnement' %}
+                </button>
+            {% else %}
+                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
+                     {% fontawesome_icon 'bell-slash' %}
+                </button>
+            {% endif %}
+        </a>
+            {% if request.user.is_superuser %}
+                <a href="{% url 'blog:suiveursProjet' projet.slug %}">
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir qui est abonné aux notifications concernant cet article">
+                         {% fontawesome_icon 'list' %}
+                    </button>
+                </a>
+            {% endif %}
+
 	</div>
-	<div class="col-sm-6 textright">
-               <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Statut : {{ projet.get_statut_display }}
-               </button>
-            <button type="button" class="btn" data-toggle="modal" data-target="#historique">
+</div>
+
+<div class="row" >
+	<div class="col-sm-12 textcenter">
+        <button type="button" class="btn" data-toggle="modal" data-target="#historique">
               {% fontawesome_icon 'bell' title='abonnement' %}Historique
             </button>
             <!-- Modal -->
@@ -97,12 +83,20 @@
                 </div>
               </div>
             </div>
-	</div>
+    </div>
 </div>
-
     <hr>
 <div class="row justify-content-center">
-      <h3 class="textcenter">{{ projet.titre }}</h3>
+    <div class="col textcenter">
+        <h3>{{ projet.titre }}
+
+            {% if article.estArchive%}
+            <span class="badge badge-Light">
+                archivé
+            </span>
+            {%endif%}
+        </h3>
+    </div>
 </div>
         <div class="row justify-content-center">
             <div class="col textcenter">
@@ -187,13 +181,33 @@
 					</td>
 				</tr>
                     {% endif %}
+
 				<tr>
 					<td class="nomProprieteProduit">
-						Type de projet :
+						Statut :
 					</td>
 					<td class="proprieteProduit">
-						{{ projet.get_categorie_display }}
+
+               <button type="button" class="btn btn-sm btn-warning">
+                    {{ projet.get_statut_display }}
+               </button>
 					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+                         rédigé par
+					</td>
+					<td class="proprieteProduit">
+						<a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>
+                    </td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+                        Créé le :
+					</td>
+					<td class="proprieteProduit">
+						<span class="badge badge-light"> le {{ projet.date_creation|date:"DATE_FORMAT" }} </span>
+                    </td>
 				</tr>
 
                 <tr>
@@ -382,7 +396,7 @@
 </div>
 
 	</div>
-</div>
+
 
 
 <hr>

@@ -48,6 +48,7 @@ class Choix():
 
 
     abreviationsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66"]
+    abreviationsAssoEtPublic = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66", "public"]
     abreviationsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"), ("conf66", "Confédération Paysanne 66")]
     abreviationsNomsAssoEtPublic = [('public', "Public"), ] + abreviationsNomsAsso
 

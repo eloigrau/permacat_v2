@@ -1316,9 +1316,14 @@ def salon(request, slug):
         message.save()
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
         url = message.get_absolute_url()
-        action.send(request.user, verb='envoi_salon_'+str(salon.slug),
-                    action_object=message, target=group, url=url,
-                    description="a envoyé un message dans le salon '" + str(salon.titre) + "' (>"+" ".join([str(x) for x in inscrits])+")")
+        if salon.estPublic:
+            action.send(request.user, verb='envoi_salon_public'+str(salon.slug),
+                        action_object=message, target=group, url=url,
+                        description="a envoyé un message dans le salon [public] '" + str(salon.titre))
+        else:
+            action.send(request.user, verb='envoi_salon_'+str(salon.slug),
+                        action_object=message, target=group, url=url,
+                        description="a envoyé un message dans le salon '" + str(salon.titre) + "' (>"+" ".join([str(x) for x in inscrits])+")")
 
         emails = [suiv.email for suiv in followers(suivis) if request.user != suiv ]
         message = "Le <a href='https://www.perma.cat" + salon.get_absolute_url() + "'> Salon '" + salon.titre + "'</a>' a été commenté"

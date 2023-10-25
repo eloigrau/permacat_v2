@@ -1305,12 +1305,6 @@ class Suivis(models.Model):
     def get_absolute_url(self):
         return ""
 
-#class Gestionnaire_Suivis():
-        #    def get_suivi_articles(self, asso):
-        #suivis, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.abreviation))
-        #return suivis
-
-
 class InscriptionNewsletter(models.Model):
     email = models.EmailField()
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
@@ -1341,6 +1335,28 @@ class InscriptionNewsletterGenerique(models.Model):
     def __str__(self):
         return str(self.nom_newsletter) + ": " + str(self.email)
 
-
 class InscriptionNewsletterAsso(InscriptionNewsletterGenerique):
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+
+
+class ListeDiffusion(models.Model):
+    nom = models.CharField(max_length=30, blank=False, unique=True)
+
+    def __str__(self):
+        return "Liste diffusion : " + str(self.nom)
+
+class InscriptionListeDiffusion(models.Model):
+    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, related_name="liste_diffusion",
+                                 verbose_name="Liste de diffusion", blank=True, null=True)
+    email = models.EmailField()
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="profil_listediff",
+                                 verbose_name="Profil du membre (si inscrit)", blank=True, null=True)
+    commentaire = models.CharField(max_length=50, blank=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return str(self.nom_newsletter) + ": " + str(self.email)

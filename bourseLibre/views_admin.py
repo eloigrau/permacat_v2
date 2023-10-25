@@ -575,11 +575,11 @@ def movePermagoraInscritsToNewsletter(request):
     users = Profil.objects.filter(adherent_scic=True)
     asso = Asso.objects.get(abreviation="scic")
 
-    for u in users:
-        InscriptionNewsletterAsso.objects.get_or_create(asso=asso, nom_newsletter="sympathisants", profil=u, email=u.email, )
-        if not Adhesion_asso.objects.filter(user=u, asso=asso).exists():
-            u.adherent_scic = False
-            u.save()
+    #for u in users:
+    #    InscriptionNewsletterAsso.objects.get_or_create(asso=asso, nom_newsletter="sympathisants", profil=u, email=u.email, )
+    #    if not Adhesion_asso.objects.filter(user=u, asso=asso).exists():
+    #        u.adherent_scic = False
+    #        u.save()
 
     return redirect('listeContacts', "scic")
 

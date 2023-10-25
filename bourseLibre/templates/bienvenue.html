@@ -26,15 +26,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 	</div>
 </div>
 {% endif %}
- {% if not request.user.is_authenticated %}
-<div class="row-sm-12 justify-content-center">
-	<div class="col-sm-12 textcenter">
-		<button class="btn btn-lg btn-primary" type="button"><a href="{% url 'presentation_site_pkoi'  %}"> Pourquoi s'inscrire sur Perma.Cat ?</a></button>
-	</div>
-</div>
-{% else %}
-	{% cookielaw_banner %}
-{% endif %}
+{% cookielaw_banner %}
 {%endblock%}
 {% block content %}
 <div class="row">
@@ -69,11 +61,18 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 
 				 {% if not request.user.is_authenticated %}
 
+
 		<div class="row textcenter">
 			<div class="col">
 				<a  href="{% url 'gallerie' %}" ><img class="imgbienvenue" src="{{STATIC_URL}}{{nomImage}}" alt="gallerie" ></a>
 			</div>
 		</div>
+					<hr>
+				<div class="row-sm-12 justify-content-center">
+					<div class="col-sm-12 textcenter">
+						<button class="btn btn-lg btn-primary" type="button"><a href="{% url 'presentation_site_pkoi'  %}"> Pourquoi s'inscrire sur Perma.Cat ?</a></button>
+					</div>
+				</div>
 					<hr>
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">

@@ -54,40 +54,8 @@
 	</div>
 </div>
 
-<div class="row" >
-	<div class="col-sm-12 textcenter">
-        <button type="button" class="btn" data-toggle="modal" data-target="#historique">
-              {% fontawesome_icon 'bell' title='abonnement' %}Historique
-            </button>
-            <!-- Modal -->
-            <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog textcenter" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                      <div class="row justify-content-center">
-                          <div class="col col-sm-12">
-                      <h5 >Historique</h5>
-                          </div>
-                      </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="contenu historique" id="idHistorique">
-                      {%for action in actions %}
-                            {% include "notifications/notifications_template3.html" with action=action%}
-                      {%endfor%}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-    </div>
-</div>
-    <hr>
-<div class="row justify-content-center">
-    <div class="col textcenter">
+<div class="row titre_fiche titre-article-forum justify-content-center">
+    <div class="col-sm-12 textcenter">
         <h3>{{ projet.titre }}
 
             {% if article.estArchive%}
@@ -138,12 +106,15 @@
                      </a>
 {%endif  %}
             </div></div>
-    <hr>
-<div class="row">
-<div class="col">
-    {{ projet.contenu|safe}}
-</div>
-</div>
+
+
+<div class="row contenu fiche" >
+    <div class="col-sm-12">
+    <div class="row">
+    <div class="col">
+        {{ projet.contenu|safe}}
+    </div>
+    </div>
     {% comment %}
 <hr>
 <div class="row justify-content-center" >
@@ -157,6 +128,8 @@
 </div>
     {% endcomment %}
 <hr>
+
+<div class="row justify-content-center" >
     <div class="col-sm-12 paddingbase">
 		<table class="table table-condensed ">
 			<tbody>
@@ -187,10 +160,9 @@
 						Statut :
 					</td>
 					<td class="proprieteProduit">
-
-               <button type="button" class="btn btn-sm btn-warning">
-                    {{ projet.get_statut_display }}
-               </button>
+                       <button type="button" class="btn btn-sm btn-warning">
+                            {{ projet.get_statut_display }}
+                       </button>
 					</td>
 				</tr>
 				<tr>
@@ -216,6 +188,33 @@
 					</td>
 					<td class="proprieteProduit">
 						{{ projet.date_modification |date:"DATE_FORMAT"}}
+                         <button type="button" class="btn" data-toggle="modal" data-target="#historique">
+                              {% fontawesome_icon 'bell' title='abonnement' %}Historique
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog textcenter" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                  <div class="row justify-content-center">
+                                      <div class="col col-sm-12">
+                                  <h5 >Historique</h5>
+                                      </div>
+                                  </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="contenu historique" id="idHistorique">
+                                  {%for action in actions %}
+                                        {% include "notifications/notifications_template3.html" with action=action%}
+                                  {%endfor%}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 					</td>
 				</tr>
                     {% if projet.lien_document%}
@@ -279,6 +278,8 @@
             {% endif %}
 			</tbody>
 		</table>
+    </div>
+</div>
 
 <div class="row">
 <div class="col-sm-12 textcenter">
@@ -395,10 +396,8 @@
 </div>
 </div>
 
-	</div>
-
-
-
+</div>
+</div>
 <hr>
 
 {% include 'commentaires.html' %}

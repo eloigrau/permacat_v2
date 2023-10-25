@@ -576,6 +576,7 @@ def ajouterNouveauProjet(request):
             # file is saved
             projet = form.save(request.user)
             url = projet.get_absolute_url()
+            suivre_projet(request, projet.slug)
 
             suffix = "_" + projet.asso.abreviation
             action.send(request.user, verb='projet_nouveau'+suffix, action_object=projet, url=url,

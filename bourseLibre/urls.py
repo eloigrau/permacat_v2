@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'^notifications/parType/$', views_notifications.notifications, name='notifications'),
     url(r'^notifications/activite/$', views_notifications.notifications_news_regroup, name='notifications_news'),
     url(r'^notifications/parDate/$', views_notifications.notificationsParDate, name='notificationsParDate'),
+    url(r'^notifications/parGroupe/$', views_notifications.notificationsParGroupe, name='notificationsParGroupe'),
     path(r'notifications/Lues/<str:temps>', views_notifications.notificationsLues, name='notificationsLues'),
     url(r'^notificatioadherent_assos/changerDateNotif/$', views_notifications.changerDateNotif, name='changerDateNotif'),
     url(r'^notifications/notif_cejour/$', views_notifications.notif_cejour, name='notif_cejour'),

@@ -50,7 +50,7 @@
              <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
-            <ul class="navbar-nav subnavbar2">
+            <ul class="navbar-nav subnavbar2 align-items-center">
                 <a  href="{% url 'cal:agenda' %}#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
                           <h6>Tout</h6>

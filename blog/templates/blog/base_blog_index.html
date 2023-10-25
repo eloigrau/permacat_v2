@@ -13,7 +13,7 @@
              <h6>{% if dossier_courant %} Dossier : {{dossier_courant}} {% else %} Choisir un Dossier Public {% endif %} </h6> </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_dossier">
-            <ul class="navbar-nav subnavbar2">
+            <ul class="navbar-nav subnavbar_dossier">
                 {% for  dossier_id, dossier_nom in dossiers_list %}
                 <a  href="{% url 'blog:index_asso' asso='public'%}?categorie={{dossier_id}}#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if dossier_courant == dossier_nom %} btn-warning{% else %}btn-info{% endif %}">

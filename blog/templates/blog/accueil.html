@@ -115,7 +115,7 @@
              <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
-            <ul class="navbar-nav subnavbar2">
+            <ul class="navbar-nav subnavbar2 align-items-center">
                 {% for  asso_id, asso_nom in asso_list %}
                 <a  href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">

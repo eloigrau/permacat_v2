@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from actstream.models import Action, any_stream, Follow
 from bourseLibre.constantes import Choix as Choix_global
-from bourseLibre.models import Profil
+from bourseLibre.models import Profil, Asso
 from django.utils.timezone import now
 from itertools import chain
 from .forms import nouvelleDateForm
@@ -65,7 +65,6 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     if jardins:
         jardins = jardins.distinct().order_by(orderBy)[:tampon]
 
-
     fiches = [art for i, art in enumerate(fiches) if i == 0 or not (art.description == fiches[i-1].description and art.actor == fiches[i-1].actor ) ][:nbNotif]
     ateliers = [art for i, art in enumerate(ateliers) if i == 0 or not (art.description == ateliers[i-1].description and art.actor == ateliers[i-1].actor ) ][:nbNotif]
     articles = [art for i, art in enumerate(articles) if i == 0 or not (art.description == articles[i-1].description  and art.actor == articles[i-1].actor)][:nbNotif]
@@ -101,14 +100,12 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
             Q(verb__startswith="invitation_salon", description__contains=request.user.username)|
             Q(verb__startswith='inscription')|
             Q(verb__startswith='mention_' + request.user.username)|
-            Q(verb__startswith='suppression' + request.user.username)))
+            Q(verb__startswith='suppression' + request.user.username))).distinct().order_by(orderBy)
 
 
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             actions = actions.exclude(verb__icontains=nomAsso)
-
-    actions = actions.distinct().order_by(orderBy)
 
     actions = [art for i, art in enumerate(actions[:200]) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
 
@@ -142,6 +139,35 @@ def getNbNewNotifications(request):
     return len(actions)
 
 
+@login_required
+def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
+    actions = []
+    asso_courante = ""
+    asso_courante_abreviation = ""
+
+    if dateMinimum:
+        dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
+            days=30) else datetime.now().date() - timedelta(days=30)
+    else:
+        dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=utc)
+
+    if "asso" in request.GET:
+        asso_courante_abreviation = request.GET["asso"]
+        asso_courante = Asso.objects.get(abreviation=asso_courante_abreviation).nom
+        actions = Action.objects.filter(Q(timestamp__gt=dateMin, verb__contains=asso_courante_abreviation) & ( \
+             Q(verb__startswith='article')|Q(verb__startswith='projet_')|
+             Q(verb__startswith='atelier')|Q(verb__startswith='jardins_')|
+                Q(verb__startswith='documents_nouveau')|
+             Q(verb__startswith='album_nouveau'))).distinct().order_by(orderBy)[:200]
+
+    actions = [art for i, art in enumerate(actions) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
+
+    context = {'actions':actions,
+                "asso_courante_abreviation":asso_courante_abreviation,
+               "asso_courante":asso_courante,
+                'asso_list':  request.user.getListeAbreviationsNomsAssoEtPublic()  # [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+    }
+    return render(request, 'notifications/notificationsParGroupe.html', context)
 
 def raccourcirTempsStr(date):
     new = date.replace("heures","h")

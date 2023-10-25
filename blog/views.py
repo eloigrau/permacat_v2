@@ -866,8 +866,6 @@ def telecharger_fichier(request):
 @login_required
 @csrf_exempt
 def suivre_projet(request, slug, actor_only=True):
-    """
-    """
     projet = get_object_or_404(Projet, slug=slug)
 
     if projet in following(request.user):
@@ -880,8 +878,6 @@ def suivre_projet(request, slug, actor_only=True):
 @login_required
 @csrf_exempt
 def suivre_article(request, slug, actor_only=True):
-    """
-    """
     article = get_object_or_404(Article, slug=slug)
 
     if article in following(request.user):

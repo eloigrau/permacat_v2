@@ -10,17 +10,17 @@
 
     </div>
     <div class="col-md-8">
-        <p class="infos  textepetit"> <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}"  style="background-color:{{projet.get_couleur}}">Projet : {{ projet.get_categorie_display }}</a>, rédigé par <a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>, le {{ projet.date_creation|date:"DATE_FORMAT" }}
+        <p class="infos textepetit"> <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}" ><span class="badge" style="background-color:{{projet.get_couleur}}"> {{ projet.get_categorie_display }}</span> </a>, rédigé par <a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>, <span class="badge badge-light"> le {{ projet.date_creation|date:"DATE_FORMAT" }} </span>
 
 
         <a href="{% url 'blog:suivre_projet' projet.slug %}">
             {% if request.user|is_following:projet %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell' title='abonnement' %}Suivi
+                 {% fontawesome_icon 'bell' title='abonnement' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell-slash' %}Non suivi
+                 {% fontawesome_icon 'bell-slash' %}
             </button>
             {% endif %}
         </a>
@@ -163,9 +163,6 @@
 </div>
     {% endcomment %}
 <hr>
- {% if projet.tags.names %}
-
-{% endif%}
     <div class="col-sm-12 paddingbase">
 		<table class="table table-condensed ">
 			<tbody>
@@ -178,7 +175,7 @@
 						{% include 'listeTags_view_template.html' with tags=projet.tags.names %}
 					</td>
 				</tr>
-{% endif%}
+            {% endif%}
 
                     {% if projet.coresponsable%}
 				<tr>

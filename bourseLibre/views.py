@@ -1338,6 +1338,7 @@ def salon(request, slug):
 
 @login_required
 def creerSalon(request):
+    from bourseLibre.views_inscriptions import suivre_salon
     form = SalonForm(request.POST or None)
     if form.is_valid():
         salon = form.save(request)
@@ -1349,6 +1350,7 @@ def creerSalon(request):
             auteur = get_object_or_404(Profil, username="bot_permacat"),
             date_creation=now()).save()
         form.save_m2m()
+        suivre_salon(request, salon.slug)
 
         if salon.estPublic:
             url = reverse('salon', kwargs={'slug':salon.slug})

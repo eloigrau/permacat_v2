@@ -22,15 +22,15 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     albums = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='album_nouveau_public'))).order_by(orderBy)
     documents = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='document_nouveau_public'))).order_by(orderBy)
     suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suppression_article_public'))).order_by(orderBy)
-    Action.objects.none()
+    jardins = Action.objects.none()
 
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             articles = articles.exclude(Q(verb__icontains=nomAsso))
             projets = projets.exclude(Q(verb__icontains=nomAsso))
             offres = offres.exclude(Q(verb__icontains=nomAsso))
-            albums = albums.objects.exclude(Q(verb__icontains=nomAsso))
-            documents = documents.objects.exclude(Q(verb__icontains=nomAsso))
+            albums = albums.exclude(Q(verb__icontains=nomAsso))
+            documents = documents.exclude(Q(verb__icontains=nomAsso))
             suppressions = suppressions.exclude(Q(verb__icontains=nomAsso))
         else:
             if nomAsso == 'jp':

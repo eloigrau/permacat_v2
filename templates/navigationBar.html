@@ -86,7 +86,7 @@
                         </ul>
                     </li>
                     <li class="dropdown-submenu">
-                        <a class="dropdown-item dropdown-toggle"  href="#"><i class='fa fa-wrench iconleft' ></i>  Ateliers Collectifs</a>
+                        <a class="dropdown-item dropdown-toggle"  href="#"><i class='fa fa-wrench' ></i>  Ateliers Collectifs</a>
                         <ul class="dropdown-menu nav5-dropdown-subsubmenu">
                         <li><a class="dropdown-item" href="{% url 'ateliers:acceuil' %}"><i class='fa fa-wrench iconleft' ></i>  Voir les ateliers </a></li>
                         {% for atelier in liste_ateliers %}
@@ -284,7 +284,7 @@
 
             <ul class="dropdown-menu dropdown-menu1 nav8-dropdown" aria-labelledby="navbarDropdownMenuLink">
                 <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Ateliers </a>
+                    <a class="dropdown-item dropdown-toggle"  href="#"><i class='fa fa-wrench iconleft' ></i>Ateliers </a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
                         <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"><i class='fa fa-folder-open iconleft' ></i>  Voir les ateliers </a></li>
                         {% for atelier in liste_ateliers %}
@@ -293,7 +293,7 @@
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Projets</a>
+                    <a class="dropdown-item dropdown-toggle"  href="#"><i class='fa fa-folder iconleft' ></i>Projets</a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
                         <li> <a class="dropdown-item" href="{% url 'blog:index_projets' %}"><i class='fa fa-folder-open iconleft' ></i>  Voir tous les projets </a></li>
                     <li class="dropdown-submenu">
@@ -367,14 +367,13 @@
                     </ul>
                 </li>
                 <li class="divider" role="separator"></li>
-         <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> Salons de discussion</a></li>
-                 <li><a class="dropdown-item" href="{% url 'conversations' %}"> Messagerie</a></li>
-                 <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> Documents / Fichiers</a></li>
-                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> Albums photo</a></li>
+         <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> <i class='fa fa-comments iconleft' ></i>Salons de discussion</a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> <i class='fa fa-file iconleft' ></i> Documents / Fichiers</a></li>
+                 <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i class='fa fa-picture-o iconleft' ></i> Albums photo</a></li>
 
                 {% comment %}
                 <li class="dropdown-submenu">
-                    <a class="dropdown-item dropdown-toggle"  href="#">Jardins Partagés</a>
+                    <a class="dropdown-item dropdown-toggle"  href="#"><i class='fa fa-wrench iconleft' ></i>Jardins Partagés</a>
                     <ul class="dropdown-menu nav8-dropdown-submenu">
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index' %}"><i class='fa fa-folder-open iconleft' ></i>  Blog des jardins Partagés </a></li>
                         <li> <a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=1 %}"><i class='fa fa-pagelines' ></i> Jardi Per tots</a></li>
@@ -397,24 +396,27 @@
            <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
             Publier </a>
             <ul class="dropdown-menu dropdown-menu-left nav9-dropdown" aria-labelledby="navbarDropdownMenuLink">
-                <li><a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Un Article sur le forum</a></li>
-                <li><a class="dropdown-item" href="{% url 'produit_proposer_entree' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Une Petite Annonce</a></li>
-                <li><a class="dropdown-item" href="{% url 'creerSalon' %}">  <i class="fa fa-plus iconleft" title="Ajouter"></i>  Un Salon de discussion </a></li>
-                <li><a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i> Un Atelier</a></li>
-                <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug='None' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Un Document / Fichier</a></li>
-                <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i class="fa fa-plus iconleft" title="Ajouter"></i>  Une Photo / Image </a></li>
+                <li><a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}"> <i class='fa fa-sticky-note-o iconleft' ></i>  Un Article sur le forum</a></li>
+                <li><a class="dropdown-item" href="{% url 'produit_proposer_entree' %}">  <i class='fa fa-shopping-basket iconleft' ></i> Une Petite Annonce</a></li>
+                <li><a class="dropdown-item" href="{% url 'creerSalon' %}">  <i class='fa fa-comments iconleft' ></i>  Un Salon de discussion </a></li>
+                <li><a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}"> <i class='fa fa-wrench iconleft' ></i> Un Atelier</a></li>
+                <li><a class="dropdown-item" href="{% url 'photologue:ajouterDocument' article_slug='None' %}"> <i class='fa fa-file iconleft' ></i>  Un Document / Fichier</a></li>
+                <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}">  <i class='fa fa-picture-o iconleft' ></i> Une Photo / Image </a></li>
             </ul>
         </li>
 
     </ul>
 
     <ul class="nav navbar-nav ">
-         <li class="nav-item nav4 5to4"><a class="nav-link hover-icon" href="{% url 'notifications_news' %}">
+         <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2  hover-icon" href="{% url 'notifications_news' %}">
              <i class="fa fa-bell" title="Notifications"></i> {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}</a>
          </li>
+         <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2  hover-icon" href="{% url 'conversations' %}">
+             <i class="fa fa-envelope" title="messages privés"></i></a>
+         </li>
 
-        <li class="nav-item dropdown nav7">
-           <a data-toggle="dropdown" class="nav-link dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
+        <li class="nav-item dropdown nav7 ">
+           <a data-toggle="dropdown" class="nav-link nav-link2  dropdown-toggle  navbar-menu" href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false"  >
               <i class="fa fa-user iconleft" title="Profil"></i>  </a></a>
             <ul class="dropdown-menu nav7-dropdown dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                <li> <a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
@@ -426,8 +428,8 @@
                <li> <a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
             </ul>
         </li>
-        <li class="nav-item dropdown nav6">
-            <a class="nav-link dropdown-toggle navbar-menu "  href="{% url 'presentation_site' %}" id="navbarAbout2" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false" >
+        <li class="nav-item dropdown nav6 nav-icone">
+            <a class="nav-link nav-link2  dropdown-toggle navbar-menu "  href="{% url 'presentation_site' %}" id="navbarAbout2" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false" >
              <i class="fa fa-globe iconleft" title="Site"></i>
             </a>
             <ul class="dropdown-menu  nav6-dropdown dropdown-menu-right" aria-labelledby="navbarAbout2" id="dropdoownSite">

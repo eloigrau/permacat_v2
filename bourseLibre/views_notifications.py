@@ -77,7 +77,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
 
     if jardins:
         jardins = [art for i, art in enumerate(jardins) if i == 0 or not (art.description == jardins[i-1].description and art.actor == jardins[i-1].actor ) ][:nbNotif]
-    documents = [art for i, art in enumerate(documents) if i == 0 or not (art.description == documents[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
+    documents = [art for i, art in enumerate(documents) if i == 0 or not (art.description == documents[i-1].description and art.actor == documents[i-1].actor ) ][:nbNotif]
 
     return salons, articles, projets, offres, conversations, fiches, ateliers, inscription, suffrages, albums, documents, mentions, jardins, suppressions
 

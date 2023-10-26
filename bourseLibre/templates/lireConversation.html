@@ -54,11 +54,18 @@ Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% 
 </script>
 
 <hr>
-{% if not page_obj %}
-<h5>Commencer la discussion :</h5>
-{% else %}
-<h5>Répondre :</h5>
-{% endif %}
+<div class="row">
+    <div class="col-sm-8">
+        {% if not page_obj %}
+            <h5>Commencer la discussion :</h5>
+        {% else %}
+            <h5>Répondre :</h5>
+        {% endif %}
+    </div>
+    <div class="col-sm-4 textright">
+        <a href="{% url 'partagerPosition' slug_conversation=conversation.slug %}" class="btn btn-info"> <i class="fa fa-arrow-left"></i> Partager une position </a>
+    </div>
+</div>
 <div>
     <input type="hidden" name="Nouveau Message" value="{{ message }}">
 
@@ -70,11 +77,6 @@ Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% 
 </form>
 </div>
 
-<div class="row">
-<div class="col-sm-12 textcenter">
-    <a href="{% url 'partagerPosition' slug_conversation=conversation.slug %}" class="btn btn-info"> <i class="fa fa-arrow-left"></i> Partager une position </a>
-</div>
-</div>
 
 
 {% endblock %}

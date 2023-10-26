@@ -24,7 +24,6 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suppression_article_public'))).order_by(orderBy)
     jardins = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_')))
 
-    jardins = Action.objects.none()
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             articles = articles | Action.objects.exclude(Q(verb__icontains=nomAsso))
@@ -33,7 +32,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
             albums = albums | Action.objects.exclude(Q(verb__icontains=nomAsso))
             documents = documents | Action.objects.exclude(Q(verb__icontains=nomAsso))
             suppressions = suppressions | Action.objects.exclude(Q(verb__icontains=nomAsso))
-            if nomAsso =='jp' :
+            if nomAsso == 'jp':
                 jardins = jardins | Action.objects.exclude(Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso))
 
     salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (

@@ -22,18 +22,19 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     albums = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='album_nouveau_public'))).order_by(orderBy)
     documents = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='document_nouveau_public'))).order_by(orderBy)
     suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suppression_article_public'))).order_by(orderBy)
-    jardins = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_')))
+    Action.objects.none()
 
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
-            articles = articles | Action.objects.exclude(Q(verb__icontains=nomAsso))
-            projets = projets | Action.objects.exclude(Q(verb__icontains=nomAsso))
-            offres = offres | Action.objects.exclude(Q(verb__icontains=nomAsso))
-            albums = albums | Action.objects.exclude(Q(verb__icontains=nomAsso))
-            documents = documents | Action.objects.exclude(Q(verb__icontains=nomAsso))
-            suppressions = suppressions | Action.objects.exclude(Q(verb__icontains=nomAsso))
+            articles = articles.exclude(Q(verb__icontains=nomAsso))
+            projets = projets.exclude(Q(verb__icontains=nomAsso))
+            offres = offres.exclude(Q(verb__icontains=nomAsso))
+            albums = albums.objects.exclude(Q(verb__icontains=nomAsso))
+            documents = documents.objects.exclude(Q(verb__icontains=nomAsso))
+            suppressions = suppressions.exclude(Q(verb__icontains=nomAsso))
+        else:
             if nomAsso == 'jp':
-                jardins = jardins | Action.objects.exclude(Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso))
+                jardins = Action.objects.filter(Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso))
 
     salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (
                 Q(verb='envoi_salon_Public') | Q(verb__startswith='creation_salon_public') | Q(

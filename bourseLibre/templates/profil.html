@@ -134,11 +134,13 @@
 		<td>{{user.adherent_pc|translateOuiNon}}{%if user.adherent_pc and request.user.is_superuser %}, cotisation à jour : {% if user.isCotisationAJour_pc %} oui {% else %}
         <a href="{% url 'adhesion_asso' asso='pc' %}"> non </a>{% endif %}{% endif %}
 
+       {% if request.user.is_superuser %}
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='pc' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
         </a></td>
+        {% endif %}
 	    </tr>
         {% endif %}
     {%if request.user.adherent_rtg or request.user == user %}

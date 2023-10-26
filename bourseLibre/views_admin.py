@@ -57,7 +57,8 @@ def getListeMailsAlerte():
         message = "<p>Bonjour / Bon dia,</p><p>Voici les dernières nouvelles des pages auxquelles vous êtes abonné.e :</p><ul>"
         liste_messages = []
         for m in messages:
-            liste_messages.append("<li>" + m + "</li>")
+            if not "<li>" + m + "</li>" in liste_messages:
+                liste_messages.append("<li>" + m + "</li>")
             try:
                 r = re.search("htt(.*?)>", m).group(1)[:-1]
                 messagetxt += re.sub('<[^>]+>', '', m) + " : htt" + r + "\n"

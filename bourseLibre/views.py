@@ -1020,7 +1020,7 @@ def lireConversation(request, destinataire):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='conversations')
         if profil_destinataire in followers(suivi):
             titre = "Message Privé"
-            msg = request.user.username + " vous a envoyé un <a href='https://www.perma.cat"+  url+"'>" + "message</a>"
+            msg = request.user.username + " vous a envoyé un <a href='https://www.perma.cat"+ url.split("#")[0] +"'>" + "message</a>"
             msg_notif = request.user.username + " vous a envoyé un message"
             emails = [profil_destinataire.email, ]
             action.send(request.user, verb='emails', url=url, titre=titre, message=msg, emails=emails)

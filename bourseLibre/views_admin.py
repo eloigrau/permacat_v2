@@ -57,8 +57,7 @@ def getListeMailsAlerte():
         message = "<p>Bonjour / Bon dia,</p><p>Voici les dernières nouvelles des pages auxquelles vous êtes abonné.e :</p><ul>"
         liste_messages = []
         for m in messages:
-            if not "<li>" + m + "</li>" in liste_messages:
-                liste_messages.append("<li>" + m + "</li>")
+            liste_messages.append("<li>" + m + "</li>")
             try:
                 r = re.search("htt(.*?)>", m).group(1)[:-1]
                 messagetxt += re.sub('<[^>]+>', '', m) + " : htt" + r + "\n"
@@ -105,10 +104,10 @@ def nettoyerActions(request):
         return HttpResponseForbidden()
     actions = Action.objects.all()
     for action in actions:
-       # try:
+        try:
             print(action)
-        #except:
-        #    action.delete()
+        except:
+            action.delete()
     return redirect("bienvenue")
 
 

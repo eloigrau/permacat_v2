@@ -22,18 +22,19 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     albums = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='album_nouveau_public'))).order_by(orderBy)
     documents = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='document_nouveau_public'))).order_by(orderBy)
     suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suppression_article_public'))).order_by(orderBy)
+    jardins = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_')))
 
     jardins = Action.objects.none()
     for nomAsso in Choix_global.abreviationsAsso:
-        if getattr(request.user, "adherent_" + nomAsso):
-            articles = articles | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='article') & Q(verb__icontains=nomAsso)))
-            projets = projets | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='projet') & Q(verb__icontains=nomAsso)))
-            offres = offres | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='ajout_offre') & Q(verb__icontains=nomAsso)))
-            albums = albums | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='album_nouveau') & Q(verb__icontains=nomAsso)))
-            documents = documents | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='document_nouveau') & Q(verb__icontains=nomAsso)))
-            suppressions = suppressions | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='suppressions') & Q(verb__icontains=nomAsso)))
+        if not getattr(request.user, "adherent_" + nomAsso):
+            articles = articles | Action.objects.exclude(Q(verb__icontains=nomAsso))
+            projets = projets | Action.objects.exclude(Q(verb__icontains=nomAsso))
+            offres = offres | Action.objects.exclude(Q(verb__icontains=nomAsso))
+            albums = albums | Action.objects.exclude(Q(verb__icontains=nomAsso))
+            documents = documents | Action.objects.exclude(Q(verb__icontains=nomAsso))
+            suppressions = suppressions | Action.objects.exclude(Q(verb__icontains=nomAsso))
             if nomAsso =='jp' :
-                jardins = jardins | Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso)))
+                jardins = jardins | Action.objects.exclude(Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso))
 
     salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (
                 Q(verb='envoi_salon_Public') | Q(verb__startswith='creation_salon_public') | Q(

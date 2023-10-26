@@ -34,7 +34,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
             suppressions = suppressions.exclude(Q(verb__icontains=nomAsso))
         else:
             if nomAsso == 'jp':
-                jardins = Action.objects.filter(Q(verb__startswith='jardins_') & Q(verb__icontains=nomAsso))
+                jardins = Action.objects.filter(Q(verb__startswith='jardins_'))
 
     salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (
                 Q(verb='envoi_salon_Public') | Q(verb__startswith='creation_salon_public') | Q(

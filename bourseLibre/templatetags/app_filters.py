@@ -237,8 +237,9 @@ def add_get(parser, token):
 
 @register.filter(is_safe=True)
 def sansMois(value):
-    return value.replace('mois=', 'mois_old=')
+    return re.sub('(mois=)(.*)(&)', '', value)
+    #return value.replace('mois=', 'mois_old=')
 
 @register.filter(is_safe=True)
 def sansAsso(value):
-    return value.replace('asso=', 'asso_old=')
+    return re.sub('(asso=)(.*)(&)', '', value)

@@ -294,6 +294,14 @@ class Profil(AbstractUser):
              self.adresse = Adresse.objects.create()
 
         return super(Profil, self).save(*args, **kwargs)
+    @property
+    def get_username_annuaire(self):
+       if self.accepter_annuaire:
+           return self.username
+       else:
+          nb = len(self.username)
+          return self.username[:2] + "".join(['*' for i in range(nb-2)])
+
 
     def get_nom_class(self):
         return "Profil"

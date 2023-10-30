@@ -243,3 +243,9 @@ def sansMois(value):
 @register.filter(is_safe=True)
 def sansAsso(value):
     return re.sub('(asso=)(.*)(&)', '', value)
+
+
+@register.filter(is_safe=True)
+def cacherUser(value):
+    nb = len(value)
+    return value[:2] + "".join(['*' for i in range(nb-2)])

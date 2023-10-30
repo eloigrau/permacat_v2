@@ -546,7 +546,7 @@ def get_tags_articles(request):
         asso = testIsMembreAsso_bool(request, request.GET['asso'])
         if asso:
             q_objects = Q(asso=asso) | Q(partagesAsso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation="public")
-            inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).values_list('tags', flat=True).distinct()))
+            inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).values_list('tags', flat=True).order_by('tags__name').distinct()))
         else:
             inner_qs = []
     else:

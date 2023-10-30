@@ -542,9 +542,9 @@ def carte(request, asso):
     page_obj = paginator.get_page(page_number)
 
     if asso.abreviation != "public":
-        titre = "Carte/annuaire des membres du groupe %s (%d visibles sur %d inscrits)*"%(asso.nom, len(profils_filtres.qs), nbProf)
+        titre = "Carte/annuaire des membres du groupe %s"%(asso.nom,)
     else:
-        titre = "Carte/annuaire des inscrits du site (%d visibles sur %d inscrits)*"%(len(profils_filtres.qs), nbProf)
+        titre = "Carte/annuaire des inscrits du site"
 
     # try:
     #     import simplejson
@@ -590,7 +590,16 @@ def profil_contact(request, user_id):
                 html_message=message_html,
                 fail_silently=False,
                 )
-            return render(request, 'contact/message_envoye.html', {'sujet': form.cleaned_data['sujet'], 'msg':message_html, 'envoyeur':request.user.username + " (" + request.user.email + ")", "destinataire":recepteur.username + " (" +recepteur.email+ ")"})
+            destinataire = recepteur.username
+            if recepteur.accepter_annuaire:
+                destinataire += " (" +recepteur.email+ ")"
+
+            context = {'sujet': form.cleaned_data['sujet'],
+                       'msg':message_html,
+                       'envoyeur':request.user.username + " (" + request.user.email + ")",
+                       "destinataire":destinataire
+                       }
+            return render(request, 'contact/message_envoye.html', context)
     else:
         form = ContactForm()
     return render(request, 'contact/profil_contact.html', {'form': form, 'recepteur':recepteur})

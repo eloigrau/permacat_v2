@@ -98,10 +98,12 @@
             }
         {%endfor%}
         {% for profil in filter.qs %}
+            {% if profil.accepter_annuaire %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};
             var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'profil' profil.id %}"> {{profil.username}} {% if profil.first_name%}({{profil.first_name}}{% if profil.last_name%} {{profil.last_name}}{% endif%}){% else%} {% if profil.last_name%}({{profil.last_name}}){% endif%} {% endif%} </a>');
             marker.addTo(map);
+            {%endif%}
         {%endfor%}
 
         {% if filter.qs|length == 1 %}
@@ -209,7 +211,7 @@ Filtrer / rechercher...
 </div>
 </div>
 
-{% include "template_annuaire.html" with profils=filter.qs %}
+{% include "template_annuaire.html" with profils=page_obj %}
 
 {% endblock %}
 

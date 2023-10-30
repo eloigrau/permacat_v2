@@ -55,4 +55,5 @@ urlpatterns = [
     path(r'export_recapitulatif/<str:asso>/<str:type_reunion>/', views.export_recapitulatif, name='export_recapitulatif'),
 
     url(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),
+    url(r'pageTest/$', views.pageTest, name='pageTest'),
 ]

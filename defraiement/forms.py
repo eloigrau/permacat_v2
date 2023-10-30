@@ -111,3 +111,74 @@ class AdresseReunionForm(forms.ModelForm):
         instance.adresse = adresse
         instance.save()
         return instance
+
+
+
+
+
+"""
+An example of minimum requirements to make MultiValueField-MultiWidget for Django forms.
+"""
+import pickle
+
+from django.http import HttpResponse
+from django import forms
+from django.template import Context, Template
+from django.views.decorators.csrf import csrf_exempt
+
+
+class MultiWidgetBasic(forms.widgets.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = [forms.TextInput(),
+                   forms.TextInput()]
+        super(MultiWidgetBasic, self).__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            return pickle.loads(value)
+        else:
+            return ['', '']
+
+
+class MultiExampleField(forms.fields.MultiValueField):
+    widget = MultiWidgetBasic
+
+    def __init__(self, *args, **kwargs):
+        list_fields = [forms.fields.CharField(max_length=31),
+                       forms.fields.CharField(max_length=31)]
+        super(MultiExampleField, self).__init__(list_fields, *args, **kwargs)
+
+    def compress(self, values):
+        ## compress list to single object
+        ## eg. date() >> u'31/12/2012'
+        return pickle.dumps(values)
+
+class MultiWidgetBool(forms.widgets.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = [forms.CheckboxInput(), forms.CheckboxInput(), ]
+        super(MultiWidgetBool, self).__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            return pickle.loads(value)
+        else:
+            return ['', '']
+
+
+class MultiBoolField(forms.fields.MultiValueField):
+    widget = MultiWidgetBool
+
+    def __init__(self, *args, **kwargs):
+        list_fields = [forms.fields.BooleanField(),
+                       forms.fields.BooleanField()]
+        super(MultiBoolField, self).__init__(list_fields, *args, **kwargs)
+
+class FormForm(forms.Form):
+    a = forms.BooleanField()
+    b = forms.CharField(max_length=32)
+    c = forms.CharField(max_length=32, widget=forms.widgets.Textarea())
+    d = forms.CharField(max_length=32, widget=forms.widgets.SplitDateTimeWidget())
+    e = forms.CharField(max_length=32, widget=MultiWidgetBasic())
+    #f = MultiExampleField()
+    f = MultiBoolField()
+

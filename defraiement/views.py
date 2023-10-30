@@ -458,3 +458,19 @@ class ListeParticipants(ListView):
 def lireReunion_id(request, id):
     atelier = get_object_or_404(Reunion, id=id)
     return lireReunion(request, atelier)
+
+
+from django.http import HttpResponse
+from django.template import Context, Template
+from django.views.decorators.csrf import csrf_exempt
+from .forms import FormForm
+
+@csrf_exempt
+def pageTest(request):
+    form = FormForm()
+    if request.method == 'POST':
+        form = FormForm(request.POST)
+
+    t = Template("""<form method="post" action=".">{{f}}<input type="submit"><form>""")
+    c = {'f': form.as_p()}
+    return HttpResponse(t.render(Context(c)))

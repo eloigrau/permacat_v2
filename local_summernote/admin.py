@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.admin.options import InlineModelAdmin
+from django.contrib.admin import widgets
 from django.db import models
 from local_summernote.utils import get_attachment_model, using_config
 from local_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget

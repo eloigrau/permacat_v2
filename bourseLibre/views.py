@@ -525,30 +525,40 @@ def carte(request, asso):
     asso=testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
-    profils_total = asso.getProfils()
-    nbProf = len(profils_total)
-    profils = asso.getProfils_Annuaire()
+    profils = asso.getProfils()
+    nbProf = len(profils)
+    nb_par_page = 50
+    #profils = asso.getProfils_Annuaire()
     if "lettre" in request.GET:
         profils = profils.filter(username__istartswith=request.GET["lettre"])
+        nb_par_page = nbProf
     profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
+
+    paginator = Paginator(profils_filtres.qs, nb_par_page) # Show 10 contacts per page.
+    if not 'page' in request.GET:
+        page_number = 1
+    else:
+        page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     if asso.abreviation != "public":
         titre = "Carte/annuaire des membres du groupe %s (%d visibles sur %d inscrits)*"%(asso.nom, len(profils_filtres.qs), nbProf)
     else:
         titre = "Carte/annuaire des inscrits du site (%d visibles sur %d inscrits)*"%(len(profils_filtres.qs), nbProf)
 
-    try:
-        import simplejson
-        import requests
-        url = "https://presdecheznous.gogocarto.fr/api/elements.json?limit=500&bounds=1.75232%2C42.31794%2C3.24646%2C42.94034"
+    # try:
+    #     import simplejson
+    #     import requests
+    #     url = "https://presdecheznous.gogocarto.fr/api/elements.json?limit=500&bounds=1.75232%2C42.31794%2C3.24646%2C42.94034"
+    #
+    #     reponse = requests.get(url)
+    #     data = simplejson.loads(reponse.text)
+    #     ev = data["data"]
+    # except:
+    #     ev = []
+    ev = []
 
-        reponse = requests.get(url)
-        data = simplejson.loads(reponse.text)
-        ev = data["data"]
-    except:
-        ev = []
-
-    return render(request, 'carte_cooperateurs.html', {'filter':profils_filtres, 'titre': titre, 'data':ev, "asso":asso} )
+    return render(request, 'carte_cooperateurs.html', {'filter':profils_filtres, 'page_obj':page_obj,'titre': titre, 'data':ev, "asso":asso} )
 
 
 # @login_required
@@ -1020,12 +1030,13 @@ def lireConversation(request, destinataire):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='conversations')
         if profil_destinataire in followers(suivi):
             titre = "Message Privé"
-            msg = request.user.username + " vous a envoyé un <a href='https://www.perma.cat"+ url.split("#")[0] +"'>" + "message</a>"
+            msg = request.user.username + " vous a envoyé un <a href='https://www.perma.cat" + url.split("#")[0] +"'>" + "message</a>"
             msg_notif = request.user.username + " vous a envoyé un message"
             emails = [profil_destinataire.email, ]
             action.send(request.user, verb='emails', url=url, titre=titre, message=msg, emails=emails)
             payload = {"head": titre, "body": msg_notif,
-                       "icon": static('android-chrome-256x256.png'), "url": url}
+                       "icon": static('android-chrome-256x256.png'),
+                       "url": url}
             try:
                 send_user_notification(profil_destinataire, payload=payload, ttl=7200)
             except:

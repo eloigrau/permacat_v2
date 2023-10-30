@@ -57,7 +57,7 @@
                     </li>
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
-                <a  href="{% url 'cal:agenda' %}?asso={{asso_ab}}#ref-titre">
+                <a  href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansAsso}}&asso={{asso_ab}}#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
@@ -77,11 +77,11 @@
 
     <div class="col-sm-12 textcenter">
 
-        <a class="btn btn-light calleft btn-sm" href="{% url 'cal:agenda' %}?{{prev_month}}"> <i class="fa fa-arrow-left"></i> </a>
+        <a class="btn btn-light calleft btn-sm" href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansMois}}&{{prev_month}}"> <i class="fa fa-arrow-left"></i> </a>
 
         {{mois|translate_month}} {{annee}}
 
-        <a class="btn btn-light calright btn-sm" href="{% url 'cal:agenda' %}?{{next_month}}">  <i class="fa fa-arrow-right"></i> </a>
+        <a class="btn btn-light calright btn-sm" href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansMois}}&{{next_month}}">  <i class="fa fa-arrow-right"></i> </a>
 
     </div>
 </div>

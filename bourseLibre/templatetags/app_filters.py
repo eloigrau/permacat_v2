@@ -233,3 +233,12 @@ def add_get(parser, token):
         s = pair.split('=', 1)
         values[s[0]] = parser.compile_filter(s[1])
     return AddGetParameter(values)
+
+
+@register.filter(is_safe=True)
+def sansMois(value):
+    return value.replace('mois=', 'mois_old=')
+
+@register.filter(is_safe=True)
+def sansAsso(value):
+    return value.replace('asso=', 'asso_old=')

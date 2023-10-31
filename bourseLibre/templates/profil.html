@@ -217,8 +217,12 @@
 	    </tr>
         {% endif %}
         <tr>
-            <td style="width:200px">Apparait dans l'annuaire et coordonnées sont visibles: </td>
+            <td style="width:200px">Apparait dans l'annuaire et coordonnées sont visibles : </td>
             <td>{{user.accepter_annuaire|translateOuiNon }}
+        </tr>
+        <tr>
+            <td style="width:200px">Dernière connexion : </td>
+            <td>{{user.last_login|date:'DATE_FORMAT' }}
         </tr>
       </tbody>
     </table>

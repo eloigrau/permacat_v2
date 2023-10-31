@@ -248,4 +248,4 @@ def sansAsso(value):
 @register.filter(is_safe=True)
 def cacherUser(value):
     nb = len(value)
-    return value[:2] + "".join(['*' for i in range(nb-2)])
+    return value[:3] + "".join(['*' for i in range(nb-3)])

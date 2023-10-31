@@ -15,13 +15,13 @@ from hitcount.models import HitCount, Hit
 def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     tampon = nbNotif * 5
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=utc)
-    articles = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb__startswith='article_') | Q(verb='article_nouveau_Public') | Q(verb='article_message') | Q(verb='article_message_Public') |Q(verb='article_nouveau_public') | Q(verb='article_message_public') | Q(verb='article_modifier_Public')| Q(verb='article_modifier_public')| Q(verb='article_modifier'))).order_by(orderBy)
-    projets = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='projet_nouveau') | Q(verb='projet_nouveau_Public') | Q(verb='projet_message')|Q(verb='projet_message_Public')| Q(verb='projet_nouveau_public') | Q(verb='projet_message_public') |Q(verb='projet_modifier') |  Q(verb='projet_modifier_Public'))).order_by(orderBy)
-    offres = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='ajout_offre') | Q(verb='ajout_offre_public'))).order_by(orderBy)
-    suffrages = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suffrage_ajout_public') | Q(verb='suffrage_ajout'))).order_by(orderBy)
-    albums = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='album_nouveau_public'))).order_by(orderBy)
-    documents = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='document_nouveau_public'))).order_by(orderBy)
-    suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='suppression_article_public'))).order_by(orderBy)
+    articles = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='article_')).order_by(orderBy)
+    projets = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='projet_')).order_by(orderBy)
+    offres = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='ajout_offre')).order_by(orderBy)
+    suffrages = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='suffrage_')).order_by(orderBy)
+    albums = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='album_')).order_by(orderBy)
+    documents = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='document_')).order_by(orderBy)
+    suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='suppression_article')).order_by(orderBy)
     jardins = Action.objects.none()
 
     for nomAsso in Choix_global.abreviationsAsso:
@@ -36,9 +36,9 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
             if nomAsso == 'jp':
                 jardins = Action.objects.filter(Q(verb__startswith='jardins_'))
 
-    salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (
-                Q(verb='envoi_salon_Public') | Q(verb__startswith='creation_salon_public') | Q(
-            verb='envoi_salon_public'))).order_by(orderBy)
+    salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='envoi_salon_Public') |
+                                                               Q(verb__startswith='creation_salon_public') |
+                                                               Q(verb='envoi_salon_public'))).order_by(orderBy)
     salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) & ((Q(verb__startswith="envoi_salon") &
                         ~Q(verb__startswith="envoi_salon_prive"))| Q(verb__startswith="invitation_salon")) &
                                             Q(description__contains=request.user.username))
@@ -90,23 +90,22 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
         dateMin = (datetime.now() - timedelta(days=7)).replace(tzinfo=utc)
 
     actions = Action.objects.filter(Q(timestamp__gt=dateMin) & ( \
-         Q(verb='article_nouveau') | Q(verb='article_message')|
-         Q(verb='article_modifier')|Q(verb='projet_nouveau') |
-         Q(verb='projet_message')| Q(verb='projet_modifier')|
-            Q(verb='envoi_salon')| Q(verb__icontains='public')|Q(verb__icontains='Public')|
-            Q(verb__startswith='fiche')|Q(verb__startswith='atelier')|Q(verb__startswith='jardins_')|
-            Q(verb__startswith='documents_nouveau')|Q(verb__startswith='album_nouveau')|
-            Q(verb__startswith="envoi_salon_public")|
-            Q(verb__startswith="envoi_salon", description__contains=request.user.username)|
-            Q(verb__startswith="invitation_salon", description__contains=request.user.username)|
-            Q(verb__startswith='inscription')|
-            Q(verb__startswith='mention_' + request.user.username)|
+         Q(verb__startswith='article_') | Q(verb__startswith='projet_') |
+         Q(verb__icontains='_public') | Q(verb__icontains='_Public') |
+            Q(verb__startswith='fiche') | Q(verb__startswith='atelier') |
+            Q(verb__startswith='jardins_') |
+            Q(verb__startswith='documents_') | Q(verb__startswith='album_') |
+            Q(verb__startswith="envoi_salon_public") |
+            Q(verb__startswith="envoi_salon", description__contains=request.user.username) |
+            Q(verb__startswith="invitation_salon", description__contains=request.user.username) |
+            Q(verb__startswith='inscription') |
+            Q(verb__startswith='mention_' + request.user.username) |
             Q(verb__startswith='suppression' + request.user.username))).distinct().order_by(orderBy)
 
 
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
-            actions = actions.exclude(verb__icontains=nomAsso)
+            actions = actions.exclude(verb__icontains='_' + nomAsso)
 
     actions = [art for i, art in enumerate(actions[:200]) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
 

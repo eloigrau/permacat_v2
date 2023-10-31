@@ -300,7 +300,7 @@ class Profil(AbstractUser):
            return self.username
        else:
           nb = len(self.username)
-          return self.username[:2] + "".join(['*' for i in range(nb-2)])
+          return self.username[:3] + "".join(['*' for i in range(nb-3)])
 
 
     def get_nom_class(self):

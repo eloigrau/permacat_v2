@@ -1,9 +1,9 @@
 {% extends 'base_forum.html' %}
 {% load fontawesome %}
 
-{% block title %} - rechercher dans le forum{% endblock %}
+{% block title %} - rechercher dans les annonces{% endblock %}
 
-{% block subtitle %}<h5>Résultats de la recherche dans le forum : "{{recherche}}"</h5>
+{% block subtitle %}<h5>Résultats de la recherche dans les annonces : "{{recherche}}"</h5>
 
         <div class="row justify-content-center">
             <div class="col-sm-12">
@@ -22,19 +22,7 @@
 {% endblock %}
 {% block content %}
 
-<p>Articles trouvés dans le forum ({{articles_list|length}})</p>
- {% include "blog/articles_template_tableau.html" with article_list=articles_list %}
-<hr>
-{%if commentaires_list %}
-<p>Dans les commentaires des articles du forum ({{commentaires_list|length}})</p>
-<div class="row ">
-    {% for comm in commentaires_list %}
-        <div class="col ">
-        {% include "blog/article_template_recherche.html" with article=comm.article %}
-        </div>
-    {% endfor %}
-</div>
+{%if annonces_list %}
 
-<hr>
 {% endif%}
 {% endblock %}

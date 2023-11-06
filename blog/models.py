@@ -288,10 +288,14 @@ class Article(models.Model):
 
     @property
     def get_partagesAsso(self):
-        x = self.partagesAsso.filter(abreviation='public')
-        if x:
-            return x
-        return self.partagesAsso.exclude(abreviation=self.asso.abreviation)
+        try:
+            x = self.partagesAsso.filter(abreviation='public')
+            if x:
+                return x
+            return self.partagesAsso.exclude(abreviation=self.asso.abreviation)
+        except Exception as e:
+            action.send(verb='bug', description=str(e) + " ;" + str(self))
+            return Asso.objects.none()
 
     @property
     def get_partagesAssotxt(self):

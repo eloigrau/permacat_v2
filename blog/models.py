@@ -323,8 +323,7 @@ class Article(models.Model):
         try:
             return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
         except Exception as e:
-            action.send(self.request.user, verb='bug', action_object=self.object,
-                        description="bug : " + self.titre + "; " + str(e))
+            action.send(self, verb='bug', description=str(e) + " ; " + self.titre)
             return None
 
     @property
@@ -335,7 +334,7 @@ class Article(models.Model):
         try:
             return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
         except Exception as e:
-            action.send(self.request.user, verb='bug', action_object=self.object, description="bug : " + self.titre +"; "+str(e))
+            action.send(self, verb='bug', description=str(e) + " ; " + self.titre)
             return None
 
     def est_autorise(self, user):

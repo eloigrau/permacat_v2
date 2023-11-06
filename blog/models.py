@@ -152,8 +152,7 @@ class Choix:
         try:
             return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
         except Exception as e:
-            action.send(verb='bug', description=str(e))
-            return None
+            return abreviation
 
     def get_type_annonce_asso(asso):
         try:
@@ -294,7 +293,7 @@ class Article(models.Model):
                 return x
             return self.partagesAsso.exclude(abreviation=self.asso.abreviation)
         except Exception as e:
-            action.send(verb='bug', description=str(e) + " ;" + str(self))
+            action.send(sender=self, verb='bug', description=str(e) + " ;" + str(self))
             return Asso.objects.none()
 
     @property

@@ -101,6 +101,7 @@ urlpatterns = [
     url(r'^ateliers/', include('ateliers.urls', namespace='bourseLibre.ateliers')),
     url(r'^chercher/$', login_required(views.chercher), name='chercher'),
     url(r'^chercher/forum/$', login_required(views.chercher_articles), name='chercher_articles'),
+    url(r'^chercher/annonces/$', login_required(views.chercher_annonces), name='chercher_annonces'),
     url(r'^chercher/altermarche/$', login_required(views.chercher_produits), name='chercher_produits'),
     url(r'^accounts/profil/(?P<user_id>[0-9]+)/$', login_required(views.profil), name='profil',),
     url(r'^accounts/profil/(?P<user_username>[\w.@+-]+)/$', login_required(views_base.profil_nom), name='profil_nom',),

@@ -940,7 +940,7 @@ def chercher(request):
     if recherche:
         from blog.models import Commentaire, CommentaireProjet
         produits_list = Produit.objects.filter(Q(description__icontains=recherche) | Q(nom_produit__lower__contains=recherche), ).select_subclasses().distinct()
-        articles_list = Article.objects.filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
+        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles() & (Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)) ).distinct()
         projets_list = Projet.objects.filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
         profils_list = Profil.objects.filter(Q(username__lower__contains=recherche)  | Q(description__icontains=recherche)| Q(competences__icontains=recherche), ).distinct()
         commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
@@ -956,7 +956,6 @@ def chercher(request):
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             produits_list = produits_list.exclude(asso__abreviation=nomAsso)
-            articles_list = articles_list.exclude(asso__abreviation=nomAsso)
             projets_list = projets_list.exclude(asso__abreviation=nomAsso)
 
     return render(request, 'chercher.html', {'recherche':recherche, 'articles_list':articles_list, 'produits_list':produits_list, "projets_list": projets_list, 'profils_list':profils_list,'commentaires_list': commentaires_list, 'commentairesProjet_list':commentairesProjet_list, 'salon_list':salon_list})
@@ -966,24 +965,21 @@ def chercher(request):
 def chercher_articles(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     articles_list = Article.objects.none()
-    commentaires_list = []
-    articles_jardin_list = []
-    commentaires_jardin_list = []
     if recherche:
-        from blog.models import Commentaire
         from taggit.models import Tag
-        #from jardinpartage.models import Article as ArticleJardin, Commentaire as CommJardin
         tags = Tag.objects.filter(slug__icontains=recherche).values_list('name', flat=True)
-        articles_list = Article.objects.filter(Q(tags__name__in=tags) | Q(titre__lower__icontains=recherche)).distinct()
-        #articles_jardin_list = ArticleJardin.objects.filter(Q(titre__lower__icontains=recherche) | Q(contenu__icontains=recherche), ).distinct()
-        #commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
-        #commentaires_jardin_list = CommJardin.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
-        # for nomAsso in Choix_global.abreviationsAsso:
-        #     if not getattr(request.user, "adherent_" + nomAsso):
-        #         articles_list = articles_list.exclude(asso__abreviation=nomAsso)
-        #         commentaires_list = commentaires_list.exclude(article__asso__abreviation=nomAsso)
+        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles & (Q(tags__name__in=tags) | Q(titre__lower__icontains=recherche))).distinct()
 
     return render(request, 'chercherForum.html', {'recherche':recherche, 'articles_list':articles_list})
+
+@login_required
+def chercher_annonces(request):
+    recherche = str(request.GET.get('id_recherche')).lower()
+    annonces_list = Produit.objects.none()
+    if recherche:
+        annonces_list = Produit.objects.filter(Q(nom_produit__lower__icontains=recherche) | Q(description__lower__icontains=recherche)).distinct()
+
+    return render(request, 'chercherForum.html', {'recherche':recherche, 'annonces_list':annonces_list})
 
 
 @login_required
@@ -995,7 +991,7 @@ def chercher_produits(request):
             if not getattr(request.user, "adherent_" + nomAsso):
                 produits_list = produits_list.exclude(asso__abreviation=nomAsso)
     else:
-        produits_list = []
+        produits_list = Produit.objects.none()
 
     return render(request, 'bourseLibre/produit_recherche.html', {'recherche':recherche, 'produits_list':produits_list, })
 

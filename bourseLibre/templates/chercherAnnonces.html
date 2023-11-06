@@ -1,9 +1,11 @@
-{% extends 'base_forum.html' %}
-{% load fontawesome %}
 
+{% extends 'bourseLibre/base_produits.html' %}
+{% load fontawesome %}
+{% load activity_tags %}
+{% load blog_filters %}
 {% block title %} - rechercher dans les annonces{% endblock %}
 
-{% block subtitle %}<h5>Résultats de la recherche dans les annonces : "{{recherche}}"</h5>
+{% block subtitle %}<h5>Résultats de la recherche dans les annonces : "{{recherche}}" ({{produits_list|length}}</h5>
 
         <div class="row justify-content-center">
             <div class="col-sm-12">
@@ -22,7 +24,12 @@
 {% endblock %}
 {% block content %}
 
-{%if annonces_list %}
+{%if produits_list %}
 
+<div class="card-deck listOffres infinite-container">
+    {% for produit in produits_list %}
+        {% include "bourseLibre/produit_template3.html" with produit=produit %}
+    {% endfor %}
+</div>
 {% endif%}
 {% endblock %}

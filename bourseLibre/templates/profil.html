@@ -85,7 +85,7 @@
         </tr>
         <tr>
             <td style="width:250px">Pseudo :</td>
-            <td>{{ user.username }}</td>
+            <td>{{ user.get_username_annuaire }}</td>
         </tr>
         {%if user.accepter_annuaire or request.user == user %}
               {% if user.get_full_name %}
@@ -220,10 +220,12 @@
             <td style="width:200px">Apparait dans l'annuaire et coordonnées sont visibles : </td>
             <td>{{user.accepter_annuaire|translateOuiNon }}
         </tr>
+        {% if user.accepter_annuaire %}
         <tr>
             <td style="width:200px">Dernière connexion : </td>
             <td>{{user.last_login|date:'DATE_FORMAT' }}
         </tr>
+        {% endif %}
       </tbody>
     </table>
       </div>

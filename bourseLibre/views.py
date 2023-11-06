@@ -965,7 +965,7 @@ def chercher(request):
 @login_required
 def chercher_articles(request):
     recherche = str(request.GET.get('id_recherche')).lower()
-    articles_list = []
+    articles_list = Article.objects.none()
     commentaires_list = []
     articles_jardin_list = []
     commentaires_jardin_list = []
@@ -974,7 +974,7 @@ def chercher_articles(request):
         from taggit.models import Tag
         #from jardinpartage.models import Article as ArticleJardin, Commentaire as CommJardin
         tags = Tag.objects.filter(slug__icontains=recherche).values_list('name', flat=True)
-        articles_list = Article.objects.filter(Q(tags__name__in=tags) |Q(titre__lower__icontains=recherche)).distinct()
+        articles_list = Article.objects.filter(Q(tags__name__in=tags) | Q(titre__lower__icontains=recherche)).distinct()
         #articles_jardin_list = ArticleJardin.objects.filter(Q(titre__lower__icontains=recherche) | Q(contenu__icontains=recherche), ).distinct()
         #commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
         #commentaires_jardin_list = CommJardin.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
@@ -983,7 +983,7 @@ def chercher_articles(request):
         #         articles_list = articles_list.exclude(asso__abreviation=nomAsso)
         #         commentaires_list = commentaires_list.exclude(article__asso__abreviation=nomAsso)
 
-    return render(request, 'chercherForum.html', {'recherche':recherche, 'articles_list':articles_list, 'commentaires_list': commentaires_list})
+    return render(request, 'chercherForum.html', {'recherche':recherche, 'articles_list':articles_list})
 
 
 @login_required

@@ -25,16 +25,16 @@
 <p>Articles trouvés dans le forum ({{articles_list|length}})</p>
  {% include "blog/articles_template_tableau.html" with article_list=articles_list %}
 <hr>
-    {%if commentaires_list %}
-    <p>Dans les commentaires des articles du forum ({{commentaires_list|length}})</p>
-    <div class="row ">
-        {% for comm in commentaires_list %}
-            <div class="col ">
-            {% include "blog/article_template_recherche.html" with article=comm.article %}
-            </div>
-        {% endfor %}
-    </div>
+{%if commentaires_list %}
+<p>Dans les commentaires des articles du forum ({{commentaires_list|length}})</p>
+<div class="row ">
+    {% for comm in commentaires_list %}
+        <div class="col ">
+        {% include "blog/article_template_recherche.html" with article=comm.article %}
+        </div>
+    {% endfor %}
+</div>
 
-    <hr>
-    {% endif%}
+<hr>
+{% endif%}
 {% endblock %}

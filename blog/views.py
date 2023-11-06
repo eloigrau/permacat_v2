@@ -385,7 +385,7 @@ class ListeArticles_asso(ListView):
         if self.request.user.est_autorise(self.asso.abreviation):
             qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation, estArchive=False, )).distinct()
         else:
-            qs = Article.objects.none()
+            qs = Article.objects.filter(self.q_objects, asso__abreviation=self.asso.abreviation, estArchive=False, )
 
         self.categorie = None
         if "auteur" in params:

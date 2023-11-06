@@ -327,9 +327,10 @@ class Article(models.Model):
         return self.get_logo_nomgroupes_partages_html_taille(14)
 
     def get_logo_nomgroupes_partages_html_taille(self, taille=14):
-        if self.asso:
+        try:
             return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
-        else:
+        except Exception as e:
+            action.send(self.request.user, verb='bug', action_object=self.object, description="bug : " + self.titre +"; "+str(e))
             return None
 
     def est_autorise(self, user):

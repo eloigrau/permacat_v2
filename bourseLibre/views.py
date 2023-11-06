@@ -940,7 +940,7 @@ def chercher(request):
     if recherche:
         from blog.models import Commentaire, CommentaireProjet
         produits_list = Produit.objects.filter(Q(description__icontains=recherche) | Q(nom_produit__lower__contains=recherche), ).select_subclasses().distinct()
-        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles() & (Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)) ).distinct()
+        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles(), Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)).distinct()
         projets_list = Projet.objects.filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
         profils_list = Profil.objects.filter(Q(username__lower__contains=recherche)  | Q(description__icontains=recherche)| Q(competences__icontains=recherche), ).distinct()
         commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
@@ -968,7 +968,7 @@ def chercher_articles(request):
     if recherche:
         from taggit.models import Tag
         tags = Tag.objects.filter(slug__icontains=recherche).values_list('name', flat=True)
-        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles & (Q(tags__name__in=tags) | Q(titre__lower__icontains=recherche))).distinct()
+        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles(), Q(tags__name__in=tags) | Q(titre__lower__icontains=recherche)).distinct()
 
     return render(request, 'chercherForum.html', {'recherche':recherche, 'articles_list':articles_list})
 

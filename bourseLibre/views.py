@@ -983,7 +983,7 @@ def chercher_articles(request):
         #         articles_list = articles_list.exclude(asso__abreviation=nomAsso)
         #         commentaires_list = commentaires_list.exclude(article__asso__abreviation=nomAsso)
 
-    return render(request, 'chercherForum.html', {'recherche':recherche, 'articles_list':articles_list, 'articles_jardin_list':articles_jardin_list, 'commentaires_jardin_list':commentaires_jardin_list,'commentaires_list': commentaires_list})
+    return render(request, 'chercherForum.html', {'recherche':recherche, 'articles_list':articles_list, 'commentaires_list': commentaires_list})
 
 
 @login_required

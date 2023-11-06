@@ -85,6 +85,7 @@ urlpatterns = [
     url(r'supprimerReunionArticle/(?P<slug_reunion>[-\w]+)$', views.supprimerReunionArticle, name='supprimerReunionArticle'),
     url(r'^supprimerAdresseArticle/(?P<slug_article>[-\w]+)/(?P<id_adresse>[0-9]+)$', login_required(views.SupprimerAdresseArticle.as_view(), login_url='/auth/login/'), name='supprimerAdresseArticle'),
     url(r'voirCarteLieux/(?P<id_article>[0-9]+)$', views.voirCarteLieux, name='voirCarteLieux'),
+    url(r'voirCarteLieux_article/(?P<id_article>[0-9]+)$', views.voirCarteLieux_article, name='voirCarteLieux_article'),
 
     path('ajax/load-categories/', views.ajax_categories, name='ajax_categories'),
     path('ajax/articlesArchives/<str:asso>/', views.articlesArchives, name='articlesArchives'),

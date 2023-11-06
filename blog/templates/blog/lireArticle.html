@@ -4,6 +4,14 @@
 {% load fontawesome %}
 {% load static %}
 {% load hitcount_tags %}
+{% load carto_filters %}
+
+{% load leaflet_tags %}
+{% block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+
 
 {% block subtitle %}
 
@@ -388,6 +396,24 @@
     </div>
 </div>
 <div class="tab-pane fade " id="lieux">
+
+<script>
+function voir_carte_lieux(url_tag) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#carte_lieux").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
         <div class="contenu atelier">
 
@@ -403,8 +429,64 @@
             {% endif %}
                     </p>
               {%endfor%}
-             <p><a class="btn btn-sm btn-primary textleft" href="{% url 'blog:voirCarteLieux' id_article=article.id %}" ><i class="fa fa-compass"></i> Voir sur une carte</a></p>
+             {% comment %}
+            <p><a class="btn btn-sm btn-primary textleft" href="{% url 'blog:voirCarteLieux' id_article=article.id %}" ><i class="fa fa-compass"></i> Voir sur une carte</a></p>
+            {% endcomment %}
 
+<div class="row">
+  <div class="col-md-12" >
+    <style>.leaflet-container {width:  100%;min-height: 60vh;}</style>
+      <script type="text/javascript">
+        function map_init_basic (map, options) {
+          var leafIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+          var greyIcon = L.icon({
+          iconUrl: '{% static 'img/marker-icon-grey.png' %}',
+               shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var greenIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+
+        {% for lieu in lieux %}
+            try{
+                var lat = {{lieu.adresse.latitude|to_numeric}};
+                var lon = {{lieu.adresse.longitude|to_numeric}};
+                {% block markers %}
+                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b>');
+                  marker.addTo(map);
+                {% endblock %}
+            }
+            catch(err){
+            }
+        {%endfor%}
+        {% if lieux|length >= 1 %}
+        map.panTo(new L.LatLng(lat, lon));
+        {%else%}
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+        {%endif%}
+    }
+</script>
+{% leaflet_map "carte" callback="window.map_init_basic" %}
+</div>
+</div>
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
             <hr>
               <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a></p>

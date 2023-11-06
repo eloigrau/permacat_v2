@@ -41,6 +41,8 @@ export DJANGO_SETTINGS_MODULE=bourseLibre.settings.production
 python manage.py migrate
 sudo supervisorctl restart permacat_supervisor
 
+python manage.py changepassword nom_user apres l'export
+
 
 python manage.py crontab add
 python manage.py crontab show

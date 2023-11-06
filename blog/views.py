@@ -1121,6 +1121,13 @@ def voirCarteLieux(request, id_article):
     return render(request, 'blog/carte_lieux.html', {'titre':titre, "lieux":lieux})
 
 @login_required
+def voirCarteLieux_article(request, id_article):
+    article = Article.objects.get(id=id_article)
+    lieux = article.getLieux()
+    titre = "Lieux associés à l'article '" + str(article.titre) +"'"
+    return render(request, 'blog/carte_lieux_template.html', {"lieux":lieux})
+
+@login_required
 def voirLieux(request,):
     if not request.user.is_superuser:
         return HttpResponseForbidden("Vous n'avez pas l'autorisation de voir les lieux")

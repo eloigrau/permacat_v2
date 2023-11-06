@@ -149,12 +149,17 @@ class Choix:
         #return 'img/logos/nom_'+abreviation+'.png'
 
     def get_logo_nomgroupe_html(abreviation, taille=25):
-        return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
+        try:
+            return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
+        except Exception as e:
+            action.send(verb='bug', description=str(e))
+            return None
 
     def get_type_annonce_asso(asso):
-        if asso =="jp":
-            return Choix.type_annonce_jp_base + tuple([('jardin_' + str(i.id), i.titre) for i in Jardin.objects.all()])
         try:
+            if asso =="jp":
+                return Choix.type_annonce_jp_base + tuple([('jardin_' + str(i.id), i.titre) for i in Jardin.objects.all()])
+
             return Choix.type_annonce_asso[asso]
         except:
             return Choix.type_annonce
@@ -331,11 +336,8 @@ class Article(models.Model):
         return self.get_logo_nomgroupes_partages_html_taille(14)
 
     def get_logo_nomgroupes_partages_html_taille(self, taille=14):
-        try:
-            return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
-        except Exception as e:
-            action.send(self, verb='bug', description=str(e) + " ; " + self.titre)
-            return None
+        return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+
 
     def est_autorise(self, user):
         if user == self.auteur:

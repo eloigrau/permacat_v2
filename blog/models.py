@@ -320,7 +320,12 @@ class Article(models.Model):
         return self.get_logo_nomgroupe_html_taille(24)
 
     def get_logo_nomgroupe_html_taille(self, taille=24):
-        return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        try:
+            return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        except Exception as e:
+            action.send(self.request.user, verb='bug', action_object=self.object,
+                        description="bug : " + self.titre + "; " + str(e))
+            return None
 
     @property
     def get_logo_nomgroupespartages_html(self):

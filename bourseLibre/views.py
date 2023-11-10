@@ -13,10 +13,10 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
-    SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm
+    SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
-    Adhesion_asso, Adhesion_permacat
+    Adhesion_asso, Adhesion_permacat, EvenementSalon
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -1055,6 +1055,7 @@ def lireConversation(request, destinataire):
 
     return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':destinataire})
 
+
 @login_required
 def partagerPosition(request, slug_conversation):
     form_adresse = AdresseForm4(request.POST or None)
@@ -1465,6 +1466,31 @@ def sortirDuSalon(request, slug_salon):
     inscription = InscritSalon.objects.filter(salon=salon, profil=request.user)
     inscription.delete()
     return redirect("salon_accueil")
+
+
+@login_required
+def ajouterEvenementSalon(request, slug_salon):
+    form = EvenementSalonForm(request.POST or None)
+
+    if form.is_valid():
+        ev = form.save(request, slug_salon)
+        return redirect(ev.article)
+
+    return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+
+
+class SupprimerEvenementSalon(DeleteAccess, DeleteView):
+    model = EvenementSalon
+    success_url = reverse_lazy('blog:index')
+    template_name_suffix = 'article_supprimer'
+
+    def get_object(self):
+        return EvenementSalon.objects.get(id=self.kwargs['id_evenementSalon'])
+
+    def get_success_url(self):
+        return Salon.objects.get(slug=self.kwargs['slug_salon']).get_absolute_url()
+
+
 
 @login_required
 def modifier_message(request, id, type_msg, asso, ):

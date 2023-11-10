@@ -80,3 +80,4 @@ psycopg2==2.8.6
 helloasso-apiv5==1.0.0
 django-autocomplete-light==3.9.4
 django-webpush==0.3.4
+django-social-share==2.3.0

@@ -200,6 +200,12 @@ urlpatterns = [
     path(r'inviterDansSalon/<str:slug_salon>', views.inviterDansSalon, name='inviterDansSalon'),
     path(r'invitationDansSalon/<str:slug_salon>', views.invitationDansSalon, name='invitationDansSalon'),
     path(r'sortirDuSalon/<str:slug_salon>', views.sortirDuSalon, name='sortirDuSalon'),
+    url(r'ajouterEvenementSalon/(?P<slug_salon>[-\w]+)$', views.ajouterEvenementSalon, name='ajouterEvenementSalon'),
+    url(r'^supprimerEvenementSalon/(?P<slug_salon>[-\w]+)-(?P<id_evenementSalon>[0-9]+)$',
+        login_required(views.SupprimerEvenementSalon.as_view(), login_url='/auth/login/'),
+        name='supprimerEvenementSalon'),
+
+    path(r'sortirDuSalon/<str:slug_salon>', views.sortirDuSalon, name='sortirDuSalon'),
     url(r'^activity/', include('actstream.urls')),
 
     path('partagerPosition/<str:slug_conversation>', views.partagerPosition, name='partagerPosition'),

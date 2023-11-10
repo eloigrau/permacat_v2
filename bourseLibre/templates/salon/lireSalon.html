@@ -72,6 +72,7 @@
 <nav class="nav nav-tabs justify-content-center">
     <a class="nav-item nav-link active" href="#discussion" data-toggle="tab"><i class="fa fa-comments" aria-hidden="true"></i> </a>
     <a class="nav-item nav-link" href="#infos" data-toggle="tab"> <i class="fa fa-info"></i></a>
+    <a class="nav-item nav-link" href="#dates" data-toggle="tab"> <i class="fa fa-calendar"></i></a>
 {% if not salon.estPublic %}
     <a class="nav-item nav-link" href="#membres" data-toggle="tab"> <i class="fa fa-users icon-left"></i></a>
 {% endif %}
@@ -233,6 +234,27 @@
         </table>
 
         </div>
+    </div>
+</div>
+
+<div class="tab-pane fade " id="dates">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu atelier">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Dates supplémentaires : </h4>
+            </div>
+        </div>
+              {%for date in dates %}
+             <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
+                 <a class="btn btn-sm btn-danger textleft" href="{% url 'supprimerEvenementSalon' slug_article=article.slug  id_evenementArticle=date.id %}" ><i class="fa fa-times"></i> </a></p>
+            </p>
+              {%endfor%}
+            <hr>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'ajouterEvenementSalon' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
+
+      </div>
     </div>
 </div>
 </div>

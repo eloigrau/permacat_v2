@@ -5,6 +5,7 @@
 {% load static %}
 {% load hitcount_tags %}
 {% load carto_filters %}
+{% load social_share %}
 
 {% block headerDocument%}
 {% load leaflet_tags %}
@@ -106,8 +107,9 @@
             </button>
             {% endif %}
         </a>
+        {% comment %}
         <button class="btn btn-light btn-sm" onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
-
+        {% endcomment %}
 
              {% if request.user.is_superuser %}
         <a href="{% url 'blog:suiveursArticle' article.slug %}">
@@ -185,6 +187,7 @@
       <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i></a>
    {% endif %}
 <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
+<a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-link icon-left"></i></a>
       <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
     </nav>
 
@@ -450,6 +453,25 @@
     </div>
 </div>
 
+  <div class="tab-pane " id="partager">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+        <div class="contenu atelier">
+
+        <div class="row justify-content-center" >
+            <div class="col-sm-12 textcenter">
+                <h4>Partager l'article</h4>
+            </div>
+        </div>
+<table class="table textleft" style="border:none;">
+    <tr><td class="textright" style="width:40%"><i class="fa fa-envelope iconleft"></i></td><td>{% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}</td></tr>
+    <tr><td class="textright"><i class="fa fa-whatsapp iconleft"></i></td><td>{% post_to_whatsapp article 'Partager sur Whatsapp' %}</td></tr>
+    <tr><td class="textright"><i class="fa fa-telegram iconleft"></i></td><td>{% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td></tr>
+    <tr><td class="textright"><i class="fa fa-copy iconleft"></i></td><td>{% copy_to_clipboard article "Copier le lien" %}</td></tr>
+</table>
+        </div>
+        </div>
+  </div>
+
   <div class="tab-pane " id="historique">
 
         <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
@@ -632,5 +654,5 @@
         {%endif%}
     }
 </script>
-
+{% add_copy_script %}
 {% endblock %}

@@ -122,6 +122,7 @@ INSTALLED_APPS = [
     'webpush',
     'exo_mentions',
     'newsletter',
+    'django_social_share',
     #'CarPool',
     #'WebUI',
      #'emoji_picker',
@@ -207,7 +208,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
+                #'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',

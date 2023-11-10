@@ -493,6 +493,7 @@ class EvenementArticleForm(forms.ModelForm):
         instance.save()
         return instance
 
+
 class SalonArticleForm(forms.ModelForm):
 
     class Meta:

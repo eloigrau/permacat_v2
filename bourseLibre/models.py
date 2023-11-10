@@ -31,6 +31,7 @@ from webpush import send_user_notification
 from taggit.managers import TaggableManager
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
+from django.utils import timezone
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
@@ -1238,6 +1239,36 @@ class Message_salon(models.Model):
                         pass
         except Exception as e:
             pass
+
+
+class EvenementSalon(models.Model):
+    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",
+                             max_length=100, null=True, blank=True, default="")
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, help_text="L'evenement doit etre associé à un salon" )
+    start_time = models.DateField(verbose_name="Date", null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
+    end_time = models.DateField(verbose_name="Date de fin (optionnel pour un evenement sur plusieurs jours)",  null=True,blank=True, help_text="jj/mm/année")
+    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "(" + str(self.titre) + ") "+ str(self.start_time) + ": " + str(self.salon)
+
+    def get_absolute_url(self):
+        return self.salon.get_absolute_url()
+
+    @property
+    def slug(self):
+        return self.salon.slug
+
+    @property
+    def titre(self):
+        if not self.titre_even:
+            return self.salon.titre
+        return self.titre_even
+
+    @property
+    def est_autorise(self, user):
+        return self.salon.est_autorise(user)
+
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)

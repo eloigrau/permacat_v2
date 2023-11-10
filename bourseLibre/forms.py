@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Produit_vegetal, Adresse, \
     Asso, Profil, Message, MessageGeneral, Message_salon, InscriptionNewsletter, Adhesion_permacat, \
-    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche
+    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon
 from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
@@ -574,4 +574,31 @@ class Profil_rechercheForm(forms.ModelForm):
 
     def save(self):
         instance = super(Profil_rechercheForm, self).save()
+        return instance
+
+
+
+class EvenementSalonForm(forms.ModelForm):
+    class Meta:
+        model = EvenementSalon
+        fields = ['start_time', 'titre_even', ]
+        widgets = {
+            'start_time':forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+            'end_time': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+        }
+
+    def save(self, request, slug_salon):
+        instance = super(EvenementSalonForm, self).save(commit=False)
+        salon = Salon.objects.get(slug=slug_salon)
+        instance.salon = salon
+        instance.auteur = request.user
+        instance.save()
         return instance

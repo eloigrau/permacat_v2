@@ -23,7 +23,7 @@ app_name = 'defraiement'
 
 urlpatterns = [
     #(r'^accueil/$', login_required(views.ListeReunions.as_view(), login_url='/auth/login/'), name="reunions"),
-    url(r'^reunions/$', login_required(views.ListeReunions.as_view(), login_url='/auth/login/'), name="reunions"),
+    #url(r'^reunions/$', login_required(views.ListeReunions.as_view(), login_url='/auth/login/'), name="reunions"),
     path(r'reunions/<str:asso_slug>/', login_required(views.ListeReunions_asso.as_view(), login_url='/auth/login/'), name="reunions_asso"),
     path(r'participants/<str:asso_slug>/', login_required(views.ListeParticipants.as_view(), login_url='/auth/login/'), name="participants"),
     path(r'reunion/<str:slug>/', views.lireReunion, name='lireReunion'),

@@ -65,6 +65,8 @@ class ParticipantReunion(models.Model):
             return 0
 
     def get_url(self, reunion):
+        if not self.adresse.longitude or not self.adresse.latitude:
+            return ""
         latlon_1 = str(self.adresse.longitude).replace(',', '.') + "," + str(self.adresse.latitude).replace(',', '.')
         latlon_2 = str(reunion.adresse.longitude).replace(',', '.') + "," + str(reunion.adresse.latitude).replace(',',
                                                                                                                   '.')
@@ -73,6 +75,8 @@ class ParticipantReunion(models.Model):
         return url
 
     def get_gmaps_url(self, reunion):
+        if not self.adresse.longitude or not self.adresse.latitude:
+            return ""
         latlon_1 = str(self.adresse.latitude).replace(',', '.') + "," + str(self.adresse.longitude).replace(',', '.')
         latlon_2 = str(reunion.adresse.latitude).replace(',', '.') + "," + str(reunion.adresse.longitude).replace(',','.')
         url = "https://www.google.com/maps/dir/'" + latlon_1 + "'/'" + latlon_2 +"'"

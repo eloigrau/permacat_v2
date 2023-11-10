@@ -1,7 +1,7 @@
 {% load app_filters %}
 {% load static %}
 
-{% if request.user.is_authenticated %}
+{% if not request.user.is_authenticated %}
 <div class="row">
 	<div class="col-sm-12 textcenter">
 		Vous devez être connecté pour voir ce contenu

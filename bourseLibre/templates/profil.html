@@ -139,8 +139,9 @@
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
-        </a></td>
+        </a>
         {% endif %}
+            </td>
 	    </tr>
         {% endif %}
     {%if request.user.adherent_rtg or request.user == user %}
@@ -183,24 +184,32 @@
         <tr>
             <td style="width:200px">Inscrit au collectif Viure *: </td>
             <td>{{user.adherent_viure|translateOuiNon }}
+                   {% if request.user.is_superuser %}
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='pc' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a>
+        {% endif %}
+            </td>
         </tr>
     {% endif %}
     {%if request.user.adherent_bzz2022 or request.user == user %}
         <tr>
             <td style="width:200px">Inscrit au collectif Bzzz *: </td>
-            <td>{{user.adherent_bzz2022|translateOuiNon }}
+            <td>{{user.adherent_bzz2022|translateOuiNon }}</td>
         </tr>
     {% endif %}
     {%if request.user.adherent_jp or request.user == user %}
         <tr>
             <td style="width:200px">Inscrit aux jardins partagés : </td>
-            <td>{{user.adherent_jp|translateOuiNon }}
+            <td>{{user.adherent_jp|translateOuiNon }}</td>
         </tr>
     {% endif %}
       {% if request.user == user %}
         <tr>
             <td style="width:200px">Inscrit à la newsletter ^: </td>
-            <td>{{user.inscrit_newsletter|translateOuiNon }}
+            <td>{{user.inscrit_newsletter|translateOuiNon }}</td>
         </tr>
         {% endif %}
 
@@ -218,12 +227,12 @@
         {% endif %}
         <tr>
             <td style="width:200px">Apparait dans l'annuaire et coordonnées sont visibles : </td>
-            <td>{{user.accepter_annuaire|translateOuiNon }}
+            <td>{{user.accepter_annuaire|translateOuiNon }}</td>
         </tr>
         {% if user.accepter_annuaire %}
         <tr>
             <td style="width:200px">Dernière connexion : </td>
-            <td>{{user.last_login|date:'DATE_FORMAT' }}
+            <td>{{user.last_login|date:'DATE_FORMAT' }}</td>
         </tr>
         {% endif %}
       </tbody>

@@ -1,6 +1,14 @@
 {% load app_filters %}
 {% load static %}
 
+{% if request.user.is_authenticated %}
+<div class="row">
+	<div class="col-sm-12 textcenter">
+		Vous devez être connecté pour voir ce contenu
+	</div>
+</div>
+{% else %}
+
 <div class="row">
 	<div class="col-sm-12 textcenter">
 		<h4>Liste des plantes du jardin ({{plantes|length}})</h4>
@@ -33,3 +41,5 @@
 		</a>
 	</div>
 </div>
+
+{% endif %}

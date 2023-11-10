@@ -3,6 +3,7 @@
 from datetime import datetime
 from calendar import LocaleHTMLCalendar, LocaleTextCalendar, month_name
 from blog.models import Article, Projet, Evenement
+from bourseLibre.models import EvenementSalon
 from jardinpartage.models import Article as Article_jardin, Evenement as Evenement_jardin
 #from vote.models import Suffrage
 from ateliers.models import Atelier
@@ -38,12 +39,12 @@ class Calendar(LocaleTextCalendar):
 
     # formats a day as a td
     # filter events by day
-    def formatday(self, request, day, weekday, events_arti, events_arti_jardin, events_proj, events_atel, events_autre, events_autre_jardin, events_vote):
+    def formatday(self, request, day, weekday, events_arti, events_arti_jardin, events_proj, events_atel, events_autre, events_salon, events_vote):
         events_per_day_arti = events_arti.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
         events_per_day_arti_jardin = events_arti_jardin.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
         events_per_day_proj = events_proj.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
         events_per_day_autre = events_autre.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
-        events_per_day_autre_jardin = events_autre_jardin.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
+        events_per_day_salon = events_salon.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
         #events_per_day_votes = None#events_vote.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
         events_per_day_atel = events_atel.filter(Q(start_time__day=day))
 
@@ -84,7 +85,7 @@ class Calendar(LocaleTextCalendar):
                 titre = event.titre if len(event.titre)<40 else event.titre[:37] + "..."
                 d += "<div class='event'> <a href='"+event.get_absolute_url() +"'><i class='fa fa-comments iconleft' ></i> "+getAjout(event)+titre+'</a> </div>'
 
-        for event in events_per_day_autre_jardin:
+        for event in events_per_day_salon:
             if event.est_autorise(request.user):
                 titre = event.titre if len(event.titre)<40 else event.titre[:37] + "..."
                 d += "<div class='event'> <a href='"+event.get_absolute_url() +"'><i class='fa fa-pagelines' ></i> "+getAjout(event)+titre+'</a> </div>'
@@ -121,11 +122,11 @@ class Calendar(LocaleTextCalendar):
         return "<td class='other-month' style='background-color:white'></td>"
 
     # formats a week as a tr
-    def formatweek(self, request, theweek, events_arti, events_arti_jardin, events_proj, events_per_day_atel, events_autre, events_autre_jardin, events_vote):
+    def formatweek(self, request, theweek, events_arti, events_arti_jardin, events_proj, events_per_day_atel, events_autre, events_salon, events_vote):
         week = ''
 
         for d, weekday in theweek:
-            week += self.formatday(request, d, weekday, events_arti, events_arti_jardin, events_proj, events_per_day_atel, events_autre, events_autre_jardin, events_vote)
+            week += self.formatday(request, d, weekday, events_arti, events_arti_jardin, events_proj, events_per_day_atel, events_autre, events_salon, events_vote)
 
         return "<tr class='days'>" + week + ' </tr>'
 
@@ -139,7 +140,8 @@ class Calendar(LocaleTextCalendar):
         events_proj = Projet.objects.filter(start_time__year=self.year, start_time__month=self.month)
         events_atel = Atelier.objects.filter(start_time__year=self.year, start_time__month=self.month)
         events_autre = Evenement.objects.filter(start_time__year=self.year, start_time__month=self.month)
-        events_autre_jardin = Evenement_jardin.objects.filter(start_time__year=self.year, start_time__month=self.month)
+        events_salon = EvenementSalon.objects.filter(start_time__year=self.year, start_time__month=self.month)
+        #events_autre_jardin = Evenement_jardin.objects.filter(start_time__year=self.year, start_time__month=self.month)
         events_vote = None#Suffrage.objects.filter(start_time__year=self.year, start_time__month=self.month)
         if asso_abreviation:
             events_arti = events_arti.filter(Q(asso__abreviation=asso_abreviation) | Q(partagesAsso__abreviation=asso_abreviation)| Q(partagesAsso__abreviation='public'))
@@ -155,6 +157,6 @@ class Calendar(LocaleTextCalendar):
 
 
         for week in self.monthdays2calendar(self.year, self.month):
-            cal += self.formatweek(request, week, events_arti, events_arti_jardin, events_proj, events_atel, events_autre, events_autre_jardin, events_vote)+'\n'
+            cal += self.formatweek(request, week, events_arti, events_arti_jardin, events_proj, events_atel, events_autre, events_salon, events_vote)+'\n'
         cal += '</table>\n'
         return cal

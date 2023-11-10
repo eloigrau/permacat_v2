@@ -248,11 +248,11 @@
         </div>
               {%for date in dates %}
              <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
-                 <a class="btn btn-sm btn-danger textleft" href="{% url 'supprimerEvenementSalon' slug_article=article.slug  id_evenementArticle=date.id %}" ><i class="fa fa-times"></i> </a></p>
+                 <a class="btn btn-sm btn-danger textleft" href="{% url 'supprimerEvenementSalon' slug_salon=salon.slug  id_evenementSalon=date.id %}" ><i class="fa fa-times"></i> </a></p>
             </p>
               {%endfor%}
             <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'ajouterEvenementSalon' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'ajouterEvenementSalon' slug_salon=salon.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
 
       </div>
     </div>

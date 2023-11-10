@@ -1242,7 +1242,7 @@ class Message_salon(models.Model):
 
 
 class EvenementSalon(models.Model):
-    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",
+    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre du salon de discussion)",
                              max_length=100, null=True, blank=True, default="")
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE, help_text="L'evenement doit etre associé à un salon" )
     start_time = models.DateField(verbose_name="Date", null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
@@ -1265,7 +1265,6 @@ class EvenementSalon(models.Model):
             return self.salon.titre
         return self.titre_even
 
-    @property
     def est_autorise(self, user):
         return self.salon.est_autorise(user)
 

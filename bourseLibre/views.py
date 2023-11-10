@@ -1310,6 +1310,7 @@ def salon(request, slug):
         return redirect(reverse('invitationDansSalon', kwargs={'slug_salon': slug}))
 
     salon = testIsMembreSalon(request, slug)
+    dates = EvenementSalon.objects.filter(salon=salon)
     if not isinstance(salon, Salon):
         raise PermissionDenied
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_" + str(salon.slug))
@@ -1356,7 +1357,7 @@ def salon(request, slug):
                     pass
         return redirect(request.path)
 
-    return render(request, 'salon/lireSalon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "jointure_articles":jointure_articles, "page_obj":page_obj})
+    return render(request, 'salon/lireSalon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "jointure_articles":jointure_articles, "dates":dates, "page_obj":page_obj})
 
 @login_required
 def creerSalon(request):
@@ -1474,15 +1475,14 @@ def ajouterEvenementSalon(request, slug_salon):
 
     if form.is_valid():
         ev = form.save(request, slug_salon)
-        return redirect(ev.article)
+        return redirect(ev.salon)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
 
 
 class SupprimerEvenementSalon(DeleteAccess, DeleteView):
     model = EvenementSalon
-    success_url = reverse_lazy('blog:index')
-    template_name_suffix = 'article_supprimer'
+    template_name_suffix = '_supprimer'
 
     def get_object(self):
         return EvenementSalon.objects.get(id=self.kwargs['id_evenementSalon'])

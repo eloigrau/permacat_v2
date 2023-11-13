@@ -73,6 +73,9 @@
     </div>
     <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
+              {% if not request.user.is_authenticated %}
+            <p>Vous devez être <a href="{% url 'login' %}?next={{ request.path }}">connecté</a> à la plateforme pour accéder à ce contenu</p>
+              {% else %}
         <form class="form-horizontal" role="form" action="{% url 'jardins:voir_plante_recherche' %}" method="get"
             enctype="multipart/form-data">
         <div class="row justify-content-center">
@@ -83,7 +86,7 @@
                 <button id ="btn-valider" type="submit" class="btn btn-primary">Voir la fiche</button>
             </div>
         </div>
-        </form>
+        </form>   {% endif %}
     </div>
     </div>
 </div>

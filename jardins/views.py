@@ -383,7 +383,6 @@ def ajouter_plante(request):
 
     return render(request, "jardins/ajouter_plante.html", {"form":form, "plante":plante})
 
-@login_required
 def chercher_plante(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     plante_list = []

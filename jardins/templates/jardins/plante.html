@@ -14,7 +14,7 @@
        <h4> <a {% if plante.get_inpi_url %}href="{{plante.get_inpi_url}}" {% endif %}>{{plante.NOM_COMPLET_HTML|safe}}</a></h4>
 
         <p><i class="fa fa-link" aria-hidden="true"></i> Voir sur : <a  href="https://fr.wikipedia.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Wiki</a>
-        - <a  href="http://www.wikiphyto.org/w/index.php?search=={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Phyto</a>
+        - <a  href="http://www.wikiphyto.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Phyto</a>
          - <a  href="https://www.ekopedia.fr/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow" >Eko</a>
          - <a  href="https://jardinage.ooreka.fr/plante/recherche?motsClefs={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Ooreka</a>
         - <a  href="https://www.tela-botanica.org/?in=flore&s={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Tela</a>

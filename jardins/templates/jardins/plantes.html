@@ -112,6 +112,9 @@
           <div class="row justify-content-center">
               <h4>Liste des plantes de nos jardins</h4>
         <div class="col-sm-12 textcenter">
+              {% if not request.user.is_authenticated %}
+            <p>Vous devez être <a href="{% url 'login' %}?next={{ request.path }}">connecté</a> à la plateforme pour accéder à ce contenu</p>
+              {% else %}
                 <table class="table sortable table-condensed tablejardin table-striped sortable" style="width:100%;">
                 <thead>
                     <tr>
@@ -130,6 +133,8 @@
                     {% endfor %}
                 </tbody>
                 </table>        </div>
+
+              {% endif %}
         </div>
   </div>
 </div>

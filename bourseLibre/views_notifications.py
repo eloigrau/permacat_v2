@@ -14,7 +14,7 @@ from hitcount.models import HitCount, Hit
 @login_required
 def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     tampon = nbNotif * 5
-    dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=utc)
+    dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=utc)
     articles = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='article_')).order_by(orderBy)
     projets = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='projet_')).order_by(orderBy)
     offres = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='ajout_offre')).order_by(orderBy)
@@ -39,9 +39,9 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='envoi_salon_Public') |
                                                                Q(verb__startswith='creation_salon_public') |
                                                                Q(verb='envoi_salon_public'))).order_by(orderBy)
-    salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) & ((Q(verb__startswith="envoi_salon") &
-                        ~Q(verb__startswith="envoi_salon_prive"))| Q(verb__startswith="invitation_salon")) &
-                                            Q(description__contains=request.user.username))
+    salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) &
+            (Q(verb__startswith="envoi_salon_public")| Q(verb__startswith="envoi_salon", description__contains=request.user.username) |
+            Q(verb__startswith="invitation_salon", description__contains=request.user.username)))
     conversations = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith="envoi_salon_prive") &
                                           Q(description__contains=request.user.username))
     inscription = Action.objects.filter(Q(timestamp__gt=dateMin, verb__startswith='inscript')).order_by(orderBy)
@@ -85,7 +85,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
 def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
     if dateMinimum:
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
-            days=30) else datetime.now().date() - timedelta(days=7)
+            days=30) else datetime.now().date() - timedelta(days=15)
     else:
         dateMin = (datetime.now() - timedelta(days=7)).replace(tzinfo=utc)
 

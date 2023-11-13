@@ -250,8 +250,7 @@ urlpatterns = [
 def protected_serve(request, path, document_root=None, show_indexes=False):
     return serve(request, path, document_root, show_indexes)
 
-
-urlpatterns += [url(r'^media/(?P<path>.*)$', protected_serve,{'document_root': MEDIA_ROOT}), ]
+urlpatterns += [url(r'^%s(?P<path>.*)$'%MEDIA_URL[1:], protected_serve,{'document_root': MEDIA_ROOT}), ]
 urlpatterns += [
     url(r'^robots\.txt$', TemplateView.as_view(template_name="bourseLibre/robots.txt", content_type='text/plain')),
 ]

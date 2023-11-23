@@ -62,60 +62,55 @@ def import_adherents_ggl(request):
     fieldnames = "NOM","PRÉNOM","STATUT","ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","Première ADHESION","Somme 2023","Type réglement 2023","Date paiement","PAIEMENT","MONTANT2021","MOYEN2021","X","MONTANT2022","MOYEN2022","Y","Z","2023 - somme","2023 - moyen paiement",
     if importer_fic:
         with open(filename, 'r', newline='\n') as data:
-            i = 0
-            for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
+            for i, line in enumerate(csv.DictReader(data, fieldnames=fieldnames, delimiter=',')):
                 if i == 0:
-                    pass
+                    continue
                 if i >= 130:
                     break
-                i += 1
 
                 if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRÉNOM"]).exists():
-                    pass
+                    continue
+
+                tel = '0' + line["TELEPHONE"] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"]
 
                 try:
-                    tel = '0' + line["TELEPHONE"] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"]
+                    ad = re.split("\d{5}", line["ADRESSE POSTALE"])
+                    code = re.findall("\d{5}", line["ADRESSE POSTALE"])[0]
+                    adres = Adresse(rue=ad[0], code_postal=code, commune=ad[1], telephone=tel)
+                except Exception as ee:
+                    msg += "<p> erreurdresse " + str(line) + str(ee) + "</p>"
+                    adres = Adresse(rue=line["ADRESSE POSTALE"], telephone=tel)
+                adres.save(recalc=False)
+                adherent, created = Adherent.objects.get_or_create(nom=line["NOM"],
+                        prenom=line["PRÉNOM"],
+                        statut=line["STATUT"],
+                        adresse=adres,
+                        email=line["ADRESSE MAIL"]
+                       )
 
-                    try:
-                        ad = re.split("\d{5}", line["ADRESSE POSTALE"])
-                        code = re.findall("\d{5}", line["ADRESSE POSTALE"])[0]
-                        adres = Adresse(rue=ad[0], code_postal=code, commune=ad[1], telephone=tel)
-                    except Exception as ee:
-                        msg += "<p> erreurdresse " + str(line) + str(ee) + "</p>"
-                        adres = Adresse(rue=line["ADRESSE POSTALE"], telephone=tel)
-                    adres.save(recalc=False)
-                    adherent, created = Adherent.objects.get_or_create(nom=line["NOM"],
-                            prenom=line["PRÉNOM"],
-                            statut=line["STATUT"],
-                            adresse=adres,
-                            email=line["ADRESSE MAIL"]
-                           )
+                if line["Somme 2023"]:
+                    adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                        date_cotisation='2023-01-01',
+                                        montant=line["Somme 2023"],
+                                        moyen=line["Type réglement 2023"],)
 
-                    if line["Somme 2023"]:
-                        adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                            date_cotisation='2023-01-01',
-                                            montant=line["Somme 2023"],
-                                            moyen=line["Type réglement 2023"],)
+                if line["2023 - somme"]:
+                    adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                        date_cotisation='2023-01-01',
+                                        montant=line["2023 - somme"],
+                                        moyen=line["2023 - moyen paiement"],)
 
-                    if line["2023 - somme"]:
-                        adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                            date_cotisation='2023-01-01',
-                                            montant=line["2023 - somme"],
-                                            moyen=line["2023 - moyen paiement"],)
+                if line["MONTANT2021"]:
+                    adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                        date_cotisation='2021-01-01',
+                                        montant=line["MONTANT2021"],
+                                        moyen=line["MOYEN2021"],)
 
-                    if line["MONTANT2021"]:
-                        adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                            date_cotisation='2021-01-01',
-                                            montant=line["MONTANT2021"],
-                                            moyen=line["MOYEN2021"],)
-
-                    if line["MONTANT2022"]:
-                       adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                            date_cotisation='2022-01-01',
-                                            montant=line["MONTANT2022"],
-                                            moyen=line["MOYEN2022"],)
-                except Exception as e:
-                    msg += "<p> erreur " + str(line) + str(e) + "</p>"
+                if line["MONTANT2022"]:
+                   adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                        date_cotisation='2022-01-01',
+                                        montant=line["MONTANT2022"],
+                                        moyen=line["MOYEN2022"],)
 
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 

@@ -21,6 +21,9 @@ from .filters import AdherentsCarteFilter
 
 @login_required
 def accueil_admin(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
     return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
 
 

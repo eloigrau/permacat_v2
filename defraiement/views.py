@@ -249,7 +249,12 @@ class SupprimerReunion(DeleteAccess, DeleteView):
     template_name_suffix = '_supprimer'
 
     def get_object(self):
+        reu = Reunion.objects.get(slug=self.kwargs['slug'])
+        self.asso = reu.asso
         return Reunion.objects.get(slug=self.kwargs['slug'])
+
+    def get_success_url(self):
+        return reverse('defraiement:reunions_asso', kwargs={'asso_slug':self.asso.abreviation})
 
 @login_required
 def ajouterParticipant(request, asso_slug):

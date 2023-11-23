@@ -66,9 +66,6 @@ def import_adherents_ggl(request):
             header = next(csvreader)
             i = 0
             for line in csvreader:
-                i += 1
-                if i >= 9:
-                    break
                 try:
                     tel = '0' + line["TELEPHONE"] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"]
 

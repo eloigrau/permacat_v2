@@ -84,7 +84,7 @@ def import_adherents_ggl(request):
                             prenom=line["PRÉNOM"],
                             statut=line["STATUT"],
                             adresse=adres,
-                            mail=line["ADRESSE MAIL"]
+                            email=line["ADRESSE MAIL"]
                            )
 
                     if line["Somme 2023"]:

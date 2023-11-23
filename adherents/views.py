@@ -71,7 +71,7 @@ def import_adherents_ggl(request):
                 if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRÉNOM"]).exists():
                     continue
 
-                tel = '0' + line["TELEPHONE"] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"]
+                tel = '0' + line["TELEPHONE"][:14] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"][:15]
 
                 try:
                     ad = re.split("\d{5}", line["ADRESSE POSTALE"])

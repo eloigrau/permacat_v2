@@ -129,6 +129,8 @@ class AdherentDeleteView(DeleteView):
     model = Adherent
     template_name_suffix = '_supprimer'
 
+
+
 class AdherentUpdateView(UpdateView):
     model = Adherent
     template_name_suffix = '_modifier'
@@ -186,14 +188,21 @@ class AdhesionDeleteView(DeleteView):
     model = Adhesion
     template_name_suffix = '_supprimer'
 
-    #def get_object(self):
-    #    return Adhesion.objects.get(slug=self.kwargs['slug'])
+    def get_success_url(self):
+        return self.adherent.get_absolute_url()
+
+    def get_object(self):
+        ad = Adhesion.objects.get(pk=self.kwargs['pk'])
+        self.adherent = ad.adherent
+        return ad
 
 class AdhesionUpdateView(UpdateView):
     model = Adhesion
     template_name_suffix = '_modifier'
     fields = ["date_cotisation", "montant", "moyen", "detail"]
 
+    def get_success_url(self):
+        return self.object.adherent.get_absolute_url()
 
 
 def ajouterAdhesion(request, adherent_pk):
@@ -203,7 +212,9 @@ def ajouterAdhesion(request, adherent_pk):
     form = AdhesionForm(request.POST or None)
     adherent = get_object_or_404(Adherent, pk=adherent_pk)
     if form.is_valid():
-        form.save()
+        adhesion = form.save(commit=False)
+        adhesion.adherent = adherent
+        adhesion = form.save()
         return redirect(adherent)
 
     return render(request, 'adherents/adhesion_ajouter.html', {"form": form, 'adherent': adherent})

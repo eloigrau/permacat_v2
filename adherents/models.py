@@ -43,3 +43,10 @@ class Adhesion(models.Model):
 
     def __str__(self):
         return " le " + str(self.date_cotisation) + ", " + str(self.montant) + ", " + str(self.moyen)
+
+    def get_absolute_url(self):
+        return reverse('adherents:adhesion_detail', kwargs={'pk': self.pk})
+    def get_update_url(self):
+        return reverse('adherents:adhesion_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adherents:adhesion_supprimer', kwargs={'pk': self.pk})

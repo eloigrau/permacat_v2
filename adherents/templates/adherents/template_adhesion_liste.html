@@ -8,6 +8,7 @@
                 <td>montant</td>
                 <td>moyen</td>
                 <td>details</td>
+                <td></td>
             </tr></thead>
             <tbody>
 {% for adhesion in adhesions %}
@@ -17,6 +18,10 @@
                 <td>{{adhesion.montant}}</td>
                 <td>{{adhesion.moyen}}</td>
                 <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>
+                <td>
+                    <a class="btn btn-sm btn-danger textleft" href="{{adhesion.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{adhesion.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                </td>
             </tr>
 {% endfor %}
             </tbody>

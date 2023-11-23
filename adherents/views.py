@@ -62,12 +62,15 @@ def import_adherents_ggl(request):
     fieldnames = "NOM","PRÉNOM","STATUT","ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","Première ADHESION","Somme 2023","Type réglement 2023","Date paiement","PAIEMENT","MONTANT2021","MOYEN2021","X","MONTANT2022","MOYEN2022","Y","Z","2023 - somme","2023 - moyen paiement",
     if importer_fic:
         with open(filename, 'r', newline='\n') as data:
-            csvreader = csv.DictReader(data, fieldnames=fieldnames, delimiter=',')
-            header = next(csvreader)
             i = 0
-            for line in csvreader:
+            for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
+                if i == 0 :
+                    i += 1
+                    pass
+
                 if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRÉNOM"]).exists():
                     pass
+
                 try:
                     tel = '0' + line["TELEPHONE"] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"]
 

@@ -64,9 +64,11 @@ def import_adherents_ggl(request):
         with open(filename, 'r', newline='\n') as data:
             i = 0
             for line in csv.DictReader(data, fieldnames=fieldnames, delimiter=','):
-                if i == 0 :
-                    i += 1
+                if i == 0:
                     pass
+                if i >= 130:
+                    break
+                i += 1
 
                 if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRÉNOM"]).exists():
                     pass

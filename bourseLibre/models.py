@@ -110,7 +110,7 @@ class Adresse(models.Model):
         address += str(self.code_postal)
         if self.commune:
             address += "+" + self.commune
-        address = address.replace(" ", "+")
+        address = address.replace(" ", "+").replace("++", "+")
 
         try:
             url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"

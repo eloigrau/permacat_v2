@@ -1,0 +1,78 @@
+{% load app_filters %}
+{% load avatar_tags %}
+{% load static %}
+
+{%include 'pagination_alphabet.html' %}
+{% include 'pagination_new.html' %}
+<nav class="nav nav-tabs justify-content-center">
+      <a class="nav-item nav-link active" href="#adresse" data-toggle="tab"><h6>Adresse</h6></a>
+      <a class="nav-item nav-link" href="#adhesions" data-toggle="tab"><h6>Adhésions</h6></a>
+</nav>
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="adresse">
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Nom Prénom</th>
+                <th>Statut</th>
+                <th>Email</th>
+                <th>Code postal</th>
+                <th>Commune</th>
+                <th>Profil</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for adherent in adherents %}
+        <tr>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
+            <td>{{ adherent.statut }}</td>
+            <td>{{ adherent.email }}</td>
+            <td>{%if adherent.adresse.code_postal %}{{ adherent.adresse.code_postal }}{% else %}-{% endif %}</td>
+            <td>{%if adherent.adresse.commune %}{{ adherent.adresse.commune }} {% else %}-{% endif %}</td>
+            <td>{{ adherent.profil}}</td>
+        {% comment %}
+            <td>{% if adherent.profil %} - <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% endif %}</td>
+        {% endcomment %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+  </div>
+
+  <div class="tab-pane fade" id="adhesions">
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Nom Prénom</th>
+                <th>Adhésions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for adherent in adherents %}
+        <tr>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
+            <td>{% for ad in adherent.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
+      </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+  </div>
+</div>
+{% include 'pagination_new.html' %}
+    <p class="textcenter textepetit">(*qui ont accepté d'apparaitre dans l'annuaire)</p>
+    <p class="textcenter textepetit">(**la distance est calculée en km à vol d'oiseau entre l'adresse indiquée sur votre profil, et l'adresse du collègue)</p>
+
+

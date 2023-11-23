@@ -94,7 +94,7 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
          Q(verb__icontains='_public') | Q(verb__icontains='_Public') |
             Q(verb__startswith='fiche') | Q(verb__startswith='atelier') |
             Q(verb__startswith='jardins_') |
-            Q(verb__startswith='documents_') | Q(verb__startswith='album_') |
+            Q(verb__startswith='document_') | Q(verb__startswith='album_') |
             Q(verb__startswith="envoi_salon_public") |
             Q(verb__startswith="envoi_salon", description__contains=request.user.username) |
             Q(verb__startswith="invitation_salon", description__contains=request.user.username) |

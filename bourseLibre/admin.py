@@ -5,9 +5,10 @@ from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jard
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
 from ateliers.models import Atelier, CommentaireAtelier, InscriptionAtelier
 from agoratransition.models import InscriptionExposant, Proposition, Message_agora
+from adherents.models import Adherent, Adhesion
+
+
 from django.contrib.admin.models import LogEntry
-
-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 

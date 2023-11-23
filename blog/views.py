@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.http import HttpResponseForbidden
-from django.urls import reverse_lazy, reverse
 from django.utils.html import strip_tags
+from django.urls import reverse_lazy
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
@@ -29,17 +29,17 @@ from django.views.decorators.csrf import csrf_exempt
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
 from django.db.models import Q, F
-from django.core.exceptions import PermissionDenied
-import itertools
 from datetime import datetime, timedelta
 import pytz
 from django.utils.text import slugify
 from bourseLibre.views_base import DeleteAccess
 from photologue.models import Document
 from vote.models import Suffrage
-from django.core.paginator import Paginator
 from dal import autocomplete
 from taggit.models import Tag
+from django.core.paginator import Paginator
+from django.core.exceptions import PermissionDenied
+import itertools
 
 # @login_required
 # def forum(request):

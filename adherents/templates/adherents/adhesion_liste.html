@@ -1,0 +1,23 @@
+{% extends 'base_adherents.html' %}
+
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{% endblock %}
+{% block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_jardin">
+    <div class="col textcenter">
+        <h3>Les adhésions </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+     {% include 'adherents/templte_adhesion_liste.html'%}
+{% endblock %}

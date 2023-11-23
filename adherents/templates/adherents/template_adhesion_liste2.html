@@ -1,0 +1,23 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <td>date_cotisation</td>
+                <td>montant</td>
+                <td>moyen</td>
+                <td>details</td>
+            </tr></thead>
+            <tbody>
+{% for adhesion in adhesions %}
+            <tr>
+                <td>{{adhesion.date_cotisation}}</td>
+                <td>{{adhesion.montant}}</td>
+                <td>{{adhesion.moyen}}</td>
+                <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

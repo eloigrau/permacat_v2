@@ -1,0 +1,15 @@
+{% extends 'blog/base_blog.html' %}
+{% load static %}
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+{%block banniere %}
+{% endblock  %}
+
+{% block submenu  %}
+<div class="row">
+    <div class="col-sm-12 textcenter">
+<a href="{% url 'adherents:accueil' %}">
+                        <span class="fa fa-home"></span>
+</a>
+    </div>
+</div>
+{% endblock  %}

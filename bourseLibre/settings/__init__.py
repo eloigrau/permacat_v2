@@ -116,6 +116,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'permagora',
     'jardins',
+    'adherents',
 
     'dal',
     'dal_select2',

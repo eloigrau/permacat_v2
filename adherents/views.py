@@ -66,7 +66,7 @@ def import_adherents_ggl(request):
             header = next(csvreader)
             i = 0
             for line in csvreader:
-                if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRENOM"]).exists():
+                if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRÉNOM"]).exists():
                     pass
                 try:
                     tel = '0' + line["TELEPHONE"] if line["TELEPHONE"].startswith('6') or line["TELEPHONE"].startswith('7') else line["TELEPHONE"]

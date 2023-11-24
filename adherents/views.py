@@ -16,6 +16,9 @@ from .forms import AdhesionForm, AdherentForm
 from .models import Adherent, Adhesion
 from bourseLibre.models import Adresse
 from .filters import AdherentsCarteFilter
+
+from django.http import HttpResponse
+from django.template import loader
 # Create your views here.
 
 
@@ -81,8 +84,10 @@ def import_adherents_ggl(request):
         return render(request, "adherents/accueil_admin.html", {"msg":"Get item manquant 'fic=0 ou 1'"})
 
     if fic == "0":
-        filename = get_dossier_db("adherentsconf66.csv")
-        fieldnames = "NOM", "PRÉNOM", "STATUT", "ADRESSE POSTALE", "ADRESSE MAIL", "TELEPHONE", "Première ADHESION", "Somme 2023", "Type réglement 2023", "Date paiement", "PAIEMENT", "MONTANT2021", "MOYEN2021", "X", "MONTANT2022", "MOYEN2022", "Y", "Z", "2023 - somme", "2023 - moyen paiement",
+        #filename = get_dossier_db("adherentsconf66.csv")
+        filename = get_dossier_db("adherents_conf66.csv")
+        #fieldnames = "NOM", "PRÉNOM", "STATUT", "ADRESSE POSTALE", "ADRESSE MAIL", "TELEPHONE", "Première ADHESION", "Somme 2023", "Type réglement 2023", "Date paiement", "PAIEMENT", "MONTANT2021", "MOYEN2021", "X", "MONTANT2022", "MOYEN2022", "Y", "Z", "2023 - somme", "2023 - moyen paiement",
+        fieldnames = "NOM","PRÉNOM","STATUT","ADRESSE POSTALE","","","ADRESSE MAIL","","","TELEPHONE","ADHESION","MOYEN2020","MONTANT2020","","","MONTANT2021","MOYEN2021","","","MONTANT2022","MOYEN2022","","MONTANT2023","MOYEN2023"
     elif fic == "1":
         filename = get_dossier_db("Adhérents-Coordonnées.csv")
         fieldnames = "Nom", "Prénom", "Adresse", "Commune", "Code postal", "Téléphone", "Lien", "Mail", "Productions", "Statut", "Attestation MSA"
@@ -146,17 +151,11 @@ def import_adherents_ggl(request):
                             email=line["ADRESSE MAIL"]
                            )
 
-                    if line["Somme 2023"]:
+                    if line["MONTANT2020"]:
                         adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                             date_cotisation='2023-01-01',
-                                             montant=line["Somme 2023"],
-                                             moyen=line["Type réglement 2023"],)
-
-                    if line["2023 - somme"]:
-                         adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                             date_cotisation='2023-01-01',
-                                             montant=line["2023 - somme"],
-                                             moyen=line["2023 - moyen paiement"],)
+                                             date_cotisation='2020-01-01',
+                                             montant=line["MONTANT2020"],
+                                             moyen=line["MOYEN2020"],)
 
                     if line["MONTANT2021"]:
                          adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
@@ -165,10 +164,17 @@ def import_adherents_ggl(request):
                                              moyen=line["MOYEN2021"],)
 
                     if line["MONTANT2022"]:
-                        adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
-                                            date_cotisation='2022-01-01',
+                         adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                             date_cotisation='2022-01-01',
                                              montant=line["MONTANT2022"],
                                              moyen=line["MOYEN2022"],)
+
+                    if line["MONTANT2023"]:
+                        adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                            date_cotisation='2023-01-01',
+                                             montant=line["MONTANT2023"],
+                                             moyen=line["MOYEN2023"],)
+
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 
 
@@ -278,3 +284,23 @@ def ajouterAdhesion(request, adherent_pk):
         return redirect(adherent)
 
     return render(request, 'adherents/adhesion_ajouter.html', {"form": form, 'adherent': adherent})
+
+
+def get_csv(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="export_adherents.csv"'},
+    )
+
+    # The data is hard-coded here, but you could load it from a database or
+    # some other source.
+    csv_data = (
+        ("First row", "Foo", "Bar", "Baz"),
+        ("Second row", "A", "B", "C", '"Testing"', "Here's a quote"),
+    )
+
+    t = loader.get_template("my_template_name.txt")
+    c = {"data": csv_data}
+    response.write(t.render(c))
+    return response

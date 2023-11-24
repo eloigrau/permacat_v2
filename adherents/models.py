@@ -4,20 +4,17 @@ from bourseLibre.models import Profil, Adresse
 from blog.models import Article
 import simplejson
 from django.urls import reverse
-from .constantes import dict_ape
+from .constantes import dict_ape, CHOIX_STATUTS
 from django.utils import timezone
 import uuid
 
-
-class Choix():
-    statut = ('0', 'adherent')
-
 class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
-    nom = models.CharField(verbose_name="Nom ", max_length=120)
-    prenom = models.CharField(verbose_name="Prénom ", max_length=120, blank=True)
+    nom = models.CharField(verbose_name="Nom", max_length=120)
+    prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True)
     production_ape = models.CharField(verbose_name="Production (APE) ", max_length=120, blank=True)
-    statut = models.CharField(verbose_name="Statut d'agriculteur (AP pour 'a titre pincipal', CS pour 'cotisant solidaire')", max_length=120)
+    statut = models.CharField(verbose_name="Statut d'agriculteur", max_length=5,
+                              choices=CHOIX_STATUTS, default='0',)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     email = models.EmailField(verbose_name="Email", blank=True)
 

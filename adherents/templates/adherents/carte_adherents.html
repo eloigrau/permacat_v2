@@ -142,7 +142,6 @@
 </div>
       <p class="textepetit textcenter">Bleu : Cotisant Solidaire; Vert : à titre principal; Jaune : à titre secondaire; Orange : retraité.e; Gris : CC; Noir : ?</p>
 
-{% comment %}
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
@@ -156,6 +155,11 @@ Filtrer / rechercher...
       <div class="modal-header">
           <div class="row justify-content-center">
            <h5 > Filtrer/rechercher les profils</h5>
+              {% if asso.abreviation != "public" %}
+              <p>Parmi les membres du groupe {{ asso.nom }}</p>
+              {% else %}
+              <p>Parmi tous les inscrits sur le site</p>
+              {% endif %}
           </div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -167,8 +171,19 @@ Filtrer / rechercher...
       <div class="row">
         <div class="form-group col-sm-12">
             <label>Rechercher :</label>
-
+          {% render_field filter.form.compet_descrip class="form-control" %}
         </div>
+          <br>
+          <div class="form-group col-sm-12">
+              <div>
+          {{ filter.form.statut.label_tag }}
+            <label class="checkbox-inline">{% render_field filter.form.statut %}</label>
+              </div>
+              <div>
+          {{ filter.form.annee.label_tag }}
+            <label class="checkbox-inline">{% render_field filter.form.annee %}</label>
+              </div>
+            </div>
       </div>
 
     <div class="row">
@@ -186,7 +201,6 @@ Filtrer / rechercher...
 </div>
 </div>
 </div>
-{% endcomment %}
 
 {% include "adherents/template_annuaire_adherents.html" with profils=filter.qs %}
 

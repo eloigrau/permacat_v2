@@ -48,7 +48,10 @@ class ListeAdherents(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['titre'] = "Adhérents Conf 66"
+        qs = self.get_queryset()
+        context['titre'] = "Adhérents Conf 66 (%d)" % len(qs)
+        filter = AdherentsCarteFilter(self.request.GET, qs)
+        context["filter"] = filter
         return context
 
 
@@ -70,6 +73,28 @@ def modif_APE(request):
             msg += str(a.production_ape) + " from " + old + "\n"
     return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
 
+
+
+def MAJ_adherents(request):
+    if not request.user.adherent_conf66:
+        return HttpResponseForbidden()
+    msg = "update adherents"
+    for a in Adherent.objects.all():
+        a.save()
+
+    return render(request, "adherents/accueil_admin.html", {'msg':msg})
+
+
+def get_statut(nom):
+    if nom == "AP":
+        return "1"
+    elif nom == "CS":
+        return "2"
+    elif nom == "CC":
+        return "3"
+    elif nom == "retraité" or nom == "retraitée" :
+        return "4"
+    return "0"
 
 
 @login_required
@@ -114,7 +139,7 @@ def import_adherents_ggl(request):
                             a.adresse.commune=line["Commune"]
                             a.adresse.telephone=line["Téléphone"]
                             a.save()
-                            msg += "<p> adherent deja present " + str(line) + str(ad) + "</p>"
+                            msg += "<p> adherent deja present " + str(line) + str(a) + "</p>"
                         continue
 
                     adres = Adresse(rue=line["Adresse"], code_postal=line["Code postal"],
@@ -142,9 +167,10 @@ def import_adherents_ggl(request):
                         msg += "<p> erreurdresse " + str(line) + str(ee) + "</p>"
                         adres = Adresse(rue=line["ADRESSE POSTALE"], telephone=tel)
                     adres.save(recalc=False)
+
                     adherent, created = Adherent.objects.get_or_create(nom=line["NOM"],
                             prenom=line["PRÉNOM"],
-                            statut=line["STATUT"],
+                            statut=get_statut(line["STATUT"]),
                             adresse=adres,
                             email=line["ADRESSE MAIL"]
                            )

@@ -69,11 +69,20 @@ def import_adherents_ggl(request):
                     continue
                 if i >= 150:
                     break
-                if Adherent.objects.filter(Q(nom=line["Nom"], prenom=line["Prénom"]) |
+
+                ad = Adherent.objects.filter(Q(nom=line["Nom"], prenom=line["Prénom"]) |
                                            Q(nom=line["Nom"] + line["Prénom"])|
                                            Q(nom=line["Nom"] + " " + line["Prénom"])|
-                                           Q(prenom=line["Nom"] + " " + line["Prénom"])).exists():
-                    msg += "<p> adherent deja present " + str(line) + str(adherent) + "</p>"
+                                           Q(prenom=line["Nom"] + " " + line["Prénom"]))
+                if ad.exists():
+                    for a in ad:
+                        a.production_ape=line["Productions"]
+                        a.adresse.rue=line["Adresse"]
+                        a.adresse.code_postal=line["Code postal"]
+                        a.adresse.commune=line["Commune"]
+                        a.adresse.telephone=line["Téléphone"]
+                        a.save()
+                        msg += "<p> adherent deja present " + str(line) + str(ad) + "</p>"
                     continue
 
                 adres = Adresse(rue=line["Adresse"], code_postal=line["Code postal"],

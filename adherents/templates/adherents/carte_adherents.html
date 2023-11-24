@@ -104,7 +104,7 @@
             {% elif profil.statut == 'CC' %}
             var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% else %}
-            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.username}} {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
 
             {% endif %}
             marker.addTo(map);

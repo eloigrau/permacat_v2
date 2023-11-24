@@ -4,6 +4,7 @@ from bourseLibre.models import Profil, Adresse
 from blog.models import Article
 import simplejson
 from django.urls import reverse
+from .constantes import dict_ape
 from django.utils import timezone
 import uuid
 
@@ -15,6 +16,7 @@ class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
     nom = models.CharField(verbose_name="Nom ", max_length=120)
     prenom = models.CharField(verbose_name="Prénom ", max_length=120, blank=True)
+    production_ape = models.CharField(verbose_name="Production (APE) ", max_length=120, blank=True)
     statut = models.CharField(verbose_name="Statut d'agriculteur (AP pour 'a titre pincipal', CS pour 'cotisant solidaire')", max_length=120)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     email = models.EmailField(verbose_name="Email", blank=True)
@@ -33,6 +35,14 @@ class Adherent(models.Model):
     @property
     def get_adhesions(self):
         return self.adhesion_set.all()
+
+    @property
+    def get_production_str(self):
+        try:
+            return dict_ape[self.production_ape] + " (" +self.production_ape + ")"
+        except:
+            return self.production_ape
+
 
 class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent ")

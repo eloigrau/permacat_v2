@@ -94,6 +94,8 @@ def get_statut(nom):
         return "3"
     elif nom == "retraité" or nom == "retraitée" :
         return "4"
+    elif nom == "ATS" :
+        return "5"
     return "0"
 
 
@@ -147,7 +149,7 @@ def import_adherents_ggl(request):
                     adres.save()
                     adherent, created = Adherent.objects.get_or_create(nom=line["Nom"],
                              prenom=line["Prénom"],
-                             statut=line["Statut"],
+                             statut=get_statut(line["Statut"]),
                              adresse=adres,
                              email=line["Mail"],
                              production_ape=line["Productions"],

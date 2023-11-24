@@ -33,4 +33,4 @@ dict_ape = {
     "0130Z": "Reproduction de plantes"
     }
 
-CHOIX_STATUTS = ("0", "Inconnu"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "CC"), ("4", "Retraité")
+CHOIX_STATUTS = ("0", "Inconnu"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "CC"), ("4", "Retraité.e"), ("5", "ATS")

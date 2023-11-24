@@ -113,15 +113,15 @@
         {% for profil in adherents %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};
-            {% if profil.statut == 'AP' or profil.statut == 'ATP' %}
+            {% if profil.statut == '1' %}
             var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
-            {% elif profil.statut == 'CS' or profil.statut == 'CotSol'%}
+            {% elif profil.statut == '2' or profil.statut == 'CotSol'%}
             var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
-            {% elif profil.statut == 'CC' %}
+            {% elif profil.statut == '3' %}
             var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
-            {% elif profil.statut == 'ATS' %}
+            {% elif profil.statut == '5' %}
             var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
-            {% elif profil.statut == 'retraitée' or profil.statut == 'retraité' %}
+            {% elif profil.statut == '4' %}
             var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% else %}
             var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');

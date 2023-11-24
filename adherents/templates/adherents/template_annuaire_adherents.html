@@ -29,7 +29,7 @@
         {% for adherent in adherents %}
         <tr>
             <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
-            <td>{{ adherent.statut }}</td>
+            <td>{{ adherent.get_statut_display }}</td>
             <td>{{ adherent.get_production_str2}}</td>
             <td>{{ adherent.email }}</td>
             <td>{%if adherent.adresse.code_postal %}{{ adherent.adresse.code_postal }}{% else %}-{% endif %}</td>

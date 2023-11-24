@@ -55,7 +55,23 @@ def get_dossier_db(nomfichier):
     return os.path.abspath(os.path.join(PROJECT_ROOT, "../../", nomfichier))
 
 @login_required
+def modif_APE(request):
+    msg = ""
+    for a in Adherent.objects.filter(production_ape__isnull=False):
+        old = str(a.production_ape)
+        if len(str(a.production_ape).split("PE "))>1:
+            a.production_ape = str(a.production_ape).split("PE ")[1]
+            a.save()
+            msg += str(a.production_ape) + " from " + old + "\n"
+    return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
+
+
+
+@login_required
 def import_adherents_ggl(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
     #filename = get_dossier_db("adherentsconf66.csv")
     filename = get_dossier_db("Adhérents-Coordonnées.csv")
     msg = "import adherents_fic : " + filename

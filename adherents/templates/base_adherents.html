@@ -4,12 +4,25 @@
 {%block banniere %}
 {% endblock  %}
 
-{% block submenu  %}
-<div class="row">
-    <div class="col-sm-12 textcenter">
-<a href="{% url 'adherents:accueil' %}">
-                        <span class="fa fa-home"></span>
-</a>
-    </div>
+{% block submenu %}
+<div class="sticky-top">
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl  shadow-petit">
+        <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+        <div class="navbar-collapse collapse mx-auto" id="navbar2">
+    <ul class="navbar-nav mx-auto subnavbar align-items-center">
+		<li class="nav-item">
+        </li>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil' %}"> Adhérents</a></li>
+		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> Adhésions</a></li>
+		{% if request.user.is_superuser %}
+        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil_admin' %}"> Admin</a></li>
+        {% endif %}
+		        </li>
+            </ul>
+        </div>
+    </nav>
 </div>
-{% endblock  %}
+
+{% endblock %}

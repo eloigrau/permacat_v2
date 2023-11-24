@@ -18,6 +18,7 @@
             <tr>
                 <th>Nom Prénom</th>
                 <th>Statut</th>
+                <th>Production</th>
                 <th>Email</th>
                 <th>Code postal</th>
                 <th>Commune</th>
@@ -29,6 +30,7 @@
         <tr>
             <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
             <td>{{ adherent.statut }}</td>
+            <td>{{ adherent.production_ape}}</td>
             <td>{{ adherent.email }}</td>
             <td>{%if adherent.adresse.code_postal %}{{ adherent.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if adherent.adresse.commune %}{{ adherent.adresse.commune }} {% else %}-{% endif %}</td>

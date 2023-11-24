@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^conf66/accueil_admin/$', views.accueil_admin, name="accueil_admin"),
 
     url(r'^conf66/import_csv/$', views.import_adherents_ggl, name="import_csv"),
+    url(r'^conf66/modif_APE/$', views.modif_APE, name="modif_APE"),
 
     path(r'conf66/adherents/', login_required(views.ListeAdherents.as_view()), name="adherent_liste"),
     path(r'conf66/adherent/ajouter/', views.adherent_ajouter, name="adherent_ajouter"),

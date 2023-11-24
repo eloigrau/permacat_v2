@@ -42,7 +42,7 @@ class Adherent(models.Model):
             if self.production_ape:
                 return dict_ape[self.production_ape] + " (" +self.production_ape + ")"
             else:
-                return "Non renseignées"
+                return "-"
         except:
             pass
         return self.production_ape
@@ -53,7 +53,7 @@ class Adherent(models.Model):
             if self.production_ape:
                 return dict_ape[self.production_ape]
             else:
-                return "Non renseignées"
+                return "-"
         except:
             pass
         return self.production_ape

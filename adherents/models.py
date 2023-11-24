@@ -63,7 +63,7 @@ class Adhesion(models.Model):
     detail = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return " le " + str(self.date_cotisation) + ", " + str(self.montant) + ", " + str(self.moyen)
+        return str(self.date_cotisation__year) + ", " + str(self.montant) + ", " + str(self.moyen)
 
     def get_absolute_url(self):
         return reverse('adherents:adhesion_detail', kwargs={'pk': self.pk})

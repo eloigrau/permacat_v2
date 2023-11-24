@@ -101,6 +101,14 @@
               popupAnchor: [1, -34],
               shadowSize: [41, 41]
         });
+          var orangeIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-orange.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
 
         {% for profil in adherents %}
             var lat = {{profil.adresse.get_latitude}};
@@ -113,6 +121,8 @@
             var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == 'ATS' %}
             var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
+            {% elif profil.statut == 'retraitée' or profil.statut == 'retraité' %}
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% else %}
             var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
 
@@ -130,7 +140,7 @@
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
 </div>
-      <p class="textepetit textcenter">Bleu : Cotisant Solidaire; Vert : à titre principal; June : à titre secondaire; Gris : CC; Noir : ?</p>
+      <p class="textepetit textcenter">Bleu : Cotisant Solidaire; Vert : à titre principal; June : à titre secondaire; Orange : retraité.e; Gris : CC; Noir : ?</p>
 
 {% comment %}
 <hr>

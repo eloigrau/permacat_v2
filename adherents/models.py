@@ -47,6 +47,16 @@ class Adherent(models.Model):
             pass
         return self.production_ape
 
+    @property
+    def get_production_str2(self):
+        try:
+            if self.production_ape:
+                return dict_ape[self.production_ape]
+            else:
+                return "Non renseignées"
+        except:
+            pass
+        return self.production_ape
 
 class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent ")

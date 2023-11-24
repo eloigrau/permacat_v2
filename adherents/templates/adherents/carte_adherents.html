@@ -154,12 +154,7 @@ Filtrer / rechercher...
     <div class="modal-content">
       <div class="modal-header">
           <div class="row justify-content-center">
-           <h5 > Filtrer/rechercher les profils</h5>
-              {% if asso.abreviation != "public" %}
-              <p>Parmi les membres du groupe {{ asso.nom }}</p>
-              {% else %}
-              <p>Parmi tous les inscrits sur le site</p>
-              {% endif %}
+           <h5 > Filtrer/rechercher les membres</h5>
           </div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -180,8 +175,8 @@ Filtrer / rechercher...
             <label class="checkbox-inline">{% render_field filter.form.statut %}</label>
               </div>
               <div>
-          {{ filter.form.annee.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.annee %}</label>
+          {{ filter.form.annees.label_tag }}
+            <label class="checkbox-inline">{% render_field filter.form.annees %}</label>
               </div>
             </div>
       </div>

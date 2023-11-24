@@ -56,6 +56,8 @@ def get_dossier_db(nomfichier):
 
 @login_required
 def modif_APE(request):
+    if not request.user.adherent_conf66:
+        return HttpResponseForbidden()
     msg = ""
     for a in Adherent.objects.filter(production_ape__isnull=False):
         old = str(a.production_ape)
@@ -200,7 +202,7 @@ class AdherentAdresseUpdateView(UpdateView):
     fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
 
 def adherent_ajouter(request):
-    if not request.user.is_superuser:
+    if not request.user.adherent_conf66:
         return HttpResponseForbidden()
 
     form = AdherentForm(request.POST or None)
@@ -264,7 +266,7 @@ class AdhesionUpdateView(UpdateView):
 
 
 def ajouterAdhesion(request, adherent_pk):
-    if not request.user.is_superuser:
+    if not request.user.adherent_conf66:
         return HttpResponseForbidden()
 
     form = AdhesionForm(request.POST or None)

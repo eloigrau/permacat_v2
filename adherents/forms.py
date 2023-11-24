@@ -25,7 +25,7 @@ class AdherentForm(forms.ModelForm):
 
     class Meta:
         model = Adherent
-        fields = ['nom', 'prenom', 'statut', 'email', 'rue', 'code_postal', 'commune', 'telephone', 'latitude', 'longitude', ]
+        fields = ['nom', 'prenom', 'statut', 'email', 'production_ape','rue', 'code_postal', 'commune', 'telephone', 'latitude', 'longitude',  ]
 
         widgets = {
             'date_cotisation': forms.DateInput(

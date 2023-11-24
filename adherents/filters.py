@@ -6,13 +6,13 @@ from .constantes import CHOIX_STATUTS
 annees = ('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023')
 
 class AdherentsCarteFilter(django_filters.FilterSet):
-    compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_competencedesritpion_filter', label="Chercher : ")
+    descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
 
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
 
     annees = django_filters.ChoiceFilter(choices=annees, method='get_annee_filter',label="Année", )
 
-    def get_competencedesritpion_filter(self, queryset, field_name, value):
+    def get_descrip_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|
                                Q(profil__username__icontains=value)|
                                Q(adresse__commune__icontains=value)|
@@ -32,7 +32,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
     class Meta:
         model = Adherent
         fields = {
-            'compet_descrip': ['icontains', ],
+            'descrip': ['icontains', ],
             'statut': ['exact', ],
         }
 

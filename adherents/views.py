@@ -176,7 +176,7 @@ class AdherentDeleteView(DeleteView):
 
 
     def get_success_url(self):
-        return reverse('adherent:accueil')
+        return reverse('adherents:accueil')
 
 
 class AdherentUpdateView(UpdateView):

@@ -35,9 +35,9 @@ class ListeAdherents(ListView):
     def get_queryset(self):
         params = dict(self.request.GET.items())
         if "lettre" in self.request.GET:
-            qs = Adherent.objects.filter(nom__istartswith=self.request.GET["lettre"])
+            qs = Adherent.objects.filter(nom__istartswith=self.request.GET["lettre"]).order_by("nom")
         else:
-            qs = Adherent.objects.all()
+            qs = Adherent.objects.all().order_by("nom")
         profils_filtres = AdherentsCarteFilter(self.request.GET, queryset=qs)
         self.qs = profils_filtres.qs
         return profils_filtres.qs
@@ -174,6 +174,9 @@ class AdherentDeleteView(DeleteView):
     model = Adherent
     template_name_suffix = '_supprimer'
 
+
+    def get_success_url(self):
+        return reverse('adherent:accueil')
 
 
 class AdherentUpdateView(UpdateView):

@@ -3,16 +3,16 @@
     <div class="col textcenter">
         <table class="table table-condensed tableprofils table-striped sortable">
             <thead><tr>
-                <td>date_cotisation</td>
-                <td>montant</td>
-                <td>moyen</td>
-                <td>details</td>
+                <td>Année</td>
+                <td>Montant</td>
+                <td>Moyen</td>
+                <td>Details</td>
                 <td></td>
             </tr></thead>
             <tbody>
 {% for adhesion in adhesions %}
             <tr>
-                <td>{{adhesion.date_cotisation}}</td>
+                <td>{{adhesion.date_cotisation|date:"Y"}}</td>
                 <td>{{adhesion.montant}}</td>
                 <td>{{adhesion.moyen}}</td>
                 <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>

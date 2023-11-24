@@ -101,8 +101,6 @@ def import_adherents_ggl(request):
             for i, line in enumerate(csv.DictReader(data, fieldnames=fieldnames, delimiter=',')):
                 if i == 0:
                     continue
-                if i >= 150:
-                    break
                 if fic == "1":
                     ad = Adherent.objects.filter(Q(nom__iexact=line["Nom"], prenom__iexact=line["Prénom"]) |
                                                Q(nom__iexact=line["Nom"] + line["Prénom"])|

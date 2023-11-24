@@ -39,9 +39,13 @@ class Adherent(models.Model):
     @property
     def get_production_str(self):
         try:
-            return dict_ape[self.production_ape] + " (" +self.production_ape + ")"
+            if self.production_ape:
+                return dict_ape[self.production_ape] + " (" +self.production_ape + ")"
+            else:
+                return "Non renseignées"
         except:
-            return self.production_ape
+            pass
+        return self.production_ape
 
 
 class Adhesion(models.Model):

@@ -217,11 +217,19 @@
 	    <tr>
 		<td style="width:250px">Adhérent Confédération Paysanne *:</td>
 		<td>{{user.adherent_conf66|translateOuiNon}}
+
+                   {% if request.user.is_superuser %}
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='conf66' %}">
             <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrire Au Groupe
             </button>
         </a>
+        <a href="{% url 'associerProfil_adherent' profil_pk=user.pk %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>Associer adhérent
+            </button>
+        </a>
+        {% endif %}
         </td>
 	    </tr>
         {% endif %}

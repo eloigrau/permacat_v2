@@ -241,6 +241,7 @@ urlpatterns = [
     url(r'^admin/movePermagoraInscritsToNewsletter/$', views_admin.movePermagoraInscritsToNewsletter,  name="movePermagoraInscritsToNewsletter"),
     url(r'^admin/reinitialiserAbonnementsPermAgora/$', views_admin.reinitialiserAbonnementsPermAgora,  name="reinitialiserAbonnementsPermAgora"),
     path('admin/inscrireProfilAuGroupe/<int:id_profil>/<str:asso_abreviation>', views_admin.inscrireProfilAuGroupe,  name="inscrireProfilAuGroupe"),
+    path('admin/associerProfil_adherent/<int:profil_pk>/', views_admin.associerProfil_adherent,  name="associerProfil_adherent"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),

@@ -1582,3 +1582,4 @@ def accesfichier(request, path):
     del response['Content-Type']
     response['X-Accel-Redirect'] = '/protected/media/' + path
     return response
+

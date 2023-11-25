@@ -602,3 +602,14 @@ class EvenementSalonForm(forms.ModelForm):
         instance.auteur = request.user
         instance.save()
         return instance
+
+
+
+
+class AssocierProfil_adherentConf(forms.Form):
+    from adherents.models import Adherent
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=True,
+                              label="Adhérent", )
+
+
+

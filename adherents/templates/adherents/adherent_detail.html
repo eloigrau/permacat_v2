@@ -48,16 +48,16 @@
 
             {% if adherent.profil %}
             <tr>
-                <td style="width:250px">profil :</td>
+                <td style="width:250px">Profil :</td>
                 <td><a href="{{adherent.profil.get_absolute_url}}">{{adherent.profil}}</a></td>
             </tr>
             {% endif %}
             <tr>
-                <td style="width:250px">nom :</td>
+                <td style="width:250px">Nom :</td>
                 <td>{{adherent.nom}}</td>
             </tr>
             <tr>
-                <td style="width:250px">statut :</td>
+                <td style="width:250px">Statut :</td>
                 <td>{{adherent.get_statut_display}}</td>
             </tr>
             <tr>

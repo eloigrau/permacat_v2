@@ -14,7 +14,7 @@ from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
 from .forms import AdhesionForm, AdherentForm
 from .models import Adherent, Adhesion
-from bourseLibre.models import Adresse
+from bourseLibre.models import Adresse, Profil
 from .filters import AdherentsCarteFilter
 
 from django.http import HttpResponse
@@ -330,8 +330,11 @@ def import_adherents_ggl(request):
     elif fic == "1":
         filename = get_dossier_db("Adhérents-Coordonnées.csv")
         fieldnames = "Nom", "Prénom", "Adresse", "Commune", "Code postal", "Téléphone", "Lien", "Mail", "Productions", "Statut", "Attestation MSA"
+    elif fic == "2":
+        filename = get_dossier_db("Adhérents_pcat.csv")
+        fieldnames = "NOM PRENOM","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"
     else:
-        return render(request, "adherents/accueil_admin.html", {"msg":"Get item manquant 'fic=0 ou 1'"})
+        return render(request, "adherents/accueil_admin.html", {"msg":"Get item manquant 'fic=0(adherents_conf66.csv) ou 1 (Adhérents-Coordonnées.csv) ou 2 (Adhérents_pcat.csv)'"})
 
     msg = "import adherents_fic : " + filename
     importer_fic = True
@@ -412,6 +415,39 @@ def import_adherents_ggl(request):
                                             date_cotisation='2023-01-01',
                                              montant=line["MONTANT2023"],
                                              moyen=line["MOYEN2023"],)
+                elif fic == "2":
+
+                    if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRÉNOM"]).exists():
+                        continue
+
+                    tel = line["TELEPHONE"][:15]
+
+                    try:
+                        ad = re.split("\d{5}", line["ADRESSE POSTALE"])
+                        code = re.findall("\d{5}", line["ADRESSE POSTALE"])[0]
+                        adres = Adresse(rue=ad[0], code_postal=code, commune=ad[1], telephone=tel)
+                    except Exception as ee:
+                        adres = Adresse(rue=line["ADRESSE POSTALE"], telephone=tel)
+
+                    adres.save(recalc=False)
+                    try :
+                        profil = Profil.objects.get(username=line["PROFIL_PCAT"])
+                    except:
+                        profil = Profil.objects.none()
+
+                    adherent, created = Adherent.objects.get_or_create(nom=line["NOM"],
+                            prenom=line["PRÉNOM"],
+                            statut=line["STATUT(0?-1AP-2CS-3CC-4Retraite)"],
+                            adresse=adres,
+                            profil=profil,
+                            email=line["ADRESSE MAIL"]
+                           )
+                    for an in ["2020", "2021", "2022"]:
+                        adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                            date_cotisation= an+'-01-01',
+                                             montant=line["MONTANT"+an],
+                                             moyen=line["MOYEN"+an],)
+
 
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 

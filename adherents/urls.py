@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^conf66/$', login_required(views.ListeAdherents.as_view()), name="accueil"),
     url(r'^conf66/accueil_admin/$', views.accueil_admin, name="accueil_admin"),
     url(r'^conf66/get_csv_adherents/$', views.get_csv_adherents, name="get_csv_adherents"),
-    path(r'conf66/infos_adherents/<str:type_info>$', views.get_infos_adherent, name="get_infos_adherent"),
+    path(r'conf66/infos_adherents/<str:type_info>', views.get_infos_adherent, name="get_infos_adherent"),
 
     url(r'^conf66/import_csv/$', views.import_adherents_ggl, name="import_csv"),
     url(r'^conf66/modif_APE/$', views.modif_APE, name="modif_APE"),

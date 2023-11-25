@@ -1,0 +1,3 @@
+<p>{%for m in qs %}
+    {{m.email}} {% if not forloop.last %}, {% endif%}
+    {%endfor%}</p>

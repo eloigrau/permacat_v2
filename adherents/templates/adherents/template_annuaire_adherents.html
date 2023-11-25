@@ -4,10 +4,12 @@
 
 {%include 'pagination_alphabet.html' %}
 {% include 'pagination_new.html' %}
+{% if is_membre_bureau %}
 <nav class="nav nav-tabs justify-content-center">
       <a class="nav-item nav-link active" href="#adresse" data-toggle="tab"><h6>Adresse</h6></a>
       <a class="nav-item nav-link" href="#adhesions" data-toggle="tab"><h6>Adhésions</h6></a>
 </nav>
+{% endif %}
 <div class="tab-content">
   <div class="tab-pane fade show active" id="adresse">
    <div class="row">
@@ -21,6 +23,7 @@
                 <th>Statut</th>
                 <th>Production</th>
                 <th>Email</th>
+                <th>Tel</th>
                 <th>Code postal</th>
                 <th>Commune</th>
                 {% if request.user.is_superuser %}
@@ -36,6 +39,8 @@
  <td>{{ adherent.get_statut_display }}</td>
             <td>{{ adherent.get_production_str2}}</td>
             <td>{{ adherent.email }}</td>
+
+            <td>{% if adherent.adresse.telephone %}{{ adherent.adresse.telephone }}{% else %}-{% endif %}</td>
             <td>{%if adherent.adresse.code_postal %}{{ adherent.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if adherent.adresse.commune %}{{ adherent.adresse.commune }} {% else %}-{% endif %}</td>
                {% if request.user.is_superuser %}
@@ -52,6 +57,7 @@
 
   </div>
 
+{% if is_membre_bureau %}
   <div class="tab-pane fade" id="adhesions">
    <div class="row">
     <div class="col-md-12">
@@ -76,6 +82,7 @@
     </div>
     </div>
   </div>
+{% endif %}
 </div>
 {% include 'pagination_new.html' %}
 

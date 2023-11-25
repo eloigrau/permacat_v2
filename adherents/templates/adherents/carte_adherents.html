@@ -22,15 +22,14 @@
   </div>
 </div>
 
+{% if is_membre_bureau %}
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
-        {%if request.user.is_superuser %}
         <a href="{% url 'adherents:adherent_ajouter'%}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un adhérent
             </button>
         </a>
-        {%endif%}
         {%if request.user.is_superuser %}
         <a href="https://www.perma.cat/gestion/adherents/adherent/">
             <button type="button" class="btn btn-sm btn-danger">
@@ -38,7 +37,9 @@
             </button>
         </a>
         {%endif%}
-</div></div>
+</div>
+</div>
+{%endif%}
 {% endblock %}
 {% block content %}
 
@@ -197,28 +198,33 @@ Filtrer / rechercher...
 </div>
 </div>
 
+{% if is_membre_bureau %}
 <p class="textcenter">
     <a href="{% url 'adherents:get_csv_adherents' %}?{{ request.GET.urlencode }}" target="_blank" rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
         &nbsp;Exporter en CSV
         </button>
     </a>
-    <a  onclick="getMails('{% url 'adherents:getMails' %}?{{ request.GET.urlencode }}')">
+    <a  onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='email' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
         Liste de mails
         </button>
-        </a>
+    </a>
+    <a  onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='tel' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+        Téléphones
+        </button>
+    </a>
 </p>
-<div id="listeMails">
-
-</div>
-
+<div id="listeMails"></div>
+<hr>
+{% endif %}
 {% include "adherents/template_annuaire_adherents.html" with profils=filter.qs %}
 
 
     
 <script>
-function getMails(url_tag) {
+function get_infos(url_tag) {
     $.ajax({
         url: url_tag,
         type: "GET",

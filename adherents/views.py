@@ -25,21 +25,13 @@ from bourseLibre.models import Salon, InscritSalon
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 
-def is_membre(user):
+def is_membre_bureau(user):
+    if user.is_anonymous:
+        return False
     salon = get_object_or_404(Salon, slug="conf66_bureau")
     if not user.adherent_conf66:
         return False
     return InscritSalon.objects.filter(salon=salon, profil=user).exists()
-
-
-@login_required
-@user_passes_test(is_membre)
-def accueil_admin(request):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
-
-    return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
-
 
 class ListeAdherents(ListView):
     model = Adherent
@@ -63,8 +55,213 @@ class ListeAdherents(ListView):
         context['titre'] = "Adhérents Conf 66 (%d)" % len(qs)
         filter = AdherentsCarteFilter(self.request.GET, qs)
         context["filter"] = filter
-
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         return context
+
+
+class AdherentDetailView(DetailView):
+    model = Adherent
+    template_name_suffix = '_detail'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['adhesions'] = Adhesion.objects.filter(adherent=self.object)
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        return context
+
+class AdherentDeleteView(UserPassesTestMixin, DeleteView):
+    model = Adherent
+    template_name_suffix = '_supprimer'
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+    def get_success_url(self):
+        return reverse('adherents:accueil')
+
+
+class AdherentUpdateView(UserPassesTestMixin, UpdateView):
+    model = Adherent
+    template_name_suffix = '_modifier'
+    fields = ["nom", "prenom", "statut", "email", "production_ape"]
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
+    model = Adresse
+    template_name_suffix = '_modifier'
+    fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_success_url(self):
+        return reverse('adherents:accueil')
+
+login_required
+@user_passes_test(is_membre_bureau)
+def adherent_ajouter(request):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    form = AdherentForm(request.POST or None)
+    if form.is_valid():
+        adresse = Adresse.objects.create(
+            rue=form.cleaned_data['rue'],
+            code_postal=form.cleaned_data['code_postal'],
+            telephone=form.cleaned_data['telephone'],
+            latitude=form.cleaned_data['latitude'],
+            longitude=form.cleaned_data['longitude'],
+        )
+        adherent = form.save(commit=False)
+        adherent.adresse = adresse
+        adherent = form.save()
+        return redirect(adherent)
+
+    return render(request, 'adherents/adherent_ajouter.html', {"form": form})
+
+class ListeAdhesions(UserPassesTestMixin, ListView):
+    model = Adhesion
+    context_object_name = "adhesions"
+    template_name = "adherents/adhesion_liste.html"
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+    #def get_queryset(self):
+    #    params = dict(self.request.GET.items())
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class AdhesionDetailView(UserPassesTestMixin, DetailView):
+    model = Adhesion
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+class AdhesionDeleteView(UserPassesTestMixin, DeleteView):
+    model = Adhesion
+    template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return self.adherent.get_absolute_url()
+
+    def get_object(self):
+        ad = Adhesion.objects.get(pk=self.kwargs['pk'])
+        self.adherent = ad.adherent
+        return ad
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+class AdhesionUpdateView(UserPassesTestMixin, UpdateView):
+    model = Adhesion
+    template_name_suffix = '_modifier'
+    fields = ["date_cotisation", "montant", "moyen", "detail"]
+
+    def get_success_url(self):
+        return self.object.adherent.get_absolute_url()
+
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+def ajouterAdhesion(request, adherent_pk):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    form = AdhesionForm(request.POST or None)
+    adherent = get_object_or_404(Adherent, pk=adherent_pk)
+    if form.is_valid():
+        adhesion = form.save(commit=False)
+        adhesion.adherent = adherent
+        adhesion = form.save()
+        return redirect(adherent)
+
+    return render(request, 'adherents/adhesion_ajouter.html', {"form": form, 'adherent': adherent})
+
+
+login_required
+@user_passes_test(is_membre_bureau)
+def get_csv2(request):
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(
+        content_type="text/csv",
+    )
+    response['Content-Disposition'] = 'attachment; filename="myfile.csv"'
+
+    # The data is hard-coded here, but you could load it from a database or
+    # some other source.
+    csv_data = [
+        ("NOM PRENOM","STATUT","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
+    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
+          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in Adherent.objects.all() ]
+
+    t = loader.get_template("my_template_name.csv")
+    c = {"data": csv_data}
+    response.write(t.render(c))
+    return response
+
+import csv
+
+from django.http import StreamingHttpResponse
+
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+login_required
+@user_passes_test(is_membre_bureau)
+def write_csv_data(request, csv_data):
+    """A view that streams a large CSV file."""
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    return StreamingHttpResponse(
+        (writer.writerow(row) for row in csv_data),
+        content_type="text/csv",
+    )
+
+login_required
+@user_passes_test(is_membre_bureau)
+def get_csv_adherents(request):
+    """A view that streams a large CSV file."""
+    profils = Adherent.objects.all()
+    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
+
+    csv_data = [
+        ("NOM PRENOM","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
+    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.rue + " " + a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
+          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in profils_filtres.qs ]
+
+    return write_csv_data(request, csv_data)
+
+
+
+@login_required
+@user_passes_test(is_membre_bureau)
+def accueil_admin(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
+
 
 def get_dossier_db(nomfichier):
     if LOCALL:
@@ -72,7 +269,7 @@ def get_dossier_db(nomfichier):
     return os.path.abspath(os.path.join(PROJECT_ROOT, "../../", nomfichier))
 
 @login_required
-@user_passes_test(is_membre)
+@user_passes_test(is_membre_bureau)
 def modif_APE(request):
     if not request.user.adherent_conf66:
         return HttpResponseForbidden()
@@ -88,7 +285,7 @@ def modif_APE(request):
 
 
 @login_required
-@user_passes_test(is_membre)
+@user_passes_test(is_membre_bureau)
 def MAJ_adherents(request):
     if not request.user.adherent_conf66:
         return HttpResponseForbidden()
@@ -114,7 +311,7 @@ def get_statut(nom):
 
 
 @login_required
-@user_passes_test(is_membre)
+@user_passes_test(is_membre_bureau)
 def import_adherents_ggl(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -219,204 +416,26 @@ def import_adherents_ggl(request):
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 
 
-
-class AdherentDetailView(DetailView):
-    model = Adherent
-    template_name_suffix = '_detail'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['adhesions'] = Adhesion.objects.filter(adherent=self.object)
-        return context
-
-class AdherentDeleteView(UserPassesTestMixin, DeleteView):
-    model = Adherent
-    template_name_suffix = '_supprimer'
-
-    def test_func(self):
-        return is_membre(self.request.user)
-
-    def get_success_url(self):
-        return reverse('adherents:accueil')
-
-
-class AdherentUpdateView(UserPassesTestMixin, UpdateView):
-    model = Adherent
-    template_name_suffix = '_modifier'
-    fields = ["nom", "prenom", "statut", "email", "production_ape"]
-
-
-    def test_func(self):
-        return is_membre(self.request.user)
-
-class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
-    model = Adresse
-    template_name_suffix = '_modifier'
-    fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
-
-    def test_func(self):
-        return is_membre(self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def get_success_url(self):
-        return reverse('adherents:accueil')
-
 login_required
-@user_passes_test(is_membre)
-def adherent_ajouter(request):
-    if not request.user.adherent_conf66:
-        return HttpResponseForbidden()
-
-    form = AdherentForm(request.POST or None)
-    if form.is_valid():
-        adresse = Adresse.objects.create(
-            rue=form.cleaned_data['rue'],
-            code_postal=form.cleaned_data['code_postal'],
-            telephone=form.cleaned_data['telephone'],
-            latitude=form.cleaned_data['latitude'],
-            longitude=form.cleaned_data['longitude'],
-        )
-        adherent = form.save(commit=False)
-        adherent.adresse = adresse
-        adherent = form.save()
-        return redirect(adherent)
-
-    return render(request, 'adherents/adherent_ajouter.html', {"form": form})
-
-class ListeAdhesions(UserPassesTestMixin, ListView):
-    model = Adhesion
-    context_object_name = "adhesions"
-    template_name = "adherents/adhesion_liste.html"
-
-    def test_func(self):
-        return is_membre(self.request.user)
-    #def get_queryset(self):
-    #    params = dict(self.request.GET.items())
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        return context
-
-
-class AdhesionDetailView(UserPassesTestMixin, DetailView):
-    model = Adhesion
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def test_func(self):
-        return is_membre(self.request.user)
-
-class AdhesionDeleteView(UserPassesTestMixin, DeleteView):
-    model = Adhesion
-    template_name_suffix = '_supprimer'
-
-    def get_success_url(self):
-        return self.adherent.get_absolute_url()
-
-    def get_object(self):
-        ad = Adhesion.objects.get(pk=self.kwargs['pk'])
-        self.adherent = ad.adherent
-        return ad
-
-    def test_func(self):
-        return is_membre(self.request.user)
-
-class AdhesionUpdateView(UserPassesTestMixin, UpdateView):
-    model = Adhesion
-    template_name_suffix = '_modifier'
-    fields = ["date_cotisation", "montant", "moyen", "detail"]
-
-    def get_success_url(self):
-        return self.object.adherent.get_absolute_url()
-
-
-    def test_func(self):
-        return is_membre(self.request.user)
-
-def ajouterAdhesion(request, adherent_pk):
-    if not request.user.adherent_conf66:
-        return HttpResponseForbidden()
-
-    form = AdhesionForm(request.POST or None)
-    adherent = get_object_or_404(Adherent, pk=adherent_pk)
-    if form.is_valid():
-        adhesion = form.save(commit=False)
-        adhesion.adherent = adherent
-        adhesion = form.save()
-        return redirect(adherent)
-
-    return render(request, 'adherents/adhesion_ajouter.html', {"form": form, 'adherent': adherent})
-
-
-login_required
-@user_passes_test(is_membre)
-def get_csv2(request):
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(
-        content_type="text/csv",
-    )
-    response['Content-Disposition'] = 'attachment; filename="myfile.csv"'
-
-    # The data is hard-coded here, but you could load it from a database or
-    # some other source.
-    csv_data = [
-        ("NOM PRENOM","STATUT","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
-    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in Adherent.objects.all() ]
-
-    t = loader.get_template("my_template_name.csv")
-    c = {"data": csv_data}
-    response.write(t.render(c))
-    return response
-
-import csv
-
-from django.http import StreamingHttpResponse
-
-class Echo:
-    """An object that implements just the write method of the file-like
-    interface.
-    """
-    def write(self, value):
-        """Write the value by returning it, instead of storing in a buffer."""
-        return value
-
-
-login_required
-@user_passes_test(is_membre)
-def write_csv_data(request, csv_data):
-    """A view that streams a large CSV file."""
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    return StreamingHttpResponse(
-        (writer.writerow(row) for row in csv_data),
-        content_type="text/csv",
-    )
-
-login_required
-@user_passes_test(is_membre)
-def get_csv_adherents(request):
-    """A view that streams a large CSV file."""
-    profils = Adherent.objects.all()
-    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
-
-    csv_data = [
-        ("NOM PRENOM","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
-    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.rue + " " + a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in profils_filtres.qs ]
-
-    return write_csv_data(request, csv_data)
-
-login_required
-@user_passes_test(is_membre)
+@user_passes_test(is_membre_bureau)
 def getMails(request):
     profils = Adherent.objects.all()
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
 
     return render(request, 'adherents/template_mails.html', {'qs': profils_filtres.qs})
+
+
+login_required
+@user_passes_test(is_membre_bureau)
+def get_infos_adherent(request, type_info="email"):
+    profils = Adherent.objects.all()
+    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
+    if type_info == "tel":
+        template = 'adherents/template_tel.html'
+    elif type_info == "email":
+        template = 'adherents/template_mails.html'
+    else:
+        template = 'adherents/template_inconnu.html'
+
+    return render(request, template, {'qs': profils_filtres.qs})
+

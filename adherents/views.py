@@ -27,6 +27,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 def is_membre(user):
     salon = get_object_or_404(Salon, slug="conf66_bureau")
+    if not user.adherent_conf66:
+        return False
     return InscritSalon.objects.filter(salon=salon, profil=user).exists()
 
 
@@ -218,12 +220,9 @@ def import_adherents_ggl(request):
 
 
 
-class AdherentDetailView(UserPassesTestMixin, DetailView):
+class AdherentDetailView(DetailView):
     model = Adherent
     template_name_suffix = '_detail'
-
-    def test_func(self):
-        return is_membre(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

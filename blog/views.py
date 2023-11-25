@@ -58,7 +58,7 @@ def accueil(request):
     #derniers = sorted(set([x for x in itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8], derniers_articles[:8], )]), key=lambda x:x.date_modification if x.date_modification else x.date_creation)[::-1]
 
     QObject = request.user.getQObjectsAssoArticles()
-    articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation')
+    articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation').distinct()
 
     derniers = articles.annotate(
         latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
@@ -385,7 +385,7 @@ class ListeArticles_asso(ListView):
         if self.request.user.est_autorise(self.asso.abreviation):
             qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation, estArchive=False, )).distinct()
         else:
-            qs = Article.objects.filter(self.request.user.getQObjectsAssoArticles(), asso__abreviation=self.asso.abreviation, estArchive=False, )
+            qs = Article.objects.filter(self.request.user.getQObjectsAssoArticles(), asso__abreviation=self.asso.abreviation, estArchive=False, ).distinct()
 
         self.categorie = None
         if "auteur" in params:

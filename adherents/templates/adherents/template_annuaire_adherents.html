@@ -17,13 +17,13 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Nom Prénom</th>
+                <th>Profil</th>
                 <th>Statut</th>
                 <th>Production</th>
                 <th>Email</th>
                 <th>Code postal</th>
                 <th>Commune</th>
                 {% if request.user.is_superuser %}
-                <th>Profil</th>
                 <th>gps</th>
                 {% endif %}
             </tr>
@@ -32,13 +32,13 @@
         {% for adherent in adherents %}
         <tr>
             <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
-            <td>{{ adherent.get_statut_display }}</td>
+            <td>{% if adherent.profil %} <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
+ <td>{{ adherent.get_statut_display }}</td>
             <td>{{ adherent.get_production_str2}}</td>
             <td>{{ adherent.email }}</td>
             <td>{%if adherent.adresse.code_postal %}{{ adherent.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if adherent.adresse.commune %}{{ adherent.adresse.commune }} {% else %}-{% endif %}</td>
-            <td>{% if adherent.profil %} <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
-                {% if request.user.is_superuser %}
+               {% if request.user.is_superuser %}
             <td>{{ adherent.adresse.latitude }}, {{ adherent.adresse.longitude }}</td>
                 {% endif %}
 

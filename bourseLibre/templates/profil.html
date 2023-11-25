@@ -243,7 +243,7 @@
 
   <div class="col-md-6">
       {%if request.user.id == user.id %}
-        <a href="{% url 'profil_modifier_adresse' %}">
+        <a href="{% url 'profil_modifier_adresse_user' user_pk=user.pk %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
             </button>

@@ -257,6 +257,13 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         return is_membre(self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_success_url(self):
+        return reverse('adherents:accueil')
+
 login_required
 @user_passes_test(is_membre)
 def adherent_ajouter(request):

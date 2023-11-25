@@ -44,6 +44,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.debug import sensitive_variables
 #from django.views.decorators.debug import sensitive_post_parameters
 
+from django.http import HttpResponseForbidden
 #from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, CharField, F
 from django.utils.html import strip_tags
@@ -718,6 +719,20 @@ def profil_modifier_adresse(request):
 
     return render(request, 'registration/profil_modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':request.user.adresse })
 
+
+@login_required
+def profil_modifier_adresse_user(request, user_pk):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    profil = Profil.objects.get(pk=user_pk)
+    form_adresse = AdresseForm5(request.POST or None, instance=profil)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        return redirect(profil)
+
+    return render(request, 'registration/profil_modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':request.user.adresse })
 
 class profil_modifier(UpdateView):
     model = Profil

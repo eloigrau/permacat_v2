@@ -111,6 +111,7 @@ urlpatterns = [
     url(r'^accounts/profil_modifier/$', login_required(views.profil_modifier.as_view()), name='profil_modifier',),
     url(r'^accounts/profil_supprimer/$', login_required(views.profil_supprimer.as_view()), name='profil_supprimer',),
     url(r'^accounts/profil_modifier_adresse/$', login_required(views.profil_modifier_adresse), name='profil_modifier_adresse',),
+    url(r'^accounts/profil_modifier_adresse_user//(?P<user_pk>[0-9]+)/$', login_required(views.profil_modifier_adresse_user), name='profil_modifier_adresse_user',),
     url(r'^accounts/profil_contact/(?P<user_id>[0-9]+)/$', login_required(views.profil_contact), name='profil_contact',),
     url(r'^accounts/mesSuivis/$', login_required(views.mesSuivis), name='mesSuivis',),
     url(r'^accounts/supprimerAction/(?P<actionid>[0-9]+)/$', login_required(views.supprimerAction), name='supprimerAction',),

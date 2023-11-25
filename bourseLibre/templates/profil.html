@@ -15,7 +15,7 @@
 {% block subtitle %}
 <div class="row">
   <div class="col-md-12 textcenter">
-    <h3> {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.get_username_annuaire }} {% endif %}
+    <h3> {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.get_username }} {% endif %}
     </h3>
   </div>
   </div>

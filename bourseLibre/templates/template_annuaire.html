@@ -36,7 +36,7 @@
             <td><a href="{% url 'profil' profil.id %}">{{ profil|distance:request.user }}</a></td>
             {% else %}
             <td>-</td>
-            <td><a href="{% url 'profil' profil.id %}">{{ profil.username|cacherUser }}</a></td>
+            <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
             <td>-</td>
             <td>-</td>
             <td>-</td>

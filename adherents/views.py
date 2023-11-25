@@ -389,7 +389,7 @@ class Echo:
 
 
 login_required
-@user_passes_test(is_membre)
+@user_passes_test(request, is_membre)
 def write_csv_data(csv_data):
     """A view that streams a large CSV file."""
     pseudo_buffer = Echo()
@@ -411,7 +411,7 @@ def get_csv_adherents(request):
     csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.rue + " " + a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
           a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in profils_filtres.qs ]
 
-    return write_csv_data(csv_data)
+    return write_csv_data(request, csv_data)
 
 login_required
 @user_passes_test(is_membre)

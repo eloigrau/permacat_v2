@@ -24,6 +24,8 @@ app_name = 'adherents'
 urlpatterns = [
     url(r'^conf66/$', views.ListeAdherents.as_view(), name="accueil"),
     url(r'^conf66/accueil_admin/$', views.accueil_admin, name="accueil_admin"),
+    url(r'^conf66/get_csv_adherents/$', views.get_csv_adherents, name="get_csv_adherents"),
+    url(r'^conf66/getMails/$', views.getMails, name="getMails"),
 
     url(r'^conf66/import_csv/$', views.import_adherents_ggl, name="import_csv"),
     url(r'^conf66/modif_APE/$', views.modif_APE, name="modif_APE"),

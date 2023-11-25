@@ -197,8 +197,42 @@ Filtrer / rechercher...
 </div>
 </div>
 
+<p class="textcenter">
+    <a href="{% url 'adherents:get_csv_adherents' %}?{{ request.GET.urlencode }}" target="_blank" rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+        &nbsp;Exporter en CSV
+        </button>
+    </a>
+    <a  onclick="getMails('{% url 'adherents:getMails' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+        Liste de mails
+        </button>
+        </a>
+</p>
+<div id="listeMails">
+
+</div>
+
 {% include "adherents/template_annuaire_adherents.html" with profils=filter.qs %}
 
-{% endblock %}
 
     
+<script>
+function getMails(url_tag) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#listeMails").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
+
+{% endblock %}

@@ -23,6 +23,9 @@
                 <th>Code postal</th>
                 <th>Commune</th>
                 <th>Profil</th>
+                {% if request.user.is_superuser %}
+                <th>gps</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -35,6 +38,7 @@
             <td>{%if adherent.adresse.code_postal %}{{ adherent.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if adherent.adresse.commune %}{{ adherent.adresse.commune }} {% else %}-{% endif %}</td>
             <td>{{ adherent.profil}}</td>
+            <td>{{ adherent.adresse.latitude }}, {{ adherent.adresse.longitude }}</td>
         {% comment %}
             <td>{% if adherent.profil %} - <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% endif %}</td>
         {% endcomment %}

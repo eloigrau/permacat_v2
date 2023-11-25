@@ -105,35 +105,33 @@ def recapitulatif(request, asso_slug):
         tarifKilometrique = form.cleaned_data["tarifKilometrique"]
         entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique)
 
-        return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion}, )
+        return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique}, )
 
     return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion},)
 
-def export_recapitulatif(request, asso, type_reunion="999"):
+def export_recapitulatif(request, asso, type_reunion="999", type_export="km", prixMax="1000", tarifKilometrique="0.5" ):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
+
     if type_reunion != "999":
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion).order_by('start_time','categorie',)
     else:
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',)
 
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(
-        content_type='text/csv',
-        headers={'Content-Disposition': 'attachment; filename="defraiement_reunions.csv"'},
-    )
-    writer = csv.writer(response)
+    if type_export == "km":
+        entete, lignes = getRecapitulatif_km(request, reunions, asso)
+        csv_data = [entete, ] + lignes
+    else:
+        entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique)
+        csv_data = [entete, ] + lignes
 
-    entete, lignes = getRecapitulatif_euros(request, reunions, asso)
-    writer.writerow(entete)
-    for l in lignes:
-        writer.writerow(l)
-    entete, lignes = getRecapitulatif_km(request, reunions, asso)
-    writer.writerow(entete)
-    for l in lignes:
-        writer.writerow(l)
-    response['Content-Disposition'] = 'attachment; filename="defraiement_reunions.csv"'
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    return StreamingHttpResponse(
+        (writer.writerow(row) for row in csv_data),
+        content_type="text/csv",
+        )
     return response
 
 
@@ -479,3 +477,29 @@ def pageTest(request):
     t = Template("""<form method="post" action=".">{{f}}<input type="submit"><form>""")
     c = {'f': form.as_p()}
     return HttpResponse(t.render(Context(c)))
+
+
+
+
+import csv
+
+from django.http import StreamingHttpResponse
+
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+def get_csv(request):
+    """A view that streams a large CSV file."""
+
+    recap = getRecapitulatif_km()
+    csv_data = [
+        ("NOM PRENOM","STATUT","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
+    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
+          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in Adherent.objects.all() ]
+

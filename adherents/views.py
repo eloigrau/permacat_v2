@@ -408,7 +408,7 @@ def get_csv_adherents(request):
 
     csv_data = [
         ("NOM PRENOM","STATUT","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
-    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.rue + " " + a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
+    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.rue + " " + a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
           a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in profils_filtres.qs ]
 
     return write_csv_data(request, csv_data)

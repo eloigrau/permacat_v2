@@ -61,6 +61,13 @@ class Adherent(models.Model):
             pass
         return self.production_ape
 
+
+    @property
+    def get_profil_username(self):
+        if self.profil:
+            return self.profil.username
+        return ""
+
 class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent ")
     date_cotisation = models.DateField(verbose_name="Date de la cotisation", editable=True, auto_now_add=False)

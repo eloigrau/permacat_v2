@@ -389,8 +389,8 @@ class Echo:
 
 
 login_required
-@user_passes_test(request, is_membre)
-def write_csv_data(csv_data):
+@user_passes_test(is_membre)
+def write_csv_data(request, csv_data):
     """A view that streams a large CSV file."""
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)

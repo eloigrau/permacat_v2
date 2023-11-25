@@ -17,14 +17,14 @@
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
 <div class="row textcenter">
-  <div class="col-sm-12 textcenter">
-    <h4> {{titre}}</h4>
-  </div>
+    <div class="col-sm-12 textcenter">
+        <h4> {{titre}}</h4>
+    </div>
 </div>
 
 {% if is_membre_bureau %}
 <div class="row textcenter">
-  <div class="col-sm-12 textcenter">
+    <div class="col-sm-12 textcenter">
         <a href="{% url 'adherents:adherent_ajouter'%}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un adhérent
@@ -37,18 +37,17 @@
             </button>
         </a>
         {%endif%}
-</div>
+    </div>
 </div>
 {%endif%}
 {% endblock %}
 {% block content %}
 
 
-
-<div class="row cartePleinePage" >
-  <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
-      <script type="text/javascript">
+<div class="row cartePleinePage">
+    <div class="col-md-12">
+        <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
+        <script type="text/javascript">
 
         function map_init_basic (map, options) {
           var leafIcon = L.icon({
@@ -137,82 +136,90 @@
         map.panTo(new L.LatLng(42.62914, 2.49939));
         {%endif%}
     }
-</script>
-{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+    </div>
 </div>
-</div>
-      <p class="textepetit textcenter">Bleu : Cotisant Solidaire; Vert : à titre principal; Jaune : à titre secondaire; Orange : retraité.e; Gris : CC; Noir : ?</p>
+<p class="textepetit textcenter">Bleu : Cotisant Solidaire; Vert : à titre principal; Jaune : à titre secondaire; Orange
+    : retraité.e; Gris : CC; Noir : ?</p>
 
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
-<button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
-Filtrer / rechercher...
-</button>
-<!-- Modal -->
-<div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog textaide" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-          <div class="row justify-content-center">
-           <h5 > Filtrer/rechercher les membres</h5>
-          </div>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
+            Filtrer / rechercher...
         </button>
-      </div>
-      <div class="modal-body textleft">
-<form method="get">
-    <div class="well">
-      <div class="row">
-        <div class="form-group col-sm-12">
-            <label>Rechercher :</label>
-          {% render_field filter.form.descrip class="form-control" %}
-        </div>
-          <br>
-          <div class="form-group col-sm-12">
-              <div>
-          {{ filter.form.statut.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.statut %}</label>
-              </div>
-              <div>
-          {{ filter.form.annees.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.annees %}</label>
-              </div>
-            </div>
-      </div>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog textaide" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row justify-content-center">
+                            <h5> Filtrer/rechercher parmi les adhérents</h5>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body textleft">
+                        <form method="get">
+                            <div class="well">
+                                <div class="row">
+                                    <div class="form-group col-sm-12">
+                                        <label>Rechercher :</label>
+                                        {% render_field filter.form.descrip class="form-control" %}
+                                    </div>
+                                    <br>
+                                    <div class="form-group col-sm-12">
+                                        <div>
+                                            {{ filter.form.statut.label_tag }}
+                                            <label class="checkbox-inline">{% render_field filter.form.statut %}</label>
+                                        </div>
+                                        <div>
+                                            {{ filter.form.annees.label_tag }}
+                                            <label class="checkbox-inline">{% render_field filter.form.annees %}</label>
+                                        </div>
+                                        <div>
+                                            {{ filter.form.bureau.label_tag }}
+                                            <label class="checkbox-inline">{% render_field filter.form.bureau %}</label>
+                                        </div>
+                                    </div>
+                                </div>
 
-    <div class="row">
-    <div class="col-md-12 textcenter">
-      <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-search"></span> Filtrer les profils
-      </button>
+                                <div class="row">
+                                    <div class="col-md-12 textcenter">
+                                        <button type="submit" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-search"></span> Filtrer les profils
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    </div>
-</div>
-  </form>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
 </div>
 
 {% if is_membre_bureau %}
 <p class="textcenter">
-    <a href="{% url 'adherents:get_csv_adherents' %}?{{ request.GET.urlencode }}" target="_blank" rel="noopener noreferrer nofollow">
+    <a href="{% url 'adherents:get_csv_adherents' %}?{{ request.GET.urlencode }}" target="_blank"
+       rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
-        &nbsp;Exporter en CSV
+            &nbsp;Exporter en CSV
         </button>
     </a>
-    <a  onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='email' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='email' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
-        Liste de mails
+            Liste de mails
         </button>
     </a>
-    <a  onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='tel' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='tel' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
-        Téléphones
+            Téléphones
         </button>
     </a>
 </p>
@@ -222,7 +229,6 @@ Filtrer / rechercher...
 {% include "adherents/template_annuaire_adherents.html" with profils=filter.qs %}
 
 
-    
 <script>
 function get_infos(url_tag) {
     $.ajax({
@@ -239,6 +245,7 @@ function get_infos(url_tag) {
         }
     });
 }
+
 </script>
 
 {% endblock %}

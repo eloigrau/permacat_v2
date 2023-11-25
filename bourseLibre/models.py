@@ -461,6 +461,8 @@ class Profil(AbstractUser):
         from permagora.models import Signataire
         return Signataire.objects.filter(auteur=self).exists()
 
+    def estMembre_salon(self, salon):
+       return salon.est_membre(self)
 
 class Profil_recherche(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
@@ -1146,6 +1148,9 @@ class Salon(models.Model):
 
     def est_autorise(self, user):
         return self.estPublic or user in self.membres.all()
+
+    def est_membre(self, user):
+        return user in self.membres.all()
 
     def getInscrits(self):
         return [u.profil for u in InscritSalon.objects.filter(salon=self)]

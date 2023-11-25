@@ -243,7 +243,7 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
 class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     model = Adherent
     template_name_suffix = '_modifier'
-    fields = ["nom", "prenom", "statut", "email"]
+    fields = ["nom", "prenom", "statut", "email", "production_ape"]
 
 
     def test_func(self):

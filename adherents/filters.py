@@ -3,12 +3,9 @@ from .models import Adherent, Adhesion
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q
-from .constantes import CHOIX_STATUTS
+from .constantes import CHOIX_STATUTS, get_slug_salon
 annees = ('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023')
 
-
-def is_bureau(profil):
-    return salon.is_membre()
 
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
@@ -37,7 +34,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         return queryset.filter(adhesion__in=cotisations)
 
     def get_bureau_filter(self, queryset, field_name, value):
-        membres = [p.pk for p in Salon.objects.get(slug="conf66_bureau_2023").getInscrits()]
+        membres = [p.pk for p in Salon.objects.get(slug=get_slug_salon()).getInscrits()]
         return queryset.filter(pk__in=membres)
 
     class Meta:

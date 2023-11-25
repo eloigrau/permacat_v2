@@ -16,6 +16,8 @@ from .forms import AdhesionForm, AdherentForm
 from .models import Adherent, Adhesion
 from bourseLibre.models import Adresse, Profil
 from .filters import AdherentsCarteFilter
+from .constantes import get_slug_salon
+
 
 from django.http import HttpResponse
 from django.template import loader
@@ -24,14 +26,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from bourseLibre.models import Salon, InscritSalon
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-
 def is_membre_bureau(user):
-    if user.is_anonymous:
+    if user.is_anonymous or not user.adherent_conf66:
         return False
-    salon = get_object_or_404(Salon, slug="conf66_bureau")
-    if not user.adherent_conf66:
-        return False
-    return InscritSalon.objects.filter(salon=salon, profil=user).exists()
+    if Salon.objects.filter(slug=get_slug_salon()).exists():
+        salon = Salon.objects.filter(slug=get_slug_salon())[0]
+        return InscritSalon.objects.filter(salon=salon, profil=user).exists()
+
+    return False
 
 class ListeAdherents(ListView):
     model = Adherent

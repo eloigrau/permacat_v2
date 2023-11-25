@@ -34,3 +34,12 @@ dict_ape = {
     }
 
 CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "CC"), ("4", "Retraité.e"), ("5", "ATS")
+
+
+def get_slug_salon(nom="bureau"):
+    if nom=="bureau":
+        return "conf66_bureau_2023"
+
+    return "test"
+
+

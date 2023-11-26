@@ -541,6 +541,8 @@ def get_articles_pardossier(request):
 
 @login_required
 def get_tags_articles(request):
+    from django.urls import reverse
+
     tags = []
     if "asso" in request.GET:
         asso = testIsMembreAsso_bool(request, request.GET['asso'])

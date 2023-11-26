@@ -1325,9 +1325,9 @@ def salon(request, slug):
         return redirect(reverse('invitationDansSalon', kwargs={'slug_salon': slug}))
 
     salon = testIsMembreSalon(request, slug)
-    dates = EvenementSalon.objects.filter(salon=salon)
     if not isinstance(salon, Salon):
         raise PermissionDenied
+    dates = EvenementSalon.objects.filter(salon=salon)
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_" + str(salon.slug))
     inscrits = salon.getInscrits()
     invites = salon.getInvites()

@@ -1147,7 +1147,7 @@ class Salon(models.Model):
 
 
     def est_autorise(self, user):
-        return self.estPublic or user in self.membres.all()
+        return self.estPublic or user in self.getInscrits() or user in self.getInvites()
 
     def est_membre(self, user):
         return user in self.membres.all()

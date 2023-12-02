@@ -468,7 +468,7 @@ def import_adherents_ggl(request):
                         adherent.nom = line["NOM"]
                         adherent.nom_gaec=line["GAEC"],
                         adherent.prenom = line["PRENOM"]
-                        adherent.statut = get_statut(line["NOM"])
+                        adherent.statut = line["STATUT(0?-1AP-2CS-3CC-4Retraite)"]
                         adherent.email = line["ADRESSE MAIL"]
                         adherent.adresse.rue = line["ADRESSE POSTALE"]
                         adherent.adresse.commune = line["COMMUNE"]

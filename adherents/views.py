@@ -197,6 +197,16 @@ def ajouterAdhesion(request, adherent_pk):
 
 login_required
 @user_passes_test(is_membre_bureau)
+def normaliser_dherents(request):
+    """A view that streams a large CSV file."""
+    profils = Adherent.objects.all()
+    for p in profils:
+        p.nom = str.upper(p.nom)
+
+    return
+
+login_required
+@user_passes_test(is_membre_bureau)
 def get_csv2(request):
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(
@@ -250,9 +260,10 @@ def get_csv_adherents(request):
     csv_data = [
         ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
     csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).moyen) for a in profils_filtres.qs ]
+          a.get_adhesion_an(2020).moyen, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).moyen, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).moyen, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).moyen) for a in profils_filtres.qs ]
 
     return write_csv_data(request, csv_data)
+
 
 
 

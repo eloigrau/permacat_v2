@@ -18,8 +18,8 @@
     <table class="table table-condensed tableprofils table-striped sortable">
         <thead class="thead-inverse">
             <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
+                <th>Nom Prénom</th>
+                <th>Gaec</th>
                 <th>Profil</th>
                 <th>Statut</th>
                 <th>Production</th>
@@ -35,8 +35,8 @@
         <tbody>
         {% for adherent in adherents %}
         <tr>
-            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }}</a></td>
-            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.prenom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }}  {{ adherent.prenom }}</a></td>
+            <td> {{ adherent.nom_gaec }}</td>
             <td>{% if adherent.profil %} <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
             <td>{{ adherent.get_statut_display }}</td>
             <td>{{ adherent.get_production_str2}}</td>

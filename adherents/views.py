@@ -461,6 +461,9 @@ def import_adherents_ggl(request):
                     if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRENOM"]).exists():
                         continue
 
+                    if not line["CODE_POSTAL"]:
+                        continue
+
                     tel = line["TELEPHONE"][:15]
 
                     if Adherent.objects.filter(nom=line["NOM"] + " " + line["PRENOM"]).exists():

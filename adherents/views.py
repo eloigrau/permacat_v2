@@ -85,7 +85,7 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
 class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     model = Adherent
     template_name_suffix = '_modifier'
-    fields = ["nom", "prenom", "statut", "email", "production_ape"]
+    fields = ["nom", "prenom", "statut", "nom_gaec", "email", "production_ape"]
 
     def test_func(self):
         return is_membre_bureau(self.request.user)

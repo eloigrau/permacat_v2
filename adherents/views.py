@@ -197,13 +197,15 @@ def ajouterAdhesion(request, adherent_pk):
 
 login_required
 @user_passes_test(is_membre_bureau)
-def normaliser_dherents(request):
+def normaliser_adherents(request):
     """A view that streams a large CSV file."""
     profils = Adherent.objects.all()
     for p in profils:
-        p.nom = str.upper(p.nom)
+        if p.nom_gaec = "('',)":
+            p.nom_gaec = ""
+            p.save()
 
-    return
+    return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
 
 login_required
 @user_passes_test(is_membre_bureau)

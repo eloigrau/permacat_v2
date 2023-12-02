@@ -475,21 +475,13 @@ def import_adherents_ggl(request):
                         adherent.email = line["ADRESSE MAIL"]
                         adherent.adresse.rue = line["ADRESSE POSTALE"]
                         adherent.adresse.commune = line["COMMUNE"]
-                        adherent.adresse.code_postal = line["CODE POSTAL"][:5]
-                        if len(line["CODE POSTAL"]) > 5:
-                            msg+="pas ok code postl" + str(line)
+                        adherent.adresse.code_postal = line["CODE POSTAL"]
                         adherent.adresse.save()
                         adherent.save()
                         #msg += "<p> adhrent mis à jour <a href='" + adherent.get_absolute_url()+"'>"+str(adherent)+ "</a></p>"
                     else:
 
-                        try:
-                            ad = re.split("\d{5}", line["ADRESSE POSTALE"])
-                            code = re.findall("\d{5}", line["CODE POSTAL"])[0]
-                            adres, created = Adresse.objects.get_or_create(rue=ad[0], code_postal=code, commune=ad[1],
-                                                                           telephone=tel)
-                        except Exception as ee:
-                            adres, created = Adresse.objects.get_or_create(rue=line["ADRESSE POSTALE"],
+                        adres, created = Adresse.objects.get_or_create(rue=line["ADRESSE POSTALE"],
                                                                            code_postal=line["CODE POSTAL"],
                                                                            commune=line["COMMUNE"], telephone=tel)
 

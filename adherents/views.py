@@ -201,7 +201,7 @@ def normaliser_adherents(request):
     """A view that streams a large CSV file."""
     profils = Adherent.objects.all()
     for p in profils:
-        if p.nom_gaec = "('',)":
+        if p.nom_gaec == "('',)":
             p.nom_gaec = ""
             p.save()
 

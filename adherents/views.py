@@ -482,7 +482,7 @@ def import_adherents_ggl(request):
                     else:
 
                         adres, created = Adresse.objects.get_or_create(rue=line["ADRESSE POSTALE"],
-                                                                           code_postal=line["CODE POSTAL"],
+                                                                           code_postal=line["CODE POSTAL"][:5],
                                                                            commune=line["COMMUNE"], telephone=tel)
 
                         adres.save(recalc=False)

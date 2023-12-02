@@ -463,18 +463,6 @@ def import_adherents_ggl(request):
 
                     tel = line["TELEPHONE"][:15]
 
-                    try:
-                        ad = re.split("\d{5}", line["ADRESSE POSTALE"])
-                        code = re.findall("\d{5}", line["CODE POSTAL"])[0]
-                        adres, created = Adresse.objects.get_or_create(rue=ad[0], code_postal=code, commune=ad[1], telephone=tel)
-                    except Exception as ee:
-                        adres, created = Adresse.objects.get_or_create(rue=line["ADRESSE POSTALE"],code_postal=line["CODE POSTAL"],commune=line["COMMUNE"], telephone=tel)
-
-                    adres.save(recalc=False)
-                    try :
-                        profil = Profil.objects.get(username=line["PROFIL_PCAT"])
-                    except:
-                        profil = Profil.objects.none()
                     if Adherent.objects.filter(nom=line["NOM"] + " " + line["PRENOM"]).exists():
                         adherent = Adherent.objects.get(nom=line["NOM"] + " " + line["PRENOM"])
                         adherent.nom = line["NOM"]
@@ -483,9 +471,25 @@ def import_adherents_ggl(request):
                         adherent.statut = get_statut(line["NOM"])
                         adherent.adresse = adres
                         adherent.email = line["ADRESSE MAIL"]
+                        adherent.adresse.rue = line["ADRESSE POSTALE"]
+                        adherent.adresse.commune = line["COMMUNE"]
+                        adherent.adresse.code_postal = line["CODE POSTAL"]
+                        adherent.adresse.save()
                         adherent.save()
-                        msg += "<p> adhrent mis à jour <a href='" + adherent.get_absolute_url()+"'>"+str(adherent)+ "</a></p>"
+                        #msg += "<p> adhrent mis à jour <a href='" + adherent.get_absolute_url()+"'>"+str(adherent)+ "</a></p>"
                     else:
+
+                        try:
+                            ad = re.split("\d{5}", line["ADRESSE POSTALE"])
+                            code = re.findall("\d{5}", line["CODE POSTAL"])[0]
+                            adres, created = Adresse.objects.get_or_create(rue=ad[0], code_postal=code, commune=ad[1],
+                                                                           telephone=tel)
+                        except Exception as ee:
+                            adres, created = Adresse.objects.get_or_create(rue=line["ADRESSE POSTALE"],
+                                                                           code_postal=line["CODE POSTAL"],
+                                                                           commune=line["COMMUNE"], telephone=tel)
+
+                        adres.save(recalc=False)
                         adherent, created = Adherent.objects.get_or_create(nom=line["NOM"],
                                 prenom=line["PRENOM"],
                                 statut=line["STATUT(0?-1AP-2CS-3CC-4Retraite)"],
@@ -493,7 +497,7 @@ def import_adherents_ggl(request):
                                 nom_gaec=line["GAEC"],
                                 email=line["ADRESSE MAIL"]
                                )
-                        msg += "<p> adhérent cree <a href='" + adherent.get_absolute_url()+"'>"+ str(adherent)+ "</a></p>"
+                        #msg += "<p> adhérent cree <a href='" + adherent.get_absolute_url()+"'>"+ str(adherent)+ "</a></p>"
                     for an in ["2023"]:
                         if line["MONTANT"+an]:
                             adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,

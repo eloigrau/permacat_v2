@@ -18,7 +18,8 @@
     <table class="table table-condensed tableprofils table-striped sortable">
         <thead class="thead-inverse">
             <tr>
-                <th>Nom Prénom</th>
+                <th>Nom</th>
+                <th>Prénom</th>
                 <th>Profil</th>
                 <th>Statut</th>
                 <th>Production</th>
@@ -34,9 +35,10 @@
         <tbody>
         {% for adherent in adherents %}
         <tr>
-            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.prenom }}</a></td>
             <td>{% if adherent.profil %} <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
- <td>{{ adherent.get_statut_display }}</td>
+            <td>{{ adherent.get_statut_display }}</td>
             <td>{{ adherent.get_production_str2}}</td>
             <td>{{ adherent.email }}</td>
 
@@ -65,14 +67,16 @@
     <table class="table table-condensed tableprofils table-striped sortable">
         <thead class="thead-inverse">
             <tr>
-                <th>Nom Prénom</th>
+                <th>Nom</th>
+                <th>Prénom</th>
                 <th>Adhésions</th>
             </tr>
         </thead>
         <tbody>
         {% for adherent in adherents %}
         <tr>
-            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} {{ adherent.prenom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }} </a></td>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.prenom }}</a></td>
             <td>{% for ad in adherent.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
       </tr>
         {% endfor %}

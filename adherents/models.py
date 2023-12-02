@@ -11,6 +11,7 @@ import uuid
 class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
     nom = models.CharField(verbose_name="Nom", max_length=120)
+    nom_gaec = models.CharField(verbose_name="Gaec", max_length=120, blank=True)
     prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True)
     production_ape = models.CharField(verbose_name="Production (APE) ", max_length=120, blank=True)
     statut = models.CharField(verbose_name="Statut d'agriculteur", max_length=5,
@@ -67,6 +68,7 @@ class Adherent(models.Model):
         if self.profil:
             return self.profil.username
         return ""
+
 
 class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent ")

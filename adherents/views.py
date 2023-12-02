@@ -248,9 +248,9 @@ def get_csv_adherents(request):
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
 
     csv_data = [
-        ("NOM PRENOM","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
-    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.rue + " " + a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in profils_filtres.qs ]
+        ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
+    csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
+          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).moyen) for a in profils_filtres.qs ]
 
     return write_csv_data(request, csv_data)
 
@@ -305,10 +305,12 @@ def get_statut(nom):
         return "2"
     elif nom == "CC":
         return "3"
-    elif nom == "retraité" or nom == "retraitée" :
+    elif nom == "retraité" or nom == "retraitée"  or nom == "retraité.e" :
         return "4"
     elif nom == "ATS" :
         return "5"
+    elif nom == "PP" :
+        return "6"
     return "0"
 
 
@@ -335,6 +337,9 @@ def import_adherents_ggl(request):
     elif fic == "2":
         filename = get_dossier_db("Adhérents_pcat.csv")
         fieldnames = "NOM PRENOM","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"
+    elif fic == "3":
+        filename = get_dossier_db("Adhérents_pcat_2.csv")
+        fieldnames = "NOM","PRENOM","GAEC","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","MONTANT2023","MOYEN2023"
     else:
         return render(request, "adherents/accueil_admin.html", {"msg":"Get item manquant 'fic=0(adherents_conf66.csv) ou 1 (Adhérents-Coordonnées.csv) ou 2 (Adhérents_pcat.csv)'"})
 
@@ -444,11 +449,58 @@ def import_adherents_ggl(request):
                             profil=profil,
                             email=line["ADRESSE MAIL"]
                            )
-                    for an in ["2020", "2021", "2022"]:
+                    for an in ["2020", "2021", "2022", "2023"]:
                         adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
                                             date_cotisation= an+'-01-01',
                                              montant=line["MONTANT"+an],
                                              moyen=line["MOYEN"+an],)
+                elif fic == "3":
+                    if i >= 10:
+                        continue
+
+                    if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRENOM"]).exists():
+                        continue
+
+                    tel = line["TELEPHONE"][:15]
+
+                    try:
+                        ad = re.split("\d{5}", line["ADRESSE POSTALE"])
+                        code = re.findall("\d{5}", line["CODE POSTAL"])[0]
+                        adres, created = Adresse.objects.get_or_create(rue=ad[0], code_postal=code, commune=ad[1], telephone=tel)
+                    except Exception as ee:
+                        adres, created = Adresse.objects.get_or_create(rue=line["ADRESSE POSTALE"],code_postal=line["CODE POSTAL"],commune=line["COMMUNE"], telephone=tel)
+
+                    adres.save(recalc=False)
+                    try :
+                        profil = Profil.objects.get(username=line["PROFIL_PCAT"])
+                    except:
+                        profil = Profil.objects.none()
+                    if Adherent.objects.filter(nom=line["NOM"] + " " + line["PRENOM"]).exists():
+                        adherent = Adherent.objects.get(nom=line["NOM"] + " " + line["PRENOM"])
+                        adherent.nom = line["NOM"]
+                        adherent.nom_gaec=line["GAEC"],
+                        adherent.prenom = line["PRENOM"]
+                        adherent.statut = get_statut(line["NOM"])
+                        adherent.adresse = adres
+                        adherent.email = line["ADRESSE MAIL"]
+                        adherent.save()
+                        msg += "<p> adhrent mis à jour <a href='" + adherent.get_absolute_url()+"'>"+str(adherent)+ "</a></p>"
+                    else:
+                        adherent, created = Adherent.objects.get_or_create(nom=line["NOM"],
+                                prenom=line["PRENOM"],
+                                statut=line["STATUT(0?-1AP-2CS-3CC-4Retraite)"],
+                                adresse=adres,
+                                nom_gaec=line["GAEC"],
+                                email=line["ADRESSE MAIL"]
+                               )
+                        msg += "<p> adhérent cree <a href='" + adherent.get_absolute_url()+"'>"+ str(adherent)+ "</a></p>"
+                    for an in ["2023"]:
+                        if line["MONTANT"+an]:
+                            adhesion, created = Adhesion.objects.get_or_create(adherent=adherent,
+                                                date_cotisation= an+'-01-01',
+                                                 montant=line["MONTANT"+an],
+                                                 moyen=line["MOYEN"+an],)
+
 
 
     return render(request, "adherents/accueil_admin.html", {"msg":msg})

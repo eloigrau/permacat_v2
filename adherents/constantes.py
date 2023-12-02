@@ -33,7 +33,7 @@ dict_ape = {
     "0130Z": "Reproduction de plantes"
     }
 
-CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "CC"), ("4", "Retraité.e"), ("5", "ATS")
+CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "Conjoint Collaborateur"), ("4", "Retraité.e"), ("5", "ATS"), ("6", "Porteur de projet")
 
 
 def get_slug_salon(nom="bureau"):

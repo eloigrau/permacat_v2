@@ -201,8 +201,8 @@ def normaliser_adherents(request):
     """A view that streams a large CSV file."""
     profils = Adherent.objects.all()
     for p in profils:
-        if p.nom_gaec == "('',)":
-            p.nom_gaec = ""
+        if p.prenom:
+            p.nom = str.upper(p.nom)
             p.save()
 
     return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})

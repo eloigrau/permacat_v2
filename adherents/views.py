@@ -199,11 +199,22 @@ login_required
 @user_passes_test(is_membre_bureau)
 def normaliser_adherents(request):
     """A view that streams a large CSV file."""
-    profils = Adherent.objects.all()
-    for p in profils:
-        if p.prenom:
-            p.nom = str.upper(p.nom)
-            p.save()
+    # profils = Adherent.objects.all()
+    # for p in profils:
+    #     if p.prenom:
+    #         p.nom = str.upper(p.nom)
+    #         p.save()
+    adhesions = Adhesion.objects.all()
+    for a in adhesions:
+        if a.moyen == "chq" or a.moyen == "ch-que" or a.moyen == "chèque" or a.moyen == "   chq":
+            a.moyen = "CHQ"
+            a.save()
+        elif a.moyen == "virement" or a.moyen == "   virement" or a.moyen == "viremeny" :
+            a.moyen = "VIR"
+            a.save()
+        elif a.moyen == "espèces" or a.moyen == "espèce" :
+            a.moyen = "ESP"
+            a.save()
 
     return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
 

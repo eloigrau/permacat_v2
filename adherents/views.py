@@ -206,10 +206,10 @@ def normaliser_adherents(request):
     #         p.save()
     adhesions = Adhesion.objects.all()
     for a in adhesions:
-        if a.moyen == "chq" or a.moyen == "ch-que" or a.moyen == "chèque" or a.moyen == "   chq":
+        if a.moyen == "chq" or a.moyen == "ch-que" or a.moyen == "chèque" or a.moyen == " chq"or a.moyen == "   chq":
             a.moyen = "CHQ"
             a.save()
-        elif a.moyen == "virement" or a.moyen == "   virement" or a.moyen == "viremeny" :
+        elif a.moyen == "virement" or a.moyen == "   virement" or a.moyen == "viremeny" or a.moyen == " virement"  or a.moyen == "vitrment":
             a.moyen = "VIR"
             a.save()
         elif a.moyen == "espèces" or a.moyen == "espèce" :

@@ -455,7 +455,7 @@ def import_adherents_ggl(request):
                                              montant=line["MONTANT"+an],
                                              moyen=line["MOYEN"+an],)
                 elif fic == "3":
-                    if i >= 10:
+                    if i >= 160:
                         continue
 
                     if Adherent.objects.filter(nom=line["NOM"], prenom=line["PRENOM"]).exists():

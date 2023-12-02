@@ -475,7 +475,9 @@ def import_adherents_ggl(request):
                         adherent.email = line["ADRESSE MAIL"]
                         adherent.adresse.rue = line["ADRESSE POSTALE"]
                         adherent.adresse.commune = line["COMMUNE"]
-                        adherent.adresse.code_postal = line["CODE POSTAL"]
+                        adherent.adresse.code_postal = line["CODE POSTAL"][:5]
+                        if len(line["CODE POSTAL"]) > 5:
+                            msg+="pas ok code postl" + str(line)
                         adherent.adresse.save()
                         adherent.save()
                         #msg += "<p> adhrent mis à jour <a href='" + adherent.get_absolute_url()+"'>"+str(adherent)+ "</a></p>"

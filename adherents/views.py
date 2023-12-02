@@ -338,7 +338,7 @@ def import_adherents_ggl(request):
         filename = get_dossier_db("Adhérents_pcat.csv")
         fieldnames = "NOM PRENOM","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"
     elif fic == "3":
-        filename = get_dossier_db("Adhérents_pcat_2.csv")
+        filename = get_dossier_db("adherents_pcat_2.csv")
         fieldnames = "NOM","PRENOM","GAEC","STATUT(0?-1AP-2CS-3CC-4Retraite)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","MONTANT2023","MOYEN2023"
     else:
         return render(request, "adherents/accueil_admin.html", {"msg":"Get item manquant 'fic=0(adherents_conf66.csv) ou 1 (Adhérents-Coordonnées.csv) ou 2 (Adhérents_pcat.csv)'"})

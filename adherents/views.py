@@ -256,7 +256,7 @@ login_required
 @user_passes_test(is_membre_bureau)
 def get_csv_adherents(request):
     """A view that streams a large CSV file."""
-    profils = Adherent.objects.all()
+    profils = Adherent.objects.all().order_by("nom")
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
 
     csv_data = [

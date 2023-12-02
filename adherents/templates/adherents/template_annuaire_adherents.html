@@ -35,7 +35,8 @@
         <tbody>
         {% for adherent in adherents %}
         <tr>
-            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }}  {{ adherent.prenom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' adherent.pk %}"> {{ adherent.nom }}</a></td>
+            <td> {{ adherent.prenom }}</td>
             <td> {{ adherent.nom_gaec }}</td>
             <td>{% if adherent.profil %} <a href="{% url 'profil' adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
             <td>{{ adherent.get_statut_display }}</td>

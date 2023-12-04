@@ -28,12 +28,11 @@
 {% block content %}
  {% include 'adherents/template_listeDiffusionConf_liste.html'%}
 
-
-
 <div class="row ">
     <div class="col textcenter">
-		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' %}">Voir la liste des inscriptions</a></li>
+		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' %}">Gérer la liste des inscriptions</a></li>
     </div>
 </div>
-
+<hr>
+ {% include 'adherents/template_actions.html'%}
 {% endblock %}

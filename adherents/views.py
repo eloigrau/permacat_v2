@@ -18,6 +18,7 @@ from bourseLibre.models import Adresse, Profil
 from .filters import AdherentsCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
+from actstream.models import Action
 
 
 from django.http import HttpResponse
@@ -26,6 +27,7 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required, user_passes_test
 from bourseLibre.models import Salon, InscritSalon
 from django.contrib.auth.mixins import UserPassesTestMixin
+from actstream import actions, action
 
 def is_membre_bureau(user):
     if user.is_anonymous or not user.adherent_conf66:
@@ -638,7 +640,7 @@ class ListeDiffusionConf_liste(UserPassesTestMixin, ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-
+        context['actions'] = Action.objects.filter(verb__startswith="listeDiff_conf66").order_by('-timestamp')
         return context
 
 
@@ -689,6 +691,8 @@ def creerInscriptionMail_adherent(request, adherent_pk):
         inscription = form.save(commit=False)
         inscription.adherent = adherent
         inscription.save()
+        action.send(inscription.adherent, verb="listeDiff_conf66_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),
+                     description=" ajouté dans la liste: '%s'" %(inscription.liste_diffusion.nom))
         return redirect(reverse('adherents:inscriptionMail_liste'))
 
     return render(request, 'adherents/inscriptionmail_ajouter.html', {"form": form, 'adherent':adherent})
@@ -703,6 +707,8 @@ def creerInscriptionMail(request,):
     form = InscriptionMail_listeAdherent_Form(request.POST or None)
     if form.is_valid():
         inscription = form.save()
+        action.send(inscription.adherent, verb="listeDiff_conf66_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),
+                     description=" ajouté dans la liste: '%s'" %(inscription.liste_diffusion.nom))
         return redirect(reverse('adherents:inscriptionMail_liste'))
 
     return render(request, 'adherents/inscriptionmail_ajouter.html', {"form": form, 'adherent':adherent})
@@ -716,6 +722,8 @@ def creerListeDiffusionConf(request):
     form = ListeDiffusionConfForm(request.POST or None)
     if form.is_valid():
         liste = form.save()
+        action.send(request.user, verb="listeDiff_conf66_nouvelle", action_object=liste, url=liste.get_absolute_url(),
+                     description="Novelle liste : '%s'" %(liste.nom))
         return redirect(liste)
 
     return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form})
@@ -760,8 +768,12 @@ def swap_inscription(request, listeMail_pk, adherent_pk):
                                    adherent=adherent)
     if inscrit:
         inscrit.delete()
+        action.send(adherent, verb="listeDiff_conf66_moins", action_object=listeMail, url=listeMail.get_absolute_url(),
+                     description="s'est retiré de la liste : '%s'" %(listeMail.nom))
     else:
         InscriptionMail.objects.create(liste_diffusion=listeMail, adherent=adherent).save()
+        action.send(adherent, verb="listeDiff_conf66_plus", action_object=listeMail, url=listeMail.get_absolute_url(),
+                     description="s'est ajouté dans la liste : '%s'" %(listeMail.nom))
 
     return redirect('adherents:mesListesMails')
 
@@ -779,6 +791,9 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
         adhesion = form.save(commit=False)
         adhesion.liste_diffusion = listeDiffusion
         adhesion = form.save()
+        action.send(request.user, verb="listeDiff_conf66_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
+                     description="s'est ajouté dans la liste : '%s'" %(listeDiffusion.nom))
+
         return redirect(listeDiffusion)
 
     return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form, 'listeDiffusion': listeDiffusion})

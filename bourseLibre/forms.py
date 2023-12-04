@@ -309,7 +309,7 @@ class ProfilCreationForm(UserCreationForm):
     accepter_annuaire = forms.BooleanField(required=False, initial=True, label="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous les inscrits")
     inscrit_newsletter = forms.BooleanField(required=False, initial=True, label="J'accepte de recevoir des emails de Perma.cat")
     accepter_conditions = forms.BooleanField(required=True, label="J'ai lu et j'accepte les Conditions Générales d'Utilisation du site*",  )
-    pseudo_june = forms.CharField(label="Pseudonyme dans le réseau de la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
+    #pseudo_june = forms.CharField(label="Pseudonyme dans le réseau de la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
 
 
     def __init__(self, request, *args, **kargs):
@@ -319,7 +319,7 @@ class ProfilCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = Profil
-        fields = ['username', 'password1',  'password2', 'email', 'first_name', 'last_name', 'site_web', 'description', 'competences', 'pseudo_june', 'adherent_jp', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure', 'adherent_bzz2022', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
+        fields = ['username', 'password1',  'password2', 'email', 'first_name', 'last_name', 'site_web', 'description', 'competences', 'adherent_jp', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure', 'adherent_bzz2022', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
         exclude = ['slug', ]
 
     def clean(self):

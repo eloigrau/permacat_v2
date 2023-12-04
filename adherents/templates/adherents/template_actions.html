@@ -1,0 +1,22 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <h3>Historique</h3>
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>acteur</th>
+                <th>action</th>
+                <th>date</th>
+            </tr></thead>
+            <tbody>
+{% for act in actions %}
+            <tr>
+                <td><a href="{{act.data.url}}">{{act.action_object}}</a></td>
+                <td><a href="{{act.data.url}}">{{act.description}}</a></td>
+                <td><a href="{{act.data.url}}">{{act.timestamp|date:"l d F"}}</a></td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

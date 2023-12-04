@@ -38,7 +38,7 @@
 {% block content %}
 
 <div class="row justify-content-center">
-    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
+    <div class="col-sm-12 col-md-11 col-lg-10 textcenter">
         <table class="table table-condensed  table-striped">
         <thead class="thead-inverse">
             <tr>
@@ -62,7 +62,7 @@
                              {{m.commentaire}}
                         </td>
                         <td>
-                             {{m.date_inscription|date:"DATE_FORMAT"}}
+                             {{m.date_inscription|date:"d/m/Y"}}
                         </td>
                     <td>
                         {% if request.user.estmembre_bureau_conf %}

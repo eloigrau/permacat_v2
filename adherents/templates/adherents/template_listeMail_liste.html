@@ -14,7 +14,7 @@
 {% for inscription in inscriptions %}
             <tr>
                 <td><a href="{{adhesion.adherent.get_absolute_url}}"> {{inscription.liste_diffusion.nom}}</a></td>
-                <td>{{inscription.date_inscription|date:"DATE_FORMAT"}}</td>
+                <td>{{inscription.date_inscription|date:"d/m/Y"}}</td>
                 <td>{{inscription.adherent}}</td>
                 <td>{{inscription.get_email}}</td>
                 <td>{% if inscription.commentaire %}{{inscription.commentaire}}{% endif %}</td>

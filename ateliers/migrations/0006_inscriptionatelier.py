@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='InscriptionAtelier',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_inscription', models.DateTimeField(auto_now_add=True, verbose_name="Date d'inscritpion")),
+                ('date_inscription', models.DateTimeField(auto_now_add=True, verbose_name="Date d'inscription")),
                 ('atelier', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='ateliers.Atelier')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],

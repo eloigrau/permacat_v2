@@ -10,9 +10,9 @@
             <tbody>
 {% for liste in listesDiffusion %}
             <tr>
-                <td><a href="{{liste.get_absolute_url}}"> {{liste.nom}}</a></td>
                 {% with liste.get_liste_inscriptions as adherents %}
-                <td>({{adherents|length}})
+                <td><a href="{{liste.get_absolute_url}}"> {{liste.nom}}({{adherents|length}})</a></td>
+                <td>
                     {%for m in adherents %}
                         {{m.adherent.get_email}} {% if not forloop.last %}, {% endif%}
                     {%endfor%}

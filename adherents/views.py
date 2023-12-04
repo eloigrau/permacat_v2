@@ -69,6 +69,13 @@ class AdherentDetailView(DetailView):
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         return context
 
+def monProfil(request):
+    adherents = Adherent.objects.filter(profil=request.user)
+    if not adherents.exists():
+        return render(request, 'adherents/profil_inconnu.html')
+
+    return redirect('adherents:adherent_detail', pk=adherents[0].pk)
+
 class AdherentDeleteView(UserPassesTestMixin, DeleteView):
     model = Adherent
     template_name_suffix = '_supprimer'

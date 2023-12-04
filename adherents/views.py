@@ -711,7 +711,7 @@ def creerListeDiffusionConf(request):
         form.save()
         return redirect(reverse('adherents:inscriptionMail_liste'))
 
-    return render(request, 'adherents/inscriptionMail_ajouter.html', {"form": form})
+    return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form})
 
 
 @login_required

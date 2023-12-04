@@ -11,6 +11,15 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+
+        migrations.CreateModel(
+            name='ListeDiffusionConf',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nom', models.CharField(max_length=30, unique=True)),
+                ('date_creation', models.DateTimeField(auto_now=True, verbose_name='Date de création'),)
+            ],
+        ),
         migrations.CreateModel(
             name='InscriptionMail',
             fields=[

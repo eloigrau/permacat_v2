@@ -291,7 +291,7 @@ class AdresseForm5(forms.ModelForm):
         return adresse
 
 class ProfilCreationForm(UserCreationForm):
-    username = forms.CharField(label="Pseudonyme*", help_text="Attention : Pas d'espace, et les majuscules sont importantes...")
+    username = forms.CharField(label="Pseudonyme (sans espace)*", help_text="Attention : Pas d'espace, et les majuscules sont importantes...")
     description = forms.CharField(label=None, help_text="Une description de vous même", required=False, widget=forms.Textarea)
     competences = forms.CharField(label=None, help_text="Par exemple: electricien, bouturage, aromatherapie, pépinieriste, etc...", required=False, widget=forms.Textarea, )
     site_web = forms.CharField(label="Votre site web", help_text="n'oubliez pas le https://", required=False)

@@ -1,0 +1,33 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Nom</th>
+                <th>Adhérents</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+{% for liste in listesDiffusion %}
+            <tr>
+                <td><a href="{{liste.get_absolute_url}}"> {{liste.nom}}</a></td>
+                {% with liste.get_liste_inscriptions as adherents %}
+                <td>({{adherents|length}})
+                    {%for m in adherents %}
+                        {{m.adherent.get_email}} {% if not forloop.last %}, {% endif%}
+                    {%endfor%}
+                </td>
+                <td>
+                    <a onclick="copyToClipboard('{%for m in adherents %} {% if m.adherent.get_email != '?'%}{{m.adherent.get_email}} {% if not forloop.last %}, {% endif%}{% endif%}{%endfor%}')">
+                        <button type="button" class="btn btn-sm btn-primary">
+                            Copier la liste des mails
+                        </button>
+                    </a>
+                </td>
+                {% endwith %}
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

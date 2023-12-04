@@ -1,5 +1,6 @@
 from django import forms
-from .models import Adhesion, Adherent
+from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf
+from local_summernote.widgets import SummernoteWidget
 
 
 class AdhesionForm(forms.ModelForm):
@@ -34,3 +35,38 @@ class AdherentForm(forms.ModelForm):
                        'type': 'date'
                        }),
             }
+
+class InscriptionMailForm(forms.ModelForm):
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Adhérent", )
+
+    class Meta:
+        model = InscriptionMail
+        fields = [ "adherent", 'commentaire',]
+        widgets = {
+            'commentaire': SummernoteWidget(),
+        }
+
+class InscriptionMailAdherentALsteForm(forms.ModelForm):
+
+    class Meta:
+        model = InscriptionMail
+        fields = [ 'liste_diffusion', 'commentaire']
+        widgets = {
+            'commentaire': SummernoteWidget(),
+        }
+
+class InscriptionMail_listeAdherent_Form(forms.ModelForm):
+
+    class Meta:
+        model = InscriptionMail
+        fields = [ 'liste_diffusion', 'adherent', 'commentaire',]
+        widgets = {
+            'commentaire': SummernoteWidget(),
+        }
+
+
+class ListeDiffusionConfForm(forms.ModelForm):
+    class Meta:
+        model = ListeDiffusionConf
+        fields = ['nom']
+

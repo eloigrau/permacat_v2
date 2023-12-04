@@ -32,7 +32,7 @@
         {% endif %}
     </div>
 </div>
-<div class="row titre_jardin">
+<div class="row titre_adherents">
     <div class="col textcenter">
         <h3> {{adherent}} </h3>
     </div>
@@ -40,12 +40,17 @@
 
 {% endblock %}
 {% block content %}
-
+{% if request.user == adherent.profil %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 textcenter">
+        <a class="btn btn-success" href="{% url 'adherents:mesListesMails' %}">Voir mes abonnements aux listes de diffusion</a>
+    </div>
+</div>
+{% endif %}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-10">
         <table class="table table-condensed tablepanier table-striped">
             <tbody>
-
             {% if adherent.profil %}
             <tr>
                 <td style="width:250px">Profil :</td>
@@ -137,9 +142,6 @@
 
             </tbody>
         </table>
-        <small> {% if request.user == user %}Les champs notés par un ^ ne sont visibles que par vous et l'administrateur
-            du site. {%endif%}Les champs notés par un * ne sont visibles que par les membres du collectif
-            concerné</small>
     </div>
 
     <div class="col-md-6">
@@ -184,5 +186,19 @@
         </a>
     </div>
 </div>
+<hr>
+<h5>Inscriptions </h5>
+{% include 'adherents/template_inscriptionmail_liste.html' %}
+
+<div class="row">
+    <div class="col-md-12 textcenter">
+        <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="fa fa-plus"></span>&nbsp;Ajouter l'adhérent à une liste
+            </button>
+        </a>
+    </div>
+</div>
 {% endif %}
+
 {% endblock %}

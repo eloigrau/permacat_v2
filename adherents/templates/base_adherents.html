@@ -15,10 +15,16 @@
 		<li class="nav-item">
         </li>
 		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil' %}"> Adhérents</a></li>
-		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> Adhésions</a></li>
-		{% if request.user.is_superuser %}
-        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil_admin' %}"> Admin</a></li>
-        {% endif %}
+            {% if request.user.estmembre_bureau_conf %}
+                <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> Adhésions</a></li>
+                <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"> Listes de diffusion</a></li>
+
+                {% if request.user.is_superuser %}
+                <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil_admin' %}"> Admin</a></li>
+                {% endif %}
+            {% else %}
+                        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:mesListesMails' %}"> Listes de diffusion</a></li>
+            {% endif %}
 		        </li>
             </ul>
         </div>

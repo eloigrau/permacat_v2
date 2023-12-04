@@ -1,0 +1,44 @@
+{% extends 'base_adherents.html' %}
+
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{% endblock %}
+{% block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Les Listes de diffusion par Mail </h3>
+    </div>
+</div>
+
+<div class="row ">
+    <div class="col textcenter">
+        <a class="btn btn-success"   href="{% url 'adherents:mesListesMails' %}">Voir mes abonnements</a></li>
+    </div>
+</div>
+<div class="row ">
+    <div class="col textcenter">
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusionConf_creer' %}">Ajouter une liste</a></li>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+ {% include 'adherents/template_listeDiffusionConf_liste.html'%}
+
+
+
+<div class="row ">
+    <div class="col textcenter">
+		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' %}">Voir la liste des inscriptions</a></li>
+    </div>
+</div>
+
+{% endblock %}

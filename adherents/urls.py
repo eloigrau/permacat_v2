@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^conf66/accueil_admin/$', views.accueil_admin, name="accueil_admin"),
     url(r'^conf66/get_csv_adherents/$', views.get_csv_adherents, name="get_csv_adherents"),
     path(r'conf66/infos_adherents/<str:type_info>', views.get_infos_adherent, name="get_infos_adherent"),
+    path(r'conf66/infos_listeMail/<int:listeMail_pk>/<str:type_info>', views.get_infos_listeMail, name="get_infos_listeMail"),
 
     url(r'^conf66/import_csv/$', views.import_adherents_ggl, name="import_csv"),
     url(r'^conf66/modif_APE/$', views.modif_APE, name="modif_APE"),
@@ -44,4 +45,24 @@ urlpatterns = [
     path(r'conf66/adhesion/modifier/<int:pk>', login_required(views.AdhesionUpdateView.as_view()), name="adhesion_modifier"),
     path(r'conf66/adhesion/supprimer/<int:pk>', login_required(views.AdhesionDeleteView.as_view()), name="adhesion_supprimer"),
 
+    path(r'conf66/inscriptions/listesInscriptions', login_required(views.ListeInscriptionsMails.as_view()), name="inscriptionMail_liste"),
+    path(r'conf66/inscriptions/creer/<int:adherent_pk>', views.creerInscriptionMail_adherent, name="inscriptionMail_adherent"),
+    path(r'conf66/inscriptions/creer/', views.creerInscriptionMail, name="inscriptionMail_creer"),
+    path(r'conf66/inscriptions/detail/<int:pk>', login_required(views.InscriptionMailDetailView.as_view()), name="inscriptionMail_detail"),
+    path(r'conf66/inscriptions/modifier/<int:pk>', login_required(views.InscriptionMailUpdateView.as_view()), name="inscriptionMail_modifier"),
+    path(r'conf66/inscriptions/supprimer/<int:pk>', login_required(views.InscriptionMailDeleteView.as_view()), name="inscriptionMail_supprimer"),
+
+    path(r'conf66/listesDiffusion/', login_required(views.ListeDiffusionConf_liste.as_view()), name="listeDiffusionConf_liste"),
+    path(r'conf66/listesDiffusion/creerListe/', views.creerListeDiffusionConf, name="listeDiffusionConf_creer"),
+    path(r'conf66/listesDiffusion/detail/<int:pk>', login_required(views.ListeDiffusionConfDetailView.as_view()), name="listeDiffusion_detail"),
+    path(r'conf66/listesDiffusion/modifier/<int:pk>', login_required(views.ListeDiffusionConfUpdateView.as_view()), name="listeDiffusion_modifier"),
+    path(r'conf66/listesDiffusion/supprimer/<int:pk>', login_required(views.ListeDiffusionConfDeleteView.as_view()), name="listeDiffusionsupprimer"),
+    path(r'conf66/listesDiffusion/mesListesMails/', views.mesListesMails, name="mesListesMails"),
+    path(r'conf66/inscriptions/swap_inscription/<int:listeMail_pk>/<int:adherent_pk>',
+         views.swap_inscription, name="swap_inscription"),
+
+    path(r'conf66/listesDiffusion/ajouter/<int:listeDiffusion_pk>/', views.ajouterAdherentAListeDiffusionConf,
+         name="listeDiffusion_ajouterAdherent"),
+    path(r'conf66/inscriptions/ajouter/<int:adherent_pk>',
+         views.ajouterInscription_AdherentListeDiffusionConf, name="ajouterInscription_AdherentListeDiffusionConf"),
      ]

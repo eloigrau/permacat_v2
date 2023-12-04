@@ -34,6 +34,13 @@ class Adherent(models.Model):
     def get_adhesions(self):
         return self.adhesion_set.all()
 
+    @property
+    def get_email(self):
+        if self.email:
+            return self.email
+        return "?"
+
+
     def get_adhesion_an(self, an):
         ad = self.adhesion_set.filter(date_cotisation__year=int(an))
         if ad:
@@ -86,3 +93,53 @@ class Adhesion(models.Model):
         return reverse('adherents:adhesion_modifier', kwargs={'pk': self.pk})
     def get_delete_url(self):
         return reverse('adherents:adhesion_supprimer', kwargs={'pk': self.pk})
+
+
+
+class ListeDiffusionConf(models.Model):
+    nom = models.CharField(max_length=30, blank=False, unique=True)
+    date_creation = models.DateTimeField(verbose_name="Date de creétion", editable=False, auto_now=True)
+
+    def __str__(self):
+        return str(self.nom)
+
+    def get_absolute_url(self):
+        return reverse('adherents:listeDiffusion_detail', kwargs={'pk': self.pk})
+    def get_update_url(self):
+        return reverse('adherents:listeDiffusion_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adherents:listeDiffusion_supprimer', kwargs={'pk': self.pk})
+
+
+    @property
+    def get_liste_inscriptions(self):
+        return self.inscriptionmail_set.all()
+
+    @property
+    def get_liste_mails(self):
+        return [i.adherent.email for i in self.inscriptionmail_set.all() if "@" in i.adherent.email]
+
+class InscriptionMail(models.Model):
+    liste_diffusion = models.ForeignKey(ListeDiffusionConf, on_delete=models.CASCADE, verbose_name="Liste de diffusion", blank=True, null=True)
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent", blank=False, null=False)
+    commentaire = models.CharField(max_length=50, blank=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return str(self.liste_diffusion.nom) + ": " + str(self.get_email)
+
+    @property
+    def get_email(self):
+        return self.adherent.get_email
+
+
+    def get_absolute_url(self):
+        return reverse('adherents:inscriptionMail_detail', kwargs={'pk': self.pk})
+    def get_update_url(self):
+        return reverse('adherents:inscriptionMail_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adherents:inscriptionMail_supprimer', kwargs={'pk': self.pk})
+

@@ -5,19 +5,12 @@
 {% load static %}
 {% load fontawesome %}
 {% endblock %}
-{% block header %}
-{% leaflet_js %}
-{% leaflet_css %}
-{% endblock %}
 
 {% block subtitle %}
-<div class="row titre_adherents">
+<div class="row">
     <div class="col textcenter">
-        <h3>Les adhésions </h3>
+        <h3>Votre profil n'est pas encore associé à un adhérent/cotisant. Veuillez vous adresser à l'administrateur du groupe</h3>
     </div>
 </div>
+{% endblock %}
 
-{% endblock %}
-{% block content %}
-     {% include 'adherents/template_adhesion_liste.html'%}
-{% endblock %}

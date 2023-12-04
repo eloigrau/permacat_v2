@@ -423,10 +423,19 @@ class Profil(AbstractUser):
             return True
         elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
             return True
-        #elif self.adherent_gt and (nom_asso == "Gardiens de la Terre" or nom_asso == "gt") :
-        #    return True
         else:
             return False
+
+    def estmembre_bureau(self, asso_abreviation):
+        if not self.is_anonymous:
+            if asso_abreviation == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
+                return InscritSalon.objects.filter(salon=Salon.objects.filter(slug="conf66_bureau_2023")[0], profil=self).exists()
+
+        return False
+
+    @property
+    def estmembre_bureau_conf(self,):
+        return self.estmembre_bureau("conf66")
 
     def getQObjectsAssoArticles(self):
         q_objects = Q()

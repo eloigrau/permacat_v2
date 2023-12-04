@@ -1,0 +1,30 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Nom</th>
+                <th>Date</th>
+                <th>Profil</th>
+                <th>Email</th>
+                <th>Details</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+{% for inscription in inscriptions %}
+            <tr>
+                <td><a href="{{adhesion.adherent.get_absolute_url}}"> {{inscription.liste_diffusion.nom}}</a></td>
+                <td>{{inscription.date_inscription|date:"DATE_FORMAT"}}</td>
+                <td>{{inscription.adherent}}</td>
+                <td>{{inscription.get_email}}</td>
+                <td>{% if inscription.commentaire %}{{inscription.commentaire}}{% endif %}</td>
+                <td>
+                    <a class="btn btn-sm btn-danger textleft" href="{{inscription.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{inscription.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                </td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -12,11 +12,12 @@ import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
-from .forms import AdhesionForm, AdherentForm
-from .models import Adherent, Adhesion
+from .forms import AdhesionForm, AdherentForm, InscriptionMailForm, ListeDiffusionConfForm, InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm
+from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
 from bourseLibre.models import Adresse, Profil
 from .filters import AdherentsCarteFilter
 from .constantes import get_slug_salon
+from django.utils.timezone import now
 
 
 from django.http import HttpResponse
@@ -29,11 +30,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 def is_membre_bureau(user):
     if user.is_anonymous or not user.adherent_conf66:
         return False
-    if Salon.objects.filter(slug=get_slug_salon()).exists():
-        salon = Salon.objects.filter(slug=get_slug_salon())[0]
-        return InscritSalon.objects.filter(salon=salon, profil=user).exists()
-
-    return False
+    return user.estmembre_bureau_conf
 
 class ListeAdherents(ListView):
     model = Adherent
@@ -68,6 +65,7 @@ class AdherentDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['adhesions'] = Adhesion.objects.filter(adherent=self.object)
+        context['inscriptionsMail'] = InscriptionMail.objects.filter(adherent=self.object)
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         return context
 
@@ -131,6 +129,7 @@ class ListeAdhesions(UserPassesTestMixin, ListView):
     model = Adhesion
     context_object_name = "adhesions"
     template_name = "adherents/adhesion_liste.html"
+    ordering = ['adherent']
 
     def test_func(self):
         return is_membre_bureau(self.request.user)
@@ -204,16 +203,21 @@ def normaliser_adherents(request):
     #     if p.prenom:
     #         p.nom = str.upper(p.nom)
     #         p.save()
-    adhesions = Adhesion.objects.all()
-    for a in adhesions:
-        if "ch" in a.moyen:
-            a.moyen = "CHQ"
-            a.save()
-        elif "virement" in a.moyen or a.moyen == "vitrment":
-            a.moyen = "VIR"
-            a.save()
-        elif a.moyen == "èspèces" or "espèce" in a.moyen :
-            a.moyen = "ESP"
+    #
+    # for a in  Adhesion.objects.all():
+    #     if "ch" in a.moyen:
+    #         a.moyen = "CHQ"
+    #         a.save()
+    #     elif "virement" in a.moyen or a.moyen == "vitrment":
+    #         a.moyen = "VIR"
+    #         a.save()
+    #     elif a.moyen == "èspèces" or "espèce" in a.moyen :
+    #         a.moyen = "ESP"
+    #         a.save()
+
+    for a in Adherent.objects.all():
+        if not "@" in a.email:
+            a.email = ""
             a.save()
 
     return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
@@ -308,18 +312,6 @@ def modif_APE(request):
             msg += str(a.production_ape) + " from " + old + "\n"
     return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
 
-
-
-@login_required
-@user_passes_test(is_membre_bureau)
-def MAJ_adherents(request):
-    if not request.user.adherent_conf66:
-        return HttpResponseForbidden()
-    msg = "update adherents"
-    for a in Adherent.objects.all():
-        a.save()
-
-    return render(request, "adherents/accueil_admin.html", {'msg':msg})
 
 
 def get_statut(nom):
@@ -552,4 +544,236 @@ def get_infos_adherent(request, type_info="email"):
         template = 'adherents/template_inconnu.html'
 
     return render(request, template, {'qs': profils_filtres.qs})
+
+
+login_required
+def get_infos_listeMail(request, listeMail_pk, type_info="email"):
+    liste = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
+    if type_info == "email":
+        mails = liste.get_liste_mails
+    else:
+        mails = []
+
+    return render(request, 'adherents/template_liste.html', {'liste': mails})
+
+
+class ListeInscriptionsMails(UserPassesTestMixin, ListView):
+    model = InscriptionMail
+    context_object_name = "inscriptions"
+    template_name = "adherents/inscriptionMail_liste.html"
+    ordering = ['liste_diffusion']
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+    #def get_queryset(self):
+    #    params = dict(self.request.GET.items())
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class InscriptionMailDetailView(UserPassesTestMixin, DetailView):
+    model = InscriptionMail
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        return context
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
+    model = InscriptionMail
+    template_name_suffix = '_supprimer'
+
+
+    def get_object(self):
+        ad = InscriptionMail.objects.get(pk=self.kwargs['pk'])
+        self.listeMail = ad.liste_diffusion
+        return ad
+
+    def get_success_url(self):
+        return self.listeMail.get_absolute_url()
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
+    model = InscriptionMail
+    template_name_suffix = '_modifier'
+    fields = ["liste_diffusion", "adherent", "commentaire"]
+
+    def get_success_url(self):
+        return self.object.adherent.get_absolute_url()
+
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+
+class ListeDiffusionConf_liste(UserPassesTestMixin, ListView):
+    model = ListeDiffusionConf
+    context_object_name = "listesDiffusion"
+    template_name = "adherents/listeDiffusionConf_list.html"
+    ordering = ['nom']
+
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+    #def get_queryset(self):
+    #    params = dict(self.request.GET.items())
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        return context
+
+
+class ListeDiffusionConfDetailView(DetailView):
+    model = ListeDiffusionConf
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class ListeDiffusionConfDeleteView(UserPassesTestMixin, DeleteView):
+    model = ListeDiffusionConf
+    template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return self.adherent.get_absolute_url()
+
+    def get_object(self):
+        ad = Adhesion.objects.get(pk=self.kwargs['pk'])
+        self.adherent = ad.adherent
+        return ad
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+class ListeDiffusionConfUpdateView(UserPassesTestMixin, UpdateView):
+    model = ListeDiffusionConf
+    template_name_suffix = '_modifier'
+    fields = ["nom"]
+
+    def get_success_url(self):
+        return self.object.adherent.get_absolute_url()
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+
+@login_required
+@user_passes_test(is_membre_bureau)
+def creerInscriptionMail_adherent(request, adherent_pk):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    adherent = get_object_or_404(Adherent, pk=adherent_pk)
+    form = InscriptionMailAdherentALsteForm(request.POST or None)
+    if form.is_valid():
+        inscription = form.save(commit=False)
+        inscription.adherent = adherent
+        inscription.save()
+        return redirect(reverse('adherents:inscriptionMail_liste'))
+
+    return render(request, 'adherents/inscriptionmail_ajouter.html', {"form": form, 'adherent':adherent})
+
+
+@login_required
+@user_passes_test(is_membre_bureau)
+def creerInscriptionMail(request,):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    form = InscriptionMail_listeAdherent_Form(request.POST or None)
+    if form.is_valid():
+        inscription = form.save()
+        return redirect(reverse('adherents:inscriptionMail_liste'))
+
+    return render(request, 'adherents/inscriptionmail_ajouter.html', {"form": form, 'adherent':adherent})
+
+@login_required
+@user_passes_test(is_membre_bureau)
+def creerListeDiffusionConf(request):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    form = ListeDiffusionConfForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect(reverse('adherents:inscriptionMail_liste'))
+
+    return render(request, 'adherents/inscriptionMail_ajouter.html', {"form": form})
+
+
+@login_required
+@user_passes_test(is_membre_bureau)
+def ajouterInscription_AdherentListeDiffusionConf(request, listeMail_pk, adherent_pk):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    listeMail = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
+    adherent = get_object_or_404(Adherent, pk=adherent_pk)
+    InscriptionMail.objects.create(liste_diffusion=listeMail,
+                                   date_inscription=now(),
+                                   adherent=adherent)
+
+    return redirect(reverse('adherents:listeMail'))
+
+
+@login_required
+def mesListesMails(request):
+    if not Adherent.objects.filter(profil=request.user).exists():
+        return render(request, 'adherents/profil_inconnu.html')
+    adherent = Adherent.objects.get(profil=request.user)
+    liste = []
+    for listeMail in ListeDiffusionConf.objects.all():
+        if InscriptionMail.objects.filter(liste_diffusion=listeMail, adherent=adherent).exists():
+            liste.append([listeMail, "inscrit", adherent.pk])
+        else:
+            liste.append([listeMail, "pasinscrit", adherent.pk])
+
+    return render(request, 'adherents/listediffusionconf_mesListes.html', {'liste_inscriptions': liste, 'adherent':adherent})
+
+
+@login_required
+def swap_inscription(request, listeMail_pk, adherent_pk):
+
+    listeMail = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
+    adherent = get_object_or_404(Adherent, pk=adherent_pk)
+    inscrit = InscriptionMail.objects.filter(liste_diffusion=listeMail,
+                                   adherent=adherent)
+    if inscrit:
+        inscrit.delete()
+    else:
+        InscriptionMail.objects.create(liste_diffusion=listeMail, adherent=adherent).save()
+
+    return redirect('adherents:mesListesMails')
+
+
+@login_required
+@user_passes_test(is_membre_bureau)
+def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    form = InscriptionMailForm(request.POST or None)
+    listeDiffusion = get_object_or_404(ListeDiffusionConf, pk=listeDiffusion_pk)
+
+    if form.is_valid():
+        adhesion = form.save(commit=False)
+        adhesion.liste_diffusion = listeDiffusion
+        adhesion = form.save()
+        return redirect(listeDiffusion)
+
+    return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form, 'listeDiffusion': listeDiffusion})
+
 

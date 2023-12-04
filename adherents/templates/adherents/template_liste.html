@@ -1,0 +1,5 @@
+{% if not liste %}
+<p>Pas de mails dans cette liste (pas d'adhérent inscrit, ou pas de mail renseigné)</p>
+{%else%}
+<p>{%for m in liste %} {{m}} {% if not forloop.last %}, {% endif%} {%endfor%}</p>
+{%endif%}

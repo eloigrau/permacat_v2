@@ -20,4 +20,11 @@ class Migration(migrations.Migration):
             name='statut',
             field=models.CharField(choices=[('0', '?'), ('1', 'A titre principal'), ('2', 'Cotisant Solidaire'), ('3', 'Conjoint Collaborateur'), ('4', 'Retraité.e'), ('5', 'ATS'), ('6', 'Porteur de projet')], default='0', max_length=5, verbose_name="Statut d'agriculteur"),
         ),
+        migrations.CreateModel(
+            name='ListeDiffusionConf',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nom', models.CharField(max_length=30, unique=True)),
+            ],
+        ),
     ]

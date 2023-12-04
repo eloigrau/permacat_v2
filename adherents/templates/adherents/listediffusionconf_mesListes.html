@@ -1,0 +1,62 @@
+{% extends 'base_adherents.html' %}
+
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome %}
+{% endblock %}
+{% block header %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Mes abonnements aux listes de diffusion par Mail </h3>
+        <p>Abonné : <a href="{{adherent.get_absolute_url }}">{{adherent}} ({{adherent.email}})</a></p>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Nom de la liste</th>
+                <th>Abonnement</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+{% for liste in liste_inscriptions %}
+            <tr>
+                <td><a href="{{liste.0.get_absolute_url}}"> {{liste.0.nom}}</a></td>
+                {% with liste.0.get_liste_inscriptions as adherents %}
+                <td>
+                    {% if liste.1 == "inscrit" %}
+                    <a href="{% url 'adherents:swap_inscription' listeMail_pk=liste.0.pk adherent_pk=liste.2 %}">
+                        <button type="button" class="btn btn-sm btn-primary">
+                            <i class="fa fa-bell" title="Se désabonner"></i>Abonné
+                        </button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'adherents:swap_inscription' listeMail_pk=liste.0.pk adherent_pk=liste.2 %}">
+                        <button type="button " class="btn btn-sm btn-secondary">
+                             <i class="fa fa-bell-slash " title="S'abonner"></i>Non Abonné
+                        </button>
+                    </a>
+                    {% endif %}
+                </td>
+                <td>
+                </td>
+                {% endwith %}
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

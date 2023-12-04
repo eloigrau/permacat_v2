@@ -98,7 +98,7 @@ class Adhesion(models.Model):
 
 class ListeDiffusionConf(models.Model):
     nom = models.CharField(max_length=30, blank=False, unique=True)
-    date_creation = models.DateTimeField(verbose_name="Date de creétion", editable=False, auto_now=True)
+    date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now=True)
 
     def __str__(self):
         return str(self.nom)

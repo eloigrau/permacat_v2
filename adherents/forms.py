@@ -42,9 +42,6 @@ class InscriptionMailForm(forms.ModelForm):
     class Meta:
         model = InscriptionMail
         fields = [ "adherent", 'commentaire',]
-        widgets = {
-            'commentaire': SummernoteWidget(),
-        }
 
 class InscriptionMailAdherentALsteForm(forms.ModelForm):
 

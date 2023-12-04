@@ -708,8 +708,8 @@ def creerListeDiffusionConf(request):
 
     form = ListeDiffusionConfForm(request.POST or None)
     if form.is_valid():
-        form.save()
-        return redirect(reverse('adherents:inscriptionMail_liste'))
+        liste = form.save()
+        return redirect(liste)
 
     return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form})
 

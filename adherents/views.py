@@ -723,7 +723,7 @@ def creerListeDiffusionConf(request):
     if form.is_valid():
         liste = form.save()
         action.send(request.user, verb="listeDiff_conf66_nouvelle", action_object=liste, url=liste.get_absolute_url(),
-                     description="Novelle liste : '%s'" %(liste.nom))
+                     description="a créé une nouvelle liste : '%s'" %(liste.nom))
         return redirect(liste)
 
     return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form})

@@ -6,11 +6,11 @@ from django.db.models import Q
 from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
 annees = ('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023')
 
-def get_choix_productions():
-    return [(p, dict_ape[p]) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct()]
-
 
 class AdherentsCarteFilter(django_filters.FilterSet):
+    def get_choix_productions():
+        return [(p, dict_ape[p]) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct()]
+
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
 
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")

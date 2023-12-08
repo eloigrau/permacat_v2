@@ -791,7 +791,7 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
         adhesion = form.save(commit=False)
         adhesion.liste_diffusion = listeDiffusion
         adhesion = form.save()
-        action.send(request.user, verb="listeDiff_conf66_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
+        action.send(adhesion.adherent, verb="listeDiff_conf66_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
                      description="s'est ajouté dans la liste : '%s'" %(listeDiffusion.nom))
 
         return redirect(listeDiffusion)

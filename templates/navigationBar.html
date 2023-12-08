@@ -424,6 +424,9 @@
                <li> <a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                 <li class="divider" role="separator"></li>
                  <li><a class="dropdown-item" href="{% url 'mesSuivis' %}"> Abonnements </a></li>
+                {% if request.user.adherent_conf66 %}
+                 <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> Abonnements Conf66</a></li>
+                {% endif %}
                 <li class="divider" role="separator"></li>
                  <li><a class="dropdown-item" href="{% url 'mesActions' %}"> Publications </a></li>
                 <li class="divider" role="separator"></li>

@@ -90,7 +90,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'themes', 'tags', 'estModifiable', 'estEpingle', ]
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'tags', 'estModifiable', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(

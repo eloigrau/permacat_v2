@@ -95,7 +95,8 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     fields = ["nom", "prenom", "statut", "nom_gaec", "email", "production_ape"]
 
     def test_func(self):
-        return is_membre_bureau(self.request.user)
+        a = Adherent.objects.get(pk=self.kwargs['pk'])
+        return is_membre_bureau(self.request.user) or self.request.user == a.profil
 
 class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     model = Adresse
@@ -103,14 +104,16 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
 
     def test_func(self):
-        return is_membre_bureau(self.request.user)
+        self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
+        self.adherent = self.adresse.adherent_set.first()
+        return is_membre_bureau(self.request.user) or self.request.user == self.adherent.profil
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
 
     def get_success_url(self):
-        return reverse('adherents:accueil')
+        return self.adherent.get_absolute_url()
 
 login_required
 @user_passes_test(is_membre_bureau)

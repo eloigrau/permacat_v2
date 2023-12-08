@@ -87,7 +87,6 @@ class ArticleForm(forms.ModelForm):
     themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
-
     class Meta:
         model = Article
         fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'tags', 'estModifiable', 'estEpingle', ]

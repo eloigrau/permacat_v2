@@ -8,14 +8,11 @@ annees = ('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023')
 
 
 class AdherentsCarteFilter(django_filters.FilterSet):
-    def get_choix_productions():
-        return [(p, dict_ape[p]) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct()]
-
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
 
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
 
-    production_ape = django_filters.ChoiceFilter(choices=get_choix_productions(), label="Production")
+    production_ape = django_filters.ChoiceFilter(choices=[(p, dict_ape[p]) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct()], label="Production")
 
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
 

@@ -7,6 +7,7 @@ from django.urls import reverse
 from .constantes import dict_ape, CHOIX_STATUTS
 from django.utils import timezone
 import uuid
+import datetime
 
 class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
@@ -33,6 +34,18 @@ class Adherent(models.Model):
     @property
     def get_adhesions(self):
         return self.adhesion_set.all()
+
+    @property
+    def get_inscriptionsMail(self):
+        return self.inscriptionmail_set.all()
+
+    def getInscriptions_listeMails_csvggl(self):
+        liste = " ::: ".join([i.liste_diffusion.nom for i in self.get_inscriptionsMail])
+        an = int(datetime.date.today().year)
+        for i in range(3):
+            if self.adhesion_set.filter(date_cotisation__year=int(an-i)).exists():
+                liste += " ::: Adhesion_" + str(an-i)
+        return liste
 
     @property
     def get_email(self):
@@ -118,6 +131,14 @@ class ListeDiffusionConf(models.Model):
     @property
     def get_liste_mails(self):
         return [i.adherent.email for i in self.inscriptionmail_set.all() if "@" in i.adherent.email]
+
+    @property
+    def get_liste_adherents(self, avecMail=True):
+        if avecMail:
+            return [i.adherent for i in self.inscriptionmail_set.all() if "@" in i.adherent.email]
+        else:
+            return [i.adherent for i in self.inscriptionmail_set.all()]
+
 
 class InscriptionMail(models.Model):
     liste_diffusion = models.ForeignKey(ListeDiffusionConf, on_delete=models.CASCADE, verbose_name="Liste de diffusion", blank=True, null=True)

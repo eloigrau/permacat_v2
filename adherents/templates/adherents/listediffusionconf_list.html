@@ -30,6 +30,12 @@
 
 <div class="row ">
     <div class="col textcenter">
+
+    <a href="{% url 'adherents:get_csv_listeMails' %}" target="_blank" rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+            &nbsp;Exporter en CSV
+        </button>
+    </a>
 		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' %}">Gérer la liste des inscriptions</a></li>
     </div>
 </div>

@@ -84,8 +84,8 @@ class ArticleForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
-    themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
-                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
+    #themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
+    #                                         widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
     class Meta:
         model = Article

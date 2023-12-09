@@ -42,7 +42,7 @@ class Adherent(models.Model):
     def getInscriptions_listeMails_csvggl(self):
         liste = " ::: ".join(["listeDiff_" + i.liste_diffusion.nom for i in self.get_inscriptionsMail])
         an = int(datetime.date.today().year)
-        for i in range(3):
+        for i in range(1):
             if self.adhesion_set.filter(date_cotisation__year=int(an-i)).exists():
                 liste += " ::: Adhesion_" + str(an-i)
         return liste

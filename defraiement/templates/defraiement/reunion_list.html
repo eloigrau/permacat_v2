@@ -130,7 +130,7 @@
     font-variant: small-caps;" > {{ reunion.titre }}
             </td>
 
-        <td class="textepetit" style=" width:20%; "> {{reunion.participants.all | length}} participants, {{reunion.getDistanceTotale}}km</td>
+        <td class="textepetit" style=" width:20%; "> {{reunion.participants.all | length}} participant.es, {{reunion.getDistanceTotale}}km</td>
 
             {% if reunion.start_time %}
         <td class="textepetit " style=" width:15%; ">{{ reunion.start_time|date:"DATE_FORMAT" }}</td>

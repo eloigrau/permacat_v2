@@ -335,7 +335,7 @@ class ListePlantes(ListView):
 def voir_plante(request, cd_nom):
     p = get_object_or_404(Plante, CD_NOM=int(cd_nom))
     plantesDeJardins = p.plantedejardin_plante.all()
-    jardins = set(j.jardin for j in plantesDeJardins )
+    jardins = set(j.jardin for j in plantesDeJardins)
     graines = p.graine_set.all()
     grainotheques = set(j.grainotheque for j in graines )
     return render(request, "jardins/plante.html", {"plante":p, "jardins":jardins, "grainotheques":grainotheques})
@@ -460,6 +460,7 @@ def jardin_ajouterPlante_pk(request, jardin_pk, plante_pk):
 
     return render(request, 'jardins/jardin_ajouterPlante_pk.html', {'jardin':jardin, 'form':form , 'form_infos':form_infos , "plante":plante})
 
+@login_required
 def ajouterPlante_monJardin(request, plante_pk):
     jardins = request.user.get_jardins
     if len(jardins) == 0:
@@ -475,12 +476,13 @@ def ajouterPlante_monJardin(request, plante_pk):
     return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
 
 
+@login_required
 def voir_monJardin(request):
     jardins = request.user.get_jardins
     if len(jardins) == 0:
         return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
     elif len(jardins) == 1:
-        return redirect('jardins:jardin_lire', slug=jardins[0].jardin.slug)
+        return redirect(jardins[0])
     else:
         form = ChoisirMonJardinForm(request, request.POST or None)
 
@@ -505,12 +507,13 @@ def graino_ajouterGraine_pk(request, graino_pk, plante_pk):
 
 
 
+@login_required
 def ajouterPlante_maGrainotheque(request, plante_pk):
     graino = request.user.get_grainotheques
     if len(graino) == 0:
         return render(request, 'jardins/jardin_pasDeGrainothèqueEnregistre.html', {})
     elif len(graino) == 1:
-        return redirect('jardins:graino_ajouterGraine_pk', graino_pk=graino[0].grainotek.pk, plante_pk=plante_pk)
+        return redirect('jardins:graino_ajouterGraine_pk', graino_pk=graino[0].pk, plante_pk=plante_pk)
     else:
         form = ChoisirMaGrainothequeForm(request, request.POST or None)
 
@@ -519,12 +522,13 @@ def ajouterPlante_maGrainotheque(request, plante_pk):
 
     return render(request, 'jardins/grainotheque_choisirMaGrainotheque.html', {'form': form,})
 
+@login_required
 def voir_maGrainotheque(request):
     graino = request.user.get_grainotheques
     if len(graino) == 0:
         return render(request, 'jardins/jardin_pasDegrainothequeEnregistre.html', {})
     elif len(graino) == 1:
-        return redirect('jardins:grainotheque_lire', slug=graino[0].grainotek.slug)
+        return redirect(graino[0])
     else:
         form = ChoisirMaGrainothequeForm(request, request.POST or None)
 

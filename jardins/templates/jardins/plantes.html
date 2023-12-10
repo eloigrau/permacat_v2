@@ -111,7 +111,7 @@
   </div>
   <div class="tab-pane fade" id="jardins">
           <div class="row justify-content-center">
-              <h4>Liste des plantes de nos jardins</h4>
+              <h4>Liste des plantes de nos jardins (visibles)</h4>
         <div class="col-sm-12 textcenter">
               {% if not request.user.is_authenticated %}
             <p>Vous devez être <a href="{% url 'login' %}?next={{ request.path }}">connecté</a> à la plateforme pour accéder à ce contenu</p>

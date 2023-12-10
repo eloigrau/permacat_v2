@@ -102,6 +102,7 @@ class GrainothequeForm(forms.ModelForm):
 
     def __init__(self, current_user, *args, **kwargs):
         super(GrainothequeForm, self).__init__(*args, **kwargs)
+        self.fields['email_contact'].initial = current_user.email
         #self.fields['referent'].choices = [(current_user.id, current_user), ] + [(u.id,u) for i, u in enumerate(Profil.objects.filter(adherent_jp=True).order_by('username')) if u != current_user]
 
 

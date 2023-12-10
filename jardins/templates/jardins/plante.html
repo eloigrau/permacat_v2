@@ -76,12 +76,9 @@
             {% if not forloop.last %}, {% endif %} {% endfor %}
         </p>
         {%endif%}
-        {% if request.user.get_jardins %}
-            <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_monJardin' plante.pk %}">Ajouter à mon jardin</a>
-        {%endif%}
-        {% if request.user.get_grainotheques %}
-            <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_maGrainotheque' plante.pk %}">Ajouter à ma grainothèque</a>
-        {%endif%}
+        <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_monJardin' plante.pk %}">Ajouter à mon jardin</a>
+        <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_maGrainotheque' plante.pk %}">Ajouter à ma grainothèque</a>
+
     </div>
 </div>
 

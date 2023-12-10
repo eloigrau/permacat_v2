@@ -481,13 +481,13 @@ class Profil(AbstractUser):
 
     @property
     def get_jardins(self,):
-        return set([i.jardin for i in self.jardin_suiveur.all()] +
-        list(self.auteur_jardin.all()) + list(self.referent_jardin.all()))
+        return list(set([i.jardin for i in self.jardin_suiveur.all()] +
+        list(self.auteur_jardin.all()) + list(self.referent_jardin.all())))
 
     @property
     def get_grainotheques(self,):
-        return set([i.grainotek for i in self.grainotheque_suiveur.all()] +
-                   list(self.auteur_grainotheque.all()) + list(self.referent_grainotheque.all()))
+        return list(set([i.grainotek for i in self.grainotheque_suiveur.all()] +
+                   list(self.auteur_grainotheque.all()) + list(self.referent_grainotheque.all())))
 
 class Profil_recherche(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)

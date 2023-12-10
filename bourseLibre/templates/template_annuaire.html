@@ -27,15 +27,12 @@
                         {% for profil in profils %}
                         <tr>
                             {% if profil.accepter_annuaire %}
-                            <td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil"
-                                id="user_avatar" %}</a></td>
+                            <td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil" id="user_avatar" %}</a></td>
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.email }}</a></td>
-                            <td>{%if profil.adresse.code_postal %}{{ profil.adresse.code_postal }}{% else %}-{% endif
-                                %}
+                            <td>{%if profil.adresse.code_postal %}{{ profil.adresse.code_postal }}{% else %}-{% endif %}
                             </td>
-                            <td>{%if profil.adresse.commune %}{{ profil.adresse.commune }} ({{
-                                profil|distance:request.user }} km) {% else %}-{% endif %}
+                            <td>{%if profil.adresse.commune %}{{ profil.adresse.commune }} ({{ profil|distance:request.user }} km) {% else %}-{% endif %}
                             </td>
                             {% else %}
                             <td>-</td>
@@ -84,8 +81,8 @@
         </div>
     </div>
 </div>
-<p class="textcenter textepetit">({{profils|length})</p>
 {% include 'pagination_new.html' %}
+<p class="textcenter textepetit">({{profils|length}})</p>
 <p class="textcenter textepetit">(*la distance est calculée en km à vol d'oiseau entre l'adresse indiquée sur votre
     profil, et l'adresse du collègue)</p>
 

@@ -18,7 +18,6 @@
                 <th>Type</th>
                 <th>Email</th>
                 <th>Commune</th>
-                <th>Distance</th>
             </tr>
         </thead>
         <tbody>
@@ -29,18 +28,18 @@
            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
             {% if not request.user.is_authenticated %}
                 {% if grainotheque.visibilite_annuaire == '0' %}
-                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} ({{ grainotheque|distance:request.user }} km){% else %}-{% endif %}</td>
                  {% else %}
                 <td> - </td>
                 {% endif %}
             {% else %}
                 {% if grainotheque.visibilite_annuaire == '0' or grainotheque.visibilite_annuaire == '1' %}
-                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} ({{ grainotheque|distance:request.user}} km) {% else %}-{% endif %}</td>
                 {% else %}
                 <td> - </td>
                 {% endif %}
             {% endif %}
-            <td>{{ grainotheque|distance:request.user }}</td>
+            <td></td>
         </tr>
         {% endfor %}
         </tbody>

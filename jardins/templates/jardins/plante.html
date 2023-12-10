@@ -30,21 +30,21 @@
     <div class="col-sm-12 col-md-9 col-lg-7 textcenter">
     <table class="table table-condensed ">
         <tbody>
-            <tr><td>Rang</td><td>{{plante.get_rang}}</td></tr>
+            <tr><td><i>Rang</i></td><td>{{plante.get_rang}}</td></tr>
             {% if plante.SOUS_FAMILLE %}
-            <tr><td>Sous-famille</td><td>{{plante.SOUS_FAMILLE}}</td></tr>
+            <tr><td>Sous-famille</i></td><td>{{plante.SOUS_FAMILLE}}</td></tr>
             {% endif %}
             {% if plante.FAMILLE %}
-            <tr><td>Famille</td><td>{{plante.FAMILLE}}</td></tr>
+            <tr><td>Famille</i></td><td>{{plante.FAMILLE}}</td></tr>
             {% endif %}
             {% if plante.ORDRE %}
-            <tr><td>Ordre</td><td>{{plante.ORDRE}}</td></tr>
+            <tr><td>Ordre</i></td><td>{{plante.ORDRE}}</td></tr>
             {% endif %}
             {% if plante.CLASSE %}
-            <tr><td>Classe</td><td>{{plante.CLASSE}}</td></tr>
+            <tr><td>Classe</i></td><td>{{plante.CLASSE}}</td></tr>
             {% endif %}
             {% if plante.get_nomvern %}
-            <tr><td>Autres noms</td><td>{{plante.get_nomvern}}</td></tr>
+            <tr><td>Autres noms</i></td><td>{{plante.get_nomvern}}</td></tr>
             {% endif %}
         </tbody>
     </table >
@@ -52,7 +52,7 @@
         <p> Habitat: {{plante.get_habitat}}</td></tr></p>
         {% endcomment %}
 </div></div>
-{% if plante.has_info_supp %}
+{% if plante.has_info_supp and request.user.is_superuser%}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-9 col-lg-7 textcenter">
             <p>(Cf :
@@ -75,6 +75,12 @@
         <p>Présente dans les grainothèques : {% for g in grainotheques %} <a href="{{g.get_absolute_url}}">{{g.titre}}</a>
             {% if not forloop.last %}, {% endif %} {% endfor %}
         </p>
+        {%endif%}
+        {% if request.user.get_jardins %}
+            <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_monJardin' plante.pk %}">Ajouter à mon jardin</a>
+        {%endif%}
+        {% if request.user.get_grainotheques %}
+            <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_maGrainotheque' plante.pk %}">Ajouter à ma grainothèque</a>
         {%endif%}
     </div>
 </div>

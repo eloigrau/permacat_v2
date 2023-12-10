@@ -181,6 +181,19 @@ class PlanteDeJardinForm(forms.ModelForm):
         instance.save()
         return instance
 
+class AjouterPlanteDeJardinAMonJardinForm(forms.ModelForm):
+    class Meta:
+        model = PlanteDeJardin
+        fields = ['nom', ]
+
+    def save(self, jardin, infos, plante):
+        instance = super(PlanteDeJardinForm, self).save(commit=False)
+        instance.jardin = jardin
+        instance.infos = infos
+        instance.plante = plante
+        instance.save()
+        return instance
+
 class InfoPlanteForm(forms.ModelForm):
     class Meta:
         model = InfoPlante
@@ -194,3 +207,18 @@ class ContactParticipantsForm(forms.Form):
 
 
 
+class ChoisirMonJardinForm(forms.Form):
+    jardin = forms.ModelChoiceField(queryset=Jardin.objects.all(), required=True,
+                              label="Choisir quel jardin", )
+
+    def __init__(self, request, *args, **kwargs):
+        super(ChoisirMonJardinForm, self).__init__(*args, **kwargs)
+        self.fields["jardin"].choices = [('', '(Choisir un jardin)'), ] + [(x.pk, x.get_titreEtCommune()) for x in request.user.get_jardins]
+
+class ChoisirMaGrainothequeForm(forms.Form):
+    grainotheque = forms.ModelChoiceField(queryset=Grainotheque.objects.all(), required=True,
+                              label="Choisir quelle grainothèque", )
+
+    def __init__(self, request, *args, **kwargs):
+        super(ChoisirMaGrainothequeForm, self).__init__(*args, **kwargs)
+        self.fields["grainotheque"].choices = [('', '(Choisir ma grainothèque)'), ] + [(x.pk, x.get_titreEtCommune()) for x in request.user.get_grainotheques]

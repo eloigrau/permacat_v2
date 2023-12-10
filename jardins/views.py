@@ -12,7 +12,8 @@ from bourseLibre.settings.production import LOCALL
 from bourseLibre.forms import AdresseForm4
 from bourseLibre.models import Asso, Profil, Salon
 from .forms import Plante_rechercheForm, GrainothequeForm, GrainothequeChangeForm, JardinForm, JardinChangeForm, \
-    GraineForm, InfoGraineForm, ContactParticipantsForm, SalonJardinForm, PlanteDeJardinForm, InfoPlanteForm
+    GraineForm, InfoGraineForm, ContactParticipantsForm, SalonJardinForm, PlanteDeJardinForm, InfoPlanteForm, \
+    ChoisirMonJardinForm, ChoisirMaGrainothequeForm
 from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, PlanteDeJardin, InfoPlante, \
     DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel, RTG_import
 from .filters import JardinCarteFilter, GrainoCarteFilter
@@ -423,7 +424,7 @@ class AjouterJardin(CreateView):
 
         return redirect("jardins:jardin_ajouterAdresse", slug=self.object.slug)
 
-
+@login_required
 def jardin_ajouterAdresse(request, slug):
     jardin = get_object_or_404(Jardin, slug=slug)
     form_adresse = AdresseForm4(request.POST or None)
@@ -436,6 +437,7 @@ def jardin_ajouterAdresse(request, slug):
 
     return render(request, 'jardins/jardin_ajouterAdresse.html', {'jardin':jardin, 'form_adresse':form_adresse })
 
+@login_required
 def jardin_ajouterSalon(request, slug):
     form = SalonJardinForm(request.POST or None)
     jardin = get_object_or_404(Jardin, slug=slug)
@@ -444,6 +446,93 @@ def jardin_ajouterSalon(request, slug):
         return redirect(salon)
 
     return render(request, 'jardins/jardin_ajouterSalon.html', {'form': form, 'jardin':jardin})
+
+@login_required
+def jardin_ajouterPlante_pk(request, jardin_pk, plante_pk):
+    jardin = get_object_or_404(Jardin, pk=jardin_pk)
+    plante = Plante.objects.get(pk=plante_pk)
+    form = PlanteDeJardinForm(request.POST or None)
+    form_infos = InfoPlanteForm(request.POST or None)
+    if form.is_valid() and form_infos.is_valid():
+        infos = form_infos.save()
+        planteDeJardin = form.save(jardin, infos, plante)
+        return redirect(jardin)
+
+    return render(request, 'jardins/jardin_ajouterPlante_pk.html', {'jardin':jardin, 'form':form , 'form_infos':form_infos , "plante":plante})
+
+def ajouterPlante_monJardin(request, plante_pk):
+    jardins = request.user.get_jardins
+    if len(jardins) == 0:
+        return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
+    elif len(jardins) == 1:
+        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=jardins[0].jardin.pk, plante_pk=plante_pk)
+    else:
+        form = ChoisirMonJardinForm(request, request.POST or None)
+
+    if form.is_valid():
+        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=form.cleaned_data['jardin'].pk, plante_pk=plante_pk)
+
+    return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
+
+
+def voir_monJardin(request):
+    jardins = request.user.get_jardins
+    if len(jardins) == 0:
+        return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
+    elif len(jardins) == 1:
+        return redirect('jardins:jardin_lire', slug=jardins[0].jardin.slug)
+    else:
+        form = ChoisirMonJardinForm(request, request.POST or None)
+
+    if form.is_valid():
+        return redirect(form.cleaned_data['jardin'])
+
+    return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
+
+
+@login_required
+def graino_ajouterGraine_pk(request, graino_pk, plante_pk):
+    graino = get_object_or_404(Grainotheque, pk=graino_pk)
+    plante = Plante.objects.get(pk=plante_pk)
+    form = GraineForm(request.POST or None)
+    form_infos = InfoGraineForm(request.POST or None)
+    if form.is_valid() and form_infos.is_valid():
+        infos = form_infos.save()
+        graine = form.save(graino, infos, plante)
+        return redirect(graino)
+
+    return render(request, 'jardins/grainotheque_ajouterGraine_pk.html', {'graino':graino, 'form':form , 'form_infos':form_infos, "plante":plante})
+
+
+
+def ajouterPlante_maGrainotheque(request, plante_pk):
+    graino = request.user.get_grainotheques
+    if len(graino) == 0:
+        return render(request, 'jardins/jardin_pasDeGrainothèqueEnregistre.html', {})
+    elif len(graino) == 1:
+        return redirect('jardins:graino_ajouterGraine_pk', graino_pk=graino[0].grainotek.pk, plante_pk=plante_pk)
+    else:
+        form = ChoisirMaGrainothequeForm(request, request.POST or None)
+
+    if form.is_valid():
+        return redirect('jardins:graino_ajouterGraine_pk',graino_pk=form.cleaned_data['grainotheque'].pk, plante_pk=plante_pk)
+
+    return render(request, 'jardins/grainotheque_choisirMaGrainotheque.html', {'form': form,})
+
+def voir_maGrainotheque(request):
+    graino = request.user.get_grainotheques
+    if len(graino) == 0:
+        return render(request, 'jardins/jardin_pasDegrainothequeEnregistre.html', {})
+    elif len(graino) == 1:
+        return redirect('jardins:grainotheque_lire', slug=graino[0].grainotek.slug)
+    else:
+        form = ChoisirMaGrainothequeForm(request, request.POST or None)
+
+    if form.is_valid():
+        return redirect(form.cleaned_data['grainotheque'])
+
+    return render(request, 'jardins/grainotheque_choisirMaGrainotheque.html', {'form': form,})
+
 
 @login_required
 def jardin_modifierAdresse(request, slug):

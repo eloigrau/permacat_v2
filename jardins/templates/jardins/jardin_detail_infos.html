@@ -110,6 +110,9 @@
 		  	<a href="{% url 'jardins:jardin_ajouterAdresse' slug=jardin.slug %}">Ajouter une adresse</a>
 			{% endif %}
 		{% endif %}
+			{% if jardin.adresse.commune%}
+				<p>à {{jardin.adresse.commune}}</p>
+			{% endif %}
 {% endif %}
 </div>
 					</td>

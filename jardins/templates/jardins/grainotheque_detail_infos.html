@@ -127,6 +127,9 @@
             }
         </script>
         {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+			{% if grainotheque.adresse.commune%}
+				<p>à {{grainotheque.adresse.commune}}</p>
+			{% endif %}
 	{% endif %}
 {% endif %}
 </div>

@@ -257,6 +257,11 @@ class Jardin(models.Model):
     def getDistance(self, adresse):
         return self.adresse.getDistance(adresse)
 
+    def get_titreEtCommune(self):
+        if self.adresse:
+            return self.titre + " (" + str(self.adresse.get_commune) + ")"
+        return self.titre
+
 class Grainotheque(models.Model):
     categorie = models.CharField(max_length=3,
         choices=Choix.type_grainotheque,
@@ -277,6 +282,11 @@ class Grainotheque(models.Model):
     description = models.TextField(null=True, blank=True, help_text="Un descriptif bref de la grianothèque et son fonctionnement")
 
     def __str__(self):
+        return self.titre
+
+    def get_titreEtCommune(self):
+        if self.adresse:
+            return self.titre + " (" + str(self.adresse.get_commune) + ")"
         return self.titre
 
     def get_absolute_url(self):

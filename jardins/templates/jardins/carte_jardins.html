@@ -29,6 +29,13 @@
         <i class="fa fa-plus"></i>&nbsp; Ajouter un jardin
     </button>
 </a>
+{% if request.user.get_jardins %}
+<a href="{% url 'jardins:voir_monJardin' %}">
+    <button type="button" class="btn  btn-success" >
+        <i class="fa fa-arrow-right"></i>&nbsp; Mon Jardin
+    </button>
+</a>
+{% endif %}
   </div>
   </div>
 

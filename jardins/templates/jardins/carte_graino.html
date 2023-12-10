@@ -29,6 +29,14 @@
         <i class="fa fa-plus"></i>&nbsp; Ajouter une grainothèque
     </button>
 </a>
+
+{% if request.user.get_jardins %}
+<a href="{% url 'jardins:voir_maGrainotheque' %}">
+    <button type="button" class="btn  btn-success" >
+        <i class="fa fa-arrow-right"></i>&nbsp; Ma Grainothèque
+    </button>
+</a>
+{% endif %}
   </div>
 </div>
 

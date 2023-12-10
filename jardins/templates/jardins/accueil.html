@@ -32,7 +32,7 @@
 {% if not request.user.is_anonymous %}
     {% if request.user.adherent_jp %}
     <p class="textcenter">
-        <a class="btn btn-success" href="{% url 'inscription_jp' %}"> Je suis inscrit -> Je me désinscris du groupe en
+        <a class="btn btn-primary" href="{% url 'inscription_jp' %}"> Je suis inscrit -> Je me désinscris du groupe en
             cliquant ici</a>
     </p>
     {% else %}
@@ -60,7 +60,7 @@
 </section>
 <!-- end banner -->
 <!-- about -->
-<div id="about" class="about">
+<div id="intro" class="about">
     <div class="container-fluid">
         <div class="row d_flex">
             <div class="col-xl-5 col-lg-5 col-md-12 padding_lert">
@@ -71,22 +71,15 @@
             <div class="col-xl-7 col-lg-7 col-md-12">
                 <div class="about_text">
                     <div class="titlepage">
-                        <h2>Une Jardinothèque ?</h2>
+                        <h2>Jardinothèque ?</h2>
                         <ul class="check-list">
-                            <li> Plateforme 100% gratuite et sans publicité qui a pour but de créer le réseau en ligne
+                            <li> C'est l'annuaire et la <a href="{% url 'jardins:carte_graino'  %}">carte des
+                                grainothèques</a> et <a href="{% url 'jardins:carte_jardins'  %}">des jardins</a>.
+                            </li>
+                            <li> Cette plateforme est 100% gratuite et sans publicité qui a pour but de créer le réseau en ligne
                                 des jardins et des grainothèques du Pays Catalan.
                             </li>
-                            <li> Développée bénévolement par <a href="{% url 'permagora:bienvenue' %}">PermAgora</a>,
-                                dans le cadre de la collaboration avec <a
-                                        href="{% url 'presentation_asso' asso='pc' %}">PermaCat</a> et le groupe de
-                                travail initié par le <a href="">Pays Pyrenées Mediterannée</a> dans le cadre du Projet
-                                Alimentaire Territorial
-                                "Mar i Munt".
-                            </li>
-                            <li> Visualisez la <a href="{% url 'jardins:carte_graino'  %}">carte des
-                                grainothèques</a> ou <a href="{% url 'jardins:carte_jardins'  %}">celle des jardins</a>.
-                            </li>
-                            <li> Ajoutez et décrivez les plantes de votre jardin (graines, boutures, arbres, ...)</li>
+                            <li>Ajoutez votre jardin ou votre grainothèque puis ajoutez-y et décrivez les plantes de votre jardin, celles que vous voulez échanger ou qui pourraient être multipliées...</li>
                             <li> Communiquez et partagez entre jardiniers et jardinières !</li>
                         </ul>
                     </div>
@@ -103,20 +96,18 @@
             <div class="col-xl-7 col-lg-7 col-md-12 order_2">
                 <div class="our_text">
                     <div class="titlepage">
-                        <h2>Inscrivez votre jardin et/ou votre grainothèque</h2>
+                        <h2>Participer à la grainothèque c'est :</h2>
+                        <p>
                         <ul class="check-list">
-                            <li>Vous avez un jardin ou une grainothèque ? <a href="{% url 'senregistrer' %}">Inscrivez-vous</a>
-                                sur la plateforme de Perma.Cat, puis vous pourrez ajouter votre jardin et/ou votre
-                                grainothèque ici.
+                            <li>échanger des conseils, des services, des graines, des boutures, des plantes...</li>
+                            <li>être visible (si vous le souhaitez) par tous les potentiels jardiniers qui voudraient
+                                vous aider
                             </li>
-                            <li>Si vous ne souhaitez pas vous inscrire à la plateforme, vous pouvez simplement inscrire
-                                votre jardin pour être tenu informé de la suite et participer aux échanges
-                            </li>
-                            <li>Vous pouvez aussi vous inscrire à la newsletter afin de recevoir des informations par
-                                mail (quelques uns par an)
-                            </li>
+                            <li>profiter de ce que les autres jardins partagent</li>
+                            <li>multiplier, échanger, et gérer vos plantes et vos graines</li>
+                            <li>co-créer un territoire écologique et résilient !</li>
                         </ul>
-
+                        </p>
                     </div>
                 </div>
             </div>
@@ -160,18 +151,21 @@
             <div class="col-xl-7 col-lg-7 col-md-12">
                 <div class="our_fruit_text">
                     <div class="titlepage">
-                        <h2>Participer à la grainothèque c'est :</h2>
-                        <p>
+
+                        <h2>Inscrivez votre jardin et/ou votre grainothèque</h2>
                         <ul class="check-list">
-                            <li>échanger des conseils, des services, des graines, des boutures, des plantes...</li>
-                            <li>être visible (si vous le souhaitez) par tous les potentiels jardiniers qui voudraient
-                                vous aider
+                            <li>Vous avez un jardin ou une grainothèque ? <a href="{% url 'senregistrer' %}">Inscrivez-vous</a>
+                                sur la plateforme de Perma.Cat, puis vous pourrez ajouter votre jardin et/ou votre
+                                grainothèque ici.
                             </li>
-                            <li>profiter de ce que les autres jardins partagent</li>
-                            <li>multiplier, échanger, et gérer vos plantes et vos graines</li>
-                            <li>co-créer un territoire écologique et résilient !</li>
+                            <li>Si vous ne souhaitez pas vous inscrire à la plateforme, vous pouvez simplement inscrire
+                                votre jardin pour être tenu informé de la suite et participer aux échanges
+                            </li>
+                            <li>Vous pouvez aussi vous inscrire à la newsletter afin de recevoir des informations par
+                                mail (quelques uns par an)
+                            </li>
                         </ul>
-                        </p>
+
                     </div>
                 </div>
             </div>
@@ -185,27 +179,21 @@
             <div class="col-xl-7 col-lg-7 col-md-12 order_2">
                 <div class="our_text">
                     <div class="titlepage">
-                        <h2>Qu'est ce que le Forum ?</h2>
+                        <h2>Qu'est ce que cela implique d'inscrire mon jardin / ma grainothèque ?</h2>
                         <ul class="check-list">
-                            <li>C'est un espace de discussion et de partage d'information. C'est la partie consacrée aux
-                                Jardins
-                                Partagés du Forum de Perma.Cat qui regroupe différents collectifs
+
+                            <li>Vous choisissez votre niveau de visibilité sur la plateforme
                             </li>
-                            <li>Le Forum permet de poser des questions aux autres participant.es, se tenir informer des
-                                actions en cours
-                                dans les différents jardins et au delà.
+                            <li>Vous pouvez indiquer la position de votre jardin, plus ou moins approximativement (pour
+                                indiquer dans quelle zone/village il se situe)
                             </li>
-                            <li>C'est une source d'informations diverses, construite collaborativement (chacun peut
-                                apporter sa
-                                contribution)
+                            <li>Vous serez informé.e de ce qu'il se passe dans les autres jardins participants</li>
+                            <li>Vous avez la possibilité de créer des "salons de discussion privés" afin d'avoir un espace privé pour discuter
                             </li>
-                            <li>Il est ouvert à différents groupes, afin de donner un point de rencontre aux différents
-                                réseaux
+                            <li>Vous pourrez publier sur le forum, demander de l'aide ou faire bénéficier les autres de
+                                votre savoir
                             </li>
-                            <li>Il est nécessaire de s'inscrire personnellement pour avoir accès au Forum</li>
-                            <li>Mais si vous souhaitez seulement participer à la jardinothèque (avoir accès à la carte,
-                                l'annuaire et aux contacts des jardins) il n'est pas nécessaire de s'inscrire personnellement
-                            </li>
+                            <li>Vous pouvez vous désinscrire totalement à tout moment, si cela ne vous convient pas</li>
                         </ul>
 
                     </div>
@@ -232,21 +220,28 @@
             <div class="col-xl-7 col-lg-7 col-md-12">
                 <div class="about_text">
                     <div class="titlepage">
-                        <h2>Qu'est ce que cela implique d'inscrire mon jardin / ma grainothèque ?</h2>
-                        <ul class="check-list">
 
-                            <li>Vous choisissez votre niveau de visibilité sur la plateforme
+                        <h2>Qu'est ce que le Forum ?</h2>
+                        <ul class="check-list">
+                            <li>C'est un espace de discussion et de partage d'information. C'est la partie consacrée aux
+                                Jardins
+                                Partagés du Forum de Perma.Cat qui regroupe différents collectifs
                             </li>
-                            <li>Vous pouvez indiquer la position de votre jardin, plus ou moins approximativement (pour
-                                indiquer dans quelle zone/village il se situe)
+                            <li>Le Forum permet de poser des questions aux autres participant.es, se tenir informer des
+                                actions en cours
+                                dans les différents jardins et au delà.
                             </li>
-                            <li>Vous serez informé.e de ce qu'il se passe dans les autres jardins participants</li>
-                            <li>Vous avez la possibilité de créer des "salons de discussion privés" afin d'avoir un espace privé pour discuter
+                            <li>C'est une source d'informations diverses, construite collaborativement (chacun peut
+                                apporter sa
+                                contribution)
                             </li>
-                            <li>Vous pourrez publier sur le forum, demander de l'aide ou faire bénéficier les autres de
-                                votre savoir
+                            <li>Il est ouvert à différents groupes, afin de donner un point de rencontre aux différents
+                                réseaux
                             </li>
-                            <li>Vous pouvez vous désinscrire totalement à tout moment, si cela ne vous convient pas</li>
+                            <li>Il est nécessaire de s'inscrire personnellement pour avoir accès au Forum</li>
+                            <li>Mais si vous souhaitez seulement participer à la jardinothèque (avoir accès à la carte,
+                                l'annuaire et aux contacts des jardins) il n'est pas nécessaire de s'inscrire personnellement
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -255,6 +250,24 @@
     </div>
 </div>
 
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 textcenter">
+            <ul class="check-list">
+                <li>Cette plateforme est développée bénévolement par <a
+                        href="{% url 'permagora:bienvenue' %}">PermAgora</a>,
+                    dans le cadre de la collaboration avec <a
+                            href="{% url 'presentation_asso' asso='pc' %}">PermaCat</a> et le groupe de
+                    travail initié par le <a href="">Pays Pyrenées Mediterannée</a> dans le cadre du Projet
+                    Alimentaire Territorial "Mar i Munt".
+                </li>
+                <li>La plateforme est évolutive, elle peut s'adapter à vos besoins</li>
+                <li> Pour toute question, suggestion ou remarque, n'hésitez pas à <a href="{% url 'contact_admins' %}" class="btn btn-light  btn-sm"><i
+                        class='fa fa-envelope iconleft '></i> Nous contacter</a></li>
+                <li>Vous pouvez <a href="{% url 'adhesion_entree' %}" class="btn btn-light btn-sm">faire un don à
+                    l'association ou au développeur bénévole</a> ;)
+                </li>
+            </ul>
+    </div></div>
 {% if request.user.is_superuser and msg %}
 <hr>
 <div class="row justify-content-center">

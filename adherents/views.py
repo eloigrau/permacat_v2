@@ -57,6 +57,7 @@ class ListeAdherents(ListView):
         filter = AdherentsCarteFilter(self.request.GET, qs)
         context["filter"] = filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_conf66_'))
         return context
 
 
@@ -86,8 +87,9 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
         return is_membre_bureau(self.request.user)
 
     def get_success_url(self):
+        desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
+        action.send(self.request.user, verb='adherent_conf66_supprimer', url=reverse('adherents:accueil'), description=desc)
         return reverse('adherents:accueil')
-
 
 class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     model = Adherent
@@ -97,6 +99,19 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         a = Adherent.objects.get(pk=self.kwargs['pk'])
         return is_membre_bureau(self.request.user) or self.request.user == a.profil
+
+
+    def form_valid(self, form):
+        desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
+            form.changed_data) + ")"
+        action.send(self.request.user, verb='adherent_conf66_modifier', action_object=self.object,
+                    url=self.object.get_absolute_url(), description=desc)
+        titre = "[PCAT_adherents] Modification de l'adherent : " + str(self.object)
+        action.send(self.request.user, verb='emails', url=self.object.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 
 class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     model = Adresse
@@ -115,6 +130,13 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return self.adherent.get_absolute_url()
 
+    def form_valid(self, form):
+        desc =" a modifié l'adresse de l'adhérent : " + str(self.adherent) + " (" + str(form.changed_data)+ ")"
+        action.send(self.request.user, verb='adherent_conf66_modifAdresse', action_object=self.object, url=self.adherent.get_absolute_url(), description=desc)
+        titre = "[PCAT_adherents] Modification de l'adresse de l'adherent" + str(self.adherent)
+        action.send(self.request.user, verb='emails', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+        return super().form_valid(form)
+
 login_required
 @user_passes_test(is_membre_bureau)
 def adherent_ajouter(request):
@@ -126,13 +148,18 @@ def adherent_ajouter(request):
         adresse = Adresse.objects.create(
             rue=form.cleaned_data['rue'],
             code_postal=form.cleaned_data['code_postal'],
+            commune=form.cleaned_data['commune'],
             telephone=form.cleaned_data['telephone'],
-            latitude=form.cleaned_data['latitude'],
-            longitude=form.cleaned_data['longitude'],
         )
         adherent = form.save(commit=False)
         adherent.adresse = adresse
         adherent = form.save()
+        desc = " a ajouté l'adhérent : " + str(adherent.nom) + ", " + str(adherent.prenom)
+        action.send(request.user, verb='adherent_conf66_ajouter', action_object=adherent, url=adherent.get_absolute_url(), description=desc)
+        titre = "[PCAT_adherents] Ajout de l'adherent : " + str(adherent)
+        action.send(request.user, verb='emails', url=adherent.get_absolute_url(), titre=titre,
+                    message=str(request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+
         return redirect(adherent)
 
     return render(request, 'adherents/adherent_ajouter.html', {"form": form})

@@ -21,12 +21,10 @@ class AdherentForm(forms.ModelForm):
     code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)
     commune = forms.CharField(label="Commune", initial="Perpignan", required=False)
     telephone = forms.CharField(label="Téléphone", required=False)
-    latitude = forms.FloatField(label="Latitude", initial="42", required=False,)
-    longitude = forms.FloatField(label="Longitude", initial="2", required=False,)
 
     class Meta:
         model = Adherent
-        fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape','rue', 'code_postal', 'commune', 'telephone', 'latitude', 'longitude',  ]
+        fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape','rue', 'code_postal', 'commune', 'telephone', ]
 
         widgets = {
             'date_cotisation': forms.DateInput(

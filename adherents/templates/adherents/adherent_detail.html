@@ -14,7 +14,7 @@
 
 <div class="row rowcentre" id="titre">
     <div class="col-sm-12 textcenter">
-        {%if request.user.is_superuser or request.user.estmembre_bureau_conf or request.user == adherent.profil %}
+        {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
         <div class="btn-group">
             <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_modifier' pk=adherent.pk %}{% endif %}">
                 <button type="button" class="btn btn-sm btn-warning">
@@ -95,7 +95,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        {%if request.user.is_superuser or request.user.estmembre_bureau_conf or request.user == adherent.profil  %}
+        {%if request.user.is_superuser or request.user.estmembre_bureau_conf  %}
         <a href="{% url 'adherents:adherents_modifier_adresse' adherent.adresse.pk %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier

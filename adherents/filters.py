@@ -7,12 +7,16 @@ from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
 annees = ('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023')
 
 
+def get_choix_Production():
+    return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
+
+
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
 
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
 
-    production_ape = django_filters.ChoiceFilter(choices=[(p, dict_ape[p]) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct()], label="Production")
+    production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production")
 
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
 

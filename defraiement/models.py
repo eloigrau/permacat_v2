@@ -166,7 +166,7 @@ class Reunion(models.Model):
 class Distance_ParticipantReunion(models.Model):
     reunion = models.ForeignKey(Reunion, on_delete=models.CASCADE, null=True, blank=True, )
     participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
-    distance = models.CharField(max_length=50, blank=True, null=True, verbose_name="Distance (en km)")
+    distance = models.CharField(max_length=50, blank=True, null=True, verbose_name="Distance aller (en km)")
     contexte_distance = models.TextField(blank=True, null=True, verbose_name="Description du contexte")
     type_trajet = models.CharField(max_length=30,
                                  choices=(Choix.type_trajet),

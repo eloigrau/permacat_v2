@@ -2,6 +2,7 @@
 {% load ateliers_filters %}
 {% load fontawesome %}
 {% load hitcount_tags %}
+{% load app_filters %}
 
 {% block subtitle %}
 
@@ -167,7 +168,7 @@
 						Article associé :
 					</td>
 					<td class="proprieteAtelier">
-						<a href="{{ atelier.article.get_absolute_url}}">{{ atelier.article.titre}}</a>
+						<a href="{{ atelier.article.get_absolute_url}}">{{ atelier.article.titre|couperTexte:30}}</a>
 					</td>
 				</tr>
 			{% endif %}

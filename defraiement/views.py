@@ -9,8 +9,9 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
-from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm
-from .models import Reunion, ParticipantReunion, Choix, get_typereunion
+from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, \
+    ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm
+from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 import itertools
 import csv
@@ -22,7 +23,7 @@ def lireReunion(request, slug):
     if not reunion.est_autorise(request.user):
         return render(request, 'notMembre.html', {"asso": str(reunion.asso)})
 
-    liste_participants = [(x, x.getDistance_route(reunion), x.get_url(reunion), x.get_gmaps_url(reunion)) for x in reunion.participants.all()]
+    liste_participants = [(x, x.getDistance_route(reunion), x.get_url(reunion), x.get_gmaps_url(reunion), x.getDistance_objet(reunion)) for x in reunion.participants.all()]
 
     context = {'reunion': reunion, 'liste_participants': liste_participants, }
 
@@ -463,20 +464,28 @@ def lireReunion_id(request, id):
     return lireReunion(request, atelier)
 
 
-from django.http import HttpResponse
-from django.template import Context, Template
-from django.views.decorators.csrf import csrf_exempt
-from .forms import FormForm
 
-@csrf_exempt
-def pageTest(request):
-    form = FormForm()
-    if request.method == 'POST':
-        form = FormForm(request.POST)
+class ModifierDistance_ParticipantReunion(UpdateView):
+    model = Distance_ParticipantReunion
+    form = Distance_ParticipantReunionForm
+    template_name_suffix = '_modifier'
+    fields = ['type_trajet', 'distance', 'contexte_distance',]
 
-    t = Template("""<form method="post" action=".">{{f}}<input type="submit"><form>""")
-    c = {'f': form.as_p()}
-    return HttpResponse(t.render(Context(c)))
+#
+# from django.http import HttpResponse
+# from django.template import Context, Template
+# from django.views.decorators.csrf import csrf_exempt
+# from .forms import FormForm
+#
+# @csrf_exempt
+# def pageTest(request):
+#     form = FormForm()
+#     if request.method == 'POST':
+#         form = FormForm(request.POST)
+#
+#     t = Template("""<form method="post" action=".">{{f}}<input type="submit"><form>""")
+#     c = {'f': form.as_p()}
+#     return HttpResponse(t.render(Context(c)))
 
 
 

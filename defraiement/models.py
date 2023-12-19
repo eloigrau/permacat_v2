@@ -21,7 +21,7 @@ class Choix:
       }
 
     type_reunion = [(str(i), y) for i, y in enumerate([x for x in list(itertools.chain.from_iterable(type_reunion_asso.values()))])]
-
+    type_trajet = ('0', 'Véhicule personnel'), ('1', 'Covoiturage'), ('2', 'Distanciel')
     ordre_tri_reunions = {
                         "Date <":'-start_time',
                         "Date >":'start_time',
@@ -82,6 +82,10 @@ class ParticipantReunion(models.Model):
         url = "https://www.google.com/maps/dir/'" + latlon_1 + "'/'" + latlon_2 +"'"
 
         return url
+
+    def getDistance_objet(self, reunion):
+        distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
+        return distanceObject
 
     def getDistance_route(self, reunion, recalculer=False):
         distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
@@ -158,14 +162,21 @@ class Reunion(models.Model):
     def get_logo_nomgroupe_html_taille(self, taille=20):
         return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
+
 class Distance_ParticipantReunion(models.Model):
     reunion = models.ForeignKey(Reunion, on_delete=models.CASCADE, null=True, blank=True, )
     participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
-    distance = models.TextField(blank=True, null=True, verbose_name="Distance calculée")
+    distance = models.CharField(max_length=50, blank=True, null=True, verbose_name="Distance (en km)")
     contexte_distance = models.TextField(blank=True, null=True, verbose_name="Description du contexte")
+    type_trajet = models.CharField(max_length=30,
+                                 choices=(Choix.type_trajet),
+                                 default='0', verbose_name="Type de trajet")
 
     class Meta:
         unique_together = (('reunion', 'participant',), )
+
+    def get_absolute_url(self):
+        return reverse('defraiement:lireReunion', kwargs={'slug': self.reunion.slug})
 
     def save(self, calculerDistance=False, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -181,23 +192,28 @@ class Distance_ParticipantReunion(models.Model):
             return self.calculerDistance()
 
     def calculerDistance(self):
-        try:
-            reponse = requests.get(self.participant.get_url(self.reunion))
-            data = simplejson.loads(reponse.text)
-            if data["code"] != "Ok":
-                raise Exception("erreur de calcul de trajet")
-            routes = data["routes"]
-            self.contexte_distance = str(routes)
-            dist = 100000000
-            for r in routes[0]:
-                if routes[0]["distance"] < dist:
-                    dist = float(routes[0]["distance"])
-            if dist == 100000000:
+        if self.type_trajet == '0':
+            try:
+                reponse = requests.get(self.participant.get_url(self.reunion))
+                data = simplejson.loads(reponse.text)
+                if data["code"] != "Ok":
+                    raise Exception("erreur de calcul de trajet")
+                routes = data["routes"]
+                self.contexte_distance = str(routes)
+                dist = 100000000
+                for r in routes[0]:
+                    if routes[0]["distance"] < dist:
+                        dist = float(routes[0]["distance"])
+                if dist == 100000000:
+                    dist = -1
+            except:
                 dist = -1
-        except:
-            dist = -1
-        self.distance = str(round(dist/1000.0, 2))
-        self.save(calculerDistance=False)
+            self.distance = str(round(dist/1000.0, 2))
+            self.save(calculerDistance=False)
+        elif self.type_trajet =='2':
+            self.distance = 0
+        else:
+            self.distance = 0
         return self.distance
 
 

@@ -41,6 +41,8 @@ urlpatterns = [
     path(r'ajouterParticipant/<str:asso_slug>', views.ajouterParticipant, name='ajouterParticipant'),
     path(r'modifierParticipant/<int:id>',
         login_required(views.ModifierParticipant.as_view(), login_url='/auth/login/'), name='modifierParticipant'),
+    path(r'modifierTrajet/<int:pk>',
+        login_required(views.ModifierDistance_ParticipantReunion.as_view(), login_url='/auth/login/'), name='modifierTrajet'),
     path(r'modifierParticipantReunion/<int:id>', views.modifierParticipantReunion, name='modifierParticipantReunion'),
 
     path(r'supprimerParticipant/<int:id>',
@@ -54,5 +56,5 @@ urlpatterns = [
     #path(r'recapitulatif/<str:asso_slug>/<int:annee>', views.recapitulatif_annee, name='recapitulatif_annee'),
     path(r'export_recapitulatif/<str:asso>/<str:type_reunion>/<str:type_export>/<str:prixMax>/<str:tarifKilometrique>/', views.export_recapitulatif, name='export_recapitulatif'),
     url(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),
-    url(r'pageTest/$', views.pageTest, name='pageTest'),
+#    url(r'pageTest/$', views.pageTest, name='pageTest'),
 ]

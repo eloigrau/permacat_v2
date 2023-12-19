@@ -4,7 +4,7 @@ import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso
 from photologue.models import Album
-from .models import Choix, ParticipantReunion, Reunion
+from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion
 from django.core.exceptions import ValidationError
 
 class DateInput(forms.DateInput):
@@ -113,6 +113,10 @@ class AdresseReunionForm(forms.ModelForm):
         return instance
 
 
+class Distance_ParticipantReunionForm(forms.ModelForm):
+    class Meta:
+        model = Distance_ParticipantReunion
+        fields = ['type_trajet', 'distance', 'contexte_distance',]
 
 
 

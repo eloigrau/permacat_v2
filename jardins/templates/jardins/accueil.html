@@ -251,9 +251,9 @@
     </div>
 </div>
 
-<div class="row justify-content-center">
-    <div class="col-sm-12 col-md-10 textcenter">
-            <ul class="check-list">
+<div id="infos_complementaires" class="about">
+    <div class="container-fluid">
+            <ul class="check-list2">
                 <li>Cette plateforme est développée bénévolement par <a
                         href="{% url 'permagora:bienvenue' %}">PermAgora</a>,
                     dans le cadre de la collaboration avec <a
@@ -268,7 +268,8 @@
                     l'association ou au développeur bénévole</a> ;)
                 </li>
             </ul>
-    </div></div>
+    </div>
+</div>
 {% if request.user.is_superuser and msg %}
 <hr>
 <div class="row justify-content-center">

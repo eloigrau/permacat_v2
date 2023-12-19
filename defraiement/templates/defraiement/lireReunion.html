@@ -1,6 +1,7 @@
 {% extends 'base_defraiement.html' %}
 {% load fontawesome %}
 {% load hitcount_tags %}
+{% load app_filters %}
 
 {% block subtitle %}
 
@@ -49,7 +50,7 @@
     </p>
 
      {% if reunion.article %}
-            <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre}}</a></p>
+            <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre|couperTexte:30}}</a></p>
 {% endif %}
         </div>
     </div>
@@ -60,7 +61,7 @@
 
 			{% if reunion.article %}
                 <span class="badge badge-info">
-                Article associé : <a href="{{ reunion.article.get_absolute_url}}">{{ reunion.article.titre}}</a>
+                Article associé : <a href="{{ reunion.article.get_absolute_url}}">{{ reunion.article.titre|couperTexte:30}}</a>
                 </span>
             {% endif %}
 		</p>
@@ -107,10 +108,10 @@
             <table class="table table-condensed ">
                 <tr>
                 <th>Participant (conducteur)</th>
-                <th>distance</th>
-
+                <th>Distance</th>
                 <th>GMaps</th>
-                <th>Supprimer</th>
+                <th>Type de trajet</th>
+                <th>Modifier/Supprimer</th>
                 </tr>
             </thead>
 			<tbody>
@@ -126,11 +127,14 @@
 					</td>
 
                     <td>
-                         <a href="{{part.3}}" target='_blank'> lien </a>
+                         <a href="{{part.3}}" target='_blank'> Gmap </a>
                     </td>
 
                     <td>
-                        <a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
+                         {{part.4.get_type_trajet_display}}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-warning textleft" href="{% url 'defraiement:modifierTrajet' pk=part.4.pk %}"> modifier </a><a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
                     </td>
 				</tr>
             {% endfor %}

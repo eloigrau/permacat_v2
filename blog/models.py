@@ -148,7 +148,7 @@ class Choix:
         return 'img/logos/'+ Choix.logo_asso[abreviation]
         #return 'img/logos/nom_'+abreviation+'.png'
 
-    def get_logo_nomgroupe_html(abreviation, taille=25):
+    def get_logo_nomgroupe_html(abreviation, taille=18):
         try:
             return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
         except Exception as e:
@@ -325,9 +325,9 @@ class Article(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.get_logo_nomgroupe_html_taille(24)
+        return self.get_logo_nomgroupe_html_taille(18)
 
-    def get_logo_nomgroupe_html_taille(self, taille=24):
+    def get_logo_nomgroupe_html_taille(self, taille=18):
         try:
             return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
         except Exception as e:
@@ -436,7 +436,7 @@ class Evenement(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.article.get_logo_nomgroupe_html_taille(taille=15)
+        return self.article.get_logo_nomgroupe_html_taille(taille=18)
 
 
 class Discussion(models.Model):
@@ -623,7 +623,7 @@ class Projet(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self, ):
-        return self.asso.get_logo_nomgroupe_html_taille(taille=15)
+        return self.asso.get_logo_nomgroupe_html_taille(taille=18)
 
 class FicheProjet(models.Model):
     projet = models.OneToOneField(Projet, on_delete=models.CASCADE, primary_key=True,)

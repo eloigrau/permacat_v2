@@ -150,7 +150,7 @@ class Article(models.Model):
     def get_logo_nomgroupe_html(self):
         return self.get_logo_nomgroupe_html_taille()
 
-    def get_logo_nomgroupe_html_taille(self, taille=28):
+    def get_logo_nomgroupe_html_taille(self, taille=18):
         return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
 class Evenement(models.Model):

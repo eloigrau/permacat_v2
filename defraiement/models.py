@@ -94,6 +94,16 @@ class ParticipantReunion(models.Model):
         else:
             return float(distanceObject.calculerDistance())
 
+    def getDistance_route_allerretour(self, reunion, recalculer=False):
+        distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
+        if distanceObject.type_trajet == '0':
+            return self.getDistance_route(reunion, recalculer)*2.0
+        elif distanceObject.type_trajet == '1':
+            return self.getDistance_route(reunion, recalculer)
+        elif distanceObject.type_trajet == '2':
+            return 0
+        else:
+            return 0
 
     def getDistance_routeTotale(self):
         dist = 0
@@ -101,6 +111,11 @@ class ParticipantReunion(models.Model):
             dist += float(self.getDistance_route(r))
         return round(dist, 1)
 
+    def getDistance_routeTotale_allerretour(self):
+        dist = 0
+        for r in self.reunion_set.all():
+            dist += float(self.getDistance_route_allerretour(r))
+        return round(dist, 1)
 
 class Reunion(models.Model):
     categorie = models.CharField(max_length=30,
@@ -142,7 +157,7 @@ class Reunion(models.Model):
         dist = 0
         for p in self.participants.all():
             try:
-                dist += p.getDistance_route(self)
+                dist += p.getDistance_route_allerretour(self)
             except:
                 return -1
         return round(dist, 2)
@@ -209,7 +224,7 @@ class Distance_ParticipantReunion(models.Model):
                 dist = -1
             self.distance = str(round(dist/1000.0, 2))
             self.save(calculerDistance=False)
-        elif self.type_trajet =='2':
+        elif self.type_trajet == '2':
             self.distance = 0
         else:
             self.distance = 0

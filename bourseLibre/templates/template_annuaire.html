@@ -20,7 +20,8 @@
                             <th>Pseudo</th>
                             <th>Email</th>
                             <th>Code postal</th>
-                            <th>Commune (Distance*)</th>
+                            <th>Commune </th>
+                            <th>Distance* </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -32,7 +33,9 @@
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.email }}</a></td>
                             <td>{%if profil.adresse.code_postal %}{{ profil.adresse.code_postal }}{% else %}-{% endif %}
                             </td>
-                            <td>{%if profil.adresse.commune %}{{ profil.adresse.commune }} ({{ profil|distance:request.user }} km) {% else %}-{% endif %}
+                            <td>{%if profil.adresse.commune %}{{ profil.adresse.commune }}{% else %}-{% endif %}
+                            </td>
+                            <td>{%if profil.adresse.commune %}{{ profil|distance:request.user }} {% else %}-{% endif %}
                             </td>
                             {% else %}
                             <td>-</td>

@@ -48,29 +48,29 @@ def lireParticipant(request, id):
 
 def getRecapitulatif_km(request, reunions, asso):
     participants = ParticipantReunion.objects.filter(asso=asso)
-    entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>"  + " (" + str(r.start_time) + ")" for r in reunions] + ["km parcourus",]
+    entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["km parcourus",]
     lignes = []
     for p in participants:
-        distances = [round(p.getDistance_route(r)*2, 2) if p in r.participants.all() else 0 for r in reunions ]
+        distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
         part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [round(sum(distances), 2) , ]
         lignes.append(part)
-    distancesTotales = [round(r.getDistanceTotale*2, 2) for r in reunions]
+    distancesTotales = [round(r.getDistanceTotale, 2) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [round(sum(distancesTotales), 2), ])
     return entete, lignes
 
 def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique):
     participants = ParticipantReunion.objects.filter(asso=asso)
-    entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" + " (" + str(r.start_time) +")" for r in reunions] + ["total Euros",]
+    entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" + r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["total Euros",]
     lignes = []
 
     distancesTotales = [r.getDistanceTotale for r in reunions]
-    prixTotal = 2.0 * sum(distancesTotales) * float(tarifKilometrique)
+    prixTotal = sum(distancesTotales) * float(tarifKilometrique)
     if prixTotal < float(prixMax):
-        coef_distanceTotale = 2.0 * float(tarifKilometrique)
+        coef_distanceTotale = float(tarifKilometrique)
     else:
         coef_distanceTotale = float(prixMax) / prixTotal
     for p in participants:
-        distances = [int(p.getDistance_route(r) * coef_distanceTotale + 0.5) if p in r.participants.all() else 0 for r in reunions ]
+        distances = [int(p.getDistance_route_allerretour(r) * coef_distanceTotale + 0.5) if p in r.participants.all() else 0 for r in reunions ]
         part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [sum(distances), ]
         lignes.append(part)
     distancesTotales = [int(r.getDistanceTotale * coef_distanceTotale + 0.5) for r in reunions]

@@ -67,11 +67,13 @@ class ParticipantReunion(models.Model):
     def get_url(self, reunion):
         if not self.adresse.longitude or not self.adresse.latitude:
             return ""
-        latlon_1 = str(self.adresse.longitude).replace(',', '.') + "," + str(self.adresse.latitude).replace(',', '.')
-        latlon_2 = str(reunion.adresse.longitude).replace(',', '.') + "," + str(reunion.adresse.latitude).replace(',',
-                                                                                                                  '.')
-        url = "http://router.project-osrm.org/route/v1/driving/" + latlon_1 + ";" + latlon_2 + "?overview=false"
-
+        try:
+            latlon_1 = str(self.adresse.longitude).replace(',', '.') + "," + str(self.adresse.latitude).replace(',', '.')
+            latlon_2 = str(reunion.adresse.longitude).replace(',', '.') + "," + str(reunion.adresse.latitude).replace(',',
+                                                                                                     '.')
+            url = "http://router.project-osrm.org/route/v1/driving/" + latlon_1 + ";" + latlon_2 + "?overview=false"
+        except:
+            url = ''
         return url
 
     def get_gmaps_url(self, reunion):

@@ -79,10 +79,12 @@ class ParticipantReunion(models.Model):
     def get_gmaps_url(self, reunion):
         if not self.adresse.longitude or not self.adresse.latitude:
             return ""
-        latlon_1 = str(self.adresse.latitude).replace(',', '.') + "," + str(self.adresse.longitude).replace(',', '.')
-        latlon_2 = str(reunion.adresse.latitude).replace(',', '.') + "," + str(reunion.adresse.longitude).replace(',','.')
-        url = "https://www.google.com/maps/dir/'" + latlon_1 + "'/'" + latlon_2 +"'"
-
+        try:
+            latlon_1 = str(self.adresse.latitude).replace(',', '.') + "," + str(self.adresse.longitude).replace(',', '.')
+            latlon_2 = str(reunion.adresse.latitude).replace(',', '.') + "," + str(reunion.adresse.longitude).replace(',','.')
+            url = "https://www.google.com/maps/dir/'" + latlon_1 + "'/'" + latlon_2 +"'"
+        except:
+            url = ''
         return url
 
     def getDistance_objet(self, reunion):

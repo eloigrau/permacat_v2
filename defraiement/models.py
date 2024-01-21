@@ -87,6 +87,7 @@ class ParticipantReunion(models.Model):
             url = ''
         return url
 
+
     def getDistance_objet(self, reunion):
         distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
         return distanceObject

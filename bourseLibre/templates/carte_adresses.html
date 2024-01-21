@@ -8,6 +8,9 @@
 {% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+ <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
 {%endblock%}
 {% block title %} - Carte - {{asso}}
 {% endblock %}
@@ -57,18 +60,20 @@
               shadowSize: [41, 41]
         });
 
+        var markers = L.markerClusterGroup();
         {% for adresse in lieux %}
             try{
                 var lat = {{adresse.latitude|to_numeric}};
                 var lon = {{adresse.longitude|to_numeric}};
                 {% block markers %}
                   var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{adresse.get_adresse_str}} ({{adresse.latitude|to_numeric|slice:":10"}}, {{adresse.longitude|to_numeric|slice:":9"}})</b>');
-                  marker.addTo(map);
+                  markers.addLayer(marker);
                 {% endblock %}
             }
             catch(err){ ;
             }
         {%endfor%}
+        map.addLayer(markers);
         {% if lieux|length >= 1 %}
           map.panTo(new L.LatLng(lat, lon));
         {%else%}

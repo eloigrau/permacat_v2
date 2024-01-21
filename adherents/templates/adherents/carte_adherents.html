@@ -10,6 +10,9 @@
 {% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+ <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
 {%endblock%}
 {% block title %} - Carte - Adhérents Conf
 {% endblock %}
@@ -110,6 +113,7 @@
               shadowSize: [41, 41]
         });
 
+        var markers = L.markerClusterGroup();
         {% for profil in adherents %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};
@@ -125,11 +129,10 @@
             var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% else %}
             var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
-
             {% endif %}
-            marker.addTo(map);
+            markers.addLayer(marker);
         {%endfor%}
-
+        map.addLayer(markers);
         {% if filter.qs|length == 1 %}
         map.panTo(new L.LatLng(lat, lon));
         {%else%}

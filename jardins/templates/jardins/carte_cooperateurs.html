@@ -10,6 +10,9 @@
 {% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+ <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
 {%endblock%}
 {% block title %} - Carte - {{asso}}
 {% endblock %}
@@ -54,13 +57,16 @@
               shadowSize: [41, 41]
         });
 
+        var markers = L.markerClusterGroup();
         {% for profil in filter.qs %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};
             var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'profil' profil.id %}"> {{profil.username}} {% if profil.first_name%}({{profil.first_name}}{% if profil.last_name%} {{profil.last_name}}{% endif%}){% else%} {% if profil.last_name%}({{profil.last_name}}){% endif%} {% endif%} </a>');
-            marker.addTo(map);
+
+            markers.addLayer(marker);
         {%endfor%}
 
+        map.addLayer(markers);
         {% if filter.qs|length == 1 %}
         map.panTo(new L.LatLng(lat, lon));
         {%else%}

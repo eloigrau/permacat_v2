@@ -10,6 +10,9 @@
 {% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+ <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
 {%endblock%}
 {% block title %} - Carte des jardins du 66
 {% endblock %}
@@ -68,15 +71,17 @@
               shadowSize: [41, 41]
         });
 
+        var markers = L.markerClusterGroup();
         {% for jardin in filter.qs %}
             {% if jardin.adresse.get_latitude %}
                 var lat = {{ jardin.adresse.get_latitude }};
                 var lon = {{ jardin.adresse.get_longitude }};
                 var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'jardins:jardin_lire' jardin.slug%}"> {{jardin.titre}} </a>');
-                marker.addTo(map);
+                markers.addLayer(marker);
             {% endif %}
         {%endfor%}
 
+        map.addLayer(markers);
         {% if filter.qs|length == 1 %}
         map.panTo(new L.LatLng(lat, lon));
         {%else%}

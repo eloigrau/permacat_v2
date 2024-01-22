@@ -63,7 +63,7 @@
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};
             var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'profil' profil.id %}"> {{profil.username}} </a>');
-
+:jardin_ajouterPlante_pk', jardin_pk=jardins[0].jardin.pk, plante_pk=plante_pk)
             markers.addLayer(marker);
             {% endif %}
         {%endfor%}

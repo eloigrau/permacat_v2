@@ -466,7 +466,7 @@ def ajouterPlante_monJardin(request, plante_pk):
     if len(jardins) == 0:
         return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
     elif len(jardins) == 1:
-        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=jardins[0].jardin.pk, plante_pk=plante_pk)
+        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=jardins[0].pk, plante_pk=plante_pk)
     else:
         form = ChoisirMonJardinForm(request, request.POST or None)
 

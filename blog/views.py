@@ -35,6 +35,7 @@ from django.utils.text import slugify
 from bourseLibre.views_base import DeleteAccess
 from photologue.models import Document
 from vote.models import Suffrage
+from vote.models_simple import Sondage_binaire
 from dal import autocomplete
 from taggit.models import Tag
 from django.core.paginator import Paginator
@@ -213,6 +214,8 @@ def lireArticle(request, slug):
     salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if s.salon.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
+
+    sondages = Sondage_binaire.objects.filter(article=article).order_by('-date_creation')
     documents_partages = DocumentPartage.objects.filter(article=article)
     reunions = Reunion.objects.filter(article=article)
 
@@ -240,7 +243,7 @@ def lireArticle(request, slug):
                             discussions}
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons,
+                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
                        "documents_partages":documents_partages, "reunions":reunions,"ancre": discu.slug}
 
     elif form.is_valid() and 'message_discu' in request.POST:
@@ -276,11 +279,11 @@ def lireArticle(request, slug):
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
-                   "suffrages":suffrages, "documents_partages":documents_partages, "reunions":reunions, }
+                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions, }
 
     else:
         context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
-                   'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "documents_partages":documents_partages, "reunions":reunions,  }
+                   'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required

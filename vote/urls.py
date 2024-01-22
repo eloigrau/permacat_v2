@@ -47,5 +47,10 @@ urlpatterns = [
     path(r'supprimerPropositionM/<str:slug><int:id_question>/<int:id_proposition>', views.supprimerPropositionM, name='supprimerPropositionM'),
     #url(r'ajouter_suffrage/$', views_wizard.SuffrageWizard.as_view()),
 
-
+    path(r'ajouterSuffrage_article/<str:article_slug>', views.ajouterSuffrage_article, name='ajouterSuffrage_article'),
+    path(r'ajouterSondageBinaire/<str:article_slug>', views.ajouterSondageBinaire, name='ajouterSondageBinaire'),
+    path(r'ajouterVoteBinaire/<int:sondageBinaire_pk>/<str:reponse_b>/', login_required(views.ajouterVoteBinaire), name='ajouterVoteBinaire'),
+    path(r'modifierSondageB/<int:pk>', login_required(views.ModifierSondageB.as_view()), name='modifierSondageB'),
+    path(r'supprimerSondageB/<int:pk>', login_required(views.SupprimerSondageB.as_view()), name='supprimerSondageB'),
+    path(r'get_resultatSondageB/<int:sondage_pk>', views.get_resultatSondageB, name='get_resultatSondageB'),
 ]

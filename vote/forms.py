@@ -1,6 +1,7 @@
 from django import forms
 from .models import Suffrage, Vote, Commentaire, Question_majoritaire, Question_binaire, ReponseQuestion_b, ReponseQuestion_m, \
     Proposition_m, Choix
+from .models_simple import Sondage_binaire
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -255,3 +256,20 @@ class VoteChangeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['commentaire'].required = False
+
+
+class Sondage_binaireForm(forms.ModelForm):
+
+    class Meta:
+        model = Sondage_binaire
+        fields = ['question', ]
+
+    def save(self, userProfile, article):
+        instance = super(Sondage_binaireForm, self).save(commit=False)
+        instance.auteur = userProfile
+        instance.article = article
+        instance.save()
+
+        return instance
+
+

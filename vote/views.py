@@ -4,9 +4,11 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 from django.utils.html import strip_tags
 from .models import Suffrage, Commentaire, Choix, Vote, Proposition_m, Question_binaire, Question_majoritaire
+from .models_simple import VoteSimple_binaire, Sondage_binaire
 from bourseLibre.constantes import Choix as Choix_global
 from .forms import SuffrageForm, CommentaireSuffrageForm, CommentaireSuffrageChangeForm, SuffrageChangeForm, \
-    VoteForm, VoteChangeForm, Question_majoritaire_Form, Question_binaire_formset, Proposition_m_formset, Reponse_binaire_Form, Reponse_majoritaire_Form
+    VoteForm, VoteChangeForm, Question_majoritaire_Form, Question_binaire_formset, Proposition_m_formset, Reponse_binaire_Form,\
+    Sondage_binaireForm, Reponse_majoritaire_Form
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.utils.timezone import now
@@ -380,3 +382,63 @@ def suivre_suffrages(request, actor_only=True):
     else:
         actions.follow(request.user, suivi, actor_only=actor_only)
     return redirect('vote:index')
+
+
+
+@login_required
+def ajouterSuffrage_article(request, article_slug):
+    article = get_object_or_404(Article, slug=article_slug)
+
+    return render(request, 'vote/ajouterSuffrage_article.html', {"article":article})
+
+@login_required
+def ajouterSondageBinaire(request, article_slug):
+    article = get_object_or_404(Article, slug=article_slug)
+    form = Sondage_binaireForm(request.POST or None)
+    if form.is_valid():
+        question = form.save(request.user, article)
+
+        return redirect(question.article)
+
+    return render(request, 'vote/ajouterSondageBinaire.html', { "form": form, }) #"qb_formset":qb_formset, "qm_formset":qm_formset })
+
+@login_required
+def ajouterVoteBinaire(request, sondageBinaire_pk, reponse_b):
+    question = Sondage_binaire.objects.get(pk=sondageBinaire_pk)
+    for v in VoteSimple_binaire.objects.filter(auteur=request.user, question=question):
+        v.delete()
+    vote = VoteSimple_binaire.objects.get_or_create(auteur=request.user, question=question, choix=reponse_b)
+    return redirect(question.article)
+
+
+class ModifierSondageB(UpdateView):
+    model = Sondage_binaire
+    template_name_suffix = '_modifier'
+    fields = ["question",]
+
+    def form_valid(self, form):
+         return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+class SupprimerSondageB(DeleteView):
+    model = Sondage_binaire
+    template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
+
+@login_required
+def get_resultatSondageB(request, sondage_pk):
+    sondage = Sondage_binaire.objects.get(pk=sondage_pk)
+    resultat = sondage.get_resultats()
+    votes = VoteSimple_binaire.objects.filter(question__pk=sondage_pk)
+    try:
+        vote = VoteSimple_binaire.objects.get(question__pk=sondage_pk, auteur=request.user)
+    except VoteSimple_binaire.DoesNotExist:
+        vote = None
+
+    return render(request, 'vote/ajax_resultatSondageB.html', {'resultat': resultat,"votes": votes, "vote":vote})

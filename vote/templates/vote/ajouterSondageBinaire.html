@@ -1,0 +1,29 @@
+{% extends 'vote/baseVote.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+	<div class="col col-md-12 textcenter"><h3>Ajouter un Sondage </h3>
+    </div>
+</div>
+	<hr>
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+	<form id="myForm" class="form-horizontal" role="form" action="" method="post"
+	enctype="multipart/form-data">
+	{% csrf_token %}
+        <input type="hidden" name="Suffrage"
+		value="{{ suffrage }}"> {% include 'form_template2.html' %}
+  <button type="submit" class="btn btn-primary">Valider</button>
+
+</form>
+</div>
+</div>
+
+{% endblock %}

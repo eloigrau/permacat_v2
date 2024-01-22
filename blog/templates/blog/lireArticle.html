@@ -18,526 +18,660 @@
 
 {% block subtitle %}
 
-<div class="container-fluid" >
-<div class="row">
-    <div class="col-sm-12 textcenter">
-        <p>
-        {%if article.auteur == request.user or request.user.is_superuser %}
-		<div class="btn-group">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 textcenter">
+            <p>
+                {%if article.auteur == request.user or request.user.is_superuser %}
+            <div class="btn-group">
+                <a href="{% url 'blog:modifierArticle' slug=article.slug %}">
+                    <button type="button" class="btn btn-sm btn-warning">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+                    </button>
+                </a>
+                <a href="{% url 'blog:supprimerArticle' slug=article.slug %}">
+                    <button type="button" class="btn btn-sm btn-danger">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Supprimer
+                    </button>
+                </a>
+            </div>
+            {%elif article.estModifiable%}
             <a href="{% url 'blog:modifierArticle' slug=article.slug %}">
-               <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
-               </button></a>
-            <a href="{% url 'blog:supprimerArticle' slug=article.slug %}">
-               <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Supprimer
-               </button></a>
-        </div>
-        {%elif article.estModifiable%}
-            <a href="{% url 'blog:modifierArticle' slug=article.slug %}">
-               <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
-               </button></a>
-        {%endif%}
-        {%if request.user.is_superuser%}
+                <button type="button" class="btn btn-sm btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+                </button>
+            </a>
+            {%endif%}
+            {%if request.user.is_superuser%}
             <a href="https://www.perma.cat/gestion/blog/article/{{article.id}}/change/">
-               <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin
-               </button>
+                <button type="button" class="btn btn-sm btn-danger">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin
+                </button>
             </a>
             <a href="{% url 'blog:archiverArticleAdmin' slug=article.slug %}">
-               <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Archiver (Admin)
-               </button>
+                <button type="button" class="btn btn-sm btn-danger">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;Archiver (Admin)
+                </button>
             </a>
-        {%endif%}
+            {%endif%}
 
-    </p>
+            </p>
+        </div>
     </div>
-</div>
 
 </div>
 
 {% endblock %}
 
-    {% block sidebar_menu %}
-  <li class="list-group-item py-1">
-      <a href="#ref-titre">
+{% block sidebar_menu %}
+<li class="list-group-item py-1">
+    <a href="#ref-titre">
         #Titre
     </a>
-  </li>
-  <li class="list-group-item py-1">
-      <a href="#idContenu">
+</li>
+<li class="list-group-item py-1">
+    <a href="#idContenu">
         #Contenu
     </a>
-  </li>
-  <li class="list-group-item py-1">
-      <a href="#idConversation">
+</li>
+<li class="list-group-item py-1">
+    <a href="#idConversation">
         #Discussion
     </a>
-  </li>
-  <li class="list-group-item py-1">
-      <a href="#idComenter">
+</li>
+<li class="list-group-item py-1">
+    <a href="#idComenter">
         #Commenter
     </a>
-  </li>
-  </li>
+</li>
+</li>
 
-    {% endblock %}
+{% endblock %}
 {% block contenu %}
 <div class="">
-<div class="row">
-<div class="col-sm-12 offset-md-2 col-md-8 textcenter">
-    <p class="infos  textepetit textcenter">
-            <span >
-                <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}#ref-titre" >{{ article.get_logo_nomgroupe_html|safe }}</a>
+    <div class="row">
+        <div class="col-sm-12 offset-md-2 col-md-8 textcenter">
+            <p class="infos  textepetit textcenter">
+            <span>
+                <a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}#ref-titre">{{ article.get_logo_nomgroupe_html|safe }}</a>
             </span>
-    {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> </td>{% endif %}
-            / <span class="badge badge-success" style="background-color:{{article.get_couleur}}" ><a href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe" >{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %} {{ article.get_categorie_display2 }}</a>
+                {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> </td>
+                {% endif %}
+                / <span class="badge badge-success" style="background-color:{{article.get_couleur}}"><a
+                    href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe">{% if article.get_logo_categorie %}  <img
+                    src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %} {{ article.get_categorie_display2 }}</a>
             </span> -
 
-        <a href="{% url 'blog:suivre_article' article.slug %}">
-            {% if request.user|is_following:article %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arrêter de recevoir des notifications concernant cet article par mail">
-                 {% fontawesome_icon 'bell'  %}
-            </button>
-            {% else %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant cet article par mail">
-                 {% fontawesome_icon 'bell-slash' %}
-            </button>
-            {% endif %}
-        </a>
-        {% comment %}
-        <button class="btn btn-light btn-sm" onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
-        {% endcomment %}
+                <a href="{% url 'blog:suivre_article' article.slug %}">
+                    {% if request.user|is_following:article %}
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom"
+                            title="Vous êtes abonné :  Cliquez pour arrêter de recevoir des notifications concernant cet article par mail">
+                        {% fontawesome_icon 'bell' %}
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom"
+                            title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant cet article par mail">
+                        {% fontawesome_icon 'bell-slash' %}
+                    </button>
+                    {% endif %}
+                </a>
+                {% comment %}
+                <button class="btn btn-light btn-sm"
+                        onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')"
+                        title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
+                {% endcomment %}
 
-             {% if request.user.is_superuser %}
-        <a href="{% url 'blog:suiveursArticle' article.slug %}">
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir abonnés">
-                 {% fontawesome_icon 'list' %}
-            </button>
-        </a>
-            {% endif %}
+                {% if request.user.is_superuser %}
+                <a href="{% url 'blog:suiveursArticle' article.slug %}">
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom"
+                            title="Voir abonnés">
+                        {% fontawesome_icon 'list' %}
+                    </button>
+                </a>
+                {% endif %}
 
-        </p>
-    <div class="row titre_fiche titre-article-forum">
-        <div class="col textcenter" >
-              <h2>
-            {% if article.estEpingle%}
-            <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
-            {%endif%}
-            {% if article.estModifiable%}
-            <span class="fa fa-edit"  title="Article modifiable">    </span>
-            {%endif%}
-                  {{ article.titre }}
+            </p>
+            <div class="row titre_fiche titre-article-forum">
+                <div class="col textcenter">
+                    <h2>
+                        {% if article.estEpingle%}
+                        <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
+                        {%endif%}
+                        {% if article.estModifiable%}
+                        <span class="fa fa-edit" title="Article modifiable">    </span>
+                        {%endif%}
+                        {{ article.titre }}
 
-            {% if article.estArchive%}
-            <span class="badge badge-Light"  title="Article archivé">
+                        {% if article.estArchive%}
+                        <span class="badge badge-Light" title="Article archivé">
             archivé
             </span>
-            {%endif%}
-              </h2>
+                        {%endif%}
+                    </h2>
+                </div>
+            </div>
+            {%if article.start_time%}
+            <p>
+                <a href="{% url 'cal:agenda' %} ">
+                    {%if article.end_time and article.start_time != article.end_time %}
+                    Du {{ article.start_time|date:"l d F Y" }} au {{ article.end_time|date:"l d F Y" }}
+                    {%else%}
+                    le {{ article.start_time|date:"l d F Y" }}
+
+                    {% endif %}
+                </a>
+            </p>
+            {% endif %}
+
         </div>
     </div>
-        {%if article.start_time%}
-    <p>
-          <a href="{% url 'cal:agenda' %} ">
-            {%if article.end_time and article.start_time != article.end_time %}
-                Du {{ article.start_time|date:"l d F Y"  }} au {{ article.end_time|date:"l d F Y"  }}
-                {%else%}
-                le {{ article.start_time|date:"l d F Y"  }}
-
-            {% endif %}
-          </a>
-    </p>
-        {% endif %}
-
- </div>
-</div>
     <div class="anchor_blank" id="idContenu"></div>
     <nav class="nav nav-tabs justify-content-center">
-      <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"><i class="fa fa-align-center icon-left" ></i> </a>
+        <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"><i
+                class="fa fa-align-center icon-left"></i> </a>
 
         {% if lieux %}
-      <a class="nav-item nav-link" href="#lieux" data-toggle="tab">
-                        <i class="fa fa-map-marker icon-left"></i></a>
+        <a class="nav-item nav-link" href="#lieux" data-toggle="tab">
+            <i class="fa fa-map-marker icon-left"></i></a>
         {% endif %}
         {% if dates %}
-      <a class="nav-item nav-link" href="#dates" data-toggle="tab"><i class="fa fa-calendar icon-left" ></i></a>
+        <a class="nav-item nav-link" href="#dates" data-toggle="tab"><i class="fa fa-calendar icon-left"></i></a>
         {% endif %}
         {% if article.album %}
-      <a class="nav-item nav-link" href="#album" data-toggle="tab"><i class="fa fa-camera-retro icon-left"></i></a>
+        <a class="nav-item nav-link" href="#album" data-toggle="tab"><i class="fa fa-camera-retro icon-left"></i></a>
         {% endif %}
         {% if salons %}
-      <a class="nav-item nav-link" href="#salons" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
+        <a class="nav-item nav-link" href="#salons" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
         {% endif %}
         {% if ateliers %}
-      <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left" ></i></a>
+        <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left"></i></a>
         {% endif %}
         {% if reunions %}
-      <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
+        <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
         {% endif %}
         {% if documents %}
-      <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-file icon-left"></i></a>
+        <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-file icon-left"></i></a>
         {% endif %}
         {% if documents_partages %}
-      <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-share icon-left"></i></a>
+        <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-share icon-left"></i></a>
         {% endif %}
-{% if suffrages %}
-      <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i class="fa fa-paper-plane-top"></i></a>
-   {% endif %}
-<a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
-<a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-link icon-left"></i></a>
-      <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
+        {% if suffrages or sondages %}
+        <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i
+                class="fa fa-paper-plane-top"></i></a>
+        {% endif %}
+        <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
+        <a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-link icon-left"></i></a>
+        <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
     </nav>
 
-<div class="tab-content">
+    <div class="tab-content">
 
-    <div class="tab-pane fade show active " id="contenu">
-        <div class="row justify-content-center">
-        <div class="col contenu fiche">
-            {{ article.contenu |safe}}
-        </div>
-        </div>
-    </div>
-
-  <div class="tab-pane fade" id="album">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Album : </h4>
-            </div>
-        </div>
-<div class="row justify-content-center">
-<div class="col-sm-12 col-md-8 col-lg-6 textcenter">
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-	    {% for photo in article.album.public %}
-            <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}" {% if forloop.first %} class="active"{% endif %}></li>
-	    {% endfor %}
-  </ol>
-  <div class="carousel-inner">
-	    {% for photo in article.album.public %}
-    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
-	        <a href="{{ photo.get_absolute_url }}">
-	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
-	        </a>
-    </div>
-          {% endfor %}
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Précédent</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Suivant</span>
-  </a>
-</div>
-</div>
-</div>
-<hr>
-<div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
-        {% if article.album.description %}<p>{{ article.album.description|safe }}</p>{% endif %}
-
-</div>
-</div>
-   <div class="row">
-        <div class="col-sm-12 offset-md-1 col-md-10 textcenter">
-             <small>
-            {%if not article.album %}
-                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                       <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un album photo</a>
-                {% endif%}
-            {%else%}
-                 <a class="btn btn-sm btn-success textleft" href="{{ article.album.get_absolute_url }}"><i class="fa fa-arrow-right"></i> Voir tout l'album photo</a>
-
-                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerAlbumArticle' slug=article.slug%}"><i class="fa fa-times"></i> Enlever l'album photo de l'article</a>
-            {% endif %}
-        {%endif%}
-                 </small>
-        </div>
-        </div>
-        </div>
-  </div>
-
-
-  <div class="tab-pane fade" id="documents">
-    <div class="contenu atelier">
-<div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
-
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Documents : </h4>
-            </div>
-        </div>
-        {% for document in documents %}
-        <p>
-            <a href="{{document.doc.url}}" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.titre }} </a>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                <a class="btn btn-sm btn-danger textleft" href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i class="fa fa-times"></i> </a>
-            {% endif %}
-        </p>
-        {% endfor%}
-        <p>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                   <a class="btn btn-sm btn-success textleft" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un fichier/document</a>
-            {% endif%}
-        </p>
-    </div>
-  </div>
-    </div>
-  </div>
-<div class="tab-pane fade" id="documents_partages">
-    <div class="contenu atelier">
-<div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Documents partagés (framapad): </h4>
-            </div>
-        </div>
-        {% for document in documents_partages %}
-        <p>
-            <a href="{{document.get_url}}" target="_blank" ><i class="fa fa-download" aria-hidden="true"></i> {{ document.nom }} </a>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=document.slug%}"> <i class="fa fa-times"></i> </a>
-            {% endif %}
-        </p>
-        {% endfor%}
-        <p>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                   <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un Document partagé</a>
-            {% endif%}
-        </p>
-    </div>
-  </div>
-    </div>
-  </div>
-<div class="tab-pane fade" id="reunions">
-    <div class="contenu atelier">
-<div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Réunions : </h4>
-            </div>
-        </div>
-        {% for reunion in reunions %}
-        <p>
-            <a href="{{reunion.get__absolute_url}}" target="_blank" > {{ reunion.titre }} </a>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerReunionArticle' slug_reunion=reunion.slug%}"> <i class="fa fa-times"></i> </a>
-            {% endif %}
-        </p>
-        {% endfor%}
-        <p>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                   <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion</a>
-            {% endif%}
-             {%if request.user.is_superuser %}
-                <a class="btn btn-sm btn-success textleft" href="{% url 'blog:associerReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Associer une réunion</a>
-            {% endif%}
-        </p>
-    </div>
-  </div>
-    </div>
-  </div>
-  <div class="tab-pane fade " id="ateliers">
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Ateliers : </h4>
-            </div>
-        </div>
-        {% for atelier in ateliers %}
-        <p>
-                <a href="{{atelier.get_absolute_url}}"> <i class="fa fa-arrow-right"></i>  Atelier du {{atelier.start_time |date:"l d F Y"}} : {{atelier.titre}}</a>
-
-                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <a class="btn btn-sm btn-danger textleft" href="{% url 'ateliers:supprimerAtelier' slug=atelier.slug%}"><i class="fa fa-times"></i> </a>
-            {% endif %}
-        </p>
-        {% endfor%}
-            <hr>
-        <p><a class="btn btn-sm  btn-success textleft" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>
-</p>
-          </div>
-          </div>
-  </div>
-
-
-<div class="tab-pane fade " id="dates">
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Dates supplémentaires : </h4>
-            </div>
-        </div>
-              {%for date in dates %}
-             <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
-
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser  %}
-                    <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerEvenementArticle' slug_article=article.slug  id_evenementArticle=date.id %}" ><i class="fa fa-times"></i> </a></p>
-            {% endif %}
-            </p>
-              {%endfor%}
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-            <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
-            {% endif %}
-      </div>
-    </div>
-</div>
-<div class="tab-pane fade " id="lieux">
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Lieux : </h4>
-            </div>
-        </div>
-              {%for lieu in lieux %}
-                <p> {{lieu}}
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <a class="btn btn-sm btn-danger textleft" href="{% url 'blog:supprimerAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}" ><i class="fa fa-times"></i> </a>
-            {% endif %}
-                    </p>
-              {%endfor%}
-             {% comment %}
-            <p><a class="btn btn-sm btn-primary textleft" href="{% url 'blog:voirCarteLieux' id_article=article.id %}" ><i class="fa fa-compass"></i> Voir sur une carte</a></p>
-            {% endcomment %}
-
-<div class="row">
-  <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;min-height: 60vh;}</style>
-{% leaflet_map "carte" callback="window.map_init_basic" %}
-</div>
-</div>
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-            <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a></p>
-            {% endif %}
-      </div>
-    </div>
-</div>
-<div class="tab-pane fade " id="salons">
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Salons de discussions : </h4>
-            </div>
-        </div>
-              {%for salon in salons %}
-            <p><a href="{{salon.get_absolute_url}}"> {{salon.titre}}</a></p>
-              {%endfor%}
-            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-            <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un salon de discussion</a></p>
-            {% endif %}
-      </div>
-    </div>
-</div>
-
-  <div class="tab-pane " id="partager">
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Partager l'article</h4>
-            </div>
-        </div>
-<table class="table textleft" style="border:none;">
-    <tr><td class="textright" style="width:40%"><i class="fa fa-envelope iconleft"></i></td><td>{% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}</td></tr>
-    <tr><td class="textright"><i class="fa fa-whatsapp iconleft"></i></td><td>{% post_to_whatsapp article 'Partager sur Whatsapp' %}</td></tr>
-    <tr><td class="textright"><i class="fa fa-telegram iconleft"></i></td><td>{% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td></tr>
-    <tr><td class="textright"><i class="fa fa-copy iconleft"></i></td><td>{% copy_to_clipboard article "Copier le lien" %}</td></tr>
-</table>
-        </div>
-        </div>
-  </div>
-
-  <div class="tab-pane " id="historique">
-
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Informations générales : </h4>
-            </div>
-        </div>
-    {% if article.tags.names  %}
-        <div class="row-sm-12 justify-content-center">
-        <div class="col-sm-12 ">
-          Mots-clés: {% for tag in article.tags.names %}
-                <span class="badge badge-info"> {{tag}}</span>
-           {% endfor %}
-        </div>
-        </div>
-   {% endif %}
-            <p>
-            {% if article.get_partagesAsso %}
-                Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec
-                    {{article.get_partagesAssoLogo|safe}},
-            {%endif%}
-
-               rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a>
-
-                {% get_hit_count for article as nbvues %}
-                 ({{ nbvues }} vue{{nbvues|pluralize:"s"}})
-                {% if article.estArchive%}
-                    - archivé
-                {%endif%}
-                {% if article.estModifiable%}
-                    - modifiable
-                {%endif%}
-            </p>
-            {% if article.themes.all %}
-                <p class="textcenter">
-                   <em>Thème{{article.themes.all|pluralize:"s"}}: </em>
-               {% for tag in article.themes.all %}
-                    <a href="{% url 'blog:index' %}?theme={{tag}}"> {{tag}}</a>{%if not forloop.last%}, {%endif%}
-               {% endfor %}
-                </p>
-            {% endif %}
-            <hr>
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Historique: </h4>
-            </div>
-        </div>
-            <div class="row textcenter">
-                <div class="col-sm-12">
-                  {%for action in actions %}
-                        {% include "notifications/notifications_template3.html" with action=action%}
-                  {%endfor%}
+        <div class="tab-pane fade show active " id="contenu">
+            <div class="row justify-content-center">
+                <div class="col contenu fiche">
+                    {{ article.contenu |safe}}
                 </div>
             </div>
         </div>
+
+        <div class="tab-pane fade" id="album">
+            <div class="contenu atelier">
+
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+                        <h4>Album : </h4>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 col-md-8 col-lg-6 textcenter">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                {% for photo in article.album.public %}
+                                <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}"
+                                   {% if forloop.first %} class="active" {% endif %}></li>
+                                {% endfor %}
+                            </ol>
+                            <div class="carousel-inner">
+                                {% for photo in article.album.public %}
+                                <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
+                                    <a href="{{ photo.get_absolute_url }}">
+                                        <img class="d-block w-100 {% if forloop.first %} active {% endif %} "
+                                             src="{{ photo.get_display_url }}" class="thumbnail"
+                                             alt="{{ photo.title }}">
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                               data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Précédent</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                               data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Suivant</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+                        {% if article.album.description %}<p>{{ article.album.description|safe }}</p>{% endif %}
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 offset-md-1 col-md-10 textcenter">
+                        <small>
+                            {%if not article.album %}
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}"><i class="fa fa-plus"></i>
+                                Ajouter un album photo</a>
+                            {% endif%}
+                            {%else%}
+                            <a class="btn btn-sm btn-success textleft" href="{{ article.album.get_absolute_url }}"><i
+                                    class="fa fa-arrow-right"></i> Voir tout l'album photo</a>
+
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-danger textleft"
+                               href="{% url 'blog:supprimerAlbumArticle' slug=article.slug%}"><i
+                                    class="fa fa-times"></i> Enlever l'album photo de l'article</a>
+                            {% endif %}
+                            {%endif%}
+                        </small>
+                    </div>
+                </div>
+            </div>
         </div>
-  </div>
 
-<div class="tab-pane fade " id="suffrages">
 
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu discussion_fiche">
+        <div class="tab-pane fade" id="documents">
+            <div class="contenu atelier">
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
 
+
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12 textcenter">
+                                <h4>Documents : </h4>
+                            </div>
+                        </div>
+                        {% for document in documents %}
+                        <p>
+                            <a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i> {{
+                                document.titre }} </a>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-danger textleft"
+                               href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i
+                                    class="fa fa-times"></i> </a>
+                            {% endif %}
+                        </p>
+                        {% endfor%}
+                        <p>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter un fichier/document</a>
+                            {% endif%}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="documents_partages">
+            <div class="contenu atelier">
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12 textcenter">
+                                <h4>Documents partagés (framapad): </h4>
+                            </div>
+                        </div>
+                        {% for document in documents_partages %}
+                        <p>
+                            <a href="{{document.get_url}}" target="_blank"><i class="fa fa-download"
+                                                                              aria-hidden="true"></i> {{ document.nom }}
+                            </a>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-danger textleft"
+                               href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=document.slug%}"> <i
+                                    class="fa fa-times"></i> </a>
+                            {% endif %}
+                        </p>
+                        {% endfor%}
+                        <p>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter un Document partagé</a>
+                            {% endif%}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="reunions">
+            <div class="contenu atelier">
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12 textcenter">
+                                <h4>Réunions : </h4>
+                            </div>
+                        </div>
+                        {% for reunion in reunions %}
+                        <p>
+                            <a href="{{reunion.get__absolute_url}}" target="_blank"> {{ reunion.titre }} </a>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-danger textleft"
+                               href="{% url 'blog:supprimerReunionArticle' slug_reunion=reunion.slug%}"> <i
+                                    class="fa fa-times"></i> </a>
+                            {% endif %}
+                        </p>
+                        {% endfor%}
+                        <p>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter une réunion</a>
+                            {% endif%}
+                            {%if request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:associerReunionArticle' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Associer une réunion</a>
+                            {% endif%}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade " id="ateliers">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
+                <div class="contenu atelier">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Ateliers : </h4>
+                        </div>
+                    </div>
+                    {% for atelier in ateliers %}
+                    <p>
+                        <a href="{{atelier.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> Atelier du
+                            {{atelier.start_time |date:"l d F Y"}} : {{atelier.titre}}</a>
+
+                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                        <a class="btn btn-sm btn-danger textleft"
+                           href="{% url 'ateliers:supprimerAtelier' slug=atelier.slug%}"><i class="fa fa-times"></i>
+                        </a>
+                        {% endif %}
+                    </p>
+                    {% endfor%}
+                    <hr>
+                    <p><a class="btn btn-sm  btn-success textleft"
+                          href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}"><i
+                            class="fa fa-plus"></i> Ajouter un atelier</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade " id="dates">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Dates supplémentaires : </h4>
+                        </div>
+                    </div>
+                    {%for date in dates %}
+                    <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
+
+                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                        <a class="btn btn-sm btn-danger textleft"
+                           href="{% url 'blog:supprimerEvenementArticle' slug_article=article.slug  id_evenementArticle=date.id %}"><i
+                                class="fa fa-times"></i> </a></p>
+                    {% endif %}
+                    </p>
+                    {%endfor%}
+                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <hr>
+                    <p><a class="btn btn-sm btn-success textleft"
+                          href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}"><i
+                            class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade " id="lieux">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Lieux : </h4>
+                        </div>
+                    </div>
+                    {%for lieu in lieux %}
+                    <p> {{lieu}}
+                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                        <a class="btn btn-sm btn-danger textleft"
+                           href="{% url 'blog:supprimerAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}"><i
+                                class="fa fa-times"></i> </a>
+                        {% endif %}
+                    </p>
+                    {%endfor%}
+                    {% comment %}
+                    <p><a class="btn btn-sm btn-primary textleft"
+                          href="{% url 'blog:voirCarteLieux' id_article=article.id %}"><i class="fa fa-compass"></i>
+                        Voir sur une carte</a></p>
+                    {% endcomment %}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <style>.leaflet-container {width:  100%;min-height: 60vh;}</style>
+                            {% leaflet_map "carte" callback="window.map_init_basic" %}
+                        </div>
+                    </div>
+                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <hr>
+                    <p><a class="btn btn-sm btn-success textleft"
+                          href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}"><i class="fa fa-plus"></i>
+                        Ajouter un lieu</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade " id="salons">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Salons de discussions : </h4>
+                        </div>
+                    </div>
+                    {%for salon in salons %}
+                    <p><a href="{{salon.get_absolute_url}}"> {{salon.titre}}</a></p>
+                    {%endfor%}
+                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <hr>
+                    <p><a class="btn btn-sm btn-success textleft"
+                          href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug %}"><i
+                            class="fa fa-plus"></i> Ajouter un salon de discussion</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane " id="partager">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Partager l'article</h4>
+                        </div>
+                    </div>
+                    <table class="table textleft" style="border:none;">
+                        <tr>
+                            <td class="textright" style="width:40%"><i class="fa fa-envelope iconleft"></i></td>
+                            <td>{% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser "
+                                article "Envoyer le lien par mail" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="textright"><i class="fa fa-whatsapp iconleft"></i></td>
+                            <td>{% post_to_whatsapp article 'Partager sur Whatsapp' %}</td>
+                        </tr>
+                        <tr>
+                            <td class="textright"><i class="fa fa-telegram iconleft"></i></td>
+                            <td>{% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td>
+                        </tr>
+                        <tr>
+                            <td class="textright"><i class="fa fa-copy iconleft"></i></td>
+                            <td>{% copy_to_clipboard article "Copier le lien" %}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane " id="historique">
+
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Informations générales : </h4>
+                        </div>
+                    </div>
+                    {% if article.tags.names %}
+                    <div class="row-sm-12 justify-content-center">
+                        <div class="col-sm-12 ">
+                            Mots-clés: {% for tag in article.tags.names %}
+                            <span class="badge badge-info"> {{tag}}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <p>
+                        {% if article.get_partagesAsso %}
+                        Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec
+                        {{article.get_partagesAssoLogo|safe}},
+                        {%endif%}
+
+                        rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a>
+
+                        {% get_hit_count for article as nbvues %}
+                        ({{ nbvues }} vue{{nbvues|pluralize:"s"}})
+                        {% if article.estArchive%}
+                        - archivé
+                        {%endif%}
+                        {% if article.estModifiable%}
+                        - modifiable
+                        {%endif%}
+                    </p>
+                    {% if article.themes.all %}
+                    <p class="textcenter">
+                        <em>Thème{{article.themes.all|pluralize:"s"}}: </em>
+                        {% for tag in article.themes.all %}
+                        <a href="{% url 'blog:index' %}?theme={{tag}}"> {{tag}}</a>{%if not forloop.last%}, {%endif%}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                    <hr>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Historique: </h4>
+                        </div>
+                    </div>
+                    <div class="row textcenter">
+                        <div class="col-sm-12">
+                            {%for action in actions %}
+                            {% include "notifications/notifications_template3.html" with action=action%}
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade " id="suffrages">
+
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu discussion_fiche">
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <h4>Sondage{{sondages|pluralize:",s"}} </h4>
+                        </div>
+                    </div>
+
+<script>
+function get_resultatSondage(url_tag, div_name) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#" + div_name).html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+    <table class="table table-condensed">
+        <thead>
+        <th>Question</th>
+        <th>Vote</th>
+        <th>Résultat</th>
+        {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}<th></th>{% endif%}
+        </thead>
+        <tbody  >
+              {% for sondage in sondages %}
+            <tr class="tr_vote"><td width="100%; " style="text-align: center; vertical-align: middle;"> <i class="fa fa-arrow-right"></i> {{sondage.question}}</td>
+                <td style="text-align: center; vertical-align: middle;"><a class="btn btn-block  btn-sm btn-success textleft" href="{% url 'vote:ajouterVoteBinaire' sondageBinaire_pk=sondage.pk reponse_b='0' %}" >Oui</a>
+                    <a class="btn btn-block btn-sm btn-success textleft" href="{% url 'vote:ajouterVoteBinaire' sondageBinaire_pk=sondage.pk reponse_b='1' %}" >Non</a>
+                    <a class="btn btn-block btn-sm btn-success textleft" href="{% url 'vote:ajouterVoteBinaire' sondageBinaire_pk=sondage.pk reponse_b='2' %}" >Blanc</a>
+                </td>
+                <td style="text-align: center; vertical-align: middle;">
+                    <a href="#resSondage" onclick="get_resultatSondage('{% url 'vote:get_resultatSondageB' sondage_pk=sondage.pk %}', 'resSondage_{{forloop.counter}}')" data-toggle="tab" id="navtab_archives"> Résultats</a>
+
+                {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-primary textleft" href="{% url 'vote:modifierSondageB' pk=sondage.pk %}" ><i class="fa fa-edit"></i></a>
+               <a class="btn btn-sm btn-danger textleft" href="{% url 'vote:supprimerSondageB' pk=sondage.pk %}" ><i class="fa fa-close"></i></a></td>
+                {% endif %}
+                </tr>
+              <tr> {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}<td colspan="4">{%else%}<td colspan="3">{%endif%}<div id="resSondage_{{forloop.counter}}"></div></td></tr>
+              {% if not forloop.last %}
+        <hr>
+              {% endif %}
+              {% endfor %}
+<tr> {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}<td colspan="4">{%else%}<td colspan="3">{%endif%}
+<a class="btn btn-sm btn-success textleft" href="{% url 'vote:ajouterSondageBinaire' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une question</a>
+
+</td></tr>
+
+        </tbody>
+    </table>
+    </div>
+</div>
+            <hr>
+{% comment %}
         <div class="row justify-content-center" >
             <div class="col-sm-12 textcenter">
                 <h4>Suffrages liés : </h4>
@@ -548,8 +682,11 @@
               {%endfor%}
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
             <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un vote</a></p>
+              <p><a class="btn btn-sm btn-success textleft" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un suffrage au groupe</a></p>
             {% endif %}
+
+{% endcomment %}
+
       </div>
     </div>
 </div>
@@ -593,7 +730,7 @@
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank" rel="noopener noreferrer nofollow"><i class="fa fa-plus"></i>  Covoiturage</a>
         </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}"><i class="fa fa-plus"></i>  Ajouter un vote</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage_article' article_slug=article.slug %}"><i class="fa fa-plus"></i>  Ajouter un vote</a>
         </p>
 
           </div>
@@ -653,6 +790,7 @@
         map.panTo(new L.LatLng(42.62914, 2.49939));
         {%endif%}
     }
-</script>
-{% add_copy_script %}
-{% endblock %}
+
+                    </script>
+                    {% add_copy_script %}
+                    {% endblock %}

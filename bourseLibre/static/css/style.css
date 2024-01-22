@@ -2645,3 +2645,9 @@ min-height:40px;
 .img_album{
     max-height: 90vh;
 }
+
+
+.tr_vote{
+    background-color: #cae3c2;
+      border-top: black;
+  }

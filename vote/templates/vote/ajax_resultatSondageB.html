@@ -1,0 +1,83 @@
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter ">
+            <table class="table table-condensed" cellpadding="2">
+                <thead>
+                <tr>
+                    <th class="tg-0lax">Votants</th>
+                    <th class="tg-baqh">{{resultat.nbTotal}}</th>
+                    <th class="tg-baqh">
+
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="tg-0lax">Oui</td>
+                    <td class="tg-baqh">{{resultat.nbOui.0}}</td>
+                    <td class="tg-baqh">{{resultat.nbOui.1}}</td>
+                </tr>
+                <tr>
+                    <td class="tg-0lax">Non</td>
+                    <td class="tg-baqh">{{resultat.nbNon.0}}</td>
+                    <td class="tg-baqh">{{resultat.nbNon.1}}</td>
+                </tr>
+                <tr>
+                    <td class="tg-0lax">Ne se prononce pas</td>
+                    <td class="tg-baqh">{{resultat.nbNSPP.0}}</td>
+                    <td class="tg-baqh">{{resultat.nbNSPP.1}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr>
+    </div>
+
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
+        {% if vote %}
+        <p> Vous avez voté : {{vote}}</p>
+        {% else %}
+        <p> Vous n'avez pas participé à ce sondage</p>
+        {% endif %}
+    </div>
+</div>
+
+
+{% if votes %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
+        <button id="btn-detail-comments" type="button" class="btn btn-lg"
+                onclick="toggle_visibility('detail-comments');" data-toggle="tooltip" data-placement="bottom"
+                title="Cliquez pour afficher les archives">
+            Voir tous les votes
+        </button>
+        <div id="detail-comments" style='display:none;'>
+
+            <div class="anchor_blank" id="idConversation"></div>
+            <div class="contenu commentaires" id="idConversation_2">
+                {% for vote in votes %}
+                        <p class="infos  textepetit ">
+                            <a href="{% url 'profil_nom' vote.auteur %}"> {{vote.auteur}}</a>: {{vote}} ({{ vote.date_creation|date:"d/m/Y, G:i" }})
+                        </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<script>
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'inline'){
+          e.style.display = 'none';
+      }
+       else{
+          e.style.display = 'inline';
+      }
+   }
+
+</script>
+
+

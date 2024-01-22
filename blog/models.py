@@ -768,3 +768,5 @@ class AdresseArticle(models.Model):
         if not self.titre:
             return ""
         return self.titre
+
+

@@ -105,8 +105,9 @@
 </p>
 <hr>
 {% endif %}
+
 <p class="textcenter">
-    <a href="{% url 'defraiement:export_recapitulatif' asso=asso_courante type_reunion=type_courant type_export=unite prixMax=prixMax  tarifKilometrique=tarifKilometrique %}" target="_blank" rel="noopener noreferrer nofollow">
+    <a href="{% url 'defraiement:export_recapitulatif' asso=asso_courante type_reunion=type_courant type_export=unite  %}?{% if request.GET.tarifKilometrique %}tarifKilometrique={{ request.GET.tarifKilometrique }}{% endif%}{% if request.GET.prixMax %}&prixMax={{ request.GET.prixMax }}{% endif%}{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
         &nbsp;Exporter en CSV
         </button>

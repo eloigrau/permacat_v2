@@ -50,6 +50,7 @@ def getRecapitulatif_km(request, reunions, asso):
     participants = ParticipantReunion.objects.filter(asso=asso)
     entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["km parcourus",]
     lignes = []
+    lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
         part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [round(sum(distances), 2) , ]
@@ -63,12 +64,13 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique):
     entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" + r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["total Euros",]
     lignes = []
 
+    lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
     distancesTotales = [r.getDistanceTotale for r in reunions]
     prixTotal = sum(distancesTotales) * float(tarifKilometrique)
     if prixTotal < float(prixMax):
         coef_distanceTotale = float(tarifKilometrique)
     else:
-        coef_distanceTotale = float(prixMax) / prixTotal
+        coef_distanceTotale = float(prixMax) / sum(distancesTotales)
     for p in participants:
         distances = [int(p.getDistance_route_allerretour(r) * coef_distanceTotale + 0.5) if p in r.participants.all() else 0 for r in reunions ]
         part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [sum(distances), ]
@@ -76,7 +78,7 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique):
     distancesTotales = [int(r.getDistanceTotale * coef_distanceTotale + 0.5) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [sum(distancesTotales), ])
     lignes.append(["prix max : " + prixMax, "bareme kilometrique max : " + tarifKilometrique,
-                   "barème calculé : " + str(round(coef_distanceTotale/2.0, 3)), ] + ["" for r in reunions[2:]] + ["", ])
+                   "barème calculé : " + str(round(coef_distanceTotale, 3)), ] + ["" for r in reunions[2:]] + ["", ])
 
     return entete, lignes
 
@@ -108,17 +110,24 @@ def recapitulatif(request, asso_slug):
 
         return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique}, )
 
-    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion},)
+    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
 
-def export_recapitulatif(request, asso, type_reunion="999", type_export="km", prixMax="1000", tarifKilometrique="0.5" ):
+def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
+
+    prixMax = request.GET.get('prixMax')
+    tarifKilometrique = request.GET.get('tarifKilometrique')
 
     if type_reunion != "999":
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion).order_by('start_time','categorie',)
     else:
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',)
+
+    annee = request.GET.get('annee')
+    if annee:
+        reunions = reunions.filter(start_time__year=annee)
 
     if type_export == "km":
         entete, lignes = getRecapitulatif_km(request, reunions, asso)

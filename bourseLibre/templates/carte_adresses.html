@@ -60,7 +60,7 @@
               shadowSize: [41, 41]
         });
 
-        var markers = L.markerClusterGroup();
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
         {% for adresse in lieux %}
             try{
                 var lat = {{adresse.latitude|to_numeric}};

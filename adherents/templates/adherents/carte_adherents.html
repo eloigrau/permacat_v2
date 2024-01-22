@@ -113,7 +113,7 @@
               shadowSize: [41, 41]
         });
 
-        var markers = L.markerClusterGroup();
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
         {% for profil in adherents %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};

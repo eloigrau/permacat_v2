@@ -71,7 +71,7 @@
               shadowSize: [41, 41]
         });
 
-        var markers = L.markerClusterGroup();
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
         {% for graino in filter.qs %}
             {% if graino.adresse.get_latitude %}
                 var lat = {{ graino.adresse.get_latitude }};

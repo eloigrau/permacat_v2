@@ -33,7 +33,7 @@
 {% if not request.user.is_anonymous %}
     {% if request.user.adherent_jp %}
     <p class="textcenter">
-        <a class="btn btn-primary" href="{% url 'inscription_jp' %}"> Je suis inscrit -> Je me désinscris du groupe en
+        <a class="btn btn-primary" href="{% url 'inscription_jp' %}" style="color:white;"> Je suis inscrit -> Je me désinscris du groupe en
             cliquant ici</a>
     </p>
     {% else %}

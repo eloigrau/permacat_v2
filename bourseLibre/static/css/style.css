@@ -2649,5 +2649,5 @@ min-height:40px;
 
 .tr_vote{
     background-color: #cae3c2;
-      border-top: black;
+      border-top: 10px solid black;
   }

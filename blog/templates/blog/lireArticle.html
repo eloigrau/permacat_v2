@@ -301,8 +301,8 @@
                         </div>
                         {% for document in documents %}
                         <p>
-                            <a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i> {{
-                                document.titre }} </a>
+                            <a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i>
+                                {{ document.titre }} </a>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <a class="btn btn-sm btn-danger textleft"
                                href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i
@@ -522,8 +522,7 @@
                     <table class="table textleft" style="border:none;">
                         <tr>
                             <td class="textright" style="width:40%"><i class="fa fa-envelope iconleft"></i></td>
-                            <td>{% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser "
-                                article "Envoyer le lien par mail" %}
+                            <td>{% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}
                             </td>
                         </tr>
                         <tr>
@@ -682,7 +681,9 @@ function get_resultatSondage(url_tag, div_name) {
               {%endfor%}
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
             <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un suffrage au groupe</a></p>
+              <p><a class="btn btn-sm btn-success textleft"
+                    href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" >
+                  <i class="fa fa-plus"></i> Ajouter un suffrage au groupe</a></p>
             {% endif %}
 
 {% endcomment %}

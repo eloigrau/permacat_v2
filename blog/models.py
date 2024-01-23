@@ -217,7 +217,7 @@ class Article(models.Model):
         return self.titre
 
     def get_absolute_url(self):
-        return reverse('blog:lireArticle', kwargs={'slug':self.slug})
+        return reverse('blog:lireArticle', kwargs={'slug':self.slug}) + "#ref-titre"
 
 
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):

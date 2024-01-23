@@ -605,8 +605,8 @@
 
         <div class="tab-pane fade " id="suffrages">
 
-            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-                <div class="contenu discussion_fiche">
+            <div class="col-sm-12 col-md-10 offset-md-1 textcenter">
+                <div class="contenu discussion_sondage">
 
                     <div class="row justify-content-center">
                         <div class="col-sm-12 textcenter">
@@ -614,6 +614,7 @@
                         </div>
                     </div>
 
+{% if sondages %}
 <script>
 function get_resultatSondage(url_tag, div_name) {
     $.ajax({
@@ -636,7 +637,7 @@ function get_resultatSondage(url_tag, div_name) {
     <table class="table table-condensed">
         <thead>
         <th>Question</th>
-        <th>Vote</th>
+        <th>Voter</th>
         <th>Résultat</th>
         {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}<th></th>{% endif%}
         </thead>
@@ -648,7 +649,8 @@ function get_resultatSondage(url_tag, div_name) {
                     <a class="btn btn-block btn-sm btn-success textleft" href="{% url 'vote:ajouterVoteBinaire' sondageBinaire_pk=sondage.pk reponse_b='2' %}" >Blanc</a>
                 </td>
                 <td style="text-align: center; vertical-align: middle;">
-                    <a href="#resSondage" onclick="get_resultatSondage('{% url 'vote:get_resultatSondageB' sondage_pk=sondage.pk %}', 'resSondage_{{forloop.counter}}')" data-toggle="tab" id="navtab_archives"> Résultats</a>
+                    <a href="#resSondage" onclick="get_resultatSondage('{% url 'vote:get_resultatSondageB' sondage_pk=sondage.pk %}', 'resSondage_{{forloop.counter}}')" data-toggle="tab" id="navtab_archives">
+                    <i class="fa fa-2x fa-check"></a>
 
                 {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                 <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-primary textleft" href="{% url 'vote:modifierSondageB' pk=sondage.pk %}" ><i class="fa fa-edit"></i></a>
@@ -669,8 +671,9 @@ function get_resultatSondage(url_tag, div_name) {
     </table>
     </div>
 </div>
+{% endif %}
+{% if suffrages %}
             <hr>
-{% comment %}
         <div class="row justify-content-center" >
             <div class="col-sm-12 textcenter">
                 <h4>Suffrages liés : </h4>
@@ -679,14 +682,16 @@ function get_resultatSondage(url_tag, div_name) {
               {%for suffrage in suffrages %}
             <p><a href="{{suffrage.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> {{suffrage.titre}}</a></p>
               {%endfor%}
+{% comment %}
             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
             <hr>
               <p><a class="btn btn-sm btn-success textleft"
                     href="{% url 'vote:ajouterSuffrage' article_slug=article.slug %}" >
                   <i class="fa fa-plus"></i> Ajouter un suffrage au groupe</a></p>
             {% endif %}
-
 {% endcomment %}
+
+            {% endif %}
 
       </div>
     </div>

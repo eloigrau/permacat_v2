@@ -46,9 +46,12 @@ def lireParticipant(request, id):
 
     return render(request, 'defraiement/lireParticipant.html', context,)
 
-def getRecapitulatif_km(request, reunions, asso):
+def getRecapitulatif_km(request, reunions, asso, export=False):
     participants = ParticipantReunion.objects.filter(asso=asso)
-    entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["km parcourus",]
+    if export:
+        entete = ["nom", ] + [r.titre+ " (" + str(r.start_time) + ")"  for r in reunions] + ["total Euros",]
+    else:
+        entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["km parcourus",]
     lignes = []
     lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
     for p in participants:
@@ -59,12 +62,15 @@ def getRecapitulatif_km(request, reunions, asso):
     lignes.append(["Total", ] + distancesTotales + [round(sum(distancesTotales), 2), ])
     return entete, lignes
 
-def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique):
+def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, export=False):
     participants = ParticipantReunion.objects.filter(asso=asso)
-    entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" + r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["total Euros",]
+    if export:
+        entete = ["nom", ] + [r.titre for r in reunions] + ["total Euros",]
+    else:
+        entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" + r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["total Euros",]
     lignes = []
 
-    lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
+    lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["Total", ])
     distancesTotales = [r.getDistanceTotale for r in reunions]
     prixTotal = sum(distancesTotales) * float(tarifKilometrique)
     if prixTotal < float(prixMax):
@@ -89,10 +95,10 @@ def recapitulatif(request, asso_slug):
         raise PermissionDenied
     type_reunion = request.GET.get('type_reunion')
     if type_reunion:
-        reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion, ).order_by('start_time','categorie',)
+        reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion, ).order_by('categorie','start_time',)
     else:
         type_reunion = "999"
-        reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',)
+        reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',).order_by('categorie','start_time',)
 
     annee = request.GET.get('annee')
     if annee:

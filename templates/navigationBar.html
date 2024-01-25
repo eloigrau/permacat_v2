@@ -38,7 +38,7 @@
                             <li class="divider" role="separator"></li>
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permacat_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document partagé </a></li>
 
-                         <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='pc'%}#ref-titre"><i class='fa fa-comments iconleft ' ></i> Articles du forum</a></li>
+                         <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='pc'%}#ref-titre"><i class='fa fa-comments iconleft ' ></i> Forum</a></li>
                          <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=pc#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_projets'%}?asso=pc#ref-titre"><i class='fa fa-file iconleft ' ></i> Projets</a></li>
 
@@ -120,7 +120,7 @@
                             <li> <a class="dropdown-item" href="{% url 'carte'  asso='rtg' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire </a></li>
                             <li class="divider" role="separator"></li>
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/rtg_doctravail" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Document partagé </a></li>
-                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='rtg'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Articles du forum</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='rtg'%}#ref-titre"><i class='fa fa-comments iconleft' ></i> Forum</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:lireArticle' slug='dossiersactions-en-cours'%}"><i class='fa fa-comments iconleft' ></i> Dossiers en cours </a></li>
                             <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug='rtg' %}"><i class='fa fa-comments iconleft' ></i> Defraiement </a></li>
                          <li><a class="dropdown-item" href="{% url 'photologue:doc-list'%}?asso=rtg#ref-titre"><i class='fa fa-file iconleft ' ></i> Documents</a></li>
@@ -195,6 +195,16 @@
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permagora_cerclejptg" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Cercle Jardins </a></li>
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/forum_permagora_polesthematiques" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Cercle Thématique </a></li>
                      <li> <a class="dropdown-item" href="https://semestriel.framapad.org/p/permagora_cercleevenementiel" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Cercle Evenementiel </a></li>
+                                </ul>
+                            </li>
+                           <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle"  href="#">Salons</a>
+                                    <ul class="dropdown-menu nav8-dropdown-subsubmenu">
+                     <li> <a class="dropdown-item" href="https://www.perma.cat/salon/d/salon-du-cercle-coeur-de-permagora" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Cercle Ancrage </a></li>
+                     <li> <a class="dropdown-item" href="https://www.perma.cat/salon/d/permagora-cercle-education-formation" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Cercle Education </a></li>
+                     <li> <a class="dropdown-item" href="https://www.perma.cat/salon/d/permagora-cercle-jardins-partages" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Cercle Jardins </a></li>
+                     <li> <a class="dropdown-item" href="https://www.perma.cat/salon/d/groupe-de-travail-des-jardins-partages" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Groupe de W Jardins partagés </a></li>
+                     <li> <a class="dropdown-item" href="https://www.perma.cat/salon/d/permagora-jardins-saint-jean" target="_blank" rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft' ></i>  Jardins Saint Jean </a></li>
                                 </ul>
                             </li>
                           <li> <a class="dropdown-item" href="{% url 'carte'  asso='scic' %}"><i class='fa fa-compass iconleft' ></i>  Carte / Annuaire  </a></li>

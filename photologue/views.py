@@ -111,11 +111,11 @@ class PhotoDetailView(DetailView):
 
 
 class DocListView(ListView):
-    paginate_by = 20
+    paginate_by = 50
 
     def get_queryset(self):
         qs = Document.objects.all().order_by("-date_creation")
-        if "asso" in  self.request.GET:
+        if "asso" in self.request.GET:
             qs = qs.filter(asso__abreviation=self.request.GET["asso"])
 
         for nomAsso in Choix_global.abreviationsAsso:

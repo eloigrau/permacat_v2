@@ -528,7 +528,7 @@ def carte(request, asso):
         raise PermissionDenied
     profils = asso.getProfils()
     nbProf = len(profils)
-    nb_par_page = 50
+    nb_par_page = 100
     #profils = asso.getProfils_Annuaire()
     if "lettre" in request.GET:
         profils = profils.filter(username__istartswith=request.GET["lettre"])

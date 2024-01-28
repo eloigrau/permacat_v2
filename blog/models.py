@@ -18,7 +18,7 @@ import uuid
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
     type_projet = ('Part','Participation à un évènement'), ('AGO',"Organisation d'une AGO"), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
-    type_annonce_base = ('Annonce','Annonce'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
+    type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
                    ('Documentation','Documentation'),  ('covoit','Covoiturage'), \
                     ('Point', 'Idée / Point de vue'),  ('Recette', 'Recette'), ('BonPlan','Bon Plan / achat groupé'), \
                      ('Divers','Divers')
@@ -39,7 +39,7 @@ class Choix:
 
     type_annonce_jp = type_annonce_jp_base + tuple([('jardin_' + str(i), 'Jardin_' + str(i)) for i in range(100)])
 
-    type_annonce_scic = ('Annonce','Annonce'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
+    type_annonce_scic = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
                         ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
 

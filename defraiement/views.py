@@ -56,7 +56,11 @@ def getRecapitulatif_km(request, reunions, asso, export=False):
     lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
-        part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [round(sum(distances), 2) , ]
+
+        if export:
+            part = [p.nom, ] + distances + [sum(distances), ]
+        else:
+            part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [round(sum(distances), 2) , ]
         lignes.append(part)
     distancesTotales = [round(r.getDistanceTotale, 2) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [round(sum(distancesTotales), 2), ])
@@ -79,11 +83,15 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, 
         coef_distanceTotale = float(prixMax) / sum(distancesTotales)
     for p in participants:
         distances = [int(p.getDistance_route_allerretour(r) * coef_distanceTotale + 0.5) if p in r.participants.all() else 0 for r in reunions ]
-        part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [sum(distances), ]
+
+        if export:
+            part = [p.nom, ] + distances + [sum(distances), ]
+        else:
+            part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [sum(distances), ]
         lignes.append(part)
     distancesTotales = [int(r.getDistanceTotale * coef_distanceTotale + 0.5) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [sum(distancesTotales), ])
-    lignes.append(["prix max : " + prixMax, "bareme kilometrique max : " + tarifKilometrique,
+    lignes.append(["prix max : " + str(prixMax), "bareme kilometrique max : " + str(tarifKilometrique),
                    "barème calculé : " + str(round(coef_distanceTotale, 3)), ] + ["" for r in reunions[2:]] + ["", ])
 
     return entete, lignes
@@ -123,8 +131,8 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     if not isinstance(asso, Asso):
         raise PermissionDenied
 
-    prixMax = request.GET.get('prixMax')
-    tarifKilometrique = request.GET.get('tarifKilometrique')
+    prixMax = request.GET.get('prixMax', 100000)
+    tarifKilometrique = request.GET.get('tarifKilometrique', 1)
 
     if type_reunion != "999":
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion).order_by('start_time','categorie',)
@@ -136,10 +144,10 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
         reunions = reunions.filter(start_time__year=annee)
 
     if type_export == "km":
-        entete, lignes = getRecapitulatif_km(request, reunions, asso)
+        entete, lignes = getRecapitulatif_km(request, reunions, asso, export=True)
         csv_data = [entete, ] + lignes
     else:
-        entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique)
+        entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, export=True)
         csv_data = [entete, ] + lignes
 
     pseudo_buffer = Echo()

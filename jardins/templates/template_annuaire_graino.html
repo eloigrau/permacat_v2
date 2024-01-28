@@ -16,7 +16,7 @@
             <tr>
                 <th style="min-width:40%;">Nom</th>
                 <th>Type</th>
-                <th>Email</th>
+                {% if request.user.is_authenticated %}<th>Email</th>{% endif %}
                 <th>Commune</th>
             </tr>
         </thead>
@@ -25,7 +25,7 @@
         <tr>
            <td style="width-min:50%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug %}">{{ grainotheque.titre }}</a></td>
             <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.get_categorie_display }}</a></td>
-           <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
+           {% if request.user.is_authenticated %}<td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>{% endif %}
             {% if not request.user.is_authenticated %}
                 {% if grainotheque.visibilite_annuaire == '0' %}
                 <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} ({{ grainotheque|distance:request.user }} km){% else %}-{% endif %}</td>

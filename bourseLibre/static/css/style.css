@@ -606,6 +606,18 @@ border: 1px inset rgba(28,110,164,0.65);
   background-color: blue;
 }
 
+.navbargroupe >ul {
+    display: table;
+}
+.bs-dark .navgroupe {
+    background-color: #e6e6ff;
+    display: table-cell;
+}
+.bs-dark .navgroupe > a:hover{
+    background-color: #ccccff;
+}
+
+
 @media screen and (max-height: 1000px) and (max-width: 1200px){
 .navbar-collapse {
     overflow-y: auto;

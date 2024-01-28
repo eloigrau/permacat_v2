@@ -510,7 +510,7 @@ class SalonArticleForm(forms.ModelForm):
 class AdresseArticleForm(forms.ModelForm):
     class Meta:
         model = AdresseArticle
-        fields = ['titre',]
+        fields = ['titre', 'infos']
 
     def save(self, article, adresse):
         instance = super(AdresseArticleForm, self).save(commit=False)

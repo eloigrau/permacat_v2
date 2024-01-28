@@ -217,7 +217,7 @@ class Article(models.Model):
         return self.titre
 
     def get_absolute_url(self):
-        return reverse('blog:lireArticle', kwargs={'slug':self.slug}) + "#ref-titre"
+        return reverse('blog:lireArticle', kwargs={'slug':self.slug})
 
 
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
@@ -754,11 +754,12 @@ class AdresseArticle(models.Model):
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 help_text="L'evenement doit etre associé à un article existant (sinon créez un article avec une date)")
-
+    infos = models.CharField(verbose_name="Infos complémentaires",
+                             max_length=100, null=True, blank=True, default="")
 
     def __str__(self):
         if self.titre:
-            return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
+            return str(self.titre) + " : " + self.infos + "; (" + str(self.adresse.get_adresse_str) + ")"
         else:
             return str(self.adresse.get_adresse_str)
 

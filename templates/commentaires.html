@@ -17,7 +17,8 @@
 </p>
 
             </div>
-        <div class=" col-sm-9 col-md-9 col-lg-10 message ">
+        <div class=" col-sm-9 col-md-9 col-lg-10 message
+                {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} ">
                 <p>{{ comment.commentaire|safe}}</p>
         </div>
     </div>

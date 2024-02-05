@@ -3,8 +3,30 @@
 {% load avatar_tags %}
 
 <div class="anchor_blank" id="idConversation"></div>
-<div class="contenu commentaires"  id="idConversation_2">
+<div class=" commentaires"  id="idConversation_2">
+
+<div class="conversation">
+              <div class="conversation-container">
+    {% for comment in commentaires %}
+        <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} ">
+
+                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>{% endifchanged %}
+                <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
+
+                {% if request.user == comment.auteur_comm or request.user.is_superuser %}
+                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+                {% endif %}
+                   </span>
+                <p>{{ comment.commentaire|safe|usermention}}</p>
+        </div>
+{% endfor %}
+    </div>
+    </div>
+
+    {% comment %}
 {% for comment in commentaires %}
+
+
     <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
 
         <div class="col-sm-3 col-md-3 col-lg-2">
@@ -23,6 +45,7 @@
         </div>
     </div>
 {% endfor %}
+    {% endcomment %}
 </div>
 {% if commentaires %}
 

@@ -551,7 +551,7 @@ def get_tags_articles(request):
         asso = testIsMembreAsso_bool(request, request.GET['asso'])
         if asso:
             q_objects = Q(asso=asso) | Q(partagesAsso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation="public")
-            inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).values_list('tags', flat=True).order_by('tags__name').distinct()))
+            inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).order_by('tags__name').values_list('tags', flat=True).distinct()))
         else:
             inner_qs = []
     else:
@@ -560,7 +560,7 @@ def get_tags_articles(request):
     inner_qs.remove(None)
     if inner_qs:
         tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.abreviation, 'tag':t}), t)
-                for t in Tag.objects.filter(id__in=inner_qs)]
+                for t in Tag.objects.filter(id__in=inner_qs).order_by('name')]
     return render(request, 'blog/ajax/listeTags_template.html', {'tags': tags})
 
 

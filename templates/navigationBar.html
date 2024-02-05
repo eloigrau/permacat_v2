@@ -487,13 +487,18 @@
                                            href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre"><i
                                             class='fa fa-comments iconleft'></i> Forum</a></li>
                                     <li><a class="dropdown-item"
+                                           href="/article/organisation-de-la-communication-interne-de-la-confederation-paysanne#ref-titre"><i
+                                            class='fa fa-comments iconleft'></i> Organisation</a></li>
+                                    <li><a class="dropdown-item"
                                            href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
                                             class='fa fa-file iconleft '></i> Documents</a></li>
                                     <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
                                     {% if request.user.estmembre_bureau_conf %}
-                <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> Gérer les Adhésions</a></li>
-                <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"> Gérer les Listes de mails</a></li>
+                                <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> <i
+                                                            class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
+                                <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"><i
+                                                            class='fa fa-arrow-right iconleft'></i> Gérer les Listes de mails</a></li>
 
             {% endif %}
                                     {% comment %}

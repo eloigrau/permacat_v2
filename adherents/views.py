@@ -67,7 +67,7 @@ class AdherentDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['adhesions'] = Adhesion.objects.filter(adherent=self.object)
+        context['adhesions'] = Adhesion.objects.filter(adherent=self.object).order_by("-date_cotisation__year", "adherent__nom")
         context['inscriptionsMail'] = InscriptionMail.objects.filter(adherent=self.object)
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         return context
@@ -168,7 +168,7 @@ class ListeAdhesions(UserPassesTestMixin, ListView):
     model = Adhesion
     context_object_name = "adhesions"
     template_name = "adherents/adhesion_liste.html"
-    ordering = ['adherent']
+    ordering = ("-date_cotisation__year", "adherent__nom")
 
     def test_func(self):
         return is_membre_bureau(self.request.user)

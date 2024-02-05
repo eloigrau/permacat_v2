@@ -816,8 +816,8 @@ border: 1px inset rgba(28,110,164,0.65);
   padding: 8px;
   position: relative;
   margin: 4px 2px;
-  max-width: 92%;
-  min-width: 40%;
+  max-width: 96%;
+  min-width: 38%;
   word-wrap: break-word;
 }
 

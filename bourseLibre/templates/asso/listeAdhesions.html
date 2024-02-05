@@ -30,6 +30,18 @@ Coopérateurs
 <hr>
 {% endcomment %}
 
+{% if request.user.is_superuser %}
+<div class="row textcenter">
+    <div class="col-sm-12">
+    <a class="dropdown-item" href="{% url 'ajouterAdhesion' abreviationAsso=asso.abreviation  %}">
+    <button type="button" class="btn btn-primary">
+      SU : Ajouter adhésion
+    </button>
+    </a>
+    </div>
+</div>
+<hr>
+{% endif %}
 <div class="row contenu reunion">
 <div class="col justify-content-center">
 <table class="table table-condensed tableprofils table-striped sortable">
@@ -37,7 +49,9 @@ Coopérateurs
             <tr>
                 <th>asso</th>
                 <th>user</th>
+                <th>email</th>
                 <th>date</th>
+                <th>année</th>
                 <th>montant</th>
                 <th>moyen</th>
                 <th>detail</th>
@@ -48,7 +62,9 @@ Coopérateurs
     <tr>
         <td><a href="{{adhesion.user.get_absolute_url}}">{%if not adhesion.asso%} permacat {%else%}{{adhesion.asso}}{%endif%}</a></td>
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.user}}</a></td>
-        <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.date_cotisation|date:"DATE_FORMAT"}}</a></td>
+        <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.user.email}}</a></td>
+        <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.date_cotisation|date:"d/m"}}</a></td>
+        <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.date_cotisation|date:"Y"}}</a></td>
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.montant}}</a></td>
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.get_moyen_display}}</a></td>
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.detail}}</a></td>

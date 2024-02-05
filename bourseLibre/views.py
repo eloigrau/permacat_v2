@@ -389,9 +389,9 @@ def listeAdhesions(request, asso):
     if not isinstance(asso, Asso):
         raise PermissionDenied
     if asso.abreviation == "pc":
-        qs = Adhesion_permacat.objects.filter().order_by()
+        qs = Adhesion_permacat.objects.filter().order_by("-date_cotisation")
     else:
-        qs = Adhesion_asso.objects.filter(asso=asso).order_by()
+        qs = Adhesion_asso.objects.filter(asso=asso).order_by("-date_cotisation")
 
     return render(request, 'asso/listeAdhesions.html', {"listeAdhesions":qs, "asso":asso })
 

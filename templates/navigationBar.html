@@ -473,11 +473,6 @@
                                     <li><a class="dropdown-item"
                                            href="{% url 'photologue:doc-list'%}?asso=bzz2022#ref-titre"><i
                                             class='fa fa-file iconleft '></i> Documents</a></li>
-
-                                    <li><a class="dropdown-item"
-                                           href="https://semestriel.framapad.org/p/projetbzzz_doctravail"
-                                           target="_blank" rel="noopener noreferrer nofollow"><i
-                                            class='fa fa-file iconleft'></i> Document partagé </a></li>
                                     {% endif %}
                                 </ul>
                             </li>
@@ -496,6 +491,11 @@
                                             class='fa fa-file iconleft '></i> Documents</a></li>
                                     <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
+                                    {% if request.user.estmembre_bureau_conf %}
+                <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> Gérer les Adhésions</a></li>
+                <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"> Gérer les Listes de mails</a></li>
+
+            {% endif %}
                                     {% comment %}
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='conf66' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte des inscrits </a></li>

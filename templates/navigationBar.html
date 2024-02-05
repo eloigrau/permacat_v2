@@ -494,13 +494,17 @@
                                             class='fa fa-file iconleft '></i> Documents</a></li>
                                     <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
+                                            class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
+                            <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> Abonnements
+                                Mails</a></li>
                                     {% if request.user.estmembre_bureau_conf %}
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> <i
                                                             class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"><i
                                                             class='fa fa-arrow-right iconleft'></i> Gérer les Listes de mails</a></li>
 
-            {% endif %}
+                                    {% endif %}
                                     {% comment %}
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='conf66' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte des inscrits </a></li>
@@ -739,10 +743,6 @@
                             <li><a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'mesSuivis' %}"> Abonnements </a></li>
-                            {% if request.user.adherent_conf66 %}
-                            <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> Abonnements
-                                Conf66</a></li>
-                            {% endif %}
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'mesActions' %}"> Publications </a></li>
                             <li class="divider" role="separator"></li>

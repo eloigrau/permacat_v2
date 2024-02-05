@@ -207,7 +207,7 @@ class SupprimerArticle(DeleteAccess, DeleteView):
 def lireArticle(request, slug):
     article = get_object_or_404(Article, slug=slug)
     ateliers = Atelier.objects.filter(article=article).order_by('-start_time')
-    documents = Document.objects.filter(article=article).order_by('date_creation')
+    documents = Document.objects.filter(article=article).order_by('-date_creation')
     lieux = AdresseArticle.objects.filter(article=article).order_by('titre')
     salons = Salon.objects.filter(article=article).order_by('titre')
     salons_article = AssociationSalonArticle.objects.filter(article=article).order_by('salon__titre')

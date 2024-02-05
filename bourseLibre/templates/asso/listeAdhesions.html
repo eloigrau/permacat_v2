@@ -30,18 +30,16 @@ Coopérateurs
 <hr>
 {% endcomment %}
 
-{% if request.user.is_superuser %}
 <div class="row textcenter">
     <div class="col-sm-12">
     <a class="dropdown-item" href="{% url 'ajouterAdhesion' abreviationAsso=asso.abreviation  %}">
     <button type="button" class="btn btn-primary">
-      SU : Ajouter adhésion
+      Ajouter adhésion
     </button>
     </a>
     </div>
 </div>
 <hr>
-{% endif %}
 <div class="row contenu reunion">
 <div class="col justify-content-center">
 <table class="table table-condensed tableprofils table-striped sortable">

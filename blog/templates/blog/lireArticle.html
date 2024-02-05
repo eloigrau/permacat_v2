@@ -376,7 +376,7 @@
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <a class="btn btn-sm btn-success textleft"
                                href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}"><i
-                                    class="fa fa-plus"></i> Ajouter une réunion</a>
+                                    class="fa fa-plus"></i> Ajouter une réunion (pour défraiement)</a>
                             {% endif%}
                             {%if request.user.is_superuser %}
                             <a class="btn btn-sm btn-success textleft"
@@ -714,7 +714,7 @@ function get_resultatSondage(url_tag, div_name) {
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu <i class="fa fa-map-marker "></i></a>
         </p>
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion <i class="fa fa-users "></i></a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion (pour défraiement) <i class="fa fa-users "></i></a>
         </p>
         <p>
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion <i class="fa fa-users "></i></a>

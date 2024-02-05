@@ -162,14 +162,12 @@
                 </a>
             </p>
             {% endif %}
-
         </div>
     </div>
     <div class="anchor_blank" id="idContenu"></div>
     <nav class="nav nav-tabs justify-content-center">
         <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"><i
                 class="fa fa-align-center icon-left"></i> </a>
-
         {% if lieux %}
         <a class="nav-item nav-link" href="#lieux" data-toggle="tab">
             <i class="fa fa-map-marker icon-left"></i></a>
@@ -193,14 +191,14 @@
         <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-file icon-left"></i></a>
         {% endif %}
         {% if documents_partages %}
-        <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-share icon-left"></i></a>
+        <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-link icon-left"></i></a>
         {% endif %}
         {% if suffrages or sondages %}
-        <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i><i
-                class="fa fa-paper-plane-top"></i></a>
+        <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i>
+            <i class="fa fa-paper-plane-top"></i></a>
         {% endif %}
         <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
-        <a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-link icon-left"></i></a>
+        <a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-share icon-left"></i></a>
         <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
     </nav>
 
@@ -467,11 +465,9 @@
                         {% endif %}
                     </p>
                     {%endfor%}
-                    {% comment %}
                     <p><a class="btn btn-sm btn-primary textleft"
                           href="{% url 'blog:voirCarteLieux' id_article=article.id %}"><i class="fa fa-compass"></i>
                         Voir sur une carte</a></p>
-                    {% endcomment %}
 
                     <div class="row">
                         <div class="col-md-12">
@@ -650,7 +646,7 @@ function get_resultatSondage(url_tag, div_name) {
                 </td>
                 <td style="text-align: center; vertical-align: middle;">
                     <a href="#resSondage" onclick="get_resultatSondage('{% url 'vote:get_resultatSondageB' sondage_pk=sondage.pk %}', 'resSondage_{{forloop.counter}}')" data-toggle="tab" id="navtab_archives">
-                    <i class="fa fa-2x fa-check"></a>
+                   <i class="fa fa-2x fa-question-circle"></a>
 
                 {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                 <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-primary textleft" href="{% url 'vote:modifierSondageB' pk=sondage.pk %}" ><i class="fa fa-edit"></i></a>
@@ -707,36 +703,36 @@ function get_resultatSondage(url_tag, div_name) {
             </div>
         </div>
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda <i class="fa fa-calendar "></i></a>
         </p>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
         <p>
-            <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Associer à un album photo</a>
+            <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}" ><i class="fa fa-plus"></i> Associer à un album photo <i class="fa fa-camera-retro"></i></a>
         </p>
         {% endif %}
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}" ><i class="fa fa-plus"></i> Ajouter un lieu <i class="fa fa-map-marker "></i></a>
         </p>
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion <i class="fa fa-users "></i></a>
         </p>
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion</a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion <i class="fa fa-users "></i></a>
         </p>
        <p>
-           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un fichier/document</a>
+           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un fichier/document <i class="fa fa-file "></i></a>
        </p>
        <p>
-           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document partagé</a>
+           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un document partagé <i class="fa fa-link "></i></a>
        </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier <i class="fa fa-wrench  "></i></a>
         </p>
         <p>
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" target="_blank" rel="noopener noreferrer nofollow"><i class="fa fa-plus"></i>  Covoiturage</a>
         </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage_article' article_slug=article.slug %}"><i class="fa fa-plus"></i>  Ajouter un vote</a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage_article' article_slug=article.slug %}"><i class="fa fa-plus"></i>  Ajouter un sondage <i class="fa fa-paper-plane-top"></i><i class="fa fa-paper-plane"></i></a>
         </p>
 
           </div>
@@ -744,7 +740,36 @@ function get_resultatSondage(url_tag, div_name) {
   </div>
 </div>
 <hr>
-
+    <a class="nav-item nav-link" href="#lieux" data-toggle="tab">
+            <i class="fa fa-map-marker icon-left"></i></a>
+        {% if dates %}
+        <a class="nav-item nav-link" href="#dates" data-toggle="tab"></a>
+        {% endif %}
+        {% if article.album %}
+        <a class="nav-item nav-link" href="#album" data-toggle="tab"></a>
+        {% endif %}
+        {% if salons %}
+        <a class="nav-item nav-link" href="#salons" data-toggle="tab"></a>
+        {% endif %}
+        {% if ateliers %}
+        <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"></a>
+        {% endif %}
+        {% if reunions %}
+        <a class="nav-item nav-link" href="#reunions" data-toggle="tab"></a>
+        {% endif %}
+        {% if documents %}
+        <a class="nav-item nav-link" href="#documents" data-toggle="tab"></a>
+        {% endif %}
+        {% if documents_partages %}
+        <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"></a>
+        {% endif %}
+        {% if suffrages or sondages %}
+        <a class="nav-item nav-link" href="#suffrages" data-toggle="tab">
+            </a>
+        {% endif %}
+        <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
+        <a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-share icon-left"></i></a>
+        <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
 {% include 'commentaires_discussions.html' %}
 </div>
 

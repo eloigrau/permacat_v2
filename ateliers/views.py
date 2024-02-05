@@ -12,7 +12,7 @@ from bourseLibre.settings.production import SERVER_EMAIL
 from datetime import timedelta
 
 from django.utils.timezone import now
-
+from django.dispatch import Signal
 from bourseLibre.models import Suivis, Profil
 from bourseLibre.views_base import DeleteAccess
 from bourseLibre.views_admin import send_mass_html_mail
@@ -20,6 +20,7 @@ from bourseLibre.views_admin import send_mass_html_mail
 from bourseLibre.constantes import Choix as Choix_global
 from actstream import actions, action
 from actstream.models import Action as Actstream_action
+from django.db.models import Q
 
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
@@ -89,7 +90,11 @@ def inscriptionAtelier(request, slug):
         inscript = InscriptionAtelier(user=request.user, atelier=atelier)
         inscript.save()
         action.send(request.user, verb='atelier_inscription', action_object=atelier, url=atelier.get_absolute_url(),
-                     description="s'est inscrit.e à l'atelier: '%s'" % atelier.titre)
+                     description="s'est inscrit-e à l'atelier: '%s'" % atelier.titre)
+        #act = Actstream_action.objects.model_actions(atelier, actor_content_type=3, actor_object_id=request.user.id)
+        #for a in act:
+        #    a.delete()
+
     #messages.info(request, 'Vous êtes bien inscrit.e à cet atelier !')
     return redirect(atelier.get_absolute_url())
 

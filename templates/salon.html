@@ -1,43 +1,36 @@
 {% load blog_filters %}
 {% load app_filters %}
+{% load avatar_tags %}
 <div class="anchor_blank" id="idConversation"></div>
-<div class="contenu conversation" id="idConversation_2">
 {% include 'pagination_new.html' %}
-{% for mess in page_obj %}
-    {% ifchanged %}
-    <div class="row msg-date textcenter">
-        <div class="col-sm-12">
-            <p class="infos">{{ mess.date_creation|date:"l d F" }}</p>
-        </div>
-    </div>
-    {% endifchanged %}
+<div class=" commentaires"  id="idConversation_2">
+<div class="conversation">
+              <div class="conversation-container">
+    {% for comment in page_obj %}
+    <div class="anchor_blank" id="msg_{{mess.id}}"></div>
+        <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
 
-    {%if mess.auteur.username == 'bot_permacat' %}
+    {%if comment.auteur.username == 'bot_permacat' %}
     <div class="row ">
         <div class="col-sm-12 message_bot">
                     <p>{{ mess.message|safe }}</p>
         </div>
     </div>
     {% else %}
+                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}"> {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur}}</a>{% endifchanged %}
+                <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
 
-<div class="anchor_blank" id="comm_{{mess.id}}"></div>
-    <div class="row {% ifequal mess.auteur.id request.user.id %} msg-auteur  {%else%} msg-destinataire{%endifequal%} " >
-        <div class="col-sm-2 col-md-3 col-lg-2">
-            <p class="infos  textepetit ">
-                {% ifchanged %}<a href="{% url 'profil' mess.auteur.id %}"> {{mess.auteur}}</a><br> {% endifchanged %}{{ mess.date_creation|date:"G:i" }}
-
-                {% if request.user == mess.auteur  or request.user.is_superuser%}
-            <a class="boutonediter" href="{{ mess.get_edit_url  }}" role="button" alt="éditer"><i class="fa fa-edit"></i></a>
+                {% if request.user == comment.auteur or request.user.is_superuser %}
+                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
                 {% endif %}
-            </p>
+                   </span>
+                <p>{{ comment.message|safe}}</p>
+{% endif %}
         </div>
-
-            <div class=" col-sm-10 col-md-9 col-lg-10 message  ">
-                    <p>{{ mess.message|safe|usermention }}</p>
-            </div>
-    </div>
-    {% endif %}
 {% endfor %}
+    </div>
+    </div>
+
 
 {% include 'pagination_new.html' %}
 </div>

@@ -1,5 +1,8 @@
 {% extends 'base_jardin.html' %}
 {% load static %}
+{% block header %}
+<link rel="stylesheet" href="{% static 'jardins/garelick/css/style_jardins.css' %}">
+{% endblock %}
  {% block panel-heading %}{%endblock%}
 {% block div-container-global %} style="padding-top:0;{% endblock%}
 {% block surtitle %}
@@ -53,5 +56,4 @@ Jardinothèque Catalane
     </nav>
 
 </div>
-
 {% endblock %}

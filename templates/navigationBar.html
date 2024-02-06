@@ -482,31 +482,36 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}"><i
                                             class='fa fa-asterisk iconleft'></i> Présentation </a></li>
                                     {% if request.user.adherent_conf66 %}
-                                    <li class="divider" role="separator"></li>
-                                    <li><a class="dropdown-item"
-                                           href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre"><i
-                                            class='fa fa-comments iconleft'></i> Forum</a></li>
-                                    <li><a class="dropdown-item"
-                                           href="https://www.perma.cat/forum/article/organisation-de-la-communication-interne-de-la-confederation-paysanne#ref-titre"><i
-                                            class='fa fa-comments iconleft'></i> Organisation</a></li>
-                                    <li><a class="dropdown-item"
-                                           href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
-                                            class='fa fa-file iconleft '></i> Documents</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
-                                            class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
-                            <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> Abonnements
-                                Mails</a></li>
+                                    <li class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">Espace Adhérents</a>
+                                        <ul class="dropdown-menu nav8-dropdown-subsubmenu">
+                                            <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
+                                                    class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
+                                            <li><a class="dropdown-item"
+                                                   href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre"><i
+                                                    class='fa fa-comments iconleft'></i> Forum</a></li>
+                                            <li><a class="dropdown-item"
+                                                   href="https://www.perma.cat/forum/article/organisation-de-la-communication-interne-de-la-confederation-paysanne#ref-titre"><i
+                                                    class='fa fa-comments iconleft'></i> Organisation</a></li>
+                                            <li><a class="dropdown-item"
+                                                   href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
+                                                    class='fa fa-file iconleft '></i> Documents</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> <i class="fa fa-envelope iconleft" title="messages privés"></i> Abonnements
+                                        Mails</a></li>
+                                            </ul>
+                                      </li></li>
                                     {% if request.user.estmembre_bureau_conf %}
+
+                                    <li class="dropdown-submenu">
+                                        <a class="dropdown-item dropdown-toggle" href="#">Espace Admin</a>
+                                        <ul class="dropdown-menu nav8-dropdown-subsubmenu">
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> <i
                                                             class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"><i
                                                             class='fa fa-arrow-right iconleft'></i> Gérer les Listes de mails</a></li>
-
+                                        </ul>
+                                    </li>
                                     {% endif %}
-                                    {% comment %}
-                                    <li><a class="dropdown-item" href="{% url 'carte'  asso='conf66' %}"><i
-                                            class='fa fa-compass iconleft'></i> Carte des inscrits </a></li>
-                                    {% endcomment %}
                                     {% endif %}
                                 </ul>
                             </li>

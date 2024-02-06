@@ -51,7 +51,7 @@
                 </td>
                 <td><a onclick="copyToClipboard('{%for m in adherents %}{% if m.adherent.get_email != '?'%}{{m.adherent.get_email}}{% if not forloop.last %}, {% endif%}{% endif%}{%endfor%}')">
                         <button type="button" class="btn btn-sm btn-primary">
-                            Copier les mails
+                            Copier les mails de la liste
                         </button>
                     </a>
                 </td>

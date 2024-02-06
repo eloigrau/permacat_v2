@@ -7,16 +7,16 @@
 <div class="conversation">
               <div class="conversation-container">
     {% for comment in page_obj %}
-    <div class="anchor_blank" id="msg_{{mess.id}}"></div>
-        <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
-
+    <div class="anchor_blank" id="msg_{{comment.id}}"></div>
     {%if comment.auteur.username == 'bot_permacat' %}
-    <div class="row ">
+    <div class="row message sent">
         <div class="col-sm-12 message_bot">
-                    <p>{{ mess.message|safe }}</p>
+                    <p>{{ comment.message|safe }}</p>
         </div>
     </div>
     {% else %}
+        <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
+
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}"> {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur}}</a>{% endifchanged %}
                 <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
 
@@ -25,8 +25,8 @@
                 {% endif %}
                    </span>
                 <p>{{ comment.message|safe}}</p>
-{% endif %}
         </div>
+{% endif %}
 {% endfor %}
     </div>
     </div>

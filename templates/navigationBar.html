@@ -482,9 +482,7 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}"><i
                                             class='fa fa-asterisk iconleft'></i> Présentation </a></li>
                                     {% if request.user.adherent_conf66 %}
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Espace Adhérents</a>
-                                        <ul class="dropdown-menu nav8-dropdown-subsubmenu">
+                                    <li class="metanavbar"> Espace Adhérents :</li>
                                             <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
                                                     class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
                                             <li><a class="dropdown-item"
@@ -497,20 +495,14 @@
                                                    href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
                                                     class='fa fa-file iconleft '></i> Documents</a></li>
                                     <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> <i class="fa fa-envelope iconleft" title="messages privés"></i> Abonnements
-                                        Mails</a></li>
-                                            </ul>
+                                        Mails</a>
                                       </li></li>
                                     {% if request.user.estmembre_bureau_conf %}
-
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Espace Admin</a>
-                                        <ul class="dropdown-menu nav8-dropdown-subsubmenu">
+                                    <li class="metanavbar">Espace Admin :</li>
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> <i
                                                             class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"><i
                                                             class='fa fa-arrow-right iconleft'></i> Gérer les Listes de mails</a></li>
-                                        </ul>
-                                    </li>
                                     {% endif %}
                                     {% endif %}
                                 </ul>

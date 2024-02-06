@@ -1336,6 +1336,13 @@ a:visited        { color: #003d66 }  /* visited links         */
 a:hover, a:focus { text-shadow: 0px 0.2px ; text-decoration:none;}    /* user hovers, or focus */
 a:active         { color: #005c99 }  /* active links          */
 
+.metanavbar{
+    font-size:small;
+    font-variant:normal;
+    font-style:italic;
+    line-height:0.9em;
+
+}
 
 .commentaire{
     border-color: #333;

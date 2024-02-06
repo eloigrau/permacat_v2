@@ -27,7 +27,7 @@
             <thead><tr>
                 <th>Nom de la liste</th>
                 <th>Abonnement</th>
-                <th></th>
+                <th>Obtenir les mails</th>
             </tr></thead>
             <tbody>
 {% for liste in liste_inscriptions %}
@@ -49,7 +49,11 @@
                     </a>
                     {% endif %}
                 </td>
-                <td>
+                <td><a onclick="copyToClipboard('{%for m in adherents %}{% if m.adherent.get_email != '?'%}{{m.adherent.get_email}}{% if not forloop.last %}, {% endif%}{% endif%}{%endfor%}')">
+                        <button type="button" class="btn btn-sm btn-primary">
+                            Copier les mails
+                        </button>
+                    </a>
                 </td>
                 {% endwith %}
             </tr>

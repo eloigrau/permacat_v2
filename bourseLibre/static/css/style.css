@@ -771,9 +771,8 @@ border: 1px inset rgba(28,110,164,0.65);
     }
 
 .conversation {
-  height: calc(100% - 12px);
   position: relative;
-  background-color: #e1e7ff;
+  background-color: #f7ffe0;
  /* background: #efe7dd url("https://cloud.githubusercontent.com/assets/398893/15136779/4e765036-1639-11e6-9201-67e728e86f39.jpg") repeat;*/
   z-index: 0;
 }

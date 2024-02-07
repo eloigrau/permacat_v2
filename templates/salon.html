@@ -3,6 +3,7 @@
 {% load avatar_tags %}
 <div class="anchor_blank" id="idConversation"></div>
 {% include 'pagination_new.html' %}
+<div class=" commentaires"  id="idConversation_2">
 <div class="conversation">
               <div class="conversation-container">
     {% for comment in page_obj %}
@@ -32,10 +33,10 @@
 
 
 {% include 'pagination_new.html' %}
-
+</div>
 <script>
-    {% with page_obj|last as last %}
-    {% endwith %}
+    var messageBody = document.querySelector('#idConversation_2');
+    messageBody.scrollTop = idConversation_2.scrollHeight - idConversation_2.clientHeight;
 </script>
 
 

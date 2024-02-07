@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
  <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
 {%endblock%}
-{% block title %} - Carte - {{asso}}
+{% block title %} - Carte - {{titre}}
 {% endblock %}
 {% block subtitle %}
 
@@ -69,13 +69,13 @@
   <div class="col-sm-12 col-md-10 col-lg-8" >
     <table class="table table-condensed ">
         <tbody>
-        {% for adresse in lieux %}
+        {% for lieu in lieux %}
             <tr>
                 <td class="proprieteJardin">
                   Adresse :
                 </td>
                 <td class="nomProprieteJardin textcenter">
-                    {{ adresse.getLatLon_html }} - {{ adresse.code_postal }} {{ adresse.commune }}
+                    {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}
                 </td>
                 <td class="nomProprieteJardin textcenter">
                     <a href="{{ adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>

@@ -5,7 +5,6 @@
 {% load staticfiles %}
 {% endblock %}
 {% block header %}
-{{ form.media }}
 {% leaflet_js %}
 {% leaflet_css %}
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
@@ -90,8 +89,8 @@ $('.example').leafletLocationPicker({
         <p>Cliquez sur la carte ou rentrez les nouvelles coordonnées GPS (latitude, longitude) :</p>
 
      {% include 'form_template2.html' with form=form_adresse%}
+      <button type="submit"  class="btn btn-primary">Valider l'adresse</button>
      <button type="cancel" onclick="window.history.back();" class="btn btn-warning ">Annuler</button>
-      <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider l'adresse</button>
     </form>
     </div>
 </div>

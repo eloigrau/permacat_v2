@@ -9,8 +9,7 @@
 <div class="conversation">
               <div class="conversation-container">
     {% for comment in commentaires %}
-    <div class="anchor_blank" id="msg_{{comment.id}}"></div>
-        <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} ">
+        <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} "  id="comm_{{comment.id}}">
 
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>{% endifchanged %}
                 <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}

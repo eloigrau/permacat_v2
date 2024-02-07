@@ -15,13 +15,10 @@
     <div class="anchor_blank" id="idConversation"></div>
 
 {% include 'pagination_new.html' %}
-
-
-<div class=" commentaires"  id="idConversation_2">
 <div class="conversation">
-              <div class="conversation-container">
+    <div class="conversation-container">
     {% for comment in page_obj %}
-    <div class="anchor_blank" id="msg_{{comment.id}}"></div>
+	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
 
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}"> {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur}}</a>{% endifchanged %}
@@ -68,9 +65,7 @@
 {% include 'pagination_new.html' %}
 
 </div>
-    <script>
-    var messageBody = document.querySelector('#idConversation_2');
-    messageBody.scrollTop = idConversation_2.scrollHeight - idConversation_2.clientHeight;
+<script>
 </script>
 
 <hr>

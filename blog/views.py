@@ -266,7 +266,7 @@ def lireArticle(request, slug):
             article.save(sendMail=False, saveModif=False)
             suffix = "_" + article.asso.abreviation
             if discu.slug == 'discussion-generale':
-                url = article.get_absolute_url()+"#idConversation"
+                url = article.get_absolute_url()+"#comm_" + str(comment.id)
                 desc = "a réagi à l'article: '%s'" % article.titre
                 action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
                         description=desc, discussion=discu.titre)

@@ -1319,7 +1319,7 @@ class Message(models.Model):
         return reverse('modifierMessage',  kwargs={'id':self.id, 'type_msg':'conversation', 'asso':'convers'})
 
     def get_absolute_url(self):
-        return self.conversation.get_absolute_url() + "#msg_" + str(self.id)
+        return self.conversation.get_absolute_url() + "#comm_" + str(self.id)
 
 
     def save(self, *args, **kwargs):

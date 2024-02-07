@@ -150,3 +150,7 @@ function toggle_visibility(id) {
   }
 }
 
+function scrollToMe(element) {
+    location.href = element;
+}
+

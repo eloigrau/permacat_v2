@@ -136,6 +136,10 @@ font : normal;
 scroll-margin-top: 50px;
 width:100%;
 }
+.anchor_blank_comm{
+scroll-margin-top: 50px;
+width:100%;
+}
 
 .navbarcontainer{
 }
@@ -1356,7 +1360,7 @@ a:active         { color: #005c99 }  /* active links          */
 .commentaires{
 	overflow: auto;
 	width: 100%;
-	/*max-height: 80vh;*/
+	max-height: 80vh;
 }
 
 .historique{

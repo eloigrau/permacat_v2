@@ -33,13 +33,11 @@
 {% if not request.user.is_anonymous %}
     {% if request.user.adherent_jp %}
     <p class="textcenter">
-        <a class="btn btn-primary" href="{% url 'inscription_jp' %}" style="color:white;"> Je suis inscrit -> Je me désinscris du groupe en
-            cliquant ici</a>
+        <a class="btn btn-primary" href="{% url 'inscription_jp' %}" style="color:white;"> Tu es inscrit-e -> Tu peux te désinscrire du groupe en cliquant ici</a>
     </p>
     {% else %}
     <p class="textcenter">
-        <a class="btn btn-warning" href="{% url 'inscription_jp' %}">Vous ne faites pas partie du groupe -> Inscrivez-vous
-            en cliquant ici</a>
+        <a class="btn btn-warning" href="{% url 'inscription_jp' %}">Tu ne fais pas partie du groupe -> Inscris-toi en cliquant ici</a>
     </p>
     {% endif %}
 {% else %}

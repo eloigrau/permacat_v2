@@ -9,7 +9,7 @@ from django.db.models import Q
 import pytz
 
 class Choix():
-    type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé'), ('', 'Jardin Professionnel (maraichage, arboriculture, etc. à usage pro)')
+    type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé'), ('4', 'Jardin Professionnel (maraichage, arboriculture, etc. à usage pro)')
     type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
 
     visibilite_jardin_annuaire = ('0', "Public (visible sans inscription)"), ('1', 'Inscrits (visible seulement par les inscrits au site)'), ('2', "Invisible ")

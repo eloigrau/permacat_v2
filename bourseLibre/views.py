@@ -1078,7 +1078,8 @@ def partagerPosition(request, slug_conversation):
 
     if form_adresse.is_valid():
         adresse = form_adresse.save()
-        mess = request.user.username + "<a href='" + reverse('voirLieu', kwargs={'id_lieu':adresse.id}) + "#ref-titre'>" +  " a partagé une position </a>"
+        mess = request.user.username + "<a href='" + reverse('voirLieu', kwargs={'id_lieu':adresse.id}) + \
+               "#ref-titre'>" + " a partagé une position avec vous</a> (<a href='"+adresse.getGoogleUrl +"'>voir sur google</a>)"
         message = Message(message=mess, conversation=conversation, auteur=request.user)
         message.save()
 

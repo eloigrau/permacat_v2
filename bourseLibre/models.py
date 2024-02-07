@@ -70,6 +70,9 @@ class Adresse(models.Model):
         else:
             return "("+str(self.id)+") " + str(self.code_postal)
 
+    @property
+    def getGoogleUrl(self):
+        return "https://maps.google.com/maps?q="+self.getLatLon_html +"&entry=gps"
 
     def getDistance(self, adresse):
         try:

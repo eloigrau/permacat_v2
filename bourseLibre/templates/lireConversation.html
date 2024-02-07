@@ -21,7 +21,7 @@
 <div class="conversation">
               <div class="conversation-container">
     {% for comment in page_obj %}
-    <div class="anchor_blank" id="msg_{{mess.id}}"></div>
+    <div class="anchor_blank" id="msg_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
 
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}"> {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur}}</a>{% endifchanged %}

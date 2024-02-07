@@ -466,15 +466,17 @@
                     </p>
                     {%endfor%}
                     <p><a class="btn btn-sm btn-primary textleft"
-                          href="{% url 'blog:voirCarteLieux' id_article=article.id %}"><i class="fa fa-compass"></i>
+                          href="{% url 'blog:voirCarteLieux_article' id_article=article.id %}"><i class="fa fa-compass"></i>
                         Voir sur une carte</a></p>
 
+                    {% comment %}
                     <div class="row">
                         <div class="col-md-12">
                             <style>.leaflet-container {width:  100%;min-height: 60vh;}</style>
                             {% leaflet_map "carte" callback="window.map_init_basic" %}
                         </div>
                     </div>
+                    {% endcomment %}
                     {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                     <hr>
                     <p><a class="btn btn-sm btn-success textleft"

@@ -924,9 +924,7 @@ border: 1px inset rgba(28,110,164,0.65);
 .msg-date {
     background-color:#e6e6e6 ;
     border-radius: 15px;
-
-    }
-/*fin blog*/
+}
 
 .col_cat{
     padding: 25px;
@@ -1055,7 +1053,7 @@ border: 1px inset rgba(28,110,164,0.65);
     text-decoration: none;
 }
 .offreentete{
-    height:80px;
+    height: 80px;
     text-align: center;
     font-size:small;
 }
@@ -1162,8 +1160,6 @@ a article_carte:active {
 	top:1px;
 	}*/
 
-
-
 .centered{
 }
 
@@ -1183,7 +1179,6 @@ a article_carte:active {
     .grid-container2 {
         grid-template-columns: 100% ;
     }
-
 }
 
 @media (max-width: 400px) {
@@ -1196,25 +1191,25 @@ a article_carte:active {
     .article_carte {
         max-width: 100%;
     }
-.contenu{
-    /*margin-top: 2em;*/
-    margin-bottom: 1em;
-    border-radius: 0.2em;
-    padding: 1px;
-    background:white;
-}
-.paddingbase{
-    padding: 0.5px;
-}
-.colprincipal{
-    padding-left:0px;
-    padding-right:0px;
-}
-.container-fluid {
-    width: 100%;
-    padding-right: 0px;
-    padding-left: 0px;
-}
+    .contenu{
+        /*margin-top: 2em;*/
+        margin-bottom: 1em;
+        border-radius: 0.2em;
+        padding: 1px;
+        background:white;
+    }
+    .paddingbase{
+        padding: 0.5px;
+    }
+    .colprincipal{
+        padding-left:0px;
+        padding-right:0px;
+    }
+    .container-fluid {
+        width: 100%;
+        padding-right: 0px;
+        padding-left: 0px;
+    }
 
     .cartePleinePage{
         min-height:80vh;
@@ -1227,20 +1222,20 @@ a article_carte:active {
 .cartePleinePage{
     min-height:80vh;
 }
-    .carteMiPage{
-        min-height:40vh;
-    }
+.carteMiPage{
+    min-height:40vh;
+}
 
 @media (max-width: 920px) {
 .col_cat{
-width: 100 %;
+    width: 100 %;
 }
 
-    .row{
-        margin-right: 1px;
-        margin-left: 1px;
-        padding: 1px;
-    }
+.row{
+    margin-right: 1px;
+    margin-left: 1px;
+    padding: 1px;
+}
 .panelsoustitre{
     padding: 2px;
     border-radius: 0.8em;
@@ -1295,8 +1290,6 @@ width: 100 %;
     }
 }
 
-
-
 .projet{
 /*background-color: grey;*/
 border-color: #333;
@@ -1305,10 +1298,12 @@ box-shadow: 0 10px 10px 0px grey;
     border-radius: 0.3em;
     border:1.5px grey solid;
 }
+
 .box_titre{
   display:flex;
   justify-content:center;
 }
+
 .boxitem_droite{
   display:flex;
   justify-content:right;
@@ -1316,7 +1311,7 @@ box-shadow: 0 10px 10px 0px grey;
 
 .projet:hover {
 	box-shadow: 2px 3px 8px 0px;
-	}
+}
 
 .article_recherche{
 /*background-color: grey;*/
@@ -1333,7 +1328,7 @@ box-shadow: 0 10px 10px 0px grey;
 
 a:link           { color: #3366BB }  /* unvisited links       */
 a:visited        { color: #003d66 }  /* visited links         */
-a:hover, a:focus { text-shadow: 0px 0.2px ; text-decoration:none;}    /* user hovers, or focus */
+a:hover, a:focus { text-shadow: 0px 0.2px; text-decoration:none;}    /* user hovers, or focus */
 a:active         { color: #005c99 }  /* active links          */
 
 .metanavbar{
@@ -1341,7 +1336,6 @@ a:active         { color: #005c99 }  /* active links          */
     font-variant:normal;
     font-style:italic;
     line-height:0.9em;
-
 }
 
 .commentaire{

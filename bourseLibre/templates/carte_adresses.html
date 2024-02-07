@@ -15,6 +15,7 @@
 {% block title %} - Carte - {{asso}}
 {% endblock %}
 {% block subtitle %}
+<div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
     <h4> {{titre}}</h4>
@@ -95,7 +96,10 @@
                   Adresse :
                 </td>
                 <td class="nomProprieteJardin textcenter">
-                    <a href="https://maps.google.com/maps?q={{ adresse.getLatLon_html }}&entry=gps" target="_blank" rel="noopener noreferrer nofollow">{{ adresse.getLatLon_html }} - {{ adresse.code_postal }} {{ adresse.commune }}</a>
+                    {{ adresse.getLatLon_html }} - {{ adresse.code_postal }} {{ adresse.commune }}
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    <a href="{{ adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
                 </td>
             </tr>
         {%endfor%}

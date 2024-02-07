@@ -1130,7 +1130,7 @@ def voirCarteLieux_article(request, id_article):
     article = Article.objects.get(id=id_article)
     lieux = article.getLieux()
     titre = "Lieux associés à l'article '" + str(article.titre) +"'"
-    return render(request, 'blog/carte_lieux_template.html', {"lieux":lieux})
+    return render(request, 'blog/carte_lieux.html', {"lieux":lieux, "titre":titre})
 
 @login_required
 def voirLieux(request,):

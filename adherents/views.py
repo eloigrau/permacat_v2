@@ -677,15 +677,11 @@ class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
         return is_membre_bureau(self.request.user)
 
 
-class ListeDiffusionConf_liste(UserPassesTestMixin, ListView):
+class ListeDiffusionConf_liste(ListView):
     model = ListeDiffusionConf
     context_object_name = "listesDiffusion"
     template_name = "adherents/listeDiffusionConf_list.html"
     ordering = ['nom']
-
-
-    def test_func(self):
-        return is_membre_bureau(self.request.user)
 
     #def get_queryset(self):
     #    params = dict(self.request.GET.items())

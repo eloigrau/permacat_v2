@@ -16,18 +16,20 @@
         <h3>Les Listes de diffusion par Mail </h3>
     </div>
 </div>
-
+{% if request.user.estmembre_bureau_conf %}
 <div class="row ">
     <div class="col textcenter">
         <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusionConf_creer' %}">Ajouter une liste</a></li>
     </div>
 </div>
 {% endblock %}
+{% endif %}
 
 
 {% block content %}
  {% include 'adherents/template_listeDiffusionConf_liste.html'%}
 
+{% if request.user.estmembre_bureau_conf %}
 <div class="row ">
     <div class="col textcenter">
 
@@ -41,4 +43,5 @@
 </div>
 <hr>
  {% include 'adherents/template_actions.html'%}
+{% endif %}
 {% endblock %}

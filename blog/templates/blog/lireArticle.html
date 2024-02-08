@@ -470,19 +470,41 @@
                             <h4>Lieux : </h4>
                         </div>
                     </div>
-                    {%for lieu in lieux %}
-                    <p> {{lieu}}
-                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                        <a class="btn btn-sm btn-danger textleft"
-                           href="{% url 'blog:supprimerAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}"><i
-                                class="fa fa-times"></i> </a>
-                        {% endif %}
-                    </p>
-                    {%endfor%}
                     <p><a class="btn btn-sm btn-primary textleft"
                           href="{% url 'blog:voirCarteLieux_article' id_article=article.id %}"><i class="fa fa-compass"></i>
                         Voir sur une carte</a></p>
+                    <p>
+                    <table class="table table-condensed sortable">
+                        <thead>
+                        <th>Lieu</th>
+                        <th>GPS</th>
+                        <th>Ggle</th>
+                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                        <th>Supprimer</th>
+                        {% endif %}
 
+                        </thead>
+                        <tbody>
+                        {%for lieu in lieux %}
+                        <tr>
+                            <td> {{lieu}}
+                            </td>
+                            <td> {{lieu.adresse.getLatLon_html}}
+                            </td>
+                            <td> <a class="btn btn-sm btn-info textleft" href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">
+                                <i class="fa fa-link" aria-hidden="true"></i></a>
+                            </td>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <td><a class="btn btn-sm btn-danger textleft"
+                                   href="{% url 'blog:supprimerAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}"><i
+                                    class="fa fa-times"></i> </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {%endfor%}
+                        </tbody>
+                    </table>
+                    </p>
                     {% comment %}
                     <div class="row">
                         <div class="col-md-12">

@@ -297,17 +297,31 @@
                                 <h4>Documents : </h4>
                             </div>
                         </div>
+    <table class="table table-condensed ">
+        <thead><th>Date</th><th>Document</th>
+        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                     <th>Supprimer</th>       {% endif %}
+
+        </thead>
+        <tbody>
                         {% for document in documents %}
-                        <p>
-                            <a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i>
+
+                        <tr><td>
+                            {{ document.date_creation|date:"d/m/Y" }}
+                        </td>
+                            <td><a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i>
                                 {{ document.titre }} </a>
+                            </td>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <a class="btn btn-sm btn-danger textleft"
+                            <td><a class="btn btn-sm btn-danger textleft"
                                href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i
                                     class="fa fa-times"></i> </a>
+                            </td>
                             {% endif %}
-                        </p>
+                        </tr>
                         {% endfor%}
+        </tbody>
+    </table>
                         <p>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <a class="btn btn-sm btn-success textleft"

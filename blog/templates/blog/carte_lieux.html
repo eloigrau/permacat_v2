@@ -78,7 +78,7 @@
                     {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}
                 </td>
                 <td class="nomProprieteJardin textcenter">
-                    <a href="{{ adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
+                    <a href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
                 </td>
             </tr>
         {%endfor%}

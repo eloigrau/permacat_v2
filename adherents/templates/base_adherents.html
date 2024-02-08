@@ -15,9 +15,9 @@
 		<li class="nav-item">
         </li>
 		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil' %}"> Adhérents</a></li>
-        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:mesListesMails' %}"> Mes Abonnements Mails</a></li>
 		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:monProfil' %}"> Mon profil</a></li>
-        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"> Les Abonnements</a></li>
+        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:mesListesMails' %}"> Mes Abonnements Mails</a></li>
+        <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"> Les Listes Mails</a></li>
                        {% if request.user.estmembre_bureau_conf %}
                 <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> Gérer les Adhésions</a></li>
 

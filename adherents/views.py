@@ -849,6 +849,6 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
 
         return redirect(listeDiffusion)
 
-    return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form, 'listeDiffusion': listeDiffusion})
+    return render(request, 'adherents/listediffusionconf_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion})
 
 

@@ -43,7 +43,7 @@ class Choix:
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
                         ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
 
-    type_annonce_conf66 = ('Annonce', 'Annonce'), ("Infos", "Infos diverses"), ('administratif', 'Administratif'), ('evenement', 'Evènement'), ("elevage", "Elevage"), ("ppam","PPAM"), ("maraichage", "Maraichage"), ("arboriculture", "Arboriculture"), ("viticulture", "Viticulture"), ("Commission", "Commission")
+    type_annonce_conf66 = ('Annonce', 'Information'), ("Idees", "Idées"), ('administratif', 'Gestion de la conf66'), ('evenement', 'Actions/Evènement'), ("elevage", "Elevage"), ("ppam","PPAM"), ("maraichage", "Maraichage"), ("arboriculture", "Arboriculture"), ("viticulture", "Viticulture"), ("Commission", "Commission")
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,

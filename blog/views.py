@@ -271,7 +271,7 @@ def lireArticle(request, slug):
                 action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
                         description=desc, discussion=discu.titre)
             else:
-                url = article.get_absolute_url()+"?ancre=" + discu.slug +"#idConversation"
+                url = article.get_absolute_url()+"?ancre=" + discu.slug +"#comm_" + str(comment.id)
                 desc = "a réagi à l'article: (%s) '%s'" % (discu.titre, article.titre)
                 action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
                             description=desc, discussion=discu.titre)

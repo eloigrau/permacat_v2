@@ -556,7 +556,7 @@ class ReunionArticleForm(forms.ModelForm):
                        }),
         }
 
-    def save(self, article):
+    def save(self, auteur, article):
         instance = super(ReunionArticleForm, self).save(commit=False)
         max_length = DocumentPartage._meta.get_field('slug').max_length
         instance.slug = orig = slugify(instance.titre)[:max_length]
@@ -569,6 +569,7 @@ class ReunionArticleForm(forms.ModelForm):
             instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
 
         instance.article = article
+        instance.auteur = auteur
         instance.asso = article.asso
         instance.save()
         return instance

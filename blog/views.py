@@ -1022,7 +1022,7 @@ def ajouterReunionArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        form.save(article)
+        form.save(request.user, article, )
         return redirect(article)
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
@@ -1042,9 +1042,9 @@ def associerReunionArticle(request, slug_article):
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": art})
 
 @login_required
-def supprimerReunionArticle(request, slug_article):
-    article = Article.objects.get(slug=slug_article)
-    reu = reu.article
+def supprimerReunionArticle(request, slug_reunion):
+    reu = Reunion.objects.get(slug=slug_reunion)
+    article = reu.article
     reu.delete()
     return redirect(article.get_absolute_url())
 

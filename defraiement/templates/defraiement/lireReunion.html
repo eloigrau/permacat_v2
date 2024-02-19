@@ -65,7 +65,7 @@
                 </span>
             {% endif %}
 		</p>
-        <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil' reunion.auteur.id %}">{{reunion.auteur.username}}</a>, dernière modification le {{ reunion.date_modification|date:"DATE_FORMAT" }}
+        <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil_nom' reunion.auteur.username %}">{{reunion.auteur.username}}</a>, dernière modification le {{ reunion.date_modification|date:"DATE_FORMAT" }}
 
 		</p>
     </div>

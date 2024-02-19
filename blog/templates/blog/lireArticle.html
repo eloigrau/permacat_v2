@@ -378,7 +378,7 @@
                         </div>
                         {% for reunion in reunions %}
                         <p>
-                            <a href="{{reunion.get__absolute_url}}" target="_blank"> {{ reunion.titre }} </a>
+                            <a href="{{reunion.get_absolute_url}}" target="_blank"> {{ reunion.titre }} </a>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <a class="btn btn-sm btn-danger textleft"
                                href="{% url 'blog:supprimerReunionArticle' slug_reunion=reunion.slug%}"> <i
@@ -486,7 +486,7 @@
                         </thead>
                         <tbody>
                         {%for lieu in lieux %}
-                        <tr>
+                        <tr>reunuion
                             <td> {{lieu}}
                             </td>
                             <td> {{lieu.adresse.getLatLon_html}}

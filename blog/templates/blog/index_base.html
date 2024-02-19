@@ -207,10 +207,8 @@
 
 function get_articles_archives(url_tag) {
 
-  var url = '';
-
     $.ajax({
-        url: url,
+        url: url_tag,
         type: "GET",
         contentType: "application/x-www-form-urlencoded",
         async: false,
@@ -438,7 +436,7 @@ function get_tags_articles(url_tag) {
     {% endif%}
     {% if asso_courante %}
         <a class="nav-item nav-link" href="#art_motscles" onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{asso_courante}}')" data-toggle="tab"  id="navtab_tags"> Par mot clé</a>
-        <a class="nav-item nav-link" href="#art_partage" onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab" id="navtab_oartages"> Partagés</a>
+        <a class="nav-item nav-link" href="#art_partage" onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab" id="navtab_partages"> Partagés</a>
         <a class="nav-item nav-link" href="#art_archive" onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab" id="navtab_archives"> Archivés</a>
     {% endif%}
 </nav>
@@ -446,9 +444,7 @@ function get_tags_articles(url_tag) {
 
 <div class="tab-content">
   <div class="tab-pane fade show active" id="art_groupe">
-
-
-<div class="anchor_blank"  id="articles_epingles"></div>
+    <div class="anchor_blank"  id="articles_epingles"></div>
     {%if articles_epingles%}
     <div class="row justify-content-center" >
         <div class="col-sm-12 textcenter">
@@ -463,13 +459,13 @@ function get_tags_articles(url_tag) {
     <hr>
     {%endif%}
     <div class="anchor_blank"  id="article_list"></div>
-        {% if asso_courante %}
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <p><h4>Articles du groupe : </h4> </p>
-            </div>
+    {% if asso_courante %}
+    <div class="row justify-content-center" >
+        <div class="col-sm-12 textcenter">
+            <p><h4>Articles du groupe : </h4> </p>
         </div>
-        {% endif %}
+    </div>
+    {% endif %}
 
     <div class="row ">
         <div class="col-sm-12 my-auto">

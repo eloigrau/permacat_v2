@@ -32,6 +32,7 @@ class BourseLibreConfig(AppConfig):
         registry.register(self.get_model('Asso'))
         registry.register(self.get_model('Salon'))
         registry.register(self.get_model('InvitationDansSalon'))
+        registry.register(self.get_model('Adresse'))
         registry.register(Document)
         registry.register(Atelier)
         registry.register(InscriptionAtelier)

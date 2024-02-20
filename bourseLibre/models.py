@@ -52,7 +52,7 @@ class Adresse(models.Model):
     latitude = models.FloatField(blank=True, null=True, default=LATITUDE_DEFAUT)
     longitude = models.FloatField(blank=True, null=True, default=LONGITUDE_DEFAUT)
     pays = models.CharField(max_length=12, blank=True, null=True, default="France")
-    telephone = models.CharField(max_length=15, blank=True)
+    telephone = models.CharField(max_length=25, blank=True)
 
 
     def save(self, recalc=False, *args, **kwargs):

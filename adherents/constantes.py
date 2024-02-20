@@ -33,6 +33,8 @@ dict_ape = {
     "0130Z": "Reproduction de plantes"
     }
 
+list_ape = ((k, v) for k, v in dict_ape.items())
+
 CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "Conjoint Collaborateur"), ("4", "Retraité.e"), ("5", "ATS"), ("6", "Porteur de projet")
 
 

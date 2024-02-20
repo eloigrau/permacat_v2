@@ -1,5 +1,6 @@
 from django import forms
 from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf
+from .constantes import list_ape
 from local_summernote.widgets import SummernoteWidget
 
 
@@ -21,6 +22,7 @@ class AdherentForm(forms.ModelForm):
     code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)
     commune = forms.CharField(label="Commune", initial="Perpignan", required=False)
     telephone = forms.CharField(label="Téléphone", required=False)
+    production_ape = forms.CharField(label="Code APE", required=False, widget=forms.Select(choices=list_ape))
 
     class Meta:
         model = Adherent

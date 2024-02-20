@@ -759,13 +759,19 @@ class AdresseArticle(models.Model):
                              max_length=100, null=True, blank=True, default="")
 
     def __str__(self):
-        if self.titre:
-            if self.infos:
-                return str(self.titre) + " : " + str(self.infos) + "; (" + str(self.adresse.get_adresse_str) + ")"
+        try:
+            if self.titre:
+                if self.infos:
+                    return str(self.titre) + " : " + str(self.infos) + "; (" + str(self.adresse.get_adresse_str) + ")"
+                else:
+                    return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
             else:
-                return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
-        else:
-            return str(self.adresse.get_adresse_str)
+                return str(self.adresse.get_adresse_str)
+        except:
+            if self.adresse:
+                return str(self.adresse.get_adresse_str)
+            else:
+                return "-"
 
 
     @property

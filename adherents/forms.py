@@ -22,7 +22,7 @@ class AdherentForm(forms.ModelForm):
     code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)
     commune = forms.CharField(label="Commune", initial="Perpignan", required=False)
     telephone = forms.CharField(label="Téléphone", required=False)
-    production_ape = forms.CharField(label="Code APE", required=False, widget=forms.Select(choices=list_ape))
+    production_ape = forms.CharField(label="Code APE", help_text="Selectionner la culture principale", required=False, widget=forms.Select(choices=list_ape))
 
     class Meta:
         model = Adherent

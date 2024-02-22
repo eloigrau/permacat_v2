@@ -20,8 +20,7 @@ from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
 from actstream.models import following
 from django.db.models import Q
-from bourseLibre.settings import DEBUG
-
+from bourseLibre.settings.production import LOCALL
 
 def getMessage(action):
     message = action.data['message']
@@ -266,8 +265,8 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
                                            alternatives=[(html_message, 'text/html')],
                                            connection=connection)
                 )
-    #if DEBUG:
-    #    return
+    #if LOCALL:
+     #   return
     return connection.send_messages(messages)
 
 

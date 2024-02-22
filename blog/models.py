@@ -232,12 +232,12 @@ class Article(models.Model):
             message_notif = "Un article a été posté dans le forum [" + str(
                 self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.abreviation))
-            suiveurs = [suiv for suiv in followers(suivi) if self.auteur != self.est_autorise(suiv)]
+            suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             for asso in self.partagesAsso.all():
                 suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.abreviation))
                 suiveurs = [suiv for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
-                emails = [suiv.email for suiv in suiveurs]
+                emails += [suiv.email for suiv in suiveurs]
         else:
             temps_depuiscreation = timezone.now() - self.date_creation
             titre = "Article actualisé"

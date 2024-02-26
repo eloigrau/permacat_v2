@@ -4,7 +4,9 @@ from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q
 from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
-annees = ('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023')
+from datetime import date
+
+annees = [(str(an), str(an)) for an in range(2020, date.today().isocalendar()[0] + 1)] #('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023'), ('2023', '2023')
 
 
 def get_choix_Production():

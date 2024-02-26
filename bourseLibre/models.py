@@ -32,6 +32,7 @@ from taggit.managers import TaggableManager
 from django.contrib.staticfiles.templatetags.staticfiles import static
 import re
 from django.utils import timezone
+from django.core.exceptions import MultipleObjectsReturned
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
@@ -1126,6 +1127,8 @@ def getOrCreateConversation(nom1, nom2):
         profil_1 = Profil.objects.get(username=liste[0])
         profil_2 = Profil.objects.get(username=liste[1])
         convers, created = Conversation.objects.get_or_create(profil1=profil_1, profil2=profil_2)
+    except MultipleObjectsReturned:
+        return Conversation.objects.filter(slug=get_slug_from_names(nom1, nom2)).order_by('date_creation')[0]
 
     return convers
 

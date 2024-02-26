@@ -23,6 +23,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     documents = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='document_')).order_by(orderBy)
     suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='suppression_article')).order_by(orderBy)
     jardins = Action.objects.none()
+    conversations = Action.objects.none()
 
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
@@ -42,15 +43,15 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) &
             (Q(verb__startswith="envoi_salon_public")| Q(verb__startswith="envoi_salon", description__contains=request.user.username) |
             Q(verb__startswith="invitation_salon", description__contains=request.user.username)))
-    conversations = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith="envoi_salon_prive") &
-                                          Q(description__contains=request.user.username))
+    #conversations = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith="envoi_salon_prive") &
+     #                                     Q(description__contains=request.user.username))
     inscription = Action.objects.filter(Q(timestamp__gt=dateMin, verb__startswith='inscript')).order_by(orderBy)
     mentions = Action.objects.filter(Q(timestamp__gt=dateMin, verb='mention_' + request.user.username)).order_by(orderBy)
     fiches = Action.objects.filter(Q(timestamp__gt=dateMin, verb__startswith='fiche')).order_by(orderBy)
     ateliers = Action.objects.filter(Q(timestamp__gt=dateMin, verb__startswith='atelier')).order_by(orderBy)
 
     salons = salons.distinct().order_by(orderBy)[:tampon]
-    conversations = conversations.distinct().order_by(orderBy)[:tampon]
+    #conversations = conversations.distinct().order_by(orderBy)[:tampon]
     articles = articles.distinct().order_by(orderBy)[:tampon]
     projets = projets.distinct().order_by(orderBy)[:tampon]
     offres = offres.distinct().order_by(orderBy)[:tampon]
@@ -74,6 +75,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     offres = [art for i, art in enumerate(offres) if i == 0 or not (art.description == offres[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
     albums = [art for i, art in enumerate(albums) if i == 0 or not (art.description == albums[i-1].description and art.actor == albums[i-1].actor ) ][:nbNotif]
     mentions = [art for i, art in enumerate(mentions) if i == 0 or not (art.description == mentions[i-1].description and art.actor == mentions[i-1].actor ) ][:nbNotif]
+    #conversations = [art for i, art in enumerate(conversations) if i == 0 or not (art.description == conversations[i-1].description and art.actor == conversations[i-1].actor)][:nbNotif]
 
     if jardins:
         jardins = [art for i, art in enumerate(jardins) if i == 0 or not (art.description == jardins[i-1].description and art.actor == jardins[i-1].actor ) ][:nbNotif]

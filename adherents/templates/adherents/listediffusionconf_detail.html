@@ -19,11 +19,14 @@
 </div>
 
 
+{% if request.user.estmembre_bureau_conf %}
 <div class="row justify-content-center">
     <div class="col textcenter">
         <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusionconf.pk %}"> Ajouter un confédéré à la liste</a></li>
     </div>
 </div>
+{% endif %}
+
 <hr>
 <p class="textcenter">
     <a onclick="get_infos('{% url 'adherents:get_infos_listeMail' listeMail_pk=listediffusionconf.pk type_info='email' %}?{{ request.GET.urlencode }}')">

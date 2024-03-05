@@ -22,7 +22,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
 
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
 
-    annees = django_filters.ChoiceFilter(choices=annees, method='get_annee_filter',label="Année", )
+    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter',label="Année")
 
     def get_descrip_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|
@@ -38,7 +38,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         return queryset.filter(statut=value[0])
 
     def get_annee_filter(self, queryset, field_name, value):
-        cotisations = Adhesion.objects.filter(date_cotisation__year=value)
+        cotisations = Adhesion.objects.filter(date_cotisation__year__in=value)
         return queryset.filter(adhesion__in=cotisations)
 
     def get_bureau_filter(self, queryset, field_name, value):

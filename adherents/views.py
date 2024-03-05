@@ -695,6 +695,8 @@ class ListeDiffusionConf_liste(ListView):
 
 class ListeDiffusionConfDetailView(DetailView):
     model = ListeDiffusionConf
+    ordering = ['nom']
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

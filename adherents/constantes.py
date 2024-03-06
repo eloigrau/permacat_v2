@@ -1,5 +1,5 @@
 dict_ape = {
-    "": "Non renseigné",
+    "-": "Non renseigné",
     "0111Z": "Culture de céréales (à l exception du riz), de légumineuses et de graines oléagineuses",
     "0114Z": "Culture de la canne à sucre",
     "0112Z": "Culture du riz",
@@ -33,7 +33,7 @@ dict_ape = {
     "0130Z": "Reproduction de plantes"
     }
 
-list_ape = ((k, v + " (" + k+")") for k, v in dict_ape.items())
+list_ape = [(k, k+" : " + v) for k, v in dict_ape.items()]
 
 CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "Conjoint Collaborateur"), ("4", "Retraité.e"), ("5", "ATS"), ("6", "Porteur de projet")
 

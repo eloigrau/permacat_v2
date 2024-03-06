@@ -231,7 +231,6 @@ def lireArticle(request, slug):
     dates = Evenement.objects.filter(article=article).order_by("-start_time")
 
     actions = action_object_stream(article)
-    #modifs = ModificationArticle.objects.filter(article=article)
 
     hit_count = HitCount.objects.get_for_object(article)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)

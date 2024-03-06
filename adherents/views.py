@@ -12,7 +12,7 @@ import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
-from .forms import AdhesionForm, AdherentForm, InscriptionMailForm, ListeDiffusionConfForm, InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm
+from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm
 from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
 from bourseLibre.models import Adresse, Profil
 from .filters import AdherentsCarteFilter
@@ -94,7 +94,7 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
 class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     model = Adherent
     template_name_suffix = '_modifier'
-    fields = ["nom", "prenom", "statut", "nom_gaec", "email", "production_ape"]
+    form_class = AdherentChangeForm
 
     def test_func(self):
         a = Adherent.objects.get(pk=self.kwargs['pk'])

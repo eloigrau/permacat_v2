@@ -162,7 +162,7 @@ def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
                 Q(verb__startswith='documents_nouveau')|
              Q(verb__startswith='album_nouveau'))).distinct().order_by(orderBy)[:200]
 
-    actions = [art for i, art in enumerate(actions) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
+    #actions = [art for i, art in enumerate(actions) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
 
     context = {'actions':actions,
                 "asso_courante_abreviation":asso_courante_abreviation,

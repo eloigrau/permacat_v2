@@ -1002,7 +1002,7 @@ def ajouterEvenementArticle(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté une date")
+                    description="a ajouté une date à l'article '%s%'" % article.titre)
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
@@ -1018,7 +1018,7 @@ def ajouterDocumentPartage(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté un document partagé")
+                    description="a ajouté un document partagé à l'article '%s%'" % article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterDocumentPartage.html', {'form': form, "article": article})
@@ -1042,7 +1042,7 @@ def ajouterReunionArticle(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté une réunion")
+                    description="a ajouté une réunion à l'article '%s%'" % article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
@@ -1081,7 +1081,7 @@ def ajouterSalonArticle(request, slug_article):
                         action_object=article, 
                         url=article.get_absolute_url(),
                         verb="article_modifier_" + article.asso.abreviation, 
-                        description="a ajouté un salon")
+                        description="a ajouté un salon à l'article '%s%'" % article.titre)
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterSalon.html', {'form': form, 'article':article, })
@@ -1092,12 +1092,13 @@ def associerSalonArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        ev = form.save(article)
-        action.send(request.user, 
+        salon = form.save(article)
+        if salon.estPublic:
+            action.send(request.user,
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté un salon")
+                    description="a ajouté un salon à l'article '%s%'" % article.titre)
         return redirect(article)
 
     return render(request, 'blog/associerSalon.html', {'form': form, 'article':article})
@@ -1127,7 +1128,7 @@ def ajouterAdresseArticle(request, id_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté un lieu")
+                    description="a ajouté un lieu à l'article '%s%'" % article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse2':form_adresse2 })

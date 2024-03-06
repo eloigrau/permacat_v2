@@ -6,6 +6,7 @@ from local_summernote.widgets import SummernoteWidget
 from dal import autocomplete
 import re
 import itertools
+from bourseLibre.utils import slugify_pcat
 
 class Plante_rechercheForm(forms.ModelForm):
 
@@ -38,7 +39,7 @@ class JardinForm(forms.ModelForm):
         instance = super(JardinForm, self).save(commit=False)
 
         max_length = Jardin._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Jardin.objects.filter(slug=instance.slug).exists():
@@ -110,7 +111,7 @@ class GrainothequeForm(forms.ModelForm):
         instance = super(GrainothequeForm, self).save(commit=False)
 
         max_length = Grainotheque._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Grainotheque.objects.filter(slug=instance.slug).exists():

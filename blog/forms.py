@@ -14,6 +14,7 @@ from photologue.models import Album
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 import re
+from bourseLibre.utils import slugify_pcat
 #from dal import autocomplete
 #from taggit.models import Tag
 
@@ -111,7 +112,7 @@ class ArticleForm(forms.ModelForm):
         instance = super(ArticleForm, self).save(commit=False)
 
         max_length = Article._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Article.objects.filter(slug=instance.slug).exists():
@@ -295,7 +296,7 @@ class ProjetForm(forms.ModelForm):
         instance = super(ProjetForm, self).save(commit=False)
 
         max_length = Projet._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Projet.objects.filter(slug=instance.slug).exists():
@@ -360,7 +361,7 @@ class ProjetForm(forms.ModelForm):
         instance = super(ProjetForm, self).save(commit=False)
 
         max_length = Projet._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Projet.objects.filter(slug=instance.slug).exists():
@@ -484,9 +485,8 @@ class EvenementArticleForm(forms.ModelForm):
                        }),
         }
 
-    def save(self, request, slug_article):
+    def save(self, request, article):
         instance = super(EvenementArticleForm, self).save(commit=False)
-        article = Article.objects.get(slug=slug_article)
         instance.article = article
         instance.auteur = request.user
         instance.save()
@@ -559,7 +559,7 @@ class ReunionArticleForm(forms.ModelForm):
     def save(self, auteur, article):
         instance = super(ReunionArticleForm, self).save(commit=False)
         max_length = DocumentPartage._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Reunion.objects.filter(slug=instance.slug).exists():

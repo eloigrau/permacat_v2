@@ -9,6 +9,7 @@ from bourseLibre.models import Asso
 from django.utils.timezone import now
 from django.shortcuts import redirect
 import re
+from bourseLibre.utils import slugify_pcat
 
 class AtelierForm(forms.ModelForm):
     referent = forms.ChoiceField(label='Référent atelier')
@@ -47,7 +48,7 @@ class AtelierForm(forms.ModelForm):
             instance.article = article
 
         max_length = Atelier._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
         for x in itertools.count(1):
             if not Atelier.objects.filter(slug=instance.slug).exists():
                 break

@@ -6,7 +6,6 @@ from io import BytesIO
 
 from PIL import Image
 
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
@@ -24,6 +23,7 @@ from blog.models import Article
 from local_summernote.widgets import SummernoteWidget
 from django.utils.text import slugify
 import itertools
+from bourseLibre.utils import slugify_pcat
 
 logger = logging.getLogger('photologue.forms')
 
@@ -290,7 +290,7 @@ class DocumentForm(forms.ModelForm):
     def save(self, request, article, commit=True):
         instance = super(DocumentForm, self).save(commit=False)
         max_length = Photo._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Photo.objects.filter(slug=instance.slug).exists():
@@ -327,7 +327,7 @@ class DocumentFormAsso(forms.ModelForm):
     def save(self, request, article, commit=True):
         instance = super(DocumentFormAsso, self).save(commit=False)
         max_length = Photo._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Photo.objects.filter(slug=instance.slug).exists():

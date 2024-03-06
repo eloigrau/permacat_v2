@@ -11,6 +11,7 @@ from bourseLibre.models import Asso
 from django.forms import formset_factory, BaseFormSet
 from django.utils.timezone import now
 from datetime import timedelta
+from bourseLibre.utils import slugify_pcat
 
 class SuffrageForm(forms.ModelForm):
     asso = forms.ModelChoiceField(queryset=Asso.objects.all().all(), required=True, label="Suffrage public ou réservé aux adhérents de l'asso :",)
@@ -48,7 +49,7 @@ class SuffrageForm(forms.ModelForm):
         instance = super(SuffrageForm, self).save(commit=False)
 
         max_length = Suffrage._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Suffrage.objects.filter(slug=instance.slug).exists():

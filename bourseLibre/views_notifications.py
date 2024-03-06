@@ -222,7 +222,7 @@ def notifications_news_regroup(request):
                     htmlArticles += "(" + action.data['discussion'] + ") "
                 htmlArticles += "commenté par "
 
-            elif action.description.startswith("a ajout"):
+            elif action.description.startswith("a ajouté un article "):
                 htmlArticles += "créé par "
             elif action.description.startswith("a modif"):
                 htmlArticles += "modifié par "

@@ -74,6 +74,9 @@ def accueil(request):
     #'categorie_list':categorie_list,'categorie_list_pc':categorie_list_pc,'categorie_list_rtg':categorie_list_rtg,'categorie_list_fer':categorie_list_fer,'categorie_list_gt':categorie_list_gt,'categorie_list_citealt':categorie_list_citealt,'categorie_list_viure':categorie_list_viure,'projets_list':projets_list,'ateliers_list':ateliers_list, 'categorie_list_projets':categorie_list_projets,
     return render(request, 'blog/accueil.html', {'asso_list':asso_list,'derniers_articles':derniers, 'suivis':suivis})
 
+def envoyerActionArticle(request, article, verb, description):
+    action.send(request.user, verb=verb, action_object=article, url=article.get_absolute_url(),
+                description=description)
 
 @login_required
 def ajouterArticle(request):
@@ -89,11 +92,12 @@ def ajouterArticle(request):
             article.partagesAsso.add(asso)
         article.save(sendMail=True, forcerCreationMails=True)
         form.save_m2m()
-        url = article.get_absolute_url() + "#ref-titre"
-        suffix = "_" + article.asso.abreviation
-        action.send(request.user, verb='article_nouveau'+suffix, action_object=article, url=url,
-                    description="a ajouté un article : '%s'" % article.titre)
         suivre_article(request, article.slug)
+        action.send(request.user, 
+                    action_object=article, 
+                    url=article.get_absolute_url(),
+                    verb="article_nouveau_" + article.asso.abreviation, 
+                    description="a ajouté un article : '%s'" % article.titre)
         return redirect(article.get_absolute_url())
 
     return render(request, 'blog/ajouterArticle.html', { "form": form, })
@@ -992,7 +996,13 @@ def ajouterEvenementArticle(request, slug_article):
     form = EvenementArticleForm(request.POST or None)
 
     if form.is_valid():
-        ev = form.save(request, slug_article)
+        article = Article.objects.get(slug=slug_article)
+        ev = form.save(request, article)
+        action.send(request.user, 
+                    action_object=article, 
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation, 
+                    description="a ajouté une date")
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
@@ -1004,6 +1014,11 @@ def ajouterDocumentPartage(request, slug_article):
 
     if form.is_valid():
         form.save(article)
+        action.send(request.user, 
+                    action_object=article, 
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation, 
+                    description="a ajouté un document partagé")
         return redirect(article)
 
     return render(request, 'blog/ajouterDocumentPartage.html', {'form': form, "article": article})
@@ -1023,6 +1038,11 @@ def ajouterReunionArticle(request, slug_article):
 
     if form.is_valid():
         form.save(request.user, article, )
+        action.send(request.user, 
+                    action_object=article, 
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation, 
+                    description="a ajouté une réunion")
         return redirect(article)
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
@@ -1055,7 +1075,13 @@ def ajouterSalonArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        ev = form.save(request, article)
+        salon = form.save(request, article)
+        if salon.estPublic:
+            action.send(request.user, 
+                        action_object=article, 
+                        url=article.get_absolute_url(),
+                        verb="article_modifier_" + article.asso.abreviation, 
+                        description="a ajouté un salon")
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterSalon.html', {'form': form, 'article':article, })
@@ -1067,6 +1093,11 @@ def associerSalonArticle(request, slug_article):
 
     if form.is_valid():
         ev = form.save(article)
+        action.send(request.user, 
+                    action_object=article, 
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation, 
+                    description="a ajouté un salon")
         return redirect(article)
 
     return render(request, 'blog/associerSalon.html', {'form': form, 'article':article})
@@ -1092,6 +1123,11 @@ def ajouterAdresseArticle(request, id_article):
     if form_adresse2.is_valid():
         adresse = form_adresse2.save()
         form.save(article, adresse)
+        action.send(request.user, 
+                    action_object=article, 
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation, 
+                    description="a ajouté un lieu")
         return redirect(article)
 
     return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse2':form_adresse2 })

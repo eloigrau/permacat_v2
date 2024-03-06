@@ -8,6 +8,7 @@ from local_summernote.widgets import SummernoteWidget, SummernoteWidgetBase, Sum
 from django.urls import reverse
 from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from bourseLibre.utils import slugify_pcat
 
 
 
@@ -91,7 +92,7 @@ class ArticleForm(forms.ModelForm):
         instance = super(ArticleForm, self).save(commit=False)
 
         max_length = Article._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Article.objects.filter(slug=instance.slug).exists():

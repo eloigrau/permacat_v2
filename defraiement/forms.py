@@ -6,6 +6,7 @@ from bourseLibre.models import Asso
 from photologue.models import Album
 from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion
 from django.core.exceptions import ValidationError
+from bourseLibre.utils import slugify_pcat
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -32,7 +33,7 @@ class ReunionForm(forms.ModelForm):
         instance = super(ReunionForm, self).save(commit=False)
 
         max_length = Reunion._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Reunion.objects.filter(slug=instance.slug).exists():

@@ -314,9 +314,11 @@ def ajouterDocument(request, article_slug=None):
                 article = Article.objects.get(slug=article_slug)
             else:
                 article = None
+
             doc = form.save(request, article)
+
             action.send(request.user, verb='document_nouveau' + "_" + doc.asso.abreviation, action_object=doc, url=doc.get_absolute_url(),
-                        description="a ajouté le document: '%s'" % doc.titre)
+                            description="a ajouté le document: '%s'" % doc.titre)
 
             # Redirect to the document list after POST
             if article:

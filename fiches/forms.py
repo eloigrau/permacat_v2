@@ -4,6 +4,7 @@ from bourseLibre.forms import SummernoteWidgetWithCustomToolbar
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
+from bourseLibre.utils import slugify_pcat
 
 class FicheForm(forms.ModelForm):
     objectif = forms.CharField(label="Objectif de la fiche", strip=False)
@@ -20,7 +21,7 @@ class FicheForm(forms.ModelForm):
         instance = super(FicheForm, self).save(commit=False)
 
         max_length = Fiche._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Fiche.objects.filter(slug=instance.slug).exists():
@@ -73,7 +74,7 @@ class AtelierForm(forms.ModelForm):
 
         instance.fiche = fiche
         max_length = Atelier._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Atelier.objects.filter(slug=instance.slug).exists():

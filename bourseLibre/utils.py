@@ -2,6 +2,8 @@
 from actstream import actions
 from actstream.models import Follow, following
 from .models import Choix, Suivis
+import uuid
+from django.utils.text import slugify
 
 def reabonnerProfil_base(profil):
     for suiv in Choix.suivisPossibles:
@@ -16,3 +18,10 @@ def reabonnerProfil_base(profil):
             actions.follow(profil, suivi, send_action=False)
             #suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
             #actions.follow(request.user, suivi, send_action=False)
+
+
+def slugify_pcat(titre, max_length):
+    slug = slugify(titre)[:max_length]
+    if slug == '':
+        slug = uuid.uuid4()
+    return slug

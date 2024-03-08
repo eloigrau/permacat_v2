@@ -222,14 +222,27 @@ def notifications_news_regroup(request):
                     htmlArticles += "(" + action.data['discussion'] + ") "
                 htmlArticles += "commenté par "
 
-            elif action.description.startswith("a ajouté un article "):
-                htmlArticles += "créé par "
+            elif action.description.startswith("a ajout"):
+                if action.description.startswith("a ajouté un article "):
+                    htmlArticles += "créé par "
+                elif action.description.startswith("a ajouté une date"):
+                    htmlArticles += "a ajouté une date"
+                elif action.description.startswith("a ajouté un lieu"):
+                    htmlArticles += "a ajouté un lieu"
+                elif action.description.startswith("a ajouté un document"):
+                    htmlArticles += "a ajouté un document"
+                elif action.description.startswith("a ajouté le document"):
+                    htmlArticles += "a ajouté un document"
+                elif action.description.startswith("a ajouté un salon"):
+                    htmlArticles += "a ajouté un salon"
+                elif action.description.startswith("a ajouté une réunion"):
+                    htmlArticles += "a ajouté une réunion"
             elif action.description.startswith("a modif"):
                 htmlArticles += "modifié par "
             elif action.description.startswith("a archiv"):
                 htmlArticles += "archivé par "
             else:
-                htmlArticles += str(action.actor) + " " + action.description
+                htmlArticles += " " + action.description
             htmlArticles += str(action.actor) + "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(
                 action.timesince()) + ")</small></li>"
 

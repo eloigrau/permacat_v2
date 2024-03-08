@@ -224,7 +224,7 @@ def notifications_news_regroup(request):
 
             elif action.description.startswith("a ajout"):
                 if action.description.startswith("a ajouté un article "):
-                    htmlArticles += "créé par "
+                    htmlArticles += "créé par "+ str(action.actor)
                 elif action.description.startswith("a ajouté une date"):
                     htmlArticles += "ajout d'une date "
                 elif action.description.startswith("a ajouté un lieu"):
@@ -238,15 +238,12 @@ def notifications_news_regroup(request):
                 elif action.description.startswith("a ajouté une réunion"):
                     htmlArticles += "ajout d'une réunion"
             elif action.description.startswith("a modif"):
-                htmlArticles += "modifié par "
-                htmlArticles += "&nbsp;" +str(action.actor) + "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(
-                action.timesince()) + ")</small></li>"
+                htmlArticles += "modifié par "+ str(action.actor)
             elif action.description.startswith("a archiv"):
-                htmlArticles += "archivé par "
-                htmlArticles += "&nbsp;" +str(action.actor) + "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(
-                action.timesince()) + ")</small></li>"
+                htmlArticles += "archivé par " +str(action.actor)
             else:
                 htmlArticles += " " + action.description
+            htmlArticles += "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(action.timesince()) + ")</small></li>"
 
         htmlArticles += " </ul></a></li>"
 

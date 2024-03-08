@@ -1,6 +1,7 @@
 {% extends 'blog/base_blog2.html' %}
 {% load activity_tags %}
 {% load blog_filters %}
+{% load app_filters %}
 {% load fontawesome %}
 {% load static %}
 {% load hitcount_tags %}
@@ -88,7 +89,6 @@
 
 {% endblock %}
 {% block contenu %}
-<div class="">
     <div class="row">
         <div class="col-sm-12 offset-md-2 col-md-8 textcenter">
             <p class="infos  textepetit textcenter">
@@ -684,7 +684,7 @@ function get_resultatSondage(url_tag, div_name) {
                 </td>
                 <td style="text-align: center; vertical-align: middle;">
                     <a href="#resSondage" onclick="get_resultatSondage('{% url 'vote:get_resultatSondageB' sondage_pk=sondage.pk %}', 'resSondage_{{forloop.counter}}')" data-toggle="tab" id="navtab_archives">
-                   <i class="fa fa-2x fa-question-circle"></a>
+                        <i class="fa fa-2x fa-question-circle"></i></a>
 
                 {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                 <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-primary textleft" href="{% url 'vote:modifierSondageB' pk=sondage.pk %}" ><i class="fa fa-edit"></i></a>
@@ -776,6 +776,17 @@ function get_resultatSondage(url_tag, div_name) {
           </div>
           </div>
   </div>
+</div>
+
+<div class="row">
+<div class="col-sm-12">
+    <p class="textcenter textepetitgris">Dans le même dossier :</p>
+    <ul class="list-group list-group-horizontal position-relative overflow-auto w-100 justify-content-center">
+{% for art in articles_dossier %}
+    <li class="list-group-item"><a href="{{article.get_absolute_url}}">{{article.titre|couperTexte:20}}</a></li>
+{% endfor %}
+</ul>
+</div>
 </div>
 <hr>
 

@@ -218,6 +218,7 @@ def lireArticle(request, slug):
     salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if s.salon.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
+    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie).order_by('-date_creation')[:20]
 
     sondages = Sondage_binaire.objects.filter(article=article).order_by('-date_creation')
     documents_partages = DocumentPartage.objects.filter(article=article)
@@ -246,7 +247,7 @@ def lireArticle(request, slug):
                             discussions}
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-                       'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
+                       'articles_dossier':articles_dossier,'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
                        "documents_partages":documents_partages, "reunions":reunions,"ancre": discu.slug}
 
     elif form.is_valid() and 'message_discu' in request.POST:
@@ -281,12 +282,12 @@ def lireArticle(request, slug):
 
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-               'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
+               'articles_dossier':articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
                    "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions, }
 
     else:
         context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
-                   'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions,  }
+                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required

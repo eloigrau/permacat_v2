@@ -97,7 +97,7 @@ def ajouterArticle(request):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_nouveau_" + article.asso.abreviation, 
-                    description="a ajouté un article : '%s'" % article.titre)
+                    description="a ajouté un article : '%s'"%article.titre)
         return redirect(article.get_absolute_url())
 
     return render(request, 'blog/ajouterArticle.html', { "form": form, })
@@ -271,7 +271,7 @@ def lireArticle(request, slug):
             suffix = "_" + article.asso.abreviation
             if discu.slug == 'discussion-generale':
                 url = article.get_absolute_url()+"#comm_" + str(comment.id)
-                desc = "a réagi à l'article: '%s'" % article.titre
+                desc = "a réagi à l'article: '%s'"%article.titre
                 action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
                         description=desc, discussion=discu.titre)
             else:
@@ -1002,7 +1002,7 @@ def ajouterEvenementArticle(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté une date à l'article '%s%'" % article.titre)
+                    description="a ajouté une date à l'article '%s'"%article.titre)
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
@@ -1018,7 +1018,7 @@ def ajouterDocumentPartage(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté un document partagé à l'article '%s%'" % article.titre)
+                    description="a ajouté un document partagé à l'article '%s'"%article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterDocumentPartage.html', {'form': form, "article": article})
@@ -1042,7 +1042,7 @@ def ajouterReunionArticle(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté une réunion à l'article '%s%'" % article.titre)
+                    description="a ajouté une réunion à l'article '%s'"%article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
@@ -1081,7 +1081,7 @@ def ajouterSalonArticle(request, slug_article):
                         action_object=article, 
                         url=article.get_absolute_url(),
                         verb="article_modifier_" + article.asso.abreviation, 
-                        description="a ajouté un salon à l'article '%s%'" % article.titre)
+                        description="a ajouté un salon à l'article '%s'"%article.titre)
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterSalon.html', {'form': form, 'article':article, })
@@ -1098,7 +1098,7 @@ def associerSalonArticle(request, slug_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté un salon à l'article '%s%'" % article.titre)
+                    description="a ajouté un salon à l'article '%s'"%article.titre)
         return redirect(article)
 
     return render(request, 'blog/associerSalon.html', {'form': form, 'article':article})
@@ -1128,7 +1128,7 @@ def ajouterAdresseArticle(request, id_article):
                     action_object=article, 
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation, 
-                    description="a ajouté un lieu à l'article '%s%'" % article.titre)
+                    description="a ajouté un lieu à l'article '%s'"%article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse2':form_adresse2 })

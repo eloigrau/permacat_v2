@@ -226,25 +226,27 @@ def notifications_news_regroup(request):
                 if action.description.startswith("a ajouté un article "):
                     htmlArticles += "créé par "
                 elif action.description.startswith("a ajouté une date"):
-                    htmlArticles += "a ajouté une date"
+                    htmlArticles += "ajout d'une date "
                 elif action.description.startswith("a ajouté un lieu"):
-                    htmlArticles += "a ajouté un lieu"
+                    htmlArticles += "ajout d'un lieu"
                 elif action.description.startswith("a ajouté un document"):
-                    htmlArticles += "a ajouté un document"
+                    htmlArticles += "ajout d'un document"
                 elif action.description.startswith("a ajouté le document"):
-                    htmlArticles += "a ajouté un document"
+                    htmlArticles += "ajout d'un document"
                 elif action.description.startswith("a ajouté un salon"):
-                    htmlArticles += "a ajouté un salon"
+                    htmlArticles += "ajout d'un salon"
                 elif action.description.startswith("a ajouté une réunion"):
-                    htmlArticles += "a ajouté une réunion"
+                    htmlArticles += "ajout d'une réunion"
             elif action.description.startswith("a modif"):
                 htmlArticles += "modifié par "
+                htmlArticles += "&nbsp;" +str(action.actor) + "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(
+                action.timesince()) + ")</small></li>"
             elif action.description.startswith("a archiv"):
                 htmlArticles += "archivé par "
+                htmlArticles += "&nbsp;" +str(action.actor) + "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(
+                action.timesince()) + ")</small></li>"
             else:
                 htmlArticles += " " + action.description
-            htmlArticles += str(action.actor) + "&nbsp;&nbsp;<small> (il y a " + raccourcirTempsStr(
-                action.timesince()) + ")</small></li>"
 
         htmlArticles += " </ul></a></li>"
 

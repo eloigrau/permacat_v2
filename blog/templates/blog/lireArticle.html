@@ -780,7 +780,7 @@ function get_resultatSondage(url_tag, div_name) {
 
 <div class="row">
 <div class="col-sm-12">
-    <p class="textcenter textepetitgris">Dans le dossier
+    <p class="textcenter textepetitgris">Articles du dossier
         <span class="badge badge-success" style="background-color:{{article.get_couleur}}"><a
                     href="{% url 'blog:index_asso' asso=article.asso.abreviation %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe">{% if article.get_logo_categorie %}  <img
                     src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %} {{ article.get_categorie_display2 }}</a>

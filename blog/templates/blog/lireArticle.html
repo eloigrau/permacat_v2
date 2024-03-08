@@ -781,9 +781,9 @@ function get_resultatSondage(url_tag, div_name) {
 <div class="row">
 <div class="col-sm-12">
     <p class="textcenter textepetitgris">Dans le même dossier :</p>
-    <ul class="list-group list-group-horizontal position-relative overflow-auto w-100 justify-content-center">
+    <ul class="list-group list_group_art_dossier list-group-horizontal position-relative overflow-auto w-100 justify-content-center">
 {% for art in articles_dossier %}
-    <li class="list-group-item"><a href="{{art.get_absolute_url}}">{{art.titre|couperTexte:20}}</a></li>
+    <li class="list-group-item list_art_dossier"><a href="{{art.get_absolute_url}}">{{art.titre|couperTexte:20}}</a></li>
 {% endfor %}
 </ul>
 </div>

@@ -601,10 +601,10 @@
                         {{article.get_partagesAssoLogo|safe}},
                         {%endif%}
 
-                        rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a>
+                        rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}}
 
                         {% get_hit_count for article as nbvues %}
-                        ({{ nbvues }} vue{{nbvues|pluralize:"s"}})
+                        - {{ nbvues }} vue{{nbvues|pluralize:"s"}}
                         {% if article.estArchive%}
                         - archivé
                         {%endif%}

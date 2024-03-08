@@ -218,7 +218,7 @@ def lireArticle(request, slug):
     salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if s.salon.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
-    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie).order_by('-date_creation')[:20]
+    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).order_by('-date_creation')[:20]
 
     sondages = Sondage_binaire.objects.filter(article=article).order_by('-date_creation')
     documents_partages = DocumentPartage.objects.filter(article=article)

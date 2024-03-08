@@ -317,6 +317,10 @@ def ajouterDocument(request, article_slug=None):
 
             doc = form.save(request, article)
 
+            if article_slug and article_slug != 'None':
+                action.send(request.user, verb="article_modifier_" + doc.asso.abreviation, action_object=article, url=article.get_absolute_url(),
+                            description="a ajouté le document: '%s'" % doc.titre)
+
             action.send(request.user, verb='document_nouveau' + "_" + doc.asso.abreviation, action_object=doc, url=doc.get_absolute_url(),
                             description="a ajouté le document: '%s'" % doc.titre)
 

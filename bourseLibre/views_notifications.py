@@ -232,7 +232,7 @@ def notifications_news_regroup(request):
                 elif action.description.startswith("a ajouté un document"):
                     htmlArticles += "ajout d'un document"
                 elif action.description.startswith("a ajouté le document"):
-                    htmlArticles += "ajout d'un document"
+                    htmlArticles += str(action.description)
                 elif action.description.startswith("a ajouté un salon"):
                     htmlArticles += "ajout d'un salon"
                 elif action.description.startswith("a ajouté une réunion"):

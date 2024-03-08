@@ -2825,12 +2825,17 @@ min-height:40px;
 .list_art_dossier{
     font-size: 0.8em;
     font-family: Montserrat,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    width: 100px;
-    padding-left:2px;
-    padding-right:2px;
+    padding-left:3px;
+    padding-right:3px;
     text-align:center;
 }
 
 .list_group_art_dossier{
 overflow-x: scroll;
+ white-space:nowrap;
+}
+
+
+.list_group_art_dossier > li {
+   display:inline;
 }

@@ -76,9 +76,9 @@ def ordreTriStr(value):
 
 
 @register.filter(is_safe=True)
-def couperTexte(value, nb):
+def couperTexte2(value, nb):
     if len(value) > nb:
-        return value[:nb-3] + "..."
+        return value[:nb-3] + " ..."
     return value
 
 @register.filter(is_safe=True)

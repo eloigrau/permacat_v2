@@ -140,12 +140,8 @@
                         {% if article.estModifiable%}
                         <span class="fa fa-edit" title="Article modifiable">    </span>
                         {%endif%}
-                        {{ article.titre }}
-
-                        {% if article.estArchive%}
-                        <span class="badge badge-Light" title="Article archivé">
-            archivé
-            </span>
+                        {{ article.titre }} {% if article.estArchive%} <span class="badge badge-Light" title="Article archivé">
+                        archivé </span>
                         {%endif%}
                     </h2>
                 </div>

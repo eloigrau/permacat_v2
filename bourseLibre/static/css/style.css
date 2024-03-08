@@ -2839,3 +2839,7 @@ overflow-x: scroll;
 .list_group_art_dossier > li {
    display:inline;
 }
+
+.dropdownmenu_plus{
+background-color : #47d23d;
+}

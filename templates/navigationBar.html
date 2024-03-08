@@ -80,7 +80,6 @@
                                     class='fa fa-compass'></i> Carte / Annuaire </a></li>
                             {% endcomment %}
 
-                            <li class="divider" role="separator"></li>
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
                                 <ul class="dropdown-menu nav5-dropdown-submenu">
@@ -512,12 +511,12 @@
 
                         <ul class="dropdown-menu dropdown-menu1 nav8-dropdown" aria-labelledby="navbarDropdownMenuLink">
 
-                            <li><a class="dropdown-item" href="{% url  'blog:acceuil'  %}"> <i
+                            <li><a class="dropdown-item dropdownmenu_plus" href="{% url  'blog:acceuil'  %}"> <i
                                     class='fa fa-comments iconleft'></i>Forum</a></li>
+                            <li><a class="dropdown-item dropdownmenu_plus" href="{% url 'cal:agenda' %}"> <i
+                                    class='fa fa-calendar iconleft'></i>Agenda</a></li>
                             <li><a class="dropdown-item" href="{% url 'salon_accueil' %}"> <i
                                     class='fa fa-comments iconleft'></i>Salons</a></li>
-                            <li><a class="dropdown-item" href="{% url 'cal:agenda' %}"> <i
-                                    class='fa fa-calendar iconleft'></i>Agenda</a></li>
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"> <i
                                     class='fa fa-compass iconleft'></i>Carte / Annuaire </a></li>

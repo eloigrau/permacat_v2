@@ -473,8 +473,7 @@
                     <table class="table table-condensed sortable">
                         <thead>
                         <th>Lieu</th>
-                        <th>GPS</th>
-                        <th>Ggle</th>
+                        <th>Infos</th>
                         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                         <th>Supprimer</th>
                         {% endif %}
@@ -483,12 +482,16 @@
                         <tbody>
                         {%for lieu in lieux %}
                         <tr>
-                            <td> {{lieu}}
+                            <td>
+                                <a href="{{lieu.get_url_map}}">{{lieu}}</a>
                             </td>
-                            <td> {{lieu.adresse.getLatLon_html}}
-                            </td>
-                            <td> <a class="btn btn-sm btn-info textleft" href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">
-                                <i class="fa fa-link" aria-hidden="true"></i></a>
+                            <td>
+
+                            {% if lieu.infos %}
+                            <div class="row"><div class="col-sm-12">
+                            <a href="{{lieu.get_url_map}}">{{lieu.infos|safe}}</a>
+                            </div></div>
+                            {% endif %}
                             </td>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <td><a class="btn btn-sm btn-danger textleft"

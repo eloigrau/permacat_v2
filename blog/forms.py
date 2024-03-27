@@ -512,6 +512,10 @@ class AdresseArticleForm(forms.ModelForm):
         model = AdresseArticle
         fields = ['titre', 'infos']
 
+        widgets = {
+            'infos': SummernoteWidget(),
+        }
+
     def save(self, article, adresse):
         instance = super(AdresseArticleForm, self).save(commit=False)
         instance.article = article

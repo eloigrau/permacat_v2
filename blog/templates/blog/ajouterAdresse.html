@@ -1,4 +1,4 @@
-{% extends 'blog/base_blog.html' %}
+{% extends 'blog/base_blog2.html' %}
 {% block headerDocument%}
 {% load leaflet_tags %}
 {% load static %}
@@ -21,10 +21,48 @@
 {% block content %}
 
 
-<div class="row carteMiPage">
-  <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
-      <script type="text/javascript">
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+<form method="post">
+  {% csrf_token %}
+ {% include 'form_template2.html' with form=form%}
+<p>Cliquez sur la carte ou rentrez les coordonnées GPS (latitude, longitude) :</p>
+<p><style>.leaflet-container {width:  100%;min-height: 50vh;}</style>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</p>>
+
+ {% include 'form_template2.html' with form=form_adresse2%}
+  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider</button>
+</form>
+</div>
+</div>
+
+{% comment %}
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+<form id="myForm" method="post">
+  {% csrf_token %}
+ {% include 'form_template2.html'%}
+    <p>Coordonnées GPS (<a href="https://support.google.com/maps/answer/18539?hl=fr&co=GENIE.Platform%3DAndroid" target="_blank" rel="noopener noreferrer nofollow">latitude, longitude</a>) :</p>
+
+ {% include 'form_template2.html' with form=form_adresse2%}
+  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées GPS</button>
+</form>
+</div>
+</div>
+{% endcomment %}
+
+<script type="text/javascript">
 
         function map_init_basic (map, options) {
         map.panTo(new L.LatLng(42.62914, 2.49939));
@@ -85,45 +123,4 @@ $('.example').leafletLocationPicker({
   mapContainer: "#yourmap"
 });
 </script>
-{% leaflet_map "yourmap" callback="window.map_init_basic" %}
-</div>
-</div>
-
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
-<div class="row justify-content-sm-center">
-<div class="col-sm-12 col-md-10 col-lg-9 text-center">
-<form method="post">
-  {% csrf_token %}
-    <p>Cliquez sur la carte ou rentrez les coordonnées GPS (latitude, longitude) :</p>
-
- {% include 'form_template2.html' with form=form%}
- {% include 'form_template2.html' with form=form_adresse2%}
-  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées</button>
-</form>
-</div>
-</div>
-
-{% comment %}
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
-<div class="row justify-content-sm-center">
-<div class="col-sm-12 col-md-10 col-lg-9 text-center">
-<form id="myForm" method="post">
-  {% csrf_token %}
- {% include 'form_template2.html'%}
-    <p>Coordonnées GPS (<a href="https://support.google.com/maps/answer/18539?hl=fr&co=GENIE.Platform%3DAndroid" target="_blank" rel="noopener noreferrer nofollow">latitude, longitude</a>) :</p>
-
- {% include 'form_template2.html' with form=form_adresse2%}
-  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider les coordonnées GPS</button>
-</form>
-</div>
-</div>
-{% endcomment %}
 {% endblock %}

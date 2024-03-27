@@ -40,7 +40,6 @@
               shadowSize: [41, 41]
         });
         var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
-        {% for lieu in lieux %}
             try{
                 var lat = {{lieu.adresse.latitude|to_numeric}};
                 var lon = {{lieu.adresse.longitude|to_numeric}};
@@ -51,14 +50,13 @@
             }
             catch(err){
             }
-        {%endfor%}
 
       map.addLayer(markers);
-        {% if lieux|length >= 1 %}
+        try{
         map.panTo(new L.LatLng(lat, lon));
-        {%else%}
-        map.panTo(new L.LatLng(42.62914, 2.49939));
-        {%endif%}
+        }
+            catch(err){
+            }
     }
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
@@ -69,17 +67,9 @@
   <div class="col-sm-12 col-md-10 col-lg-8" >
     <table class="table table-condensed ">
         <tbody>
-        {% for lieu in lieux %}
             <tr>
                 <td class="proprieteJardin">
-                    {% if lieu.titre %}
-                  {{ lieu.titre }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if lieu.infos %}
-                        {{lieu.infos|safe}}
-                    {% endif %}
+                    {{ lieu.get_titre }}
                 </td>
                 <td class="nomProprieteJardin textcenter">
                     {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}
@@ -88,9 +78,13 @@
                     <a href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
                 </td>
             </tr>
-        {%endfor%}
         </tbody>
     </table>
+      <div>
+            {% if lieu.infos %}
+                {{lieu.infos|safe}}
+            {% endif %}
+      </div>
   </div>
 </div>
 {% endblock %}

@@ -62,8 +62,14 @@ class Adresse(models.Model):
             self.set_latlon_from_adresse()
         return super(Adresse, self).save(*args, **kwargs)
 
+    @property
     def get_absolute_url(self):
-        return reverse_lazy('profil_courant')
+        return reverse('profil_courant')
+
+    @property
+    def get_url_map(self):
+        return reverse('voirLieu',  kwargs={'id_lieu': self.id})
+
 
     def __str__(self):
         if self.commune:

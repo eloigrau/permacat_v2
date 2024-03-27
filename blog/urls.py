@@ -78,6 +78,7 @@ urlpatterns = [
     path(r'associerSalonArticle/<str:slug_article>', views.associerSalonArticle, name='associerSalonArticle'),
     url(r'^supprimerEvenementArticle/(?P<slug_article>[-\w]+)-(?P<id_evenementArticle>[0-9]+)$', login_required(views.SupprimerEvenementArticle.as_view(), login_url='/auth/login/'), name='supprimerEvenementArticle'),
     url(r'ajouterAdresseArticle/(?P<id_article>[0-9]+)$', views.ajouterAdresseArticle, name='ajouterAdresseArticle'),
+    url(r'voirAdresseArticle/(?P<id_adresseArticle>[0-9]+)$', views.voirAdresseArticle, name='voirAdresseArticle'),
     url(r'ajouterDocumentPartage/(?P<slug_article>[-\w]+)$', views.ajouterDocumentPartage, name='ajouterDocumentPartage'),
     url(r'supprimerDocumentPartage/(?P<slug_docpartage>[-\w]+)$', views.supprimerDocumentPartage, name='supprimerDocumentPartage'),
     url(r'ajouterReunionArticle/(?P<slug_article>[-\w]+)$', views.ajouterReunionArticle, name='ajouterReunionArticle'),

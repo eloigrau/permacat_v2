@@ -749,22 +749,19 @@ class EvenementAcceuil(models.Model):
     def est_autorise(self, user):
         return self.article.est_autorise(user)
 
+
 class AdresseArticle(models.Model):
     titre = models.CharField(verbose_name="Nom du lieu",
                              max_length=100, null=True, blank=True, default="")
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 help_text="L'evenement doit etre associé à un article existant (sinon créez un article avec une date)")
-    infos = models.CharField(verbose_name="Infos complémentaires",
-                             max_length=100, null=True, blank=True, default="")
+    infos = models.TextField(verbose_name="Infos complémentaires", null=True, blank=True)
 
     def __str__(self):
         try:
             if self.titre:
-                if self.infos:
-                    return str(self.titre) + " : " + str(self.infos) + "; (" + str(self.adresse.get_adresse_str) + ")"
-                else:
-                    return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
+                return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
             else:
                 return str(self.adresse.get_adresse_str)
         except:
@@ -773,6 +770,10 @@ class AdresseArticle(models.Model):
             else:
                 return "-"
 
+
+    @property
+    def get_url_map(self):
+        return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})
 
     @property
     def get_titre(self):

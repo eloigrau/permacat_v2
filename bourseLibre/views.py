@@ -1093,9 +1093,14 @@ def partagerPosition(request, slug_conversation):
 @login_required
 def voirLieu(request, id_lieu):
     lieux = [Adresse.objects.get(id=id_lieu), ]
-    titre = ""
+    titre = lieux[0]
     return render(request, 'carte_adresses.html', {'titre':titre, "lieux":lieux})
 
+@login_required
+def voirLieuInfo(request, id_lieu):
+    lieux = [Adresse.objects.get(id=id_lieu), ]
+    titre = lieux[0]
+    return render(request, 'carte_adresses.html', {'titre':titre, "lieux":lieux})
 
 @login_required
 def lireConversation_2noms(request, destinataire1, destinataire2):

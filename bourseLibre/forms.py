@@ -230,8 +230,8 @@ class AdresseForm(forms.ModelForm):
 
 class AdresseForm2(forms.ModelForm):
     telephone = forms.CharField(label="Contact (tel/mail/...)", required=False)
-    latitude = forms.FloatField(label="Latitude", initial="42,2", required=True)
-    longitude = forms.FloatField(label="Longitude", initial="2,2", required=True)
+    latitude = forms.FloatField(label="Latitude", required=True)
+    longitude = forms.FloatField(label="Longitude", required=True)
 
     class Meta:
         model = Adresse

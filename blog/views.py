@@ -1134,6 +1134,12 @@ def ajouterAdresseArticle(request, id_article):
     return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse2':form_adresse2 })
 
 
+@login_required
+def voirAdresseArticle(request, id_adresseArticle):
+    lieu = AdresseArticle.objects.get(id=id_adresseArticle)
+    titre = str(lieu)
+    return render(request, 'blog/carte_lieu.html', {'titre':titre, "lieu":lieu})
+
 class SupprimerAdresseArticle(DeleteView):
     model = AdresseArticle
     success_url = reverse_lazy('blog:index')

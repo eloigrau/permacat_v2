@@ -158,6 +158,8 @@ class Atelier(models.Model):
         return getattr(user, "adherent_" + self.asso.abreviation)
 
     def est_complet(self):
+        if not self.nbMaxInscriptions:
+            return False
         return len(self.get_inscrits) >= self.nbMaxInscriptions
 
     @property

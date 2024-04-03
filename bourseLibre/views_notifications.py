@@ -230,7 +230,7 @@ def notifications_news_regroup(request):
                 elif action.description.startswith("a ajouté un lieu"):
                     htmlArticles += str(action.actor) + " a ajouté un lieu"
                 elif action.description.startswith("a ajouté un document partagé"):
-                    htmlArticles += str(action.actor) + " a ajouté undocument partagé"
+                    htmlArticles += str(action.actor) + " a ajouté un document partagé"
 
                 elif action.description.startswith(" a ajouté le document"):
                     htmlArticles += str(action.actor) + str(action.description)

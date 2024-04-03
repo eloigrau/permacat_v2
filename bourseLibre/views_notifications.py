@@ -226,11 +226,12 @@ def notifications_news_regroup(request):
                 if action.description.startswith("a ajouté un article "):
                     htmlArticles += "créé par "+ str(action.actor)
                 elif action.description.startswith("a ajouté une date"):
-                    htmlArticles += "ajout d'une date "
+                    htmlArticles += "ajout d'une date"
                 elif action.description.startswith("a ajouté un lieu"):
                     htmlArticles += "ajout d'un lieu"
-                elif action.description.startswith("a ajouté un document"):
-                    htmlArticles += "ajout d'un document"
+                elif action.description.startswith("a ajouté un document partagé"):
+                    htmlArticles += "ajout d'un document partagé"
+
                 elif action.description.startswith("a ajouté le document"):
                     htmlArticles += str(action.description)
                 elif action.description.startswith("a ajouté un salon"):

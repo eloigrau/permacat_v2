@@ -394,6 +394,8 @@ class DocumentPartage(models.Model):
         return "(" + str(self.nom) + ") "+ str(self.url)
 
     def get_url(self):
+        if self.nom.startswith("http"):
+            return self.nom
         return "https://semestriel.framapad.org/p/" + self.slug
 
 class Evenement(models.Model):

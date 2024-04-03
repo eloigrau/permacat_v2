@@ -1,4 +1,4 @@
-{% extends 'blog/base_blog.html' %}
+{% extends 'blog/base_blog2.html' %}
 {% load carto_filters %}
 {% block headerDocument%}
 {% load leaflet_tags %}
@@ -20,7 +20,9 @@
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
     <h4> {{titre}}</h4>
-    <button type="cancel" onclick="window.history.back();" class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> </button>
+      <a href="{{lieu.article.get_absolute_url}}">
+    <button  class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> Revenir à l'article </button>
+          </a>
   </div>
 </div>
 {% endblock %}

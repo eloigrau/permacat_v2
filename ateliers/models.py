@@ -69,6 +69,7 @@ class Atelier(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 
     estArchive = models.BooleanField(default=False, verbose_name="Archiver l'atelier")
+    nbMaxInscriptions = models.IntegerField( verbose_name="Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
 
     class Meta:
         ordering = ('-date_creation', )
@@ -114,8 +115,7 @@ class Atelier(models.Model):
                         DATE_INPUT_FORMAT) + " a été modifié"
                 else:
                     message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
-                    message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + "' le " + self.start_time.strftime(
-                        DATE_INPUT_FORMAT) + " a été modifié"
+                    message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + " a été modifié"
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:
@@ -138,6 +138,10 @@ class Atelier(models.Model):
             return Choix.couleurs_ateliers['0']
 
     @property
+    def get_inscrits(self):
+        return [x[0] for x in InscriptionAtelier.objects.filter(atelier=self).values_list('user__username')]
+
+    @property
     def get_couleur_cat(self, cat):
         try:
             return Choix.couleurs_ateliers[cat]
@@ -153,6 +157,8 @@ class Atelier(models.Model):
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 
+    def est_complet(self):
+        return len(self.get_inscrits) >= self.nbMaxInscriptions
 
     @property
     def heure_fin_atelier(self,):

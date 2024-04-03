@@ -141,7 +141,7 @@ def lireAtelier_id(request, id):
 @login_required
 def lireAtelier(request, atelier):
     commentaires = CommentaireAtelier.objects.filter(atelier=atelier).order_by("date_creation")
-    inscrits = [x[0] for x in InscriptionAtelier.objects.filter(atelier=atelier).values_list('user__username')]
+    inscrits = atelier.get_inscrits
 
     if not request.user.is_anonymous:
         user_inscrit = request.user.username in inscrits
@@ -161,17 +161,17 @@ def lireAtelier(request, atelier):
         atelier.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(comment.commentaire))[:96] + "..."
         atelier.save()
         comment.save()
-
-        action.send(request.user, verb='atelier_message', url=atelier.get_absolute_url(),
+        url= atelier.get_absolute_url() + "#comm_"+str(comment.id)
+        action.send(request.user, verb='atelier_message', url=url,
                     description="a commenté l'atelier: '%s'" % atelier.titre)
         suiveurs = [Profil.objects.get(username=atelier.auteur), ] + [x.user for x in InscriptionAtelier.objects.filter(atelier=atelier)]
         emails = [suiv.email for suiv in suiveurs]
-        message = "L'atelier <a href='https://www.perma.cat" + atelier.get_absolute_url() + "'>%s</a> a été commenté" %atelier.titre
+        message = "L'atelier <a href='https://www.perma.cat" + url + "'>%s</a> a été commenté" %atelier.titre
         message_notif = "L'atelier %s a été commenté par %s" % (atelier.titre, request.user.username)
-        action.send(request.user, verb='emails', url=atelier.get_absolute_url(),
+        action.send(request.user, verb='emails', url=url,
                     titre="a commenté l'atelier: '%s'" % atelier.titre,  message=message, emails=emails)
         payload = {"head": "atelier: '%s'" % atelier.titre, "body": message_notif,
-                   "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url()}
+                   "icon": static('android-chrome-256x256.png'), "url": url}
         for suiv in suiveurs:
             try:
                 send_user_notification(suiv, payload=payload, ttl=7200)

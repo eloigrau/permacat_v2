@@ -130,9 +130,13 @@
 
 
                 {% else %}
+                    {% if not atelier.est_complet  %}
 <form>
-   <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire" onclick="clicked();" value="S'inscrire à l'atelier">
+   <input type="button" class="btn btn-success" id="btn-sinscrire3" onclick="clicked();" value="S'inscrire à l'atelier">
 </form>
+                    {%else%}
+                        <button type="button" class="btn btn-warning">Atelier complet
+                    {%endif%}
                 {% endif %}
             {% else %}
             <p><a href="/auth/login/" >Connectez-vous pour vous inscrire à l'atelier</a></p>
@@ -232,26 +236,27 @@
 					{% endif %}
 
 				<tr>
-                     {% if user_inscrit %}
+                     {% if user_inscrit or request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}
 					<td class="nomProprieteAtelier">
-						Inscrits :
+						Inscrits ({{inscrits|length}}{% if atelier.nbMaxInscriptions %}/{{atelier.nbMaxInscriptions}}{% endif %}):
 					</td>
 					<td class="proprieteAtelier">
                         {% for i in inscrits %}
                         <a href="{% url 'profil_nom' i %}">{{i}}</a>{%if not forloop.last%}, {% endif %}
 					    {% endfor %}
-					</td>
-                    {% else %}
-					<td class="nomProprieteAtelier">
-						Inscription à l'atelier
-					</td>
-					<td class="proprieteAtelier">
-<form>
-   <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
-</form>
-					</td>
+                        {% if not user_inscrit  %}
 
+                    {% if not atelier.est_complet  %}
+<form>
+   <input type="button" class="btn btn-success float-right" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
+</form>
+                    {%else%}
+                        <button type="button" class="btn btn-warning float-right">Atelier complet
                     {%endif%}
+                    {%endif%}
+					</td>
+                    {%endif%}
+
 				</tr>
 			</tbody>
 		</table>

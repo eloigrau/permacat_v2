@@ -2,18 +2,6 @@
 {% load fontawesome %}
 {% load hitcount_tags %}
 
-{% block subtitle %}
-
-<p class="textcenter">
-    <a href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante %}">
-        <button type="button" class="btn btn-sm btn-primary">
-        &nbsp;Revenir à la liste des réunions
-        </button>
-    </a>
-</p>
-
-{% endblock %}
-
 {% block content %}
 <div class="anchor_blank" id="ref-annee"></div>
 <p class="textcenter">

@@ -392,6 +392,33 @@ def listeAdhesions(request, asso):
 
     return render(request, 'asso/listeAdhesions.html', {"listeAdhesions":qs, "asso":asso })
 
+class Adhesion_asso_modifier(UpdateView):
+    model = Adhesion_asso
+    template_name_suffix = '_modifier'
+
+    def get_object(self):
+        self.object = Adhesion_asso.objects.get(pk=self.kwargs['pk'])
+
+        return self.object
+
+    #def form_valid(self, form):
+    #    self.object = form.save()
+    #    return HttpResponseRedirect(self.get_success_url())
+
+
+class Adhesion_asso_supprimer(DeleteView):
+    model = Adhesion_asso
+    template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return self.adherent.get_absolute_url()
+
+    def get_object(self):
+        ad = Adhesion.objects.get(pk=self.kwargs['pk'])
+        self.adherent = ad.adherent
+        return ad
+
+
 @login_required
 def listeContacts_admin(request):
     if request.user.is_superuser:

@@ -585,6 +585,12 @@ class Adhesion_asso(models.Model):
     def __str__(self):
         return self.user.username + " le " + str(self.date_cotisation) + " " + str(self.montant) + " " + str(self.moyen) + "(" + self.asso.nom + ")"
 
+    def get_update_url(self):
+        return reverse('adhesion_asso_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adhesion_asso_supprimer', kwargs={'pk': self.pk})
+
+
 class Monnaie(models.Model):
     nom = models.CharField(
         max_length=50,

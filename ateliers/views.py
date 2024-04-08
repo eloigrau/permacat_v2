@@ -241,7 +241,7 @@ class ModifierCommentaire(UpdateView):
         return CommentaireAtelier.objects.get(id=self.kwargs['id'])
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         if self.object.commentaire and self.object.commentaire !='<br>':
             self.object.date_modification = now()
             self.object.save()

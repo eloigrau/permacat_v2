@@ -53,6 +53,9 @@ Coopérateurs
                 <th>montant</th>
                 <th>moyen</th>
                 <th>detail</th>
+                {% if request.user.is_superuser %}
+                <th></th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -66,7 +69,13 @@ Coopérateurs
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.montant}}</a></td>
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.get_moyen_display}}</a></td>
         <td><a href="{{adhesion.user.get_absolute_url}}">{{adhesion.detail}}</a></td>
-    </tr>
+        {% if request.user.is_superuser %}
+            <td>
+                <a href="{{adhesion.get_update_url}}" class="btn btn-warning btn-sm"><i class="fa fa-edit" aria-hidden="true"></i> Modifier</a>
+                <a href="{{adhesion.get_delete_url}}" class="btn btn-danger  btn-sm"><i class="fa fa-times" aria-hidden="true"></i> Supprimer</a>
+            </td>
+        {% endif %}
+        </tr>
     {% endfor %}
         </tbody>
 </table>

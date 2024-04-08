@@ -36,17 +36,37 @@ class CustomUserAdmin(UserAdmin):
 
 
 class ArticleAdmin(admin.ModelAdmin):
-        list_display = ('titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
+    list_display = ('titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
+    search_fields = ('titre', )
+
 class Article_jardinAdmin(admin.ModelAdmin):
-        list_display = ('titre', 'jardin', 'categorie', 'estArchive', )
+    list_display = ('titre', 'jardin', 'categorie', 'estArchive', )
+    search_fields = ('titre', )
+
 class ProjetAdmin(admin.ModelAdmin):
     list_display = ('titre', 'estArchive', 'ficheprojet')
+    search_fields = ('titre', )
+
 class ProduitAdmin(admin.ModelAdmin):
     list_display = ('nom_produit', 'categorie', 'estUneOffre', 'asso')
+    search_fields = ('nom_produit', )
+
 class Adhesion_permacatAdmin(admin.ModelAdmin):
     list_display = ('user', 'date_cotisation', 'montant')
+    search_fields = ('user', )
+
+class Adhesion_assoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'date_cotisation', 'montant')
+    search_fields = ('user', )
+
+
+
 class AssoAdmin(admin.ModelAdmin):
     readonly_fields = ('id',)
+
+class BookAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'my_stock')
+    search_fields = ('name', )
 
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Art_jardin, Article_jardinAdmin)
@@ -67,7 +87,7 @@ admin.site.register(MessageGeneral)
 admin.site.register(InscriptionNewsletter)
 admin.site.register(InscriptionNewsletterAsso)
 admin.site.register(Adhesion_permacat, Adhesion_permacatAdmin)
-admin.site.register(Adhesion_asso)
+admin.site.register(Adhesion_asso, Adhesion_assoAdmin)
 
 admin.site.register(Conversation)
 admin.site.register(Commentaire)

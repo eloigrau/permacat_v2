@@ -288,13 +288,6 @@
             </tr>
             {% endif %}
             {% if user.accepter_annuaire or request.user == user %}
-                {%if user.adresse.pays %}
-                    <tr>
-                        <td style="width:250px">Pays ^:</td>
-                        <td>{{ user.adresse.pays }}</td>
-                    </tr>
-                {% endif %}
-
                 {%if request.user == user %}
                 <tr>
                     <td style="width:200px">lat/lon ^:</td>

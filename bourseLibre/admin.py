@@ -72,12 +72,22 @@ admin.site.register(Article, ArticleAdmin)
 admin.site.register(Art_jardin, Article_jardinAdmin)
 admin.site.register(Evenement)
 admin.site.register(EvenementAcceuil)
-admin.site.register(AdresseArticle)
+
+class AdresseArticle_Admin(admin.ModelAdmin):
+    list_display  = ('titre', 'adresse', 'article')
+    search_fields = ('titre', )
+
+admin.site.register(AdresseArticle, AdresseArticle_Admin)
+
+class Adresse_Admin(admin.ModelAdmin):
+    list_display  = ('id', 'rue', 'code_postal', 'commune')
+    search_fields = ('rue', 'code_postal', 'commune')
+
+admin.site.register(Adresse, Adresse_Admin)
+
 admin.site.register(Projet, ProjetAdmin)
 admin.site.register(FicheProjet)
 admin.site.register(Profil, CustomUserAdmin)
-
-admin.site.register(Adresse)
 admin.site.register(Asso, AssoAdmin)
 admin.site.register(Produit, ProduitAdmin)
 admin.site.register(Panier)

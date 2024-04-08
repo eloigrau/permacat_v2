@@ -13,6 +13,7 @@ from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixM
     ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm
 from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
+from datetime import datetime
 import itertools
 import csv
 from django.http import HttpResponse
@@ -25,7 +26,7 @@ def lireReunion(request, slug):
 
     liste_participants = [(x, x.getDistance_route(reunion), x.get_url(reunion), x.get_gmaps_url(reunion), x.getDistance_objet(reunion)) for x in reunion.participants.all()]
 
-    context = {'reunion': reunion, 'liste_participants': liste_participants, }
+    context = {'reunion': reunion, 'liste_participants': liste_participants, "asso_courante":reunion.asso }
 
     return render(request, 'defraiement/lireReunion.html', context,)
 
@@ -42,7 +43,7 @@ def lireParticipant(request, id):
     part = get_object_or_404(ParticipantReunion, id=id)
     reunions = part.reunion_set.all().order_by('start_time')
     reu = [(r, part.getDistance_route(r)) for r in reunions]
-    context = {"part":part, 'reunions': reu, }
+    context = {"part":part, 'reunions': reu,  "asso_courante":part.asso}
 
     return render(request, 'defraiement/lireParticipant.html', context,)
 
@@ -111,6 +112,8 @@ def recapitulatif(request, asso_slug):
     annee = request.GET.get('annee')
     if annee:
         reunions = reunions.filter(start_time__year=annee)
+    else:
+        reunions = reunions.filter(start_time__year=datetime.now().year)
 
     entete, lignes = getRecapitulatif_km(request, reunions, asso)
     asso_list = [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id")
@@ -122,9 +125,9 @@ def recapitulatif(request, asso_slug):
         tarifKilometrique = form.cleaned_data["tarifKilometrique"]
         entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique)
 
-        return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique}, )
+        return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique})
 
-    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso.abreviation, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
+    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
 
 def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     asso = testIsMembreAsso(request, asso)
@@ -169,7 +172,7 @@ def ajouterReunion(request, asso_slug):
         reu.save()
         return redirect(reverse('defraiement:ajouterAdresseReunion', kwargs={"slug": reu.slug}))
 
-    return render(request, 'defraiement/ajouterReunion.html', { "form": form,})
+    return render(request, 'defraiement/ajouterReunion.html', { "form": form,"asso_courante":asso})
 
 
 @login_required
@@ -185,7 +188,7 @@ def modifierParticipantReunion(request, id):
         part.save()
         return redirect(part.get_absolute_url())
 
-    return render(request, 'defraiement/modifierParticipantReunion.html', {'part':part, 'form':form,'form_adresse':form_adresse})
+    return render(request, 'defraiement/modifierParticipantReunion.html', {'part':part, 'form':form,'form_adresse':form_adresse, "asso_courante":part.asso})
 
 # @login_required
 class ModifierParticipant(UpdateView):
@@ -385,49 +388,52 @@ def voirLieux(request,):
     return render(request, 'defraiement/carte_touslieux.html', {'titre':titre, "lieux":lieux})
 
 
+#
+# class ListeReunions(ListView):
+#     model = Reunion
+#     context_object_name = "reunion_list"
+#     template_name = "reunions/reunion_list.html"
+#     paginate_by = 100
+#
+#     def get_queryset(self):
+#         params = dict(self.request.GET.items())
+#         qs = Reunion.objects.filter(estArchive=False)
+#
+#         if "annee" in params:
+#             qs = qs.filter(start_time__year = params['annee'])
+#
+#         if "categorie" in params:
+#             qs = qs.filter(categorie=params['categorie'])
+#
+#         if "ordreTri" in params:
+#             qs = qs.order_by(params['ordreTri'])
+#         else:
+#             qs = qs.order_by('-start_time', 'categorie', 'titre', )
+#
+#         return qs
+#
+#     def get_context_data(self, **kwargs):
+#         # Call the base implementation first to get a context
+#         context = super().get_context_data(**kwargs)
+#         context['list_archive'] = Reunion.objects.filter(estArchive=True)
+#
+#         cat= Reunion.objects.order_by('categorie').values_list('categorie', flat=True).distinct()
+#         context['categorie_list'] = [x for x in Choix.type_reunion if x[0] in cat]
+#         context['ordreTriPossibles'] = ['-date_creation', 'categorie', 'titre' ]
+#
+#         if 'categorie' in self.request.GET:
+#             context['typeFiltre'] = "categorie"
+#             context['categorie_courante'] = [x[1] for x in Choix.type_reunion if x[0] == self.request.GET['categorie']][0]
+#         if 'ordreTri' in self.request.GET:
+#             context['typeFiltre'] = "ordreTri"
+#         context['asso_courante'] = "Public"
+#         return context
 
-class ListeReunions(ListView):
+
+class ListeReunions_asso(ListView):
     model = Reunion
     context_object_name = "reunion_list"
     template_name = "reunions/reunion_list.html"
-    paginate_by = 100
-
-    def get_queryset(self):
-        params = dict(self.request.GET.items())
-        qs = Reunion.objects.filter(estArchive=False)
-
-        if "annee" in params:
-            qs = qs.filter(start_time__year = params['annee'])
-
-        if "categorie" in params:
-            qs = qs.filter(categorie=params['categorie'])
-
-        if "ordreTri" in params:
-            qs = qs.order_by(params['ordreTri'])
-        else:
-            qs = qs.order_by('-start_time', 'categorie', 'titre', )
-
-        return qs
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context['list_archive'] = Reunion.objects.filter(estArchive=True)
-
-        cat= Reunion.objects.order_by('categorie').values_list('categorie', flat=True).distinct()
-        context['categorie_list'] = [x for x in Choix.type_reunion if x[0] in cat]
-        context['ordreTriPossibles'] = ['-date_creation', 'categorie', 'titre' ]
-
-        if 'categorie' in self.request.GET:
-            context['typeFiltre'] = "categorie"
-            context['categorie_courante'] = [x[1] for x in Choix.type_reunion if x[0] == self.request.GET['categorie']][0]
-        if 'ordreTri' in self.request.GET:
-            context['typeFiltre'] = "ordreTri"
-        context['asso_courante'] = "public"
-        return context
-
-
-class ListeReunions_asso(ListeReunions):
     paginate_by = 100
 
     def get_queryset(self):
@@ -436,7 +442,9 @@ class ListeReunions_asso(ListeReunions):
         qs = Reunion.objects.filter(estArchive=False, asso=self.asso)
 
         if "annee" in self.params:
-            qs = qs.filter(start_time__year = self.params['annee'])
+            qs = qs.filter(start_time__year=self.params['annee'])
+        else:
+            qs = qs.filter(start_time__year=datetime.now().year)
 
         if "categorie" in self.params:
             qs = qs.filter(categorie=self.params['categorie'])

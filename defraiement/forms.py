@@ -81,8 +81,8 @@ class ParticipantReunionChoiceForm(forms.Form):
         self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__abreviation=asso_slug).order_by('nom')]
 
 class PrixMaxForm(forms.Form):
-    prixMax = forms.CharField(required=True, label="Defraiement maximum",initial="1000" )
-    tarifKilometrique = forms.CharField(required=True, label="Tarif kilometrique maximum", initial="0.5")
+    prixMax = forms.CharField(required=True, label="Defraiement maximum (euros)",initial="2000" )
+    tarifKilometrique = forms.CharField(required=True, label="Tarif kilometrique maximum", initial="0.6")
 
 
 class ParticipantReunionForm(forms.ModelForm):

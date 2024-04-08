@@ -1,4 +1,4 @@
-{% extends 'base_defraiement.html' %}
+{% extends 'base_defraiement2.html' %}
 {% load static %}
 {% load fontawesome %}
 {% load blog_filters %}
@@ -17,13 +17,6 @@
 <h4 class="textcenter">
     Liste des événements (réunions, trocs...)
 </h4>
-<p class="textcenter">
-    <a href="{% url 'defraiement:participants' asso_slug=asso_courante.abreviation %}">
-    <button type="button" class="btn btn-primary btn-sm" >
-            <i class="fa fa-arrow-right"></i> Liste des Participant.e.s
-        </button>
-    </a>
-</p>
 <div class="row align-items-center reunion_titre_page_index">
     <div class="col-md-4 offset-md-4 textcenter justify-content-center">
 
@@ -69,7 +62,7 @@
 <a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
     <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%}">2023</button></a>
 <a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning {%else%}btn-info{%endif%}">2024</button></a>
+    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning {%elif not request.GET.annee %} btn-warning  {% else%}btn-info{%endif%}">2024</button></a>
  {% comment %}
  <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation%}?" method="get" role = "search">
      <span class="input-group-append">

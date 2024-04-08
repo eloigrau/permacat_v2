@@ -161,7 +161,7 @@ def lireAtelier(request, atelier):
         atelier.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(comment.commentaire))[:96] + "..."
         atelier.save()
         comment.save()
-        url= atelier.get_absolute_url() + "#comm_"+str(comment.id)
+        url = atelier.get_absolute_url() + "#comm_"+str(comment.id)
         action.send(request.user, verb='atelier_message', url=url,
                     description="a commenté l'atelier: '%s'" % atelier.titre)
         suiveurs = [Profil.objects.get(username=atelier.auteur), ] + [x.user for x in InscriptionAtelier.objects.filter(atelier=atelier)]
@@ -170,6 +170,7 @@ def lireAtelier(request, atelier):
         message_notif = "L'atelier %s a été commenté par %s" % (atelier.titre, request.user.username)
         action.send(request.user, verb='emails', url=url,
                     titre="a commenté l'atelier: '%s'" % atelier.titre,  message=message, emails=emails)
+
         payload = {"head": "atelier: '%s'" % atelier.titre, "body": message_notif,
                    "icon": static('android-chrome-256x256.png'), "url": url}
         for suiv in suiveurs:

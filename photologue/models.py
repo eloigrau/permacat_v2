@@ -308,6 +308,9 @@ class Document(models.Model):
     def get_delete_url(self):
         return reverse("photologue:supprimerDocument", kwargs={"slug":self.slug})
 
+    def get_change_url(self):
+        return reverse("photologue:modifierDocument", kwargs={"slug":self.slug})
+
     def save(self, sendMail=True, *args, **kwargs):
         emails = []
         if not self.id:

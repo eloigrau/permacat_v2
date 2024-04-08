@@ -400,9 +400,7 @@ class DocumentPartage(models.Model):
         return "https://semestriel.framapad.org/p/" + self.slug
 
     def get_url(self):
-        if self.nom.startswith("http"):
-            return self.nom
-        return "https://semestriel.framapad.org/p/" + self.slug
+        return self.url
 
 class Evenement(models.Model):
     titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",

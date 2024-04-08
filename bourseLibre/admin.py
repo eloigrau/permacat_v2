@@ -36,7 +36,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
+    list_display = ('id', 'titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
     search_fields = ('titre', )
 
 class Article_jardinAdmin(admin.ModelAdmin):
@@ -44,11 +44,11 @@ class Article_jardinAdmin(admin.ModelAdmin):
     search_fields = ('titre', )
 
 class ProjetAdmin(admin.ModelAdmin):
-    list_display = ('titre', 'estArchive', 'ficheprojet')
+    list_display = ('id', 'titre', 'estArchive', 'ficheprojet')
     search_fields = ('titre', )
 
 class ProduitAdmin(admin.ModelAdmin):
-    list_display = ('nom_produit', 'categorie', 'estUneOffre', 'asso')
+    list_display = ('id', 'nom_produit', 'categorie', 'estUneOffre', 'asso')
     search_fields = ('nom_produit', )
 
 class Adhesion_permacatAdmin(admin.ModelAdmin):
@@ -58,8 +58,6 @@ class Adhesion_permacatAdmin(admin.ModelAdmin):
 class Adhesion_assoAdmin(admin.ModelAdmin):
     list_display = ('user', 'date_cotisation', 'montant')
     search_fields = ('user', )
-
-
 
 class AssoAdmin(admin.ModelAdmin):
     readonly_fields = ('id',)
@@ -74,7 +72,7 @@ admin.site.register(Evenement)
 admin.site.register(EvenementAcceuil)
 
 class AdresseArticle_Admin(admin.ModelAdmin):
-    list_display  = ('titre', 'adresse', 'article')
+    list_display  = ('id', 'titre', 'adresse', 'article')
     search_fields = ('titre', )
 
 admin.site.register(AdresseArticle, AdresseArticle_Admin)

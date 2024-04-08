@@ -393,6 +393,12 @@ class DocumentPartage(models.Model):
     def __str__(self):
         return "(" + str(self.nom) + ") "+ str(self.url)
 
+    @property
+    def url(self):
+        if self.nom.startswith("http"):
+            return self.nom
+        return "https://semestriel.framapad.org/p/" + self.slug
+
     def get_url(self):
         if self.nom.startswith("http"):
             return self.nom

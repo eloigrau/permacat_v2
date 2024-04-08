@@ -51,6 +51,8 @@ urlpatterns = [
 
     url(r'^supprimerDocument/(?P<slug>[\-\d\w]+)$',
         login_required(views.SupprimerDocument.as_view(), login_url='/auth/login/'), name='supprimerDocument'),
+    url(r'^modifierDocument/(?P<slug>[\-\d\w]+)$',
+        login_required(views.ModifierDocument.as_view(), login_url='/auth/login/'), name='modifierDocument'),
 
     url(r'^telechargerDocument/(?P<slug>[\-\d\w]+)$',login_required(views.telechargerDocument), name='telechargerDocument'),
 

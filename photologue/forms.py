@@ -283,9 +283,12 @@ class DocumentForm(forms.ModelForm):
         model = Document
         fields = ['asso', 'titre', 'doc', 'tags']
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, article=None, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
+        if article:
+            self.fields["asso"].initial = [article.asso.id,]
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+
 
     def save(self, request, article, commit=True):
         instance = super(DocumentForm, self).save(commit=False)
@@ -302,13 +305,25 @@ class DocumentForm(forms.ModelForm):
         instance.auteur = request.user
         if article:
             instance.article = article
-            instance.article = article
 
         if commit:
             instance.save()
 
 
         return instance
+
+
+class DocumentChangeForm(forms.ModelForm):
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+                              label="Document public ou réservé aux adhérents de l'asso :", )
+
+    class Meta:
+        model = Document
+        fields = ['asso', 'titre', 'tags']
+
+    def __init__(self, request, *args, **kwargs):
+        super(DocumentChangeForm, self).__init__(*args, **kwargs)
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
 
 
 class DocumentFormAsso(forms.ModelForm):

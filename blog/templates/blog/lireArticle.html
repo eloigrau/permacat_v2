@@ -294,9 +294,11 @@
                             </div>
                         </div>
     <table class="table table-condensed sortable">
-        <thead><th>Date</th><th>Document</th>
+        <thead><th>Date</th><th>Document</th><th>Groupe</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                     <th>Supprimer</th>       {% endif %}
+                     <th>Modifier</th>
+                     <th>Supprimer</th>
+        {% endif %}
 
         </thead>
         <tbody>
@@ -308,7 +310,13 @@
                             <td><a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i>
                                 {{ document.titre }} </a>
                             </td>
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <td> {{ document.asso.get_logo_nomgroupe_html|safe }}</td>
+                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+
+                            <td><a class="btn btn-sm btn-warning textleft"
+                               href="{% url 'photologue:modifierDocument' slug=document.slug%}">
+                                <i class="fa fa-edit"></i> </a>
+                            </td>
                             <td><a class="btn btn-sm btn-danger textleft"
                                href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i
                                     class="fa fa-times"></i> </a>

@@ -1,0 +1,27 @@
+{% extends 'photologue/root.html' %}
+{% load fontawesome %}
+
+{% block subtitle %}
+<div class="row textcenter">
+<div class="col-sm-12"><h3>Modifier le Fichier {{document}}</h3></div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row">
+	<div class="col-sm-12">
+<form class="form-horizontal" role="form" action="" method="post"
+	enctype="multipart/form-data">
+	{% csrf_token %} <input type="hidden" name="Photo"
+		value="{{ photo }}"> {% include 'form_template.html'%}
+</form>
+
+</div>
+    </div>
+{% endblock %}

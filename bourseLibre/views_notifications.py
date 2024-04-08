@@ -238,6 +238,8 @@ def notifications_news_regroup(request):
                     htmlArticles += str(action.actor) + " a ajouté un salon"
                 elif action.description.startswith("a ajouté une réunion"):
                     htmlArticles += str(action.actor) + "a ajouté une réunion"
+                else:
+                    htmlArticles += str(action.description)
             elif action.description.startswith("a modif"):
                 htmlArticles += "modifié par "+ str(action.actor)
             elif action.description.startswith("a archiv"):

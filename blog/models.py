@@ -386,7 +386,7 @@ class AssociationSalonArticle(models.Model):
         return str(self.salon) + " - "+ str(self.article)
 
 class DocumentPartage(models.Model):
-    nom = models.CharField(verbose_name="Nom du document", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
+    nom = models.CharField(verbose_name="Nom du document (ou lien http)", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
     slug = models.SlugField(max_length=100)
 

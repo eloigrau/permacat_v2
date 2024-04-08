@@ -5,7 +5,7 @@ from django.views.generic import ListView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from .models import Photo, Album, Document
 from django.shortcuts import render, redirect
-from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm,DocumentFormAsso, DocumentAssocierArticleForm
+from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, DocumentAssocierArticleForm
 from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -304,35 +304,24 @@ def telechargerDocument(request, slug):
 
 @login_required
 def ajouterDocument(request, article_slug=None):
-    if request.method == 'POST':
-        if article_slug and article_slug != 'None':
-            form = DocumentFormAsso(request.POST, request.FILES)
+    if article_slug and article_slug != 'None':
+        article = Article.objects.get(slug=article_slug)
+    else:
+        article = None
+    form = DocumentForm(request, article, request.POST or None, request.FILES or None)
+    if form.is_valid():
+        doc = form.save(request, article)
+        if article :
+            action.send(request.user, verb="article_modifier_" + doc.asso.abreviation, action_object=article, url=article.get_absolute_url(),
+                        description="a ajouté le document: '%s'" % doc.titre)
         else:
-            form = DocumentForm(request, request.POST, request.FILES)
-        if form.is_valid():
-            if article_slug and article_slug != 'None':
-                article = Article.objects.get(slug=article_slug)
-            else:
-                article = None
-
-            doc = form.save(request, article)
-
-            if article_slug and article_slug != 'None':
-                action.send(request.user, verb="article_modifier_" + doc.asso.abreviation, action_object=article, url=article.get_absolute_url(),
-                            description="a ajouté le document: '%s'" % doc.titre)
-
             action.send(request.user, verb='document_nouveau' + "_" + doc.asso.abreviation, action_object=doc, url=doc.get_absolute_url(),
                             description="a ajouté le document: '%s'" % doc.titre)
 
-            # Redirect to the document list after POST
-            if article:
-                return redirect(article)
-            return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
-    else:
-        if article_slug and article_slug != 'None':
-            form = DocumentFormAsso()
-        else:
-            form = DocumentForm(request) # A empty, unbound form
+        # Redirect to the document list after POST
+        if article:
+            return redirect(article)
+        return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
 
     # Render list page with the documents and the form
     return render(request, 'photologue/document_ajouter.html', { "form": form})
@@ -368,14 +357,34 @@ def filtrer_documents(request):
 class SupprimerDocument(DeleteAccess, DeleteView):
     model = Document
     template_name_suffix = '_supprimer'
-#    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
-        return Document.objects.get(slug=self.kwargs['slug'])
+        self.object = Document.objects.get(slug=self.kwargs['slug'])
+        self.article = self.object.article
+        return self.object
 
     def get_success_url(self):
+        if self.article:
+            return self.article.get_absolute_url()
         return reverse_lazy("photologue:doc-list")
 
+
+class ModifierDocument(UpdateView):
+    model = Document
+    template_name_suffix = '_modifier'
+
+    def get_object(self):
+        self.object = Document.objects.get(slug=self.kwargs['slug'])
+        self.article = self.object.article
+        return self.object
+
+    def get_form(self):
+        return DocumentChangeForm(self.request, **self.get_form_kwargs())
+
+    def get_success_url(self):
+        if self.article:
+            return self.article.get_absolute_url()
+        return reverse_lazy("photologue:doc-list")
 
 
 @login_required

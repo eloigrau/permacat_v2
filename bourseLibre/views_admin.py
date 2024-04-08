@@ -422,8 +422,8 @@ def ajouterAdhesion(request, abreviationAsso):
 
     return render(request, 'asso/adhesion_ajouter.html', {"form": form, })
 
-    return render(request, 'erreur.html', {
-        'msg': "Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
+    #return render(request, 'erreur.html', {
+    #    'msg': "Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
 
 
 def creerAction_articlenouveau(request):

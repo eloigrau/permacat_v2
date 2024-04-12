@@ -291,17 +291,22 @@
                 <div class="row justify-content-center">
                     <div class="col-sm-12 textcenter">
 
-
                         <div class="row justify-content-center">
-                            <div class="col-sm-12 textcenter">
+                            <div class="col-sm-12 col-md-8 textcenter">
                                 <h4>Documents : </h4>
                             </div>
+                            <div class="col-sm-12 col-md-4 textcenter">
+                            <h4> <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter un fichier/document</a>
+                                </h4>
+                            </div>
+
                         </div>
     <table class="table table-condensed sortable">
         <thead><th>Date</th><th>Document</th><th>Groupe</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                     <th>Modifier</th>
-                     <th>Supprimer</th>
+                     <th>Modifier/Supprimer</th>
         {% endif %}
 
         </thead>
@@ -320,8 +325,7 @@
                             <td><a class="btn btn-sm btn-warning textleft"
                                href="{% url 'photologue:modifierDocument' slug=document.slug%}">
                                 <i class="fa fa-edit"></i> </a>
-                            </td>
-                            <td><a class="btn btn-sm btn-danger textleft"
+                                <a class="btn btn-sm btn-danger textleft"
                                href="{% url 'photologue:supprimerDocument' slug=document.slug%}"> <i
                                     class="fa fa-times"></i> </a>
                             </td>
@@ -330,13 +334,6 @@
                         {% endfor%}
         </tbody>
     </table>
-                        <p>
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <a class="btn btn-sm btn-success textleft"
-                               href="{% url 'photologue:ajouterDocument' article_slug=article.slug %}"><i
-                                    class="fa fa-plus"></i> Ajouter un fichier/document</a>
-                            {% endif%}
-                        </p>
                     </div>
                 </div>
             </div>
@@ -347,8 +344,15 @@
                     <div class="col-sm-12 textcenter">
 
                         <div class="row justify-content-center">
-                            <div class="col-sm-12 textcenter">
+                            <div class="col-sm-12 col-md-8 textcenter">
                                 <h4>Documents partagés (framapad): </h4>
+                            </div>
+                            <div class="col-sm-12 col-md-4 textcenter">
+                                <h4>
+                                    <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter un Document partagé</a>
+                                </h4>
                             </div>
                         </div>
                         {% for document in documents_partages %}
@@ -363,13 +367,6 @@
                             {% endif %}
                         </p>
                         {% endfor%}
-                        <p>
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <a class="btn btn-sm btn-success textleft"
-                               href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}"><i
-                                    class="fa fa-plus"></i> Ajouter un Document partagé</a>
-                            {% endif%}
-                        </p>
                     </div>
                 </div>
             </div>
@@ -380,8 +377,17 @@
                     <div class="col-sm-12 textcenter">
 
                         <div class="row justify-content-center">
-                            <div class="col-sm-12 textcenter">
+                            <div class="col-sm-12 col-md-8 textcenter">
                                 <h4>Réunions : </h4>
+                            </div>
+                            <div class="col-sm-12 col-md-4 textcenter">
+                              <h4>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter une réunion (pour défraiement)</a>
+                            {% endif%}
+                                </h4>
                             </div>
                         </div>
                         {% for reunion in reunions %}
@@ -394,18 +400,13 @@
                             {% endif %}
                         </p>
                         {% endfor%}
-                        <p>
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <a class="btn btn-sm btn-success textleft"
-                               href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}"><i
-                                    class="fa fa-plus"></i> Ajouter une réunion (pour défraiement)</a>
-                            {% endif%}
                             {%if request.user.is_superuser %}
+                        <p>
                             <a class="btn btn-sm btn-success textleft"
                                href="{% url 'blog:associerReunionArticle' slug_article=article.slug %}"><i
                                     class="fa fa-plus"></i> Associer une réunion</a>
-                            {% endif%}
                         </p>
+                            {% endif%}
                     </div>
                 </div>
             </div>
@@ -413,29 +414,35 @@
         <div class="tab-pane fade " id="ateliers">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
                 <div class="contenu atelier">
-
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 textcenter">
+                        <div class="col-sm-12 col-md-8 textcenter">
                             <h4>Ateliers : </h4>
                         </div>
+                        <div class="col-sm-12 col-md-4 textcenter">
+                          <h4>
+                                <a class="btn btn-sm  btn-success textleft"
+                                  href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter un atelier
+                                </a>
+                            </h4>
+                            </div>
                     </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12">
                     {% for atelier in ateliers %}
                     <p>
                         <a href="{{atelier.get_absolute_url}}"> <i class="fa fa-arrow-right"></i> Atelier du
                             {{atelier.start_time |date:"l d F Y"}} : {{atelier.titre}}</a>
 
-                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                        {%if atelier.auteur == request.user or article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                         <a class="btn btn-sm btn-danger textleft"
                            href="{% url 'ateliers:supprimerAtelier' slug=atelier.slug%}"><i class="fa fa-times"></i>
                         </a>
                         {% endif %}
                     </p>
                     {% endfor%}
-                    <hr>
-                    <p><a class="btn btn-sm  btn-success textleft"
-                          href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}"><i
-                            class="fa fa-plus"></i> Ajouter un atelier</a>
-                    </p>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -446,10 +453,18 @@
                 <div class="contenu atelier">
 
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 textcenter">
-                            <h4>Dates supplémentaires : </h4>
+                            <div class="col-sm-12 col-md-8 textcenter">
+                                <h4>Dates supplémentaires : </h4>
+                            </div>
+                            <div class="col-sm-12 col-md-4 textcenter">
+                        <h4><a class="btn btn-sm btn-success textleft"
+                              href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}"><i
+                                class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a>
+                        </h4>
                         </div>
                     </div>
+                    <div class="row justify-content-center">
+                            <div class="col-sm-12">
                     {%for date in dates %}
                     <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
 
@@ -460,24 +475,30 @@
                     {% endif %}
                     </p>
                     {%endfor%}
-                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <hr>
-                    <p><a class="btn btn-sm btn-success textleft"
-                          href="{% url 'blog:ajouterEvenementArticle' slug_article=article.slug %}"><i
-                            class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
-                    {% endif %}
+
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
         <div class="tab-pane fade " id="lieux">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
-
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 textcenter">
+                        <div class="col-sm-12 col-md-8 textcenter">
                             <h4>Lieux : </h4>
                         </div>
+
+                        <div class="col-sm-12 col-md-4 textcenter">
+                          <h4>
+                           <a class="btn btn-sm btn-success textleft"
+                              href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}"><i class="fa fa-plus"></i>
+                            Ajouter un lieu</a>
+                          </h4>
+                        </div>
                     </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12">
                     <p><a class="btn btn-sm btn-primary textleft"
                           href="{% url 'blog:voirCarteLieux_article' id_article=article.id %}"><i class="fa fa-compass"></i>
                         Voir sur une carte</a></p>
@@ -524,33 +545,34 @@
                         </div>
                     </div>
                     {% endcomment %}
-                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <hr>
-                    <p><a class="btn btn-sm btn-success textleft"
-                          href="{% url 'blog:ajouterAdresseArticle' id_article=article.id %}"><i class="fa fa-plus"></i>
-                        Ajouter un lieu</a></p>
-                    {% endif %}
+                </div>
+            </div>
+
                 </div>
             </div>
         </div>
         <div class="tab-pane fade " id="salons">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
-
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 textcenter">
+                        <div class="col-sm-12 col-md-8 textcenter">
                             <h4>Salons de discussions : </h4>
                         </div>
+
+                        <div class="col-sm-12 col-md-4 textcenter">
+                        <h4><a class="btn btn-sm btn-success textleft"
+                              href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug %}"><i
+                                class="fa fa-plus"></i> Ajouter un salon de discussion</a></h4>
+                        </div>
                     </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12">
                     {%for salon in salons %}
                     <p><a href="{{salon.get_absolute_url}}"> {{salon.titre}}</a></p>
                     {%endfor%}
-                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <hr>
-                    <p><a class="btn btn-sm btn-success textleft"
-                          href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug %}"><i
-                            class="fa fa-plus"></i> Ajouter un salon de discussion</a></p>
-                    {% endif %}
+                </div>
+            </div>
+
                 </div>
             </div>
         </div>
@@ -558,28 +580,27 @@
         <div class="tab-pane " id="partager">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
-
                     <div class="row justify-content-center">
                         <div class="col-sm-12 textcenter">
                             <h4>Partager l'article</h4>
                         </div>
                     </div>
-                    <table class="table textleft" style="border:none;">
+                    <table class="table textcenter" style="border:none;">
                         <tr>
-                            <td  style="width:40%"><i class="fa fa-envelope iconleft"></i>
+                            <td><i class="fa fa-envelope iconleft"></i>
                                 {% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}
                             </td>
                         </tr>
                         <tr>
-                            <td ><i class="fa fa-whatsapp iconleft"></i>
+                            <td><i class="fa fa-whatsapp iconleft"></i>
                                 {% post_to_whatsapp article 'Partager sur Whatsapp' %}</td>
                         </tr>
                         <tr>
-                            <td ><i class="fa fa-telegram iconleft"></i>
+                            <td><i class="fa fa-telegram iconleft"></i>
                                 {% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td>
                         </tr>
                         <tr>
-                            <td ><i class="fa fa-copy iconleft"></i>
+                            <td><i class="fa fa-copy iconleft"></i>
                                 {% copy_to_clipboard article "Copier le lien" %}</td>
                         </tr>
                     </table>
@@ -588,7 +609,6 @@
         </div>
 
         <div class="tab-pane " id="historique">
-
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
 
@@ -649,7 +669,6 @@
         </div>
 
         <div class="tab-pane fade " id="suffrages">
-
             <div class="col-sm-12 col-md-10 offset-md-1 textcenter">
                 <div class="contenu discussion_sondage">
 

@@ -566,20 +566,20 @@
                     </div>
                     <table class="table textleft" style="border:none;">
                         <tr>
-                            <td class="textright" style="width:40%"><i class="fa fa-envelope iconleft"></i>
+                            <td  style="width:40%"><i class="fa fa-envelope iconleft"></i>
                                 {% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}
                             </td>
                         </tr>
                         <tr>
-                            <td class="textright"><i class="fa fa-whatsapp iconleft"></i>
+                            <td ><i class="fa fa-whatsapp iconleft"></i>
                                 {% post_to_whatsapp article 'Partager sur Whatsapp' %}</td>
                         </tr>
                         <tr>
-                            <td class="textright"><i class="fa fa-telegram iconleft"></i>
+                            <td ><i class="fa fa-telegram iconleft"></i>
                                 {% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td>
                         </tr>
                         <tr>
-                            <td class="textright"><i class="fa fa-copy iconleft"></i>
+                            <td ><i class="fa fa-copy iconleft"></i>
                                 {% copy_to_clipboard article "Copier le lien" %}</td>
                         </tr>
                     </table>

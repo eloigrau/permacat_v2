@@ -247,9 +247,11 @@
                         {% if not user_inscrit  %}
 
                     {% if not atelier.est_complet  %}
+                        <p>
 <form>
    <input type="button" class="btn btn-success float-right" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
 </form>
+                        </p>
                     {%else%}
                         <button type="button" class="btn btn-warning float-right">Atelier complet
                     {%endif%}

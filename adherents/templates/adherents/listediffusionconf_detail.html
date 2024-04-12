@@ -69,8 +69,9 @@
                         </td>
                     <td>
                         {% if request.user.estmembre_bureau_conf %}
+                            <a class="btn btn-sm btn-warning textleft" href="{{m.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                             <a class="btn btn-sm btn-danger textleft" href="{{m.get_delete_url}}" ><i class="fa fa-times"></i> </a>
-                            <a class="btn btn-sm btn-danger textleft" href="{{m.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+
                         {% endif %}
                     </td>
                     </tr>

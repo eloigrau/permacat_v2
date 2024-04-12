@@ -15,8 +15,8 @@
                 <td>{{inscription.date_inscription|date:"d/m/Y"}}</td>
                 <td>{{inscription.commentaire}}</td>
                 <td>
+                    <a class="btn btn-sm btn-warning textleft" href="{{inscription.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                     <a class="btn btn-sm btn-danger textleft" href="{{inscription.get_delete_url}}" ><i class="fa fa-times"></i> </a>
-                    <a class="btn btn-sm btn-danger textleft" href="{{inscription.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                 </td>
             </tr>
 {% endfor %}

@@ -150,13 +150,19 @@
             <p>
                 <a href="{% url 'cal:agenda' %} ">
                     {%if article.end_time and article.start_time != article.end_time %}
-                    Du {{ article.start_time|date:"l d F Y" }} au {{ article.end_time|date:"l d F Y" }}
+                        Du {{ article.start_time|date:"l d F Y" }} au {{ article.end_time|date:"l d F Y" }}
                     {%else%}
                     le {{ article.start_time|date:"l d F Y" }}
 
+                        {% if dates %}
+                         + {{dates|length}} date{{dates|pluralize:"s"}}
+                        {% endif %}
                     {% endif %}
+
                 </a>
             </p>
+            {% elif dates %}
+             {{dates|length}} date{{dates|pluralize:"s"}}
             {% endif %}
         </div>
     </div>

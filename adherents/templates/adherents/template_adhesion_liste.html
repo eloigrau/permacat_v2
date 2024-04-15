@@ -16,7 +16,7 @@
                 <td><a href="{{adhesion.adherent.get_absolute_url}}"> {{adhesion.adherent}}</a></td>
                 <td>{{adhesion.date_cotisation|date:"Y"}}</td>
                 <td>{{adhesion.montant}}</td>
-                <td>{{adhesion.moyen}}</td>
+                <td>{{adhesion.get_moyen_display}}</td>
                 <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>
                 <td>
                     <a class="btn btn-sm btn-warning textleft" href="{{adhesion.get_update_url}}" ><i class="fa fa-edit"></i> </a>

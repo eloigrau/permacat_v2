@@ -14,7 +14,7 @@
             <tr>
                 <td>{{adhesion.date_cotisation|date:"Y"}}</td>
                 <td>{{adhesion.montant}}</td>
-                <td>{{adhesion.moyen}}</td>
+                <td>{{adhesion.get_moyen_display}}</td>
                 <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>
                 <td>
                     {% if is_membre_bureau %}

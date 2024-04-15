@@ -43,6 +43,7 @@ urlpatterns = [
 
     path(r'conf66/adhesions/', login_required(views.ListeAdhesions.as_view()), name="adhesion_liste"),
     path(r'conf66/adhesion/creer/<int:adherent_pk>', views.ajouterAdhesion, name="adhesion_creer"),
+    path(r'conf66/adhesion/creer/', views.ajouterAdhesion_2, name="adhesion_creer_adherent"),
     path(r'conf66/adhesion/detail/<int:pk>', login_required(views.AdhesionDetailView.as_view()), name="adhesion_detail"),
     path(r'conf66/adhesion/modifier/<int:pk>', login_required(views.AdhesionUpdateView.as_view()), name="adhesion_modifier"),
     path(r'conf66/adhesion/supprimer/<int:pk>', login_required(views.AdhesionDeleteView.as_view()), name="adhesion_supprimer"),

@@ -17,6 +17,21 @@ class AdhesionForm(forms.ModelForm):
                        }),
 
         }
+
+
+class AdhesionForm_adherent(forms.ModelForm):
+
+    class Meta:
+        model = Adhesion
+        fields = ['adherent', 'date_cotisation', 'montant', 'moyen', 'detail']
+        widgets = {
+            'date_cotisation': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+
+        }
 class AdherentForm(forms.ModelForm):
     rue = forms.CharField(label="Rue", required=False)
     code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)

@@ -12,7 +12,8 @@ import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
-from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm
+from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, \
+    InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent
 from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
 from bourseLibre.models import Adresse, Profil
 from .filters import AdherentsCarteFilter
@@ -231,6 +232,18 @@ def ajouterAdhesion(request, adherent_pk):
         return redirect(adherent)
 
     return render(request, 'adherents/adhesion_ajouter.html', {"form": form, 'adherent': adherent})
+
+
+def ajouterAdhesion_2(request, ):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+
+    form = AdhesionForm_adherent(request.POST or None)
+    if form.is_valid():
+        adhesion = form.save()
+        return redirect(adhesion.adherent)
+
+    return render(request, 'adherents/adhesion_ajouter.html', {"form": form})
 
 
 login_required
@@ -762,7 +775,7 @@ def creerInscriptionMail(request,):
                      description=" ajouté dans la liste: '%s'" %(inscription.liste_diffusion.nom))
         return redirect(reverse('adherents:inscriptionMail_liste'))
 
-    return render(request, 'adherents/inscriptionmail_ajouter.html', {"form": form, 'adherent':adherent})
+    return render(request, 'adherents/inscriptionmail_ajouter.html', {"form": form})
 
 @login_required
 @user_passes_test(is_membre_bureau)

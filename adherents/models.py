@@ -4,7 +4,7 @@ from bourseLibre.models import Profil, Adresse
 from blog.models import Article
 import simplejson
 from django.urls import reverse
-from .constantes import dict_ape, CHOIX_STATUTS
+from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN
 from django.utils import timezone
 import uuid
 import datetime
@@ -97,7 +97,8 @@ class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent ")
     date_cotisation = models.DateField(verbose_name="Date de la cotisation", editable=True, auto_now_add=False)
     montant = models.CharField(max_length=50, blank=False, verbose_name="Montant de l'adhesion")
-    moyen = models.CharField(max_length=50, blank=False, verbose_name="Moyen de paiement")
+    moyen = models.CharField(max_length=50, blank=False, verbose_name="Moyen de paiement",
+                             choices=CHOIX_MOYEN, )
     detail = models.TextField(null=True, blank=True)
 
     def __str__(self):

@@ -37,6 +37,7 @@ list_ape = [(k, k+" : " + v) for k, v in dict_ape.items()]
 
 CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "Conjoint Collaborateur"), ("4", "Retraité.e"), ("5", "ATS"), ("6", "Porteur de projet")
 
+CHOIX_MOYEN = ("VIR", "Virement"), ("CHQ", "Chèque"), ("ESP", "Espèce"), ("HA", "HelloAsso"), ("Autre", "Autre"),
 
 def get_slug_salon(nom="bureau"):
     if nom=="bureau":

@@ -3,7 +3,7 @@ from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
 
 
 class Adherent_Admin(admin.ModelAdmin):
-    list_display = ('nom', 'email', 'profil')
+    list_display = ('nom', 'prenom', 'email', 'profil', 'get_adhesions')
     search_fields = ('nom', 'email', )
 
 class Adhesion_Admin(admin.ModelAdmin):

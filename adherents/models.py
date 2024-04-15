@@ -20,6 +20,9 @@ class Adherent(models.Model):
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     email = models.EmailField(verbose_name="Email", blank=True)
 
+    class Meta:
+        unique_together = ('nom', 'prenom',)
+
     def __str__(self):
         #profil = " (" + str(self.profil)+")" if self.profil else ""
         return self.nom + " " + self.prenom

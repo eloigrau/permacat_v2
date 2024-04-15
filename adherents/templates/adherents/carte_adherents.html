@@ -239,6 +239,12 @@
 {% if is_membre_bureau %}
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
+    <div class="textcenter">
+        <button id="btn-archives"  type="button" class="btn btn-lg" onclick="toggle_visibility('historique');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+            Afficher l'historique
+        </button>
+    </div>
+    <div id="historique" style='display:none;'>
     <div class="card carte-notif-news notif3 d-md-flex">
         <ul class="list-group list-group-flush">
             <li class="list-group-item textcenter"  style="background-color:#ffc34d">Historique</li>
@@ -253,9 +259,23 @@
     </div>
     </div>
     </div>
+</div>
 {% endif %}
 
-
+<script>
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       var btn = document.getElementById("btn-archives");
+       if(e.style.display == 'block'){
+          e.style.display = 'none';
+          btn.textContent = "Afficher l'historique";
+      }
+       else{
+          e.style.display = 'block';
+          btn.textContent = "Cacher l'historique";
+      }
+   }
+</script>
 <script>
 function get_infos(url_tag) {
     $.ajax({

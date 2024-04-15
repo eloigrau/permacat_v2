@@ -30,6 +30,7 @@ class AdherentForm(forms.ModelForm):
         model = Adherent
         fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape','rue', 'code_postal', 'commune', 'telephone', ]
 
+
         widgets = {
             'date_cotisation': forms.DateInput(
                 format=('%Y-%m-%d'),

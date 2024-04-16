@@ -833,11 +833,11 @@ def swap_inscription(request, listeMail_pk, adherent_pk):
     if inscrit:
         inscrit.delete()
         action.send(adherent, verb="listeDiff_conf66_moins", action_object=listeMail, url=listeMail.get_absolute_url(),
-                     description="s'est retiré de la liste : '%s'" %(listeMail.nom))
+                     description=request.user.username + "a retiré %s de la liste : '%s'" %(adherent, listeMail.nom))
     else:
         InscriptionMail.objects.create(liste_diffusion=listeMail, adherent=adherent).save()
         action.send(adherent, verb="listeDiff_conf66_plus", action_object=listeMail, url=listeMail.get_absolute_url(),
-                     description="s'est ajouté dans la liste : '%s'" %(listeMail.nom))
+                     description=request.user.username + "a ajouté %s dans la liste : '%s'" %(adherent, listeMail.nom))
 
     return redirect('adherents:mesListesMails')
 

@@ -103,9 +103,7 @@ def nettoyerActions(request):
         return HttpResponseForbidden()
     actions = Action.objects.all()
     for action in actions:
-        try:
-            print(action)
-        except:
+        if not action.actor or not action.verb:
             action.delete()
     return redirect("bienvenue")
 
@@ -125,26 +123,19 @@ def abonnerAdherentsCiteAlt(request, ):
 def nettoyerFollows(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.all()
-    nombre = 0
-    for action in follows:
-        if not action.follow_object:
-            #action.delete()
-            nombre += 1
+    follows = Follow.objects.filter(follow_object__isnull=True)
+    nombre = len(follows)
 
     return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, })
 
 def nettoyerFollowsValide(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.all()
-    nombre = 0
+    follows = Follow.objects.filter(follow_object__isnull=True)
     for action in follows:
-        if not action.follow_object:
-            action.delete()
-            nombre += 1
+        action.delete()
 
-    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, })
+    return render(request, 'admin/voirNettoyes.html', {'nombre': 0, })
 
 def nettoyerHistoriqueAdmin(request):
     if not request.user.is_superuser:

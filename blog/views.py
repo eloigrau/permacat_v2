@@ -4,11 +4,11 @@ from django.http import HttpResponseForbidden
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
-    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle
+    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
-    AssocierReunionArticleForm, AssociationSalonArticleForm
+    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -218,6 +218,7 @@ def lireArticle(request, slug):
     salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if s.salon.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
+    todos = TodoArticle.objects.filter(article=article).order_by('titre')
     articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).order_by('-date_creation')[:20]
 
     sondages = Sondage_binaire.objects.filter(article=article).order_by('-date_creation')
@@ -248,7 +249,7 @@ def lireArticle(request, slug):
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                        'articles_dossier':articles_dossier,'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
-                       "documents_partages":documents_partages, "reunions":reunions,"ancre": discu.slug}
+                       "documents_partages":documents_partages, "reunions":reunions,"todos":todos, "ancre": discu.slug}
 
     elif form.is_valid() and 'message_discu' in request.POST:
         discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#",""))
@@ -283,11 +284,11 @@ def lireArticle(request, slug):
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                'articles_dossier':articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
-                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions, }
+                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "todos":todos, "reunions":reunions, }
 
     else:
         context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
-                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions,  }
+                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"todos":todos, "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required
@@ -1027,6 +1028,11 @@ def ajouterDocumentPartage(request, slug_article):
 def supprimerDocumentPartage(request, slug_docpartage):
     doc = DocumentPartage.objects.get(slug=slug_docpartage)
     article = doc.article
+    action.send(request.user,
+                action_object=article,
+                url=article.get_absolute_url(),
+                verb="article_modifier_" + article.asso.abreviation,
+                description="a supprimé le document partagé %s de l'article '%s'"%(doc.nom, article.titre))
     doc.delete()
     return redirect(article.get_absolute_url())
 
@@ -1082,7 +1088,7 @@ def ajouterSalonArticle(request, slug_article):
                         url=article.get_absolute_url(),
                         verb="article_modifier_" + article.asso.abreviation, 
                         description="a ajouté un salon à l'article '%s'"%article.titre)
-        return redirect(ev.article)
+        return redirect(salon.article)
 
     return render(request, 'blog/ajouterSalon.html', {'form': form, 'article':article, })
 
@@ -1160,6 +1166,68 @@ class SupprimerAdresseArticle(DeleteView):
             return HttpResponseRedirect(success_url)
         else:
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
+
+
+@login_required
+def ajouterTodoArticle(request, slug_article):
+    article = Article.objects.get(slug=slug_article)
+    form = TodoArticleForm(request.POST or None)
+
+    if form.is_valid():
+        form.save(article,)
+        action.send(request.user,
+                    action_object=article,
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation,
+                    description="a ajouté un todo à l'article '%s'"%article.titre)
+        return redirect(article)
+
+    return render(request, 'blog/ajouterTodoArticle.html', {'article':article, 'form': form})
+
+
+class ModifierTodoArticle(UpdateView):
+    model = TodoArticle
+    form_class = TodoArticleChangeForm
+    template_name_suffix = '_modifier'
+    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+
+class SupprimerTodoArticle(DeleteView):
+    model = TodoArticle
+    template_name_suffix = '_supprimer'
+
+    def get_object(self):
+        return TodoArticle.objects.get(slug=self.kwargs['slug_todo'])
+
+    def get_success_url(self):
+        return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
+
+    def delete(self, request, *args, **kwargs):
+        # the Post object
+        self.object = self.get_object()
+        if self.object.article.estModifiable or self.object.article.auteur == request.user or request.user.is_superuser:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
+
+
+
+@login_required
+def todoArticle_toggle(request, slug_article, slug_todo) :
+    """Toggle the completed status of a task from done to undone, or vice versa.
+    Redirect to the list from which the task came.
+    """
+
+    if request.method == "POST":
+        todo = get_object_or_404(TodoArticle, slug=slug_todo)
+        todo.estFait = not todo.estFait
+        todo.save()
+
+        return redirect(reverse('blog:lireArticle', kwargs={'slug':slug_article}))
+
+
 
 @login_required
 def voirCarteLieux(request, id_article):

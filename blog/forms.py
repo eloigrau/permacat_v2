@@ -1,7 +1,7 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
 from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
-    DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle
+    DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle, TodoArticle
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -545,6 +545,33 @@ class DocumentPartageArticleForm(forms.ModelForm):
         instance.save()
         return instance
 
+class TodoArticleForm(forms.ModelForm):
+    class Meta:
+        model = TodoArticle
+        fields = ['titre', 'description' ]
+
+    def save(self, article):
+        instance = super(TodoArticleForm, self).save(commit=False)
+
+        max_length = TodoArticle._meta.get_field('slug').max_length
+        instance.slug = orig = slugify(instance.titre)[:max_length]
+
+        for x in itertools.count(1):
+            if not TodoArticle.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.article = article
+        instance.save()
+        return instance
+
+
+class TodoArticleChangeForm(forms.ModelForm):
+    class Meta:
+        model = TodoArticle
+        fields = ['titre', 'description']
 
 class ReunionArticleForm(forms.ModelForm):
 

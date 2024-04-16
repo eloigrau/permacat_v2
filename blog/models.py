@@ -788,3 +788,17 @@ class AdresseArticle(models.Model):
         return self.titre
 
 
+class TodoArticle(models.Model):
+    titre = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=100)
+    description = models.CharField(max_length=500, blank=True, null=True)
+    date_creation = models.DateTimeField('Créé le', auto_now_add=True)
+    date_modification = models.DateTimeField('Modifié le', auto_now=True)
+    estFait = models.BooleanField(default=False)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article lié")
+
+    def __str__(self):
+        return self.titre
+
+    def get_absolute_url(self):
+        return self.article.get_absolute_url()

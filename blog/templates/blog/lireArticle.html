@@ -184,6 +184,9 @@
         {% if ateliers %}
         <a class="nav-item nav-link" href="#ateliers" data-toggle="tab"><i class="fa fa-wrench  icon-left"></i></a>
         {% endif %}
+        {% if todos %}
+        <a class="nav-item nav-link" href="#todos" data-toggle="tab"> <i class="fa fa-tasks icon-left"></i></a>
+        {% endif %}
         {% if reunions %}
         <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
         {% endif %}
@@ -407,6 +410,71 @@
                                     class="fa fa-plus"></i> Associer une réunion</a>
                         </p>
                             {% endif%}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="todos">
+            <div class="contenu atelier">
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12 col-md-8 textcenter">
+                                <h4>Todo : </h4>
+                            </div>
+                            <div class="col-sm-12 col-md-4 textcenter">
+                              <h4>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterTodoArticle' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Ajouter un Todo</a>
+                            {% endif%}
+                                </h4>
+                            </div>
+                        </div>
+                         <table class="table table-condensed sortable">
+        <thead><th>Date</th><th>Titre</th><th>Description</th><th>Fait</th>
+        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                     <th>Modifier/Supprimer</th>
+        {% endif %}
+
+        </thead>
+        <tbody>
+                        {% for todo in todos %}
+                        <tr><td>
+                            {{ todo.date_creation|date:"d/m/Y" }}
+                        </td>
+                            <td>
+                                {{ todo.titre }}
+                            </td>
+                            <td style="width:50%">
+                                {% if todo.description %}
+                                {{ todo.description }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{% url 'blog:todoArticle_toggle' slug_article=article.slug slug_todo=todo.slug %}" role="form">
+                {% csrf_token %}
+                <button class="btn {% if todo.estFait %}btn-info{% else %}btn-secondary{% endif %} btn-sm" type="submit" name="toggle_done">
+                                {{ todo.estFait|translateOuiNon }}
+                </button>
+              </form>
+                            </td>
+                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+
+                            <td><a class="btn btn-sm btn-warning textleft"
+                               href="{% url 'blog:modifierTodoArticle' slug=todo.slug%}">
+                                <i class="fa fa-edit"></i> </a>
+                                <a class="btn btn-sm btn-danger textleft"
+                               href="{% url 'blog:supprimerTodoArticle' slug_article=article.slug slug_todo=todo.slug%}"> <i
+                                    class="fa fa-times"></i> </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor%}
+        </tbody>
+    </table>
+
                     </div>
                 </div>
             </div>
@@ -787,6 +855,9 @@ function get_resultatSondage(url_tag, div_name) {
         </p>
         <p>
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier <i class="fa fa-wrench  "></i></a>
+        </p>
+        <p>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'blog:ajouterTodoArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un Todo <i class="fa fa-tasks"></i></a>
         </p>
         <p>
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion (pour défraiement) <i class="fa fa-users "></i></a>

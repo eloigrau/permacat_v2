@@ -526,6 +526,10 @@ def supprimerHitsAnciens(request):
     for hit in hit_counts:
         hit.delete()
 
+    hit_counts2 = HitCount.objects.filter(hit__isnull=True)
+    for hit in hit_counts2:
+        hit.delete()
+
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
 
 

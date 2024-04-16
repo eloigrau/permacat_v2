@@ -833,11 +833,11 @@ def swap_inscription(request, listeMail_pk, adherent_pk):
     if inscrit:
         inscrit.delete()
         action.send(adherent, verb="listeDiff_conf66_moins", action_object=listeMail, url=listeMail.get_absolute_url(),
-                     description=request.user.username + "a retiré %s de la liste : '%s'" %(adherent, listeMail.nom))
+                     description=request.user.username + " a retiré %s de la liste : '%s'" %(adherent, listeMail.nom))
     else:
         InscriptionMail.objects.create(liste_diffusion=listeMail, adherent=adherent).save()
         action.send(adherent, verb="listeDiff_conf66_plus", action_object=listeMail, url=listeMail.get_absolute_url(),
-                     description=request.user.username + "a ajouté %s dans la liste : '%s'" %(adherent, listeMail.nom))
+                     description=request.user.username + " a ajouté %s dans la liste : '%s'" %(adherent, listeMail.nom))
 
     return redirect('adherents:mesListesMails')
 
@@ -856,7 +856,7 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
         adhesion.liste_diffusion = listeDiffusion
         adhesion = form.save()
         action.send(adhesion.adherent, verb="listeDiff_conf66_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
-                     description="s'est ajouté dans la liste : '%s'" %(listeDiffusion.nom))
+                     description=request.user.username + " a ajouté %s dans la liste : '%s'" %(adhesion.adherent, listeDiffusion.nom))
 
         return redirect(listeDiffusion)
 

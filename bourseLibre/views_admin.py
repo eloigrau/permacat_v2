@@ -123,17 +123,24 @@ def abonnerAdherentsCiteAlt(request, ):
 def nettoyerFollows(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.filter(follow_object__isnull=True)
-    nombre = len(follows)
+    follows = Follow.objects.all()
+    nombre = 0
+    for action in follows:
+        if not action.follow_object:
+            action.delete()
+            nombre += 1
 
     return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, })
 
 def nettoyerFollowsValide(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.filter(follow_object__isnull=True)
+    nombre = 0
+    follows = Follow.objects.all()
     for action in follows:
-        action.delete()
+        if not action.follow_object:
+            action.delete()
+            nombre += 1
 
     return render(request, 'admin/voirNettoyes.html', {'nombre': 0, })
 

@@ -432,8 +432,8 @@
                                 </h4>
                             </div>
                         </div>
-                         <table class="table table-condensed sortable">
-        <thead><th>Date</th><th>Titre</th><th>Description</th><th>Fait</th>
+                         <table class="table table-condensed sortable textcenter">
+        <thead><th>Créé le</th><th>Titre</th><th>Description</th><th>Fait ?</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
         {% endif %}
@@ -447,7 +447,7 @@
                             <td>
                                 {{ todo.titre }}
                             </td>
-                            <td style="width:50%">
+                            <td style="width:50%;  text-align:left;">
                                 {% if todo.description %}
                                 {{ todo.description }}
                                 {% endif %}
@@ -460,7 +460,7 @@
                 </button>
               </form>
                             </td>
-                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
 
                             <td><a class="btn btn-sm btn-warning textleft"
                                href="{% url 'blog:modifierTodoArticle' slug=todo.slug%}">
@@ -490,7 +490,7 @@
                           <h4>
                                 <a class="btn btn-sm  btn-success textleft"
                                   href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}"><i
-                                    class="fa fa-plus"></i> Ajouter un atelier
+                                    class="fa fa-plus"></i> Ajouter un Atelier
                                 </a>
                             </h4>
                             </div>
@@ -854,13 +854,13 @@ function get_resultatSondage(url_tag, div_name) {
           <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterSalonArticle' slug_article=article.slug%}" ><i class="fa fa-plus"></i> Ajouter un Salon de discussion <i class="fa fa-users "></i></a>
         </p>
         <p>
-            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un atelier <i class="fa fa-wrench  "></i></a>
+            <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'ateliers:ajouterAtelier_article' article_slug=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un Atelier <i class="fa fa-wrench  "></i></a>
         </p>
         <p>
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'blog:ajouterTodoArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i>  Ajouter un Todo <i class="fa fa-tasks"></i></a>
         </p>
         <p>
-          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter une réunion (pour défraiement) <i class="fa fa-users "></i></a>
+          <a class="btn btn-sm btn-block btn-info textleft textnoir" href="{% url 'blog:ajouterReunionArticle' slug_article=article.slug %}" ><i class="fa fa-plus"></i> Ajouter un déplacement (pour défraiement) <i class="fa fa-users "></i></a>
         </p>
         <p>
             <a class="btn btn-sm btn-block  btn-info textleft textnoir" href="{% url 'vote:ajouterSuffrage_article' article_slug=article.slug %}"><i class="fa fa-plus"></i>  Ajouter un sondage <i class="fa fa-paper-plane-top"></i><i class="fa fa-paper-plane"></i></a>

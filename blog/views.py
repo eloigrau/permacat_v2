@@ -1229,6 +1229,36 @@ def todoArticle_toggle(request, slug_article, slug_todo) :
 
 
 
+class ListeTodo_asso(ListView):
+    model = TodoArticle
+    context_object_name = "todoarticle_list"
+    template_name = "blog/todoarticle_list.html"
+    paginate_by = 50
+
+    def get_queryset(self):
+        params = dict(self.request.GET.items())
+        if 'asso' in self.kwargs:
+            self.asso = Asso.objects.get(abreviation=self.kwargs['asso'])
+        else:
+            self.asso = Asso.objects.get(abreviation='public')
+
+        if self.request.user.est_autorise(self.asso.abreviation):
+            qs = TodoArticle.objects.filter(Q(article__asso__abreviation=self.asso.abreviation)).distinct().order_by('date_creation')
+        else:
+            qs = TodoArticle.objects.none()
+
+        self.qs = qs
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_list'] = Choix_global.abreviationsNomsAssoEtPublic
+        context['asso_courante'] = self.asso
+        return context
+
+
+
+
 @login_required
 def voirCarteLieux(request, id_article):
     article = Article.objects.get(id=id_article)

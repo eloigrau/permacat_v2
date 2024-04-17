@@ -717,11 +717,13 @@ def get_mails(typeListe="bureau"):
     profils = Adherent.objects.all().order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
     if typeListe=="bureau":
-        return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau_conf]))
+        return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau_conf and a.email]))
     elif typeListe=="ajour":
-        return list(set([a.email for a in profils if a.get_adhesion_an(current_year)]))
+        return list(set([a.email for a in profils if a.get_adhesion_an(current_year) and a.email]))
+    elif typeListe=="anneeprecedente_pasajour":
+        return list(set([a.email for a in profils if a.get_adhesion_an(current_year-1) and not a.get_adhesion_an(current_year) and a.email]))
     elif typeListe=="pasajour":
-        return list(set([a.email for a in profils if not a.get_adhesion_an(current_year)]))
+        return list(set([a.email for a in profils if not a.get_adhesion_an(current_year) and a.email]))
 
 
 class ListeDiffusionConf_liste(ListView):
@@ -739,6 +741,7 @@ class ListeDiffusionConf_liste(ListView):
         context['actions'] = Action.objects.filter(verb__startswith="listeDiff_conf66").order_by('-timestamp')
         context['dico_ListesBase'] = {'Bureau': get_mails(typeListe="bureau"),
                                         'Adhérents à jour':get_mails(typeListe="ajour"),
+                                        "Adhérents de l'année dernière pas à jour":get_mails(typeListe="anneeprecedente_pasajour"),
                                         'Adhérents pas à jour':get_mails(typeListe="pasajour")}
 
         return context

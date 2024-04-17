@@ -17,46 +17,9 @@
     </div>
 </div>
 {% if request.user.estmembre_bureau_conf %}
-
-<script>
-function get_infos(url_tag) {
-    $.ajax({
-        url: url_tag,
-        type: "GET",
-        contentType: "application/x-www-form-urlencoded",
-        async: false,
-        data: { },
-        error: function(response, status, error_msg) {
-            console.log(error_msg);
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#listeMails").html(data);  // replace the contents of the city input with the data that came from the server
-          copyToClipboardElement($("#listeMails"));
-        }
-    });
-}
-
-</script>
 <div class="row ">
     <div class="col textcenter">
         <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusionConf_creer' %}">Ajouter une liste</a>
-
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherents_pasajour'  %}')">
-        <button type="button" class="btn btn-sm btn-primary">
-            Liste des mails des adhérents à jour
-        </button>
-    </a>
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherents_ajour' %}')">
-        <button type="button" class="btn btn-sm btn-primary">
-            Liste des mails des adhérents PAS à jour
-        </button>
-    </a>
-
-<div class="row">
-    <div class="col textcenter">
-<div id="listeMails"></div>
-    </div>
-</div>
     </div>
 </div>
 {% endif %}

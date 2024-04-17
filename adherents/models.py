@@ -61,7 +61,7 @@ class Adherent(models.Model):
         ad = self.adhesion_set.filter(date_cotisation__year=int(an))
         if ad:
             return ad[0]
-        return None
+        return Adhesion()
 
     @property
     def get_production_str(self):

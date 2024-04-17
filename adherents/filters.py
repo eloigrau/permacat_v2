@@ -39,10 +39,10 @@ class AdherentsCarteFilter(django_filters.FilterSet):
 
     def get_annee_filter(self, queryset, field_name, value):
         cotisations = Adhesion.objects.filter(date_cotisation__year__in=value)
-        return queryset.filter(adhesion__in=cotisations)
+        return queryset.filter(adhesion__in=cotisations).distinct()
 
     def get_bureau_filter(self, queryset, field_name, value):
-        membres = [p.pk for p in Salon.objects.get(slug=get_slug_salon()).getInscrits()]
+        membres = [p.pk for p in Salon.objects.get(slug=get_slug_salon()).getInscritsEtInvites()]
         return queryset.filter(pk__in=membres)
 
     def get_production_ape_filter(self, queryset, field_name, value):

@@ -1202,6 +1202,9 @@ class Salon(models.Model):
     def getInvites(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
+    def getInscritsEtInvites(self):
+        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)] + [u.profil for u in InscritSalon.objects.filter(salon=self)]
+
     def getArticles(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 

@@ -326,11 +326,16 @@ def get_csv_adherents(request):
     """A view that streams a large CSV file."""
     profils = Adherent.objects.all().order_by("nom")
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
+    current_year = date.today().isocalendar()[0]
 
     csv_data = [
         ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023","MONTANT2024","MOYEN2024"),]
-    csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).moyen, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).moyen, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).moyen, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).moyen, a.get_adhesion_an(2024).montant, a.get_adhesion_an(2024).moyen) for a in profils_filtres.qs.distinct() ]
+    csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username,
+                  a.get_adhesion_an(current_year-4).montant, a.get_adhesion_an(current_year-4).moyen,
+                  a.get_adhesion_an(current_year-3).montant, a.get_adhesion_an(current_year-3).moyen,
+                  a.get_adhesion_an(current_year-2).montant, a.get_adhesion_an(current_year-2).moyen,
+                  a.get_adhesion_an(current_year-1).montant, a.get_adhesion_an(current_year-1).moyen,
+                  a.get_adhesion_an(current_year).montant, a.get_adhesion_an(current_year).moyen) for a in profils_filtres.qs.distinct() ]
 
     return write_csv_data(request, csv_data)
 
@@ -342,7 +347,7 @@ def get_csv_adherents_pasajour(request):
     current_year = date.today().isocalendar()[0]
 
     csv_data = [ ("Email"),]
-    csv_data += list(set([(a.email, ) for a in profils if not a.get_adhesion_an(current_year)]))
+    csv_data += list(set([(a.email, ) for a in profils if not a.get_adhesion_an(current_year).montant]))
 
     return write_csv_data(request, csv_data)
 
@@ -719,11 +724,11 @@ def get_mails(typeListe="bureau"):
     if typeListe=="bureau":
         return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau_conf and a.email]))
     elif typeListe=="ajour":
-        return list(set([a.email for a in profils if a.get_adhesion_an(current_year) and a.email]))
+        return list(set([a.email for a in profils if a.get_adhesion_an(current_year).montant and a.email]))
     elif typeListe=="anneeprecedente_pasajour":
-        return list(set([a.email for a in profils if a.get_adhesion_an(current_year-1) and not a.get_adhesion_an(current_year) and a.email]))
+        return list(set([a.email for a in profils if a.get_adhesion_an(current_year-1).montant and not a.get_adhesion_an(current_year).montant and a.email]))
     elif typeListe=="pasajour":
-        return list(set([a.email for a in profils if not a.get_adhesion_an(current_year) and a.email]))
+        return list(set([a.email for a in profils if not a.get_adhesion_an(current_year).montant and a.email]))
 
 
 class ListeDiffusionConf_liste(ListView):

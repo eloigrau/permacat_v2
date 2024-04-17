@@ -20,6 +20,7 @@ from .filters import AdherentsCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
 from actstream.models import Action
+from datetime import date, timedelta, datetime
 
 
 from django.http import HttpResponse
@@ -327,12 +328,23 @@ def get_csv_adherents(request):
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
 
     csv_data = [
-        ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
+        ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023","MONTANT2024","MOYEN2024"),]
     csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).moyen, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).moyen, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).moyen, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).moyen) for a in profils_filtres.qs ]
+          a.get_adhesion_an(2020).moyen, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).moyen, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).moyen, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).moyen, a.get_adhesion_an(2024).montant, a.get_adhesion_an(2024).moyen) for a in profils_filtres.qs.distinct() ]
 
     return write_csv_data(request, csv_data)
 
+login_required
+@user_passes_test(is_membre_bureau)
+def get_csv_adherents_pasajour(request):
+    """A view that streams a large CSV file."""
+    profils = Adherent.objects.all().order_by("nom").distinct()
+    current_year = date.today().isocalendar()[0]
+
+    csv_data = [ ("Email"),]
+    csv_data += list(set([(a.email, ) for a in profils if not a.get_adhesion_an(current_year)]))
+
+    return write_csv_data(request, csv_data)
 
 login_required
 @user_passes_test(is_membre_bureau)
@@ -597,7 +609,7 @@ def import_adherents_ggl(request):
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 
 
-login_required
+@login_required
 @user_passes_test(is_membre_bureau)
 def getMails(request):
     profils = Adherent.objects.all()
@@ -606,7 +618,7 @@ def getMails(request):
     return render(request, 'adherents/template_mails.html', {'qs': profils_filtres.qs})
 
 
-login_required
+@login_required
 @user_passes_test(is_membre_bureau)
 def get_infos_adherent(request, type_info="email"):
     profils = Adherent.objects.all()
@@ -621,7 +633,7 @@ def get_infos_adherent(request, type_info="email"):
     return render(request, template, {'qs': profils_filtres.qs})
 
 
-login_required
+@login_required
 def get_infos_listeMail(request, listeMail_pk, type_info="email"):
     liste = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
     if type_info == "email":
@@ -631,6 +643,18 @@ def get_infos_listeMail(request, listeMail_pk, type_info="email"):
 
     return render(request, 'adherents/template_liste.html', {'liste': mails})
 
+@login_required
+def get_infos_adherents_pasajour(request,):
+
+    return render(request, 'adherents/template_liste.html', {'liste': mails})
+
+@login_required
+def get_infos_adherents_ajour(request,):
+    profils = Adherent.objects.all().order_by("nom").distinct()
+    current_year = date.today().isocalendar()[0]
+    mails = list(set([a.email for a in profils if a.get_adhesion_an(current_year)]))
+
+    return render(request, 'adherents/template_liste.html', {'liste': mails})
 
 class ListeInscriptionsMails(UserPassesTestMixin, ListView):
     model = InscriptionMail
@@ -689,6 +713,16 @@ class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         return is_membre_bureau(self.request.user)
 
+def get_mails(typeListe="bureau"):
+    profils = Adherent.objects.all().order_by("nom").distinct()
+    current_year = date.today().isocalendar()[0]
+    if typeListe=="bureau":
+        return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau_conf]))
+    elif typeListe=="ajour":
+        return list(set([a.email for a in profils if a.get_adhesion_an(current_year)]))
+    elif typeListe=="pasajour":
+        return list(set([a.email for a in profils if not a.get_adhesion_an(current_year)]))
+
 
 class ListeDiffusionConf_liste(ListView):
     model = ListeDiffusionConf
@@ -703,8 +737,11 @@ class ListeDiffusionConf_liste(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['actions'] = Action.objects.filter(verb__startswith="listeDiff_conf66").order_by('-timestamp')
-        return context
+        context['dico_ListesBase'] = {'Bureau': get_mails(typeListe="bureau"),
+                                        'Adhérents à jour':get_mails(typeListe="ajour"),
+                                        'Adhérents pas à jour':get_mails(typeListe="pasajour")}
 
+        return context
 
 class ListeDiffusionConfDetailView(DetailView):
     model = ListeDiffusionConf

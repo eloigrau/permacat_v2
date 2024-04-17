@@ -48,8 +48,8 @@ class ListeAdherents(ListView):
         else:
             qs = Adherent.objects.all().order_by("nom")
         profils_filtres = AdherentsCarteFilter(self.request.GET, queryset=qs)
-        self.qs = profils_filtres.qs
-        return profils_filtres.qs
+        self.qs = profils_filtres.qs.distinct()
+        return self.qs
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

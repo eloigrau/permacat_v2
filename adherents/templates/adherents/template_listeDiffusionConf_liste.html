@@ -11,7 +11,7 @@
 {% for liste in listesDiffusion %}
             <tr>
                 {% with liste.get_liste_inscriptions as adherents %}
-                <td><a href="{{liste.get_absolute_url}}"> {{liste.nom}}({{adherents|length}})</a></td>
+                <td><a href="{{liste.get_absolute_url}}"> {{liste.nom}} ({{adherents|length}})</a></td>
                 <td>
                     {%for m in adherents %}
                         {{m.adherent.get_email}} {% if not forloop.last %}, {% endif%}

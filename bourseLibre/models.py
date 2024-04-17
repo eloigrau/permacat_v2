@@ -445,7 +445,8 @@ class Profil(AbstractUser):
     def estmembre_bureau(self, asso_abreviation):
         if not self.is_anonymous:
             if asso_abreviation == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
-                return InscritSalon.objects.filter(salon=Salon.objects.filter(slug="conf66_bureau_2023")[0], profil=self).exists()
+                salon = Salon.objects.get(slug="conf66_bureau_2023")
+                return salon.est_autorise(self)
 
         return False
 

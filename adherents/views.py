@@ -741,8 +741,8 @@ class ListeDiffusionConf_liste(ListView):
         context['actions'] = Action.objects.filter(verb__startswith="listeDiff_conf66").order_by('-timestamp')
         context['dico_ListesBase'] = {'Bureau': get_mails(typeListe="bureau"),
                                         'Adhérents à jour':get_mails(typeListe="ajour"),
-                                        "Adhérents de l'année dernière pas à jour":get_mails(typeListe="anneeprecedente_pasajour"),
-                                        'Adhérents pas à jour':get_mails(typeListe="pasajour")}
+                                        "Adhérents de l'année dernière pas à jour de cotisation":get_mails(typeListe="anneeprecedente_pasajour"),
+                                        'Adhérents (depuis 2021) pas à jour de cotisation':get_mails(typeListe="pasajour")}
 
         return context
 

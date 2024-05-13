@@ -14,6 +14,8 @@
 <div class="row titre_adherents">
     <div class="col textcenter">
         <h3>Les Listes de diffusion par Mail </h3>
+
+        <a class="btn btn-primary"   href="{% url 'adherents:mesListesMails' %}">Voir mes abonnements</a>
     </div>
 </div>
 {% if request.user.estmembre_bureau_conf %}

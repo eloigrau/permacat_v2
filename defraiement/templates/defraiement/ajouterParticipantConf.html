@@ -1,0 +1,48 @@
+{% extends 'base_defraiement.html' %}
+{% block headerDocument%}
+{% load leaflet_tags %}
+{% load static %}
+{% load staticfiles %}
+{% endblock %}
+{% block header %}
+{{ form.media }}
+{% leaflet_js %}
+{% leaflet_css %}
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{%endblock%}
+
+{% block subtitle %}
+<div class="row justify-content-center">
+	<div class="col col-md-12 textcenter"><h3>Ajouter un adhérent de la Conf66 au module de défraiement</h3>
+	</div>
+
+</div>
+{% endblock  %}
+{% block content %}
+{% if error_message %}
+<p>
+	<strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+{% if asso_courante.abreviation == "conf66" %}
+    <a href="{% url 'defraiement:ajouterParticipantConf66' %}">
+    <button type="button" class="btn btn-success" >
+        <i class="fa fa-plus"></i> Ajouter un adhérent de la Conf
+    </button>
+    </a>&ensp;
+{% endif %}
+</div></div>
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+<form method="post">
+  {% csrf_token %}
+    <p>Nom du participant : </p>
+ {% include 'form_template2.html' with form=form %}
+  <button type="submit" name="gpsbtn"  class="btn btn-primary">Valider le participant</button>
+</form>
+</div>
+</div>
+{% endblock %}

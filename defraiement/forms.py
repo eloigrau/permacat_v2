@@ -7,6 +7,7 @@ from photologue.models import Album
 from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion
 from django.core.exceptions import ValidationError
 from bourseLibre.utils import slugify_pcat
+from adherents.models import Adherent
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -187,3 +188,9 @@ class FormForm(forms.Form):
     #f = MultiExampleField()
     f = MultiBoolField()
 
+
+class ChoixAdherentConf(forms.Form):
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Adhérent", )
+
+    class Meta:
+        fields = ['adherent']

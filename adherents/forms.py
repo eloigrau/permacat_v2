@@ -32,6 +32,8 @@ class AdhesionForm_adherent(forms.ModelForm):
                        }),
 
         }
+
+
 class AdherentForm(forms.ModelForm):
     rue = forms.CharField(label="Rue", required=False)
     code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)

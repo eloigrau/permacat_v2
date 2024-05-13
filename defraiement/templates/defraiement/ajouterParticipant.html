@@ -14,7 +14,8 @@
 
 {% block subtitle %}
 <div class="row justify-content-center">
-	<div class="col col-md-12 textcenter"><h3>Ajouter un participant </h3>
+	<div class="col col-md-12 textcenter"><h3>Ajouter un participant  </h3>
+        <p>à la liste des participants pour le défraiement</p>
 	</div>
 
 </div>
@@ -25,6 +26,16 @@
 	<strong>{{ error_message }}</strong>
 </p>
 {% endif %}
+<div class="row justify-content-sm-center">
+<div class="col-sm-12 col-md-10 col-lg-9 text-center">
+{% if asso_courante.abreviation == "conf66" %}
+    <a href="{% url 'defraiement:ajouterParticipantConf66' %}">
+    <button type="button" class="btn btn-success" >
+        <i class="fa fa-plus"></i> Ajouter un adhérent de la Conf
+    </button>
+    </a>&ensp;
+{% endif %}
+</div></div>
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
 <form method="post">

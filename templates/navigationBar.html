@@ -488,15 +488,17 @@
                                             <li><a class="dropdown-item"
                                                    href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
                                                     class='fa fa-file iconleft '></i> Documents</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}"> <i class="fa fa-envelope iconleft" title="messages privés"></i> Mes Abonnements
-                                        Mails</a>
-                                      </li>
+
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusionConf_liste' %}"><i
                                                             class='fa fa-arrow-right iconleft'></i> Listes de mails</a></li>
                                     {% if request.user.estmembre_bureau_conf %}
                                     <li class="metanavbar">Espace Admin :</li>
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> <i
                                                             class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
+
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'defraiement:reunions_asso' asso_slug='conf66' %}"><i
+                                            class='fa fa-comments iconleft'></i> Defraiement </a></li>
                                     {% endif %}
                                     {% endif %}
                                 </ul>

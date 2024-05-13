@@ -10,7 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
 from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, \
-    ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm
+    ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm, \
+    ChoixAdherentConf
 from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 from datetime import datetime
@@ -21,6 +22,7 @@ from django.http import HttpResponse
 @login_required
 def lireReunion(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
+    request.session['reunion_courante_url'] = reunion.get_absolute_url()
     if not reunion.est_autorise(request.user):
         return render(request, 'notMembre.html', {"asso": str(reunion.asso)})
 
@@ -290,9 +292,24 @@ def ajouterParticipant(request, asso_slug):
         adresse = form_adresse2.save()
         part = form.save(adresse, asso)
 
-        return redirect(part.get_absolute_url())
+        return redirect(request.session.get('reunion_courante_url'))
 
-    return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2 }) # 'form_adresse':form_adresse,
+    return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2, "asso_courante":asso }) # 'form_adresse':form_adresse,
+
+
+@login_required
+def ajouterParticipantConf66(request):
+    form = ChoixAdherentConf(request.POST or None, )
+    if form.is_valid():
+        adherent = form.cleaned_data["adherent"]
+        part = ParticipantReunion.objects.create(
+            asso=Asso.objects.get(abreviation="conf66"),
+            nom=adherent.nom + " " + adherent.prenom,
+            adresse=adherent.adresse)
+
+        return redirect(request.session.get('reunion_courante_url'))
+
+    return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
 
 
 @login_required
@@ -316,7 +333,7 @@ def ajouterParticipantReunion(request, slug_reunion):
         reunion.save()
         return redirect(reunion)
 
-    return render(request, 'defraiement/ajouterParticipantReunion.html', {'reunion':reunion, 'form': form, 'form_choice':form_choice,  'form_adresse2':form_adresse2 }) ##'form_adresse':form_adresse,
+    return render(request, 'defraiement/ajouterParticipantReunion.html', {'reunion':reunion, 'form': form, 'form_choice':form_choice,  'form_adresse2':form_adresse2, 'asso_courante':asso }) ##'form_adresse':form_adresse,
 
 
 @login_required

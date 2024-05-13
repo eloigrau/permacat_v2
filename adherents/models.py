@@ -1,6 +1,6 @@
 
 from django.db import models
-from bourseLibre.models import Profil, Adresse
+from bourseLibre.models import Profil, Adresse, Asso
 from blog.models import Article
 import simplejson
 from django.urls import reverse
@@ -19,6 +19,7 @@ class Adherent(models.Model):
                               choices=CHOIX_STATUTS, default='0',)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     email = models.EmailField(verbose_name="Email", blank=True)
+    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         unique_together = ('nom', 'prenom',)
@@ -100,6 +101,7 @@ class Adhesion(models.Model):
     moyen = models.CharField(max_length=50, blank=False, verbose_name="Moyen de paiement",
                              choices=CHOIX_MOYEN, )
     detail = models.TextField(null=True, blank=True)
+    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.date_cotisation.strftime('%Y')) + ": " + str(self.montant) + " euros (" + str(self.moyen) +")"

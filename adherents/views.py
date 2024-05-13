@@ -15,7 +15,7 @@ from bourseLibre.settings.production import LOCALL
 from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, \
     InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent
 from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
-from bourseLibre.models import Adresse, Profil
+from bourseLibre.models import Adresse, Profil, Asso
 from .filters import AdherentsCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
@@ -43,6 +43,7 @@ class ListeAdherents(ListView):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
+        #self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
         if "lettre" in self.request.GET:
             qs = Adherent.objects.filter(nom__istartswith=self.request.GET["lettre"]).order_by("nom")
         else:

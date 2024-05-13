@@ -511,11 +511,6 @@
 
                         <ul class="dropdown-menu dropdown-menu1 nav8-dropdown" aria-labelledby="navbarDropdownMenuLink">
 
-                            <li><a class="dropdown-item dropdownmenu_plus" href="{% url  'blog:acceuil'  %}"> <i
-                                    class='fa fa-comments iconleft'></i>Forum</a></li>
-                            <li><a class="dropdown-item dropdownmenu_plus" href="{% url 'cal:agenda' %}"> <i
-                                    class='fa fa-calendar iconleft'></i>Agenda</a></li>
-                            <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"> <i
                                     class='fa fa-compass iconleft'></i>Carte / Annuaire </a></li>
                             <li><a class="dropdown-item" href="{% url 'jardins:accueil' %}"> <i
@@ -686,6 +681,11 @@
 
                         </ul>
                     </li>
+
+                    <li class="nav-item nav2"><a class="nav-link" href="{% url  'blog:acceuil'  %}"> <i
+                            class='fa fa-comments iconleft'></i>Forum</a></li>
+                    <li class="nav-item nav3"><a class="nav-link" href="{% url 'cal:agenda' %}"> <i
+                            class='fa fa-calendar iconleft'></i>Agenda</a></li>
                     {% comment %}
                     <li class="nav-item nav2"><a class="nav-link" href="{% url 'blog:acceuil' %}"> Forum</a></li>
                     <li class="nav-item nav1"><a class="nav-link" href="{% url 'marche' %}"> Annonces</a></li>

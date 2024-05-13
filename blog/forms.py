@@ -545,6 +545,11 @@ class DocumentPartageArticleForm(forms.ModelForm):
         instance.save()
         return instance
 
+class DocumentPartageArticleModifierForm(forms.ModelForm):
+    class Meta:
+        model = DocumentPartage
+        fields = ['nom', ]
+
 class TodoArticleForm(forms.ModelForm):
     class Meta:
         model = TodoArticle

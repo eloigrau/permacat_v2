@@ -83,6 +83,7 @@ urlpatterns = [
     url(r'voirAdresseArticle/(?P<id_adresseArticle>[0-9]+)$', views.voirAdresseArticle, name='voirAdresseArticle'),
     url(r'ajouterDocumentPartage/(?P<slug_article>[-\w]+)$', views.ajouterDocumentPartage, name='ajouterDocumentPartage'),
     url(r'supprimerDocumentPartage/(?P<slug_docpartage>[-\w]+)$', views.supprimerDocumentPartage, name='supprimerDocumentPartage'),
+    url(r'modifierDocumentPartage/(?P<slug_docpartage>[-\w]+)$', views.modifierDocumentPartage, name='modifierDocumentPartage'),
     url(r'ajouterReunionArticle/(?P<slug_article>[-\w]+)$', views.ajouterReunionArticle, name='ajouterReunionArticle'),
     url(r'associerReunionArticle/(?P<slug_article>[-\w]+)$', views.associerReunionArticle, name='associerReunionArticle'),
     url(r'supprimerReunionArticle/(?P<slug_reunion>[-\w]+)$', views.supprimerReunionArticle, name='supprimerReunionArticle'),

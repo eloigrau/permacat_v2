@@ -8,7 +8,7 @@ from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet,
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
-    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm
+    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -1035,6 +1035,18 @@ def supprimerDocumentPartage(request, slug_docpartage):
                 description="a supprimé le document partagé %s de l'article '%s'"%(doc.nom, article.titre))
     doc.delete()
     return redirect(article.get_absolute_url())
+
+@login_required
+def modifierDocumentPartage(request, slug_docpartage):
+    doc = DocumentPartage.objects.get(slug=slug_docpartage)
+    article = doc.article
+    form = DocumentPartageArticleModifierForm(request.POST or None, instance=doc)
+
+    if form.is_valid():
+        form.save()
+        return redirect(article)
+
+    return render(request, 'blog/modifierDocumentPartage.html', {'form': form, "article": article})
 
 
 @login_required

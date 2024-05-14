@@ -77,8 +77,6 @@ h6 {
      font-weight: normal;
      line-height: normal;
      color: #111111;
-     margin: 0;
-     padding: 0;
 }
 
 h1 {
@@ -140,7 +138,7 @@ ol {
 }
 
 p {
-     margin: 0px;
+     margin: 1px;
      font-weight: 500;
      font-size: 15px;
      line-height: 24px;

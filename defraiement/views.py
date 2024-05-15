@@ -59,12 +59,12 @@ def getRecapitulatif_km(request, reunions, asso, export=False):
     lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
-
-        if export:
-            part = [p.nom, ] + distances + [sum(distances), ]
-        else:
-            part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [round(sum(distances), 2) , ]
-        lignes.append(part)
+        if distances > 0:
+            if export:
+                part = [p.nom, ] + distances + [sum(distances), ]
+            else:
+                part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [round(sum(distances), 2) , ]
+            lignes.append(part)
     distancesTotales = [round(r.getDistanceTotale, 2) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [round(sum(distancesTotales), 2), ])
     return entete, lignes
@@ -86,12 +86,12 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, 
         coef_distanceTotale = float(prixMax) / sum(distancesTotales)
     for p in participants:
         distances = [int(p.getDistance_route_allerretour(r) * coef_distanceTotale + 0.5) if p in r.participants.all() else 0 for r in reunions ]
-
-        if export:
-            part = [p.nom, ] + distances + [sum(distances), ]
-        else:
-            part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [sum(distances), ]
-        lignes.append(part)
+        if distances > 0:
+            if export:
+                part = [p.nom, ] + distances + [sum(distances), ]
+            else:
+                part = ["<a href=" + p.get_absolute_url() + ">" +p.nom+"</a>", ] + distances + [sum(distances), ]
+            lignes.append(part)
     distancesTotales = [int(r.getDistanceTotale * coef_distanceTotale + 0.5) for r in reunions]
     lignes.append(["Total", ] + distancesTotales + [sum(distancesTotales), ])
     lignes.append(["prix max : " + str(prixMax), "bareme kilometrique max : " + str(tarifKilometrique),

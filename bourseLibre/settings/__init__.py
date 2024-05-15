@@ -50,7 +50,7 @@ print('LOCALL : ' + str(LOCALL))
 
 #SECURE_SSL_REDIRECT = False
 #SESSION_COOKIE_SECURE = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE=False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #SECURE_HSTS_SECONDS = 518400
 #SECURE_CONTENT_TYPE_NOSNIFF = True
 #SECURE_BROWSER_XSS_FILTER = True
@@ -69,7 +69,7 @@ if not LOCALL:
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_COOKIE_PATH = '/;HttpOnly'
 
-ALLOWED_HOSTS = ['www.perma.cat', 'perma.cat']
+ALLOWED_HOSTS = ['www.perma.cat', 'perma.cat', 'permacat.majopi.fr']
 #print("local" + str(LOCALL))
 # Application definition
 

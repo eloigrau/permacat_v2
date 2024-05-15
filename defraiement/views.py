@@ -59,7 +59,7 @@ def getRecapitulatif_km(request, reunions, asso, export=False):
     lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
-        if distances > 0:
+        if sum(distances) > 0:
             if export:
                 part = [p.nom, ] + distances + [sum(distances), ]
             else:
@@ -86,7 +86,7 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, 
         coef_distanceTotale = float(prixMax) / sum(distancesTotales)
     for p in participants:
         distances = [int(p.getDistance_route_allerretour(r) * coef_distanceTotale + 0.5) if p in r.participants.all() else 0 for r in reunions ]
-        if distances > 0:
+        if sum(distances) > 0:
             if export:
                 part = [p.nom, ] + distances + [sum(distances), ]
             else:

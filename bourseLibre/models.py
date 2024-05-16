@@ -70,7 +70,6 @@ class Adresse(models.Model):
     def get_url_map(self):
         return reverse('voirLieu',  kwargs={'id_lieu': self.id})
 
-
     def __str__(self):
         if self.commune:
             return "("+str(self.id)+") " + str(self.commune)

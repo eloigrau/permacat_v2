@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
   <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
  <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+ <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
 {%endblock%}
 {% block title %} - Carte - {{titre}}
 {% endblock %}
@@ -33,20 +34,12 @@
     <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
       <script type="text/javascript">
         function map_init_basic (map, options) {
-          var greenIcon = L.icon({
-              iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
-              shadowUrl: '{% static 'img/marker-shadow.png' %}',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-        });
         var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
             try{
                 var lat = {{lieu.adresse.latitude|to_numeric}};
                 var lon = {{lieu.adresse.longitude|to_numeric}};
                 {% block markers %}
-                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <a href="{{ lieu.get_url_map }}"><b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b></a>');
+                  var marker = L.marker([lat, lon], {icon: getIconFromType(L, '{{lieu.type_marqueur}}')}).bindPopup(' <a href="{{ lieu.get_url_map }}"><b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b></a>');
                   markers.addLayer(marker);
                 {% endblock %}
             }
@@ -68,6 +61,11 @@
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8" >
     <table class="table table-condensed ">
+        <thead>
+        <th class=" textcenter">Titre</th>
+        <th class=" textcenter">Adresse</th>
+        <th></th>
+        </thead>
         <tbody>
             <tr>
                 <td class="proprieteJardin">
@@ -80,13 +78,17 @@
                     <a href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
                 </td>
             </tr>
+        {% if lieu.infos %}
+            <tr><td>Description : </td>
+                <td colspan="2">
+                <td>
+                        {{lieu.infos|safe}}
+                </td>
+                </td>
+            </tr>
+                    {% endif %}
         </tbody>
     </table>
-      <div>
-            {% if lieu.infos %}
-                {{lieu.infos|safe}}
-            {% endif %}
-      </div>
   </div>
 </div>
 {% endblock %}

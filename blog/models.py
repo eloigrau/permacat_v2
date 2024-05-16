@@ -133,6 +133,9 @@ class Choix:
         "jp": "nom_jp.webp",
         "conf66":"nom_conf66.png"
     }
+
+    type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
+
     def get_couleur(categorie):
         try:
             return Choix.couleurs_annonces[categorie]
@@ -763,6 +766,9 @@ class AdresseArticle(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 help_text="L'evenement doit etre associé à un article existant (sinon créez un article avec une date)")
     infos = models.TextField(verbose_name="Infos complémentaires", null=True, blank=True)
+    type_marqueur = models.CharField(max_length=5,
+        choices= Choix.type_marqueur,
+        default='0', verbose_name="type_marqueur")
 
     def __str__(self):
         try:
@@ -787,6 +793,12 @@ class AdresseArticle(models.Model):
             return ""
         return self.titre
 
+    @property
+    def get_marqueur(self):
+        if self.type_marqueur:
+            return Choix.nom_marqueur[self.type_marqueur]
+        else:
+            return 'greenIcon'
 
 class TodoArticle(models.Model):
     titre = models.CharField(max_length=150)

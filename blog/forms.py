@@ -510,7 +510,7 @@ class SalonArticleForm(forms.ModelForm):
 class AdresseArticleForm(forms.ModelForm):
     class Meta:
         model = AdresseArticle
-        fields = ['titre', 'infos']
+        fields = ['titre', 'type_marqueur', 'infos']
 
         widgets = {
             'infos': SummernoteWidget(),
@@ -522,6 +522,15 @@ class AdresseArticleForm(forms.ModelForm):
         instance.adresse = adresse
         instance.save()
         return instance
+
+class AdresseArticleChangeForm(forms.ModelForm):
+    class Meta:
+        model = AdresseArticle
+        fields = ['titre', 'type_marqueur', 'infos']
+
+        widgets = {
+            'infos': SummernoteWidget(),
+        }
 
 class DocumentPartageArticleForm(forms.ModelForm):
     class Meta:

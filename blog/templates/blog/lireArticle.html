@@ -580,7 +580,7 @@
                         <th>Lieu</th>
                         <th>Infos</th>
                         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                        <th>Supprimer</th>
+                        <th>Edit</th>
                         {% endif %}
 
                         </thead>
@@ -593,15 +593,41 @@
                             <td>
 
                             {% if lieu.infos %}
-                            <div class="row"><div class="col-sm-12">
-                            <a href="{{lieu.get_url_map}}">{{lieu.infos|safe}}</a>
-                            </div></div>
+                                <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  + d'infos...
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content textleft">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Nom : {{lieu.titre|safe}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       {{lieu.infos|safe}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">ok</button>
+      </div>
+    </div>
+  </div>
+</div>
                             {% endif %}
                             </td>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <td><a class="btn btn-sm btn-danger textleft"
+                            <td>
+                                <a class="btn btn-sm btn-warning textleft"
+                                   href="{% url 'blog:modifierAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}"><i
+                                    class="fa fa-edit"></i> </a>
+                                <a class="btn btn-sm btn-danger textleft"
                                    href="{% url 'blog:supprimerAdresseArticle' slug_article=article.slug  id_adresse=lieu.id %}"><i
                                     class="fa fa-times"></i> </a>
+
                             </td>
                             {% endif %}
                         </tr>

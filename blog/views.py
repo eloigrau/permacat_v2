@@ -8,7 +8,8 @@ from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet,
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
-    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm
+    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
+    AdresseArticleChangeForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -1160,7 +1161,6 @@ def voirAdresseArticle(request, id_adresseArticle):
 
 class SupprimerAdresseArticle(DeleteView):
     model = AdresseArticle
-    success_url = reverse_lazy('blog:index')
     template_name_suffix = '_supprimer'
 
     def get_object(self):
@@ -1179,6 +1179,17 @@ class SupprimerAdresseArticle(DeleteView):
         else:
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
+
+class ModifierAdresseArticle(UpdateView):
+    model = AdresseArticle
+    template_name_suffix = '_modifier'
+    form_class = AdresseArticleChangeForm
+
+    def get_object(self):
+        return AdresseArticle.objects.get(id=self.kwargs['id_adresse'])
+
+    def get_success_url(self):
+        return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
 
 @login_required
 def ajouterTodoArticle(request, slug_article):

@@ -783,6 +783,9 @@ class AdresseArticle(models.Model):
                 return "-"
 
 
+    def get_absolute_url(self):
+        return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})
+
     @property
     def get_url_map(self):
         return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})

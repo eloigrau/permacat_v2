@@ -1188,8 +1188,6 @@ class ModifierAdresseArticle(UpdateView):
     def get_object(self):
         return AdresseArticle.objects.get(id=self.kwargs['id_adresse'])
 
-    def get_success_url(self):
-        return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
 
 @login_required
 def ajouterTodoArticle(request, slug_article):

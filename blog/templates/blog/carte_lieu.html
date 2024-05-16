@@ -21,9 +21,12 @@
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
     <h4> {{titre}}</h4>
-      <a href="{{lieu.article.get_absolute_url}}">
+      <p><a href="{{lieu.get_edit_url}}">
+    <button  class="btn btn-success btn-sm"><i class="fa fa-edit"></i> Modifier le lieu </button>
+          </a></p>
+ <p>    <a href="{{lieu.article.get_absolute_url}}">
     <button  class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> Revenir à l'article </button>
-          </a>
+          </a></p>
   </div>
 </div>
 {% endblock %}

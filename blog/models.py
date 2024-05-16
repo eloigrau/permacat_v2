@@ -783,6 +783,11 @@ class AdresseArticle(models.Model):
                 return "-"
 
 
+    @property
+    def get_edit_url(self):
+        return reverse('blog:modifierAdresseArticle',  kwargs={'slug_article':self.article.slug, 'id_adresse':self.id})
+
+    @property
     def get_absolute_url(self):
         return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})
 

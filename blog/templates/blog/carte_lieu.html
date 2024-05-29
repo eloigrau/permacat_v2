@@ -20,10 +20,14 @@
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
-    <h4> {{titre}}</h4>
       <p><a href="{{lieu.get_edit_url}}">
-    <button  class="btn btn-success btn-sm"><i class="fa fa-edit"></i> Modifier le lieu </button>
-          </a></p>
+    <button  class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Modifier </button>
+          </a>
+          <a href="{{lieu.get_delete_url}}">
+    <button  class="btn btn-danger btn-sm"><i class="fa fa-delete"></i> Supprimer</button>
+          </a>
+      </p>
+    <h4> {{titre}}</h4>
  <p>    <a href="{{lieu.article.get_absolute_url}}">
     <button  class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> Revenir à l'article </button>
           </a></p>
@@ -72,7 +76,7 @@
         <tbody>
             <tr>
                 <td class="proprieteJardin">
-                    {{ lieu.get_titre }}
+                    <a href="{{ lieu.adresse.get_absolute_url }}">{{ lieu.get_titre }}</a>
                 </td>
                 <td class="nomProprieteJardin textcenter">
                     {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}

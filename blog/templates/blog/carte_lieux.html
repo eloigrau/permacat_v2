@@ -72,7 +72,7 @@
             <tr>
                 <td class="proprieteJardin">
                     {% if lieu.titre %}
-                            {{ lieu.titre }}
+                    <a href="{{ lieu.get_absolute_url }}">{{ lieu.get_titre }}</a>
                     {% endif %}
                 </td>
                 <td class="nomProprieteJardin textcenter">

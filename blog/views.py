@@ -1186,8 +1186,12 @@ class ModifierAdresseArticle(UpdateView):
     form_class = AdresseArticleChangeForm
 
     def get_object(self):
-        return AdresseArticle.objects.get(id=self.kwargs['id_adresse'])
+        self.object = AdresseArticle.objects.get(id=self.kwargs['id_adresse'])
+        return self.object
 
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.object.get_absolute_url)
 
 @login_required
 def ajouterTodoArticle(request, slug_article):

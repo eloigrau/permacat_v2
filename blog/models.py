@@ -788,6 +788,10 @@ class AdresseArticle(models.Model):
         return reverse('blog:modifierAdresseArticle',  kwargs={'slug_article':self.article.slug, 'id_adresse':self.id})
 
     @property
+    def get_delete_url(self):
+        return reverse('blog:supprimerAdresseArticle',  kwargs={'slug_article':self.article.slug, 'id_adresse':self.id})
+
+    @property
     def get_absolute_url(self):
         return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})
 

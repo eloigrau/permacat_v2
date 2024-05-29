@@ -203,7 +203,7 @@ class ModifierParticipant(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(self.object.get_success_url())
 
 # @login_required
 class ModifierReunion(UpdateView):

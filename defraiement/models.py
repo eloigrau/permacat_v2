@@ -207,7 +207,7 @@ class Distance_ParticipantReunion(models.Model):
 
     def getDistance(self):
         if self.distance:
-            return self.distance
+            return float(self.distance.replace(",", "."))
         else:
             return self.calculerDistance()
 

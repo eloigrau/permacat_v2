@@ -82,12 +82,13 @@
                 </td>
             </tr>
         {% if lieu.infos %}
-            <tr><td>Description : </td>
+            <tr>
+                <td></td>
                 <td colspan="2">
                         {{lieu.infos|safe}}
                 </td>
             </tr>
-                    {% endif %}
+            {% endif %}
         </tbody>
     </table>
   </div>

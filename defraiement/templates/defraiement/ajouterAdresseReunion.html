@@ -47,7 +47,7 @@
           if (typeof pin == "object") {
             pin.setLatLng(ev.latlng);
           } else {
-            pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true,icon: leafIcon });
+            pin = L.marker(ev.latlng,{ riseOnHover:true,draggable:true,icon: greenIcon });
             pin.addTo(map);
             pin.on('drag',function(ev) {
               $('#id_latitude').val(ev.latlng.lat);
@@ -95,7 +95,7 @@ $('.example').leafletLocationPicker({
       <hr>
 <div class="row justify-content-sm-center row_banniere_smartphone">
         <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
-        <button class="btn btn-info" id="find-me">Ma position</button><br />
+        <button class="btn btn-info" id="find-me">Utiliser ma position GPS</button><br />
         <p id="status"></p>
         <a id="map-link" target="_blank"></a>
 
@@ -139,7 +139,7 @@ function geoFindMe_2() {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
     var map = window.maps[0];
-    var marker = L.marker([latitude, longitude]).addTo(map);
+    var marker = L.marker([latitude, longitude], {icon: greenIcon}).addTo(map);
     map.panTo(new L.LatLng(latitude, longitude));
     var url = 'https://geo.api.gouv.fr/communes?lat=' + latitude + '&lon='+longitude;  // get the url of the `load_cities` view
 

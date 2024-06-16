@@ -50,12 +50,6 @@
     <div class="col-md-12 textcenter">
 		<p>
                 {{reunion.get_logo_nomgroupe_html|safe}}
-
-			{% if reunion.article %}
-                <span class="badge badge-info">
-                Article associé : <a href="{{ reunion.article.get_absolute_url}}">{{ reunion.article.titre|couperTexte:30}}</a>
-                </span>
-            {% endif %}
 		</p>
         <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil_nom' reunion.auteur.username %}">{{reunion.auteur.username}}</a>, dernière modification le {{ reunion.date_modification|date:"DATE_FORMAT" }}
 
@@ -73,7 +67,7 @@
            </button>
         </a>
         {% else %}
-            <p><b>Adresse : </b><a href="https://www.google.com/maps/search/?api=1&query={{reunion.adresse.get_adresse_str}}" target="_blank" rel="noopener noreferrer nofollow">{{ reunion.adresse.get_adresse_str}} </a>
+            <p><b>Adresse : </b><a href="{{ reunion.adresse.get_url_map }}" target="_blank" rel="noopener noreferrer nofollow">{{ reunion.adresse.get_adresse_str}} </a>
                     <a href="{% url 'defraiement:modifierAdresseReunion' slug=reunion.slug %}">
                        <button type="button" class="btn btn-s btn-success ">
                             <i class="fa fa-arrow-right"></i> Modifier l'adresse

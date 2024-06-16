@@ -27,10 +27,12 @@
       <script type="text/javascript">
 
         function map_init_basic (map, options) {
+
+
         map.panTo(new L.LatLng(42.62914, 2.49939));
 
         map.on('click', function(ev) {
-                  var leafIcon = L.icon({
+            var leafIcon = L.icon({
             iconUrl: '{% static 'img/leafgreen.png' %}',
             shadowUrl: '{% static 'img/leafshadow.png' %}',
 
@@ -84,11 +86,23 @@ $('.example').leafletLocationPicker({
   onChangeLocation: $.noop,
   mapContainer: "#yourmap"
 });
+
+
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
 </div>
       <hr>
+<div class="row justify-content-sm-center row_banniere_smartphone">
+        <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
+        <button class="btn btn-info" id="find-me">Ma position</button><br />
+        <p id="status"></p>
+        <a id="map-link" target="_blank"></a>
+
+              <hr>
+        </div>
+</div>
+
 <div class="row justify-content-sm-center">
     <p>Cliquez sur la carte ou rentrez les coordonnées GPS (latitude, longitude) :</p>
         <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
@@ -111,4 +125,49 @@ $('.example').leafletLocationPicker({
         </a>
 </div>
 </div>
+
+<script>
+
+function geoFindMe_2() {
+  const status = document.querySelector("#status");
+  const mapLink = document.querySelector("#map-link");
+
+  mapLink.href = "";
+  mapLink.textContent = "";
+
+  function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    var map = window.maps[0];
+    var marker = L.marker([latitude, longitude]).addTo(map);
+    map.panTo(new L.LatLng(latitude, longitude));
+    var url = 'https://geo.api.gouv.fr/communes?lat=' + latitude + '&lon='+longitude;  // get the url of the `load_cities` view
+
+      $('#id_latitude').val(latitude);
+      $('#id_longitude').val(longitude);
+    $.ajax({                       // initialize an AJAX request
+    url: url,                    // set the url of the request
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_commune").val(data[0].nom);  // replace the contents of the city input with the data that came from the server
+          $("#id_code_postal").val(data[0].code);  // replace the contents of the city input with the data that came from the server
+          }
+    });
+    status.textContent = "";
+    mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+    mapLink.textContent = `Latitude: ${latitude}°, Longitude: ${longitude}°`;
+  }
+
+  function error() {
+    status.textContent = "Impossible de retrouver votre position";
+  }
+
+  if (!navigator.geolocation) {
+    status.textContent = "Geolocalisation indisponible dans votre navigateur";
+  } else {
+    status.textContent = "Locating…";
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+}
+document.querySelector("#find-me").addEventListener("click", geoFindMe_2);
+</script>
 {% endblock %}

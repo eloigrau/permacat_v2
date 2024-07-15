@@ -395,7 +395,7 @@
                                 </ul>
                             </li>
 
-                            {% comment %}
+                            {% if request.user.adherent_citealt %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Cité Altruiste</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
@@ -405,7 +405,6 @@
                                            href="https://docs.google.com/spreadsheets/d/19tiVQYasscCukeNaS_fxfOwcztk4ZjE5AWR1vWlMZEw/edit#gid=1682331242"
                                            target="_blank" rel="noopener noreferrer nofollow"><i
                                             class='fa fa-asterisk iconleft'></i> Ressourcerie 66 </a></li>
-                                    {% if request.user.adherent_citealt %}
                                     <li class="divider" role="separator"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='citealt' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
@@ -422,11 +421,9 @@
                                            href="https://semestriel.framapad.org/p/citealtruiste_doctravail"
                                            target="_blank" rel="noopener noreferrer nofollow"><i
                                             class='fa fa-file iconleft'></i> Document partagé </a></li>
-                                    {% endif %}
                                 </ul>
                             </li>
-
-                            {% endcomment %}
+                            {% endif %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Viure</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">

@@ -154,8 +154,8 @@ function geoFindMe_2() {
     $.ajax({                       // initialize an AJAX request
     url: url,                    // set the url of the request
         success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#id_commune").val(data[0].nom);  // replace the contents of the city input with the data that came from the server
-          $("#id_code_postal").val(data[0].code);  // replace the contents of the city input with the data that came from the server
+              $("#id_commune").val(data[0].nom);  // replace the contents of the city input with the data that came from the server
+              $("#id_code_postal").val(data[0].code);  // replace the contents of the city input with the data that came from the server
           }
     });
     status.textContent = "";

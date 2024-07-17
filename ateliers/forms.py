@@ -98,7 +98,12 @@ class AtelierChangeForm(forms.ModelForm):
         super(AtelierChangeForm, self).__init__(*args, **kwargs)
         self.fields['description'].strip = False
         listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
-        listeChoix.insert(0, (0, kwargs["instance"].referent))
+        try:
+            nom = kwargs["instance"].referent
+            ref = Profil.objects.get(username=nom)
+            listeChoix.insert(0, (ref.id, ref.username))
+        except:
+            pass
         self.fields['referent'].choices = listeChoix
 
     def save(self):

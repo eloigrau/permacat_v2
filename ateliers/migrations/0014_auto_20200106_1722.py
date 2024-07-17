@@ -18,11 +18,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='atelier',
-            name='dernierMessage',
-            field=models.CharField(blank=True, default=None, help_text='Heure prévue (hh:mm)', max_length=100, null=True),
-        ),
-        migrations.AlterField(
-            model_name='atelier',
             name='heure_atelier',
             field=models.TimeField(blank=True, default='17:00', help_text='(hh:mm)', null=True, verbose_name='Heure prévue'),
         ),

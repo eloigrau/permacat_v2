@@ -37,4 +37,5 @@ urlpatterns = [
 
     url(r'^suivre_ateliers/$', views.suivre_ateliers, name='suivre_ateliers'),
     url(r'^copierAteliers/$', views.copierAteliers, name='copierAteliers'),
+    url(r'^copierAteliers_inverse/$', views.copierAteliers_inverse, name='copierAteliers_inverse'),
 ]

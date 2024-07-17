@@ -10,9 +10,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='atelier',
-            name='date_dernierMessage',
-            field=models.DateTimeField(verbose_name='Date du dernier message'),
-        ),
     ]

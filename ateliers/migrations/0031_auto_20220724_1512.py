@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
             field=models.TimeField(blank=True, default='17:00', help_text='Horaire de départ (hh:mm)', null=True, verbose_name='Heure de début'),
         ),
 
-        migrations.RunPython(combine_names, ),
+        #migrations.RunPython(combine_names, ),
         migrations.RemoveField(
             model_name='atelier',
             name='duree_prevue',

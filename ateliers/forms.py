@@ -78,20 +78,20 @@ class AtelierChangeForm(forms.ModelForm):
     referent = forms.ChoiceField(label='Référent(.e) atelier')
 
     class Meta:
-        model = Atelier #'article',
+        model = Atelier
         fields = [ 'titre', 'statut', 'asso', 'categorie', 'referent', 'description', 'materiel','start_time',  'heure_atelier', 'heure_atelier_fin', 'tarif_par_personne', 'nbMaxInscriptions', 'estArchive' ]
-        # widgets = {
-        #     'description': SummernoteWidget(),
-        #     'materiel': SummernoteWidget(),
-        #     'outils': SummernoteWidget(),
-        #     'start_time': forms.DateInput(
-        #         format=('%Y-%m-%d'),
-        #         attrs={'class': 'form-control',
-        #                'type': 'date'
-        #                }),
-        #     'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-        #     'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-        # }
+        widgets = {
+            'description': SummernoteWidget(),
+            'materiel': SummernoteWidget(),
+            'outils': SummernoteWidget(),
+            'start_time': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+            'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+        }
 
 
     def __init__(self, *args, **kwargs):

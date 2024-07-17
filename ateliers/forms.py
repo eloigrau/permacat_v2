@@ -75,45 +75,44 @@ class AtelierForm(forms.ModelForm):
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
 
 class AtelierChangeForm(forms.ModelForm):
-    #referent = forms.ChoiceField(label='Référent(.e) atelier')
+    referent = forms.ChoiceField(label='Référent(.e) atelier')
 
     class Meta:
         model = Atelier
-        fields = [ 'titre', 'statut', 'asso', 'categorie', 'article', 'referent', 'description', 'materiel','start_time',  'heure_atelier', 'heure_atelier_fin', 'tarif_par_personne', 'nbMaxInscriptions', 'estArchive' ]
-        widgets = {
-            'description': SummernoteWidget(),
-            'materiel': SummernoteWidget(),
-            'outils': SummernoteWidget(),
-            'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-        }
+        fields = [ 'titre', 'statut', 'asso', 'categorie', ]#'article', 'referent', 'description', 'materiel','start_time',  'heure_atelier', 'heure_atelier_fin', 'tarif_par_personne', 'nbMaxInscriptions', 'estArchive' ]
+        # widgets = {
+        #     'description': SummernoteWidget(),
+        #     'materiel': SummernoteWidget(),
+        #     'outils': SummernoteWidget(),
+        #     'start_time': forms.DateInput(
+        #         format=('%Y-%m-%d'),
+        #         attrs={'class': 'form-control',
+        #                'type': 'date'
+        #                }),
+        #     'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+        #     'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+        # }
 
 
     def __init__(self, *args, **kwargs):
         super(AtelierChangeForm, self).__init__(*args, **kwargs)
-        self.fields['description'].strip = False
-        # listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
-        # try:
-        #     nom = kwargs["instance"].referent
-        #     ref = Profil.objects.get(username=nom)
-        #     listeChoix.insert(0, (ref.id, ref.username))
-        # except:
-        #     pass
-        # self.fields['referent'].choices = listeChoix
+        listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
+        try:
+            nom = kwargs["instance"].referent
+            ref = Profil.objects.get(username=nom)
+            listeChoix.insert(0, (ref.id, ref.username))
+        except:
+            pass
+        self.fields['referent'].choices = listeChoix
 
     def save(self):
         instance = super(AtelierChangeForm, self).save(commit=False)
-        # try:
-        #     referent = int(self.cleaned_data['referent'])
-        #     instance.referent = dict(self.fields['referent'].choices)[referent].username
-        # except:
-        #     instance.referent = dict(self.fields['referent'].choices)[referent]
-        #     pass
+        try:
+            referent = int(self.cleaned_data['referent'])
+            instance.referent = dict(self.fields['referent'].choices)[referent].username
+        except:
+            instance.referent = dict(self.fields['referent'].choices)[referent]
+            pass
         instance.save()
         return instance
 

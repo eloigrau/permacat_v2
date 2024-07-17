@@ -11,19 +11,19 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='atelier',
-            name='date_atelier',
-            field=models.DateField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='Date prévue'),
-        ),
-        migrations.AlterField(
-            model_name='atelier',
-            name='heure_atelier',
-            field=models.TimeField(blank=True, default=django.utils.timezone.now, help_text='Heure prévue', null=True, verbose_name='Heure prévue'),
-        ),
-        migrations.AlterField(
-            model_name='atelier',
-            name='titre',
-            field=models.CharField(max_length=120, verbose_name="Titre de l'atelier"),
-        ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='date_atelier',
+        #     field=models.DateField(blank=True, default=django.utils.timezone.now, null=True, verbose_name='Date prévue'),
+        # ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='heure_atelier',
+        #     field=models.TimeField(blank=True, default=django.utils.timezone.now, help_text='Heure prévue', null=True, verbose_name='Heure prévue'),
+        # ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='titre',
+        #     field=models.CharField(max_length=120, verbose_name="Titre de l'atelier"),
+        # ),
     ]

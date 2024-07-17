@@ -7,7 +7,6 @@ from bourseLibre.models import Asso
 from bourseLibre.views import testIsMembreAsso
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
 from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, \
     ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm, \
@@ -267,8 +266,11 @@ class SupprimerParticipant(DeleteAccess, DeleteView):
     template_name_suffix = '_supprimer'
 
     def get_object(self):
+        self.asso_abrev = self.kwargs['asso_abrev']
         return ParticipantReunion.objects.get(id=self.kwargs['id'])
 
+    def get_success_url(self):
+        return reverse('defraiement:participants', kwargs={'asso_slug':self.asso_abrev})
 
 class SupprimerReunion(DeleteAccess, DeleteView):
     model = Reunion

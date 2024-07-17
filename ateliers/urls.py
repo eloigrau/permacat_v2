@@ -36,4 +36,5 @@ urlpatterns = [
     url(r'^ajouterAtelier/$', login_required(views.ajouterAtelier), name='ajouterAtelier'),
 
     url(r'^suivre_ateliers/$', views.suivre_ateliers, name='suivre_ateliers'),
+    url(r'^copierAteliers/$', views.copierAteliers, name='copierAteliers'),
 ]

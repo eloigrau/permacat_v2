@@ -12,7 +12,7 @@
                  &nbsp;Modifier
                </button></a>
             </div>
-				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerParticipant' id=part.id %}{% endif %}">
+				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerParticipant' asso_abrev=asso_courante.abreviation id=part.id  %}{% endif %}">
                <button type="button" class="btn btn-sm btn-danger">
                  &nbsp;Supprimer
                </button></a>

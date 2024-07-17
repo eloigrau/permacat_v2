@@ -695,7 +695,6 @@ class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
     model = InscriptionMail
     template_name_suffix = '_supprimer'
 
-
     def get_object(self):
         ad = InscriptionMail.objects.get(pk=self.kwargs['pk'])
         self.listeMail = ad.liste_diffusion

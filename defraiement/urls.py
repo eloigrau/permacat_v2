@@ -46,7 +46,7 @@ urlpatterns = [
         login_required(views.ModifierDistance_ParticipantReunion.as_view(), login_url='/auth/login/'), name='modifierTrajet'),
     path(r'modifierParticipantReunion/<int:id>', views.modifierParticipantReunion, name='modifierParticipantReunion'),
 
-    path(r'supprimerParticipant/<int:id>',
+    path(r'supprimerParticipant/<str:asso_abrev>/<int:id>',
         login_required(views.SupprimerParticipant.as_view(), login_url='/auth/login/'), name='supprimerParticipant'),
 
     path(r'ajouterParticipantReunion/<str:slug_reunion>', views.ajouterParticipantReunion, name='ajouterParticipantReunion'),

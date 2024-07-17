@@ -4,6 +4,7 @@
 {% load fontawesome %}
 {% load hitcount_tags %}
 {% load app_filters %}
+{% load qr_code %}
 
 {% block subtitle %}
 
@@ -67,8 +68,9 @@
 
 	<div class="anchor_blank" id="idTitreAtelier"></div>
     <div class="row titre_atelier" style="background-color:{{atelier.atelier.get_couleur}};margin-bottom:5px;">
-        <div class="col textcenter" >
-              <h2> Atelier : {{ atelier.titre }}</h2>
+        <div class="col textcenter" ><h2> Atelier : {{ atelier.titre }}</h2>
+
+
         </div>
     </div>
  	<div class="row">
@@ -235,6 +237,14 @@
 					</td>
 				</tr>
 					{% endif %}
+				<tr>
+					<td class="nomProprieteAtelier">
+						QR code de Partage :
+					</td>
+					<td class="proprieteAtelier">
+                {% qr_from_text atelier.get_absolute_url size="T" %}
+					</td>
+				</tr>
 
 				<tr>
                      {% if user_inscrit or request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}

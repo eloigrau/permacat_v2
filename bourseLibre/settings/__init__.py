@@ -124,6 +124,7 @@ INSTALLED_APPS = [
     'exo_mentions',
     'newsletter',
     'django_social_share',
+    'qr_code',
     #'CarPool',
     #'WebUI',
      #'emoji_picker',

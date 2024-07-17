@@ -34,6 +34,7 @@ admin.sites.site_title ="Admin Permacat"
 
 urlpatterns = [
     url(r'^tinymce/', include('tinymce.urls')),
+    path('qr_code/', include('qr_code.urls', namespace="qr_code")),
     url(r'^summernote/', include('local_summernote.urls')),
     url(r'^captcha/', include('bourseLibre.captcha_local.urls')),
     url(r'^photolog/', include('photologue.urls', namespace='photologue')),

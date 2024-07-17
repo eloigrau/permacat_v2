@@ -11,14 +11,14 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='atelier',
-            name='date_atelier',
-            field=models.DateField(blank=True, default=django.utils.timezone.now, help_text='(jj/mm/an)', null=True, verbose_name='Date prévue'),
-        ),
-        migrations.AlterField(
-            model_name='atelier',
-            name='heure_atelier',
-            field=models.TimeField(blank=True, default='17:00', help_text='(hh:mm)', null=True, verbose_name='Heure prévue'),
-        ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='date_atelier',
+        #     field=models.DateField(blank=True, default=django.utils.timezone.now, help_text='(jj/mm/an)', null=True, verbose_name='Date prévue'),
+        # ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='heure_atelier',
+        #     field=models.TimeField(blank=True, default='17:00', help_text='(hh:mm)', null=True, verbose_name='Heure prévue'),
+        # ),
     ]

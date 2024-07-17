@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
             model_name='atelier',
             name='outils',
         ),
-        migrations.AlterField(
-            model_name='atelier',
-            name='heure_atelier',
-            field=models.TimeField(blank=True, default='17:00', help_text='Horaire de départ (hh:mm)', null=True, verbose_name='Heure prévue'),
-        ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='heure_atelier',
+        #     field=models.TimeField(blank=True, default='17:00', help_text='Horaire de départ (hh:mm)', null=True, verbose_name='Heure prévue'),
+        # ),
         migrations.AlterField(
             model_name='atelier',
             name='materiel',

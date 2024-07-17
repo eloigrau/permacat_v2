@@ -28,7 +28,7 @@ class AtelierForm(forms.ModelForm):
                        'type': 'date'
                        }),
             'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'duree_prevue': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
         }
 
     def save(self, request, article):

@@ -158,8 +158,6 @@ def lireAtelier(request, atelier):
         comment = form_comment.save(commit=False)
         comment.atelier = atelier
         comment.auteur_comm = request.user
-        atelier.date_dernierMessage = comment.date_creation
-        atelier.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(comment.commentaire))[:96] + "..."
         atelier.save()
         comment.save()
         url = atelier.get_absolute_url() + "#comm_"+str(comment.id)
@@ -201,7 +199,7 @@ class ListeAteliers(ListView):
         if "ordreTri" in params:
             self.qs = self.qs.order_by(params['ordreTri'])
         else:
-            self.qs = self.qs.order_by('start_time', 'categorie', '-date_dernierMessage', )
+            self.qs = self.qs.order_by('start_time', 'categorie')
 
         return self.qs.filter(start_time__gte=now(), start_time__isnull=False).order_by('start_time')
 
@@ -217,7 +215,7 @@ class ListeAteliers(ListView):
         context['typeFiltre'] = "aucun"
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="ateliers")
 
-        context['ordreTriPossibles'] = ['-date_creation', '-date_dernierMessage', 'categorie', 'titre' ]
+        context['ordreTriPossibles'] = ['-date_creation', 'categorie', 'titre' ]
 
         if 'categorie' in self.request.GET:
             context['typeFiltre'] = "categorie"

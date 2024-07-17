@@ -29,11 +29,11 @@ class Migration(migrations.Migration):
             name='duree_prevue',
             field=models.TimeField(blank=True, default='02:00', help_text="Durée de l'atelier estimée", null=True, verbose_name='Durée prévue'),
         ),
-        migrations.AlterField(
-            model_name='atelier',
-            name='heure_atelier',
-            field=models.TimeField(blank=True, default='17:00', help_text='Heure prévue', null=True, verbose_name='Heure prévue'),
-        ),
+        # migrations.AlterField(
+        #     model_name='atelier',
+        #     name='heure_atelier',
+        #     field=models.TimeField(blank=True, default='17:00', help_text='Heure prévue', null=True, verbose_name='Heure prévue'),
+        # ),
         migrations.AlterField(
             model_name='atelier',
             name='tarif_par_personne',

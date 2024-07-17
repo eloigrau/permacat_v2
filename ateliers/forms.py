@@ -70,7 +70,7 @@ class AtelierForm(forms.ModelForm):
         super(AtelierForm, self).__init__(*args, **kwargs)
         self.fields['description'].strip = False
         listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
-        listeChoix.insert(0, (0, "----------------"))
+        listeChoix.insert(0, (request.user.id, request.user.username))
         self.fields['referent'].choices = listeChoix
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
 
@@ -90,7 +90,7 @@ class AtelierChangeForm(forms.ModelForm):
                        'type': 'date'
                        }),
             'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'duree_prevue': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
         }
 
 

@@ -4,7 +4,6 @@
 {% load fontawesome %}
 {% load hitcount_tags %}
 {% load app_filters %}
-{% load qr_code %}
 
 {% block subtitle %}
 
@@ -237,14 +236,6 @@
 					</td>
 				</tr>
 					{% endif %}
-				<tr>
-					<td class="nomProprieteAtelier">
-						QR code de Partage :
-					</td>
-					<td class="proprieteAtelier">
-                {% qr_from_text atelier.get_absolute_url size="T" %}
-					</td>
-				</tr>
 
 				<tr>
                      {% if user_inscrit or request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}

@@ -697,8 +697,6 @@
                             <td><i class="fa fa-telegram iconleft"></i>
                                 {% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td>
                         </tr>
-                        <tr><td> {% qr_from_text atelier.get_absolute_url size="T" %}</td>
-                        </tr>
                         <tr>
                             <td><i class="fa fa-copy iconleft"></i>
                                 {% copy_to_clipboard article "Copier le lien" %}</td>

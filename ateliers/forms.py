@@ -75,7 +75,7 @@ class AtelierForm(forms.ModelForm):
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
 
 class AtelierChangeForm(forms.ModelForm):
-    referent = forms.ChoiceField(label='Référent(.e) atelier')
+    #referent = forms.ChoiceField(label='Référent(.e) atelier')
 
     class Meta:
         model = Atelier
@@ -97,23 +97,23 @@ class AtelierChangeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AtelierChangeForm, self).__init__(*args, **kwargs)
         self.fields['description'].strip = False
-        listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
-        try:
-            nom = kwargs["instance"].referent
-            ref = Profil.objects.get(username=nom)
-            listeChoix.insert(0, (ref.id, ref.username))
-        except:
-            pass
-        self.fields['referent'].choices = listeChoix
+        # listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
+        # try:
+        #     nom = kwargs["instance"].referent
+        #     ref = Profil.objects.get(username=nom)
+        #     listeChoix.insert(0, (ref.id, ref.username))
+        # except:
+        #     pass
+        # self.fields['referent'].choices = listeChoix
 
     def save(self):
         instance = super(AtelierChangeForm, self).save(commit=False)
-        try:
-            referent = int(self.cleaned_data['referent'])
-            instance.referent = dict(self.fields['referent'].choices)[referent].username
-        except:
-            instance.referent = dict(self.fields['referent'].choices)[referent]
-            pass
+        # try:
+        #     referent = int(self.cleaned_data['referent'])
+        #     instance.referent = dict(self.fields['referent'].choices)[referent].username
+        # except:
+        #     instance.referent = dict(self.fields['referent'].choices)[referent]
+        #     pass
         instance.save()
         return instance
 

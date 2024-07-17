@@ -53,7 +53,6 @@ class Atelier(models.Model):
     materiel = models.TextField(null=True, blank=True, verbose_name="Matériel/outils nécessaires")
     referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name="Référent(e.s)")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-#    projet = models.OneToOneField(Projet)
     start_time = models.DateField(verbose_name="Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
     heure_atelier = models.TimeField(verbose_name="Heure de début", help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
     heure_atelier_fin = models.TimeField(verbose_name="Heure de fin ", help_text="Horaire de fin (hh:mm)",
@@ -69,7 +68,7 @@ class Atelier(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 
     estArchive = models.BooleanField(default=False, verbose_name="Archiver l'atelier")
-    nbMaxInscriptions = models.IntegerField( verbose_name="Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
+    nbMaxInscriptions = models.IntegerField(verbose_name="Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
 
     class Meta:
         ordering = ('-date_creation', )

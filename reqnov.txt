@@ -55,7 +55,6 @@ django-widget-tweaks
 djangorestframework-jwt
 exifread
 factory-boy
-gdal
 gunicorn
 helloasso-apiv5
 html5lib

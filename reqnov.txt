@@ -22,7 +22,6 @@ django-el-pagination
 django-emoji-picker
 django-exo-mentions
 django-extensions
-django-filters
 django-fontawesome
 django-fontawesome-5
 django-formset

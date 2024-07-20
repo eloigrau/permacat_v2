@@ -95,7 +95,7 @@ INSTALLED_APPS = [
     'fiches',
     'ateliers',
     #'django_extensions',
-    'django_filters',
+    #'django_filters',
     'cal',
     #'carto',
     'vote',

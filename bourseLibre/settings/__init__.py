@@ -94,7 +94,7 @@ INSTALLED_APPS = [
     #'jardinpartage',
     'fiches',
     'ateliers',
-    'django_extensions',
+    #'django_extensions',
     'django_filters',
     'cal',
     #'carto',

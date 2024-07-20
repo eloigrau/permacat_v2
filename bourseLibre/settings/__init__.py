@@ -65,7 +65,7 @@ if not LOCALL:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    #X_FRAME_OPTIONS = 'DENY'
+    X_FRAME_OPTIONS = 'SAMEORIGIN'
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_COOKIE_PATH = '/;HttpOnly'
 
@@ -76,9 +76,9 @@ ALLOWED_HOSTS = ['www.perma.cat', 'perma.cat', 'permacat.majopi.fr']
 # pip install django-fontawesome django-model_utils django-debug_toolbar django-haystack django-bootstrap django-extensions django-leaflet django-filter django-rest-framework django-scheduler django-widget-tweaks
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -86,22 +86,22 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.postgres',
     #'django.contrib.gis',
-    'bootstrap','fontawesome','cookielaw_local',
+    'bootstrap','fontawesome_5','cookielaw_local',
     #'haystack',
     'model_utils',
     'bourseLibre',
     'blog',
-    'jardinpartage',
+    #'jardinpartage',
     'fiches',
     'ateliers',
     'django_extensions',
     'django_filters',
     'cal',
-    'carto',
+    #'carto',
     'vote',
     'widget_tweaks',
     'leaflet',
-    'captcha',
+    #'captcha',
     'bourseLibre.captcha_local',
     'local_summernote',
     'actstream',
@@ -117,18 +117,19 @@ INSTALLED_APPS = [
     'permagora',
     'jardins',
     'adherents',
-
+    #'tinymce',
     'dal',
     'dal_select2',
     'webpush',
-    'exo_mentions',
-    'newsletter',
+    #'exo_mentions',
+    #'newsletter',
     'django_social_share',
-    #'qr_code',
+    'qr_code',
+    #'fontawesome',
     #'CarPool',
     #'WebUI',
      #'emoji_picker',
-    #"django_minify_html",
+    "django_minify_html",
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',
@@ -143,12 +144,12 @@ INSTALLED_APPS = [
     #'polymorphic',  # We need polymorphic installed for the shop
     'django.contrib.humanize.apps.HumanizeConfig',
     #'django_nyt.apps.DjangoNytConfig',
-    'mptt',
-    'sekizai',
-    'sorl.thumbnail',
+    #'mptt',
+    #'sekizai',
+    #'sorl.thumbnail',
      'sortedm2m',
     'photologue',
-    'anymail',
+    #'anymail',
     #'wiki.apps.WikiConfig',
    # 'wiki.plugins.attachments.apps.AttachmentsConfig',
     #'wiki.plugins.notifications.apps.NotificationsConfig',
@@ -188,10 +189,10 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
-    #"django_minify_html.middleware.MinifyHtmlMiddleware",
+    "django_minify_html.middleware.MinifyHtmlMiddleware",
     #"visits.middleware.BotVisitorMiddleware",
      #"visits.middleware.CounterMiddleware",
     #'django.core.context_processors.request',
@@ -272,8 +273,6 @@ TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 DATE_FORMAT = "l d F Y"
@@ -291,6 +290,8 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 INTERNAL_IPS = ['127.0.0.1']
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 ########################
 import re
@@ -323,8 +324,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 MAX_UPLOAD_SIZE = 20971520
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+STORAGES = {
+    "default": {
+        "BACKEND": 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # LOCATION_FIELD = {
 #     'map.provider': 'openstreetmap',
@@ -351,7 +361,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale/'),
 )
 
-gettext =  lambda x: x
+gettext = lambda x: x
 LANGUAGES = (
    ('fr', gettext('French')),
    ('ca', gettext('Catalan')),

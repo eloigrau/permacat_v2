@@ -5,5 +5,5 @@
 background-color:#ffffe6
 {%endif%}">
     <a href="{%if action.data.url %}{{ action.data.url }} {%endif%}"><small>({{action.timestamp|date:"G:i"}})</small> {{action.actor}}
-        {%if action.description %}{{action.description}}{% endif %} {%ifequal action.verb 'started following' %} suit la {{action.target}}{% endifequal %}
+        {%if action.description %}{{action.description}}{% endif %} {%if action.verb == 'started following' %} suit la {{action.target}}{% endif %}
         </a></li>

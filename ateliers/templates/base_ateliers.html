@@ -1,6 +1,6 @@
 {% extends 'base_atelier.html' %}
 {% load static %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% block titreBlog %}
 <h1>Ateliers </h1>
 {% endblock  %}
@@ -26,7 +26,7 @@
     <div class="position-sticky textcenter">
             <a href="{% url 'ateliers:index_ateliers' %}" >
             <button type="button" class="btn  btn-info" >
-               {% fontawesome_icon 'home' title='home' %} Ateliers
+               {% fa5_icon 'home' title='home' %} Ateliers
             </button>
             </a>
       <div class="list-group list-group-flush mx-3 mt-4">

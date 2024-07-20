@@ -19,8 +19,10 @@
                 <td>{{adhesion.get_moyen_display}}</td>
                 <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>
                 <td>
+                    {% if is_membre_bureau %}
                     <a class="btn btn-sm btn-warning textleft" href="{{adhesion.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                     <a class="btn btn-sm btn-danger textleft" href="{{adhesion.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                {% endif %}
                 </td>
             </tr>
 {% endfor %}

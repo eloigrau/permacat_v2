@@ -6,34 +6,33 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+    2. Add a URL to urlpatterns:  re_path(r'^$', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  re_path(r'^$', Home.as_view(), name='home')
 Including another URLconf
     1. Add an import:  from blog__ import urls as blog_urls
-    2. Add a URL to urlpatterns:  url(r'^blog__/', include(blog_urls))
+    2. Add a URL to urlpatterns:  re_path(r'^blog__/', include(blog_urls))
 """
-from django.conf.urls import url
-from django.urls import path
+from django.urls import path, include
 from . import views
 from django.contrib.auth.decorators import login_required
 
 app_name = 'adherents'
 
 urlpatterns = [
-    url(r'^conf66/$', login_required(views.ListeAdherents.as_view()), name="accueil"),
-    url(r'^conf66/accueil_admin/$', views.accueil_admin, name="accueil_admin"),
-    url(r'^conf66/get_csv_adherents/$', views.get_csv_adherents, name="get_csv_adherents"),
-    url(r'^conf66/get_infos_adherents_pasajour/$', views.get_infos_adherents_pasajour, name="get_infos_adherents_pasajour"),
-    url(r'^conf66/get_infos_adherents_ajour/$', views.get_infos_adherents_ajour, name="get_infos_adherents_ajour"),
-    url(r'^conf66/get_csv_listeMails/$', views.get_csv_listeMails, name="get_csv_listeMails"),
+    path('conf66/', login_required(views.ListeAdherents.as_view()), name="accueil"),
+    path('conf66/accueil_admin/', views.accueil_admin, name="accueil_admin"),
+    path('conf66/get_csv_adherents/', views.get_csv_adherents, name="get_csv_adherents"),
+    path('conf66/get_infos_adherents_pasajour/', views.get_infos_adherents_pasajour, name="get_infos_adherents_pasajour"),
+    path('conf66/get_infos_adherents_ajour/', views.get_infos_adherents_ajour, name="get_infos_adherents_ajour"),
+    path('conf66/get_csv_listeMails/', views.get_csv_listeMails, name="get_csv_listeMails"),
     path(r'conf66/infos_adherents/<str:type_info>', views.get_infos_adherent, name="get_infos_adherent"),
     path(r'conf66/infos_listeMail/<int:listeMail_pk>/<str:type_info>', views.get_infos_listeMail, name="get_infos_listeMail"),
 
-    url(r'^conf66/import_csv/$', views.import_adherents_ggl, name="import_csv"),
-    url(r'^conf66/modif_APE/$', views.modif_APE, name="modif_APE"),
-    url(r'^conf66/normaliser_adherents/$', views.normaliser_adherents, name="normaliser_adherents"),
+    path('conf66/import_csv/', views.import_adherents_ggl, name="import_csv"),
+    path('conf66/modif_APE/', views.modif_APE, name="modif_APE"),
+    path('conf66/normaliser_adherents/', views.normaliser_adherents, name="normaliser_adherents"),
 
     path(r'conf66/adherents/', login_required(views.ListeAdherents.as_view()), name="adherent_liste"),
     path(r'conf66/adherent/ajouter/', views.adherent_ajouter, name="adherent_ajouter"),

@@ -2,7 +2,7 @@
 {% block headerDocument%}
 {% load leaflet_tags %}
 {% load static %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {%endblock%}
 
 {%block header %}
@@ -20,6 +20,7 @@
 					</td>
 					<td class="proprieteJardin">
 						{{ jardin.get_categorie_display }}
+			{% if jardin.adresse.commune%}à {{jardin.adresse.commune}}{% endif %}
 					</td>
 				</tr>
 				{%if jardin.description %}
@@ -110,9 +111,6 @@
 		  	<a href="{% url 'jardins:jardin_ajouterAdresse' slug=jardin.slug %}">Ajouter une adresse</a>
 			{% endif %}
 		{% endif %}
-			{% if jardin.adresse.commune%}
-				<p>à {{jardin.adresse.commune}}</p>
-			{% endif %}
 {% endif %}
 </div>
 					</td>

@@ -2,7 +2,7 @@
 {% load static %}
 {% load app_filters %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load activity_tags %}
 {% block subtitle %}
 <div class="row">
@@ -35,18 +35,18 @@
         <a href="{% url 'blog:suivre_projet' projet.slug %}">
             {% if request.user|is_following:projet %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
-                     {% fontawesome_icon 'bell' title='abonnement' %}
+                     {% fa5_icon 'bell' title='abonnement' %}
                 </button>
             {% else %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fa5_icon 'bell-slash' %}
                 </button>
             {% endif %}
         </a>
             {% if request.user.is_superuser %}
                 <a href="{% url 'blog:suiveursProjet' projet.slug %}">
                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir qui est abonné aux notifications concernant cet article">
-                         {% fontawesome_icon 'list' %}
+                         {% fa5_icon 'list' %}
                     </button>
                 </a>
             {% endif %}
@@ -189,7 +189,7 @@
 					<td class="proprieteProduit">
 						{{ projet.date_modification |date:"DATE_FORMAT"}}
                          <button type="button" class="btn" data-toggle="modal" data-target="#historique">
-                              {% fontawesome_icon 'bell' title='abonnement' %}Historique
+                              {% fa5_icon 'bell' title='abonnement' %}Historique
                         </button>
                         <!-- Modal -->
                         <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

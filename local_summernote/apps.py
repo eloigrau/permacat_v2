@@ -6,6 +6,7 @@ from local_summernote.utils import (
 
 
 class LocalSummernoteConfig(AppConfig):
+    default_auto_field = 'django.db.models.AutoField'
     name = 'local_summernote'
     verbose_name = 'Django Summernote'
 

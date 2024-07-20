@@ -27,7 +27,7 @@ from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
 from bs4 import BeautifulSoup
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 def accueil(request):
     return redirect("ateliers:index_ateliers")

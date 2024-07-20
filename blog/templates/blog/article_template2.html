@@ -2,7 +2,7 @@
 {% load activity_tags %}
 {% load app_filters %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 <a href="{% url 'blog:lireArticle' slug=article.slug %}">
 <div class="content-card">
 <div class="card-big-shadow">
@@ -43,16 +43,16 @@
          <span class="badge badge-light">
 
                 {% if request.user|is_following:article %}
-                    {% fontawesome_icon 'bell' title='abnnement' %}
+                    {% fa5_icon 'bell' title='abnnement' %}
 
                     {% else %}
-                    {% fontawesome_icon 'bell-slash' title='abnnement' %}
+                    {% fa5_icon 'bell-slash' title='abnnement' %}
                 {% endif %}
                  &nbsp;&nbsp;
                 {%if article.estArchive %}
                    archivé
                 {% endif %}
-                {%if article.date_modification %}{%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %} &nbsp; Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endifnotequal%} {%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {% endif %}
+                {%if article.date_modification %}{%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %} &nbsp; Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endif%} {%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {% endif %}
 
              </span>
         </div>

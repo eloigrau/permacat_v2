@@ -1,5 +1,5 @@
 {% extends 'base_asso.html' %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load blog_filters %}
 {% load activity_tags %}
 {% load webpush_notifications %}
@@ -18,16 +18,16 @@
             <a href="{% url 'suivre_salon' slug_salon='accueil' %}">
                 {% if request.user|is_following:suivis %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
-                     {% fontawesome_icon 'bell' title='abnnement' %}
+                     {% fa5_icon 'bell' title='abnnement' %}
                 </button>
                 {% else %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
-                     {% fontawesome_icon 'bell-slash' title='abnnement' %}
+                     {% fa5_icon 'bell-slash' title='abnnement' %}
                 </button>
                 {% endif %}
             </a>
                 <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-                 {% fontawesome_icon 'question-circle' %}
+                 {% fa5_icon 'question-circle' %}
                 </button>
                 <!-- Modal -->
                 <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

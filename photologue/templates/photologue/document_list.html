@@ -1,8 +1,8 @@
 {% extends "photologue/root.html" %}
-{% load fontawesome %}
 {% load i18n %}
 {% load static %}
 {% load activity_tags %}
+{% load fontawesome_5 %}
 
 {% block panel-heading %} {%endblock%}
 {% block header %}
@@ -21,16 +21,16 @@
         <a href="{% url 'photologue:suivre_documents' %}">
             {% if request.user|is_following:suivis %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir un mail à chaque nouveau document">
-                 {% fontawesome_icon 'bell' %}
+                 {% fa5_icon 'bell' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir un mail à chaque nouveau document">
-                 {% fontawesome_icon 'bell-slash' %}
+                 {% fa5_icon 'bell-slash' %}
             </button>
             {% endif %}
         </a>
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -71,7 +71,7 @@
                  <div class="row no-gutters justify-content-center">
     <a href="{% url 'photologue:filtrer_documents' %}">
         <button type="button" class="btn  btn-success" >
-           {% fontawesome_icon 'search' title='chercher' %}&nbsp; Rechercher...
+           {% fa5_icon 'search' title='chercher' %}&nbsp; Rechercher...
         </button>
     </a>&ensp;</div>
 </div>

@@ -1,7 +1,7 @@
 from bourseLibre.models import Suivis, Profil
 from bourseLibre.constantes import Choix
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from actstream import action
 
 

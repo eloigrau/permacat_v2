@@ -135,8 +135,8 @@ class Atelier(models.Model):
 
     # @property
     # def get_budget_html(self):
-    #     return "{% fontawesome_icon 'euro-sign' %}"
-    #     return "{% fontawesome_icon 'euro-sign' %} ".join([" " for i in range(int(self.budget))])
+    #     return "{% fa5_icon 'euro-sign' %}"
+    #     return "{% fa5_icon 'euro-sign' %} ".join([" " for i in range(int(self.budget))])
 
     @property
     def get_budget_length(self):

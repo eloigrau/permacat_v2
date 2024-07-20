@@ -103,7 +103,9 @@ def nettoyerActions(request):
         return HttpResponseForbidden()
     actions = Action.objects.all()
     for action in actions:
-        if not action.actor or not action.verb:
+        if not hasattr(action, '__str__'):
+            action.delete()
+        if not action or not action.actor or not action.verb:
             action.delete()
     return redirect("bienvenue")
 
@@ -168,11 +170,11 @@ def get_articles_a_archiver():
         if article.start_time:
             liste.append(article)
     liste2 = []
-    from jardinpartage.models import Article as Article_jardin, Evenement as Evenement_jardin
-    articles = Article_jardin.objects.filter(estArchive=False, start_time__lte=date_limite)
-    for article in articles:
-        if article.start_time:
-            liste2.append(article)
+    #from jardinpartage.models import Article as Article_jardin, Evenement as Evenement_jardin
+    #articles = Article_jardin.objects.filter(estArchive=False, start_time__lte=date_limite)
+    #for article in articles:
+        #if article.start_time:
+        #    liste2.append(article)
 
     liste4 = []
     ateliers = Atelier.objects.filter(estArchive=False, start_time__lte=date_limite)

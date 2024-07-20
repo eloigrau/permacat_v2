@@ -2,7 +2,7 @@
 {% load activity_tags %}
 {% load blog_filters %}
 {% load vote_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% block subtitle %}
 
@@ -109,7 +109,7 @@
     <div class="col textright" >
         {% if actions %}
             <button type="button" class="btn" data-toggle="modal" data-target="#historique">
-              {% fontawesome_icon 'bell' title='abonnement' %}Historique
+              {% fa5_icon 'bell' title='abonnement' %}Historique
             </button>
             <!-- Modal -->
             <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

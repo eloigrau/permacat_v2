@@ -6,15 +6,15 @@ The `urlpatterns` list routes URLs to views. For more information please see:
 Examples:
 Function views
     1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  url(r'^$', views.home, name='home')
+    2. Add a URL to urlpatterns:  re_path(r'^$', views.home, name='home')
 Class-based views
     1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  url(r'^$', Home.as_view(), name='home')
+    2. Add a URL to urlpatterns:  re_path(r'^$', Home.as_view(), name='home')
 Including another URLconf
     1. Add an import:  from blog__ import urls as blog_urls
-    2. Add a URL to urlpatterns:  url(r'^blog__/', include(blog_urls))
+    2. Add a URL to urlpatterns:  re_path(r'^blog__/', include(blog_urls))
 """
-from django.conf.urls import url
+from django.urls import path, include, re_path
 from django.urls import path
 from . import views
 from django.contrib.auth.decorators import login_required
@@ -22,24 +22,24 @@ from django.contrib.auth.decorators import login_required
 app_name = 'jardins'
 
 urlpatterns = [
-    url(r'^$', views.accueil, name="accueil"),
+    re_path(r'^$', views.accueil, name="accueil"),
 
     ## plantes
-    url(r'^accueil_admin/$', views.accueil_admin, name="accueil_admin"),
-    url(r'^import_db_inpn_0/$', views.import_db_inpn_0, name="import_db_inpn_0"),
-    url(r'^import_db_inpn_1/$', views.import_db_inpn_1, name="import_db_inpn_1"),
-    url(r'^import_db_inpn_2/$', views.import_db_inpn_2, name="import_db_inpn_2"),
-    url(r'^import_db_inpn_3/$', views.import_db_inpn_3, name="import_db_inpn_3"),
-    url(r'^import_db_inpn_4/$', views.import_db_inpn_4, name="import_db_inpn_4"),
-    url(r'^import_grainotheque_rtg_1/$', views.import_grainotheque_rtg_1, name="import_grainotheque_rtg_1"),
-    url(r'^import_grainotheque_rtg_2/$', views.import_grainotheque_rtg_2, name="import_grainotheque_rtg_2"),
+    re_path(r'^accueil_admin/$', views.accueil_admin, name="accueil_admin"),
+    re_path(r'^import_db_inpn_0/$', views.import_db_inpn_0, name="import_db_inpn_0"),
+    re_path(r'^import_db_inpn_1/$', views.import_db_inpn_1, name="import_db_inpn_1"),
+    re_path(r'^import_db_inpn_2/$', views.import_db_inpn_2, name="import_db_inpn_2"),
+    re_path(r'^import_db_inpn_3/$', views.import_db_inpn_3, name="import_db_inpn_3"),
+    re_path(r'^import_db_inpn_4/$', views.import_db_inpn_4, name="import_db_inpn_4"),
+    re_path(r'^import_grainotheque_rtg_1/$', views.import_grainotheque_rtg_1, name="import_grainotheque_rtg_1"),
+    re_path(r'^import_grainotheque_rtg_2/$', views.import_grainotheque_rtg_2, name="import_grainotheque_rtg_2"),
     path(r'plantes/', views.ListePlantes.as_view(), name="plantes"),
     path(r'voir_plante/<str:cd_nom>', views.voir_plante, name="voir_plante"),
     path(r'voir_plante_nom/', views.voir_plante_nom, name="voir_plante_nom"),
     path(r'voir_plante_recherche/', views.voir_plante_recherche, name="voir_plante_recherche"),
-    url(r'^plante-ac/$', views.PlanteAutocomplete.as_view(), name='plante-ac',),
-    url(r'^ajouterPlante/$', views.ajouter_plante, name="ajouter_plante"),
-    url(r'^chercher_plante/$', views.chercher_plante, name="chercher_plante"),
+    re_path(r'^plante-ac/$', views.PlanteAutocomplete.as_view(), name='plante-ac',),
+    re_path(r'^ajouterPlante/$', views.ajouter_plante, name="ajouter_plante"),
+    re_path(r'^chercher_plante/$', views.chercher_plante, name="chercher_plante"),
 
     ##jardins
     path(r'jardins/carte/', views.carte_jardins, name="carte_jardins"),

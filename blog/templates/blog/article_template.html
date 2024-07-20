@@ -1,7 +1,7 @@
 
 {% load activity_tags %}
 {% load app_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
   <a href="{% url 'blog:lireArticle' slug=article.slug %}" >
 <div class="card card-block article_carte textcenter d-flex "  style="background-color:{{article.get_couleur}}">
 
@@ -19,16 +19,16 @@
                  archivé
                 </span>&nbsp;
                 {% endif %}
-                <span class="badge btn-light"> {%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %}Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endifnotequal%}
+                <span class="badge btn-light"> {%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %}Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endif%}
                 </span>&nbsp;
                 {% if request.user|is_following:article %}
                 <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant cet article par mail">
-                     {% fontawesome_icon 'bell' title='abonnement' %}
+                     {% fa5_icon 'bell' title='abonnement' %}
                 </span>
 
                 {% else %}
                 <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant cet article par mail">
-                     {% fontawesome_icon 'bell-slash' %}title='abonnement'  %}
+                     {% fa5_icon 'bell-slash' %}title='abonnement'  %}
                 </span>
                 {% endif %}
               </div>

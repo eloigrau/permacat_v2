@@ -16,7 +16,7 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
-    Adhesion_asso, Adhesion_permacat, EvenementSalon
+   Adhesion_asso, Adhesion_permacat, EvenementSalon
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -33,7 +33,7 @@ from taggit.models import Tag
 from blog.models import Article, Projet, EvenementAcceuil, Evenement, AssociationSalonArticle
 from ateliers.models import Atelier
 from vote.models import Suffrage, Vote
-from jardinpartage.models import Article as Article_jardin
+#from jardinpartage.models import Article as Article_jardin
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -54,7 +54,7 @@ from hitcount.views import HitCountMixin
 from actstream import actions, action
 from actstream.models import Action, Follow, following, followers, actor_stream,  any_stream, user_stream, action_object_stream, model_stream, target_stream
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.core.exceptions import ObjectDoesNotExist
 from bourseLibre.constantes import Choix as Choix_global
 from django.utils.timezone import now
@@ -91,9 +91,9 @@ def getEvenementsSemaine(request):
                 ev_2 = ev_2.exclude(asso__abreviation=nomAsso)
 
         evenements.append(ev_2)
-        ev_3 = []
-        if request.user.adherent_jp:
-            ev_3 = Article_jardin.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        #ev_3 = []
+        #if request.user.adherent_jp:
+        #    ev_3 = Article_jardin.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
         ev_4 = Projet.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
         for nomAsso in Choix_global.abreviationsAsso:
@@ -108,7 +108,7 @@ def getEvenementsSemaine(request):
         utc = pytz.UTC
         y = []
         y2 = []
-        for ev in list(chain(ev_art, ev_2, ev_3, ev_4, ev_5)):
+        for ev in list(chain(ev_art, ev_2, ev_4, ev_5)):
             try:
                 if ev.start_time >= date.today():
                     y.append((ev, date(ev.start_time.year, ev.start_time.month, ev.start_time.day)))
@@ -125,7 +125,7 @@ def getEvenementsSemaine(request):
 
         dict_passe = {}
         dict_futur = {}
-        for ev in list(chain(ev_art, ev_2, ev_3, ev_4, ev_5)):
+        for ev in list(chain(ev_art, ev_2, ev_4, ev_5)):
             date_ev = ev.start_time
             if date_ev < date.today():
                 if not date_ev in dict_passe.keys():
@@ -414,7 +414,7 @@ class Adhesion_asso_supprimer(DeleteView):
         return self.adherent.get_absolute_url()
 
     def get_object(self):
-        ad = Adhesion.objects.get(pk=self.kwargs['pk'])
+        ad = Adhesion_asso.objects.get(pk=self.kwargs['pk'])
         self.adherent = ad.adherent
         return ad
 
@@ -448,10 +448,10 @@ def listeFollowers(request, asso):
         suiveurs = followers(art)
         if suiveurs:
             listeArticles.append({"titre": art.titre, "url": art.get_absolute_url(), "followers": suiveurs, })
-    for art in Article_jardin.objects.all():
-        suiveurs = followers(art)
-        if suiveurs:
-            listeArticles.append({"titre": art.titre, "url": art.get_absolute_url(), "followers": suiveurs, })
+    #for art in Article_jardin.objects.all():
+        #suiveurs = followers(art)
+        #if suiveurs:
+         #   listeArticles.append({"titre": art.titre, "url": art.get_absolute_url(), "followers": suiveurs, })
     for art in Projet.objects.filter(asso=asso):
         suiveurs = followers(art)
         if suiveurs:

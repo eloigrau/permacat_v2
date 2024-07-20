@@ -3,7 +3,7 @@
 {% load blog_filters %}
 {% load app_filters %}
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% block title %} - Todo {% endblock  %}
 {%block header %}
@@ -18,7 +18,7 @@
     <div class="col-sm-12 textcenter">
         <h4>Todo</h4>
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -33,7 +33,8 @@
                 </button>
               </div>
               <div class="modal-body textleft">
-                  <p>Les Todo sont des petites taches à faire. Ils peuvent être ajoutés dans les Articles du Forum (dans le menu accessible par le bouton "+" sous le titre de l'article)</p>
+                  <p>Les Todo sont des (petites) actions à faire. Cela peut permettre de ne pas oublier une tâche qu'on a dit qu'on ferait. OU bien encore d'avoir un suivi des actions dans le temps. </p>
+                  <p>On peut rajouter un Todo sur la page d'un article du Forum (dans le menu accessible par le bouton "+" sous le titre de l'article)</p>
                   <p>Cliquer sur le bouton "Non" pour les marquer comme "Fait" (et inversement, cliquer sur "Non" pourles marquer comme "non fait")</p>
               </div>
             </div>

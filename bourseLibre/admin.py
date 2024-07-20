@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from .models import Adresse, Produit, Panier, Item, Adhesion_asso, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso, InvitationDansSalon, InscritSalon, Monnaie
 from blog.models import Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement, EvenementAcceuil, AdresseArticle
-from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
+#from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
 from ateliers.models import Atelier, CommentaireAtelier, InscriptionAtelier
 from agoratransition.models import InscriptionExposant, Proposition, Message_agora
@@ -14,6 +14,7 @@ from .models import Profil, Salon
 from django.utils.translation import gettext_lazy as _
 
 
+@admin.register(Profil)
 class CustomUserAdmin(UserAdmin):
     add_form = ProfilCreationForm
     form = ProducteurChangeForm_admin
@@ -32,6 +33,7 @@ class CustomUserAdmin(UserAdmin):
         )
 
 
+@admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('id', 'titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
     search_fields = ('titre', )
@@ -40,64 +42,59 @@ class Article_jardinAdmin(admin.ModelAdmin):
     list_display = ('titre', 'jardin', 'categorie', 'estArchive', )
     search_fields = ('titre', )
 
+@admin.register(Projet)
 class ProjetAdmin(admin.ModelAdmin):
     list_display = ('id', 'titre', 'estArchive', 'ficheprojet')
     search_fields = ('titre', )
 
+@admin.register(Produit)
 class ProduitAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom_produit', 'categorie', 'estUneOffre', 'asso')
     search_fields = ('nom_produit', )
 
+@admin.register(Adhesion_permacat)
 class Adhesion_permacatAdmin(admin.ModelAdmin):
     list_display = ('user', 'date_cotisation', 'montant')
     search_fields = ('user', )
 
+@admin.register(Adhesion_asso)
 class Adhesion_assoAdmin(admin.ModelAdmin):
     list_display = ('user', 'date_cotisation', 'montant')
     search_fields = ('user', )
 
+@admin.register(Asso)
 class AssoAdmin(admin.ModelAdmin):
     readonly_fields = ('id',)
 
-class BookAdmin(admin.ModelAdmin):
-    list_display  = ('name', 'my_stock')
-    search_fields = ('name', )
 
-admin.site.register(Article, ArticleAdmin)
-admin.site.register(Art_jardin, Article_jardinAdmin)
+#admin.site.register(Art_jardin, Article_jardinAdmin)
 admin.site.register(Evenement)
 admin.site.register(EvenementAcceuil)
 
+@admin.register(AdresseArticle)
 class AdresseArticle_Admin(admin.ModelAdmin):
     list_display  = ('id', 'titre', 'adresse', 'article')
     search_fields = ('titre', )
 
-admin.site.register(AdresseArticle, AdresseArticle_Admin)
 
+@admin.register(Adresse)
 class Adresse_Admin(admin.ModelAdmin):
     list_display  = ('id', 'rue', 'code_postal', 'commune')
     search_fields = ('rue', 'code_postal', 'commune')
 
-admin.site.register(Adresse, Adresse_Admin)
 
-admin.site.register(Projet, ProjetAdmin)
 admin.site.register(FicheProjet)
-admin.site.register(Profil, CustomUserAdmin)
-admin.site.register(Asso, AssoAdmin)
-admin.site.register(Produit, ProduitAdmin)
 admin.site.register(Panier)
 admin.site.register(Item)
 admin.site.register(Monnaie)
 admin.site.register(MessageGeneral)
 admin.site.register(InscriptionNewsletter)
 admin.site.register(InscriptionNewsletterAsso)
-admin.site.register(Adhesion_permacat, Adhesion_permacatAdmin)
-admin.site.register(Adhesion_asso, Adhesion_assoAdmin)
 
 admin.site.register(Conversation)
 admin.site.register(Commentaire)
 admin.site.register(Discussion)
-admin.site.register(Comm_jardin)
+#admin.site.register(Comm_jardin)
 admin.site.register(CommentaireProjet)
 
 admin.site.register(Fiche)

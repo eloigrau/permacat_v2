@@ -2,7 +2,8 @@ from django.apps import AppConfig
 
 
 class JardinpartageConfig(AppConfig):
-    name = 'jardingpartage'
+    default_auto_field = 'django.db.models.AutoField'
+    name = 'jardinpartage'
     #
     # def ready(self):
     #     from actstream import registry

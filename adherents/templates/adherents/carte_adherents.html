@@ -7,7 +7,6 @@
 {% endblock %}
 {% block header %}
 {% load static %}
-{% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
     <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
@@ -252,7 +251,7 @@
             {% for action in historique %}
             <li class="list-group-item"  style="{% if request.user.date_notifications > action.timestamp %}background-color:#ffffe6{%endif%}">
                 <a href="{%if action.data.url %}{{ action.data.url }}{%endif%} ">{{action.actor}}
-                    {%if action.description %}{{action.description|truncatechars:180|filtrerNotifSalon}}{% endif %} {%ifequal action.verb 'started following' %} suit la {{action.target}}{% endifequal %} &nbsp; <small>(il y a {{action.timesince|raccourcirTempsStr}})</small>
+                    {%if action.description %}{{action.description|truncatechars:180|filtrerNotifSalon}}{% endif %} {%if action.verb == 'started following' %} suit la {{action.target}}{% endif %} &nbsp; <small>(il y a {{action.timesince|raccourcirTempsStr}})</small>
                 </a>
             </li>
             {% endfor %}

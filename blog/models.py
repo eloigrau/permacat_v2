@@ -10,11 +10,12 @@ from django.utils.text import slugify
 from datetime import datetime, timedelta
 from django.utils.safestring import mark_safe
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from jardins.models import Jardin
 from django.core.validators import MinLengthValidator
 import uuid
 from bourseLibre.settings import DATE_INPUT_FORMAT
+from tinymce import models as tinymce_models
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
@@ -254,6 +255,9 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('blog:lireArticle', kwargs={'slug':self.slug})
 
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
@@ -501,6 +505,8 @@ class Discussion(models.Model):
 class Commentaire(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
     commentaire = models.TextField()
+    #commentaire = models.TextField()
+
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, null=True)
     date_creation = models.DateTimeField(auto_now_add=True)
@@ -517,6 +523,7 @@ class Commentaire(models.Model):
 
     def get_absolute_url(self):
         return self.article.get_absolute_url() + "#comm_" + str(self.id)
+
 
     def get_absolute_url_discussion(self):
         return self.article.get_absolute_url() + "#idConversation"

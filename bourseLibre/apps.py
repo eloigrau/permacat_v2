@@ -2,12 +2,13 @@ from django.apps import AppConfig
 
 class BourseLibreConfig(AppConfig):
     name = 'bourseLibre'
+    default_auto_field = 'django.db.models.AutoField'
 
     def ready(self):
         from actstream import registry
         from django.contrib.auth.models import Group
         from blog.models import Article, Projet, Commentaire, FicheProjet
-        from jardinpartage.models import Article as art_jardinpartage
+        #from jardinpartage.models import Article as art_jardinpartage
         from ateliers.models import Atelier, InscriptionAtelier
         from fiches.models import Fiche, Atelier as fiche_at
         from vote.models import Suffrage
@@ -41,7 +42,7 @@ class BourseLibreConfig(AppConfig):
         registry.register(FicheProjet)
         registry.register(Article)
         registry.register(Commentaire)
-        registry.register(art_jardinpartage)
+        #registry.register(art_jardinpartage)
         registry.register(Projet)
         registry.register(Group)
         registry.register(Suffrage)

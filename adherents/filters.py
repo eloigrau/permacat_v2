@@ -51,7 +51,6 @@ class AdherentsCarteFilter(django_filters.FilterSet):
     class Meta:
         model = Adherent
         fields = {
-            'descrip': ['icontains', ],
             'statut': ['exact', ],
         }
 

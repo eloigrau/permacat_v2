@@ -1,8 +1,7 @@
 {% load static %}
-{% load staticfiles %}
 {% load i18n %}
 {% load l10n %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load webpush_notifications %}
 {%block header_document %}
 {%endblock%}
@@ -16,12 +15,13 @@
     <script src="{% static 'js/jquery.min.js' %}"></script>
 	<script src="{% static 'js/tether.min.js' %}"></script>
 
-    {% fontawesome_stylesheet %}
    <script src="{% static 'js/popper.min.js' %}"></script>
    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bourseLibre.js' %}"></script>
 
     <link href="{% static 'css/cookielaw.css'%}" rel="stylesheet" />
+
+    {% fontawesome_5_static %}
 
 <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
 <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">

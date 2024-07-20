@@ -1,5 +1,5 @@
 {% extends 'base_asso.html' %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load blog_filters %}
 {% load activity_tags %}
 {%block message%}{%endblock%}
@@ -9,7 +9,7 @@
     <div class="col-md-4 ">
          <a href="{% url 'salon_accueil' %}">
             <button type="button" class="btn  btn-info" >
-               {% fontawesome_icon 'home' title='home' %}
+               {% fa5_icon 'home' title='home' %}
             </button>
          </a>
     </div>

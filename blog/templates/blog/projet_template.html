@@ -1,6 +1,6 @@
 
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 <div class="card article_carte textcenter" style="background-color:{{projet.get_couleur}}">
   <a href="{% url 'blog:lireProjet' slug=projet.slug %}">
       <div class="article-card-header smallcaps_h ">{{ projet.get_categorie_display }}</div>
@@ -18,14 +18,14 @@
       {% endif %}
             {% if request.user|is_following:projet %}
             <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell' title='abnnement' %}
+                 {% fa5_icon 'bell' title='abnnement' %}
             </span>
             {% else %}
             <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell-slash' title='abnnement' %}
+                 {% fa5_icon 'bell-slash' title='abnnement' %}
             </span>
             {% endif %}
-            <p class="text-muted textsmall">Proposé le {{ projet.date_creation|date:"DATE_FORMAT" }} {%ifnotequal  projet.date_creation projet.date_modification %} (dernière modif le  {{ projet.date_modification|date:"DATE_FORMAT" }}) {%endifnotequal%}</p>
+            <p class="text-muted textsmall">Proposé le {{ projet.date_creation|date:"DATE_FORMAT" }} {%if  projet.date_creation != projet.date_modification %} (dernière modif le  {{ projet.date_modification|date:"DATE_FORMAT" }}) {%endif%}</p>
   </a>
 </div>
 </div>

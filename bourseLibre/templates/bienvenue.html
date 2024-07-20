@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load cookielaw_tags %}
 {%block header %}
  <script src="{% static 'js/cookielaw.js'%}" type="text/javascript"></script>
@@ -115,9 +115,9 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 					<div class="row" >
 					  <div class="col-sm-12 textcenter" style ="color:#0f7407;">
 						{% if nbNotif %}
-						  <b><a href="{% url 'notifications_news' %}">{% fontawesome_icon 'bell' title='abonnement' %} Vous avez {{nbNotif}} notification{{ nbNotif|pluralize:",s" }} </a></b>
+						  <b><a href="{% url 'notifications_news' %}">{% fa5_icon 'bell' title='abonnement' %} Vous avez {{nbNotif}} notification{{ nbNotif|pluralize:",s" }} </a></b>
 						{%else%}
-						  <b><a href="{% url 'notifications_news' %}">{% fontawesome_icon 'bell' title='abonnement' %} Notifications</a></b>
+						  <b><a href="{% url 'notifications_news' %}">{% fa5_icon 'bell' title='abonnement' %} Notifications</a></b>
 						{%endif%}
 					  </div>
 					</div>

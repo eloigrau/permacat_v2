@@ -1,5 +1,5 @@
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load static %}
 
 {%block header %}
@@ -32,13 +32,14 @@
             </td>
           <td class="expand"  data-title="Titre">
             <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
-                <div class="titre_forum">{{article.titre}}
+                <p class="titre_forum">{{article.titre}}
             {%if article.estModifiable %}
                 <span class="fa fa-edit"  title="Article modifiable">    </span>
             {% endif %}
-                </div>
+                </p>
 
 
+            {%if article.estArchive or article.start_time %}
               <p>
           {% if article.start_time %}
               <span class="badge badge-success">
@@ -56,21 +57,22 @@
              </span>
             {% endif %}
               </p>
+            {% endif %}
                 </a>
           </td>
             <td  data-title="Infos" class="shrink">
                 <span class="badge badge-light" style=" display: inline-block;">
                 {% if request.user|is_following:article %}
-                    {% fontawesome_icon 'bell' %}
+                    {% fa5_icon 'bell' %}
                     {% else %}
-                    {% fontawesome_icon 'bell-slash' %}
+                    {% fa5_icon 'bell-slash' %}
                 {% endif %}&nbsp;
                 {%if article.date_modification %}
-                    {%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %} &nbsp;
+                    {%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %} &nbsp;
                          Modifié le {{ article.date_modification|date:"DATE_FORMAT" }}
                     {%else%}&nbsp;
                         Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
-                    {%endifnotequal%}
+                    {%endif%}
                 {%else%}&nbsp;
                     Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
                 {% endif %}

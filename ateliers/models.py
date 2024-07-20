@@ -7,7 +7,7 @@ from bourseLibre.models import Profil, Suivis, Asso, username_re
 from actstream.models import followers
 from actstream import action
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from bourseLibre.settings import DATE_INPUT_FORMAT
 
 class Choix():
@@ -78,6 +78,10 @@ class Atelier(models.Model):
 
     def get_absolute_url(self):
         return reverse('ateliers:lireAtelier', kwargs={'slug':self.slug}) #+ "#idTitreAtelier"
+
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def save(self, sendMail=True, *args, **kwargs):
         ''' On save, update timestamps '''

@@ -29,7 +29,7 @@ import simplejson
 from datetime import datetime
 from webpush import send_user_notification
 from taggit.managers import TaggableManager
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 import re
 from django.utils import timezone
 from django.core.exceptions import MultipleObjectsReturned

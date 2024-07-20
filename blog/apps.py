@@ -4,6 +4,7 @@ from django.apps import AppConfig
 #from .utils import post_detect_mention_callback
 
 class BlogConfig(AppConfig):
+    default_auto_field = 'django.db.models.AutoField'
     name = 'blog'
     #
     # def ready(self):

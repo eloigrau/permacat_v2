@@ -1,5 +1,5 @@
 {% extends 'base_forum.html' %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% block title %} - rechercher dans le forum{% endblock %}
 
@@ -14,7 +14,7 @@
                             <input class="form-control border-secondary border-right-0 rounded-0" name="id_recherche" placeholder="{{recherche}}" type="text">
                                 </div>
                     <div class="col-auto" style="padding-left:0;">
-                                <button class="btn btn-outline-secondary border-left-0 rounded-0 rounded-right" type="submit" >{% fontawesome_icon 'search' title='chercher' %}</button>
+                                <button class="btn btn-outline-secondary border-left-0 rounded-0 rounded-right" type="submit" >{% fa5_icon 'search' title='chercher' %}</button>
                     </div>
                  </form>
              </div>

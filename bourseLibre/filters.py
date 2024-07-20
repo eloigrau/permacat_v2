@@ -18,12 +18,13 @@ class ProfilCarteFilter(django_filters.FilterSet):
                                                   label="Membre des jardins partagés")
     adherent_conf66 = django_filters.BooleanFilter(field_name='adherent_conf66', method='get_adherent_asso',
                                                   label="Membre de la Conf 66")
-    compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_competencedesritpion_filter', label="Mot dans la compétence ou la description")
+    compet_descrip = django_filters.CharFilter(method='get_competencedesritpion_filter', label="Mot dans la compétence ou la description")
 
 
 
     def get_adherent_asso(self, queryset, field_name, value):
         return queryset.filter(**{field_name: value})
+
     def get_competencedesritpion_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|
                                Q(username__icontains=value)|
@@ -37,7 +38,7 @@ class ProfilCarteFilter(django_filters.FilterSet):
     class Meta:
         model = Profil
         fields = {
-            'compet_descrip': ['icontains', ],
+            #'compet_descrip': ['icontains', ],
             "adherent_pc": ['exact', ],
             "adherent_scic": ['exact', ],
             "adherent_rtg": ['exact', ],

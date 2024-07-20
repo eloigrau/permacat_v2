@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.conf import settings
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from django.forms import ClearableFileInput
@@ -99,7 +99,7 @@ class UploadZipForm(forms.Form):
             album = self.cleaned_data['album']
         else:
             logger.debug(
-                force_text('Creating new album "{0}".').format(self.cleaned_data['title']))
+                force_str('Creating new album "{0}".').format(self.cleaned_data['title']))
             album = Album.objects.create(title=self.cleaned_data['title'],
                                              slug=slugify(self.cleaned_data['title']),
                                              description=self.cleaned_data['description'],
@@ -237,7 +237,7 @@ class PhotoForm(forms.ModelForm):
         fields = ['image', 'title', 'caption']
         widgets = {
             'caption': SummernoteWidget(),
-            'image': ClearableFileInput(attrs={'multiple': True}),
+            'image': ClearableFileInput(attrs={'allow_multiple_selected': True}),
         }
 
     def clean_content(self):

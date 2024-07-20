@@ -3,7 +3,7 @@
 {% block headerDocument%}
 {% load leaflet_tags %}
 {% load static %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% endblock %}
 {% block header %}
 {% leaflet_js %}
@@ -160,12 +160,12 @@
     </div>
 </div>
 
-{% if is_membre_bureau %}
+{% if is_membre_bureau or request.user == adherent.profil  %}
 <hr>
-<p>Pour le bureau :</p>
 <h5>Cotisations :</h5>
 {% include 'adherents/template_adhesion_liste2.html' %}
 
+{% if is_membre_bureau %}
 <div class="row">
     <div class="col-md-12 textcenter">
         <a href="{% url 'adherents:adhesion_creer' adherent.pk %}">
@@ -175,10 +175,12 @@
         </a>
     </div>
 </div>
+{% endif %}
 <hr>
 <h5>Listes de diffusion :</h5>
 {% include 'adherents/template_inscriptionmail_liste.html' %}
 
+{% if is_membre_bureau %}
 <div class="row">
     <div class="col-md-12 textcenter">
         <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">
@@ -188,6 +190,7 @@
         </a>
     </div>
 </div>
+{% endif %}
 {% endif %}
 
 {% endblock %}

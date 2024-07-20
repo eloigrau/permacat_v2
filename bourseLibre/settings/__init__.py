@@ -112,7 +112,7 @@ INSTALLED_APPS = [
     'avatar',
     'defraiement',
     'agoratransition',
-    'acme_challenge',
+    #'acme_challenge',
     'rest_framework',
     'permagora',
     'jardins',

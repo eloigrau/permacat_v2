@@ -37,7 +37,7 @@ urlpatterns = [
     re_path(r'^captcha/', include('bourseLibre.captcha_local.urls')),
     re_path(r'^photolog/', include('photologue.urls', namespace='photologue')),
     #path('tinymce/', include('tinymce.urls')),
-    re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
+    #re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
     #path('newsletter/', include('newsletter.urls')),
     #re_path(r'^chat/', include('chat.urls')),
     path(r'agenda/', include('cal.urls')),

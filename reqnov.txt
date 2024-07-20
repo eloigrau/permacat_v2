@@ -4,7 +4,6 @@ beautifulsoup4
 chardet
 django
 dj-database-url
-django-acme-challenge
 django-activity-stream
 django-anymail
 django-auth0
@@ -57,6 +56,7 @@ django-widget-tweaks
 djangorestframework-jwt
 exifread
 factory-boy
+gdal
 gunicorn
 helloasso-apiv5
 html5lib

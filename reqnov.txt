@@ -2,6 +2,7 @@ apscheduler
 babel
 beautifulsoup4
 chardet
+django
 dj-database-url
 django-acme-challenge
 django-activity-stream

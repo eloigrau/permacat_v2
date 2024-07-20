@@ -12,7 +12,7 @@ charset-normalizer==2.1.1
 cloudinary==1.10.0
 cryptography==39.0.0
 dj-database-url==2.2.0
-Django==4.2.14
+Django==3.2.25
 django-acme-challenge==1.2
 django-activity-stream==2.0.0
 django-anymail==11.0.1

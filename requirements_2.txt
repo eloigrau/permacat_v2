@@ -1,4 +1,3 @@
-sjango3.2
 django-hitcount==1.3.5
 django-infinite-scroll-pagination==1.2.1
 django-js-asset==2.0.0

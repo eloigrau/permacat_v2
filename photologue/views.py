@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from .models import Photo, Album, Document
 from django.shortcuts import render, redirect
 from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, DocumentAssocierArticleForm
-from .filters import DocumentFilter
+#from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from bourseLibre.constantes import Choix as Choix_global
@@ -350,7 +350,8 @@ def filtrer_documents(request):
     for nomAsso in Choix_global.abreviationsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             doc_list = doc_list.exclude(asso__abreviation=nomAsso)
-    f = DocumentFilter(request.GET, queryset=doc_list)
+    #f = DocumentFilter(request.GET, queryset=doc_list)
+    f=doc_list
 
     return render(request, 'photologue/document_filter.html', {'filter': f})
 

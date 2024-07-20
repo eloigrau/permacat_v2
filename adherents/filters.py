@@ -1,7 +1,7 @@
 from django import forms
 from .models import Adherent, Adhesion
 from bourseLibre.models import Salon, InscritSalon
-import django_filters
+#import django_filters
 from django.db.models import Q
 from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
 from datetime import date

@@ -2,7 +2,7 @@ apscheduler
 babel
 beautifulsoup4
 chardet
-django
+django==4.1
 dj-database-url
 django-activity-stream
 django-anymail

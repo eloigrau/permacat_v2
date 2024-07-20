@@ -6,7 +6,7 @@ import itertools
 from datetime import date
 
 from django.utils.safestring import mark_safe
-import django_filters
+#import django_filters
 import requests
 from actstream import actions, action
 from actstream.models import following, followers
@@ -866,35 +866,35 @@ class ItemDoesNotExist(Exception):
     pass
 
 
-class ProductFilter(django_filters.FilterSet):
-    #nom_produit = django_filters.CharFilter(lookup_expr='iexact')
-    # date_creation = django_filters.DateFromToRangeFilter(name='date_creation',)
-    # date_debut = django_filters.DateFromToRangeFilter(name='date_debut')
-    # date_expiration = django_filters.DateFromToRangeFilter(name='date_expiration')
-    categorie = django_filters.ChoiceFilter(label='categorie', lookup_expr='exact', )
-    username = django_filters.ModelChoiceFilter(label='producteur', queryset=Profil.objects.all())
-    nom_produit = django_filters.CharFilter(label='titre', lookup_expr='contains')
-    description = django_filters.CharFilter(label='description', lookup_expr='contains')
-    prixmin = django_filters.NumberFilter(label='prix min', lookup_expr='gt', name="prix")
-    prixmax = django_filters.NumberFilter(label='prix max', lookup_expr='lt', name="prix")
-    # date_debut = django_filters.DateFromToRangeFilter(widget=RangeWidget(attrs={'placeholder': 'YYYY/MM/DD'}), label='date de début')
-    date_debut = django_filters.TimeRangeFilter(label='date de début')
-    # date_debut = django_filters.DateFilter(label='date de début')
-
-
-    class Meta:
-        model = Produit
-        fields = ['categorie', 'user__username', 'nom_produit', "description", "prixmin","prixmax","date_debut"]
-        # fields = {
-        #      'categorie':['exact'],
-        #     'nom_produit':['contains'],
-        #     'description':['contains'],
-        #     # 'date_creation': ['exact'],
-        #     # 'date_debut': ['exact'],
-        #     # 'date_expiration': ['exact'],
-        #      'prix':['gte','lte'],
-        # }
-
+# class ProductFilter(django_filters.FilterSet):
+#     #nom_produit = django_filters.CharFilter(lookup_expr='iexact')
+#     # date_creation = django_filters.DateFromToRangeFilter(name='date_creation',)
+#     # date_debut = django_filters.DateFromToRangeFilter(name='date_debut')
+#     # date_expiration = django_filters.DateFromToRangeFilter(name='date_expiration')
+#     categorie = django_filters.ChoiceFilter(label='categorie', lookup_expr='exact', )
+#     username = django_filters.ModelChoiceFilter(label='producteur', queryset=Profil.objects.all())
+#     nom_produit = django_filters.CharFilter(label='titre', lookup_expr='contains')
+#     description = django_filters.CharFilter(label='description', lookup_expr='contains')
+#     prixmin = django_filters.NumberFilter(label='prix min', lookup_expr='gt', name="prix")
+#     prixmax = django_filters.NumberFilter(label='prix max', lookup_expr='lt', name="prix")
+#     # date_debut = django_filters.DateFromToRangeFilter(widget=RangeWidget(attrs={'placeholder': 'YYYY/MM/DD'}), label='date de début')
+#     date_debut = django_filters.TimeRangeFilter(label='date de début')
+#     # date_debut = django_filters.DateFilter(label='date de début')
+#
+#
+#     class Meta:
+#         model = Produit
+#         fields = ['categorie', 'user__username', 'nom_produit', "description", "prixmin","prixmax","date_debut"]
+#         # fields = {
+#         #      'categorie':['exact'],
+#         #     'nom_produit':['contains'],
+#         #     'description':['contains'],
+#         #     # 'date_creation': ['exact'],
+#         #     # 'date_debut': ['exact'],
+#         #     # 'date_expiration': ['exact'],
+#         #      'prix':['gte','lte'],
+#         # }
+#
 
 
 

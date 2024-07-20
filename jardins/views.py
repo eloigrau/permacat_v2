@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, HttpResponseRedirect
 import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
-from bourseLibre.filters import ProfilCarteFilter
+#from bourseLibre.filters import ProfilCarteFilter
 from bourseLibre.settings.production import LOCALL
 from bourseLibre.forms import AdresseForm4
 from bourseLibre.models import Asso, Profil, Salon
@@ -16,7 +16,7 @@ from .forms import Plante_rechercheForm, GrainothequeForm, GrainothequeChangeFor
     ChoisirMonJardinForm, ChoisirMaGrainothequeForm
 from .models import Plante, Jardin, Grainotheque, Graine, InscriptionJardin, PlanteDeJardin, InfoPlante, \
     DBStatut_inpn, DBRang_inpn, DBHabitat_inpn, DBVern_inpn, DB_importeur, InfoGraine, GenericModel, RTG_import
-from .filters import JardinCarteFilter, GrainoCarteFilter
+#from .filters import JardinCarteFilter, GrainoCarteFilter
 from actstream import actions, action
 from webpush import send_user_notification
 from dal import autocomplete
@@ -563,8 +563,8 @@ def carte_jardins(request):
     if "lettre" in request.GET:
         jardins = jardins.filter(titre__istartswith=request.GET["lettre"])
 
-    jardins_filtres = JardinCarteFilter(request.GET, queryset=jardins)
-
+    #jardins_filtres = JardinCarteFilter(request.GET, queryset=jardins)
+    jardins_filtres = jardins
     titre = "Carte des jardins"
 
     return render(request, 'jardins/carte_jardins.html', {'filter':jardins_filtres, 'titre': titre, } )
@@ -581,8 +581,8 @@ def carte_graino(request):
     if "lettre" in request.GET:
         graino = graino.filter(titre__istartswith=request.GET["lettre"])
 
-    graino_filtres = GrainoCarteFilter(request.GET, queryset=graino)
-
+    #graino_filtres = GrainoCarteFilter(request.GET, queryset=graino)
+    graino_filtres = graino
     titre = "Carte des grainothèques "
 
     return render(request, 'jardins/carte_graino.html', {'filter':graino_filtres, 'titre': titre, } )
@@ -838,8 +838,8 @@ def carte_jardiniers(request):
     profils = asso.getProfils_Annuaire()
     if "lettre" in request.GET:
         profils = profils.filter(username__istartswith=request.GET["lettre"])
-    profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
-
+    #profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
+    profils_filtres = profils
     titre = "Carte des Jardinier-es"
 
     return render(request, 'jardins/carte_cooperateurs.html', {'filter':profils_filtres, 'titre': titre, "asso":asso} )

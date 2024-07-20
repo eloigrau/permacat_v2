@@ -64,7 +64,7 @@ from webpush import send_user_notification
 from .views_notifications import getNbNewNotifications
 from bourseLibre.views_base import DeleteAccess
 from itertools import chain
-from .filters import ProfilCarteFilter
+#from .filters import ProfilCarteFilter
 from django.db.models.functions import Greatest, Lower
 CharField.register_lookup(Lower, "lower")
 
@@ -557,8 +557,8 @@ def carte(request, asso):
     if "lettre" in request.GET:
         profils = profils.filter(username__istartswith=request.GET["lettre"])
         nb_par_page = nbProf
-    profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
-
+    #profils_filtres = ProfilCarteFilter(request.GET, queryset=profils)
+    profils_filtres = profils
     paginator = Paginator(profils_filtres.qs, nb_par_page) # Show 10 contacts per page.
     if not 'page' in request.GET:
         page_number = 1

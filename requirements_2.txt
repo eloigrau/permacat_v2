@@ -4,7 +4,6 @@ django-js-asset==2.0.0
 django-jsonfield==1.4.1
 django-jsonfield-compat==0.4.4
 django-leaflet==0.29.1
-django-minify-html
 django-model-utils
 django-mptt
 django-notifications-hq
@@ -39,7 +38,6 @@ importlib_metadata
 jsonfield
 ldif3
 Markdown
-minify_html
 mistune
 mock
 multidict

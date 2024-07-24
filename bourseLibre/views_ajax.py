@@ -35,3 +35,4 @@ def ajax_annonces(request):
 def salonsParTag(request, tag):
     salons = Salon.objects.filter(tags__name__in=[tag, ]).distinct()
     return render(request, 'salon/salons_list_template_motcle.html', {'salons': salons, 'tag':tag})
+

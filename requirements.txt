@@ -36,7 +36,7 @@ django-el-pagination==2.1.2
 django-emoji-picker==0.0.6
 django-etc==1.4.0
 django-exo-mentions==1.1.3
-django-filter==24.2
+django-filter
 django-fontawesome==1.0
 django-fontawesome-5==1.0.18
 django-formset==1.1
@@ -52,7 +52,6 @@ django-minify-html==1.4.0
 django-model-utils==4.5.1
 django-mptt==0.9.1
 django-notifications-hq==1.2
-django-nyt==1.1.3
 django-phonenumber-field==8.0.0
 django-qr-code==4.0.0
 django-ranged-response==0.2.0

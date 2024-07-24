@@ -16,7 +16,7 @@ from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMa
     InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent
 from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
 from bourseLibre.models import Adresse, Profil, Asso
-#from .filters import AdherentsCarteFilter
+from .filters import AdherentsCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
 from actstream.models import Action
@@ -48,9 +48,9 @@ class ListeAdherents(ListView):
             qs = Adherent.objects.filter(nom__istartswith=self.request.GET["lettre"]).order_by("nom")
         else:
             qs = Adherent.objects.all().order_by("nom")
-        #profils_filtres = AdherentsCarteFilter(self.request.GET, queryset=qs)
-        #self.qs = profils_filtres.qs.distinct()
-        self.qs = qs.distinct()
+        profils_filtres = AdherentsCarteFilter(self.request.GET, queryset=qs)
+        self.qs = profils_filtres.qs.distinct()
+        #self.qs = qs.distinct()
         return self.qs
 
     def get_context_data(self, **kwargs):
@@ -327,8 +327,7 @@ login_required
 def get_csv_adherents(request):
     """A view that streams a large CSV file."""
     profils = Adherent.objects.all().order_by("nom")
-    #profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
-    profils_filtres = profils
+    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
     current_year = date.today().isocalendar()[0]
 
     csv_data = [
@@ -621,8 +620,7 @@ def import_adherents_ggl(request):
 @user_passes_test(is_membre_bureau)
 def getMails(request):
     profils = Adherent.objects.all()
-    #profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
-    profils_filtres = profils
+    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
     return render(request, 'adherents/template_mails.html', {'qs': profils_filtres.qs})
 
 
@@ -630,8 +628,7 @@ def getMails(request):
 @user_passes_test(is_membre_bureau)
 def get_infos_adherent(request, type_info="email"):
     profils = Adherent.objects.all()
-    #profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
-    profils_filtres = profils
+    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
     if type_info == "tel":
         template = 'adherents/template_tel.html'
     elif type_info == "email":

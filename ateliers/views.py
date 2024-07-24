@@ -329,3 +329,10 @@ def copierAteliers_inverse(request):
 
 
     return redirect('ateliers:index_ateliers')
+
+
+@login_required
+def get_qr_code(request, slug):
+    qr_url = Atelier.objects.get(slug=slug)
+    return render(request, 'qr_code_template.html', {'qr_url': qr_url})
+

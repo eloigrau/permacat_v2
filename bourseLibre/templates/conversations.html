@@ -12,11 +12,11 @@
         <a href="{% url 'suivre_conversations' %}">
             {% if request.user|is_following:suivis %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :  Cliquez pour arreter de recevoir des notifications concernant vos conversations privées par mail">
-                 {% fa5_icon 'bell' title='abnnement' %}
+                 {% fa5_icon 'bell' title='abonnement' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :  Cliquez pour recevoir les notifications concernant vos conversations privées par mail">
-                 {% fa5_icon 'bell-slash' title='abnnement' %}
+                 {% fa5_icon 'bell-slash' title='abonnement' %}
             </button>
             {% endif %}
         </a>

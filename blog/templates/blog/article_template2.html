@@ -43,10 +43,10 @@
          <span class="badge badge-light">
 
                 {% if request.user|is_following:article %}
-                    {% fa5_icon 'bell' title='abnnement' %}
+                    {% fa5_icon 'bell' title='abonnement ' %}
 
                     {% else %}
-                    {% fa5_icon 'bell-slash' title='abnnement' %}
+                    {% fa5_icon 'bell-slash' title='abonnement ' %}
                 {% endif %}
                  &nbsp;&nbsp;
                 {%if article.estArchive %}

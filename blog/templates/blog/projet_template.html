@@ -1,12 +1,11 @@
-
 {% load activity_tags %}
 {% load fontawesome_5 %}
+
 <div class="card article_carte textcenter" style="background-color:{{projet.get_couleur}}">
   <a href="{% url 'blog:lireProjet' slug=projet.slug %}">
       <div class="article-card-header smallcaps_h ">{{ projet.get_categorie_display }}</div>
   <div class="card-body" {%if projet.estArchive %} style="background-color:#e0e0d1;" {% endif %}>
-        <h5 class="titreArticle">
-            {{ projet.titre }}</h5>
+        <h5 class="titreArticle"> {{ projet.titre }}</h5>
        {{ projet.get_logo_nomgroupe_html|safe }} / <span class="badge badge-primary" data-toggle="tooltip" data-placement="bottom" title="Projet {%if projet.estPublic%}visible par tous les inscrits{%else%}{{projet.asso.nom}}{%endif%}">
                 {{ projet.get_statut_display }}
             </span>
@@ -16,16 +15,16 @@
          archivé
     </span>
       {% endif %}
-            {% if request.user|is_following:projet %}
-            <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant ce projet par mail">
-                 {% fa5_icon 'bell' title='abnnement' %}
-            </span>
-            {% else %}
-            <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant ce projet par mail">
-                 {% fa5_icon 'bell-slash' title='abnnement' %}
-            </span>
-            {% endif %}
-            <p class="text-muted textsmall">Proposé le {{ projet.date_creation|date:"DATE_FORMAT" }} {%if  projet.date_creation != projet.date_modification %} (dernière modif le  {{ projet.date_modification|date:"DATE_FORMAT" }}) {%endif%}</p>
+        {% if request.user|is_following:projet %}
+        <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant ce projet par mail">
+             {% fa5_icon 'bell' title='abonnement' %}
+        </span>
+        {% else %}
+        <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant ce projet par mail">
+             {% fa5_icon 'bell-slash' title='abonnement' %}
+        </span>
+        {% endif %}
+        <p class="text-muted textsmall">Proposé le {{ projet.date_creation|date:"DATE_FORMAT" }} {%if  projet.date_creation != projet.date_modification %} (dernière modif le  {{ projet.date_modification|date:"DATE_FORMAT" }}) {%endif%}</p>
+  </div>
   </a>
-</div>
 </div>

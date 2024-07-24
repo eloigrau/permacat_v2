@@ -7,6 +7,18 @@
 {% load qr_code %}
 {% block subtitle %}
 
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+
+<meta property="og:title" content="{{atelier.titre|couperTexte:65}}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{atelier.get_absolute_url_site}}" />
+<meta property="og:description"
+  content="{{atelier.description|safe|couperTexte:155}}"/>
+{%endblock%}
 
  <div class="row rowcentre">
         <div class="col-sm-12 textcenter">
@@ -137,7 +149,7 @@
    <input type="button" class="btn btn-success" id="btn-sinscrire3" onclick="clicked();" value="S'inscrire à l'atelier">
 </form>
                     {%else%}
-                        <button type="button" class="btn btn-warning">Atelier complet
+            <button type="button" class="btn btn-warning">Atelier complet</button>
                     {%endif%}
                 {% endif %}
             {% else %}
@@ -238,10 +250,10 @@
 					{% endif %}
 				<tr>
 					<td class="nomProprieteAtelier">
-						QR code de Partage :
+						QR code de partage :
 					</td>
 					<td class="proprieteAtelier">
-                {% qr_from_text atelier.get_absolute_url size="T" image_format="png"%}
+                        {% include 'ateliers/qr_code_get.html'%}
 					</td>
 				</tr>
 
@@ -263,7 +275,7 @@
 </form>
                         </p>
                     {%else%}
-                        <button type="button" class="btn btn-warning float-right">Atelier complet
+                        <button type="button" class="btn btn-warning float-right">Atelier complet</button>
                     {%endif%}
                     {%endif%}
 					</td>

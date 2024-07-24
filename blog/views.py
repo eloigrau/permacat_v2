@@ -10,7 +10,7 @@ from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, Comment
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
     AdresseArticleChangeForm
-#from .filters import ArticleFilter
+from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
@@ -1353,7 +1353,7 @@ def filtrer_articles(request):
         q_object = request.user.getQObjectsAssoArticles()
         articles_list = Article.objects.filter(q_object).distinct()
 
-    #f = ArticleFilter(request.GET, queryset=articles_list)
+    f = ArticleFilter(request.GET, queryset=articles_list)
     f = articles_list
     return render(request, 'blog/article_filter.html', {'filter': f})
 

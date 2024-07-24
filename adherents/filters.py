@@ -1,7 +1,7 @@
 from django import forms
 from .models import Adherent, Adhesion
 from bourseLibre.models import Salon, InscritSalon
-#import django_filters
+import django_filters
 from django.db.models import Q
 from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
 from datetime import date
@@ -13,7 +13,7 @@ def get_choix_Production():
     return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
 
 
-#class AdherentsCarteFilter(django_filters.FilterSet):
+class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
 
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")

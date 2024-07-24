@@ -9,13 +9,17 @@
 {% load social_share %}
 {% load qr_code %}
 
-{% block headerDocument%}
+{% block header%}
 {% load leaflet_tags %}
-{% endblock %}
-{% block header %}
 {% load static %}
 {% leaflet_js %}
 {% leaflet_css %}
+
+<meta property="og:title" content="{{article.titre}}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{article.get_absolute_url_site}}" />
+<meta property="og:description"
+  content="{{article.contenu|safe|couperTexte:150}}"/>
 {%endblock%}
 
 {% block subtitle %}
@@ -709,7 +713,9 @@
                                 {% post_to_telegram "{{article.titre}}" article 'Partager sur Telegram' %}</td>
                         </tr>
                         <tr>
-                            <td> {% qr_from_text article.get_absolute_url_site size="T" image_format="png" %}</td>
+                            <td>
+                                {% qr_from_text article.get_absolute_url_site size="T" image_format="png" %}
+                            </td>
                         </tr>
                         <tr>
                             <td><i class="fa fa-copy iconleft"></i>

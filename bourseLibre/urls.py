@@ -153,7 +153,7 @@ urlpatterns = [
     re_path(r'^marche/proposer/', login_required(views.proposerProduit_entree), name='produit_proposer_entree',),
 
     # re_path(r'^list$', views.product_list),
-    #     re_path(r'^list2/$', FilterView.as_view(model=Produit, filterset_class=ProductFilter,)),
+    #re_path(r'^list2/$', FilterView.as_view(model=Produit, filterset_class=ProductFilter,)),
     re_path(r'^marche/$', login_required(views.ListeProduit.as_view()),  name="marche"),
     re_path(r'^marche/lister/$', login_required(views.ListeProduit.as_view()),  name="marche"),
     re_path(r'^marche/supprimerProduits_expires_confirmation/$', views.supprimerProduits_expires_confirmation,  name="supprimerProduits_expires_confirmation"),
@@ -248,7 +248,6 @@ urlpatterns = [
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),
-
 
 ]
 @login_required

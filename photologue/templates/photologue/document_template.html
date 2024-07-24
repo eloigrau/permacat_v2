@@ -1,5 +1,7 @@
 {% load fontawesome_5 %}
 {% load app_filters %}
+{% load static %}
+
 
 <div class="row">
     <div class="col-sm-12">
@@ -8,7 +10,7 @@
             <thead>
             <tr>
                 <th>Groupe</th>
-                <th class="textleft">Titre</th>
+                <th>Titre</th>
                 <th>Article lié</th>
                 <th>Date</th>
                 <th>Lien</th>
@@ -21,11 +23,9 @@
 
             </tr>
             </thead>
-            <tbody>
-            <div class="infinite-container">
-                <div class="grid-container justify-content-center">
+            <tbody class="infinite-container justify-content-center">
                     {% for doc in object_list %}
-                    <tr>
+                    <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
                         <td  class="textleft" style="min-width:40%;">
                            <h5> <a href="{{doc.doc.url}}" class="btn " style="width:100%;">
@@ -54,7 +54,7 @@
                             </p>
                             {% endif%}
                         </td>
-                {%if doc.auteur == request.user or request.user.is_superuser %}
+                    {%if doc.auteur == request.user or request.user.is_superuser %}
                         <td>
                             <a href="{{doc.get_change_url}}">
                                 <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></button>
@@ -72,8 +72,15 @@
                     {% endif %}
                     </tr>
                     {% endfor %}
-                </div>
-            </div>
+
+{% if page_obj.has_next %}
+    <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">+++</a>
+{% endif %}
+<div class="d-flex justify-content-center" style="display:none;">
+<div class="spinner-border" role="status">
+    <span class="sr-only">Chargement...</span>
+</div>
+</div>
             </tbody>
         </table>
         {% else %}
@@ -81,5 +88,24 @@
         {% endif %}
     </div>
 </div>
-{% include 'pagination_new.html' %}
+
+
+    <script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+        handler: function(direction) {
+
+    },
+    offset: 'bottom-in-view',
+
+    onBeforePageLoad: function () {
+    $('.spinner-border').show();
+    },
+    onAfterPageLoad: function () {
+    $('.spinner-border').hide();
+    }
+
+    });
+
+    </script>
 

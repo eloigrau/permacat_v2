@@ -2,8 +2,11 @@
 {% load carto_filters %}
 {% load app_filters %}
 {% load widget_tweaks %}
+{% load static %}
 {% block header%}
 {% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
     <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
   <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
  <script src="{% static 'js/leaflet.markercluster.js' %}"></script>

@@ -3,6 +3,13 @@
 {% load static %}
 {% load fontawesome_5 %}
 
+{% block header%}
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{%endblock%}
 {% block subtitle %}
 
  <div class="row rowcentre" id="titre">

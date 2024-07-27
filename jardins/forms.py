@@ -173,7 +173,7 @@ class InfoGraineForm(forms.ModelForm):
 class PlanteDeJardinForm(forms.ModelForm):
     class Meta:
         model = PlanteDeJardin
-        fields = ['nom', ]
+        fields = []
 
     def save(self, jardin, infos, plante):
         instance = super(PlanteDeJardinForm, self).save(commit=False)
@@ -186,7 +186,7 @@ class PlanteDeJardinForm(forms.ModelForm):
 class AjouterPlanteDeJardinAMonJardinForm(forms.ModelForm):
     class Meta:
         model = PlanteDeJardin
-        fields = ['nom', ]
+        fields = []
 
     def save(self, jardin, infos, plante):
         instance = super(PlanteDeJardinForm, self).save(commit=False)
@@ -199,14 +199,13 @@ class AjouterPlanteDeJardinAMonJardinForm(forms.ModelForm):
 class InfoPlanteForm(forms.ModelForm):
     class Meta:
         model = InfoPlante
-        fields = ['type_plante', 'description', ]
+        fields = ['type_plante', 'strate', 'comestibilite', 'mellifere', 'description', ]
         widgets = {
             'description': SummernoteWidget(),
         }
 
 class ContactParticipantsForm(forms.Form):
     msg = forms.CharField(label="Message", widget=SummernoteWidget)
-
 
 
 class ChoisirMonJardinForm(forms.Form):

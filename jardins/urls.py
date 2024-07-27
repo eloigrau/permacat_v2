@@ -55,6 +55,7 @@ urlpatterns = [
     path(r'jardin/jardin_supprimer/<str:slug>', login_required(views.SupprimerJardin.as_view()), name="jardin_supprimer"),
     path(r'jardin/voir/<str:slug>', views.JardinDetailView.as_view(), name="jardin_lire"),
     path(r'jardin/voirMonJardin/', views.voir_monJardin, name="voir_monJardin"),
+    path(r'jardin/voir_autreJardin/', views.voir_autreJardin, name="voir_autreJardin"),
     path(r'jardin/ajouterPlante/<str:slug>', views.jardin_ajouterPlante, name="jardin_ajouterPlante"),
     path(r'jardin/ajouterPlante_monJardin/<str:plante_pk>', views.ajouterPlante_monJardin, name="ajouterPlante_monJardin"),
     path(r'jardin/ajouterPlante/<int:jardin_pk>/<int:plante_pk>', views.jardin_ajouterPlante_pk, name="jardin_ajouterPlante_pk"),

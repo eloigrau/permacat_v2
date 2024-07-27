@@ -76,11 +76,7 @@
 {% if page_obj.has_next %}
     <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">+++</a>
 {% endif %}
-<div class="d-flex justify-content-center" style="display:none;">
-<div class="spinner-border" role="status">
-    <span class="sr-only">Chargement...</span>
-</div>
-</div>
+
             </tbody>
         </table>
         {% else %}
@@ -98,12 +94,6 @@
     },
     offset: 'bottom-in-view',
 
-    onBeforePageLoad: function () {
-    $('.spinner-border').show();
-    },
-    onAfterPageLoad: function () {
-    $('.spinner-border').hide();
-    }
 
     });
 

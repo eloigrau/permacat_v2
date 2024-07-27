@@ -103,10 +103,11 @@ def nettoyerActions(request):
         return HttpResponseForbidden()
     actions = Action.objects.all()
     for action in actions:
-        if not hasattr(action, '__str__'):
+        if action is None or not hasattr(action,'_base_manager'):
             action.delete()
-        if not action or not action.actor or not action.verb:
-            action.delete()
+        else:
+            if not action or not action.actor or not action.verb:
+                action.delete()
     return redirect("bienvenue")
 
 

@@ -3,6 +3,7 @@
 
 {% load jardins_filters %}
 
+
 {% block subtitle %}
 
 <div class="row justify-content-center">
@@ -14,13 +15,14 @@
        <h4> <a {% if plante.get_inpi_url %}href="{{plante.get_inpi_url}}" {% endif %}>{{plante.NOM_COMPLET_HTML|safe}}</a></h4>
 
         <hr>
-        <p><i class="fa fa-arrow-right" aria-hidden="true"></i> Voir sur : <a  href="https://fr.wikipedia.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Wiki</a>
-        - <a  href="http://www.wikiphyto.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Phyto</a>
-         - <a  href="https://www.ekopedia.fr/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow" >Eko</a>
+        <p><i class="fa fa-arrow-right" aria-hidden="true"></i> Voir sur : <a  href="https://fr.wikipedia.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Wikipedia</a>
+        - <a  href="https://www.tela-botanica.org/?in=flore&s={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Tela Botanica</a>
+        - <a  href="https://www.gbif.org/search?q={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">GBIF</a>
+        - <a  href="http://www.wikiphyto.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">WikiPhyto</a>
+         - <a  href="https://www.ekopedia.fr/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow" >Ekopedia</a>
          - <a  href="https://jardinage.ooreka.fr/plante/recherche?motsClefs={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Ooreka</a>
-        - <a  href="https://www.tela-botanica.org/?in=flore&s={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Tela</a>
-       - <a  href="https://www.google.com/search?q={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Ggl</a>
-       - <a  href="https://florelocale.fr/encyclopedie/index.php?title=+Sp%C3%A9cial%3ARecherche&search={{plante.LB_NOM|rechercher_nom_plante}}&go=Lire"  target="_blank" rel="noopener noreferrer nofollow">Flo</a>
+       - <a  href="https://www.google.com/search?q={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Google</a>
+       - <a  href="https://florelocale.fr/encyclopedie/index.php?title=+Sp%C3%A9cial%3ARecherche&search={{plante.LB_NOM|rechercher_nom_plante}}&go=Lire"  target="_blank" rel="noopener noreferrer nofollow">Florelocale</a>
         &nbsp<i class="fa fa-arrow-left" aria-hidden="true"></i> </p>
         <hr>
 </div></div>
@@ -84,7 +86,14 @@
 </div>
 {% endif %}
 
-
+<hr>
+{% if infos2 %}
+<div class="row justify-content-center">
+    {% for i in infos2 %}
+    <img src="{{i|safe}}" alt="{{i}}" style="height:50vh;padding:5px">
+    {% endfor %}
+</div>
+{% endif %}
 
 {% endblock %}
 

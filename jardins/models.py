@@ -9,11 +9,14 @@ from django.db.models import Q
 import pytz
 
 class Choix():
-    type_jardin =  ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé'), ('4', 'Jardin Professionnel (maraichage, arboriculture, etc. à usage pro)')
+    type_jardin = ('0', 'Jardin Collectif - associatif'), ('1', 'Jardin Collectif - municipal'), ('2', 'Jardin Collectif - Privé'), ('3', 'Jardin Individuel - Privé'), ('4', 'Jardin Professionnel (maraichage, arboriculture, etc. à usage pro)')
     type_grainotheque = ('0', 'Grainothèque Collective - association'), ('2', 'Grainothèque Collective - médiathèque, école, ...'), ('3', 'Grainothèque Privée'),
 
     visibilite_jardin_annuaire = ('0', "Public (visible sans inscription)"), ('1', 'Inscrits (visible seulement par les inscrits au site)'), ('2', "Invisible ")
-    type_plante = ('0', 'Arbre'), ('1', 'Fruitier'), ('2', 'Arbuste'), ('3', 'Plante potagère'), ('4', 'Aromatique / médicinale'),  ('5', 'Petit fruit'), ('6', 'Herbacée'),  ('8', 'Liane'), ('9', 'Ornementale'), ('10', 'Champignon'),
+    type_plante = ('0', 'Arbre'), ('1', 'Fruitier'), ('2', 'Arbuste'), ('3', 'Plante potagère'), ('4', 'Aromatique / médicinale'),  ('5', 'Petit fruit'), ('6', 'Herbacée'),  ('8', 'Liane'), ('9', 'Ornementale'), ('10', 'Champignon'),('11', 'Rhizome'),
+    type_strate = ('', '----------'), ('0', 'canopée (grand arbre)'), ('1', 'strate arborée basse'), ('2', 'strate arbustive/buissonante'), ('3', 'couche herbacée'), ('4', 'couvre-sol'), ('5', 'rhizosphère'), ('6', 'strate verticale (lianes...)')
+    type_comestibilite = ('0', 'Comestibilitée inconnue'), ('1', 'non comestible'), ('2', 'Comestible (tout)'), ('3', 'Comestible (feuilles)'), ('4', 'Comestible (fruit)'), ('5', 'Comestible (fleur)'), ('6', 'Comestible (racines)')
+
 
 class DBRang_inpn(models.Model):
     RG_LEVEL = models.IntegerField()
@@ -339,9 +342,19 @@ class InfoPlante(models.Model):
     type_plante = models.CharField(max_length=3,
         choices=Choix.type_plante,
         default='0', verbose_name="Type de plante")
+    strate = models.CharField(max_length=3,
+        choices=Choix.type_strate,
+        default='0', verbose_name="Strate")
+    comestibilite = models.CharField(max_length=3,
+        choices=Choix.type_comestibilite,
+        default='0', verbose_name="Comestibilité")
+    mellifere = models.BooleanField(default=False, verbose_name="Plante mellifère")
 
     def __str__(self):
-        return str(self.description) + " " + self.get_type_plante_display()
+        description = ""
+        if self.description:
+            description += self.description
+        return description + self.get_type_plante_display() + ", " + self.get_strate_display() + ", " + self.get_comestibilite_display() + ", " + self.get_mellifere_display()
 
     def get_edit_url(self):
         return reverse('jardins:jardin_editInfosPlante', kwargs={'pk':self.pk})
@@ -349,15 +362,19 @@ class InfoPlante(models.Model):
     def get_absolute_url(self):
         return reverse('jardins:jardin_lire', kwargs={'slug':self.graine.grainotheque.slug})
 
+    def get_mellifere_display(self):
+        if self.mellifere :
+            return "mellifère"
+        else:
+            return "non mellifère"
 
 class PlanteDeJardin(models.Model):
-    nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la plante",)
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True,  related_name="plantedejardin_plante")
     jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, null=True, related_name="plantedejardin_jardin")
     infos = models.ForeignKey(InfoPlante, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.nom) +" "+ str(self.infos)
+        return str(self.infos)
 
 
     def get_edit_url(self):
@@ -372,7 +389,7 @@ class PlanteDeJardin(models.Model):
 
     @property
     def get_str_html(self):
-        return "<tr><td>"+str(self.nom) +"<td><a href='"+self.plante.get_absolute_url()+"'>"+str(self.plante) +"</a></td><td>" + str(self.infos) +"</td></tr>"
+        return "<tr><td><a href='"+self.plante.get_absolute_url()+"'>"+str(self.plante) +"</a></td><td>" + str(self.infos) +"</td></tr>"
 
 
 

@@ -34,7 +34,7 @@ from blog.models import Article, Projet, EvenementAcceuil, Evenement, Associatio
 from ateliers.models import Atelier
 from vote.models import Suffrage, Vote
 #from jardinpartage.models import Article as Article_jardin
-
+from django_minify_html.decorators import no_html_minification
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -339,7 +339,7 @@ def profil_courant(request, ):
     nbExpires = getNbProduits_expires(request)
     return render(request, 'profil.html', {'user': request.user, "nbExpires":nbExpires})
 
-
+@no_html_minification
 @login_required
 def profil(request, user_id):
     try:

@@ -1,9 +1,7 @@
 {% extends 'blog/base_blog.html' %}
+{% load static %}
 {% block header%}
 {% load leaflet_tags %}
-{% load static %}
-{% endblock %}
-{% block header %}
 {{ form.media }}
 {% leaflet_js %}
 {% leaflet_css %}

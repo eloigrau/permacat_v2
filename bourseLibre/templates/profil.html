@@ -6,7 +6,7 @@
 {% load avatar_tags %}
 {% load fontawesome_5 %}
 {%endblock%}
-{%block header %}
+{%block header2 %}
 {% leaflet_js %}
 {% leaflet_css %}
 {%endblock%}
@@ -77,8 +77,8 @@
             </button>
         </a>
       {%endif%}
-      <table class="table table-condensed tablepanier table-striped"><tbody>
-
+      <table class="table table-condensed tablepanier table-striped">
+          <tbody>
         <tr>
             <td style="width:250px">Avatar :</td>
             <td>{% avatar user class="img-circle-profil" %}</td>
@@ -167,11 +167,14 @@
 		<td>{{user.adherent_scic|translateOuiNon}}{%if user.adherent_scic and request.user.is_superuser %}, cotisation à jour : {% if user.isCotisationAJour_scic %} oui {% else %}
       <a href="{% url 'adhesion_asso' asso='scic' %}"> non </a>{% endif %}{% endif %}
 
+       {% if request.user.is_superuser %}
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='scic' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
-        </a></td>
+        </a>
+    {% endif %}
+        </td>
 	    </tr>
     {% endif %}
     {%if request.user.adherent_citealt or request.user == user %}
@@ -184,7 +187,7 @@
         <tr>
             <td style="width:200px">Inscrit au collectif Viure *: </td>
             <td>{{user.adherent_viure|translateOuiNon }}
-                   {% if request.user.is_superuser %}
+       {% if request.user.is_superuser %}
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='viure' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
@@ -239,16 +242,18 @@
         </tr>
         {% if user.accepter_annuaire %}
         <tr>
-            <td style="width:200px">Dernière connexion : </td>
-            <td>{{user.last_login|date:'DATE_FORMAT' }}</td>
+            <td style="width:200px">Dernière connexion :
+            </td>
+            <td>{{user.last_login|date:'DATE_FORMAT' }}
+            </td>
         </tr>
         {% endif %}
       </tbody>
     </table>
       </div>
 </div>
-<div class="row">
 
+<div class="row">
   <div class="col-md-6">
       {%if request.user.id == user.id %}
         <a href="{% url 'profil_modifier_adresse' %}">

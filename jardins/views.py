@@ -333,31 +333,30 @@ class ListePlantes(ListView):
         return context
 
 def voir_plante(request, cd_nom):
-    p = get_object_or_404(Plante, CD_NOM=int(cd_nom))
-    plantesDeJardins = p.plantedejardin_plante.all()
-    jardins = set(j.jardin for j in plantesDeJardins)
-    graines = p.graine_set.all()
-    grainotheques = set(j.grainotheque for j in graines )
-    return render(request, "jardins/plante.html", {"plante":p, "jardins":jardins, "grainotheques":grainotheques})
-
-
-def voir_plante_nom(request):
-    cd_nom = int(request.GET["nom"])
-    try:
-        p = Plante.objects.get(CD_NOM=int(cd_nom))
-    except:
-        return render(request, "jardins/plante.html", {"msg":"plante introuvable"})
-
-    return render(request, "jardins/plante.html", {"plante":p})
-
-def voir_plante_recherche(request):
-    cd_nom = int(request.GET["plante"])
     try:
         p = Plante.objects.get(CD_NOM=int(cd_nom))
     except:
         return render(request, "jardins/plante.html", {"msg":"plante introuvable (" + str(cd_nom) +")"})
+    plantesDeJardins = p.plantedejardin_plante.all()
+    jardins = set(j.jardin for j in plantesDeJardins)
+    graines = p.graine_set.all()
+    grainotheques = set(j.grainotheque for j in graines)
+    from pygbif import occurrences
+    import re
+    #infos = occurrences.search(q=p.LB_NOM)
+    infos = occurrences.search(scientificName=p.LB_NOM)
+    infos2 = set(re.findall("(https:\/\/inaturalist-open-data\S+(?:png|jpe?g|gif))", str(infos)))
 
-    return render(request, "jardins/plante.html", {"plante":p})
+    return render(request, "jardins/plante.html", {"plante":p, "jardins":jardins, "grainotheques":grainotheques, "infos2":infos2})
+
+
+def voir_plante_nom(request):
+    cd_nom = int(request.GET["nom"])
+    return redirect('jardins:voir_plante', cd_nom=cd_nom)
+
+def voir_plante_recherche(request):
+    cd_nom = int(request.GET["plante"])
+    return redirect('jardins:voir_plante', cd_nom=cd_nom)
 
 
 class PlanteAutocomplete(autocomplete.Select2QuerySetView):
@@ -417,7 +416,7 @@ class AjouterJardin(CreateView):
         if self.request.user.is_anonymous:
             bot = Profil.objects.get(username='bot_permacat')
             action.send(bot, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
-                     description="Quelqu'un a ajouté le Jardin: '%s'" % self.object.titre)
+                     description="Un-e anonyme a ajouté le Jardin: '%s'" % self.object.titre)
         else:
             action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
                      description="a ajouté le Jardin: '%s'" % self.object.titre)
@@ -463,15 +462,40 @@ def jardin_ajouterPlante_pk(request, jardin_pk, plante_pk):
 @login_required
 def ajouterPlante_monJardin(request, plante_pk):
     jardins = request.user.get_jardins
+
+    if not 'jardin_courant_pk' in request.session:
+        if len(jardins) == 0:
+            return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
+        elif len(jardins) == 1:
+            request.session['jardin_courant_pk'] = jardins[0].pk
+            return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=jardins[0].pk, plante_pk=plante_pk)
+        else:
+            form = ChoisirMonJardinForm(request, request.POST or None)
+
+        if form.is_valid():
+            request.session['jardin_courant_pk'] = form.cleaned_data['jardin'].pk
+            return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=form.cleaned_data['jardin'].pk, plante_pk=plante_pk)
+
+        return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
+    else:
+        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=request.session.get('jardin_courant_pk'), plante_pk=plante_pk)
+
+
+
+@login_required
+def voir_autreJardin(request):
+    jardins = request.user.get_jardins
     if len(jardins) == 0:
         return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
     elif len(jardins) == 1:
-        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=jardins[0].pk, plante_pk=plante_pk)
+        request.session['jardin_courant_pk'] = jardins[0].pk
+        return redirect(jardins[0])
     else:
         form = ChoisirMonJardinForm(request, request.POST or None)
 
     if form.is_valid():
-        return redirect('jardins:jardin_ajouterPlante_pk', jardin_pk=form.cleaned_data['jardin'].pk, plante_pk=plante_pk)
+        request.session['jardin_courant_pk'] = form.cleaned_data['jardin'].pk
+        return redirect(form.cleaned_data['jardin'])
 
     return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
 
@@ -479,17 +503,23 @@ def ajouterPlante_monJardin(request, plante_pk):
 @login_required
 def voir_monJardin(request):
     jardins = request.user.get_jardins
-    if len(jardins) == 0:
-        return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
-    elif len(jardins) == 1:
-        return redirect(jardins[0])
+    if not 'jardin_courant_pk' in request.session:
+        if len(jardins) == 0:
+            return render(request, 'jardins/jardin_pasDeJardinEnregistre.html', {})
+        elif len(jardins) == 1:
+            request.session['jardin_courant_pk'] = jardins[0].pk
+            return redirect(jardins[0])
+        else:
+            form = ChoisirMonJardinForm(request, request.POST or None)
+
+        if form.is_valid():
+            request.session['jardin_courant_pk'] = form.cleaned_data['jardin'].pk
+            return redirect(form.cleaned_data['jardin'])
+
+        return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
     else:
-        form = ChoisirMonJardinForm(request, request.POST or None)
+        return redirect(Jardin.objects.get(pk=request.session.get('jardin_courant_pk')))
 
-    if form.is_valid():
-        return redirect(form.cleaned_data['jardin'])
-
-    return render(request, 'jardins/jardin_ChoisirMonJardin.html', {'form': form,})
 
 
 @login_required
@@ -598,7 +628,7 @@ class JardinDetailView(DetailView):
         context["adresse_visible"] = self.object.visibilite_annuaire == '0' or (self.object.visibilite_annuaire == '1' and self.request.user.is_authenticated)
         context["salons"] = Salon.objects.filter(jardin=self.object)
         context["grainotheques"] = Grainotheque.objects.filter(jardin=self.object)
-        context["plantes"] = PlanteDeJardin.objects.filter(jardin=self.object).order_by("nom")
+        context["plantes"] = PlanteDeJardin.objects.filter(jardin=self.object).order_by("plante__LB_NOM")
         return context
 
 class AjouterGrainotheque(CreateView):

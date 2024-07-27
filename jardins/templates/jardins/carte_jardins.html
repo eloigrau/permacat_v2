@@ -4,8 +4,6 @@
 {% load widget_tweaks %}
 {% block header%}
 {% load leaflet_tags %}
-{% endblock %}
-{% block header %}
 {% load static %}
 {% leaflet_js %}
 {% leaflet_css %}
@@ -33,7 +31,7 @@
 </a>
 {% if request.user.get_jardins %}
 <a href="{% url 'jardins:voir_monJardin' %}">
-    <button type="button" class="btn  btn-success" >
+    <button type="button" class="btn  btn-info" >
         <i class="fa fa-arrow-right"></i>&nbsp; Mon Jardin
     </button>
 </a>

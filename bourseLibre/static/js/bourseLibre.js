@@ -47,9 +47,9 @@ $(document).ready(function() {
 document.onreadystatechange = function() {
     if (document.readyState == "complete") {
         $("#loader").css('display', "none");
-        $("#contenucharge").css('visibility', "visible");
+        /*$("#contenucharge").css('visibility', "visible");*/
     } else {
-        $("#contenucharge").css('visibility', "hidden");
+        /*$("#contenucharge").css('visibility', "hidden");*/
         $("#loader").css('visibility', "visible");
     }
 };

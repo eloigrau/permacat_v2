@@ -1,15 +1,7 @@
 {% extends 'base_plantes.html' %}
-
-{% block header%}
 {% load leaflet_tags %}
 {% load static %}
 {% load fontawesome_5 %}
-{% endblock %}
-
-{% block header %}
-{% leaflet_js %}
-{% leaflet_css %}
-{% endblock %}
 
 {% block subtitle %}
 
@@ -27,6 +19,12 @@
 				<a href="{%if request.user.is_authenticated %}{% url 'jardins:jardin_supprimer' slug=jardin.slug %}{% endif %}">
                <button type="button" class="btn btn-sm btn-danger">
                  &nbsp;Supprimer le Jardin
+               </button></a>
+            {% endif %}
+            {%if request.user.is_superuser or request.user == jardin.auteur  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:voir_autreJardin' %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-info">
+                 &nbsp;Changer de Jardin
                </button></a>
             {% endif %}
         </div>

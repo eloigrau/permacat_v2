@@ -4,8 +4,6 @@ Created on 25 mai 2017
 
 @author: tchenrezi
 '''
-import itertools
-
 from django.shortcuts import HttpResponseRedirect, render, redirect, get_object_or_404#, render, redirect, render_to_response,
 from django.core.exceptions import PermissionDenied
 from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, Produit_objet_CreationForm, \

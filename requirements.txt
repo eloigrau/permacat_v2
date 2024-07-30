@@ -94,6 +94,7 @@ oauthlib==3.1.1
 olefile==0.47
 packaging==21.3
 pbr==3.1.1
+pygbif==0.6.4
 phonenumbers==8.13.40
 pillow==10.4.0
 progressbar2==4.4.2

@@ -28,7 +28,7 @@
                         {% for profil in profils %}
                         <tr>
                             {% if profil.accepter_annuaire %}
-                            <td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil" id="user_avatar" %}</a></td>
+                            <td><a href="{% url 'profil' profil.id %}">{{% comment %}% avatar profil 40 class="img-circle-profil" id="user_avatar" %} {% endcomment %}</a></td>
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.email }}</a></td>
                             <td>{%if profil.adresse.code_postal %}{{ profil.adresse.code_postal }}{% else %}-{% endif %}
@@ -61,7 +61,7 @@
                     <table class="table table-condensed tableprofils table-striped sortable">
                         <thead class="thead-inverse">
                         <tr>
-                            <th>Avatar</th>
+                           {% comment %} <th>Avatar</th>{% endcomment %}
                             <th>Pseudo</th>
                             <th>Description</th>
                             <th>Savoir-faire</th>
@@ -70,8 +70,9 @@
                         <tbody>
                         {% for profil in profils %}
                         <tr>
+                            {% comment %}
                             <td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil"
-                                id="user_avatar" %}</a></td>
+                                id="user_avatar" %}</a></td>{% endcomment %}
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
                             <td>{{ profil.description|safe }}</td>
                             <td>{{ profil.competences|safe }}</td>

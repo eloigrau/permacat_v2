@@ -30,7 +30,7 @@ class JardinCarteFilter(django_filters.FilterSet):
 
 
 class GrainoCarteFilter(django_filters.FilterSet):
-    #compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_graino_filter', label="Mot dans le titre ou la description")
+    compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_graino_filter', label="Mot dans le titre ou la description")
 
     def get_graino_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|

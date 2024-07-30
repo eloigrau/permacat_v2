@@ -333,6 +333,6 @@ def copierAteliers_inverse(request):
 
 @login_required
 def get_qr_code(request, slug):
-    qr_url = Atelier.objects.get(slug=slug)
+    qr_url = Atelier.objects.get(slug=slug).get_absolute_url_site
     return render(request, 'qr_code_template.html', {'qr_url': qr_url})
 

@@ -615,7 +615,7 @@ def carte_graino(request):
     #graino_filtres = graino
     titre = "Carte des grainothèques "
 
-    return render(request, 'jardins/carte_graino.html', {'filter':graino_filtres, 'titre': titre, } )
+    return render(request, 'jardins/carte_graino.html', {'filter':graino_filtres, 'titre': titre, })
 
 
 class JardinDetailView(DetailView):

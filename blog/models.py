@@ -163,7 +163,7 @@ class Choix:
     def get_type_annonce_asso(asso):
         try:
             if asso =="jp":
-                return Choix.type_annonce_jp_base + tuple([('jardin_' + str(i.id), i.titre) for i in Jardin.objects.all()])
+                return Choix.type_annonce_jp_base + tuple([('jardin_' + str(i.id), "Jardin : " + i.titre) for i in Jardin.objects.all()])
 
             return Choix.type_annonce_asso[asso]
         except:

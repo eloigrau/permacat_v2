@@ -71,8 +71,9 @@
                         {% for profil in profils %}
                         <tr>
                             {% comment %}
-                            <td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil"
-                                id="user_avatar" %}</a></td>{% endcomment %}
+                            <td><a href="{% url 'profil' profil.id %}">
+                                {% avatar profil 40 class="img-circle-profil" id="user_avatar" %}</a></td>
+                            {% endcomment %}
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
                             <td>{{ profil.description|safe }}</td>
                             <td>{{ profil.competences|safe }}</td>

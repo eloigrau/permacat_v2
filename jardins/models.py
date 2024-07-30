@@ -376,6 +376,13 @@ class PlanteDeJardin(models.Model):
     def __str__(self):
         return str(self.infos)
 
+    @property
+    def get_nom(self):
+        if self.plante:
+            return self.plante.NOM_VERN
+        else:
+            return ""
+
 
     def get_edit_url(self):
         return reverse('jardins:jardin_modifierPlante', kwargs={'pk':self.pk, "slug_jardin":self.jardin.slug})

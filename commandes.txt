@@ -37,7 +37,7 @@ scp -P 32768 /home/tchenrezi/XX.csv  udjango@82.64.236.35:/home/udjango/permacat
 
 cd /home/udjango/permacat
 git pull
-source /home/udjango/permacat/permacatenv/bin/activate
+source /home/udjango/permacat/permacatenv39/bin/activate
 export DJANGO_SETTINGS_MODULE=bourseLibre.settings.production
 python manage.py migrate
 sudo supervisorctl restart permacat_supervisor

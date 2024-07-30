@@ -15,7 +15,7 @@ class Choix():
     visibilite_jardin_annuaire = ('0', "Public (visible sans inscription)"), ('1', 'Inscrits (visible seulement par les inscrits au site)'), ('2', "Invisible ")
     type_plante = ('0', 'Arbre'), ('1', 'Fruitier'), ('2', 'Arbuste'), ('3', 'Plante potagère'), ('4', 'Aromatique / médicinale'),  ('5', 'Petit fruit'), ('6', 'Herbacée'),  ('8', 'Liane'), ('9', 'Ornementale'), ('10', 'Champignon'),('11', 'Rhizome'),
     type_strate = ('', '----------'), ('0', 'canopée (grand arbre)'), ('1', 'strate arborée basse'), ('2', 'strate arbustive/buissonante'), ('3', 'couche herbacée'), ('4', 'couvre-sol'), ('5', 'rhizosphère'), ('6', 'strate verticale (lianes...)')
-    type_comestibilite = ('0', 'Comestibilité inconnue'), ('1', 'non comestible'), ('2', 'Comestible (tout)'), ('3', 'Comestible (feuilles)'), ('4', 'Comestible (fruit)'), ('5', 'Comestible (fleur)'), ('6', 'Comestible (racines)')
+    type_comestibilite = ('0', 'Comestibilité inconnue'), ('1', 'Non comestible'), ('2', 'Comestible (tout)'), ('3', 'Comestible (feuilles)'), ('4', 'Comestible (fruit)'), ('5', 'Comestible (fleur)'), ('6', 'Comestible (racines)')
 
 
 class DBRang_inpn(models.Model):

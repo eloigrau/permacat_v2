@@ -13,7 +13,7 @@ def Browse_file():
     print (str(files))
     for f in files:
         print(" ".join(["mogrify", "-format", "png", f]))
-    subprocess.run(["mogrify", "-format", "png", "*.jpeg"])
+        subprocess.run(["mogrify", "-format", "png", f])
 
 #test
 if __name__ =="__main__":

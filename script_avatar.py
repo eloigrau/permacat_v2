@@ -28,8 +28,8 @@ def Browse_file():
 def avatar():
     #Browse along file tree
     print(str(root_path))
-    print (glob.glob(root_path+"/40/*.png",   recursive=True))
-    for f in glob.glob(root_path+"/40/*.png",   recursive=True):
+    print(glob.glob(root_path+"**/40/*.png",   recursive=True))
+    for f in glob.glob(root_path+"**/40/*.png",   recursive=True):
         f_new = f.split("40/")[0] + "/40/40/" + f.split("40/")[1]
         cmd_data = ["mv", f, "png", f]
         cmd = " ".join(cmd_data)

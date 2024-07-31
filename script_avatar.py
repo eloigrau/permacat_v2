@@ -1,6 +1,6 @@
 import os
 root_path = '/home/udjango/permacat/bourseLibre/media/avatars'
-#root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars'
+root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars'
 
 import os, sys, re, subprocess
 
@@ -19,12 +19,24 @@ def Browse_file():
         subprocess.run(["mogrify", "-format", "png", f])
         subprocess.run(["rm", f])
 
-
     for f in glob.glob(root_path+"/**/*.JPG",   recursive=True):
         print(" ".join(["mogrify", "-format", "png", f]))
         subprocess.run(["mogrify", "-format", "png", f])
         subprocess.run(["rm", f])
+
+
+def avatar():
+    #Browse along file tree
+    print(str(root_path))
+    print (glob.glob(root_path+"/40/*.png",   recursive=True))
+    for f in glob.glob(root_path+"/40/*.png",   recursive=True):
+        f_new = f.split("40/")[0] + "/40/40/" + f.split("40/")[1]
+        cmd_data = ["mv", f, "png", f]
+        cmd = " ".join(cmd_data)
+        print(cmd)
+        #subprocess.run(cmd)
+        #subprocess.run(["rm", f])
 #test
 if __name__ =="__main__":
-    Browse_file()
+    avatar()
     import shutil

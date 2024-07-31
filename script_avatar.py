@@ -33,7 +33,7 @@ def avatar(taille="40"):
         print("plis" + str(split))
         if len(split) == 2:
             f_new = split[0] + ""+taille+"/"+taille+"/" + split[1]
-            cmd_data = ["mkdir", split[0] + ""+taille+"/"+taille+"/"]
+            cmd_data = ["mkdir", split[0] + ""+taille+"/"+taille]
             cmd = " ".join(cmd_data)
             print(cmd)
             subprocess.run(cmd)

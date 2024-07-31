@@ -35,8 +35,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALL = False
 DEBUG = False
 
-from .production import LOCALL, DEBUG
-
 try:
     SECRET_KEY = os.environ['SECRET_KEY']
     DB_PWD = os.environ['SECRET_KEY_DB']

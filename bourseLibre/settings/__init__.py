@@ -34,6 +34,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 LOCALL = False
 DEBUG = False
+
+from .production import LOCALL, DEBUG, SECRET_KEY
+
 # try:
 #     SECRET_KEY = os.environ['SECRET_KEY']
 #     DB_PWD = os.environ['SECRET_KEY_DB']
@@ -47,7 +50,7 @@ DEBUG = False
 #     DEBUG = True
 #     print(str(e))
 
-print('LOCALL : ' + str(LOCALL))
+print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))
 #DEBUG_PROPAGATE_EXCEPTIONS = True
 
 #SECURE_SSL_REDIRECT = False
@@ -194,7 +197,7 @@ MIDDLEWARE = [
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
-    "django_minify_html.middleware.MinifyHtmlMiddleware",
+    #"django_minify_html.middleware.MinifyHtmlMiddleware",
     #"visits.middleware.BotVisitorMiddleware",
      #"visits.middleware.CounterMiddleware",
     #'django.core.context_processors.request',

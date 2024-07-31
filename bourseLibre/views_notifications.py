@@ -296,6 +296,7 @@ def notifications_news_regroup(request):
             dicoTexte['listautres'].append(action)
 
     maintenant = now()
+    #print("prooooj" + str(htmlProjets))
     return render(request, 'notifications/notifications_last2.html', {'type_notif':type_notif,'dico':dicoTexte, "htmlArticles":htmlArticles, "htmlProjets":htmlProjets, "dateMin":dateMin, "maintenant":maintenant})
 
 

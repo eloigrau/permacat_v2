@@ -44,6 +44,6 @@ def avatar(taille="40"):
         #subprocess.run(["rm", f])
 #test
 if __name__ =="__main__":
-    avatar("40")
-    avatar("80")
-    import shutil
+    pass
+    #avatar("40")
+    #avatar("80")

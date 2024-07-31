@@ -32,15 +32,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-LOCALL = False
-DEBUG = False
 
-try:
-    toto= os.environ['LOCAL_django']
-    LOCALL = True
-    DEBUG = True
-except:
-    pass
+def get_local():
+    try:
+        toto= os.environ['LOCAL_django']
+        return True
+    except:
+        return False
+    return
+
+LOCALL = get_local()
+DEBUG = get_local()
 
 SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
 EMAIL_PWD = "test"
@@ -514,7 +516,7 @@ NBMAX_ARTICLES = 5
 
 
 AVATAR_GRAVATAR_DEFAULT = "identicon"
-AVATAR_AUTO_GENERATE_SIZES = (80, 40)
+AVATAR_AUTO_GENERATE_SIZES = (40,)
 AVATAR_MAX_AVATARS_PER_USER = 5
 AVATAR_EXPOSE_USERNAMES = False
 #AVATAR_THUMB_FORMAT = 'JPEG'

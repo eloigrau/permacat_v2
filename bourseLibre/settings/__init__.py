@@ -35,15 +35,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALL = False
 DEBUG = False
 
-try:
-    SECRET_KEY = os.environ['SECRET_KEY']
-    DB_PWD = os.environ['SECRET_KEY_DB']
-    EMAIL_PWD = os.environ['EMAIL_DB']
-except Exception as e:
-    DB_PWD = ""
-    SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
-    EMAIL_PWD = "test"
-    print(str(e))
+SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
+EMAIL_PWD = "test"
 
 print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))
 #DEBUG_PROPAGATE_EXCEPTIONS = True
@@ -59,7 +52,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # Database
 if LOCALL:
-    print("DB CONFIG LOCALL")
     DATABASES = {
        'default': {
           'ENGINE': 'django.db.backends.sqlite3',
@@ -67,7 +59,6 @@ if LOCALL:
         }
     }
 else:
-    print("DB CONFIG SERVEUR")
     DATABASES = dict()
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 

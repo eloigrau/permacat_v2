@@ -46,7 +46,6 @@ except Exception as e:
     DB_PWD = ""
     SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
     EMAIL_PWD = "test"
-    DEBUG = True
     print(str(e))
 
 print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))

@@ -180,62 +180,52 @@
 
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help2" title="Filtrer">
             Grainothèques
         </button>
-<div class="modal fade" id="help2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog textaide" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="row justify-content-center">
-                    <h5> Grainotheques</h5>
-                </div>
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
-                    Filtrer / rechercher... les grainotheques
-                </button>
-                <!-- Modal -->
-                <div class="modal fade" id="help2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog textaide" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <div class="row justify-content-center">
-                                    <h5> Filtrer/rechercher les grainotheques</h5>
-                                </div>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body textleft">
-                                <form method="get">
-                                    <div class="well">
-                                        <div class="row">
-                                            <div class="form-group col-sm-12">
-                                                <label>Rechercher :</label>
-                                                {% render_field graino_filtres.form.compet_descrip_graino
-                                                class="form-control" %}
-                                            </div>
-                                            <br>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12 textcenter">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <span class="glyphicon glyphicon-search"></span> Rechercher....
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+        <!-- Modal -->
+        <div class="modal fade" id="help2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog textaide" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row justify-content-center">
+                            <h5> Filtrer/rechercher les Grainothèques</h5>
                         </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body textleft">
+                        <form method="get">
+                            <div class="well">
+                                <div class="row">
+                                    <div class="form-group col-sm-12">
+                                        <label>Rechercher :</label>
+{% render_field graino_filtres.form.compet_descrip_graino class="form-control" %}
+                                    </div>
+                                    <br>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 textcenter">
+                                        <button type="submit" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-search"></span> Rechercher...
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
+
+
+
+
 
 {% include "template_annuaire_graino.html" with grainotheques=graino_filtres.qs %}
 

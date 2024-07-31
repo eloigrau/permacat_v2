@@ -532,3 +532,9 @@ except ImportError:
     print("Impossible d'importer production.py")
     pass
 
+# export POSTGRES_HOST=postgres
+# export POSTGRES_PORT=5432
+# export POSTGRES_DB=marketing
+# export POSTGRES_USER=username
+# export POSTGRES_PASSWORD=password
+# export DATABASE_URL=postgres://username:password@localhost:5432/marketing

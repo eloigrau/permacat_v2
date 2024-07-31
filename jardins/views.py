@@ -760,16 +760,12 @@ def jardin_ajouterPlante(request, slug):
 def jardin_modifierPlante(request, slug_jardin, pk):
     plante = PlanteDeJardin.objects.get(pk=pk)
     jardin = get_object_or_404(Jardin, slug=slug_jardin)
-    form = PlanteDeJardinForm(request.POST or None, instance=plante)
     form_infos = InfoPlanteForm(request.POST or None, instance=plante.infos)
-    plant_form = Plante_rechercheForm(None)
-    if form.is_valid() and form_infos.is_valid():
+    if form_infos.is_valid():
         infos = form_infos.save()
-        plante = Plante.objects.get(CD_NOM=int(request.POST["plante"]))
-        planteDeJardin = form.save(jardin, infos, plante)
         return redirect(jardin)
 
-    return render(request, 'jardins/jardin_modifierPlante.html', {'jardin':jardin, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
+    return render(request, 'jardins/jardin_modifierPlante.html', {'jardin':jardin, 'plante':plante, 'form_infos':form_infos })
 
 
 @login_required
@@ -846,14 +842,12 @@ def graino_modifierGraine(request, slug_graino, pk):
     graino = get_object_or_404(Grainotheque, slug=slug_graino)
     form = GraineForm(request.POST or None, instance=graine)
     form_infos = InfoGraineForm(request.POST or None, instance=graine.infos)
-    plant_form = Plante_rechercheForm(None)
     if form.is_valid() and form_infos.is_valid():
         infos = form_infos.save()
-        plante = Plante.objects.get(CD_NOM=int(request.POST["plante"]))
-        graine = form.save(graino, infos, plante)
+        graine = form.save(graino, infos, graine.plante)
         return redirect(graino)
 
-    return render(request, 'jardins/grainotheque_modifierGraine.html', {'graino':graino, 'form':form , 'plant_form':plant_form , 'form_infos':form_infos })
+    return render(request, 'jardins/grainotheque_modifierGraine.html', {'graino':graino, 'graine':graine, 'form':form , 'form_infos':form_infos })
 
 @login_required
 def inscriptionJardin(request, slug):

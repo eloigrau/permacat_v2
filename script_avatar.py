@@ -1,6 +1,6 @@
 import os
-root_path = '/home/udjango/permacat/bourseLibre/media/avatars'
-#root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars'
+root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars/'
+root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars/'
 
 import os, sys, re, subprocess
 
@@ -28,12 +28,17 @@ def Browse_file():
 def avatar():
     #Browse along file tree
     print(str(root_path))
-    print(glob.glob(root_path+"/**/40/*.png",   recursive=True))
     for f in glob.glob(root_path+"/**/40/*.png",   recursive=True):
-        f_new = f.split("40/")[0] + "/40/40/" + f.split("40/")[1]
-        cmd_data = ["mv", f, "png", f]
-        cmd = " ".join(cmd_data)
-        print(cmd)
+        split = f.split("40/")
+        #print("plis" + str(split))
+        if len(split)==2:
+            f_new = split[0] + "40/40/" + split[1]
+            cmd_data = ["mkdir", split[0] + "40/40/"]
+            cmd = " ".join(cmd_data)
+            print(cmd)
+            cmd_data = ["mv", f, f_new]
+            cmd = " ".join(cmd_data)
+            print(cmd)
         #subprocess.run(cmd)
         #subprocess.run(["rm", f])
 #test

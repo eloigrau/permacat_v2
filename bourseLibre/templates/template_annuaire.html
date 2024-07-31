@@ -16,7 +16,7 @@
                     <table class="table table-condensed tableprofils table-striped sortable">
                         <thead class="thead-inverse">
                         <tr>
-                           {% comment %} <th>Avatar</th>{% endcomment %}
+                            <th>Avatar</th>
                             <th>Pseudo</th>
                             <th>Email</th>
                             <th>Code postal</th>
@@ -28,7 +28,7 @@
                         {% for profil in profils %}
                         <tr>
                             {% if profil.accepter_annuaire %}
-                            {% comment %}<td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil" id="user_avatar" %} </a></td>{% endcomment %}
+                            <td><a href="{% url 'profil' profil.id %}">{% avatar profil 40 class="img-circle-profil" id="user_avatar" %}</a></td>
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.email }}</a></td>
                             <td>{%if profil.adresse.code_postal %}{{ profil.adresse.code_postal }}{% else %}-{% endif %}

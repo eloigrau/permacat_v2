@@ -234,6 +234,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bourseLibre.wsgi.application'
 # Database
 if LOCALL:
+    print("DB CONFIG LOCALL")
     DATABASES = {
        'default': {
           'ENGINE': 'django.db.backends.sqlite3',
@@ -242,6 +243,7 @@ if LOCALL:
     }
     ALLOWED_HOSTS = ['127.0.0.1']
 else:
+    print("DB CONFIG SERVEUR")
     DATABASES = dict()
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 

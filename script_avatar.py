@@ -1,6 +1,6 @@
 import os
-root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars/'
-root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars/'
+root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars'
+root_path = '/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/media/avatars'
 
 import os, sys, re, subprocess
 

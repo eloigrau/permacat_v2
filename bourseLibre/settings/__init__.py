@@ -35,6 +35,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALL = False
 DEBUG = False
 
+try:
+    toto= os.environ['LOCAL_django']
+    LOCALL = True
+    DEBUG = True
+except:
+    pass
+
 SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
 EMAIL_PWD = "test"
 
@@ -64,7 +71,7 @@ else:
 
 
 
-if not LOCALL:
+if  LOCALL == False:
     SECURE_HSTS_SECONDS = 604800
     SECURE_CONTENT_TYPE_NOSNIFF = True
     #SECURE_BROWSER_XSS_FILTER = True

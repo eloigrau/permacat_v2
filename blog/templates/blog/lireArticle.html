@@ -216,8 +216,8 @@
             <div class="row justify-content-center">
                 <div class="col contenu fiche">
                     {{ article.contenu |safe}}
-                    <hr>
                     <p class="textright textepetit" style="font-style: italic;text-align:right;position: absolute; bottom:0; right:10px;">
+                        <hr>
                         rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}}
 
                         {% get_hit_count for article as nbvues %}

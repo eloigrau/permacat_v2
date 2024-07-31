@@ -36,7 +36,7 @@ LOCALL = False
 DEBUG = False
 
 
-from .production import LOCALL, DEBUG, SECRET_KEY, DATABASES
+from .production import LOCALL, DEBUG, SECRET_KEY
 
 try:
     SECRET_KEY = os.environ['SECRET_KEY']

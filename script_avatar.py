@@ -25,15 +25,15 @@ def Browse_file():
         subprocess.run(["rm", f])
 
 
-def avatar():
+def avatar(taille="40"):
     #Browse along file tree
     print(str(root_path))
-    for f in glob.glob(root_path+"/**/40/*.png",   recursive=True):
+    for f in glob.glob(root_path+"/**/"+taille+"/*.png",   recursive=True):
         split = f.split("40/")
         print("plis" + str(split))
         if len(split) == 2:
-            f_new = split[0] + "40/40/" + split[1]
-            cmd_data = ["mkdir", split[0] + "40/40/"]
+            f_new = split[0] + ""+taille+"/"+taille+"/" + split[1]
+            cmd_data = ["mkdir", split[0] + ""+taille+"/"+taille+"/"]
             cmd = " ".join(cmd_data)
             print(cmd)
             cmd_data = ["mv", f, f_new]
@@ -43,5 +43,5 @@ def avatar():
         #subprocess.run(["rm", f])
 #test
 if __name__ =="__main__":
-    avatar()
+    avatar("40")
     import shutil

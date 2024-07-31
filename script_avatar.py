@@ -36,11 +36,11 @@ def avatar(taille="40"):
             cmd_data = ["mkdir", split[0] + ""+taille+"/"+taille]
             cmd = " ".join(cmd_data)
             print(cmd)
-            subprocess.run(cmd)
+            subprocess.run(cmd_data)
             cmd_data = ["mv", f, f_new]
             cmd = " ".join(cmd_data)
             print(cmd)
-            subprocess.run(cmd)
+            subprocess.run(cmd_data)
         #subprocess.run(["rm", f])
 #test
 if __name__ =="__main__":

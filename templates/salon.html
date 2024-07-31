@@ -11,13 +11,13 @@
     {%if comment.auteur.username == 'bot_permacat' %}
     <div class="row message sent">
         <div class="col-sm-12 mAjouter une liste de diffusionessage_bot">
-                    <p>{{ comment.message|safe }}</p>
+            <p>{{ comment.message|safe }}</p>
         </div>
     </div>
     {% else %}
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
 
-                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
+                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}"> {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur}}</a>{% endifchanged %}
                 <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
 
                 {% if request.user == comment.auteur or request.user.is_superuser %}

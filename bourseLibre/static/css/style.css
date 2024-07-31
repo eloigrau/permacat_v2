@@ -828,7 +828,6 @@ border: 1px inset rgba(28,110,164,0.65);
   content: "";
   width: 0;
   height: 0;
-  border-style: solid;
 }
 
 .metadata {
@@ -890,6 +889,10 @@ border: 1px inset rgba(28,110,164,0.65);
   background: #fff;
   border-radius: 0px 5px 5px 5px;
   float: left;
+
+  border: 1px;
+  border-color: blue;
+  border-style: dotted
 }
 
 .message.received .metadata {
@@ -907,6 +910,10 @@ border: 1px inset rgba(28,110,164,0.65);
   background: #e1ffc7;
   border-radius: 5px 0px 5px 5px;
   float: right;
+
+  border: 1px;
+  border-color: blue;
+  border-style: dotted
 }
 
 .message.sent:after {

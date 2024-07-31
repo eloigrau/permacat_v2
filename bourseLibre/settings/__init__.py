@@ -317,13 +317,14 @@ BASE_URL = "https://www.perma.cat"
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
 STATIC_ADD_ROOT = os.path.join(BASE_DIR, 'static_files_ajoutes/')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 MAX_UPLOAD_SIZE = 20971520
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), MEDIA_ROOT, )
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -335,6 +336,7 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
 
 # LOCATION_FIELD = {
 #     'map.provider': 'openstreetmap',

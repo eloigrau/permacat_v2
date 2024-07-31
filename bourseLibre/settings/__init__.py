@@ -529,5 +529,6 @@ HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 try:
     from production import *
 except ImportError:
+    print("Impossible d'importer production.py")
     pass
 

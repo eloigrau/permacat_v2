@@ -30,8 +30,8 @@ def avatar():
     print(str(root_path))
     for f in glob.glob(root_path+"/**/40/*.png",   recursive=True):
         split = f.split("40/")
-        #print("plis" + str(split))
-        if len(split)==2:
+        print("plis" + str(split))
+        if len(split) == 2:
             f_new = split[0] + "40/40/" + split[1]
             cmd_data = ["mkdir", split[0] + "40/40/"]
             cmd = " ".join(cmd_data)

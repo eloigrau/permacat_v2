@@ -35,9 +35,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALL = False
 DEBUG = False
 
-
-from .production import LOCALL, DEBUG, SECRET_KEY
-
 try:
     SECRET_KEY = os.environ['SECRET_KEY']
     DB_PWD = os.environ['SECRET_KEY_DB']
@@ -59,6 +56,21 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #SECURE_BROWSER_XSS_FILTER = True
 #SECURE_SSL_REDIRECT  = True
 #CSRF_COOKIE_SECURE = True
+
+# Database
+if LOCALL:
+    print("DB CONFIG LOCALL")
+    DATABASES = {
+       'default': {
+          'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.db'),
+        }
+    }
+else:
+    print("DB CONFIG SERVEUR")
+    DATABASES = dict()
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
 
 
 if not LOCALL:
@@ -232,21 +244,6 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'bourseLibre.wsgi.application'
-# Database
-if LOCALL:
-    print("DB CONFIG LOCALL")
-    DATABASES = {
-       'default': {
-          'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.db'),
-        }
-    }
-    ALLOWED_HOSTS = ['127.0.0.1']
-else:
-    print("DB CONFIG SERVEUR")
-    DATABASES = dict()
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
 
 
 # except:

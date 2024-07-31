@@ -314,7 +314,7 @@ class InfoGraine(models.Model):
         return reverse('jardins:grainotheque_lire', kwargs={'slug':self.graine.grainotheque.slug})
 
 class Graine(models.Model):
-    nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine",)
+    nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine", help_text="Vous pouvez indiquer un nom particulier")
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True)
     infos = models.ForeignKey(InfoGraine, on_delete=models.CASCADE)
@@ -386,6 +386,9 @@ class PlanteDeJardin(models.Model):
 
     def get_edit_url(self):
         return reverse('jardins:jardin_modifierPlante', kwargs={'pk':self.pk, "slug_jardin":self.jardin.slug})
+
+    def get_delete_url(self):
+        return reverse('jardins:jardin_supprimerPlante', kwargs={'pk':self.pk, "slug_jardin":self.jardin.slug})
 
     def get_absolute_url(self):
         return reverse('jardins:jardin_lire', kwargs={'slug':self.jardin.slug})

@@ -25,7 +25,8 @@
 						<td>{{ pdj.infos | safe | couperTexte_avecbouton_150:pdj.id}} </td>
 						 {%if request.user.is_superuser or request.user == jardin.auteur  or request.user == jardin.referent  %}
 						<td>
-							<a class="boutonediter" href="{{ pdj.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+							<a class="boutonediter btn btn-warning" href="{{ pdj.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+							<a class="boutonediter btn btn-danger" href="{{ pdj.get_delete_url  }}" role="button" help_text="supprimer"><i class="fa fa-times"></i></a>
 							</td>
 						{% endif %}
 					</tr>

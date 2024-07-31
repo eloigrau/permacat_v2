@@ -28,7 +28,7 @@
                  &nbsp;Supprimer le Jardin
                </button></a>
             {% endif %}
-            {%if request.user.is_superuser or request.user == jardin.auteur  %}
+            {%if request.user == jardin.auteur %}
 				<a href="{%if request.user.is_authenticated %}{% url 'jardins:voir_autreJardin' %}{% endif %}">
                <button type="button" class="btn btn-sm btn-info">
                  &nbsp;Changer de Jardin

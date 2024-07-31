@@ -3,7 +3,7 @@ import django_filters
 from django.db.models import Q
 
 class JardinCarteFilter(django_filters.FilterSet):
-    compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_jardin_filter', label="Mot dans le titre ou  la description")
+    compet_descrip_jardin = django_filters.CharFilter(lookup_expr='icontains', method='get_jardin_filter', label="Mot dans le titre ou  la description")
     categorie = django_filters.MultipleChoiceFilter(choices=Choix.type_jardin, method='get_jardin_type', )
 
     def get_jardin_filter(self, queryset, field_name, value):
@@ -30,10 +30,10 @@ class JardinCarteFilter(django_filters.FilterSet):
 
 
 class GrainoCarteFilter(django_filters.FilterSet):
-    compet_descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_graino_filter', label="Mot dans le titre ou la description")
+    compet_descrip_graino = django_filters.CharFilter(lookup_expr='icontains', method='get_graino_filter', label="Mot dans le titre ou la description")
 
     def get_graino_filter(self, queryset, field_name, value):
-        return queryset.filter(Q(email__icontains=value)|
+        return queryset.filter(Q(email_contact__icontains=value)|
                                Q(auteur__username__icontains=value)|
                                Q(referent__username__icontains=value)|
                                Q(adresse__commune__icontains=value)|

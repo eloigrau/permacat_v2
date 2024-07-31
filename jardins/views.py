@@ -594,10 +594,29 @@ def carte_jardins(request):
         jardins = jardins.filter(titre__istartswith=request.GET["lettre"])
 
     jardins_filtres = JardinCarteFilter(request.GET, queryset=jardins)
-    #jardins_filtres = jardins
-    titre = "Carte des jardins"
 
-    return render(request, 'jardins/carte_jardins.html', {'filter':jardins_filtres, 'titre': titre, } )
+
+    graino = Grainotheque.objects.all().order_by("titre")
+    nbProf = len(graino)
+
+    if not request.user.is_authenticated:
+        graino = graino.filter(visibilite_annuaire='0')
+    else:
+        graino = graino.filter(Q(visibilite_annuaire='0') | Q(visibilite_annuaire='1') )
+
+    if "lettre" in request.GET:
+        graino = graino.filter(titre__istartswith=request.GET["lettre"])
+
+    graino_filtres = GrainoCarteFilter(request.GET, queryset=graino)
+
+    titre = "Carte des jardins et des grainothèques Catalanes"
+
+    if request.user.is_authenticated:
+        mesJardins = Jardin.objects.filter(auteur=request.user)
+        mesGraino =  Grainotheque.objects.filter(auteur=request.user)
+    else:
+        mesJardins, mesGraino = [], []
+    return render(request, 'jardins/carte_jardins.html', {'jardins_filtres':jardins_filtres, 'graino_filtres':graino_filtres, 'titre': titre, 'mesJardins':mesJardins, 'mesGraino':mesGraino} )
 
 def carte_graino(request):
     graino = Grainotheque.objects.all().order_by("titre")
@@ -754,6 +773,26 @@ def jardin_modifierPlante(request, slug_jardin, pk):
 
 
 @login_required
+def jardin_supprimerPlante(request, slug_jardin, pk):
+    PlanteDeJardin.objects.get(jardin__slug=slug_jardin, pk=pk).delete()
+    return redirect("jardins:jardin_lire", slug=slug_jardin)
+
+
+
+class PlanteDJDeleteView(DeleteView):
+    model = PlanteDeJardin
+    template_name_suffix = '_supprimer'
+
+    def get_object(self):
+        self.jardin = Jardin.objects.get(slug=self.kwargs['slug_jardin'])
+        ad = PlanteDeJardin.objects.get(pk=self.kwargs['pk'], jardin=self.jardin)
+        return ad
+
+    def get_success_url(self):
+        return self.jardin.get_absolute_url()
+
+
+@login_required
 def jardin_supprimerPlantes(request, slug_jardin):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -763,7 +802,7 @@ def jardin_supprimerPlantes(request, slug_jardin):
     for g in PlanteDeJardin.objects.filter(jardin=jardin):
        g.delete()
 
-    return redirect("jardins:grainotheque_lire", slug=slug_jardin)
+    return redirect("jardins:jardin_lire", slug=slug_jardin)
 
 class ModifierInfoPlante(UpdateView):
     model = InfoPlante

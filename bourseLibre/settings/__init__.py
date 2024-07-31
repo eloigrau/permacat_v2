@@ -42,7 +42,7 @@ def get_local():
     return False
 
 LOCALL = get_local()
-DEBUG = True
+DEBUG = get_local()
 
 SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
 EMAIL_PWD = "test"
@@ -326,7 +326,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 MAX_UPLOAD_SIZE = 20971520
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), MEDIA_ROOT, )
 
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

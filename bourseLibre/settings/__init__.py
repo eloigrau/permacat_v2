@@ -35,20 +35,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOCALL = False
 DEBUG = False
 
+
 from .production import LOCALL, DEBUG, SECRET_KEY, DATABASES
 
-# try:
-#     SECRET_KEY = os.environ['SECRET_KEY']
-#     DB_PWD = os.environ['SECRET_KEY_DB']
-#     EMAIL_PWD = os.environ['EMAIL_DB']
-#     DEBUG = False
-# except Exception as e:
-#     LOCALL  = True
-#     DB_PWD = ""
-#     SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
-#     EMAIL_PWD = "test"
-#     DEBUG = True
-#     print(str(e))
+try:
+    SECRET_KEY = os.environ['SECRET_KEY']
+    DB_PWD = os.environ['SECRET_KEY_DB']
+    EMAIL_PWD = os.environ['EMAIL_DB']
+except Exception as e:
+    DB_PWD = ""
+    SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
+    EMAIL_PWD = "test"
+    DEBUG = True
+    print(str(e))
 
 print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))
 #DEBUG_PROPAGATE_EXCEPTIONS = True

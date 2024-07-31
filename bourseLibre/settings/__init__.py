@@ -527,7 +527,7 @@ HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
 #on met ça a la fin pour importer les settings de production sur le serveur
 try:
-    from production import *
+    from .production import *
 except ImportError:
     print("Impossible d'importer production.py")
     pass

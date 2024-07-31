@@ -342,7 +342,6 @@ STORAGES = {
     },
 }
 
-
 # LOCATION_FIELD = {
 #     'map.provider': 'openstreetmap',
 # }
@@ -530,6 +529,7 @@ HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 #on met ça a la fin pour importer les settings de production sur le serveur
 try:
     from .production import *
+    print ("LOCAL2" +str(LOCALL) + " " + str(DATABASES))
 except ImportError:
     print("Impossible d'importer production.py")
     pass

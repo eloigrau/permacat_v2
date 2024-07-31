@@ -33,18 +33,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 LOCALL = False
-try:
-    SECRET_KEY = os.environ['SECRET_KEY']
-    DB_PWD = os.environ['SECRET_KEY_DB']
-    EMAIL_PWD = os.environ['EMAIL_DB']
-    DEBUG = False
-except Exception as e:
-    LOCALL  = True
-    DB_PWD = ""
-    SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
-    EMAIL_PWD = "test"
-    DEBUG = True
-    print(str(e))
+DEBUG = False
+# try:
+#     SECRET_KEY = os.environ['SECRET_KEY']
+#     DB_PWD = os.environ['SECRET_KEY_DB']
+#     EMAIL_PWD = os.environ['EMAIL_DB']
+#     DEBUG = False
+# except Exception as e:
+#     LOCALL  = True
+#     DB_PWD = ""
+#     SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
+#     EMAIL_PWD = "test"
+#     DEBUG = True
+#     print(str(e))
 
 print('LOCALL : ' + str(LOCALL))
 #DEBUG_PROPAGATE_EXCEPTIONS = True

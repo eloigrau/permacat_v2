@@ -129,6 +129,9 @@ def nettoyerFollows(request):
     follows = Follow.objects.all()
     nombre = 0
     for action in follows:
+        if action is None or not hasattr(action,'_base_manager'):
+            action.delete()
+
         if not action.follow_object:
             action.delete()
             nombre += 1

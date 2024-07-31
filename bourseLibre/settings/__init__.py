@@ -38,12 +38,13 @@ try:
     DB_PWD = os.environ['SECRET_KEY_DB']
     EMAIL_PWD = os.environ['EMAIL_DB']
     DEBUG = False
-except:
+except Exception as e:
     LOCALL  = True
     DB_PWD = ""
     SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
     EMAIL_PWD = "test"
     DEBUG = True
+    print(str(e))
 
 print('LOCALL : ' + str(LOCALL))
 #DEBUG_PROPAGATE_EXCEPTIONS = True

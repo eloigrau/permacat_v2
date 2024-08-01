@@ -42,7 +42,7 @@ def get_local():
     return False
 
 LOCALL = get_local()
-DEBUG = get_local()
+DEBUG = True
 
 SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
 EMAIL_PWD = "test"

@@ -2617,6 +2617,7 @@ padding-bottom:10px;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
+  z-index: 1001;
 }
 @-webkit-keyframes load4 {
   0%,

@@ -490,7 +490,7 @@ class ImageModel(models.Model):
                 box = (int(xd), int(y_diff), int(x), int(y_diff + new_height))
             else:
                 box = (int(x_diff), int(y_diff), int(x_diff + new_width), int(y_diff + new_height))
-            im = im.resize((int(x), int(y)), Image.ANTIALIAS).crop(box)
+            im = im.resize((int(x), int(y)), Image.Resampling.LANCZOS).crop(box)
         else:
             if not new_width == 0 and not new_height == 0:
                 ratio = min(float(new_width) / cur_width,
@@ -506,7 +506,7 @@ class ImageModel(models.Model):
                     new_dimensions[1] > cur_height:
                 if not photosize.upscale:
                     return im
-            im = im.resize(new_dimensions, Image.ANTIALIAS)
+            im = im.resize(new_dimensions, Image.Resampling.LANCZOS)
         return im
 
     def create_size(self, photosize, recreate=False):

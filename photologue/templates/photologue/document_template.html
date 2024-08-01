@@ -27,7 +27,7 @@
                     <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
                         <td  class="textleft" style="min-width:40%;">
-                           <h5> <a href="{% get_media_prefix %}{{doc.doc.url}}" class="btn " style="width:100%;">
+                           <h5> <a href="{{doc.doc.url}}" class="btn " style="width:100%;">
                                 {{ doc.titre }} {% fa5_icon 'download' class='iconright' %}
                             </a>
                            </h5>

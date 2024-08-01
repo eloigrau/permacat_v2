@@ -207,7 +207,7 @@ MIDDLEWARE = [
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
-    'django.template.context_processors.media',
+    #'django.template.context_processors.media',
     #"django_minify_html.middleware.MinifyHtmlMiddleware",
     #'django.core.context_processors.request',
 ]

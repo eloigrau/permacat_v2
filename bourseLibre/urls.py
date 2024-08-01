@@ -18,7 +18,6 @@ from django.urls import path, include, re_path
 from . import views, views_base, views_notifications, views_admin, views_ajax, views_inscriptions
 from .helloasso import apiHA_pcat
 from django.views.generic import TemplateView
-from django.conf.urls.static import static
 
 # On import les vues de Django, avec un nom spécifique
 from django.contrib.auth.decorators import login_required
@@ -251,12 +250,12 @@ urlpatterns = [
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),
 
-] + static(MEDIA_URL, document_root=MEDIA_ROOT)
+]
 @login_required
 def protected_serve(request, path, document_root=None, show_indexes=False):
     return serve(request, path, document_root, show_indexes)
 
-#urlpatterns += [re_path(r'^%s(?P<path>.*)$'%MEDIA_URL[1:], protected_serve,{'document_root': MEDIA_ROOT}), ]
+urlpatterns += [re_path(r'^%s(?P<path>.*)$'%MEDIA_URL[1:], protected_serve,{'document_root': MEDIA_ROOT}), ]
 urlpatterns += [
     re_path(r'^robots\.txt$', TemplateView.as_view(template_name="bourseLibre/robots.txt", content_type='text/plain')),
 ]
@@ -278,9 +277,7 @@ urlpatterns += [
 from django.conf import settings
 if settings.DEBUG:
     from django.conf.urls.static import static
-    #urlpatterns += [static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT), ]
-#else:
-#    urlpatterns += re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = views_base.handler404
 handler500 = views_base.handler500
@@ -289,6 +286,6 @@ handler403 = views_base.handler403
 
 if settings.LOCALL:
     import debug_toolbar
-    #urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
+    urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
     #urlpatterns += re_path('',(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))
 

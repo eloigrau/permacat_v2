@@ -1,7 +1,5 @@
 {% load fontawesome_5 %}
 {% load app_filters %}
-{% load static %}
-
 
 <div class="row">
     <div class="col-sm-12">
@@ -28,9 +26,10 @@
                     <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
                         <td  class="textleft" style="min-width:40%;">
-                           <h5> <a href="{{doc.doc.url}}" class="btn " style="width:100%;">
+                           <h5> <a href="{% get_media_prefix %}{{doc.doc.url}}" class="btn " style="width:100%;">
                                 {{ doc.titre }} {% fa5_icon 'download' class='iconright' %}
-                            </a></h5>
+                            </a>
+                           </h5>
                         </td>
                         <td>
                             {% if doc.article %}

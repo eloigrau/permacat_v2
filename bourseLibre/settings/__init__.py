@@ -318,7 +318,6 @@ BASE_URL = "https://www.perma.cat"
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
-STATIC_ADD_ROOT = os.path.join(BASE_DIR, 'static_files_ajoutes/')
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 MEDIA_URL = '/media/'
@@ -328,7 +327,7 @@ MAX_UPLOAD_SIZE = 20971520
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False
 
 STORAGES = {
     "default": {
@@ -339,9 +338,6 @@ STORAGES = {
     },
 }
 
-# LOCATION_FIELD = {
-#     'map.provider': 'openstreetmap',
-# }
 DJANGO_ADMIN_LOGS_ENABLED = False
 
 LEAFLET_CONFIG = {

@@ -255,7 +255,7 @@ urlpatterns = [
 def protected_serve(request, path, document_root=None, show_indexes=False):
     return serve(request, path, document_root, show_indexes)
 
-urlpatterns += [re_path(r'^%s(?P<path>.*)$'%MEDIA_URL[1:], protected_serve,{'document_root': MEDIA_ROOT}), ]
+#urlpatterns += [re_path(r'^%s(?P<path>.*)$'%MEDIA_URL[1:], protected_serve,{'document_root': MEDIA_ROOT}), ]
 urlpatterns += [
     re_path(r'^robots\.txt$', TemplateView.as_view(template_name="bourseLibre/robots.txt", content_type='text/plain')),
 ]
@@ -277,9 +277,9 @@ urlpatterns += [
 from django.conf import settings
 if settings.DEBUG:
     from django.conf.urls.static import static
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-else:
-    urlpatterns += re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    #urlpatterns += [static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT), ]
+#else:
+#    urlpatterns += re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 
 handler404 = views_base.handler404
 handler500 = views_base.handler500
@@ -288,6 +288,6 @@ handler403 = views_base.handler403
 
 if settings.LOCALL:
     import debug_toolbar
-    urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
+    #urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
     #urlpatterns += re_path('',(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))
 

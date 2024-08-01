@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 from . import views, views_base, views_notifications, views_admin, views_ajax, views_inscriptions
 from .helloasso import apiHA_pcat
 from django.views.generic import TemplateView
+from django.conf.urls.static import static
 
 # On import les vues de Django, avec un nom spécifique
 from django.contrib.auth.decorators import login_required
@@ -250,7 +251,7 @@ urlpatterns = [
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),
 
-]
+] + static(MEDIA_URL, document_root=MEDIA_ROOT)
 @login_required
 def protected_serve(request, path, document_root=None, show_indexes=False):
     return serve(request, path, document_root, show_indexes)

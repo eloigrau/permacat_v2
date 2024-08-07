@@ -1354,7 +1354,7 @@ def filtrer_articles(request):
         articles_list = Article.objects.filter(q_object).distinct()
 
     f = ArticleFilter(request.GET, queryset=articles_list)
-    f = articles_list
+    #f = articles_list
     return render(request, 'blog/article_filter.html', {'filter': f})
 
 

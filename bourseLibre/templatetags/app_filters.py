@@ -255,3 +255,8 @@ def sansAsso(value):
 def cacherUser(value):
     nb = len(value)
     return value[:3] + "".join(['*' for i in range(nb-3)])
+
+
+@register.filter(is_safe=True)
+def filtrer_media_url(url):
+    return url

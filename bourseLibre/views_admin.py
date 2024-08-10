@@ -157,10 +157,14 @@ def nettoyerFollowsValide(request):
         return HttpResponseForbidden()
     nombre = 0
     params = dict(request.GET.items())
+
+    follows = Follow.objects.filter(id__isnull=True).delete()
+
     if "user" in params:
         follows = Follow.objects.filter(user__username=params["user"])
     else:
         follows = Follow.objects.all()
+
     for action in follows:
         try:
             if action is None or not hasattr(action,'_base_manager'):
@@ -184,6 +188,7 @@ def nettoyerFollowsValideUser(request):
     params = dict(request.GET.items())
     if "user" in params:
         follows = Follow.objects.filter(user__username=params["user"]).delete()
+        nombre = 1
     return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, "follow": []})
 
 

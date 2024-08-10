@@ -126,14 +126,19 @@ def abonnerAdherentsCiteAlt(request, ):
 def nettoyerFollows(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.all()
+
+    params = dict(request.GET.items())
+    if params["user"]:
+        follows = Follow.objects.filter(user__username=params["user"])
+    else:
+        follows = Follow.objects.all()
+
     nombre = 0
     follow = []
     follow_bug = []
     for action in follows:
         try:
             if action is None or not hasattr(action,'_base_manager'):
-                #action.delete()
                 follow.append(["not base", action])
 
             if not action.follow_object:

@@ -24,8 +24,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.contrib import admin
-from .settings import MEDIA_ROOT, MEDIA_URL
-
+from .settings import MEDIA_ROOT, MEDIA_URL, LOCALL
+from django.conf.urls.static import static
 from django.views.static import serve
 
 admin.sites.site_header ="Admin"
@@ -259,6 +259,7 @@ urlpatterns += [re_path(r'^%s(?P<path>.*)$'%MEDIA_URL[1:], protected_serve,{'doc
 urlpatterns += [
     re_path(r'^robots\.txt$', TemplateView.as_view(template_name="bourseLibre/robots.txt", content_type='text/plain')),
 ]
+urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 
 from django.views.generic.base import RedirectView
 urlpatterns += [
@@ -274,17 +275,12 @@ urlpatterns += [
     path('api_annonces/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
-from django.conf import settings
-if settings.DEBUG:
-    from django.conf.urls.static import static
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 handler404 = views_base.handler404
 handler500 = views_base.handler500
 handler400 = views_base.handler400
 handler403 = views_base.handler403
 
-if settings.LOCALL:
+if LOCALL:
     import debug_toolbar
     urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
     #urlpatterns += re_path('',(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))

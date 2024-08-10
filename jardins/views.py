@@ -613,7 +613,7 @@ def carte_jardins(request):
 
     if request.user.is_authenticated:
         mesJardins = Jardin.objects.filter(auteur=request.user)
-        mesGraino =  Grainotheque.objects.filter(auteur=request.user)
+        mesGraino = Grainotheque.objects.filter(auteur=request.user)
     else:
         mesJardins, mesGraino = [], []
     return render(request, 'jardins/carte_jardins.html', {'jardins_filtres':jardins_filtres, 'graino_filtres':graino_filtres, 'titre': titre, 'mesJardins':mesJardins, 'mesGraino':mesGraino} )

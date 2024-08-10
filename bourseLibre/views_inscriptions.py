@@ -71,8 +71,11 @@ def sedesabonner(request,):
 
 @login_required
 def sedesabonner_particuliers(request,):
-
-    follows = Follow.objects.filter(user=request.user)
+    params = dict(request.GET.items())
+    if "user" in params and request.user.is_superuser:
+        follows = Follow.objects.filter(user__username=params["user"])
+    else:
+        follows = Follow.objects.filter(user=request.user)
     follows_base, follows_agora, follows_autres, follows_forum = [], [], [], []
     for action in follows:
         if not action.follow_object:

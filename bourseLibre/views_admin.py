@@ -177,6 +177,16 @@ def nettoyerFollowsValide(request):
 
     return render(request, 'admin/voirNettoyes.html', {'nombre': nombre,"follow":[] })
 
+def nettoyerFollowsValideUser(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    nombre = 0
+    params = dict(request.GET.items())
+    if "user" in params:
+        follows = Follow.objects.filter(user__username=params["user"]).delete()
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, "follow": []})
+
+
 def nettoyerHistoriqueAdmin(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()

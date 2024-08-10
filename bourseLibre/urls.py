@@ -226,6 +226,7 @@ urlpatterns = [
     re_path(r'^admin/nettoyerActions/$', views_admin.nettoyerActions,  name="nettoyerActions"),
     re_path(r'^admin/nettoyerFollows/$', views_admin.nettoyerFollows,  name="nettoyerFollows"),
     re_path(r'^admin/nettoyerFollowsValide/$', views_admin.nettoyerFollowsValide,  name="nettoyerFollowsValide"),
+    re_path(r'^admin/nettoyerFollowsValideUser/$', views_admin.nettoyerFollowsValideUser,  name="nettoyerFollowsValideUser"),
     re_path(r'^admin/nettoyerHistoriqueAdmin/$', views_admin.nettoyerHistoriqueAdmin,  name="nettoyerHistoriqueAdmin"),
     re_path(r'^admin/envoyerEmailsRequete/$', views_admin.envoyerEmailsRequete,  name="envoyerEmailsRequete"),
     re_path(r'^admin/envoyerEmailsTest/$', views_admin.envoyerEmailsTest,  name="envoyerEmailsTest"),

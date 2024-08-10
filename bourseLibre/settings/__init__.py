@@ -329,7 +329,7 @@ WHITENOISE_MANIFEST_STRICT = False
 
 STORAGES = {
     "default": {
-        "BACKEND": 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        "BACKEND": 'django.contrib.staticfiles.storage.StaticFilesStorage',
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",

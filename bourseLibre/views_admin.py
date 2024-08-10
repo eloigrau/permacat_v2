@@ -140,12 +140,14 @@ def nettoyerFollows(request):
         try:
             if action is None or not hasattr(action,'_base_manager'):
                 follow.append(["not base", action])
+                nombre += 1
 
             if not action.follow_object:
                 follow.append(["not foll", action])
                 nombre += 1
         except Exception as e:
             follow.append(["bug" + str(e), action])
+            nombre += 1
 
 
     return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, 'follow':follow})
@@ -154,7 +156,11 @@ def nettoyerFollowsValide(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     nombre = 0
-    follows = Follow.objects.all()
+    params = dict(request.GET.items())
+    if "user" in params:
+        follows = Follow.objects.filter(user__username=params["user"])
+    else:
+        follows = Follow.objects.all()
     for action in follows:
         try:
             if action is None or not hasattr(action,'_base_manager'):

@@ -324,10 +324,6 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 MAX_UPLOAD_SIZE = 20971520
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), os.path.join(BASE_DIR, 'media'))
-print ('base dir : %s' % BASE_DIR)
-print ('MEDIA_ROOT dir : %s' % MEDIA_ROOT)
-print ('STATICFILES_DIRS dir : %s' % str(STATICFILES_DIRS))
-print ('PROJECT_ROOT dir : %s' % PROJECT_ROOT)
 WHITENOISE_MANIFEST_STRICT = False
 
 STORAGES = {

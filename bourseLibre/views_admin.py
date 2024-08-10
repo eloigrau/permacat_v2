@@ -128,15 +128,22 @@ def nettoyerFollows(request):
         return HttpResponseForbidden()
     follows = Follow.objects.all()
     nombre = 0
+    follow = []
+    follow_bug = []
     for action in follows:
-        if action is None or not hasattr(action,'_base_manager'):
-            action.delete()
+        try:
+            if action is None or not hasattr(action,'_base_manager'):
+                #action.delete()
+                follow.append(["not base", action])
 
-        if not action.follow_object:
-            action.delete()
-            nombre += 1
+            if not action.follow_object:
+                follow.append(["not foll", action])
+                nombre += 1
+        except Exception as e:
+            follow.append(["bug" + str(e), action])
 
-    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, })
+
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, 'follow':follow})
 
 def nettoyerFollowsValide(request):
     if not request.user.is_superuser:
@@ -144,11 +151,20 @@ def nettoyerFollowsValide(request):
     nombre = 0
     follows = Follow.objects.all()
     for action in follows:
-        if not action.follow_object:
+        try:
+            if action is None or not hasattr(action,'_base_manager'):
+                action.delete()
+                nombre += 1
+
+            if not action.follow_object:
+                action.delete()
+                nombre += 1
+
+        except Exception as e:
             action.delete()
             nombre += 1
 
-    return render(request, 'admin/voirNettoyes.html', {'nombre': 0, })
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre,"follow":[] })
 
 def nettoyerHistoriqueAdmin(request):
     if not request.user.is_superuser:

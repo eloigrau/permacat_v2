@@ -128,7 +128,7 @@ def nettoyerFollows(request):
         return HttpResponseForbidden()
 
     params = dict(request.GET.items())
-    if params["user"]:
+    if "user" in params:
         follows = Follow.objects.filter(user__username=params["user"])
     else:
         follows = Follow.objects.all()

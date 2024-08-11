@@ -490,8 +490,6 @@ class Profil(AbstractUser):
         return salon.est_membre(self)
 
     def get_salons(self, ):
-        print (str([s.salon for s in InvitationDansSalon.objects.filter(profil_invite=self)] + \
-            [s.salon for s in InscritSalon.objects.filter(profil=self)]))
         return [s.salon for s in InvitationDansSalon.objects.filter(profil_invite=self)] + \
             [s.salon for s in InscritSalon.objects.filter(profil=self)]
 

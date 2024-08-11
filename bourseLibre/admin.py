@@ -38,10 +38,6 @@ class ArticleAdmin(admin.ModelAdmin):
     list_display = ('id', 'titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
     search_fields = ('titre', )
 
-class Article_jardinAdmin(admin.ModelAdmin):
-    list_display = ('titre', 'jardin', 'categorie', 'estArchive', )
-    search_fields = ('titre', )
-
 @admin.register(Projet)
 class ProjetAdmin(admin.ModelAdmin):
     list_display = ('id', 'titre', 'estArchive', 'ficheprojet')

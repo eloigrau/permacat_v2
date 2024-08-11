@@ -65,7 +65,7 @@ class Choix():
                           'conversations':"Message privé",
                           'documents': "Document téléchargeable",
                           'albums': "Album photo",
-                          'ateliers': "Proposition d'Atelier",
+                          'ateliers': "Atelier",
                           'suffrages': "Suffrage (vote)",
                           'salon_accueil': "Salons de discussion publics",
                   })

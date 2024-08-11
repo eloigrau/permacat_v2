@@ -19,6 +19,9 @@ def reabonnerProfil_base(profil):
             #suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
             #actions.follow(request.user, suivi, send_action=False)
 
+    for salon in profil.get_salons():
+        actions.follow(profil, salon.getSuivi(), send_action=False)
+
 
 def slugify_pcat(titre, max_length):
     slug = slugify(titre)[:max_length]

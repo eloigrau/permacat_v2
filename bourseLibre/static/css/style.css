@@ -2521,7 +2521,7 @@ padding-bottom:10px;
 .cache{
     visibility: hidden;
 }
-.cbox_asso > li{
+.cbox_asso > div{
     list-style-type: none;
     display: inline;
     margin-right: 10px;

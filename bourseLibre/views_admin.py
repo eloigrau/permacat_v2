@@ -158,7 +158,7 @@ def nettoyerFollowsValide(request):
     nombre = 0
     params = dict(request.GET.items())
 
-    follows = Follow.objects.filter(id__isnull=True).delete()
+    #follows = Follow.objects.filter(id__isnull=True).delete()
 
     if "user" in params:
         follows = Follow.objects.filter(user__username=params["user"])

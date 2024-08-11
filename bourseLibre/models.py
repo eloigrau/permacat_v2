@@ -487,7 +487,14 @@ class Profil(AbstractUser):
         return Signataire.objects.filter(auteur=self).exists()
 
     def estMembre_salon(self, salon):
-       return salon.est_membre(self)
+        return salon.est_membre(self)
+
+    def get_salons(self, ):
+        print (str([s.salon for s in InvitationDansSalon.objects.filter(profil_invite=self)] + \
+            [s.salon for s in InscritSalon.objects.filter(profil=self)]))
+        return [s.salon for s in InvitationDansSalon.objects.filter(profil_invite=self)] + \
+            [s.salon for s in InscritSalon.objects.filter(profil=self)]
+
 
     @property
     def get_jardins(self,):
@@ -1206,6 +1213,9 @@ class Salon(models.Model):
 
     def getArticles(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
+
+    def getSuivi(self):
+        return Suivis.objects.get_or_create(nom_suivi="salon_" + str(self.slug))[0]
 
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)

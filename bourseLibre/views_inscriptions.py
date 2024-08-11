@@ -67,6 +67,23 @@ def sedesabonner(request,):
             suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
             actions.unfollow(request.user, suivi, send_action=False)
 
+
+    for salon in request.user.get_salons():
+        actions.unfollow(request.user, salon.getSuivi(), send_action=False)
+
+    return redirect('mesSuivis')
+
+@login_required
+def sedesabonner_salons(request,):
+    for salon in request.user.get_salons():
+        actions.unfollow(request.user, salon.getSuivi(), send_action=False)
+    return redirect('mesSuivis')
+
+@login_required
+def sereabonner_salons(request,):
+    for salon in request.user.get_salons():
+        actions.follow(request.user, salon.getSuivi(), send_action=False)
+
     return redirect('mesSuivis')
 
 @login_required

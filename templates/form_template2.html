@@ -26,7 +26,7 @@
     {% endfor %}
 {% endif %}
 
-  {% for field in form.visible_fields %}
+{% for field in form.visible_fields %}
 <div class="form-group">
 {% with tyype=field|field_type %}
 {% with entete=field|field_entete %}
@@ -52,6 +52,8 @@
                 {% else %}
                   {% render_field field class="form-control valid" placeholder=field.label%}
                 {% endif %}
+            {%elif tyype == 'CheckboxSelectMultiple'%}
+              {{field}} {{field.label}}
             {%else%}
                 {{field}}
             {% endif %}
@@ -75,6 +77,8 @@
             {% else %}
                 {% render_field field class="form-control" placeholder=field.label %}
             {% endif %}
+        {%elif tyype == 'CheckboxSelectMultiple'%}
+              {{field}} {{field.label}}
         {%else%}
             {{field}}
         {% endif %}

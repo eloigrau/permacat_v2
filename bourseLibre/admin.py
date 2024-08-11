@@ -9,7 +9,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import ProfilCreationForm, ProducteurChangeForm_admin
+from .forms import ProfilCreationForm, ProducteurChangeForm_admin, SalonForm
 from .models import Profil, Salon
 from django.utils.translation import gettext_lazy as _
 
@@ -84,6 +84,12 @@ class Adresse_Admin(admin.ModelAdmin):
     search_fields = ('rue', 'code_postal', 'commune')
 
 
+@admin.register(Salon)
+class Salon_Admin(admin.ModelAdmin):
+    list_display  = ('titre', 'auteur', 'date_creation')
+    search_fields = ('titre', 'description', 'auteur__username')
+    #form = SalonForm
+
 #admin.site.register(Art_jardin, Article_jardinAdmin)
 admin.site.register(Evenement)
 admin.site.register(EvenementAcceuil)
@@ -115,5 +121,4 @@ admin.site.register(InscriptionExposant)
 admin.site.register(Proposition)
 admin.site.register(Message_agora)
 
-admin.site.register(Salon)
 admin.site.register(InvitationDansSalon)

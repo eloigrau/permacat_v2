@@ -50,3 +50,12 @@ python manage.py crontab show
 python manage.py crontab remove
 
 mogrify -format png *.jpeg
+
+
+python manage.py remove_stale_contenttypes --settings=bourseLibre.settings
+
+#source /home/tchenrezi/Django/venv3.6/bin/activate
+
+#/home/tchenrezi/Django/venv3.6/bin/python /PycharmProjects/mercatLliure/manage.py migrate --run-syncdb
+#./manage.py clear_index
+#./manage.py update_index

@@ -197,24 +197,18 @@
             </td>
         </tr>
     {% endif %}
-    {%if request.user.adherent_bzz2022 or request.user == user %}
+    {%if request.user.adherent_bzz2022 or request.user == user  or request.user.is_superuser%}
         <tr>
             <td style="width:200px">Inscrit au collectif Bzzz *: </td>
             <td>{{user.adherent_bzz2022|translateOuiNon }}</td>
         </tr>
     {% endif %}
-    {%if request.user.adherent_jp or request.user == user %}
+    {%if request.user.adherent_jp or request.user == user  or request.user.is_superuser%}
         <tr>
             <td style="width:200px">Inscrit aux jardins partagés : </td>
             <td>{{user.adherent_jp|translateOuiNon }}</td>
         </tr>
     {% endif %}
-      {% if request.user == user %}
-        <tr>
-            <td style="width:200px">Inscrit à la newsletter ^: </td>
-            <td>{{user.inscrit_newsletter|translateOuiNon }}</td>
-        </tr>
-        {% endif %}
 
        {% if request.user.adherent_conf66 or request.user == user %}
 	    <tr>
@@ -246,6 +240,13 @@
             </td>
             <td>{{user.last_login|date:'DATE_FORMAT' }}
             </td>
+        </tr>
+        {% endif %}
+
+      {% if request.user == user or request.user.is_superuser%}
+        <tr>
+            <td style="width:200px">Inscrit aux mails ^: </td>
+            <td>{{user.inscrit_newsletter|translateOuiNon }}</td>
         </tr>
         {% endif %}
       </tbody>

@@ -1,4 +1,3 @@
-
 from actstream import actions
 from actstream.models import Follow, following
 from .models import Choix, Suivis

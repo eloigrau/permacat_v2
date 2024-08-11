@@ -66,10 +66,11 @@ class Adhesion_assoAdmin(admin.ModelAdmin):
 class AssoAdmin(admin.ModelAdmin):
     readonly_fields = ('id',)
 
+@admin.register(InscritSalon)
+class InscritSalonAdmin(admin.ModelAdmin):
+    list_display = ('salon', 'profil', 'date_creation')
+    search_fields = ('salon__titre', 'profil__username', )
 
-#admin.site.register(Art_jardin, Article_jardinAdmin)
-admin.site.register(Evenement)
-admin.site.register(EvenementAcceuil)
 
 @admin.register(AdresseArticle)
 class AdresseArticle_Admin(admin.ModelAdmin):
@@ -83,6 +84,9 @@ class Adresse_Admin(admin.ModelAdmin):
     search_fields = ('rue', 'code_postal', 'commune')
 
 
+#admin.site.register(Art_jardin, Article_jardinAdmin)
+admin.site.register(Evenement)
+admin.site.register(EvenementAcceuil)
 admin.site.register(FicheProjet)
 admin.site.register(Panier)
 admin.site.register(Item)
@@ -112,5 +116,4 @@ admin.site.register(Proposition)
 admin.site.register(Message_agora)
 
 admin.site.register(Salon)
-admin.site.register(InscritSalon)
 admin.site.register(InvitationDansSalon)

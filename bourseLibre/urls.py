@@ -48,7 +48,6 @@ urlpatterns = [
     path(r'jardins/', include('jardins.urls')),
     path(r'adherents/', include(('adherents.urls', 'adherents'))),
     re_path('^', include('django.contrib.auth.urls')),
-    #re_path('avatar/', include('avatar.urls')),
     re_path('avatar/', include('avatar.urls')),
     re_path(r'^webpush/', include('webpush.urls')),
     re_path(r'^$', views.bienvenue, name='bienvenue'),
@@ -92,7 +91,6 @@ urlpatterns = [
     #re_path(r'^jet/', include('jet.urls')),  # Django JET URLS
     #re_path(r'^jet/dashboard/', include('jet.dashboard.urls')),  # Django JET dashboard URLS
     #re_path(r'^admin/', admin.site.urls),
-
 
     re_path(r'^merci/$', views.merci, name='merci'),
     re_path(r'^forum/', include('blog.urls', namespace='bourseLibre.blog')),
@@ -248,6 +246,8 @@ urlpatterns = [
     re_path(r'^admin/reinitialiserAbonnementsPermAgora/$', views_admin.reinitialiserAbonnementsPermAgora,  name="reinitialiserAbonnementsPermAgora"),
     path('admin/inscrireProfilAuGroupe/<int:id_profil>/<str:asso_abreviation>', views_admin.inscrireProfilAuGroupe,  name="inscrireProfilAuGroupe"),
     path('admin/associerProfil_adherent/<int:profil_pk>/', views_admin.associerProfil_adherent,  name="associerProfil_adherent"),
+    path('admin/reabonner_tous_profils/', views_admin.reabonner_tous_profils,  name="reabonner_tous_profils"),
+
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),

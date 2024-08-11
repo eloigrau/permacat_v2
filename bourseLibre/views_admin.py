@@ -676,3 +676,16 @@ def associerProfil_adherent(request, profil_pk):
         return redirect(adherent)
 
     return render(request, 'adherents/associer_profil_adherent.html', {'form': form, "profil": profil})
+
+
+def reabonner_tous_profils(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    from .utils import reabonnerProfil_base
+    msg = ""
+    for p in Profil.objects.all():
+        if p.is_active and p.inscrit_newsletter:
+            reabonnerProfil_base(p)
+            msg += "<p>reabonnement " + str(p) + "</p>"
+
+    return  render(request, 'message_admin.html', {'message':msg})

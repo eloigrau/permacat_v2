@@ -270,13 +270,8 @@ class Profil(AbstractUser):
     description = models.TextField(null=True, blank=True)
     competences = models.TextField(null=True, blank=True)
     adresse = models.OneToOneField(Adresse, on_delete=models.CASCADE)
-    #avatar = StdImageField(null=True, blank=True, upload_to='avatars/', variations={
-    #    'large': (640, 480),
-    #    'thumbnail2': (100, 100, True)})
-
     date_registration = models.DateTimeField(verbose_name="Date de création", editable=False)
     pseudo_june = models.CharField(_('pseudo Monnaie Libre'), blank=True, default=None, null=True, max_length=50)
-
     inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=True)
     #statut_adhesion = models.IntegerField(choices=Choix.statut_adhesion, default="0")
     adherent_pc = models.BooleanField(verbose_name="Je suis adhérent de Permacat", default=False)
@@ -288,9 +283,10 @@ class Profil(AbstractUser):
     adherent_viure = models.BooleanField(verbose_name="Je fais partie du collectif 'Viure'", default=False)
     adherent_bzz2022 = models.BooleanField(verbose_name="Je fais partie du collectif 'Bzzz'", default=False)
     adherent_conf66 = models.BooleanField(verbose_name="Je suis adhérent à la confédération Paysanne 66", default=False)
+    adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
+
     accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
-    adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
 
     date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications",default=now)
     afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)

@@ -323,7 +323,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_new')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 MAX_UPLOAD_SIZE = 20971520
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), os.path.join(BASE_DIR, 'media'))
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 WHITENOISE_MANIFEST_STRICT = False
 
 STORAGES = {

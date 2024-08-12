@@ -25,7 +25,15 @@
 
 {% endblock %}
 {% block content %}
-
+<div class="anchor_blank" id="ref-annee"></div>
+<p class="textcenter">
+<a href="?{{ request.GET.urlencode }}&annee=2022#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2022' %} btn-warning {%else%}btn-info{%endif%}">2022</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%}">2023</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning {%elif not request.GET.annee %} btn-warning  {% else%}btn-info{%endif%}">2024</button></a>
+</p>
 
 <div class="row cartePleinePage">
     <div class="col-md-12">

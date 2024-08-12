@@ -219,7 +219,7 @@ class Article(models.Model):
         choices= Choix.type_annonce,
         default='', verbose_name="Dossier")
     titre = models.CharField(max_length=250,)
-    auteur = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
+    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=100)
     contenu = models.TextField(null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)

@@ -1173,6 +1173,10 @@ class Salon(models.Model):
     def get_absolute_url(self):
         return reverse('salon', kwargs={'slug': self.slug})
 
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
+
     def save(self, *args, **kwargs):
         max_length = 99
         if not self.id:

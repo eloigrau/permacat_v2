@@ -273,6 +273,7 @@ urlpatterns += [
 from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'annonces', views_ajax.AnnoncesViewSet)
+#router.register(r'articles', views_ajax.AnnoncesViewSet)
 urlpatterns += [
     path('api/', include(router.urls)),
     path('api_annonces/', include('rest_framework.urls', namespace='rest_framework')),

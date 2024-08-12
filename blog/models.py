@@ -219,7 +219,7 @@ class Article(models.Model):
         choices= Choix.type_annonce,
         default='', verbose_name="Dossier")
     titre = models.CharField(max_length=250,)
-    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
+    auteur = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=100)
     contenu = models.TextField(null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
@@ -262,7 +262,7 @@ class Article(models.Model):
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
         suiveurs = []
-        url = "https://www.perma.cat" + self.get_absolute_url() + "#ref-titre"
+        url = self.get_absolute_url_site + "#ref-titre"
         if creation or forcerCreationMails:
             titre = "Nouvel article"
             message = "Un article a été posté dans le forum [" + str(

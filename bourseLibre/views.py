@@ -1388,7 +1388,7 @@ def salon(request, slug):
                         description="a envoyé un message dans le salon '" + str(salon.titre) + "' (>"+" ".join([str(x) for x in inscrits])+")")
 
         emails = [suiv.email for suiv in followers(suivis) if request.user != suiv ]
-        message = "Le <a href='https://www.perma.cat" + salon.get_absolute_url() + "'> Salon '" + salon.titre + "'</a>' a été commenté"
+        message = "Le <a href='" + salon.get_absolute_url_site + "'> Salon '" + salon.titre + "'</a>' a été commenté"
 
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message, emails=emails)
 

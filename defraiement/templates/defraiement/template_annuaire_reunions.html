@@ -22,7 +22,7 @@
             <td> {{r.get_logo_nomgroupe_html|safe}} {{ r.get_categorie_display }}</td>
             <td><a href="{{r.get_absolute_url}}"> {{ r.titre }}</a></td>
             <td> {{ r.participants.all | length}}</td>
-            <td> {{ r.adresse}}</td>
+            <td> {% if r.adresse %} {{ r.adresse.commune}} {% endif r.adresse %} </td>
             <td> {{ r.getDistanceTotale}}km</td>
             <td> {{ r.start_time|date:"DATE_FORMAT" }}</td>
         </tr>

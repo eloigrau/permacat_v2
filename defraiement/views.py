@@ -372,8 +372,6 @@ def ajouterAdresseReunion(request, slug):
 
 
 
-
-
 class SupprimerParticipantReunion(DeleteView):
     model = ParticipantReunion
     success_url = reverse_lazy('defraiement:reunions')
@@ -386,7 +384,6 @@ class SupprimerParticipantReunion(DeleteView):
         parti = self.get_object()
         Reunion.objects.get(slug=self.kwargs['slug_reunion']).participants.remove(parti)
         return redirect(self.get_success_url())
-
 
     def get_success_url(self):
         return Reunion.objects.get(slug=self.kwargs['slug_reunion']).get_absolute_url()
@@ -489,6 +486,19 @@ class ListeReunions_asso(ListView):
 
         return context
 
+
+def carte_reunions(request, asso_slug, ):
+    asso = testIsMembreAsso(request, asso_slug)
+    qs = Reunion.objects.filter(estArchive=False, asso=asso)
+    params = dict(request.GET.items())
+    if "annee" in params:
+        qs = qs.filter(start_time__year=params['annee'])
+    else:
+        qs = qs.filter(start_time__year=datetime.now().year)
+
+    return render(request, 'defraiement/carte_reunions.html', {'asso_courante':asso_slug,'reunions':qs, 'asso_courante':asso})
+
+
 class ListeParticipants(ListView):
     model = ParticipantReunion
     context_object_name = "participant_list"
@@ -552,13 +562,13 @@ class Echo:
         """Write the value by returning it, instead of storing in a buffer."""
         return value
 
-
-def get_csv(request):
-    """A view that streams a large CSV file."""
-
-    recap = getRecapitulatif_km()
-    csv_data = [
-        ("NOM PRENOM","STATUT","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
-    csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
-          a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in Adherent.objects.all() ]
+#
+# def get_csv(request):
+#     """A view that streams a large CSV file."""
+#
+#     recap = getRecapitulatif_km()
+#     csv_data = [
+#         ("NOM PRENOM","STATUT","APE", "ADRESSE POSTALE","ADRESSE MAIL","TELEPHONE","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023"),]
+#     csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
+#           a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in Adherent.objects.all() ]
 

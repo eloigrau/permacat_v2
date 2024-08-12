@@ -18,6 +18,7 @@
             <ul class="navbar-nav mx-auto subnavbar">
                 {% if asso_courante %}
 		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}">Liste des réunions</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:carte_reunions' asso_slug=asso_courante.abreviation %}">Carte des réunions</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:participants' asso_slug=asso_courante.abreviation %}">Liste des participant-es</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:recapitulatif'  asso_slug=asso_courante.abreviation%}">Récapitulatif</a></li>
 

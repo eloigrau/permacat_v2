@@ -13,5 +13,21 @@ admin.site.register(DB_importeur)
 admin.site.register(Jardin)
 admin.site.register(Grainotheque)
 admin.site.register(Graine)
-admin.site.register(InfoGraine)
-admin.site.register(InfoPlante)
+
+@admin.register(InfoGraine)
+class Adresse_Admin(admin.ModelAdmin):
+    list_display = ('id', '__str__', 'get_plantes',)
+
+    def get_plantes(self, obj):
+        return obj.get_plantes
+    get_plantes.short_description = 'plantes'
+    get_plantes.admin_order_field = 'plantes'
+
+@admin.register(InfoPlante)
+class Adresse_Admin(admin.ModelAdmin):
+    list_display = ('id', '__str__', 'get_plantes',)
+
+    def get_plantes(self, obj):
+        return obj.get_plantes_de_jardin
+    get_plantes.short_description = 'plantes'
+    get_plantes.admin_order_field = 'plantes'

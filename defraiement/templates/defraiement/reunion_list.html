@@ -25,6 +25,11 @@
                 <i class="fa fa-plus"></i> Ajouter une réunion / un déplacement
             </button>
         </a>
+        <a href="{% url 'defraiement:carte_reunions' asso_slug=asso_courante.abreviation %}">
+        <button type="button" class="btn btn-success" >
+                <i class="fa fa-compass"></i> Voir sur une carte
+            </button>
+        </a>
     </div>
     <div class="col-md-4 textcenter">
 

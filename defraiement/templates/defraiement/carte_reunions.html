@@ -1,0 +1,89 @@
+{% extends 'base_defraiement2.html' %}
+{% load carto_filters %}
+{% load app_filters %}
+{% load widget_tweaks %}
+{% load static %}
+{% block header%}
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+    <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
+  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
+ <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+ <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
+{%endblock%}
+{% block title %} - Carte - Réunions
+{% endblock %}
+
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+{% block subtitle %}
+<div class="row textcenter">
+    <div class="col-sm-12 textcenter">
+        <h4> Carte des réunions pour le défraiement </h4>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+
+<div class="row cartePleinePage">
+    <div class="col-md-12">
+        <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
+        <script type="text/javascript">
+
+        function map_init_basic (map, options) {
+          var blueIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-blue.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+        {% for r in reunions %}
+            var lat = {{r.adresse.get_latitude}};
+            var lon = {{r.adresse.get_longitude}};
+
+            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{{r.get_absolute_url}}"> {{r.titre}} </a>');
+
+            markers.addLayer(marker);
+        {%endfor%}
+        map.addLayer(markers);
+        {% if reunions|length == 1 %}
+        map.panTo(new L.LatLng(lat, lon));
+        {%else%}
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+        {%endif%}
+    }
+
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+    </div>
+</div>
+
+<div id="listeMails"></div>
+<hr>
+{% include "defraiement/template_annuaire_reunions.html"%}
+
+
+<script>
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       var btn = document.getElementById("btn-archives");
+       if(e.style.display == 'block'){
+          e.style.display = 'none';
+          btn.textContent = "Afficher l'historique";
+      }
+       else{
+          e.style.display = 'block';
+          btn.textContent = "Cacher l'historique";
+      }
+   }
+
+
+</script>
+
+{% endblock %}

@@ -313,6 +313,11 @@ class InfoGraine(models.Model):
     def get_absolute_url(self):
         return reverse('jardins:grainotheque_lire', kwargs={'slug':self.graine.grainotheque.slug})
 
+    @property
+    def get_plantes(self):
+        return Graine.objects.filter(infos=self)
+
+
 class Graine(models.Model):
     nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine", help_text="Vous pouvez indiquer un nom particulier")
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
@@ -368,13 +373,17 @@ class InfoPlante(models.Model):
         else:
             return "non mellifère"
 
+    @property
+    def get_plantes_de_jardin(self):
+        return PlanteDeJardin.objects.filter(infos=self)
+
 class PlanteDeJardin(models.Model):
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True,  related_name="plantedejardin_plante")
     jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, null=True, related_name="plantedejardin_jardin")
     infos = models.ForeignKey(InfoPlante, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.infos)
+        return "PDJ :" + str(self.infos) + " ; " + str(self.plante) + " ; " + str(self.jardin)
 
     @property
     def get_nom(self):

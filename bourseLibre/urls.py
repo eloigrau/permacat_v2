@@ -36,10 +36,10 @@ urlpatterns = [
     re_path(r'^summernote/', include('local_summernote.urls')),
     re_path(r'^captcha/', include('bourseLibre.captcha_local.urls')),
     re_path(r'^photolog/', include('photologue.urls', namespace='photologue')),
-    #path('tinymce/', include('tinymce.urls')),
-    #re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
-    #path('newsletter/', include('newsletter.urls')),
-    #re_path(r'^chat/', include('chat.urls')),
+    # path('tinymce/', include('tinymce.urls')),
+    # re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
+    # path('newsletter/', include('newsletter.urls')),
+    # re_path(r'^chat/', include('chat.urls')),
     path(r'agenda/', include('cal.urls')),
     path(r'agoratransition/', include('agoratransition.urls', namespace='agoratransition')),
     path(r'permagora/', include('permagora.urls', namespace='permagora')),
@@ -83,19 +83,19 @@ urlpatterns = [
     re_path(r'^site/pourquoi/$', views_base.presentation_site_pkoi, name='presentation_site_pkoi'),
     re_path(r'^site/conseils/$', views_base.presentation_site_conseils, name='presentation_site_conseils'),
     re_path(r'^permacat/statuts/$', views_base.statuts, name='statuts'),
-    #re_path(r'^ramenetagraine/statuts/$', views.statuts_rtg, name='statuts_rtg'),
+    # re_path(r'^ramenetagraine/statuts/$', views.statuts_rtg, name='statuts_rtg'),
 
 
     re_path(r'^gestion/', admin.site.urls, name='admin',),
 
-    #re_path(r'^jet/', include('jet.urls')),  # Django JET URLS
-    #re_path(r'^jet/dashboard/', include('jet.dashboard.urls')),  # Django JET dashboard URLS
-    #re_path(r'^admin/', admin.site.urls),
+    # re_path(r'^jet/', include('jet.urls')),  # Django JET URLS
+    # re_path(r'^jet/dashboard/', include('jet.dashboard.urls')),  # Django JET dashboard URLS
+    # re_path(r'^admin/', admin.site.urls),
 
     re_path(r'^merci/$', views.merci, name='merci'),
     re_path(r'^forum/', include('blog.urls', namespace='bourseLibre.blog')),
-    #re_path(r'^jardins/', include('jardinpartage.urls', namespace='bourseLibre.jardinpartage')),
-    #re_path(r'^agora/', include('agoratransition.urls', namespace='bourseLibre.agoratransition')),
+    # re_path(r'^jardins/', include('jardinpartage.urls', namespace='bourseLibre.jardinpartage')),
+    # re_path(r'^agora/', include('agoratransition.urls', namespace='bourseLibre.agoratransition')),
     re_path(r'^vote/', include('vote.urls', namespace='bourseLibre.vote')),
     re_path(r'^kit/', include('fiches.urls', namespace='bourseLibre.fiches')),
     re_path(r'^ateliers/', include('ateliers.urls', namespace='bourseLibre.ateliers')),
@@ -124,7 +124,7 @@ urlpatterns = [
                                   email_template_name='accounts/reset_password_email.html',
                                   success_url=reverse_lazy('bienvenue')),
         name='reset_password'),
-    #re_path(r'^password/reset/$', views.reset_password, name='reset_password'),
+    # re_path(r'^password/reset/$', views.reset_password, name='reset_password'),
     re_path(r'^password/change/$', views.change_password, name='change_password'),
     path('auth/', include('django.contrib.auth.urls')),
 
@@ -137,7 +137,7 @@ urlpatterns = [
     path(r'adhesion/', views.adhesion_entree, name='adhesion_entree'),
     path(r'adhesion/adhesion_asso_modifier/<int:pk>', views.Adhesion_asso_modifier.as_view(), name='adhesion_asso_modifier'),
     path(r'adhesion/adhesion_asso_supprimer/<int:pk>', views.Adhesion_asso_supprimer.as_view(), name='adhesion_asso_supprimer'),
-    #re_path(r'^agenda/$', views.agenda, name='agenda',),
+    # re_path(r'^agenda/$', views.agenda, name='agenda',),
     path(r'annuaire/<str:asso>', login_required(views.annuaire), name='annuaire',),
     path(r'cooperateurs/listeAdhesions/<str:asso>', login_required(views.listeAdhesions), name='listeAdhesions',),
     path(r'cooperateurs/listeContacts/<str:asso>', login_required(views.listeContacts), name='listeContacts',),
@@ -152,7 +152,7 @@ urlpatterns = [
     re_path(r'^marche/proposer/', login_required(views.proposerProduit_entree), name='produit_proposer_entree',),
 
     # re_path(r'^list$', views.product_list),
-    #re_path(r'^list2/$', FilterView.as_view(model=Produit, filterset_class=ProductFilter,)),
+    # re_path(r'^list2/$', FilterView.as_view(model=Produit, filterset_class=ProductFilter,)),
     re_path(r'^marche/$', login_required(views.ListeProduit.as_view()),  name="marche"),
     re_path(r'^marche/lister/$', login_required(views.ListeProduit.as_view()),  name="marche"),
     re_path(r'^marche/supprimerProduits_expires_confirmation/$', views.supprimerProduits_expires_confirmation,  name="supprimerProduits_expires_confirmation"),

@@ -307,7 +307,7 @@ class ProfilCreationForm(UserCreationForm):
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
     accepter_annuaire = forms.BooleanField(required=False, initial=True, label="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous les inscrits")
-    inscrit_newsletter = forms.BooleanField(required=False, initial=True, label="J'accepte de recevoir des emails de Perma.cat")
+    inscrit_newsletter = forms.BooleanField(required=False, initial=True, label="J'accepte de m'aabonner aux emails de Perma.cat")
     accepter_conditions = forms.BooleanField(required=True, label="J'ai lu et j'accepte les Conditions Générales d'Utilisation du site*",  )
     #pseudo_june = forms.CharField(label="Pseudonyme dans le réseau de la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
 

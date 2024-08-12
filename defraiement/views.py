@@ -486,7 +486,7 @@ class ListeReunions_asso(ListView):
 
         return context
 
-
+@login_required
 def carte_reunions(request, asso_slug, ):
     asso = testIsMembreAsso(request, asso_slug)
     qs = Reunion.objects.filter(estArchive=False, asso=asso)

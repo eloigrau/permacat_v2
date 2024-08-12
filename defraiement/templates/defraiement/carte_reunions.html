@@ -44,12 +44,14 @@
 
         var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
         {% for r in reunions %}
+         {% if r.adresse %}
             var lat = {{r.adresse.get_latitude}};
             var lon = {{r.adresse.get_longitude}};
 
             var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{{r.get_absolute_url}}"> {{r.titre}} </a>');
 
             markers.addLayer(marker);
+         {%endif%}
         {%endfor%}
         map.addLayer(markers);
         {% if reunions|length == 1 %}

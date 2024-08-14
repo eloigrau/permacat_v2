@@ -689,7 +689,7 @@ def reabonner_tous_profils(request):
         if p.is_active and p.inscrit_newsletter:
             reabonnerProfil_base(p)
             reabonnerProfil_salons(p)
-            msg += "<p>reabonnement " + str(p) + "</p>"
+            msg += "<p>reabonnement " + str(p) + " ; "+ str(p.email) +" ;</p>"
 
     return render(request, 'message_admin.html', {'message':msg})
 

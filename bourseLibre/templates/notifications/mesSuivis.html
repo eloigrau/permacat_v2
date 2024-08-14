@@ -61,14 +61,14 @@
     une info par mail ou par notification). </p>
                 <hr>
                   <p>:
-                        <a href="{% url 'reinitialiserTousMesAbonnement' %}" class="btn btn-primary" type="button">cliquer ici pour réinitialiser les abonnements </a>
+                        <a href="{% url 'reinitialiserTousMesAbonnement' %}" class="btn btn-primary" type="button">cliquer ici pour réinitialiser vos abonnements (recevoir des mails pour toutes les infos)</a>
                   </p>
                 <p>
-                    <a href="{% url 'supprimerTousMesAbonnement' %}" class="btn btn-danger" type="button">cliquer ici pour supprimer tous vos abonnements</a>
+                    <a href="{% url 'supprimerTousMesAbonnement' %}" class="btn btn-danger" type="button">cliquer ici pour supprimer tous vos abonnements (ne plus recevoir de mails)</a>
                 </p>
 <hr>
-        <p>Pour recevoir les notifications sur navigateur (firefox/chrome, sur smartphone et/ou ordi), et ainsi être informé "en direct", vous pouvez aussi recevoir les notifications
-            (des pages auxquelles vous êtes abonné) sur votre smartphone en cliquant sur le bouton ci-dessous</p>
+        <p>Pour recevoir les notifications sur navigateur (firefox/chrome, sur smartphone et/ou ordi), et ainsi être informé "en direct" des pages auxquelles vous êtes abonné-e, vous pouvez aussi recevoir les notifications
+             sur votre smartphone ou ordinateur (indépendamment pour chaque appareil) en cliquant sur le bouton ci-dessous</p>
             <p class="textcenter"> {% webpush_button with_class="btn btn-info" %}</p>
             </div>
         </div>

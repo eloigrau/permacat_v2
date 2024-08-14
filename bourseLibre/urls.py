@@ -247,6 +247,7 @@ urlpatterns = [
     path('admin/inscrireProfilAuGroupe/<int:id_profil>/<str:asso_abreviation>', views_admin.inscrireProfilAuGroupe,  name="inscrireProfilAuGroupe"),
     path('admin/associerProfil_adherent/<int:profil_pk>/', views_admin.associerProfil_adherent,  name="associerProfil_adherent"),
     path('admin/reabonner_tous_profils/', views_admin.reabonner_tous_profils,  name="reabonner_tous_profils"),
+    path('admin/envoyer_emails_reabonnement/', views_admin.envoyer_emails_reabonnement,  name="envoyer_emails_reabonnement"),
 
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),

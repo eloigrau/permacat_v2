@@ -235,10 +235,10 @@ def get_articles_a_archiver():
         if eve:
             liste3.append(art)
 
-    for art in liste2:
-        eve = Evenement_jardin.objects.filter(start_time__lt=date_limite, end_time__lte=date_limite, article=art)
-        if eve:
-            liste3.append(art)
+    # for art in liste2:
+    #     eve = Evenement_jardin.objects.filter(start_time__lt=date_limite, end_time__lte=date_limite, article=art)
+    #     if eve:
+    #         liste3.append(art)
 
     return liste, liste2, liste3, liste4
 
@@ -279,6 +279,8 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
     If auth_user and auth_password are set, use them to log in.
     If auth_user is None, use the EMAIL_HOST_USER setting.
     If auth_password is None, use the EMAIL_HOST_PASSWORD setting.
+
+     datatuple = [(subject, message, html_message, sender, recipient), ]
     """
     # import re
     # EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
@@ -296,7 +298,7 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
         password=EMAIL_HOST_PASSWORD,
         fail_silently=fail_silently,
     )
-    messages= []
+    messages = []
     for subject, message, html_message, sender, recipient in data :
         if recipient and recipient != [SERVER_EMAIL, ]:
             if len(recipient) == 1:
@@ -688,4 +690,38 @@ def reabonner_tous_profils(request):
             reabonnerProfil_base(p)
             msg += "<p>reabonnement " + str(p) + "</p>"
 
-    return  render(request, 'message_admin.html', {'message':msg})
+    return render(request, 'message_admin.html', {'message':msg})
+
+
+def envoyer_emails_reabonnement(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+
+    from django.template.loader import render_to_string
+    from django.utils.html import strip_tags
+
+    template_name = "emails/newsletter_reabonnement_2024.html"
+    convert_to_html_content = render_to_string(
+        template_name=template_name,
+    )
+    sujet = "[Perma.Cat] Newletter spéciale : Réinitialiation des abonnements"
+    message = strip_tags(convert_to_html_content)
+    html_message = convert_to_html_content
+    sender = SERVER_EMAIL
+
+    #recipient = [p.email for p in Profil.objects.all()]
+    recipient = ["eloi.grau@gmail.com", ]
+    datatuple = [(sujet, message, html_message, sender, recipient), ]
+
+    if LOCALL:
+        return render(request, 'message_admin.html', {'message':"<p>envoi test : </p>"  + html_message})
+
+    envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
+
+    return render(request, 'message_admin.html', {'message':"envoi maisl : " + str(envoi_ok)})
+
+
+
+
+

@@ -48,6 +48,8 @@ SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
 EMAIL_PWD = "test"
 
 print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))
+
+
 #DEBUG_PROPAGATE_EXCEPTIONS = True
 
 #SECURE_SSL_REDIRECT = False
@@ -519,6 +521,7 @@ HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
 HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
 #on met ça a la fin pour importer les settings de production sur le serveur
+
 try:
     from .production import *
 except ImportError:

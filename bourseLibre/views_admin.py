@@ -685,11 +685,13 @@ def reabonner_tous_profils(request):
         return HttpResponseForbidden()
     from .utils import reabonnerProfil_base, reabonnerProfil_salons
     msg = ""
-    for p in Profil.objects.all():
+    for p in Profil.objects.filter(newsletter_envoyee=False):
         if p.is_active:
             reabonnerProfil_base(p)
             reabonnerProfil_salons(p)
             msg += "<p>reabonnement " + str(p) + " ; " + str(p.email) +" ;</p>"
+            p.newsletter_envoyee = True
+            p.save()
 
     return render(request, 'message_admin.html', {'message':msg})
 

@@ -291,6 +291,7 @@ class Profil(AbstractUser):
     date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications",default=now)
     afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
 
+    newsletter_envoyee = models.BooleanField(verbose_name="Newletterenvoyee", default=False)
 
     def __str__(self):
         return self.username

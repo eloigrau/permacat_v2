@@ -686,10 +686,10 @@ def reabonner_tous_profils(request):
     from .utils import reabonnerProfil_base, reabonnerProfil_salons
     msg = ""
     for p in Profil.objects.all():
-        if p.is_active and p.inscrit_newsletter:
+        if p.is_active:
             reabonnerProfil_base(p)
             reabonnerProfil_salons(p)
-            msg += "<p>reabonnement " + str(p) + " ; "+ str(p.email) +" ;</p>"
+            msg += "<p>reabonnement " + str(p) + " ; " + str(p.email) +" ;</p>"
 
     return render(request, 'message_admin.html', {'message':msg})
 
@@ -697,7 +697,6 @@ def reabonner_tous_profils(request):
 def envoyer_emails_reabonnement(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-
 
     from django.template.loader import render_to_string
     from django.utils.html import strip_tags
@@ -716,7 +715,7 @@ def envoyer_emails_reabonnement(request):
     datatuple = [(sujet, message, html_message, sender, recipient), ]
 
     if LOCALL:
-        return render(request, 'message_admin.html', {'message':"<p>envoi test : </p>"  + html_message})
+        return render(request, 'message_admin.html', {'message':"<p>envoi test : </p>" + html_message})
 
     envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
 

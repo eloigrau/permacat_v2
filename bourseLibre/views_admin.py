@@ -688,11 +688,11 @@ def reabonner_tous_profils(request):
     nb = 0
     for p in Profil.objects.filter(newsletter_envoyee=True).order_by('username'):
         if p.is_active:
-            reabonnerProfil_base(p)
-            reabonnerProfil_salons(p)
-            msg += "<p>reabonnement " + str(p) + " ; " + str(p.email) +" ;</p>"
-            p.newsletter_envoyee = False
-            p.save()
+            #reabonnerProfil_base(p)
+            #reabonnerProfil_salons(p)
+            #msg += "<p>reabonnement " + str(p) + " ; " + str(p.email) +" ;</p>"
+            #p.newsletter_envoyee = False
+            #p.save()
             nb+= 1
 
     return render(request, 'message_admin.html', {'message':msg +" <p>NB : " + str(nb) + "</p>"})
@@ -721,7 +721,7 @@ def envoyer_emails_reabonnement(request):
     if LOCALL:
         return render(request, 'message_admin.html', {'message':"<p>envoi test : </p>" + html_message})
 
-    envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
+    #envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
 
     return render(request, 'message_admin.html', {'message':"<p>envoi maisl : " + str(envoi_ok) + "</p>", "msg":"<p>envoyé à : </p>" + str(recipient)})
 

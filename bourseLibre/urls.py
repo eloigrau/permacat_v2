@@ -191,9 +191,16 @@ urlpatterns = [
     re_path(r'^suivre_produits/$', views_inscriptions.suivre_produits, name='suivre_produits'),
     re_path(r'^sereabonner/$', views_inscriptions.sereabonner, name='sereabonner'),
     re_path(r'^sedesabonner/$', views_inscriptions.sedesabonner, name='sedesabonner'),
+
+    re_path(r'^supprimerTousMesAbonnement/$', views_inscriptions.supprimerTousMesAbonnement, name='supprimerTousMesAbonnement'),
+    re_path(r'^sedesabonner/$', views_inscriptions.sedesabonner, name='sedesabonner'),
+
+
     re_path(r'^sedesabonner_particuliers/$', views_inscriptions.sedesabonner_particuliers, name='sedesabonner_particuliers'),
     re_path(r'^sereabonner_salons/$', views_inscriptions.sereabonner_salons, name='sereabonner_salons'),
     re_path(r'^sedesabonner_salons/$', views_inscriptions.sedesabonner_salons, name='sedesabonner_salons'),
+    re_path(r'^reinitialiserTousMesAbonnement/$', views_inscriptions.reinitialiserTousMesAbonnement, name='reinitialiserTousMesAbonnement'),
+    re_path(r'^supprimerTousMesAbonnement/$', views_inscriptions.supprimerTousMesAbonnement, name='supprimerTousMesAbonnement'),
     path(r'agora/<str:asso>', login_required(views.agora), name='agora'),
     path(r'suivre_agora/<str:asso>', views_inscriptions.suivre_agora, name='suivre_agora'),
     path(r'salon/accueil', login_required(views.salon_accueil), name='salon_accueil'),

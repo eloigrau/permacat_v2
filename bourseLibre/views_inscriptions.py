@@ -19,7 +19,7 @@ from actstream.models import Follow, following
 from bourseLibre.settings.production import SERVER_EMAIL
 from bourseLibre.settings import LOCALL
 from .views import testIsMembreAsso, testIsMembreSalon
-from .utils import reabonnerProfil_base
+from .utils import reabonnerProfil_base, desabonnerProfil_base, desabonnerProfil_particuliers, reabonnerProfil_salons, desabonnerProfil_salons
 CharField.register_lookup(Lower, "lower")
 
 @login_required
@@ -51,61 +51,63 @@ def suivre_produits(request, actor_only=True):
 def sereabonner(request,):
     reabonnerProfil_base(request.user)
     return redirect('mesSuivis')
+#
+# @login_required
+# def sedesabonner(request,):
+#     for suiv in Choix.suivisPossibles:
+#         suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
+#
+#         if suivi in following(request.user):
+#             actions.unfollow(request.user, suivi, send_action=False)
+#
+#     for abreviation in Choix.abreviationsAsso + ['public']:
+#         if request.user.est_autorise(abreviation):
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
+#             actions.unfollow(request.user, suivi, send_action=False)
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
+#             actions.unfollow(request.user, suivi, send_action=False)
+#
+#     for salon in request.user.get_salons():
+#         actions.unfollow(request.user, salon.getSuivi(), send_action=False)
+#
+#     return redirect('mesSuivis')
 
 @login_required
 def sedesabonner(request,):
-    for suiv in Choix.suivisPossibles:
-        suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
-
-        if suivi in following(request.user):
-            actions.unfollow(request.user, suivi, send_action=False)
-
-    for abreviation in Choix.abreviationsAsso + ['public']:
-        if request.user.est_autorise(abreviation):
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
-            actions.unfollow(request.user, suivi, send_action=False)
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
-            actions.unfollow(request.user, suivi, send_action=False)
-
-
-    for salon in request.user.get_salons():
-        actions.unfollow(request.user, salon.getSuivi(), send_action=False)
-
+    desabonnerProfil_base(request.user)
     return redirect('mesSuivis')
 
 @login_required
 def sedesabonner_salons(request,):
-    for salon in request.user.get_salons():
-        actions.unfollow(request.user, salon.getSuivi(), send_action=False)
+    desabonnerProfil_salons(request.user)
     return redirect('mesSuivis')
 
 @login_required
 def sereabonner_salons(request,):
-    for salon in request.user.get_salons():
-        actions.follow(request.user, salon.getSuivi(), send_action=False)
-
+    reabonnerProfil_salons(request.user)
     return redirect('mesSuivis')
 
 @login_required
 def sedesabonner_particuliers(request,):
     params = dict(request.GET.items())
     if "user" in params and request.user.is_superuser:
-        follows = Follow.objects.filter(user__username=params["user"])
+        desabonnerProfil_particuliers(Profil.objects.get(username=params["user"]))
     else:
-        follows = Follow.objects.filter(user=request.user)
-    follows_base, follows_agora, follows_autres, follows_forum = [], [], [], []
-    for action in follows:
-        if not action.follow_object:
-            action.delete()
-        elif 'articles' in str(action.follow_object) and not str(action.follow_object) == "articles_jardin":
-            pass
-        elif 'agora' in str(action.follow_object):
-            pass
-        elif str(action.follow_object) in Choix.suivisPossibles:
-            pass
-        else:
-            action.delete()
+        desabonnerProfil_particuliers(request.user)
+    return redirect('mesSuivis')
 
+
+@login_required
+def supprimerTousMesAbonnement(request):
+    desabonnerProfil_particuliers(request.user)
+    desabonnerProfil_salons(request.user)
+    desabonnerProfil_base(request.user)
+    return redirect('mesSuivis')
+
+@login_required
+def reinitialiserTousMesAbonnement(request):
+    reabonnerProfil_salons(request.user)
+    reabonnerProfil_base(request.user)
     return redirect('mesSuivis')
 
 def inscription_newsletter(request):

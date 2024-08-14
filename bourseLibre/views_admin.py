@@ -719,7 +719,7 @@ def envoyer_emails_reabonnement(request):
 
     envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
 
-    return render(request, 'message_admin.html', {'message':"envoi maisl : " + str(envoi_ok)})
+    return render(request, 'message_admin.html', {'message':"<p>envoi maisl : " + str(envoi_ok) + "</p>", "msg":"<p>envoyé à : </p>" + str(recipient)})
 
 
 

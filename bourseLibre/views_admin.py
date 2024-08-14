@@ -699,7 +699,7 @@ def reabonner_tous_profils(request):
             except Exception as e:
                 err += str(p) + " : " + str(e)
 
-    return render(request, 'message_admin.html', {'message':msg +" <p>NB : " + str(nb) + "</p>"})
+    return render(request, 'message_admin.html', {'message':msg +" <p>NB : " + str(nb) + "</p>", "erreur":err})
 
 
 def envoyer_emails_reabonnement(request):

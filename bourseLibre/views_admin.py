@@ -686,12 +686,12 @@ def reabonner_tous_profils(request):
     from .utils import reabonnerProfil_base, reabonnerProfil_salons
     msg = ""
     nb = 0
-    for p in Profil.objects.filter(newsletter_envoyee=False).order_by('username'):
+    for p in Profil.objects.filter(newsletter_envoyee=True).order_by('username'):
         if p.is_active:
             reabonnerProfil_base(p)
             reabonnerProfil_salons(p)
             msg += "<p>reabonnement " + str(p) + " ; " + str(p.email) +" ;</p>"
-            p.newsletter_envoyee = True
+            p.newsletter_envoyee = False
             p.save()
             nb+= 1
 

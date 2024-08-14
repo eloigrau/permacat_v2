@@ -710,8 +710,8 @@ def envoyer_emails_reabonnement(request):
     html_message = convert_to_html_content
     sender = SERVER_EMAIL
 
-    #recipient = [p.email for p in Profil.objects.all()]
-    recipient = ["eloi.grau@gmail.com", ]
+    recipient = [p.email for p in Profil.objects.all()]
+    #recipient = ["eloi.grau@gmail.com", ]
     datatuple = [(sujet, message, html_message, sender, recipient), ]
 
     if LOCALL:

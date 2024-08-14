@@ -18,9 +18,6 @@ def reabonnerProfil_base(profil):
             #suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
             #actions.follow(request.user, suivi, send_action=False)
 
-    for salon in profil.get_salons():
-        actions.follow(profil, salon.getSuivi(), send_action=False)
-
 def desabonnerProfil_base(profil):
     for suiv in Choix.suivisPossibles:
         suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
@@ -35,12 +32,9 @@ def desabonnerProfil_base(profil):
             suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
             actions.unfollow(profil, suivi, send_action=False)
 
-    for salon in profil.get_salons():
-        actions.unfollow(profil, salon.getSuivi(), send_action=False)
-
 
 def desabonnerProfil_particuliers(profil,):
-    follows = Follow.objects.filter(profil)
+    follows = Follow.objects.filter(user=profil)
     for action in follows:
         if not action.follow_object:
             action.delete()

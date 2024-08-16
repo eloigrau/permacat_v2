@@ -181,7 +181,9 @@
         <a class="nav-item nav-link" href="#dates" data-toggle="tab"><i class="fa fa-calendar icon-left"></i></a>
         {% endif %}
         {% if article.album %}
-        <a class="nav-item nav-link" href="#album" data-toggle="tab"><i class="fa fa-camera-retro icon-left"></i></a>
+        <a class="nav-item nav-link" href="#album"
+       onclick="get_album_article('{% url 'blog:get_album_article_ajax' article_slug=article.slug %}')" data-toggle="tab"
+       id="navtab_tags"> <i class="fa fa-camera-retro icon-left"></i></a>
         {% endif %}
         {% if salons %}
         <a class="nav-item nav-link" href="#salons" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
@@ -229,74 +231,7 @@
 
         <div class="tab-pane fade" id="album">
             <div class="contenu atelier">
-
-                <div class="row justify-content-center">
-                    <div class="col-sm-12 textcenter">
-                        <h4>Album : </h4>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-sm-12 col-md-8 col-lg-6 textcenter">
-                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                {% for photo in article.album.public %}
-                                <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}"
-                                   {% if forloop.first %} class="active" {% endif %}></li>
-                                {% endfor %}
-                            </ol>
-                            <div class="carousel-inner">
-                                {% for photo in article.album.public %}
-                                <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
-                                    <a href="{{ photo.get_absolute_url }}">
-                                        <img class="d-block w-100 {% if forloop.first %} active {% endif %} "
-                                             src="{{ photo.get_display_url }}" class="thumbnail"
-                                             alt="{{ photo.title }}">
-                                    </a>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
-                               data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Précédent</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
-                               data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Suivant</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row justify-content-center">
-                    <div class="col-sm-12 textcenter">
-                        {% if article.album.description %}<p>{{ article.album.description|safe }}</p>{% endif %}
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12 offset-md-1 col-md-10 textcenter">
-                        <small>
-                            {%if not article.album %}
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <a class="btn btn-sm btn-success textleft"
-                               href="{% url 'blog:ajouterAlbumArticle' slug=article.slug %}"><i class="fa fa-plus"></i>
-                                Ajouter un album photo</a>
-                            {% endif%}
-                            {%else%}
-                            <a class="btn btn-sm btn-success textleft" href="{{ article.album.get_absolute_url }}"><i
-                                    class="fa fa-arrow-right"></i> Voir tout l'album photo</a>
-
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <a class="btn btn-sm btn-danger textleft"
-                               href="{% url 'blog:supprimerAlbumArticle' slug=article.slug%}"><i
-                                    class="fa fa-times"></i> Enlever l'album photo de l'article</a>
-                            {% endif %}
-                            {%endif%}
-                        </small>
-                    </div>
-                </div>
+                <div id="articles_album"></div>
             </div>
         </div>
 
@@ -998,7 +933,23 @@ function get_resultatSondage(url_tag, div_name) {
         {%endif%}
     }
 
-</script>
 
+
+function get_album_article(url_tag) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#articles_album").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
 {% add_copy_script %}
 {% endblock %}

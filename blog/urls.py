@@ -103,6 +103,7 @@ urlpatterns = [
     path(r'todoArticleList/', login_required(views.ListeTodo_asso.as_view(), login_url='/auth/login/'),
         name='todoarticle_list'),
     path('ajax/load-categories/', views.ajax_categories, name='ajax_categories'),
+    path('ajax/get_album_article_ajax/<str:article_slug>/', views.get_album_article_ajax, name='get_album_article_ajax'),
     path('ajax/articlesArchives/<str:asso>/', views.articlesArchives, name='articlesArchives'),
     path('ajax/articlesPartages/<str:asso>/', views.articlesPartages, name='articlesPartages'),
     path('ajax/articlesParTag/<str:asso>/<str:tag>/', views.articlesParTag, name='articlesParTag'),

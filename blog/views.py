@@ -514,6 +514,12 @@ def articlesPartages(request, asso):
 
 
 @login_required
+def get_album_article_ajax(request, article_slug):
+    art = Article.objects.get(slug=article_slug)
+    return render(request, 'blog/lireArticle_album.html', {'article': art})
+
+
+@login_required
 def articlesArchives(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:

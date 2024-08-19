@@ -94,7 +94,12 @@ admin.site.register(Item)
 admin.site.register(Monnaie)
 admin.site.register(MessageGeneral)
 admin.site.register(InscriptionNewsletter)
-admin.site.register(InscriptionNewsletterAsso)
+
+@admin.register(InscriptionNewsletterAsso)
+class InscriptionNewsletterAsso_Admin(admin.ModelAdmin):
+    list_display  = ('asso', 'nom_newsletter','email',  'profil')
+    search_fields = ('email', 'nom_newsletter', 'profil__username')
+    #form = SalonForm
 
 admin.site.register(Conversation)
 admin.site.register(Commentaire)

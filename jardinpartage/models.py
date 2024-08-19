@@ -231,5 +231,3 @@ class Commentaire(models.Model):
     def est_autorise(self, user):
         return self.article.est_autorise(user)
 
-class Participation(models.Model):
-    participe = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)

@@ -108,7 +108,7 @@ INSTALLED_APPS = [
     'model_utils',
     'bourseLibre',
     'blog',
-    #'jardinpartage',
+    'jardinpartage',
     'fiches',
     'ateliers',
     #'django_extensions',

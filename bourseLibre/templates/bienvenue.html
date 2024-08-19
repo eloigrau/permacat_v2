@@ -134,21 +134,21 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 					  </div>
 					</div>
 					<hr>
-		<div class="row" >
-					  <div class="col-sm-12 textcenter">
+		<div class="row justify-content-center" >
+					  <div class="col-sm-12 col-md-10 col-lg-6">
 
 				<div class="card" >
 				  <div class="card-header  textcenter">
 						<b>	Cette semaine :</b>
 				  </div>
-					<ul class="list-group list-group-flush textcenter">
+					<ul class="list-group list-group-flush">
 
 						{% for jour, liste_ev in evenements_semaine_passes %}
 							<li class="list-group-item" style="background-color:#F2F2F2;">
-						 		<div class=''><span  style='font-variant: small-caps ;'>{{jour|date:"l d F"}}</span></div>
+						 		<div class='textcenter'><span  style='font-variant: small-caps ; '>{{jour|date:"l d F"}}</span></div>
 
 							{% for ev in liste_ev %}
-								<p><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
+								<p style="padding:0 0 0 1.8em"><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
 							{% endfor %}
 							</li>
 						{% endfor %}
@@ -162,7 +162,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 						{%endif%}
 						 		<div class=''><span  style='font-variant: small-caps ;'>{{jour|date:"l d F"}}</span></div>
 							{% for ev in liste_ev %}
-						<p><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
+						<p style="padding:0 0 0 2em"><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
 							{% endfor %}
 							</li>
 						{% endfor %}

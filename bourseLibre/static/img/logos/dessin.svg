@@ -112,6 +112,16 @@
        x2="168.39243"
        y2="82.409302"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10139"
+       id="linearGradient1039"
+       gradientUnits="userSpaceOnUse"
+       x1="73.690205"
+       y1="82.409299"
+       x2="103.03274"
+       y2="82.409299"
+       gradientTransform="translate(-26.448974,47.765701)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -120,9 +130,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="362"
-     inkscape:cy="179"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="602.45498"
+     inkscape:cy="366.98842"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -422,31 +432,39 @@
          y="90.146736"
          style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.93943px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.198484"
          id="tspan1818-5">Public</tspan></text>
-    <rect
-       style="opacity:1;fill:#e0ffb5;fill-opacity:1;stroke:url(#linearGradient10143);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2049-5"
-       width="28.356539"
-       height="11.838847"
-       x="8.8235235"
-       y="76.489876"
-       rx="7.0165701"
-       ry="5.9194236"
+    <g
+       id="g5615"
+       inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_rtg_new.png"
        inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.68955px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.192237"
-       x="14.129873"
-       y="90.023323"
-       id="text1774-1-6-3-4"
-       transform="scale(1.0622313,0.94141454)"
-       inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60"><tspan
-         sodipodi:role="line"
+       inkscape:export-ydpi="60">
+      <rect
+         style="opacity:1;fill:#e0ffb5;fill-opacity:1;stroke:url(#linearGradient10143);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2049-5"
+         width="28.356539"
+         height="11.838847"
+         x="8.8235235"
+         y="76.489876"
+         rx="7.0165701"
+         ry="5.9194236"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60"
+         inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_rtg_new.png.png" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.68955px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.192237"
          x="14.129873"
          y="90.023323"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.68955px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.192237"
-         id="tspan1818-3-8">RTG</tspan></text>
+         id="text1774-1-6-3-4"
+         transform="scale(1.0622313,0.94141454)"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60"
+         inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_rtg_new.png.png"><tspan
+           sodipodi:role="line"
+           x="14.129873"
+           y="90.023323"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.68955px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.192237"
+           id="tspan1818-3-8">RTG</tspan></text>
+    </g>
     <rect
        style="opacity:1;fill:#c6deff;fill-opacity:1;stroke:url(#linearGradient10145);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect2049-9"
@@ -474,31 +492,70 @@
          x="46.171024"
          id="tspan1772-8-2"
          sodipodi:role="line">CA</tspan></text>
-    <rect
-       style="opacity:1;fill:#ffff84;fill-opacity:1;stroke:url(#linearGradient10147);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2049-4"
-       width="28.356539"
-       height="11.838847"
-       x="74.183205"
-       y="76.489876"
-       rx="7.0165701"
-       ry="3.8614507"
+    <g
+       id="g5671"
+       inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_pc_old2.png"
        inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60" />
-    <text
-       transform="scale(1.0622313,0.94141454)"
-       id="text1774-89"
-       y="89.432251"
-       x="70.751549"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:6.32748px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.158185"
-       xml:space="preserve"
-       inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:6.32748px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.158185"
+       inkscape:export-ydpi="60">
+      <rect
+         style="opacity:1;fill:#ffff84;fill-opacity:1;stroke:url(#linearGradient10147);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2049-4"
+         width="28.356539"
+         height="11.838847"
+         x="74.183205"
+         y="76.489876"
+         rx="7.0165701"
+         ry="3.8614507"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60" />
+      <text
+         transform="scale(1.0622313,0.94141454)"
+         id="text1774-89"
          y="89.432251"
          x="70.751549"
-         id="tspan1772-3"
-         sodipodi:role="line">PermaCat</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:6.32748px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.158185"
+         xml:space="preserve"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:6.32748px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.158185"
+           y="89.432251"
+           x="70.751549"
+           id="tspan1772-3"
+           sodipodi:role="line">PermaCat</tspan></text>
+    </g>
+    <g
+       id="g5620"
+       inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_conf66.png"
+       inkscape:export-xdpi="60"
+       inkscape:export-ydpi="60">
+      <rect
+         style="fill:#feca29;fill-opacity:1;stroke:url(#linearGradient1039);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2049-4-7"
+         width="28.356539"
+         height="11.838847"
+         x="47.73423"
+         y="124.25558"
+         rx="7.0165701"
+         ry="3.8614507"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60"
+         inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_conf66.png" />
+      <text
+         transform="scale(1.0622313,0.94141454)"
+         id="text1774-89-5"
+         y="140.67465"
+         x="46.596245"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.33208px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.1833"
+         xml:space="preserve"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60"
+         inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_conf66.png"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.33208px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.1833"
+           y="140.67465"
+           x="46.596245"
+           id="tspan1772-3-9"
+           sodipodi:role="line">Conf'66</tspan></text>
+    </g>
     <rect
        style="opacity:1;fill:#8edcc1;fill-opacity:1;stroke:url(#linearGradient10149);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect2049-6"
@@ -551,31 +608,37 @@
          y="89.803734"
          x="133.33148"
          sodipodi:role="line">Fermille</tspan></text>
-    <rect
-       style="opacity:1;fill:#c0dd71;fill-opacity:1;stroke:url(#linearGradient10151);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2049-2"
-       width="28.356539"
-       height="11.838847"
-       x="172.22273"
-       y="76.489868"
-       rx="8.8874569"
-       ry="4.4876351"
+    <g
+       id="g8237"
+       inkscape:export-filename="/home/tchenrezi/PycharmProjects/permacat_ok/bourseLibre/static/img/logos/nom_scic.png"
        inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.0842px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.906644;stroke-miterlimit:4;stroke-dasharray:none"
-       x="164.86469"
-       y="89.115074"
-       id="text1774-1-6-6-0-0"
-       transform="scale(1.0622313,0.94141454)"
-       inkscape:export-xdpi="60"
-       inkscape:export-ydpi="60"><tspan
-         sodipodi:role="line"
+       inkscape:export-ydpi="60">
+      <rect
+         style="opacity:1;fill:#94d7ff;fill-opacity:1;stroke:url(#linearGradient10151);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect2049-2"
+         width="28.356539"
+         height="11.838847"
+         x="172.22273"
+         y="76.489868"
+         rx="8.8874569"
+         ry="4.4876351"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.0842px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.906644;stroke-miterlimit:4;stroke-dasharray:none"
          x="164.86469"
          y="89.115074"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.0842px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.906644;stroke-miterlimit:4;stroke-dasharray:none"
-         id="tspan1818-0-9-5">PAgora</tspan></text>
+         id="text1774-1-6-6-0-0"
+         transform="scale(1.0622313,0.94141454)"
+         inkscape:export-xdpi="60"
+         inkscape:export-ydpi="60"><tspan
+           sodipodi:role="line"
+           x="164.86469"
+           y="89.115074"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.0842px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.906644;stroke-miterlimit:4;stroke-dasharray:none"
+           id="tspan1818-0-9-5">PAgora</tspan></text>
+    </g>
     <rect
        style="opacity:1;fill:#90e090;fill-opacity:1;stroke:url(#linearGradient10153);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect2049-47"
@@ -666,5 +729,57 @@
          y="89.232536"
          style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.68955px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.192237"
          id="tspan1028">Bzzz</tspan></text>
+    <image
+       width="8.4666662"
+       height="8.4666662"
+       preserveAspectRatio="none"
+       xlink:href="data:image/png;base64,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
+MD8/j4IAAAAASUVORK5CYII=
+"
+       id="image3610"
+       x="12.417559"
+       y="113.63253" />
   </g>
 </svg>

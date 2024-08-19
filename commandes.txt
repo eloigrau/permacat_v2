@@ -52,7 +52,7 @@ python manage.py crontab remove
 mogrify -format png *.jpeg
 
 
-python manage.py remove_stale_contenttypes --settings=bourseLibre.settings
+python manage.py remove_stale_contenttypes --settings=bourseLibre.settings.production
 
 #source /home/tchenrezi/Django/venv3.6/bin/activate
 

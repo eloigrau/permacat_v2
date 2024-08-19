@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse_lazy
-from blog.models import Atelier_new, InscriptionAtelier_new, CommentaireAtelier_new
 from .models import CommentaireAtelier, Choix, Atelier, InscriptionAtelier
 from .forms import AtelierForm, CommentaireAtelierForm, AtelierChangeForm, ContactParticipantsForm, CommentaireAtelierChangeForm
 from django.contrib.auth.decorators import login_required
@@ -261,75 +260,75 @@ def suivre_ateliers(request, actor_only=True):
         actions.follow(request.user, suivi, actor_only=actor_only)
     return redirect('ateliers:index_ateliers')
 
-
-def copierAteliers(request):
-    for at in Atelier.objects.all():
-        if not Atelier_new.objects.filter(slug=at.slug).exists():
-            at_new = Atelier_new(categorie=at.categorie,
-                               statut=at.statut,
-                               titre=at.titre,
-                               slug=at.slug,
-                               description=at.description,
-                               materiel=at.materiel,
-                               referent=at.referent,
-                               auteur=at.auteur,
-                               start_time=at.start_time,
-                               heure_atelier=at.heure_atelier,
-                               heure_atelier_fin=at.heure_atelier_fin,
-                               date_creation=at.date_creation,
-                               date_modification=at.date_modification,
-                               tarif_par_personne=at.tarif_par_personne,
-                               asso=at.asso,
-                               article=at.article,
-                               estArchive=at.estArchive,
-                               nbMaxInscriptions=at.nbMaxInscriptions,
-                   )
-            at_new.save(sendMail=False)
-            for i in InscriptionAtelier.objects.filter(atelier=at):
-                InscriptionAtelier_new.objects.create(user=i.user, atelier=at_new, date_inscription=i.date_inscription)
-
-            for c in CommentaireAtelier.objects.filter(atelier=at):
-                CommentaireAtelier_new.objects.create(auteur_comm=c.auteur_comm, commentaire=c.commentaire,
-                                                      atelier=at_new,date_creation=c.date_creation)
-
-
-    return redirect('ateliers:index_ateliers')
-
-
-
-def copierAteliers_inverse(request):
-    for at in Atelier_new.objects.all():
-        if not Atelier.objects.filter(slug=at.slug).exists():
-            at_new = Atelier(categorie=at.categorie,
-                               statut=at.statut,
-                               titre=at.titre,
-                               slug=at.slug,
-                               description=at.description,
-                               materiel=at.materiel,
-                               referent=at.referent,
-                               auteur=at.auteur,
-                               start_time=at.start_time,
-                               heure_atelier=at.heure_atelier,
-                               heure_atelier_fin=at.heure_atelier_fin,
-                               date_creation=at.date_creation,
-                               date_modification=at.date_modification,
-                               tarif_par_personne=at.tarif_par_personne,
-                               asso=at.asso,
-                               article=at.article,
-                               estArchive=at.estArchive,
-                               nbMaxInscriptions=at.nbMaxInscriptions,
-                   )
-            at_new.save(sendMail=False)
-            for i in InscriptionAtelier_new.objects.filter(atelier=at):
-                InscriptionAtelier.objects.create(user=i.user, atelier=at_new, date_inscription=i.date_inscription)
-
-            for c in CommentaireAtelier_new.objects.filter(atelier=at):
-                CommentaireAtelier.objects.create(auteur_comm=c.auteur_comm, commentaire=c.commentaire,
-                                                      atelier=at_new,date_creation=c.date_creation)
-
-
-    return redirect('ateliers:index_ateliers')
-
+#
+# def copierAteliers(request):
+#     for at in Atelier.objects.all():
+#         if not Atelier_new.objects.filter(slug=at.slug).exists():
+#             at_new = Atelier_new(categorie=at.categorie,
+#                                statut=at.statut,
+#                                titre=at.titre,
+#                                slug=at.slug,
+#                                description=at.description,
+#                                materiel=at.materiel,
+#                                referent=at.referent,
+#                                auteur=at.auteur,
+#                                start_time=at.start_time,
+#                                heure_atelier=at.heure_atelier,
+#                                heure_atelier_fin=at.heure_atelier_fin,
+#                                date_creation=at.date_creation,
+#                                date_modification=at.date_modification,
+#                                tarif_par_personne=at.tarif_par_personne,
+#                                asso=at.asso,
+#                                article=at.article,
+#                                estArchive=at.estArchive,
+#                                nbMaxInscriptions=at.nbMaxInscriptions,
+#                    )
+#             at_new.save(sendMail=False)
+#             for i in InscriptionAtelier.objects.filter(atelier=at):
+#                 InscriptionAtelier_new.objects.create(user=i.user, atelier=at_new, date_inscription=i.date_inscription)
+#
+#             for c in CommentaireAtelier.objects.filter(atelier=at):
+#                 CommentaireAtelier_new.objects.create(auteur_comm=c.auteur_comm, commentaire=c.commentaire,
+#                                                       atelier=at_new,date_creation=c.date_creation)
+#
+#
+#     return redirect('ateliers:index_ateliers')
+#
+#
+#
+# def copierAteliers_inverse(request):
+#     for at in Atelier_new.objects.all():
+#         if not Atelier.objects.filter(slug=at.slug).exists():
+#             at_new = Atelier(categorie=at.categorie,
+#                                statut=at.statut,
+#                                titre=at.titre,
+#                                slug=at.slug,
+#                                description=at.description,
+#                                materiel=at.materiel,
+#                                referent=at.referent,
+#                                auteur=at.auteur,
+#                                start_time=at.start_time,
+#                                heure_atelier=at.heure_atelier,
+#                                heure_atelier_fin=at.heure_atelier_fin,
+#                                date_creation=at.date_creation,
+#                                date_modification=at.date_modification,
+#                                tarif_par_personne=at.tarif_par_personne,
+#                                asso=at.asso,
+#                                article=at.article,
+#                                estArchive=at.estArchive,
+#                                nbMaxInscriptions=at.nbMaxInscriptions,
+#                    )
+#             at_new.save(sendMail=False)
+#             for i in InscriptionAtelier_new.objects.filter(atelier=at):
+#                 InscriptionAtelier.objects.create(user=i.user, atelier=at_new, date_inscription=i.date_inscription)
+#
+#             for c in CommentaireAtelier_new.objects.filter(atelier=at):
+#                 CommentaireAtelier.objects.create(auteur_comm=c.auteur_comm, commentaire=c.commentaire,
+#                                                       atelier=at_new,date_creation=c.date_creation)
+#
+#
+#     return redirect('ateliers:index_ateliers')
+#
 
 @login_required
 def get_qr_code(request, slug):

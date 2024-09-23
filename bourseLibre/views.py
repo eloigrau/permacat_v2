@@ -1388,11 +1388,11 @@ def salon(request, slug):
                         description="a envoyé un message dans le salon '" + str(salon.titre) + "' (>"+" ".join([str(x) for x in inscrits])+")")
 
         emails = [suiv.email for suiv in followers(suivis) if request.user != suiv ]
-        message = "Le <a href='" + salon.get_absolute_url_site + "'> Salon '" + salon.titre + "'</a>' a été commenté"
+        message_notif = "Le <a href='" + salon.get_absolute_url_site + "'> Salon '" + salon.titre + "'</a>' a été commenté"
 
-        action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message, emails=emails)
+        action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message_notif, emails=emails)
 
-        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":url}
+        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":message.get_absolute_url_site}
         for suiv in followers(suivis):
             if request.user != suiv:
                 try:

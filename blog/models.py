@@ -524,6 +524,9 @@ class Commentaire(models.Model):
     def get_absolute_url(self):
         return self.article.get_absolute_url() + "#comm_" + str(self.id)
 
+    @property
+    def get_absolute_url_site(self):
+        return self.article.get_absolute_url_site() + "#idConversation"
 
     def get_absolute_url_discussion(self):
         return self.article.get_absolute_url() + "#idConversation"
@@ -565,7 +568,7 @@ class Commentaire(models.Model):
                                    description=msg_mention_notif, )
 
                         payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
                         send_user_notification(p, payload=payload, ttl=7200)
                 except:
                     pass
@@ -573,7 +576,7 @@ class Commentaire(models.Model):
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body":message_notif,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
             for suiv in suiveurs:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)
@@ -624,6 +627,10 @@ class Projet(models.Model):
 
     def get_absolute_url(self):
         return reverse('blog:lireProjet', kwargs={'slug':self.slug})
+
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def get_absolute_url_discussion(self):
         return self.get_absolute_url() + "#idConversation"
@@ -724,6 +731,10 @@ class CommentaireProjet(models.Model):
     def get_absolute_url(self):
         return self.projet.get_absolute_url()
 
+    @property
+    def get_absolute_url_site(self):
+        return self.projet.get_absolute_url_site
+
     def get_absolute_url_discussion(self):
         return self.projet.get_absolute_url() + "#idConversation"
 
@@ -758,7 +769,7 @@ class CommentaireProjet(models.Model):
                                 description=msg_mention_notif, )
 
                     payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
                     send_user_notification(p, payload=payload, ttl=7200)
                 except Exception as e:
                     pass

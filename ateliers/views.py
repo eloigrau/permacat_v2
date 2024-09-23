@@ -170,7 +170,7 @@ def lireAtelier(request, atelier):
                     titre="a commenté l'atelier: '%s'" % atelier.titre,  message=message, emails=emails)
 
         payload = {"head": "atelier: '%s'" % atelier.titre, "body": message_notif,
-                   "icon": static('android-chrome-256x256.png'), "url": url}
+                   "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url_site + "#comm_"+str(comment.id)}
         for suiv in suiveurs:
             try:
                 send_user_notification(suiv, payload=payload, ttl=7200)

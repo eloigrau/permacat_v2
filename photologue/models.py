@@ -331,9 +331,10 @@ class Document(models.Model):
         return retour
 
     def get_absolute_url(self):
-        if self.article:
-            return self.article.get_absolute_url()
-        return reverse('photologue:doc-list')
+        #if self.article:
+        #    return self.article.get_absolute_url()
+        #return reverse('photologue:doc-list')
+        return self.doc.url
 
     def est_autorise(self, user):
         if not self.asso:

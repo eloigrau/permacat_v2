@@ -684,7 +684,7 @@ class Produit(models.Model):  # , BaseProduct):
                     msg_notif = "Demande [" + self.asso.nom + "] " + self.nom_produit
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body": msg_notif,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
             for suiv in suiveurs:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)
@@ -700,6 +700,9 @@ class Produit(models.Model):  # , BaseProduct):
     def get_absolute_url(self):
         return reverse('produit_detail', kwargs={'produit_id':self.id})
 
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def get_type_prix(self):
         return Produit.objects.get_subclass(id=self.id).type_prix
@@ -1273,6 +1276,10 @@ class Message_salon(models.Model):
     def get_absolute_url(self):
         return self.salon.get_absolute_url() + "#comm_" + str(self.id)
 
+    @property
+    def get_absolute_url_site(self):
+        return self.salon.get_absolute_url_site + "#comm_" + str(self.id)
+
     def save(self, *args, **kwargs):
         super(Message_salon, self).save(*args, **kwargs)
         self.salon.date_dernierMessage = now()
@@ -1293,7 +1300,7 @@ class Message_salon(models.Model):
                                     description=msg_mention_notif, )
 
                         payload = {"head": titre_mention, "body": str(self.auteur.username) + msg_mention_notif,
-                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
                         send_user_notification(p, payload=payload, ttl=7200)
                     except Exception as e:
                         pass

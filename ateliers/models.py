@@ -98,7 +98,7 @@ class Atelier(models.Model):
             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
             if sendMail:
-                emails = [suiv.email for suiv in suiveurs]
+                emails = [suiv.email for suiv in suiveurs ]
             else:
                 emails = []
             titre = "Nouvel atelier proposé"
@@ -122,9 +122,9 @@ class Atelier(models.Model):
 
         ret = super(Atelier, self).save(*args, **kwargs)
         if emails:
-            action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
+            action.send(self, verb='emails', url=self.get_absolute_url_site, titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body":message_notif,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
             for suiv in suiveurs:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)
@@ -198,6 +198,10 @@ class CommentaireAtelier(models.Model):
     def get_absolute_url(self):
         return self.atelier.get_absolute_url()
 
+    @property
+    def get_absolute_url_site(self):
+        return self.atelier.get_absolute_url_site()
+
     def get_absolute_url_discussion(self):
         return self.atelier.get_absolute_url() + "#idConversation"
 
@@ -220,7 +224,7 @@ class CommentaireAtelier(models.Model):
                                 description=msg_mention_notif, )
 
                     payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
                     send_user_notification(p, payload=payload, ttl=7200)
 
                 except Exception as e:

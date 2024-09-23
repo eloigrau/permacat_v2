@@ -116,6 +116,7 @@ class AdresseReunionForm(forms.ModelForm):
 
 
 class Distance_ParticipantReunionForm(forms.ModelForm):
+
     class Meta:
         model = Distance_ParticipantReunion
         fields = ['type_trajet', 'distance', 'contexte_distance',]

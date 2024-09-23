@@ -200,7 +200,7 @@ class CommentaireAtelier(models.Model):
 
     @property
     def get_absolute_url_site(self):
-        return self.atelier.get_absolute_url_site()
+        return self.atelier.get_absolute_url_site
 
     def get_absolute_url_discussion(self):
         return self.atelier.get_absolute_url() + "#idConversation"

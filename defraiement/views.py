@@ -381,26 +381,26 @@ def supprimerParticipantReunion(request, slug_reunion, id_participantReunion):
     reu.participants.remove(parti)
     return redirect(reu)
 
-
-class SupprimerParticipantReunion(DeleteView):
-    model = ParticipantReunion
-    success_url = reverse_lazy('defraiement:reunions')
-    template_name_suffix = '_supprimer'
-
-    def get_object(self):
-        return
-    def delete(self, request, *args, **kwargs):
-        parti = self.get_object()
-        return redirect(self.get_success_url())
-
-    def get_success_url(self):
-        return
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context['reunion'] = Reunion.objects.get(slug=self.kwargs['slug_reunion'])
-        return context
+#
+# class SupprimerParticipantReunion(DeleteView):
+#     model = ParticipantReunion
+#     success_url = reverse_lazy('defraiement:reunions')
+#     template_name_suffix = '_supprimer'
+#
+#     def get_object(self):
+#         return
+#     def delete(self, request, *args, **kwargs):
+#         parti = self.get_object()
+#         return redirect(self.get_success_url())
+#
+#     def get_success_url(self):
+#         return
+#
+#     def get_context_data(self, **kwargs):
+#         # Call the base implementation first to get a context
+#         context = super().get_context_data(**kwargs)
+#         context['reunion'] = Reunion.objects.get(slug=self.kwargs['slug_reunion'])
+#         return context
 
 @login_required
 def voirLieux(request,):

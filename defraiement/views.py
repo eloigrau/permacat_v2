@@ -371,6 +371,12 @@ def ajouterAdresseReunion(request, slug):
     return render(request, 'defraiement/ajouterAdresseReunion.html', {'reunion':reunion, 'form_adresse':form_adresse }) #'form_adresse':form_adresse,
 
 
+def supprimerParticipantReunion(request, slug_reunion, id_participantReunion):
+    reu = Reunion.objects.get(slug=slug_reunion)
+    parti = reu.participants.get(id=id_participantReunion)
+    reu.participants.remove(parti)
+    return redirect(reu)
+
 
 class SupprimerParticipantReunion(DeleteView):
     model = ParticipantReunion
@@ -378,15 +384,13 @@ class SupprimerParticipantReunion(DeleteView):
     template_name_suffix = '_supprimer'
 
     def get_object(self):
-        return Reunion.objects.get(slug=self.kwargs['slug_reunion']).participants.get(id=self.kwargs['id_participantReunion'])
-
+        return
     def delete(self, request, *args, **kwargs):
         parti = self.get_object()
-        Reunion.objects.get(slug=self.kwargs['slug_reunion']).participants.remove(parti)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return Reunion.objects.get(slug=self.kwargs['slug_reunion']).get_absolute_url()
+        return
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

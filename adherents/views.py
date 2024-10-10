@@ -88,7 +88,7 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return is_membre_bureau(self.request.user)
+        return is_membre_bureau(self.request.user) and self.request.user.is_superuser
 
     def get_success_url(self):
         desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)

@@ -4,6 +4,7 @@
         <table class="table table-condensed tableprofils table-striped sortable">
             <thead><tr>
                 <th>Adhérent</th>
+                <th>Date</th>
                 <th>Année</th>
                 <th>Montant</th>
                 <th>Moyen</th>
@@ -14,6 +15,7 @@
 {% for adhesion in adhesions %}
             <tr>
                 <td><a href="{{adhesion.adherent.get_absolute_url}}"> {{adhesion.adherent}}</a></td>
+                <td>{{adhesion.date_cotisation|date:"d/m"}}</td>
                 <td>{{adhesion.date_cotisation|date:"Y"}}</td>
                 <td>{{adhesion.montant}}</td>
                 <td>{{adhesion.get_moyen_display}}</td>

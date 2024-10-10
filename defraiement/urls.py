@@ -50,7 +50,8 @@ urlpatterns = [
 
     path(r'ajouterParticipantReunion/<str:slug_reunion>', views.ajouterParticipantReunion, name='ajouterParticipantReunion'),
     path(r'ajouterParticipantsReunion/<str:slug_reunion>', views.ajouterParticipantsReunion, name='ajouterParticipantsReunion'),
-    path(r'supprimerParticipantReunion/<str:slug_reunion>/<int:id_participantReunion>', login_required(views.SupprimerParticipantReunion.as_view(), login_url='/auth/login/'), name='supprimerParticipantReunion'),
+    path(r'supprimerParticipantReunion/<str:slug_reunion>/<int:id_participantReunion>', views.supprimerParticipantReunion, name='supprimerParticipantReunion'),
+    #path(r'supprimerParticipantReunion/<str:slug_reunion>/<int:id_participantReunion>', login_required(views.SupprimerParticipantReunion.as_view(), login_url='/auth/login/'), name='supprimerParticipantReunion'),
 
     path(r'recapitulatif/<str:asso_slug>/', views.recapitulatif, name='recapitulatif'),
     #path(r'recapitulatif/<str:asso_slug>/<int:annee>', views.recapitulatif_annee, name='recapitulatif_annee'),

@@ -16,6 +16,7 @@ from django.dispatch import Signal
 from bourseLibre.models import Suivis, Profil
 from bourseLibre.views_base import DeleteAccess
 from bourseLibre.views_admin import send_mass_html_mail
+from django.contrib import messages
 
 from bourseLibre.constantes import Choix as Choix_global
 from actstream import actions, action
@@ -95,7 +96,7 @@ def inscriptionAtelier(request, slug):
         #for a in act:
         #    a.delete()
 
-    #messages.info(request, 'Vous êtes bien inscrit.e à cet atelier !')
+    messages.info(request, 'Vous êtes bien inscrit.e à cet atelier, notez le dans votre agenda !')
     return redirect(atelier.get_absolute_url())
 
 @login_required

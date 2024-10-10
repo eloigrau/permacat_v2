@@ -14,6 +14,7 @@ from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixM
 from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 from datetime import datetime
+from django.contrib.auth.mixins import UserPassesTestMixin
 import itertools
 import csv
 from django.http import HttpResponse
@@ -260,10 +261,13 @@ def modifierAdresseReunion(request, slug):
 
     return render(request, 'defraiement/modifierAdresseReunion.html', {'reunion':reunion, 'form_adresse':form_adresse }) # 'form_adresse':form_adresse,
 
-class SupprimerParticipant(DeleteAccess, DeleteView):
+class SupprimerParticipant(DeleteAccess, DeleteView, UserPassesTestMixin):
     model = ParticipantReunion
     success_url = reverse_lazy('defraiement:participants')
     template_name_suffix = '_supprimer'
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def get_object(self):
         self.asso_abrev = self.kwargs['asso_abrev']

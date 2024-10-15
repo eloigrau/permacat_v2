@@ -334,7 +334,7 @@ class Document(models.Model):
         if self.article:
             return self.article.get_absolute_url()
         #return reverse('photologue:doc-list')
-        return self.doc.path
+        return self.doc.url
 
     def est_autorise(self, user):
         if not self.asso:

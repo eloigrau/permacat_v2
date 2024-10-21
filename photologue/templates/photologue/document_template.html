@@ -34,7 +34,7 @@
                         </td>
                         <td>
                             {% if doc.article %}
-                            <a href="{{doc.article.get_absolute_url}}" class="btn btn-light btn-sm">{% fa5_icon 'comments' class='iconleft' %} {{ doc.article.titre|couperTexte:25}}</a>
+                            <a href="{{doc.get_absolute_url}}" class="btn btn-light btn-sm">{% fa5_icon 'comments' class='iconleft' %} {{ doc.article.titre|couperTexte:25}}</a>
                             {% endif %}
                         </td>
                         <td>{{ doc.date_creation|date:"DATE_FORMAT" }}</td>

@@ -49,6 +49,7 @@ urlpatterns = [
     path(r'adherents/', include(('adherents.urls', 'adherents'))),
     re_path('^', include('django.contrib.auth.urls')),
     re_path('avatar/', include('avatar.urls')),
+    #path("r/", include("urlshortner.urls")),
     re_path(r'^webpush/', include('webpush.urls')),
     re_path(r'^$', views.bienvenue, name='bienvenue'),
     re_path(r'^bienvenue/$', views.bienvenue, name='bienvenue'),

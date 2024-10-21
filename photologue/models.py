@@ -37,6 +37,7 @@ from actstream.models import followers
 from bourseLibre.settings import LOCALL
 from actstream import action
 from hitcount.models import HitCount
+#from urlshortner.utils import shorten_url
 
 logger = logging.getLogger('photologue.models')
 

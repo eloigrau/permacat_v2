@@ -310,7 +310,7 @@ class Document(models.Model):
             if sendMail:
                 suivi, created = Suivis.objects.get_or_create(nom_suivi='albums')
                 titre = "Nouveau document"
-                message = "Un document a été ajouté : ["+ self.asso.nom +"] '<a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>'"
+                message = "Un document a été ajouté : ["+ self.asso.nom +"] '<a href='https://www.perma.cat" + self.doc.path + "'>" + self.titre + "</a>'"
                 emails = [suiv.email for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
                 if emails and not LOCALL:
                     creation = True

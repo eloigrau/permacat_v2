@@ -98,7 +98,7 @@ pygbif==0.6.4
 phonenumbers==8.13.40
 pillow==10.4.0
 progressbar2==4.4.2
-psycopg2==2.9.9
+#psycopg2==2.9.9
 psycopg2-binary==2.9.9
 py-vapid==1.9.0
 pycparser==2.21

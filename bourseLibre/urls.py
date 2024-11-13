@@ -293,8 +293,8 @@ handler500 = views_base.handler500
 handler400 = views_base.handler400
 handler403 = views_base.handler403
 
-if LOCALL:
-    import debug_toolbar
-    urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
+#if LOCALL:
+#    import debug_toolbar
+#    urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
     #urlpatterns += re_path('',(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))
 

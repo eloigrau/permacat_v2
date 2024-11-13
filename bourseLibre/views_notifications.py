@@ -133,6 +133,8 @@ def getNbNewNotifications_test2(request):
 
 @login_required
 def getNbNewNotifications(request):
+    if not request.user.is_authenticated:
+        return 0
     if request.user.afficherNbNotifications:
         actions = getNotificationsParDate(request, dateMinimum=request.user.date_notifications)
     else:

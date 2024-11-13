@@ -337,6 +337,7 @@ class Document(models.Model):
         #return reverse('photologue:doc-list')
         return self.doc.path
 
+
     def est_autorise(self, user):
         if not self.asso:
             return True

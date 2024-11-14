@@ -123,8 +123,8 @@ class Adresse(models.Model):
         m = ""
         url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
         reponse = requests.get(url)
-        if reponse.status_code != "OK":
-            action.send(self, verb='buglatlon', description=str(reponse))
+        if reponse.status_code != 200:
+            action.send(self, verb='buglatlon', description="1"+str(reponse)+" / "+str(url))
 
         try:
             data = simplejson.loads(reponse.text)
@@ -138,8 +138,8 @@ class Adresse(models.Model):
             address = address.replace(" ", "+")
             url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
             reponse = requests.get(url)
-            if reponse.status_code != "OK":
-                action.send(self, verb='buglatlon', description=str(reponse))
+            if reponse.status_code != 200:
+                action.send(self, verb='buglatlon', description="2"+str(reponse)+" / "+str(url))
 
             try:
                 data = simplejson.loads(reponse.text)

@@ -123,27 +123,30 @@ class Adresse(models.Model):
         m = ""
         url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
         reponse = requests.get(url)
+        if reponse.status_code != "OK":
+            action.send(self, verb='buglatlon', description=str(reponse))
+
         data = simplejson.loads(reponse.text)
         try:
             self.latitude = float(data[0]["lat"])
             self.longitude = float(data[0]["lon"])
             return 1
         except Exception as e:
-            action.send(self, verb='buglatlon', description=str(reponse)+ ";"+str(e))
-
             address = str(self.code_postal)
             if self.commune:
                 address += "+" + self.commune
             address = address.replace(" ", "+")
             url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
             reponse = requests.get(url)
+            if reponse.status_code != "OK":
+                action.send(self, verb='buglatlon', description=str(reponse))
+
             data = simplejson.loads(reponse.text)
             try:
                 self.latitude = float(data[0]["lat"])
                 self.longitude = float(data[0]["lon"])
                 return 2
             except Exception as e2:
-                action.send(self, verb='buglatlon', description=str(reponse) + ";"+str(e2))
                 if LOCALL:
                     print(e2)
                     return 0
@@ -153,17 +156,15 @@ class Adresse(models.Model):
                         'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
                     api_response_dict = api_response.json()
 
-                    m += "<p> " + str(api_response) + "</p>"
                     if api_response_dict['status'] == 'OK':
                         self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
                         self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
                         return 3
+                    else:
+                        action.send(self, verb='buglatlon', description=str(api_response_dict))
                 except Exception as e3:
-                    if LOCALL:
-                        print(e3)
                     self.latitude = LATITUDE_DEFAUT
                     self.longitude = LONGITUDE_DEFAUT
-                    action.send(self, verb='buglatlon', description=str(e3))
         return 0
 
     @property

@@ -181,12 +181,23 @@
         </a>
     </div>
 </div>
-{% endif %}
 <hr>
+{% endif %}
 <h5>Listes de diffusion :</h5>
 {% include 'adherents/template_inscriptionmail_liste.html' %}
 
 {% if is_membre_bureau %}
+<hr>
+<div class="row">
+    <div class="col-md-12 textcenter">
+        <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="fa fa-plus"></span>&nbsp;Ajouter l'adhérent à une liste
+            </button>
+        </a>
+    </div>
+</div>
+
 <hr>
 <h5>Commentaires :</h5>
 {% include 'adherents/template_comm_adh_liste.html' %}
@@ -198,16 +209,6 @@
         <span class="fa fa-plus"></span>&nbsp;Ajouter un commentaire
     </button>
 </a>
-    </div>
-</div>
-<hr>
-<div class="row">
-    <div class="col-md-12 textcenter">
-        <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">
-            <button type="button" class="btn btn-sm btn-danger">
-                <span class="fa fa-plus"></span>&nbsp;Ajouter l'adhérent à une liste
-            </button>
-        </a>
     </div>
 </div>
 {% endif %}

@@ -121,34 +121,29 @@ class Adresse(models.Model):
             address += "+" + self.commune
         address = address.replace(" ", "+").replace("++", "+")
         m = ""
+        url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
+        reponse = requests.get(url)
+        data = simplejson.loads(reponse.text)
         try:
-            url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-            reponse = requests.get(url)
-            data = simplejson.loads(reponse.text)
-            m+= "<p> "+str(data)+"</p>"
-            if LOCALL:
-                print(data)
             self.latitude = float(data[0]["lat"])
             self.longitude = float(data[0]["lon"])
             return 1
-        except Exception as e:
-            if LOCALL:
-                print(e)
+        except :
+            action.send(self, verb='buglatlon', description=reponse)
+
+            address = str(self.code_postal)
+            if self.commune:
+                address += "+" + self.commune
+            address = address.replace(" ", "+")
+            url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
+            reponse = requests.get(url)
+            data = simplejson.loads(reponse.text)
             try:
-                address = str(self.code_postal)
-                if self.commune:
-                    address += "+" + self.commune
-                address = address.replace(" ", "+")
-                url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-                reponse = requests.get(url)
-                data = simplejson.loads(reponse.text)
-                m+= "<p> "+str(data)+"</p>"
-                if LOCALL:
-                    print(data)
                 self.latitude = float(data[0]["lat"])
                 self.longitude = float(data[0]["lon"])
                 return 2
             except Exception as e2:
+                action.send(self, verb='buglatlon', description=reponse)
                 if LOCALL:
                     print(e2)
                     return 0
@@ -168,7 +163,7 @@ class Adresse(models.Model):
                         print(e3)
                     self.latitude = LATITUDE_DEFAUT
                     self.longitude = LONGITUDE_DEFAUT
-                    action.send(self, verb='buglatlon', description=m)
+                    action.send(self, verb='buglatlon', description=str(e3))
         return 0
 
     @property

@@ -765,7 +765,7 @@ def recalculerAdressesConf(request):
     add = Adherent.objects.all()
     message = ""
     for a in add:
-        if a.latitude == LATITUDE_DEFAUT:
+        if a.adresse.latitude == LATITUDE_DEFAUT:
             res = a.set_latlon_from_adresse()
             if res:
                 a.save()

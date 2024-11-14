@@ -770,7 +770,7 @@ def recalculerAdressesConf(request):
             if res:
                 a.save()
             message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
-                     str(a.latitude) + " " + str(a.longitude) + "</p>"
+                     str(a.adresse.latitude) + " " + str(a.adresse.longitude) + "</p>"
 
 
     return render(request, 'message_admin.html', {'message': message,})

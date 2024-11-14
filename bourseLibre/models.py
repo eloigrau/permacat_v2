@@ -120,11 +120,12 @@ class Adresse(models.Model):
         if self.commune:
             address += "+" + self.commune
         address = address.replace(" ", "+").replace("++", "+")
-
+        m = ""
         try:
             url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
             reponse = requests.get(url)
             data = simplejson.loads(reponse.text)
+            m+= "<p> "+str(data)+"</p>"
             if LOCALL:
                 print(data)
             self.latitude = float(data[0]["lat"])
@@ -141,6 +142,7 @@ class Adresse(models.Model):
                 url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
                 reponse = requests.get(url)
                 data = simplejson.loads(reponse.text)
+                m+= "<p> "+str(data)+"</p>"
                 if LOCALL:
                     print(data)
                 self.latitude = float(data[0]["lat"])
@@ -156,6 +158,7 @@ class Adresse(models.Model):
                         'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
                     api_response_dict = api_response.json()
 
+                    m += "<p> " + str(api_response) + "</p>"
                     if api_response_dict['status'] == 'OK':
                         self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
                         self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
@@ -165,6 +168,7 @@ class Adresse(models.Model):
                         print(e3)
                     self.latitude = LATITUDE_DEFAUT
                     self.longitude = LONGITUDE_DEFAUT
+                    action.send(self, verb='buglatlon', description=m)
         return 0
 
     @property

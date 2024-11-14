@@ -762,6 +762,11 @@ def recalculerAdressesConf(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     from adherents.models import Adherent
+
+    actions = Action.objects.filter(verb='buglatlon')
+    for action in actions:
+        action.delete()
+
     add = Adherent.objects.all()
     message = ""
     for a in add:

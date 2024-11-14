@@ -121,15 +121,15 @@ class Adresse(models.Model):
             address += "+" + self.commune
         address = address.replace(" ", "+").replace("++", "+")
         m = ""
-        url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
+        url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
         reponse = requests.get(url)
         data = simplejson.loads(reponse.text)
         try:
             self.latitude = float(data[0]["lat"])
             self.longitude = float(data[0]["lon"])
             return 1
-        except :
-            action.send(self, verb='buglatlon', description=reponse)
+        except Exception as e:
+            action.send(self, verb='buglatlon', description=str(reponse)+ ";"+str(e))
 
             address = str(self.code_postal)
             if self.commune:
@@ -143,7 +143,7 @@ class Adresse(models.Model):
                 self.longitude = float(data[0]["lon"])
                 return 2
             except Exception as e2:
-                action.send(self, verb='buglatlon', description=reponse)
+                action.send(self, verb='buglatlon', description=str(reponse) + ";"+str(e2))
                 if LOCALL:
                     print(e2)
                     return 0

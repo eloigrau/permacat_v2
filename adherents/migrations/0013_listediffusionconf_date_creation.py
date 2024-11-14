@@ -10,4 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='listediffusionconf',
+            name='date_creation',
+            field=models.DateTimeField(auto_now=True, verbose_name='Date de création'),
+        ),
     ]

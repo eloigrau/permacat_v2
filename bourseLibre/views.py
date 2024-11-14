@@ -1313,9 +1313,10 @@ def salon_accueil(request):
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
     inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) +
                         list( salons_publics.values_list('tags', flat=True).distinct())))
-    inner_qs.remove(None)
-    if (None, ) in inner_qs:
-        inner_qs.remove((None, ))
+    if inner_qs:
+        inner_qs.remove(None)
+        if (None, ) in inner_qs:
+            inner_qs.remove((None, ))
     tags = Tag.objects.filter(id__in=inner_qs)
 
     return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })

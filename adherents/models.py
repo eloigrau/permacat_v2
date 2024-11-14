@@ -170,3 +170,23 @@ class InscriptionMail(models.Model):
     def get_delete_url(self):
         return reverse('adherents:inscriptionMail_supprimer', kwargs={'pk': self.pk})
 
+
+
+
+class Comm_adherent(models.Model):
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent")
+    #auteur = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="auteur")
+    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
+    commentaire = models.TextField(null=True, blank=True)
+    #detail = models.TextField(null=True, blank=True)
+    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.date_creation.strftime('%D/%M/%Y')) + ": " + str(self.commentaire)
+
+    def get_absolute_url(self):
+        return self.adherent.get_absolute_url()
+    def get_update_url(self):
+        return reverse('adherents:comm_adherent_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adherents:comm_adherent_supprimer', kwargs={'pk': self.pk})

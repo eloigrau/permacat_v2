@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf
+from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf, Comm_adherent
 from .constantes import list_ape
 from local_summernote.widgets import SummernoteWidget
 
@@ -107,4 +107,10 @@ class ListeDiffusionConfForm(forms.ModelForm):
     class Meta:
         model = ListeDiffusionConf
         fields = ['nom']
+
+
+class Comm_adh_form(forms.ModelForm):
+    class Meta:
+        model = Comm_adherent
+        fields = ['commentaire']
 

@@ -179,6 +179,20 @@
 {% include 'adherents/template_inscriptionmail_liste.html' %}
 
 {% if is_membre_bureau %}
+<hr>
+<h5>Commentaires :</h5>
+{% include 'adherents/template_comm_adh_liste.html' %}
+
+<div class="row">
+    <div class="col-md-12 textcenter">
+<a href="{% url 'adherents:ajouter_comm_adh' adherent.pk %}">
+    <button type="button" class="btn btn-sm btn-danger">
+        <span class="fa fa-plus"></span>&nbsp;Ajouter un commentaire
+    </button>
+</a>
+    </div>
+</div>
+<hr>
 <div class="row">
     <div class="col-md-12 textcenter">
         <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">
@@ -189,6 +203,8 @@
     </div>
 </div>
 {% endif %}
+
+
 {% endif %}
 
 {% endblock %}

@@ -56,6 +56,10 @@ urlpatterns = [
     path(r'conf66/inscriptions/modifier/<int:pk>', login_required(views.InscriptionMailUpdateView.as_view()), name="inscriptionMail_modifier"),
     path(r'conf66/inscriptions/supprimer/<int:pk>', login_required(views.InscriptionMailDeleteView.as_view()), name="inscriptionMail_supprimer"),
 
+    path(r'conf66/comm_adh/modifier/<int:pk>', login_required(views.Comm_adherent_modifier.as_view()), name="comm_adherent_modifier"),
+    path(r'conf66/comm_adh/supprimer/<int:pk>', login_required(views.Comm_adherent_supprimer.as_view()), name="comm_adherent_supprimer"),
+    path(r'conf66/comm_adh/creer/<int:adherent_pk>', views.ajouter_comm_adh, name="ajouter_comm_adh"),
+
     path(r'conf66/listesDiffusion/', login_required(views.ListeDiffusionConf_liste.as_view()), name="listeDiffusionConf_liste"),
     path(r'conf66/listesDiffusion/creerListe/', views.creerListeDiffusionConf, name="listeDiffusionConf_creer"),
     path(r'conf66/listesDiffusion/detail/<int:pk>', login_required(views.ListeDiffusionConfDetailView.as_view()), name="listeDiffusion_detail"),

@@ -761,7 +761,7 @@ def recalculerAdresses(request):
 def recalculerAdressesConf(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-
+    from adherents.models import Adherent
     add = Adherent.objects.all()
     message = ""
     for a in add:

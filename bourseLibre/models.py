@@ -126,8 +126,8 @@ class Adresse(models.Model):
         if reponse.status_code != "OK":
             action.send(self, verb='buglatlon', description=str(reponse))
 
-        data = simplejson.loads(reponse.text)
         try:
+            data = simplejson.loads(reponse.text)
             self.latitude = float(data[0]["lat"])
             self.longitude = float(data[0]["lon"])
             return 1
@@ -141,8 +141,8 @@ class Adresse(models.Model):
             if reponse.status_code != "OK":
                 action.send(self, verb='buglatlon', description=str(reponse))
 
-            data = simplejson.loads(reponse.text)
             try:
+                data = simplejson.loads(reponse.text)
                 self.latitude = float(data[0]["lat"])
                 self.longitude = float(data[0]["lon"])
                 return 2

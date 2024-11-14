@@ -763,7 +763,6 @@ def recalculerAdressesConf(request):
         return HttpResponseForbidden()
     from adherents.models import Adherent
     add = Adherent.objects.all()
-
     message = ""
     for a in add:
         if a.latitude == LATITUDE_DEFAUT:

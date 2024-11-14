@@ -4,7 +4,6 @@ import math
 import os
 import itertools
 from datetime import date
-
 from django.utils.safestring import mark_safe
 import django_filters
 import requests

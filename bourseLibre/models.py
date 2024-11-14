@@ -24,7 +24,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from django.core.mail import send_mail
 from .constantes import Choix, DEGTORAD
-from .settings.production import SERVER_EMAIL
+from .settings.production import SERVER_EMAIL, LOCALL
 import simplejson
 from datetime import datetime
 from webpush import send_user_notification
@@ -112,6 +112,7 @@ class Adresse(models.Model):
     def __unicode__(self):
         return self.__str__()
 
+
     def set_latlon_from_adresse(self):
         address = ''
         if self.rue:
@@ -122,23 +123,34 @@ class Adresse(models.Model):
         address = address.replace(" ", "+").replace("++", "+")
 
         try:
-            url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
+            url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
             reponse = requests.get(url)
             data = simplejson.loads(reponse.text)
+            if LOCALL:
+                print(data)
             self.latitude = float(data[0]["lat"])
             self.longitude = float(data[0]["lon"])
-        except:
+            return 1
+        except Exception as e:
+            if LOCALL:
+                print(e)
             try:
                 address = str(self.code_postal)
                 if self.commune:
                     address += "+" + self.commune
                 address = address.replace(" ", "+")
-                url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
+                url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
                 reponse = requests.get(url)
                 data = simplejson.loads(reponse.text)
+                if LOCALL:
+                    print(data)
                 self.latitude = float(data[0]["lat"])
                 self.longitude = float(data[0]["lon"])
-            except:
+                return 2
+            except Exception as e2:
+                if LOCALL:
+                    print(e2)
+                    return 0
                 try:
                     api_key = os.environ["GAPI_KEY"]
                     api_response = requests.get(
@@ -148,9 +160,13 @@ class Adresse(models.Model):
                     if api_response_dict['status'] == 'OK':
                         self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
                         self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
-                except:
+                        return 3
+                except Exception as e3:
+                    if LOCALL:
+                        print(e3)
                     self.latitude = LATITUDE_DEFAUT
                     self.longitude = LONGITUDE_DEFAUT
+        return 0
 
     @property
     def get_latitude(self):

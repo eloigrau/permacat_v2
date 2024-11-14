@@ -2,9 +2,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from actstream.models import Action, Follow
+
+from permagora.models import LATITUDE_DEFAUT
 from .models import Profil, Adhesion_asso, Suivis, Adresse, InscriptionNewsletter, InscriptionNewsletterAsso, Asso
 from ateliers.models import Atelier
-from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD
+from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD, LOCALL
 from django.http import HttpResponseForbidden
 from django.core.mail.message import EmailMultiAlternatives
 import re
@@ -20,7 +22,15 @@ from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
 from actstream.models import following
 from django.db.models import Q
-from bourseLibre.settings.production import LOCALL
+
+from enum import Enum
+
+class ErreurSetLatLon(Enum):
+    ECHEC = 0
+    OSM = 1
+    OSM2 = 2
+    GMAPS = 3
+
 
 def getMessage(action):
     message = action.data['message']
@@ -728,6 +738,24 @@ def envoyer_emails_reabonnement(request):
 
     return render(request, 'message_admin.html', {'message':"<p>envoi maisl : " + str(envoi_ok) + "</p>", "msg":"<p>envoyé à : </p>" + str(recipient)})
 
+
+
+
+def recalculerAdresses(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT)
+    message = ""
+    for a in add:
+        res = a.set_latlon_from_adresse()
+        if res:
+            a.save()
+        message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
+                 str(a.latitude) + " " + str(a.longitude) + "</p>"
+
+
+    return render(request, 'message_admin.html', {'message': message,})
 
 
 

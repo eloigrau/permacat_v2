@@ -30,6 +30,7 @@ class ErreurSetLatLon(Enum):
     OSM = 1
     OSM2 = 2
     GMAPS = 3
+    FRA = 3
 
 
 def getMessage(action):

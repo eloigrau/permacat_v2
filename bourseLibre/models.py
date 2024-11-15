@@ -138,16 +138,16 @@ class Adresse(models.Model):
     def set_latlon_from_adresse_osm(self, adresse):
         url = "http://nominatim.openstreetmap.org/search?q=" + adresse + "&format=json"
         reponse = requests.get(url)
-        if reponse.status_code != 200:
+        if reponse.status_code != 200 and reponse.status_code != 403:
             action.send(self, verb='buglatlon', description="2_osm"+str(reponse)+" / "+str(url))
         data = simplejson.loads(reponse.text)
         self.latitude = float(data[0]["lat"])
         self.longitude = float(data[0]["lon"])
 
     def set_latlon_from_adresse_france(self, adresse):
-        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)
+        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)+"&lat="+str(LATITUDE_DEFAUT) +"&lon="+str(LONGITUDE_DEFAUT) +
         reponse = requests.get(url)
-        if reponse.status_code != 200:
+        if reponse.status_code != 200 and reponse.status_code != 403:
             action.send(self, verb='buglatlon', description="1fr_"+str(reponse)+" / "+str(url))
         data = simplejson.loads(reponse.text)
         self.latitude = float(data['features'][0]["geometry"]["coordinates"][0])
@@ -159,23 +159,23 @@ class Adresse(models.Model):
             self.set_latlon_from_adresse_osm(adresse)
             return 1
         except Exception as e:
-            # address = str(self.code_postal)
-            # if self.commune:
-            #     address += "+" + self.commune
-            # try:
-            #     self.set_latlon_from_adresse_osm(address)
-            #     return 2
-            # except Exception as e2:
+            address = str(self.code_postal)
+            if self.commune:
+                address += "+" + self.commune
             try:
-                self.set_latlon_from_adresse_gmail(adresse)
-                return 3
-            except Exception as e3:
+                self.set_latlon_from_adresse_osm(address)
+                return 2
+            except Exception as e2:
                 try:
-                    self.set_latlon_from_adresse_france(adresse)
-                    return 4
+                    self.set_latlon_from_adresse_gmail(adresse)
+                    return 3
                 except Exception as e3:
-                    self.latitude = LATITUDE_DEFAUT
-                    self.longitude = LONGITUDE_DEFAUT
+                    try:
+                        self.set_latlon_from_adresse_france(adresse)
+                        return 4
+                    except Exception as e3:
+                        self.latitude = LATITUDE_DEFAUT
+                        self.longitude = LONGITUDE_DEFAUT
         return 0
 
     @property

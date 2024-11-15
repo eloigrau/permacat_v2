@@ -765,7 +765,7 @@ def recalculerAdresses(request):
         #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
         #         str(a.latitude) + " " + str(a.longitude) + "</p>"
 
-    message ="Nb ajustés : " +str(count)
+    message ="Nb ajustés : " +str(count) +" / " + m
     return render(request, 'message_admin.html', {'message': message,})
 
 

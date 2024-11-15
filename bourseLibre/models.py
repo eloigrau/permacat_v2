@@ -154,6 +154,8 @@ class Adresse(models.Model):
         self.longitude = float(data['features'][0]["geometry"]["coordinates"][1])
 
     def set_latlon_from_adresse(self):
+        if not self.code_postal and not self.commune:
+            return 0
         adresse = self.set_lonlat_getadresse()
         try:
             self.set_latlon_from_adresse_osm(adresse)

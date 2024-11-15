@@ -116,7 +116,7 @@ def view_delete(request, contact_id):
     contact = Contact.objects.filter(Q(id=contact_id))
     if contact:
         contact.delete()
-    return redirect(reverse(view_lists_contacts))
+    return redirect('phonebook:phonebook_lists_contacts')
 
 
 @login_required(login_url=LOGIN_URL)

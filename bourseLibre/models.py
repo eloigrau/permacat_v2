@@ -67,7 +67,7 @@ class Adresse(models.Model):
 
     @property
     def get_update_url(self):
-        return reverse('modifier_adresse', adresse_pk=self.pk)
+        return reverse('modifier_adresse',  kwargs={'adresse_pk':self.pk})
 
     @property
     def get_url_map(self):

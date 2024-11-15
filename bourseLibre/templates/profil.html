@@ -241,6 +241,12 @@
             <td>{{user.last_login|date:'DATE_FORMAT' }}
             </td>
         </tr>
+        <tr>
+            <td style="width:200px">Inscription :
+            </td>
+            <td>{{user.date_registration|date:'DATE_FORMAT' }}
+            </td>
+        </tr>
         {% endif %}
 
       {% if request.user == user or request.user.is_superuser%}
@@ -267,6 +273,11 @@
         <a href="https://www.perma.cat/gestion/bourseLibre/adresse/{{user.adresse.id}}/change/">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Modifier
+            </button>
+        </a>
+              <a href="{{user.adresse.get_update_url">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Pick
             </button>
         </a>
       {%endif%}

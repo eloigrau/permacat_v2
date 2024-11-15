@@ -4,7 +4,7 @@ from bourseLibre.models import Profil, Adresse, Asso
 from blog.models import Article
 import simplejson
 from django.urls import reverse
-from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN
+from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS
 from django.utils import timezone
 import uuid
 import datetime
@@ -182,7 +182,7 @@ class Comm_adherent(models.Model):
     #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return str(self.date_creation.strftime('%D/%M/%Y')) + ": " + str(self.commentaire)
+        return str(self.date_creation.strftime('%d/%m/%Y')) + ": " + str(self.commentaire)
 
     def get_absolute_url(self):
         return self.adherent.get_absolute_url()
@@ -190,3 +190,63 @@ class Comm_adherent(models.Model):
         return reverse('adherents:comm_adherent_modifier', kwargs={'pk': self.pk})
     def get_delete_url(self):
         return reverse('adherents:comm_adherent_supprimer', kwargs={'pk': self.pk})
+
+class Paysan(models.Model):
+    nom = models.CharField(verbose_name="Nom", max_length=120, blank=True)
+    prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True)
+    email = models.CharField(verbose_name="Email", max_length=150, blank=True)
+    telephone = models.CharField(verbose_name="Telephone", max_length=120, blank=True)
+    adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE)
+    commentaire = models.TextField(null=True, blank=True)
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent Conf'", null=True)
+    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
+
+    def __str__(self):
+        return str(self.nom) + " " + str(self.prenom) + " " + self.telephone
+
+    def get_absolute_url(self):
+         return reverse('adherents:accueil_phoning')
+    def get_update_url(self):
+        return reverse('adherents:phoning_paysan_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adherents:phoning_paysan_supprimer', kwargs={'pk': self.pk})
+    def get_delete_url2(self):
+        return reverse('adherents:phoning_paysan_supprimer2', kwargs={'pk': self.pk})
+    def get_ajoutContact_url(self):
+        return reverse('adherents:phoning_paysan_contact_ajout', kwargs={'paysan_pk': self.pk})
+
+    def get_contacts(self):
+        return self.contactpaysan_set.all()
+
+    @property
+    def get_background_color(self):
+        length = len(self.get_contacts())
+        if length == 0:
+            return 'red'
+        elif length == 1:
+            return 'blue'
+        elif length == 2:
+            return 'green'
+        elif length == 3:
+            return 'grey'
+        elif length > 3:
+            return 'black'
+
+    @property
+    def get_contacts_html(self):
+        html = "<ul>"
+        for c in self.get_contacts():
+            html += "<li>" +str(c) + "</li> "
+        html += "</ul>"
+        return html
+
+class ContactPaysan(models.Model):
+    paysan = models.ForeignKey(Paysan, on_delete=models.CASCADE, verbose_name="Paysan",)
+    commentaire = models.CharField(verbose_name="commentaire", max_length=200, blank=True)
+    date_contact = models.DateTimeField(verbose_name="Date", default=timezone.now)
+    statut = models.CharField(verbose_name="Statut", max_length=2,
+                              choices=CHOIX_CONTACTS, default='0',)
+
+    def __str__(self):
+        return "[" + str(self.date_contact.strftime('%d/%m %H:%M')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)
+

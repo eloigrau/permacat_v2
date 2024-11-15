@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adherent, Adhesion
+from .models import Adherent, Adhesion, Paysan
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q
@@ -54,3 +54,21 @@ class AdherentsCarteFilter(django_filters.FilterSet):
             'statut': ['exact', ],
         }
 
+
+class PaysanCarteFilter(django_filters.FilterSet):
+    descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ",
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
+                                                             'required': '', 'tabindex': 1, 'autofocus': '1'}))
+
+    def get_descrip_filter(self, queryset, field_name, value):
+        return queryset.filter(Q(email__icontains=value)|
+                               Q(adresse__icontains=value)|
+                               Q(nom__icontains=value)|
+                               Q(prenom__icontains=value)|
+                               Q(telephone__icontains=value)|
+                               Q(statut__icontains=value))
+
+
+    class Meta:
+        model = Paysan
+        fields = {        }

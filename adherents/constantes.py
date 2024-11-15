@@ -40,9 +40,11 @@ CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidair
 CHOIX_MOYEN = ("VIR", "Virement"), ("CHQ", "Chèque"), ("ESP", "Espèce"), ("HA", "HelloAsso"), ("Autre", "Autre"),
 
 def get_slug_salon(nom="bureau"):
+    #Pour retrouver le slug du bureau qui donne accès à... des fonctionnalités
     if nom=="bureau":
         return "conf66_bureau_2023"
 
     return "test"
 
 
+CHOIX_CONTACTS = ("0", "Réponse OK"), ("1", "Pas de réponse"), ("2", "à répondu mais à rappeler")

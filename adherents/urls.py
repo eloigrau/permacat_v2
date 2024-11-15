@@ -73,4 +73,18 @@ urlpatterns = [
          name="listeDiffusion_ajouterAdherent"),
     path(r'conf66/inscriptions/ajouter/<int:adherent_pk>',
          views.ajouterInscription_AdherentListeDiffusionConf, name="ajouterInscription_AdherentListeDiffusionConf"),
-     ]
+
+    path(r'conf66/phoning/', login_required(views.Paysan_liste.as_view()),
+         name="accueil_phoning"),
+    #path(r'conf66/phoning/paysan_ajouter/', views.creerListeDiffusionConf, name="listeDiffusionConf_creer"),
+    path(r'conf66/phoning/ajouter', login_required(views.Paysan_ajouter.as_view()),
+         name="phoning_paysan_ajouter"),
+    path(r'phoning/phoning/modifier/<int:pk>', login_required(views.Paysan_modifier.as_view()),
+         name="phoning_paysan_modifier"),
+    path(r'conf66/phoning/supprimer/<int:pk>', login_required(views.Paysan_supprimer.as_view()),
+         name="phoning_paysan_supprimer"),
+    path(r'conf66/phoning/supprimer2/<int:pk>', views.paysan_supprimer, name="phoning_paysan_supprimer2"),
+    path(r'conf66/phoning/contact/ajouter/<int:paysan_pk>', views.contactPaysan_ajouter, name="phoning_paysan_contact_ajout"),
+    path(r'conf66/phoning/contact/supprimer/<int:paysan_contact_pk>', views.contactPaysan_supprimer, name="phoning_paysan_contact_supprimer"),
+
+]

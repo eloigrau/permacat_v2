@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf, Comm_adherent
+from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf, Comm_adherent, Paysan, ContactPaysan
 from .constantes import list_ape
 from local_summernote.widgets import SummernoteWidget
 
@@ -114,3 +114,35 @@ class Comm_adh_form(forms.ModelForm):
         model = Comm_adherent
         fields = ['commentaire']
 
+
+
+class Paysan_form(forms.ModelForm):
+    telephone = forms.CharField(label="Téléphone", required=False)
+    code_postal = forms.CharField(label="Code postal*", required=False)
+    commune = forms.CharField(label="Commune",  required=False)
+    rue = forms.CharField(label="Rue", required=False)
+    adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
+                              label="Adhérent lié ?", )
+    class Meta:
+        model = Paysan
+        fields = ['nom', 'prenom', 'telephone', 'email', 'commune', 'code_postal', 'commentaire', 'adherent']
+
+
+class Paysan_update_form(forms.ModelForm):
+    telephone = forms.CharField(label="Téléphone", required=False)
+    code_postal = forms.CharField(label="Code postal", required=False)
+    commune = forms.CharField(label="Commune", required=False)
+    rue = forms.CharField(label="Rue", required=False)
+    adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
+                              label="Adhérent lié ?", )
+
+
+    class Meta:
+        model = Paysan
+        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', 'adherent']
+
+
+class ContactPaysan_form(forms.ModelForm):
+    class Meta:
+        model = ContactPaysan
+        fields = ['commentaire', 'statut']

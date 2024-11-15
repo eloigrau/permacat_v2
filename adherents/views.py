@@ -13,10 +13,12 @@ from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
 from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, \
-    InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent, Comm_adh_form
-from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf, Comm_adherent
+    InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent, Comm_adh_form, \
+    Paysan_form, Paysan_update_form, ContactPaysan_form
+from .models import (Adherent, Adhesion, InscriptionMail, Paysan, ContactPaysan,
+                     ListeDiffusionConf, Comm_adherent)
 from bourseLibre.models import Adresse, Profil, Asso
-from .filters import AdherentsCarteFilter
+from .filters import AdherentsCarteFilter, PaysanCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
 from actstream.models import Action
@@ -956,3 +958,136 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
     return render(request, 'adherents/listediffusionconf_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion})
 
 
+
+class Paysan_ajouter(CreateView):
+    model = Paysan
+    template_name_suffix = '_ajouter'
+
+    def get_form(self):
+        return Paysan_form(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.adresse=Adresse.objects.create(rue=form.cleaned_data['rue'],
+                                                   commune=form.cleaned_data['commune'],
+                                                   code_postal=form.cleaned_data['code_postal'],
+                                                   telephone=form.cleaned_data['telephone'])
+
+        self.object.save()
+        #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
+        #             description="a ajouté le Jardin: '%s'" % self.object.titre)
+
+        return redirect("adherents:accueil_phoning")
+
+
+
+class Paysan_modifier(UpdateView):
+    model = Paysan
+    template_name_suffix = '_modifier'
+
+    def get_form(self):
+        return Paysan_update_form(**self.get_form_kwargs())
+
+    def get_initial(self):
+        paysan = Paysan.objects.get(pk=self.kwargs["pk"])
+        return {
+            'rue': paysan.adresse.rue,
+            'commune': paysan.adresse.commune,
+            'code_postal': paysan.adresse.code_postal,
+            'telephone': paysan.adresse.telephone,
+        }
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.adresse.rue=form.cleaned_data['rue']
+        self.object.adresse.commune=form.cleaned_data['commune']
+        self.object.adresse.code_postal=form.cleaned_data['code_postal']
+        self.object.adresse.telephone=form.cleaned_data['telephone']
+        self.object.adresse.save(recalc=True)
+        #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
+        #             description="a ajouté le Jardin: '%s'" % self.object.titre)
+
+        return redirect("adherents:accueil_phoning")
+    # def form_valid(self, form):
+    #     desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
+    #         form.changed_data) + ")"
+    #     action.send(self.request.user, verb='adherent_conf66_modifier', action_object=self.object,
+    #                 url=self.object.get_absolute_url(), description=desc)
+    #     titre = "[PCAT_adherents] Modification de l'adherent : " + str(self.object)
+    #     action.send(self.request.user, verb='emails', url=self.object.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+    #     return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
+class Paysan_supprimer(UserPassesTestMixin, DeleteView):
+    model = Paysan
+    template_name_suffix = '_supprimer'
+
+    def test_func(self):
+        return True
+
+    def get_success_url(self):
+        #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
+        #action.send(self.request.user, verb='adherent_conf66_supprimer', url=reverse('adherents:accueil'), description=desc)
+        return reverse('adherents:accueil_phoning')
+
+
+@login_required
+def paysan_supprimer(request, paysan_pk):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    paysan = get_object_or_404(Paysan, pk=paysan_pk)
+    paysan.delete()
+    return redirect('adherents:accueil_phoning')
+
+class Paysan_liste(ListView):
+    model = Paysan
+    context_object_name = "paysans"
+    template_name = "adherents/carte_paysans.html"
+
+    def get_queryset(self):
+        params = dict(self.request.GET.items())
+        #self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
+        if "lettre" in self.request.GET:
+            qs = Paysan.objects.filter(nom__istartswith=self.request.GET["lettre"]).order_by("nom")
+        else:
+            qs = Paysan.objects.all().order_by("nom")
+        profils_filtres = PaysanCarteFilter(self.request.GET, queryset=qs)
+        self.qs = profils_filtres.qs.distinct()
+
+        return self.qs
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        qs = self.get_queryset()
+        context['titre'] = "Adhérents Conf 66 (%d)" % len(qs)
+        filter = AdherentsCarteFilter(self.request.GET, qs)
+        context["filter"] = filter
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
+        return context
+
+
+
+
+@login_required
+def contactPaysan_supprimer(request, paysan_contact_pk):
+    c = get_object_or_404(ContactPaysan, pk=paysan_contact_pk)
+    c.delete()
+    return redirect('adherents:accueil_phoning')
+
+@login_required
+def contactPaysan_ajouter(request, paysan_pk):
+    p = get_object_or_404(Paysan, pk=paysan_pk)
+    form = ContactPaysan_form(request.POST or None)
+    if form.is_valid():
+        contact = form.save(commit=False)
+        contact.paysan = p
+        form.save(commit=True)
+        return redirect('adherents:accueil_phoning')
+
+    return render(request, 'adherents/paysan_contact_ajouter.html', {"form": form, "paysan":p})

@@ -1,0 +1,100 @@
+{% load app_filters %}
+{% load avatar_tags %}
+{% load static %}
+
+{%include 'pagination_alphabet.html' %}
+{% include 'pagination_new.html' %}
+{% if is_membre_bureau %}
+<nav class="nav nav-tabs justify-content-center">
+        {% comment %}
+    <a class="nav-item nav-link active" href="#adresse" data-toggle="tab"><h6>Liste</h6></a>
+      <a class="nav-item nav-link" href="#adhesions" data-toggle="tab"><h6>Adhésions</h6></a>
+    {% endcomment %}
+</nav>
+{% endif %}
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="adresse">
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Conf</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Tel</th>
+                <th>Contacts</th>
+                <th>+</th>
+                <th>Email</th>
+                <th>Code postal</th>
+                <th>Commune</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paysan in paysans %}
+        <tr style="background-color:{{paysan.get_background_color}}">
+            <td>{% if paysan.profil %} <a href="{% url 'profil' paysan.profil.id %}">{{ paysan.profil.username }}</a>{% else %}-{% endif %}</td>
+
+            <td> {{ paysan.nom }} </td>
+            <td> {{ paysan.prenom }}</td>
+            <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}<a>{% else %}-{% endif %}</td>
+             <td>{{ paysan.get_contacts_html|safe }}
+             </td>
+            <td>
+             <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i><i class="fa fa-phone"></i> </a>
+
+             </td>
+
+            <td>{{ paysan.email }}</td>
+           <td>{%if paysan.adresse.code_postal %}{{ paysan.adresse.code_postal }}{% else %}-{% endif %}</td>
+            <td>{%if paysan.adresse.commune %}{{ paysan.adresse.commune }} {% else %}-{% endif %}</td>
+            <td>
+                 <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                 <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+  </div>
+{% comment %}
+{% if is_membre_bureau %}
+  <div class="tab-pane fade" id="adhesions">
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adhésions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paysan in paysans %}
+        <tr>
+            <td>{{ adherent.nom }}</td>
+            <td><a href="{% url 'adherents:paysan_detail' paysan.pk %}"> {{ paysan.prenom }}</a></td>
+            <td>{% for ad in paysan.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
+      </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+  </div>
+{% endif %}
+{% endcomment %}
+</div>
+{% include 'pagination_new.html' %}
+<p class="textcenter textepetit">({{paysans|length}} paysans)</p>
+

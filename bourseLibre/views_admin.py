@@ -755,7 +755,10 @@ def recalculerAdresses(request):
     for a in add[:10]:
         if a.code_postal:
             if a.commune == " St Paul deF.":
-                a.delete()
+                try:
+                    a.delete()
+                except Exception as e:
+                    m += "Erreur " + str(e)
             res = a.set_latlon_from_adresse()
             if res:
                 a.save()

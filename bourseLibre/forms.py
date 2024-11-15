@@ -274,13 +274,16 @@ class AdresseForm4(forms.ModelForm):
         return adresse
 
 class AdresseForm5(forms.ModelForm):
+    rue = forms.CharField(
+        label="Rue",
+        required=False)
     latitude = forms.FloatField(label="Latitude", initial="", required=False)
     longitude = forms.FloatField(label="Longitude", initial="", required=False)
     telephone = forms.CharField(label="Téléphone", required=False)
 
     class Meta:
         model = Adresse
-        fields = ['commune', 'code_postal',  'latitude', 'longitude', 'telephone']
+        fields = ['rue', 'commune', 'code_postal',  'latitude', 'longitude', 'telephone']
 
     def save(self, *args, **kwargs):
         adresse = super(AdresseForm5, self).save(commit=False)

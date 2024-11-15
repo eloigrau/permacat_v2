@@ -97,7 +97,7 @@
               {% if user.adresse.telephone %}
                 <tr>
                     <td style="width:250px">Telephone *:</td>
-                    <td>{{ user.adresse.telephone }}</td>
+                    <td><a href="tel:{{ user.adresse.telephone }}">{{ user.adresse.telephone }}</a></td>
                 </tr>
               {% endif %}
             <tr>

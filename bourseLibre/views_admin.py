@@ -748,14 +748,17 @@ def recalculerAdresses(request):
 
     add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT)
     message = ""
-    for a in add:
+    count=0
+    for a in add[:200]:
         res = a.set_latlon_from_adresse()
         if res:
             a.save()
+            count+=1
+
         #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
         #         str(a.latitude) + " " + str(a.longitude) + "</p>"
 
-
+    message ="Nb ajustés : " +str(count)
     return render(request, 'message_admin.html', {'message': message,})
 
 

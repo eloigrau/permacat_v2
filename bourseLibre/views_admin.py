@@ -751,11 +751,16 @@ def recalculerAdresses(request):
         action.delete()
     add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
     count=0
-    for a in add[:50]:
+    m=""
+    for a in add[:10]:
+        if a.code_postal:
             res = a.set_latlon_from_adresse()
             if res:
                 a.save()
                 count+=1
+                m += "O: " + str(a.id) +", "
+            else:
+                m += "N: " + str(a.id) +", "
 
         #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
         #         str(a.latitude) + " " + str(a.longitude) + "</p>"

@@ -757,6 +757,8 @@ def recalculerAdresses(request):
             if a.commune == " St Paul deF.":
                 try:
                     a.delete()
+                    m += "D: " + str(a) +", "
+                    pass
                 except Exception as e:
                     m += "Erreur " + str(e)
             res = a.set_latlon_from_adresse()

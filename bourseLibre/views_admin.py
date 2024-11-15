@@ -760,12 +760,12 @@ def recalculerAdresses(request):
                 count+=1
                 m += "O: " + str(a.id) +", "
             else:
-                m += "N: " + str(a.id) +", "
+                m += "N: <a href='" + a.get_update_url+"'>" + str(a.id) +"</a>, "
 
         #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
         #         str(a.latitude) + " " + str(a.longitude) + "</p>"
 
-    message ="Nb ajustés : " +str(count) +" / " + m
+    message ="Nb ajustés : " +str(count) +"/" +str(add.count()) + " - "+ m
     return render(request, 'message_admin.html', {'message': message,})
 
 

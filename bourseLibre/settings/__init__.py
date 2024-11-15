@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     'permagora',
     'jardins',
     'adherents',
+    'phonebook',
     #'tinymce',
     'dal',
     'dal_select2',

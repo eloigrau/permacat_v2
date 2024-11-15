@@ -3,8 +3,8 @@
 <h4>Page admin : messages</h4>
 {% endblock %}
 {% block content %}
-<p>{{msg}}</p>
+<p>{{msg|safe}}</p>
 {% for m in messages %}
-<p>{{m}}</p>
+<p>{{m|safe}}</p>
 {% endfor %}
 {% endblock %}

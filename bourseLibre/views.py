@@ -731,6 +731,20 @@ class profil_modifier_user(UpdateView):
         return super(profil_modifier_user, self).post(request, **kwargs)
 
 
+
+@login_required
+def modifier_adresse(request, adresse_pk):
+    adresse = get_object_or_404(Adresse, pk=adresse_pk)
+    form_adresse = AdresseForm5(request.POST or None, instance=adresse)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        return redirect(request.user)
+
+    return render(request, 'registration/modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':adresse })
+
+
+
 @login_required
 def profil_modifier_adresse(request):
     form_adresse = AdresseForm5(request.POST or None, instance=request.user.adresse)

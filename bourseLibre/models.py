@@ -112,7 +112,7 @@ class Adresse(models.Model):
         return self.__str__()
 
 
-    def set_latlon_from_adresse(self):
+    def set_lonlat_getadresse(self):
         address = ''
         if self.rue:
             address += self.rue + "+"
@@ -120,51 +120,62 @@ class Adresse(models.Model):
         if self.commune:
             address += "+" + self.commune
         address = address.replace(" ", "+").replace("++", "+")
-        m = ""
-        url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
+        return address
+
+    def set_latlon_from_adresse_gmail(self, adresse):
+        api_key = os.environ["GAPI_KEY"]
+        api_response = requests.get(
+            'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
+        api_response_dict = api_response.json()
+
+        if api_response_dict['status'] == 'OK':
+            self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
+            self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
+            return 3
+        else:
+            action.send(self, verb='buglatlon', description="gmail_"+str(api_response_dict))
+
+    def set_latlon_from_adresse_osm(self, adresse):
+        url = "http://nominatim.openstreetmap.org/search?q=" + adresse + "&format=json"
         reponse = requests.get(url)
         if reponse.status_code != 200:
-            action.send(self, verb='buglatlon', description="1"+str(reponse)+" / "+str(url))
+            action.send(self, verb='buglatlon', description="2_osm"+str(reponse)+" / "+str(url))
+        data = simplejson.loads(reponse.text)
+        self.latitude = float(data[0]["lat"])
+        self.longitude = float(data[0]["lon"])
 
+    def set_latlon_from_adresse_france(self, adresse):
+        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)
+        reponse = requests.get(url)
+        if reponse.status_code != 200:
+            action.send(self, verb='buglatlon', description="1fr_"+str(reponse)+" / "+str(url))
+        data = simplejson.loads(reponse.text)
+        self.latitude = float(data['features'][0]["geometry"]["coordinates"][0])
+        self.longitude = float(data['features'][0]["geometry"]["coordinates"][1])
+
+    def set_latlon_from_adresse(self):
+        adresse = self.set_lonlat_getadresse()
         try:
-            data = simplejson.loads(reponse.text)
-            self.latitude = float(data[0]["lat"])
-            self.longitude = float(data[0]["lon"])
+            self.set_latlon_from_adresse_osm(adresse)
             return 1
         except Exception as e:
             address = str(self.code_postal)
             if self.commune:
                 address += "+" + self.commune
-            address = address.replace(" ", "+")
-            url = "https://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-            reponse = requests.get(url)
-            if reponse.status_code != 200:
-                action.send(self, verb='buglatlon', description="2"+str(reponse)+" / "+str(url))
-
             try:
-                data = simplejson.loads(reponse.text)
-                self.latitude = float(data[0]["lat"])
-                self.longitude = float(data[0]["lon"])
+                self.set_latlon_from_adresse_osm(address)
                 return 2
             except Exception as e2:
-                if LOCALL:
-                    print(e2)
-                    return 0
                 try:
-                    api_key = os.environ["GAPI_KEY"]
-                    api_response = requests.get(
-                        'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
-                    api_response_dict = api_response.json()
-
-                    if api_response_dict['status'] == 'OK':
-                        self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
-                        self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
-                        return 3
-                    else:
-                        action.send(self, verb='buglatlon', description=str(api_response_dict))
+                    self.set_latlon_from_adresse_gmail(adresse)
+                    return 3
                 except Exception as e3:
-                    self.latitude = LATITUDE_DEFAUT
-                    self.longitude = LONGITUDE_DEFAUT
+                    try:
+                        self.set_latlon_from_adresse_france(adresse)
+                        return 4
+                    except Exception as e3:
+                        self.latitude = LATITUDE_DEFAUT
+                        self.longitude = LONGITUDE_DEFAUT
         return 0
 
     @property

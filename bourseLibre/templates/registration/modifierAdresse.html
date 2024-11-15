@@ -1,5 +1,5 @@
 {% extends 'base_defraiement.html' %}
-
+{% load carto_filters %}
 {% block header%}
 {% load leaflet_tags %}
 {% load static %}
@@ -12,7 +12,7 @@
 
 {% block subtitle %}
 <div class="row justify-content-center">
-	<div class="col col-md-12 textcenter"><h3>Modifier l'adresse</h3>
+	<div class="col col-md-12 textcenter"><h3>Modifier l'adresse {{adresse}}</h3>
 	</div>
 
 </div>
@@ -24,8 +24,23 @@
       <script type="text/javascript">
 
         function map_init_basic (map, options) {
-        map.panTo(new L.LatLng(42.62914, 2.49939));
 
+                  var greyIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-grey.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+        {% if adresse.latitude %}
+            var lat = {{adresse.latitude|to_numeric}};
+            var lon = {{adresse.longitude|to_numeric}};
+            var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup(' <b>{{adresse.get_adresse_str}} ({{adresse.latitude|to_numeric|slice:":10"}}, {{adresse.longitude|to_numeric|slice:":9"}})</b>').addTo(map);
+            map.panTo(new L.LatLng(lat, lon));
+        {% endif %}
         map.on('click', function(ev) {
                   var leafIcon = L.icon({
             iconUrl: '{% static 'img/leafgreen.png' %}',

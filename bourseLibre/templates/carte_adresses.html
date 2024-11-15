@@ -70,13 +70,13 @@
             }
             catch(err){ ;
             }
-        {%endfor%}
-        map.addLayer(markers);
-        {% if lieux|length >= 1 %}
-          map.panTo(new L.LatLng(lat, lon));
-        {%else%}
-          map.panTo(new L.LatLng(42.62914, 2.49939));
-        {%endif%}
+            {%endfor%}
+            map.addLayer(markers);
+            {% if lieux|length >= 1 %}
+              map.panTo(new L.LatLng(lat, lon));
+            {%else%}
+              map.panTo(new L.LatLng(42.62914, 2.49939));
+            {%endif%}
     }
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}

@@ -13,6 +13,11 @@
 {% block subtitle %}
 <div class="row justify-content-center">
 	<div class="col col-md-12 textcenter"><h3>Modifier l'adresse {{adresse}}</h3>
+       <a href="{{adresse.get_delete_url}}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>Supprimer
+            </button>
+        </a>
 	</div>
 
 </div>

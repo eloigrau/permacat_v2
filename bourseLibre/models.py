@@ -70,6 +70,10 @@ class Adresse(models.Model):
         return reverse('modifier_adresse',  kwargs={'adresse_pk':self.pk})
 
     @property
+    def get_delete_url(self):
+        return reverse('supprimer_adresse',  kwargs={'adresse_pk':self.pk})
+
+    @property
     def get_url_map(self):
         return reverse('voirLieu',  kwargs={'id_lieu': self.id})
 
@@ -303,7 +307,7 @@ class Profil(AbstractUser):
     site_web = models.URLField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     competences = models.TextField(null=True, blank=True)
-    adresse = models.OneToOneField(Adresse, on_delete=models.CASCADE)
+    adresse = models.OneToOneField(Adresse, on_delete=models.SET_NULL, null=True)
     date_registration = models.DateTimeField(verbose_name="Date de création", editable=False)
     pseudo_june = models.CharField(_('pseudo Monnaie Libre'), blank=True, default=None, null=True, max_length=50)
     inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=True)

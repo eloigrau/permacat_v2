@@ -113,6 +113,7 @@ urlpatterns = [
     re_path(r'^accounts/profil_supprimer/$', login_required(views.profil_supprimer.as_view()), name='profil_supprimer',),
     re_path(r'^accounts/profil_modifier_adresse/$', login_required(views.profil_modifier_adresse), name='profil_modifier_adresse',),
     path('accounts/modifier_adresse/<int:adresse_pk>', login_required(views.modifier_adresse), name='modifier_adresse',),
+    path('accounts/supprimer_adresse/<int:adresse_pk>', login_required(views.supprimer_adresse), name='supprimer_adresse',),
     re_path(r'^accounts/profil_modifier_adresse_user/(?P<user_pk>[0-9]+)/$', login_required(views.profil_modifier_adresse_user), name='profil_modifier_adresse_user',),
     re_path(r'^accounts/profil_contact/(?P<user_id>[0-9]+)/$', login_required(views.profil_contact), name='profil_contact',),
     re_path(r'^accounts/mesSuivis/$', login_required(views.mesSuivis), name='mesSuivis',),

@@ -758,7 +758,7 @@ def recalculerAdresses(request):
                 try:
                     a.delete()
                     m += "D: " + str(a) +", "
-                    pass
+                    continue
                 except Exception as e:
                     m += "Erreur " + str(e)
             res = a.set_latlon_from_adresse()

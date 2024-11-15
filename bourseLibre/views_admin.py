@@ -773,8 +773,8 @@ def recalculerAdressesConf(request):
     for a in add:
         if str(a.adresse.latitude) == str(LATITUDE_DEFAUT):
             res = a.adresse.set_latlon_from_adresse()
-            if res:
-                a.save()
+            if res != 0:
+                a.adresse.save()
             message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
                      str(a.adresse.latitude) + " " + str(a.adresse.longitude) + "</p>"
 

@@ -119,7 +119,7 @@ class Adresse(models.Model):
         address += str(self.code_postal)
         if self.commune:
             address += "+" + self.commune
-        address = address.replace(" ", "+").replace("++", "+")
+        address = address.replace("  ", "+").replace(" ", "+").replace("++", "+")
         return address
 
     def set_latlon_from_adresse_gmail(self, adresse):
@@ -159,23 +159,23 @@ class Adresse(models.Model):
             self.set_latlon_from_adresse_osm(adresse)
             return 1
         except Exception as e:
-            address = str(self.code_postal)
-            if self.commune:
-                address += "+" + self.commune
+            # address = str(self.code_postal)
+            # if self.commune:
+            #     address += "+" + self.commune
+            # try:
+            #     self.set_latlon_from_adresse_osm(address)
+            #     return 2
+            # except Exception as e2:
             try:
-                self.set_latlon_from_adresse_osm(address)
-                return 2
-            except Exception as e2:
+                self.set_latlon_from_adresse_gmail(adresse)
+                return 3
+            except Exception as e3:
                 try:
-                    self.set_latlon_from_adresse_gmail(adresse)
-                    return 3
+                    self.set_latlon_from_adresse_france(adresse)
+                    return 4
                 except Exception as e3:
-                    try:
-                        self.set_latlon_from_adresse_france(adresse)
-                        return 4
-                    except Exception as e3:
-                        self.latitude = LATITUDE_DEFAUT
-                        self.longitude = LONGITUDE_DEFAUT
+                    self.latitude = LATITUDE_DEFAUT
+                    self.longitude = LONGITUDE_DEFAUT
         return 0
 
     @property

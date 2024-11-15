@@ -145,7 +145,7 @@ class Adresse(models.Model):
         self.longitude = float(data[0]["lon"])
 
     def set_latlon_from_adresse_france(self, adresse):
-        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)+"&lat="+str(LATITUDE_DEFAUT) +"&lon="+str(LONGITUDE_DEFAUT) +
+        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)+"&lat="+str(LATITUDE_DEFAUT) +"&lon="+str(LONGITUDE_DEFAUT)
         reponse = requests.get(url)
         if reponse.status_code != 200 and reponse.status_code != 403:
             action.send(self, verb='buglatlon', description="1fr_"+str(reponse)+" / "+str(url))

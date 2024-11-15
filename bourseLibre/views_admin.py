@@ -746,14 +746,18 @@ def recalculerAdresses(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT)
+    actions = Action.objects.filter(verb='buglatlon')
+    for action in actions:
+        action.delete()
+    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__isexact='')
     message = ""
     count=0
     for a in add[:200]:
-        res = a.set_latlon_from_adresse()
-        if res:
-            a.save()
-            count+=1
+        if a.code_postal:
+            res = a.set_latlon_from_adresse()
+            if res:
+                a.save()
+                count+=1
 
         #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
         #         str(a.latitude) + " " + str(a.longitude) + "</p>"
@@ -771,7 +775,7 @@ def recalculerAdressesConf(request):
     for action in actions:
         action.delete()
 
-    add = Adherent.objects.all()
+    add = Adherent.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__isexact='')
     message = ""
     for a in add:
         if str(a.adresse.latitude) == str(LATITUDE_DEFAUT):

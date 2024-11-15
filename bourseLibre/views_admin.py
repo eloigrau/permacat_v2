@@ -752,8 +752,8 @@ def recalculerAdresses(request):
         res = a.set_latlon_from_adresse()
         if res:
             a.save()
-        message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
-                 str(a.latitude) + " " + str(a.longitude) + "</p>"
+        #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
+        #         str(a.latitude) + " " + str(a.longitude) + "</p>"
 
 
     return render(request, 'message_admin.html', {'message': message,})

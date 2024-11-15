@@ -749,11 +749,9 @@ def recalculerAdresses(request):
     actions = Action.objects.filter(verb='buglatlon')
     for action in actions:
         action.delete()
-    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__isexact='')
-    message = ""
+    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
     count=0
-    for a in add[:200]:
-        if a.code_postal:
+    for a in add[:50]:
             res = a.set_latlon_from_adresse()
             if res:
                 a.save()
@@ -775,7 +773,7 @@ def recalculerAdressesConf(request):
     for action in actions:
         action.delete()
 
-    add = Adherent.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__isexact='')
+    add = Adherent.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
     message = ""
     for a in add:
         if str(a.adresse.latitude) == str(LATITUDE_DEFAUT):

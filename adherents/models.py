@@ -8,6 +8,7 @@ from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS
 from django.utils import timezone
 import uuid
 import datetime
+from colour import Color
 
 class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
@@ -192,17 +193,16 @@ class Comm_adherent(models.Model):
         return reverse('adherents:comm_adherent_supprimer', kwargs={'pk': self.pk})
 
 class Paysan(models.Model):
-    nom = models.CharField(verbose_name="Nom", max_length=120, blank=True)
-    prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True)
-    email = models.CharField(verbose_name="Email", max_length=150, blank=True)
-    telephone = models.CharField(verbose_name="Telephone", max_length=120, blank=True)
+    nom = models.CharField(verbose_name="Nom", max_length=120, blank=True, null=True, )
+    prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True, null=True, )
+    email = models.CharField(verbose_name="Email", max_length=150, blank=True, null=True, )
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE)
     commentaire = models.TextField(null=True, blank=True)
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent Conf'", null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
 
     def __str__(self):
-        return str(self.nom) + " " + str(self.prenom) + " " + self.telephone
+        return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"
 
     def get_absolute_url(self):
          return reverse('adherents:accueil_phoning')
@@ -221,23 +221,19 @@ class Paysan(models.Model):
     @property
     def get_background_color(self):
         length = len(self.get_contacts())
-        if length == 0:
-            return 'red'
-        elif length == 1:
-            return 'blue'
-        elif length == 2:
-            return 'green'
-        elif length == 3:
-            return 'grey'
-        elif length > 3:
-            return 'black'
+        red = Color("#ffffcc")
+        nb = 5
+        colors = list(red.range_to(Color("#f9f06b"), nb))
+        if length<nb:
+            return colors[length]
+        else:
+            return  colors[nb]
 
     @property
     def get_contacts_html(self):
-        html = "<ul>"
+        html = ""
         for c in self.get_contacts():
             html += "<li>" +str(c) + "</li> "
-        html += "</ul>"
         return html
 
 class ContactPaysan(models.Model):

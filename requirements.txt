@@ -13,6 +13,7 @@ cffi==1.15.1
 chardet==5.2.0
 charset-normalizer==2.1.1
 cloudinary==1.10.0
+colour==0.1.5
 cryptography==39.0.0
 dj-database-url==2.2.0
 django==4.2.14

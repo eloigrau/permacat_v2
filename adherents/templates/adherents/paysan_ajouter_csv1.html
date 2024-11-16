@@ -1,21 +1,19 @@
-{% extends 'base_adherents.html' %}
-{% block subtitle %}
+{% extends 'base_phoning.html' %}
 
+{% block content %}
 <div class="row">
     <div class="col textcenter">
-       <h3> Ajouter un Adhérent </h3>
+       <h3> Ajouter une liste CSV avec au moins une colonne "telephone" </h3>
+        <p>Copier / coller le contenu du csv (colonnes séparées par une virgule)</p>
     </div>
 </div>
 
-{% endblock %}
-{% block content %}
-
 <div class="row justify-content-center">
-<div class="col-sm-12 col-md-10 col-lg-12">
+    <div class="col-sm-12 col-md-8 col-lg-6">
     <form id="myForm" class="form-horizontal" role="form" action="" method="post"
         enctype="multipart/form-data">
             {% include 'form_template.html'%}
     </form>
-</div>
+    </div>
 </div>
 {% endblock %}

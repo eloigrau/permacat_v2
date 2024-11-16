@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  re_path(r'^blog__/', include(blog_urls))
 """
 from django.urls import path, include
-from . import views
+from . import views, views_phoning
 from django.contrib.auth.decorators import login_required
 
 app_name = 'adherents'
@@ -74,17 +74,23 @@ urlpatterns = [
     path(r'conf66/inscriptions/ajouter/<int:adherent_pk>',
          views.ajouterInscription_AdherentListeDiffusionConf, name="ajouterInscription_AdherentListeDiffusionConf"),
 
-    path(r'conf66/phoning/', login_required(views.Paysan_liste.as_view()),
+
+    path(r'conf66/phoning/', login_required(views_phoning.Paysan_liste.as_view()),
          name="accueil_phoning"),
     #path(r'conf66/phoning/paysan_ajouter/', views.creerListeDiffusionConf, name="listeDiffusionConf_creer"),
-    path(r'conf66/phoning/ajouter', login_required(views.Paysan_ajouter.as_view()),
+    path(r'conf66/phoning/ajouter/acceuil', views_phoning.paysan_ajouter_accueil, name="phoning_paysan_ajouter_accueil"),
+    path(r'conf66/phoning/ajouter', login_required(views_phoning.Paysan_ajouter.as_view()),
          name="phoning_paysan_ajouter"),
-    path(r'phoning/phoning/modifier/<int:pk>', login_required(views.Paysan_modifier.as_view()),
+    path(r'conf66/phoning/ajouter/listetel', views_phoning.phoning_paysan_ajouter_listetel,
+         name="phoning_paysan_ajouter_listetel"),
+    path(r'conf66/phoning/ajouter/csv', views_phoning.phoning_paysan_ajouter_csv,
+         name="phoning_paysan_ajouter_csv"),
+    path(r'phoning/phoning/modifier/<int:pk>', login_required(views_phoning.Paysan_modifier.as_view()),
          name="phoning_paysan_modifier"),
-    path(r'conf66/phoning/supprimer/<int:pk>', login_required(views.Paysan_supprimer.as_view()),
+    path(r'conf66/phoning/supprimer/<int:pk>', login_required(views_phoning.Paysan_supprimer.as_view()),
          name="phoning_paysan_supprimer"),
-    path(r'conf66/phoning/supprimer2/<int:pk>', views.paysan_supprimer, name="phoning_paysan_supprimer2"),
-    path(r'conf66/phoning/contact/ajouter/<int:paysan_pk>', views.contactPaysan_ajouter, name="phoning_paysan_contact_ajout"),
-    path(r'conf66/phoning/contact/supprimer/<int:paysan_contact_pk>', views.contactPaysan_supprimer, name="phoning_paysan_contact_supprimer"),
+    path(r'conf66/phoning/supprimer2/<int:pk>', views_phoning.paysan_supprimer, name="phoning_paysan_supprimer2"),
+    path(r'conf66/phoning/contact/ajouter/<int:paysan_pk>', views_phoning.contactPaysan_ajouter, name="phoning_paysan_contact_ajout"),
+    path(r'conf66/phoning/contact/supprimer/<int:paysan_contact_pk>', views_phoning.contactPaysan_supprimer, name="phoning_paysan_contact_supprimer"),
 
 ]

@@ -1,0 +1,42 @@
+{% extends 'base_phoning.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+         <a href="{% url 'adherents:accueil_phoning' %}">
+        <button type="button" class="btn btn-info" >
+              Revenir à la liste
+            </button>
+         </a>
+    </div>
+    <hr>
+    <div class="col-sm-12 textcenter">
+         <a href="{% url 'adherents:phoning_paysan_ajouter' %}">
+        <button type="button" class="btn btn-success" >
+               Ajouter UN Paysan à la liste
+            </button>
+         </a>
+    </div>
+    <hr>
+    <div class="col-sm-12 textcenter">
+         <a href="{% url 'adherents:phoning_paysan_ajouter_listetel' %}">
+            <button type="button" class="btn btn-success" >
+               Ajouter DES paysans (liste de numéros de téléphones au format texte)
+            </button>
+         </a>
+    </div>
+    <hr>
+    <div class="col-sm-12 textcenter">
+         <a href="{% url 'adherents:phoning_paysan_ajouter_csv' %}">
+            <button type="button" class="btn btn-success" >
+               Ajouter DES paysans (texte csv)
+            </button>
+         </a>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}
+

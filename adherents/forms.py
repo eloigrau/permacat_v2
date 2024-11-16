@@ -125,7 +125,7 @@ class Paysan_form(forms.ModelForm):
                               label="Adhérent lié ?", )
     class Meta:
         model = Paysan
-        fields = ['nom', 'prenom', 'telephone', 'email', 'commune', 'code_postal', 'commentaire', 'adherent']
+        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', 'adherent']
 
 
 class Paysan_update_form(forms.ModelForm):
@@ -146,3 +146,18 @@ class ContactPaysan_form(forms.ModelForm):
     class Meta:
         model = ContactPaysan
         fields = ['commentaire', 'statut']
+
+
+class ListeTel_form(forms.Form):
+    telephones = forms.CharField(label="Liste de Téléphones, séparés par une virgule", required=True,
+        widget=forms.Textarea,
+    )
+
+class csvFile_form(forms.Form):
+    fichier_csv = forms.FileField(label="Selectionner CSV avec colonnes nom,prenom,telephone (+ en option: email, rue, commune, code_postal)", required=True, )
+
+
+class csvText_form(forms.Form):
+    texte_csv = forms.CharField(label=" copier/coller le contenu du csv ici", required=True,
+        widget=forms.Textarea,
+    )

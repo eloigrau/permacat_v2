@@ -39,12 +39,16 @@
 
             <td> {{ paysan.nom }} </td>
             <td> {{ paysan.prenom }}</td>
-            <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}<a>{% else %}-{% endif %}</td>
-             <td>{{ paysan.get_contacts_html|safe }}
+            <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
+               <i class="fa fa-phone"></i> </a>
+             <a>
+                {% else %}-{% endif %}</td>
+             <td><ul>
+                 {{ paysan.get_contacts_html|safe }}
+             <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
+                 </ul>
              </td>
             <td>
-             <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i><i class="fa fa-phone"></i> </a>
-
              </td>
 
             <td>{{ paysan.email }}</td>

@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 from io import StringIO
-
+from django.db.models import Count, Max
 
 class Paysan_ajouter(CreateView):
     model = Paysan
@@ -105,6 +105,7 @@ class Paysan_liste(ListView):
     model = Paysan
     context_object_name = "paysans"
     template_name = "adherents/carte_paysans.html"
+    template_name_simple = "adherents/carte_paysans_simple.html"
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -127,6 +128,12 @@ class Paysan_liste(ListView):
         #context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
         return context
+
+    def get_template_names(self, *args, **kwargs):
+        # Check if the request path is the path for a-url in example app
+        if self.request.path == reverse('adherents:accueil_phoning_simple'):
+            return [self.template_name_simple]  # Return a list that contains "a.html" template name
+        return [self.template_name]  # else return "b.html" template name
 
 
 
@@ -155,6 +162,65 @@ def contactPaysan_ajouter(request, paysan_pk):
 def paysan_ajouter_accueil(request):
     return render(request, 'adherents/paysan_ajouter_acceuil.html', {})
 
+
+@login_required
+def nettoyer_telephones(request):
+    m = ""
+    for p in Paysan.objects.all():
+        if p.adresse.telephone:
+            if p.adresse.telephone.startswith("6"):
+                p.adresse.telephone = "0" + str(p.adresse.telephone)
+                p.adresse.save()
+                m += "ajustement tel : " + str(p.adresse.telephone)
+                continue
+            if p.adresse.telephone.startswith("7"):
+                p.adresse.telephone = "0" + str(p.adresse.telephone)
+                p.adresse.save()
+                m += "ajustement tel : " + str(p.adresse.telephone)
+                continue
+
+            if len(p.adresse.telephone) < 4:
+                p.commentaire =p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
+                p.adresse.telephone = ""
+                p.adresse.save()
+                continue
+
+            try:
+                v = int(p.adresse.telephone)
+            except:
+
+                p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
+                p.adresse.telephone = ""
+                p.adresse.save()
+                m += "deplacement tel : " + str(p.adresse.telephone)
+
+    return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"message": m})
+
+@login_required
+def supprimer_doublons(request):
+    params = dict(request.GET.items())
+    if 'tel' in params:
+        unique_fields = ['adresse__telephone', ]
+    else:
+        unique_fields = ['nom', 'prenom', 'adresse__telephone']
+
+    duplicates = (
+        Paysan.objects.values(*unique_fields)
+        .order_by('nom')
+        .annotate(max_id=Max('id'), count_id=Count('id'))
+        .filter(count_id__gt=1)
+    )
+
+    for duplicate in duplicates:
+        (
+            Paysan.objects
+            .filter(**{x: duplicate[x] for x in unique_fields})
+            .exclude(id=duplicate['max_id'])
+            .delete()
+        )
+
+
+    return redirect('adherents:accueil_phoning')
 
 
 @login_required

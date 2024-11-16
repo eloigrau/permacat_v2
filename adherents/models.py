@@ -211,7 +211,7 @@ class Paysan(models.Model):
     def get_delete_url(self):
         return reverse('adherents:phoning_paysan_supprimer', kwargs={'pk': self.pk})
     def get_delete_url2(self):
-        return reverse('adherents:phoning_paysan_supprimer2', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_paysan_supprimer2', kwargs={'paysan_pk': self.pk})
     def get_ajoutContact_url(self):
         return reverse('adherents:phoning_paysan_contact_ajout', kwargs={'paysan_pk': self.pk})
 

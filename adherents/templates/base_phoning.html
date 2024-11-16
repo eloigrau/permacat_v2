@@ -13,10 +13,11 @@
          </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
     <ul class="navbar-nav mx-auto subnavbar align-items-center">
-		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil_phoning' %}"> Liste</a></li>
-		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:phoning_paysan_ajouter_accueil' %}"> Ajouter...</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:accueil_phoning' %}"> Liste</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:accueil_phoning_simple' %}"> Liste Simple</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_paysan_ajouter_accueil' %}"> Ajouter...</a></li>
         {% if request.user.is_superuser %}
-            <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'adherents:accueil_admin' %}"> Admin</a></li>
+            <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:accueil_admin' %}"> Admin</a></li>
         {% endif %}
 		        </li>
             </ul>

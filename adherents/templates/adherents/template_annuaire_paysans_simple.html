@@ -20,29 +20,27 @@
     <table class="table table-condensed tableprofils table-striped sortable">
         <thead class="thead-inverse">
             <tr>
-                <th>Nom Prénom</th>
-                <th>Tel</th>
+                <th>Nom Prénom Tel Edit</th>
                 <th>Contacts</th>
-                <th>Edit</th>
             </tr>
         </thead>
         <tbody>
         {% for paysan in paysans %}
         <tr style="background-color:{{paysan.get_background_color}}">
-            <td> {{ paysan.nom }}  {{ paysan.prenom }}</td>
-            <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
+            <td> {{ paysan.nom }}  {{ paysan.prenom }}
+                {% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>
              <a>
-                {% else %}-{% endif %}</td>
+                {% else %}-{% endif %}
+                  <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                 <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
+
+            </td>
              <td><ul>
                  {{ paysan.get_contacts_html|safe }}
              <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
                  </ul>
              </td>
-              <td>
-                 <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-                 <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
-            </td>
         </tr>
         {% endfor %}
         </tbody>

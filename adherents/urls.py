@@ -84,6 +84,7 @@ urlpatterns = [
     path(r'conf66/phoning/ajouter/listetel', views_phoning.phoning_paysan_ajouter_listetel,
          name="phoning_paysan_ajouter_listetel"),
     path(r'conf66/phoning/ajouter/csv', views_phoning.phoning_paysan_ajouter_csv, name="phoning_paysan_ajouter_csv"),
+    path(r'conf66/phoning/ajouter/adhconf', views_phoning.ajouterAdherentsConf, name="phoning_ajouterAdherentsConf"),
     path(r'conf66/phoning/supprimer/doublons', views_phoning.supprimer_doublons, name="phoning_supprimer_doublons"),
     path(r'conf66/phoning/supprimer/nettoyer_telephones', views_phoning.nettoyer_telephones, name="nettoyer_telephones"),
     path(r'phoning/phoning/modifier/<int:pk>', login_required(views_phoning.Paysan_modifier.as_view()), name="phoning_paysan_modifier"),

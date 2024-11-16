@@ -19,6 +19,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 from io import StringIO
 from django.db.models import Count, Max
+import re
 
 class Paysan_ajouter(CreateView):
     model = Paysan
@@ -167,22 +168,35 @@ def paysan_ajouter_accueil(request):
 def nettoyer_telephones(request):
     m = ""
     for p in Paysan.objects.all():
+        if p.adresse.rue:
+            try:
+                ad = re.split("\d{5}", p.adresse.rue)
+                if len(ad>1):
+                    code = re.findall("\d{5}", p.adresse.rue)[0]
+                    p.adresse.rue = ad[0]
+                    p.adresse.code_postal=code
+                    p.adresse.commune=ad[1]
+                    p.adresse.save()
+                    m+= "<p>MAJ " + p.adresse.rue + "</p>"
+            except:
+                m+= "<p>pb " + p.adresse.rue + "</p>"
         if p.adresse.telephone:
             if p.adresse.telephone.startswith("6"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
                 p.adresse.save()
-                m += "ajustement tel : " + str(p.adresse.telephone)
+                m += "<p>ajustement6 tel : " + str(p.adresse.telephone) + "</p>"
                 continue
             if p.adresse.telephone.startswith("7"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
                 p.adresse.save()
-                m += "ajustement tel : " + str(p.adresse.telephone)
+                m += "<p>ajustement7 tel : " + str(p.adresse.telephone) + "</p>"
                 continue
 
             if len(p.adresse.telephone) < 4:
-                p.commentaire =p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
+                p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
                 p.adresse.telephone = ""
                 p.adresse.save()
+                m += "<p>petit tel : " + str(p.adresse.telephone) + "</p>"
                 continue
 
             try:
@@ -192,9 +206,10 @@ def nettoyer_telephones(request):
                 p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
                 p.adresse.telephone = ""
                 p.adresse.save()
-                m += "deplacement tel : " + str(p.adresse.telephone)
+                m += "<p>deplacement tel : " + str(p.adresse.telephone) + "</p>"
 
     return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"message": m})
+
 
 @login_required
 def supprimer_doublons(request):
@@ -294,7 +309,7 @@ def lireTableauPaysan(csv_reader):
         try:
             cles = line.keys()
             if line["telephone"] and Adresse.objects.filter(telephone__iexact=line["telephone"]):
-                msg += "<p> DEJA " + str(line) + "</p>"
+                msg += "<p> DEJA " + str(line) + "#" + line["telephone"] +"#</p>"
                 continue
             if not line["telephone"] :
                 msg += "<p> pas de tel " + str(line) + "</p>"

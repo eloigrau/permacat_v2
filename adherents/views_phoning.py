@@ -182,21 +182,22 @@ def nettoyer_telephones(request):
                 m+= "<p>pb " + p.adresse.rue + "</p>"
         if p.adresse.telephone:
             if p.adresse.telephone.startswith("6"):
-                p.adresse.telephone = "0" + str(p.adresse.telephone)
+                p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
                 m += "<p>ajustement6 tel : " + str(p.adresse.telephone) + "</p>"
             elif p.adresse.telephone.startswith("7"):
-                p.adresse.telephone = "0" + str(p.adresse.telephone)
+                p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
                 m += "<p>ajustement7 tel : " + str(p.adresse.telephone) + "</p>"
 
             elif p.adresse.telephone.startswith("33"):
-                p.adresse.telephone = "+" + str(p.adresse.telephone)
+                p.adresse.telephone = "+" + str(p.adresse.telephone.strip())
                 m += "<p>ajustement+ tel : " + str(p.adresse.telephone) + "</p>"
 
             if len(p.adresse.telephone) < 4:
-                p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
+                p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone.strip())
                 p.adresse.telephone = ""
-                m += "<p>petit tel : " + str(p.adresse.telephone) + "</p>"
+                m += "<p>petit tel : " + str(p.adresse.telephone.strip()) + "</p>"
 
+            p.adresse.telephone=p.adresse.telephone.replace('/','').replace('.','').strip()
             p.adresse.save()
             p.save(update_fields=['adresse'])
             #

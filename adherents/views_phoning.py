@@ -275,7 +275,7 @@ def ajouterAdherentsConf(request):
     m = ""
     j=0
     for i, adherent in enumerate(adherents):
-        if j>5 or i> 10:
+        if j>5 or i> 20:
             break
         res, p = creerPaysan(telephone=adherent.adresse.telephone,
                              nom=adherent.nom,

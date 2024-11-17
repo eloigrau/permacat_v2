@@ -79,6 +79,21 @@
 <hr>
 
 {% if is_membre_bureau %}
+
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 col-lg-8">
+    <a href="{% url 'adherents:get_csv_paysans' %}?{{ request.GET.urlencode }}" target="_blank"
+       rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+            &nbsp;Exporter en CSV
+        </button>
+    </a>
+</div>
+</div>
+
+{% endif %}
+
+{% comment %}
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
     <div id="historique" style='display:none;'>
@@ -97,7 +112,7 @@
     </div>
     </div>
 </div>
-{% endif %}
+{% endcomment %}
 
 <script>
 

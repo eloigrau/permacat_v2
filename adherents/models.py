@@ -218,6 +218,11 @@ class Paysan(models.Model):
     def get_contacts(self):
         return self.contactpaysan_set.all()
 
+    def get_profil_username(self):
+        if self.profil:
+            return str(self.profil)
+        else:
+            return ""
     @property
     def get_background_color(self):
         length = len(self.get_contacts())

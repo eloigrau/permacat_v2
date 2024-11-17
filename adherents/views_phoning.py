@@ -418,7 +418,7 @@ def get_csv_paysans(request):
     #current_year = date.today().isocalendar()[0]
 
     csv_data = [("NOM","PRENOM","telephone","email","adresse_postale","code_postal","commune","adherent_nom",),]
-    csv_data += [(a.nom, a.prenom, a.adresse.telephone, a.email,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.get_profil_username)
+    csv_data += [(a.nom, a.prenom, a.adresse.telephone, a.email,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.get_profil_username())
                  for a in profils_filtres.qs.distinct() ]
 
     return write_csv_data(request, csv_data)

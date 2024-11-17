@@ -813,7 +813,7 @@ def nettoyerAdresses(request):
             break
 
         m +=  "<p>" + add.getStrAll() + 'Lié ? ' + str(add.estLieAUnObjet()) + "</p>"
-        if supprimer:
+        if supprimer and not add.estLieAUnObjet():
             try:
                 add.delete()
             except Exception as e:

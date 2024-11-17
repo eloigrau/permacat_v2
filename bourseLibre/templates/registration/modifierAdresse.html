@@ -30,7 +30,7 @@
 
         function map_init_basic (map, options) {
 
-                  var greyIcon = L.icon({
+         var greyIcon = L.icon({
               iconUrl: '{% static 'img/marker-icon-grey.png' %}',
               shadowUrl: '{% static 'img/marker-shadow.png' %}',
               iconSize: [25, 41],
@@ -40,7 +40,7 @@
         });
 
         map.panTo(new L.LatLng(42.62914, 2.49939));
-        {% if adresse.latitude %}
+        {% if adresse and adresse.latitude %}
             var lat = {{adresse.latitude|to_numeric}};
             var lon = {{adresse.longitude|to_numeric}};
             var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup(' <b>{{adresse.get_adresse_str}} ({{adresse.latitude|to_numeric|slice:":10"}}, {{adresse.longitude|to_numeric|slice:":9"}})</b>').addTo(map);

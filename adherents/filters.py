@@ -66,7 +66,7 @@ class PaysanCarteFilter(django_filters.FilterSet):
         return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut__isnull=True))
 
     def get_istel_filter(self, queryset, field_name, value):
-        return queryset.filter(Q(adresse__telephone__isnull=False) & ~Q(adresse__telephone__startswith=" "))
+        return queryset.exclude(adresse__telephone__startswith=" ").filter(adresse__telephone__isnull=False)
 
     def get_descrip_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|

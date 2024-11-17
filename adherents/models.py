@@ -198,7 +198,7 @@ class Paysan(models.Model):
     email = models.CharField(verbose_name="Email", max_length=150, blank=True, null=True, )
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE)
     commentaire = models.TextField(null=True, blank=True)
-    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent Conf'", null=True)
+    adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name="Adhérent Conf'", null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
 
     def __str__(self):

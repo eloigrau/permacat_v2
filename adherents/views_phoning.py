@@ -10,7 +10,7 @@ from .forms import (Paysan_form, Paysan_update_form, ContactPaysan_form,
 
 from .models import Adherent, Paysan, ContactPaysan
 from bourseLibre.models import Adresse, Profil, Asso
-from .filters import AdherentsCarteFilter, PaysanCarteFilter
+from .filters import PaysanCarteFilter
 from actstream.models import Action
 from datetime import date, timedelta, datetime
 
@@ -99,6 +99,7 @@ class Paysan_supprimer(UserPassesTestMixin, DeleteView):
 @login_required
 def paysan_supprimer(request, paysan_pk):
     paysan = get_object_or_404(Paysan, pk=paysan_pk)
+    paysan.adresse.delete()
     paysan.delete()
     return redirect('adherents:accueil_phoning')
 
@@ -122,9 +123,9 @@ class Paysan_liste(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        qs = self.get_queryset()
-        context['titre'] = "Phoning Conf pour APCA 2024 (%d)" % len(qs)
-        filter = AdherentsCarteFilter(self.request.GET, qs)
+        qs = self.qs
+        context['titre'] = "Phoning Conf pour EP CA 2024 (%d)" % len(qs)
+        filter = PaysanCarteFilter(self.request.GET, qs)
         context["filter"] = filter
         #context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
@@ -175,20 +176,23 @@ def nettoyer_telephones(request):
                     code = re.findall("\d{5}", p.adresse.rue)[0]
                     p.adresse.rue = ad[0]
                     p.adresse.code_postal=code
-                    p.adresse.commune=ad[1]
+                    p.adresse.commune = ad[1]
                     p.adresse.save()
-                    m+= "<p>MAJ " + p.adresse.rue + "</p>"
+                    p.save()
+                    m+= "<p>MAJ " + str(p.adresse) + "</p>"
             except:
                 m+= "<p>pb " + p.adresse.rue + "</p>"
         if p.adresse.telephone:
             if p.adresse.telephone.startswith("6"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
                 p.adresse.save()
+                p.save()
                 m += "<p>ajustement6 tel : " + str(p.adresse.telephone) + "</p>"
                 continue
             if p.adresse.telephone.startswith("7"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
                 p.adresse.save()
+                p.save()
                 m += "<p>ajustement7 tel : " + str(p.adresse.telephone) + "</p>"
                 continue
 
@@ -196,17 +200,18 @@ def nettoyer_telephones(request):
                 p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
                 p.adresse.telephone = ""
                 p.adresse.save()
+                p.save()
                 m += "<p>petit tel : " + str(p.adresse.telephone) + "</p>"
                 continue
-
-            try:
-                v = int(p.adresse.telephone)
-            except:
-
-                p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
-                p.adresse.telephone = ""
-                p.adresse.save()
-                m += "<p>deplacement tel : " + str(p.adresse.telephone) + "</p>"
+            #
+            # try:
+            #     v = int(p.adresse.telephone.strip())
+            # except:
+            #     p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
+            #     p.adresse.telephone = ""
+            #     p.adresse.save()
+            #     p.save()
+            #     m += "<p>deplacement tel : " + str(p.adresse.telephone) + "</p>"
 
     return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"message": m})
 
@@ -238,11 +243,10 @@ def supprimer_doublons(request):
     return redirect('adherents:accueil_phoning')
 
 
-@login_required
 def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, adherent=None):
-    if not telephone:
-        return 0, None
-    if not Paysan.objects.filter(adresse__telephone=telephone).exists():
+    #if not telephone:
+     #   return 0, None
+    #if not Paysan.objects.filter(adresse__telephone=telephone).exists():
         adresse, created = Adresse.objects.get_or_create(
                                         telephone=telephone,
                                         commune=commune,
@@ -253,11 +257,11 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                 nom=nom,
                                 prenom=prenom,
                                 email=email,
-                                adherent=adherent,
                                 adresse=adresse,
+                                adherent=adherent,
         )
         return 1, p
-    return 0, None
+   # return 0, None
 
 
 @login_required
@@ -265,8 +269,8 @@ def ajouterAdherentsConf(request):
     adherents = Adherent.objects.all()
     m = ""
     for adherent in adherents:
-        res, p = creerPaysan(adherent.nom, adherent.prenom,adherent.email, adherent.adresse.telephone, adherent.adresse.rue,
-                    adherent.adresse.commune, adherent.adresse.code_postal, adherent)
+        res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
+                    commune=adherent.adresse.commune, code_postal=adherent.adresse.code_postal, adherent=adherent)
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
         else:
@@ -331,7 +335,7 @@ def lireTableauPaysan(csv_reader):
                 msg += "<p>  adherent  deja present " + str(line) + " / " + str(paysan) + "</p>"
 
         except Exception as e:
-            msg += "<p>Erreur " + str(e.__traceback__) + " > " + str(i) + " " + str(line)
+            msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
     return msg
 
 

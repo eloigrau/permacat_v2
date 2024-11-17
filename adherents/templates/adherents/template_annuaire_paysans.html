@@ -25,7 +25,6 @@
                 <th>Prénom</th>
                 <th>Tel</th>
                 <th>Contacts</th>
-                <th>+</th>
                 <th>Email</th>
                 <th>Code postal</th>
                 <th>Commune</th>
@@ -35,22 +34,20 @@
         <tbody>
         {% for paysan in paysans %}
         <tr style="background-color:{{paysan.get_background_color}}">
-            <td>{% if paysan.profil %} <a href="{% url 'profil' paysan.profil.id %}">{{ paysan.profil.username }}</a>{% else %}-{% endif %}</td>
+            <td>{% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}"> {{ paysan.adherent.nom }}</a>{% else %}-{% endif %}</td>
 
             <td> {{ paysan.nom }} </td>
             <td> {{ paysan.prenom }}</td>
             <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>
              <a>
-                {% else %}-{% endif %}</td>
+                {% else %}-{% endif %}
+            </td>
              <td><ul>
                  {{ paysan.get_contacts_html|safe }}
              <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
                  </ul>
              </td>
-            <td>
-             </td>
-
             <td>{{ paysan.email }}</td>
            <td>{%if paysan.adresse.code_postal %}{{ paysan.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if paysan.adresse.commune %}{{ paysan.adresse.commune }} {% else %}-{% endif %}</td>

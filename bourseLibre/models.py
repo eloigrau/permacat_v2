@@ -51,7 +51,7 @@ class Adresse(models.Model):
     commune = models.CharField(max_length=50, blank=True, null=True, default="")
     latitude = models.FloatField(blank=True, null=True, default=LATITUDE_DEFAUT)
     longitude = models.FloatField(blank=True, null=True, default=LONGITUDE_DEFAUT)
-    pays = models.CharField(max_length=12, blank=True, null=True, default="France")
+    pays = models.CharField(max_length=12, blank=True, null=True, default="Catalunya")
     telephone = models.CharField(max_length=25, blank=True)
 
 

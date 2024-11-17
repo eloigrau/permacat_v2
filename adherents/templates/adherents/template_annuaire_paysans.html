@@ -20,9 +20,8 @@
     <table class="table table-condensed tableprofils table-striped sortable">
         <thead class="thead-inverse">
             <tr>
-                <th>Conf</th>
-                <th>Nom</th>
-                <th>Prénom</th>
+                <th>Nom Prénom</th>
+                <th>ATP</th>
                 <th>Tel</th>
                 <th>Contacts</th>
                 <th>Email</th>
@@ -35,10 +34,22 @@
         {% for paysan in paysans %}
         <tr style="background-color:{{paysan.get_background_color}}">
             <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
-                    {{ paysan.nom }}  {{ paysan.prenom }} {% if paysan.statut == "1" %} (ATP){% elif paysan.statut == "3"%} (CC){% else %}{%endif%} </a>
+                    {{ paysan.nom }}  {{ paysan.prenom }} </a>
                 {% else %}
                     {{ paysan.nom }}  {{ paysan.prenom }}
                 {% endif %}
+            </td>
+            <td>
+            {% if paysan.adherent %}
+                {% if paysan.adherent.statut == "1" %} (ATP){% elif paysan.adherent.statut == "3"%} (CC)
+
+                {% else %}
+                    ?
+                {% endif %}
+            {% else %}
+                -
+            {% endif %}
+
             </td>
             <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>

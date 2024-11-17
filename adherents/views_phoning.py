@@ -177,36 +177,28 @@ def nettoyer_telephones(request):
                     p.adresse.rue = ad[0]
                     p.adresse.code_postal=code
                     p.adresse.commune = ad[1]
-                    p.adresse.save()
-                    p.save()
                     m+= "<p>MAJ " + str(p.adresse) + "</p>"
             except:
                 m+= "<p>pb " + p.adresse.rue + "</p>"
         if p.adresse.telephone:
             if p.adresse.telephone.startswith("6"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
-                p.adresse.save()
-                p.save()
                 m += "<p>ajustement6 tel : " + str(p.adresse.telephone) + "</p>"
             elif p.adresse.telephone.startswith("7"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
-                p.adresse.save()
-                p.save()
                 m += "<p>ajustement7 tel : " + str(p.adresse.telephone) + "</p>"
 
             elif p.adresse.telephone.startswith("33"):
                 p.adresse.telephone = "+" + str(p.adresse.telephone)
-                p.adresse.save()
-                p.save()
                 m += "<p>ajustement+ tel : " + str(p.adresse.telephone) + "</p>"
 
             if len(p.adresse.telephone) < 4:
                 p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
                 p.adresse.telephone = ""
-                p.adresse.save()
-                p.save()
                 m += "<p>petit tel : " + str(p.adresse.telephone) + "</p>"
-                continue
+
+            p.adresse.save()
+            p.save(update_fields=['adresse'])
             #
             # try:
             #     v = int(p.adresse.telephone.strip())
@@ -251,7 +243,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
     #if not telephone:
      #   return 0, None
 
-    if not(telephone and (nom or prenom or email)):
+    if not(telephone and (nom or prenom or email)) or (adherent and Paysan.objects.filter(adherent=adherent).exists()):
         return 0, None
 
     if not Paysan.objects.filter(adresse__code_postal=code_postal,
@@ -260,7 +252,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                 prenom=prenom,
                                 email=email).exists():
 
-        adresse, created = Adresse.objects.create(
+        adresse = Adresse.objects.create(
                                         telephone=telephone,
                                         commune=commune,
                                         code_postal=code_postal,
@@ -274,7 +266,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                 adherent=adherent,
         )
         return 1, p
-   # return 0, None
+    return 0, None
 
 
 @login_required
@@ -284,18 +276,19 @@ def ajouterAdherentsConf(request):
     for i, adherent in enumerate(adherents):
         if i>5:
             break
-        if not Paysan.objects.filter(adherent=adherent).exists():
-            try:
+        res, p = creerPaysan(telephone=adherent.adresse.telephone,
+                             nom=adherent.nom,
+                             prenom=adherent.prenom ,
+                             email=adherent.email,
+                             rue=adherent.adresse.rue,
+                             commune=adherent.adresse.commune,
+                             code_postal=adherent.adresse.code_postal,
+                             adherent=adherent)
+        if res:
+            m += "<p>ajout " + str(adherent) +"</p>"
+        else:
+            m += "<p>refus " + str(adherent) +"</p>"
 
-                res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
-                        commune=adherent.adresse.commune, code_postal=adherent.adresse.code_postal, adherent=adherent)
-                if res:
-                    m += "<p>ajout " + str(adherent) +"</p>"
-                else:
-                    m += "<p>refus " + str(adherent) +"</p>"
-
-            except Exception as e:
-                m += "<p>errAdhConf " + str(e) +">" + str(adherent) +"</p>"
 
 
 

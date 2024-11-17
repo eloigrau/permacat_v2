@@ -260,7 +260,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                         rue=rue,
                                         )
         else:
-                adresse = Adresse.objects.create(
+            adresse = Adresse.objects.create(
                                         telephone=telephone,
                                             commune=commune,
                                             code_postal=code_postal,

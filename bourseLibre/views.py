@@ -739,12 +739,18 @@ def modifier_adresse(request, adresse_pk):
 
     if form_adresse.is_valid():
         adresse = form_adresse.save()
+        if not hasattr(adresse, 'profil'):
+            request.user.adresse=adresse
+            request.user.save()
         return redirect(request.user)
 
     return render(request, 'registration/modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':adresse })
 
 @login_required
 def profil_modifier_adresse(request):
+    if not request.user.adresse:
+         request.user.adresse = Adresse.objects.create(commune="Perpignan", code_postal='66000')
+         request.user.save()
     form_adresse = AdresseForm5(request.POST or None, instance=request.user.adresse)
 
     if form_adresse.is_valid():

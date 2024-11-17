@@ -243,7 +243,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
     #if not telephone:
      #   return 0, None
 
-    if not(telephone and (nom or prenom or email)) or (adherent and Paysan.objects.filter(adherent=adherent).exists()):
+    if not(telephone or nom or prenom or email or code_postal) or (adherent and Paysan.objects.filter(adherent=adherent).exists()):
         return 0, None
 
     if not Paysan.objects.filter(adresse__code_postal=code_postal,
@@ -252,7 +252,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                 prenom=prenom,
                                 email=email).exists():
 
-        if code_postal:
+        if code_postal and telephone:
             adresse, created = Adresse.objects.get_or_create(
                                         telephone=telephone,
                                         commune=commune,

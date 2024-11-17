@@ -374,7 +374,10 @@ class Profil(AbstractUser):
         return reverse('profil', kwargs={'user_id':self.id})
 
     def getDistance(self, profil):
-        return self.adresse.getDistance(profil.adresse)
+        if self.adresse:
+            return self.adresse.getDistance(profil.adresse)
+        else:
+            return 0
 
     def getAdhesions(self, abreviationAsso):
         if abreviationAsso == "pc" :

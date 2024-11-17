@@ -275,11 +275,13 @@
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Modifier
             </button>
         </a>
+      {% if user.adresse %}
               <a href="{{user.adresse.get_update_url}}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Pick
             </button>
         </a>
+      {%endif%}
       {%endif%}
     <table class="table table-condensed tablepanier table-striped">
     <tbody>

@@ -172,7 +172,7 @@ def nettoyer_telephones(request):
         if p.adresse.rue:
             try:
                 ad = re.split("\d{5}", p.adresse.rue)
-                if len(ad>1):
+                if len(ad)>1:
                     code = re.findall("\d{5}", p.adresse.rue)[0]
                     p.adresse.rue = ad[0]
                     p.adresse.code_postal=code
@@ -258,8 +258,7 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                  adresse__telephone=telephone,
                                 nom=nom,
                                 prenom=prenom,
-                                email=email,
-                                adherent=adherent,).exists():
+                                email=email).exists():
 
         adresse, created = Adresse.objects.create(
                                         telephone=telephone,

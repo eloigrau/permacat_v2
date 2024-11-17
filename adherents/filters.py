@@ -63,10 +63,16 @@ class PaysanCarteFilter(django_filters.FilterSet):
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
 
     def get_isatp_filter(self, queryset, field_name, value):
-        return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut__isnull=True))
+        if value:
+            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut__isnull=True))
+        else:
+            return queryset
 
     def get_istel_filter(self, queryset, field_name, value):
-        return queryset.exclude(adresse__telephone__startswith=" ").filter(adresse__telephone__isnull=False)
+        if value:
+            return queryset.exclude(adresse__telephone__startswith=" ").exclude(adresse__telephone__iexact="")
+        else:
+            return queryset
 
     def get_descrip_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|

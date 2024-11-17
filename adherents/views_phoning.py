@@ -246,8 +246,18 @@ def supprimer_doublons(request):
 def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, adherent=None):
     #if not telephone:
      #   return 0, None
-    #if not Paysan.objects.filter(adresse__telephone=telephone).exists():
-        adresse, created = Adresse.objects.get_or_create(
+
+    if not(telephone and (nom or prenom or email)):
+        return 0, None
+
+    if not Paysan.objects.filter(adresse__code_postal=code_postal,
+                                 adresse__telephone=telephone,
+                                nom=nom,
+                                prenom=prenom,
+                                email=email,
+                                adherent=adherent,).exists():
+
+        adresse, created = Adresse.objects.create(
                                         telephone=telephone,
                                         commune=commune,
                                         code_postal=code_postal,

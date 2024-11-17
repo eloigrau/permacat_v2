@@ -94,7 +94,7 @@
 <div class="row">
     <div class="col-md-6">
         {%if request.user.is_superuser or request.user.estmembre_bureau_conf  %}
-        <a href="{% url 'adherents:adherents_modifier_adresse' adherent.adresse.pk %}">
+        <a href="{% url 'adherents:adherents_modifier_adresse' adresse_pk=adherent.adresse.pk %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
             </button>

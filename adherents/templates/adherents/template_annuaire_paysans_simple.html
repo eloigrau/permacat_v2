@@ -27,7 +27,11 @@
         <tbody>
         {% for paysan in paysans %}
         <tr style="background-color:{{paysan.get_background_color}}">
-            <td> {{ paysan.nom }}  {{ paysan.prenom }}
+            <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
+                    {{ paysan.nom }}  {{ paysan.prenom }} </a> -
+                {% else %}
+                    {{ paysan.nom }}  {{ paysan.prenom }} -
+                {% endif %}
                 {% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>
              <a>

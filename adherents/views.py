@@ -127,7 +127,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
 
     def test_func(self):
-        self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
+        self.adresse = Adresse.objects.get(pk=self.kwargs['adresse_pk'])
         self.adherent = self.adresse.adherent_set.first()
         return is_membre_bureau(self.request.user) or self.request.user == self.adherent.profil
 
@@ -144,6 +144,8 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
         titre = "[PCAT_adherents] Modification de l'adresse de l'adherent" + str(self.adherent)
         action.send(self.request.user, verb='emails', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
         return super().form_valid(form)
+
+
 
 login_required
 @user_passes_test(is_membre_bureau)

@@ -34,10 +34,12 @@
         <tbody>
         {% for paysan in paysans %}
         <tr style="background-color:{{paysan.get_background_color}}">
-            <td>{% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}"> {{ paysan.adherent.nom }}</a>{% else %}-{% endif %}</td>
-
-            <td> {{ paysan.nom }} </td>
-            <td> {{ paysan.prenom }}</td>
+            <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
+                    {{ paysan.nom }}  {{ paysan.prenom }} {% if paysan.statut == "1" %} (ATP){% elif paysan.statut == "3"%} (CC){% else %}{%endif%} </a>
+                {% else %}
+                    {{ paysan.nom }}  {{ paysan.prenom }}
+                {% endif %}
+            </td>
             <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>
              <a>

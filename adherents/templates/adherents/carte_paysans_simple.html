@@ -18,9 +18,6 @@
 
 {% block content %}
 
-{% include "adherents/template_annuaire_paysans_simple.html" with profils=filter.qs %}
-
-<hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
@@ -76,6 +73,9 @@
     </div>
 </div>
 <div id="listeMails"></div>
+<hr>
+{% include "adherents/template_annuaire_paysans_simple.html" with profils=filter.qs %}
+
 <hr>
 
 {% if is_membre_bureau %}

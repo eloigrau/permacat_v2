@@ -28,7 +28,8 @@
         {% for paysan in paysans %}
         <tr style="background-color:{{paysan.get_background_color}}">
             <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
-                    {{ paysan.nom }}  {{ paysan.prenom }} </a> -
+                    {{ paysan.nom }}  {{ paysan.prenom }} </a>
+                {% if paysan.statut == "1" %} (ATP){% elif paysan.statut == "3"%} (CC){% else %}{%endif%} </a> -
                 {% else %}
                     {{ paysan.nom }}  {{ paysan.prenom }} -
                 {% endif %}

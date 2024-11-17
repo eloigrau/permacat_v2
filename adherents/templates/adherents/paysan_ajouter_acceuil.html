@@ -34,11 +34,13 @@
                 Ajouter DES paysans (fichier CSV en texte)
             </button>
         </a>
+        {% if request.user.is_superuser %}
         <a href="{% url 'adherents:phoning_ajouterAdherentsConf' %}">
             <button type="button" class="btn btn-success">
                 Ajouter LES paysans Conf
             </button>
         </a>
+        {% endif %}
     </div>
 </div>
 <hr>

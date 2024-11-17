@@ -141,7 +141,7 @@ class Paysan_update_form(forms.ModelForm):
 class ContactPaysan_form(forms.ModelForm):
     class Meta:
         model = ContactPaysan
-        fields = ['commentaire', 'statut']
+        fields = [ 'statut', 'commentaire',]
 
 
 class ListeTel_form(forms.Form):

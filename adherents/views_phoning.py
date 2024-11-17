@@ -282,9 +282,12 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
 def ajouterAdherentsConf(request):
     adherents = Adherent.objects.all()
     m = ""
-    for adherent in adherents:
+    for i, adherent in enumerate(adherents):
+        if i>5:
+            break
         if not Paysan.objects.filter(adherent=adherent).exists():
             try:
+
                 res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
                         commune=adherent.adresse.commune, code_postal=adherent.adresse.code_postal, adherent=adherent)
                 if res:

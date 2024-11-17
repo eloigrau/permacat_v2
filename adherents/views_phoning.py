@@ -188,13 +188,17 @@ def nettoyer_telephones(request):
                 p.adresse.save()
                 p.save()
                 m += "<p>ajustement6 tel : " + str(p.adresse.telephone) + "</p>"
-                continue
-            if p.adresse.telephone.startswith("7"):
+            elif p.adresse.telephone.startswith("7"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone)
                 p.adresse.save()
                 p.save()
                 m += "<p>ajustement7 tel : " + str(p.adresse.telephone) + "</p>"
-                continue
+
+            elif p.adresse.telephone.startswith("33"):
+                p.adresse.telephone = "+" + str(p.adresse.telephone)
+                p.adresse.save()
+                p.save()
+                m += "<p>ajustement+ tel : " + str(p.adresse.telephone) + "</p>"
 
             if len(p.adresse.telephone) < 4:
                 p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
@@ -279,8 +283,12 @@ def ajouterAdherentsConf(request):
     adherents = Adherent.objects.all()
     m = ""
     for adherent in adherents:
-        res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
+        try:
+            res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
                     commune=adherent.adresse.commune, code_postal=adherent.adresse.code_postal, adherent=adherent)
+        except Exception as e:
+            m += "<p>errAdhConf " + str(e) +">" + str(adherent) +"</p>"
+
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
         else:

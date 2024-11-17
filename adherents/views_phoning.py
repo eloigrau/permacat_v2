@@ -283,21 +283,21 @@ def ajouterAdherentsConf(request):
     adherents = Adherent.objects.all()
     m = ""
     for adherent in adherents:
-        try:
-            res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
-                    commune=adherent.adresse.commune, code_postal=adherent.adresse.code_postal, adherent=adherent)
-            if res:
-                m += "<p>ajout " + str(adherent) +"</p>"
-            else:
-                m += "<p>refus " + str(adherent) +"</p>"
+        if not Paysan.objects.filter(adherent=adherent).exists():
+            try:
+                res, p = creerPaysan(telephone=adherent.adresse.telephone, nom=adherent.nom, prenom=adherent.prenom ,email=adherent.email, rue=adherent.adresse.rue,
+                        commune=adherent.adresse.commune, code_postal=adherent.adresse.code_postal, adherent=adherent)
+                if res:
+                    m += "<p>ajout " + str(adherent) +"</p>"
+                else:
+                    m += "<p>refus " + str(adherent) +"</p>"
 
-        except Exception as e:
-            m += "<p>errAdhConf " + str(e) +">" + str(adherent) +"</p>"
+            except Exception as e:
+                m += "<p>errAdhConf " + str(e) +">" + str(adherent) +"</p>"
 
 
 
     return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"message": m})
-
 
 
 @login_required

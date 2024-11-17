@@ -809,10 +809,10 @@ def nettoyerAdresses(request):
 
     m = ""
     for i, add in enumerate(Adresse.objects.all()):
-        if i > 100 and not supprimer:
-            break
-
-        m +=  "<p>" + add.getStrAll() + 'Lié ? ' + str(add.estLieAUnObjet()) + "</p>"
+        #if i > 100 and not supprimer:
+        #    break
+        if not add.estLieAUnObjet():
+            m +=  "<p>" + add.getStrAll() + 'Supprimer ' + str(not add.estLieAUnObjet()) + "</p>"
         if supprimer and not add.estLieAUnObjet():
             try:
                 add.delete()

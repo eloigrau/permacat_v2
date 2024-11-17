@@ -17,7 +17,7 @@
    <div class="row">
     <div class="col-md-12">
         <div style="overflow-x:auto;">
-    <table class="table table-condensed tableprofils table-striped sortable">
+    <table class="table table-condensed tableprofils table-striped sortable table-phoning">
         <thead class="thead-inverse">
             <tr>
                 <th>Nom Prénom Tel Edit</th>
@@ -26,7 +26,7 @@
         </thead>
         <tbody>
         {% for paysan in paysans %}
-        <tr style="background-color:{{paysan.get_background_color}}">
+        <tr style="background-color:{{paysan.get_background_color}} ; outline: thin solid;" >
             <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
                     {{ paysan.nom }}  {{ paysan.prenom }} </a>
                     {% if paysan.statut == "1" %} (ATP){% elif paysan.statut == "3"%} (CC){% else %}{%endif%} </a> -

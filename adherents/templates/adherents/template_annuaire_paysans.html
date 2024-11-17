@@ -17,7 +17,7 @@
    <div class="row">
     <div class="col-md-12">
         <div style="overflow-x:auto;">
-    <table class="table table-condensed tableprofils table-striped sortable">
+    <table class="table table-condensed tableprofils table-striped sortable table-phoning">
         <thead class="thead-inverse">
             <tr>
                 <th>Nom Prénom</th>
@@ -27,12 +27,13 @@
                 <th>Email</th>
                 <th>Code postal</th>
                 <th>Commune</th>
+                <th>Commentaire</th>
                 <th>Edit</th>
             </tr>
         </thead>
         <tbody>
         {% for paysan in paysans %}
-        <tr style="background-color:{{paysan.get_background_color}}">
+        <tr style="background-color:{{paysan.get_background_color}} ; outline: thin solid;">
             <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
                     {{ paysan.nom }}  {{ paysan.prenom }} </a>
                 {% else %}
@@ -64,6 +65,7 @@
             <td>{{ paysan.email }}</td>
            <td>{%if paysan.adresse.code_postal %}{{ paysan.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if paysan.adresse.commune %}{{ paysan.adresse.commune }} {% else %}-{% endif %}</td>
+            <td>{{ paysan.commentaire }}</td>
             <td>
                  <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                  <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>

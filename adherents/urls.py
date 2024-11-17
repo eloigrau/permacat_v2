@@ -75,8 +75,8 @@ urlpatterns = [
          views.ajouterInscription_AdherentListeDiffusionConf, name="ajouterInscription_AdherentListeDiffusionConf"),
 
 
-    path(r'conf66/phoning/', login_required(views_phoning.Paysan_liste.as_view()), name="accueil_phoning"),
-    path(r'conf66/phoning/simple', login_required(views_phoning.Paysan_liste.as_view()), name="accueil_phoning_simple"),
+    path(r'conf66/phoning/complet', login_required(views_phoning.Paysan_liste.as_view()), name="accueil_phoning_complet"),
+    path(r'conf66/phoning/simple', login_required(views_phoning.Paysan_liste.as_view()), name="accueil_phoning"),
     #path(r'conf66/phoning/paysan_ajouter/', views.creerListeDiffusionConf, name="listeDiffusionConf_creer"),
     path(r'conf66/phoning/ajouter/acceuil', views_phoning.paysan_ajouter_accueil, name="phoning_paysan_ajouter_accueil"),
     path(r'conf66/phoning/ajouter', login_required(views_phoning.Paysan_ajouter.as_view()),
@@ -87,10 +87,10 @@ urlpatterns = [
     path(r'conf66/phoning/ajouter/adhconf', views_phoning.ajouterAdherentsConf, name="phoning_ajouterAdherentsConf"),
     path(r'conf66/phoning/supprimer/doublons', views_phoning.supprimer_doublons, name="phoning_supprimer_doublons"),
     path(r'conf66/phoning/supprimer/nettoyer_telephones', views_phoning.nettoyer_telephones, name="nettoyer_telephones"),
-    path(r'phoning/phoning/modifier/<int:pk>', login_required(views_phoning.Paysan_modifier.as_view()), name="phoning_paysan_modifier"),
+    path(r'conf66/phoning/modifier/<int:pk>', login_required(views_phoning.Paysan_modifier.as_view()), name="phoning_paysan_modifier"),
     path(r'conf66/phoning/supprimer/<int:pk>', login_required(views_phoning.Paysan_supprimer.as_view()), name="phoning_paysan_supprimer"),
     path(r'conf66/phoning/supprimer2/<int:paysan_pk>', views_phoning.paysan_supprimer, name="phoning_paysan_supprimer2"),
     path(r'conf66/phoning/contact/ajouter/<int:paysan_pk>', views_phoning.contactPaysan_ajouter, name="phoning_paysan_contact_ajout"),
     path(r'conf66/phoning/contact/supprimer/<int:paysan_contact_pk>', views_phoning.contactPaysan_supprimer, name="phoning_paysan_contact_supprimer"),
-
+    path(r'conf66/phoning/get_csv_paysans/', views_phoning.get_csv_paysans, name="get_csv_paysans")
 ]

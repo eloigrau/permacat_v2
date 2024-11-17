@@ -20,6 +20,7 @@ from actstream import actions, action
 from io import StringIO
 from django.db.models import Count, Max
 import re
+from.views import write_csv_data, is_membre_bureau
 
 class Paysan_ajouter(CreateView):
     model = Paysan
@@ -106,7 +107,7 @@ def paysan_supprimer(request, paysan_pk):
 class Paysan_liste(ListView):
     model = Paysan
     context_object_name = "paysans"
-    template_name = "adherents/carte_paysans.html"
+    template_name_complet = "adherents/carte_paysans.html"
     template_name_simple = "adherents/carte_paysans_simple.html"
 
     def get_queryset(self):
@@ -127,15 +128,15 @@ class Paysan_liste(ListView):
         context['titre'] = "Phoning Conf pour EP CA 2024 (%d)" % len(qs)
         filter = PaysanCarteFilter(self.request.GET, qs)
         context["filter"] = filter
-        #context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
         return context
 
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
-        if self.request.path == reverse('adherents:accueil_phoning_simple'):
+        if self.request.path == reverse('adherents:accueil_phoning'):
             return [self.template_name_simple]  # Return a list that contains "a.html" template name
-        return [self.template_name]  # else return "b.html" template name
+        return [self.template_name_complet]  # else return "b.html" template name
 
 
 
@@ -408,3 +409,16 @@ def import_adherents_ggl(request):
 
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 
+
+@login_required
+def get_csv_paysans(request):
+    """A view that streams a large CSV file."""
+    profils = Paysan.objects.all().order_by("nom","prenom","email")
+    profils_filtres = PaysanCarteFilter(request.GET, queryset=profils)
+    #current_year = date.today().isocalendar()[0]
+
+    csv_data = [("NOM","PRENOM","telephone","email","adresse_postale","code_postal","commune","adherent_nom",),]
+    csv_data += [(a.nom, a.prenom, a.adresse.telephone, a.email,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.get_profil_username)
+                 for a in profils_filtres.qs.distinct() ]
+
+    return write_csv_data(request, csv_data)

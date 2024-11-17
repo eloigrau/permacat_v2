@@ -273,8 +273,9 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
 def ajouterAdherentsConf(request):
     adherents = Adherent.objects.all()
     m = ""
+    j=0
     for i, adherent in enumerate(adherents):
-        if i>5:
+        if j>5 or i> 10:
             break
         res, p = creerPaysan(telephone=adherent.adresse.telephone,
                              nom=adherent.nom,
@@ -286,6 +287,7 @@ def ajouterAdherentsConf(request):
                              adherent=adherent)
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
+            j+=1
         else:
             m += "<p>refus " + str(adherent) +"</p>"
 

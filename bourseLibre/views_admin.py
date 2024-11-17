@@ -809,8 +809,6 @@ def nettoyerAdresses(request):
 
     m = ""
     for i, add in enumerate(Adresse.objects.all()):
-        if i > 500:
-            break
         if not add.estLieAUnObjet():
             m +=  "<p>" + add.getStrAll() + 'Supprimer ' + str(not add.estLieAUnObjet()) + "</p>"
             if supprimer:

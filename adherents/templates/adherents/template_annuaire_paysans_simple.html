@@ -35,16 +35,21 @@
                 {% endif %}
                 {% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>
-             <a>
                 {% else %}-{% endif %}
                   <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                  <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
-
             </td>
-             <td><ul>
-                 {{ paysan.get_contacts_html|safe }}
-             <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
-                 </ul>
+             <td>
+                 {% with contacts as paysan.get_contacts_html %}
+                 {%if contacts %}
+                     <ul>
+                     {{ contacts|safe }}
+                        <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
+                     </ul>
+                 {% else %}
+                 <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
+                 {% endif %}
+                 {% endwith %}
              </td>
         </tr>
         {% endfor %}

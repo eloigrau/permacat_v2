@@ -42,10 +42,9 @@
             </td>
             <td>
             {% if paysan.adherent %}
-                {% if paysan.adherent.statut == "1" %} (ATP){% elif paysan.adherent.statut == "3"%} (CC)
-
-                {% else %}
-                    ?
+                {% if paysan.adherent.statut == "1" %} (ATP)
+                {% elif paysan.adherent.statut == "3"%} (CC)
+                {% else %} (#)
                 {% endif %}
             {% else %}
                 -

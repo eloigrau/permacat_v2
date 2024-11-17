@@ -47,4 +47,4 @@ def get_slug_salon(nom="bureau"):
     return "test"
 
 
-CHOIX_CONTACTS = ("0", "Réponse OK"), ("1", "Pas de réponse"), ("2", "à répondu mais à rappeler")
+CHOIX_CONTACTS = ("0", "Réponse_OK"), ("1", "Pas de réponse"), ("2", "A répondu mais à rappeler"), ("3", "A répondu mais HOSTILE"), ("4", "Mauvais numéroe")

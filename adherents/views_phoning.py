@@ -252,11 +252,19 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                 prenom=prenom,
                                 email=email).exists():
 
-        adresse = Adresse.objects.create(
+        if code_postal:
+            adresse, created = Adresse.objects.get_or_create(
                                         telephone=telephone,
                                         commune=commune,
                                         code_postal=code_postal,
                                         rue=rue,
+                                        )
+        else:
+                adresse = Adresse.objects.create(
+                                        telephone=telephone,
+                                            commune=commune,
+                                            code_postal=code_postal,
+                                            rue=rue,
                                         )
         p, created = Paysan.objects.get_or_create(
                                 nom=nom,
@@ -275,8 +283,8 @@ def ajouterAdherentsConf(request):
     m = ""
     j=0
     for i, adherent in enumerate(adherents):
-        if j>5 or i> 20:
-            break
+        #if j>5 or i> 200:
+         #   break
         res, p = creerPaysan(telephone=adherent.adresse.telephone,
                              nom=adherent.nom,
                              prenom=adherent.prenom ,
@@ -287,9 +295,10 @@ def ajouterAdherentsConf(request):
                              adherent=adherent)
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
-            j+=1
+            j += 1
         else:
             m += "<p>refus " + str(adherent) +"</p>"
+
 
 
 

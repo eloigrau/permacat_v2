@@ -83,6 +83,19 @@ class Adresse(models.Model):
         else:
             return "("+str(self.id)+") " + str(self.code_postal)
 
+    def getStrAll(self):
+        return  "(%d) %s %s %s %s" %(self.id, self.rue, self.commune, self.code_postal, self.telephone)
+
+    def estLieAUnObjet(self):
+        if hasattr(self, 'profil'):
+            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) or self.profil is not None
+        else:
+            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0
+
     @property
     def getGoogleUrl(self):
         return "https://maps.google.com/maps?q="+self.getLatLon_html +"&entry=gps"

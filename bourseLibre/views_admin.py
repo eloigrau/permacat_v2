@@ -799,4 +799,26 @@ def recalculerAdressesConf(request):
 
 
 
+def nettoyerAdresses(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    supprimer = False
+    if "vrai" in request.GET:
+        supprimer = True
+
+    m = ""
+    for i, add in enumerate(Adresse.objects.all()):
+        if i > 100 and not supprimer:
+            break
+
+        m +=  "<p>" + add.getStrAll() + 'Lié ? ' + str(add.estLieAUnObjet()) + "</p>"
+        if supprimer:
+            try:
+                add.delete()
+            except Exception as e:
+                m +=  "<p>ERR " + str(e)+ "</p>"
+
+
+    return render(request, 'message_admin.html', {'message': m,})
 

@@ -187,7 +187,6 @@
 {% include 'adherents/template_inscriptionmail_liste.html' %}
 
 {% if is_membre_bureau %}
-<hr>
 <div class="row">
     <div class="col-md-12 textcenter">
         <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">

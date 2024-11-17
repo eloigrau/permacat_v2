@@ -129,13 +129,10 @@ class Paysan_update_form(forms.ModelForm):
     code_postal = forms.CharField(label="Code postal", required=False)
     commune = forms.CharField(label="Commune", required=False)
     rue = forms.CharField(label="Rue", required=False)
-    adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
-                              label="Adhérent lié ?", )
-
 
     class Meta:
         model = Paysan
-        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', 'adherent']
+        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire']
 
 
 class ContactPaysan_form(forms.ModelForm):

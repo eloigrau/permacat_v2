@@ -65,7 +65,7 @@
             <td>{{ paysan.email }}</td>
            <td>{%if paysan.adresse.code_postal %}{{ paysan.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if paysan.adresse.commune %}{{ paysan.adresse.commune }} {% else %}-{% endif %}</td>
-            <td>{{ paysan.commentaire }}</td>
+            <td>{% if paysan.commentaire %}{{ paysan.commentaire }}{% else %}-{% endif %}</td>
             <td>
                  <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                  <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>

@@ -809,15 +809,15 @@ def nettoyerAdresses(request):
 
     m = ""
     for i, add in enumerate(Adresse.objects.all()):
-        #if i > 100 and not supprimer:
-        #    break
+        if i > 500:
+            break
         if not add.estLieAUnObjet():
             m +=  "<p>" + add.getStrAll() + 'Supprimer ' + str(not add.estLieAUnObjet()) + "</p>"
-        if supprimer and not add.estLieAUnObjet():
-            try:
-                add.delete()
-            except Exception as e:
-                m +=  "<p>ERR " + str(e)+ "</p>"
+            if supprimer:
+                try:
+                    add.delete()
+                except Exception as e:
+                    m +=  "<p>ERR " + str(e)+ "</p>"
 
 
     return render(request, 'message_admin.html', {'message': m,})

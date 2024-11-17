@@ -90,7 +90,7 @@ class Adresse(models.Model):
         if hasattr(self, 'profil'):
             return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
                     len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
-                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) or self.profil is not None
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0 or self.profil is not None
         else:
             return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
                     len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \

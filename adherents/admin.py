@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
+from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf, ContactPaysan, Paysan
 
 
 @admin.register(Adherent)
@@ -14,3 +14,5 @@ class Adhesion_Admin(admin.ModelAdmin):
 
 admin.site.register(InscriptionMail)
 admin.site.register(ListeDiffusionConf)
+admin.site.register(Paysan)
+admin.site.register(ContactPaysan)

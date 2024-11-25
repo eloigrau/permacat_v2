@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf
+from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf, Comm_adherent, Paysan, ContactPaysan
 from .constantes import list_ape
 from local_summernote.widgets import SummernoteWidget
 
@@ -57,15 +57,11 @@ class AdherentForm(forms.ModelForm):
             }
 
 class AdherentChangeForm(forms.ModelForm):
-    rue = forms.CharField(label="Rue", required=False)
-    code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)
-    commune = forms.CharField(label="Commune", initial="Perpignan", required=False)
-    telephone = forms.CharField(label="Téléphone", required=False)
     production_ape = forms.ChoiceField(label="Production", help_text="Selectionner la production correspondant à votre code APE dans la liste", choices=list_ape)
 
     class Meta:
         model = Adherent
-        fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape', 'rue', 'code_postal', 'commune', 'telephone', ]
+        fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape', ]
 
         widgets = {
             'date_cotisation': forms.DateInput(
@@ -108,3 +104,53 @@ class ListeDiffusionConfForm(forms.ModelForm):
         model = ListeDiffusionConf
         fields = ['nom']
 
+
+class Comm_adh_form(forms.ModelForm):
+    class Meta:
+        model = Comm_adherent
+        fields = ['commentaire']
+
+
+
+class Paysan_form(forms.ModelForm):
+    telephone = forms.CharField(label="Téléphone", required=False)
+    code_postal = forms.CharField(label="Code postal*", required=False)
+    commune = forms.CharField(label="Commune",  required=False)
+    rue = forms.CharField(label="Rue", required=False)
+    adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
+                              label="Adhérent lié ?", )
+    class Meta:
+        model = Paysan
+        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', 'adherent']
+
+
+class Paysan_update_form(forms.ModelForm):
+    telephone = forms.CharField(label="Téléphone", required=False)
+    code_postal = forms.CharField(label="Code postal", required=False)
+    commune = forms.CharField(label="Commune", required=False)
+    rue = forms.CharField(label="Rue", required=False)
+
+    class Meta:
+        model = Paysan
+        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire']
+
+
+class ContactPaysan_form(forms.ModelForm):
+    class Meta:
+        model = ContactPaysan
+        fields = [ 'statut', 'commentaire',]
+
+
+class ListeTel_form(forms.Form):
+    telephones = forms.CharField(label="Liste de Téléphones, séparés par une virgule", required=True,
+        widget=forms.Textarea,
+    )
+
+class csvFile_form(forms.Form):
+    fichier_csv = forms.FileField(label="Selectionner CSV avec colonnes nom,prenom,telephone (+ en option: email, rue, commune, code_postal)", required=True, )
+
+
+class csvText_form(forms.Form):
+    texte_csv = forms.CharField(label=" copier/coller le contenu du csv ici", required=True,
+        widget=forms.Textarea,
+    )

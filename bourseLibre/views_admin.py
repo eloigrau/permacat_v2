@@ -2,9 +2,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from actstream.models import Action, Follow
+
+from permagora.models import LATITUDE_DEFAUT
 from .models import Profil, Adhesion_asso, Suivis, Adresse, InscriptionNewsletter, InscriptionNewsletterAsso, Asso
 from ateliers.models import Atelier
-from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD
+from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD, LOCALL
 from django.http import HttpResponseForbidden
 from django.core.mail.message import EmailMultiAlternatives
 import re
@@ -20,7 +22,16 @@ from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
 from actstream.models import following
 from django.db.models import Q
-from bourseLibre.settings.production import LOCALL
+
+from enum import Enum
+
+class ErreurSetLatLon(Enum):
+    ECHEC = 0
+    OSM = 1
+    OSM2 = 2
+    GMAPS = 3
+    FRA = 4
+
 
 def getMessage(action):
     message = action.data['message']
@@ -698,7 +709,7 @@ def reabonner_tous_profils(request):
             except Exception as e:
                 err += str(p) + " : " + str(e)
 
-    return render(request, 'message_admin.html', {'message':msg +" <p>NB : " + str(nb) + "</p>", "erreur":err})
+    return render(request, 'message_admin.html', {'message':msg +" <p>œNB : " + str(nb) + "</p>", "erreur":err})
 
 
 def envoyer_emails_reabonnement(request):
@@ -731,4 +742,81 @@ def envoyer_emails_reabonnement(request):
 
 
 
+def recalculerAdresses(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    actions = Action.objects.filter(verb='buglatlon')
+    for action in actions:
+        action.delete()
+    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
+    count=0
+    m=""
+    for a in add[:10]:
+        if a.code_postal:
+            if a.commune == " St Paul deF.":
+                try:
+                    a.delete()
+                    m += "D: " + str(a) +", "
+                    continue
+                except Exception as e:
+                    m += "Erreur " + str(e)
+            res = a.set_latlon_from_adresse()
+            if res:
+                a.save()
+                count+=1
+                m += "O: " + str(a.id) +", "
+            else:
+                m += "N: <a href='" + a.get_update_url+"'>" + str(a.id) +"</a>, "
+
+        #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
+        #         str(a.latitude) + " " + str(a.longitude) + "</p>"
+
+    message ="Nb ajustés : " +str(count) +"/" +str(add.count()) + " - "+ m
+    return render(request, 'message_admin.html', {'message': message,})
+
+
+def recalculerAdressesConf(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    from adherents.models import Adherent
+
+    actions = Action.objects.filter(verb='buglatlon')
+    for action in actions:
+        action.delete()
+
+    add = Adherent.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
+    message = ""
+    for a in add:
+        if str(a.adresse.latitude) == str(LATITUDE_DEFAUT):
+            res = a.adresse.set_latlon_from_adresse()
+            if res != 0:
+                a.adresse.save()
+            message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
+                     str(a.adresse.latitude) + " " + str(a.adresse.longitude) + "</p>"
+
+    return render(request, 'message_admin.html', {'message': message,})
+
+
+
+def nettoyerAdresses(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    supprimer = False
+    if "vrai" in request.GET:
+        supprimer = True
+
+    m = ""
+    for i, add in enumerate(Adresse.objects.all()):
+        if not add.estLieAUnObjet():
+            m +=  "<p>" + add.getStrAll() + 'Supprimer ' + str(not add.estLieAUnObjet()) + "</p>"
+            if supprimer:
+                try:
+                    add.delete()
+                except Exception as e:
+                    m +=  "<p>ERR " + str(e)+ "</p>"
+
+
+    return render(request, 'message_admin.html', {'message': m,})
 

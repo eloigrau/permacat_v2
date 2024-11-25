@@ -27,6 +27,7 @@ class ProfilCarteFilter(django_filters.FilterSet):
     def get_competencedesritpion_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|
                                Q(username__icontains=value)|
+                               Q(adresse__rue__icontains=value)|
                                Q(adresse__commune__icontains=value)|
                                Q(adresse__code_postal__icontains=value)|
                                Q(description__icontains=value)|

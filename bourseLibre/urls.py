@@ -47,6 +47,7 @@ urlpatterns = [
     path(r'carto/', include('carto.urls')),
     path(r'jardins/', include('jardins.urls')),
     path(r'adherents/', include(('adherents.urls', 'adherents'))),
+    path(r'phonebook/', include('phonebook.urls')),
     re_path('^', include('django.contrib.auth.urls')),
     re_path('avatar/', include('avatar.urls')),
     #path("r/", include("urlshortner.urls")),
@@ -111,6 +112,8 @@ urlpatterns = [
     re_path(r'^accounts/profil_modifier/$', login_required(views.profil_modifier.as_view()), name='profil_modifier',),
     re_path(r'^accounts/profil_supprimer/$', login_required(views.profil_supprimer.as_view()), name='profil_supprimer',),
     re_path(r'^accounts/profil_modifier_adresse/$', login_required(views.profil_modifier_adresse), name='profil_modifier_adresse',),
+    path('accounts/modifier_adresse/<int:adresse_pk>', login_required(views.modifier_adresse), name='modifier_adresse',),
+    path('accounts/supprimer_adresse/<int:adresse_pk>', login_required(views.supprimer_adresse), name='supprimer_adresse',),
     re_path(r'^accounts/profil_modifier_adresse_user/(?P<user_pk>[0-9]+)/$', login_required(views.profil_modifier_adresse_user), name='profil_modifier_adresse_user',),
     re_path(r'^accounts/profil_contact/(?P<user_id>[0-9]+)/$', login_required(views.profil_contact), name='profil_contact',),
     re_path(r'^accounts/mesSuivis/$', login_required(views.mesSuivis), name='mesSuivis',),
@@ -236,6 +239,7 @@ urlpatterns = [
     re_path(r'^admin/nettoyerFollowsValide/$', views_admin.nettoyerFollowsValide,  name="nettoyerFollowsValide"),
     re_path(r'^admin/nettoyerFollowsValideUser/$', views_admin.nettoyerFollowsValideUser,  name="nettoyerFollowsValideUser"),
     re_path(r'^admin/nettoyerHistoriqueAdmin/$', views_admin.nettoyerHistoriqueAdmin,  name="nettoyerHistoriqueAdmin"),
+    re_path(r'^admin/nettoyerAdresses/$', views_admin.nettoyerAdresses,  name="nettoyerAdresses"),
     re_path(r'^admin/envoyerEmailsRequete/$', views_admin.envoyerEmailsRequete,  name="envoyerEmailsRequete"),
     re_path(r'^admin/envoyerEmailsTest/$', views_admin.envoyerEmailsTest,  name="envoyerEmailsTest"),
     re_path(r'^admin/voir_articles_a_archiver/$', views_admin.voir_articles_a_archiver,  name="voir_articles_a_archiver"),
@@ -256,6 +260,8 @@ urlpatterns = [
     path('admin/associerProfil_adherent/<int:profil_pk>/', views_admin.associerProfil_adherent,  name="associerProfil_adherent"),
     path('admin/reabonner_tous_profils/', views_admin.reabonner_tous_profils,  name="reabonner_tous_profils"),
     path('admin/envoyer_emails_reabonnement/', views_admin.envoyer_emails_reabonnement,  name="envoyer_emails_reabonnement"),
+    path('admin/recalculerAdresses/', views_admin.recalculerAdresses,  name="recalculerAdresses"),
+    path('admin/recalculerAdressesConf/', views_admin.recalculerAdressesConf,  name="recalculerAdressesConf"),
 
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
@@ -293,8 +299,8 @@ handler500 = views_base.handler500
 handler400 = views_base.handler400
 handler403 = views_base.handler403
 
-if LOCALL:
-    import debug_toolbar
-    urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
+#if LOCALL:
+#    import debug_toolbar
+#    urlpatterns = [re_path(r'^__debug__/', include(debug_toolbar.urls)),] + urlpatterns
     #urlpatterns += re_path('',(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}))
 

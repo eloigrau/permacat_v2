@@ -1,0 +1,64 @@
+{% extends 'base_phoning.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <a href="{% url 'adherents:accueil_phoning' %}">
+            <button type="button" class="btn btn-info">
+                Revenir à la liste
+            </button>
+        </a>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        <a href="{% url 'adherents:phoning_paysan_ajouter' %}">
+            <button type="button" class="btn btn-success">
+                Ajouter UN Paysan à la liste (manuellement)
+            </button>
+        </a>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        <a href="{% url 'adherents:phoning_paysan_ajouter_listetel' %}">
+            <button type="button" class="btn btn-success">
+                Ajouter DES paysans (liste de numéros de TEL)
+            </button>
+        </a>
+        <a href="{% url 'adherents:phoning_paysan_ajouter_csv' %}">
+            <button type="button" class="btn btn-success">
+                Ajouter DES paysans (fichier CSV en texte)
+            </button>
+        </a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'adherents:phoning_ajouterAdherentsConf' %}">
+            <button type="button" class="btn btn-success">
+                Ajouter LES paysans Conf
+            </button>
+        </a>
+        {% endif %}
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        <a href="{% url 'adherents:phoning_supprimer_doublons' %}">
+            <button type="button" class="btn btn-success">
+                Supprimer doublons (param 'tel')
+            </button>
+        </a>
+        <a href="{% url 'adherents:nettoyer_telephones' %}">
+            <button type="button" class="btn btn-success">
+                Nettoyer numeros
+            </button>
+        </a>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+

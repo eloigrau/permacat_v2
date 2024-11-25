@@ -318,15 +318,14 @@ class Document(models.Model):
             self.date_creation = timezone.now()
             if sendMail:
                 suivi, created = Suivis.objects.get_or_create(nom_suivi='albums')
-                titre = "Nouveau document"
-                message = "Un document a été ajouté : ["+ self.asso.nom +"] '<a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>'"
                 emails = [suiv.email for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
-                if emails and not LOCALL:
-                    creation = True
+
 
         retour = super().save(*args, **kwargs)
 
         if emails:
+            titre = "Nouveau document"
+            message = "Un document a été ajouté : [" + self.asso.nom + "] '<a href='https://www.perma.cat" + self.doc.url + "'>" + self.titre + "</a>'"
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
 
         return retour
@@ -336,6 +335,7 @@ class Document(models.Model):
             return self.article.get_absolute_url()
         #return reverse('photologue:doc-list')
         return self.doc.path
+
 
     def est_autorise(self, user):
         if not self.asso:

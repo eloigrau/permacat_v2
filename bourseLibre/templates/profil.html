@@ -97,7 +97,7 @@
               {% if user.adresse.telephone %}
                 <tr>
                     <td style="width:250px">Telephone *:</td>
-                    <td>{{ user.adresse.telephone }}</td>
+                    <td><a href="tel:{{ user.adresse.telephone }}">{{ user.adresse.telephone }}</a></td>
                 </tr>
               {% endif %}
             <tr>
@@ -241,6 +241,12 @@
             <td>{{user.last_login|date:'DATE_FORMAT' }}
             </td>
         </tr>
+        <tr>
+            <td style="width:200px">Inscription :
+            </td>
+            <td>{{user.date_registration|date:'DATE_FORMAT' }}
+            </td>
+        </tr>
         {% endif %}
 
       {% if request.user == user or request.user.is_superuser%}
@@ -269,6 +275,13 @@
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Modifier
             </button>
         </a>
+      {% if user.adresse %}
+              <a href="{{user.adresse.get_update_url}}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Pick
+            </button>
+        </a>
+      {%endif%}
       {%endif%}
     <table class="table table-condensed tablepanier table-striped">
     <tbody>

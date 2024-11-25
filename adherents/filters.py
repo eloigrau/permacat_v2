@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adherent, Adhesion
+from .models import Adherent, Adhesion, Paysan
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q
@@ -14,7 +14,7 @@ def get_choix_Production():
 
 
 class AdherentsCarteFilter(django_filters.FilterSet):
-    descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ")
+    descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ", required=False)
 
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
 
@@ -54,3 +54,37 @@ class AdherentsCarteFilter(django_filters.FilterSet):
             'statut': ['exact', ],
         }
 
+
+class PaysanCarteFilter(django_filters.FilterSet):
+    descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ",
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
+                                                             'tabindex': 1, 'autofocus': '1'}))
+    isatp = django_filters.BooleanFilter(label="ATP (ou statut inconnu)", method='get_isatp_filter', widget=forms.CheckboxInput(),)
+    istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
+
+    def get_isatp_filter(self, queryset, field_name, value):
+        if value:
+            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut__isnull=True))
+        else:
+            return queryset
+
+    def get_istel_filter(self, queryset, field_name, value):
+        if value:
+            return queryset.exclude(adresse__telephone__startswith=" ").exclude(adresse__telephone__iexact="")
+        else:
+            return queryset
+
+    def get_descrip_filter(self, queryset, field_name, value):
+        return queryset.filter(Q(email__icontains=value)|
+                               Q(adresse__rue__icontains=value)|
+                               Q(adresse__commune__icontains=value)|
+                               Q(adresse__code_postal__icontains=value)|
+                               Q(nom__icontains=value)|
+                               Q(prenom__icontains=value)
+                               )
+
+
+    class Meta:
+        model = Paysan
+        fields = {
+                  }

@@ -86,7 +86,6 @@ if  LOCALL == False:
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_COOKIE_PATH = '/;HttpOnly'
 
-ALLOWED_HOSTS = ['www.perma.cat', 'perma.cat', 'permacat.majopi.fr']
 #print("local" + str(LOCALL))
 # Application definition
 
@@ -134,6 +133,7 @@ INSTALLED_APPS = [
     'permagora',
     'jardins',
     'adherents',
+    'phonebook',
     #'tinymce',
     'dal',
     'dal_select2',
@@ -202,9 +202,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',

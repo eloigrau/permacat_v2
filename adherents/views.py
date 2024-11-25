@@ -13,10 +13,12 @@ from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
 from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, \
-    InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent
-from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf
+    InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent, Comm_adh_form, \
+    Paysan_form, Paysan_update_form, ContactPaysan_form
+from .models import (Adherent, Adhesion, InscriptionMail, Paysan, ContactPaysan,
+                     ListeDiffusionConf, Comm_adherent)
 from bourseLibre.models import Adresse, Profil, Asso
-from .filters import AdherentsCarteFilter
+from .filters import AdherentsCarteFilter, PaysanCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
 from actstream.models import Action
@@ -74,6 +76,8 @@ class AdherentDetailView(DetailView):
         context['adhesions'] = Adhesion.objects.filter(adherent=self.object).order_by("-date_cotisation__year", "adherent__nom")
         context['inscriptionsMail'] = InscriptionMail.objects.filter(adherent=self.object)
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        if context['is_membre_bureau']:
+            context['commentaires'] = Comm_adherent.objects.filter(adherent=self.object)
         return context
 
 def monProfil(request):
@@ -123,7 +127,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
 
     def test_func(self):
-        self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
+        self.adresse = Adresse.objects.get(pk=self.kwargs['adresse_pk'])
         self.adherent = self.adresse.adherent_set.first()
         return is_membre_bureau(self.request.user) or self.request.user == self.adherent.profil
 
@@ -140,6 +144,8 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
         titre = "[PCAT_adherents] Modification de l'adresse de l'adherent" + str(self.adherent)
         action.send(self.request.user, verb='emails', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
         return super().form_valid(form)
+
+
 
 login_required
 @user_passes_test(is_membre_bureau)
@@ -721,6 +727,33 @@ class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         return is_membre_bureau(self.request.user)
 
+
+class Comm_adherent_modifier(UserPassesTestMixin, UpdateView):
+    model = Comm_adherent
+    template_name_suffix = '_modifier'
+    fields = ["commentaire"]
+
+    def get_success_url(self):
+        return self.object.adherent.get_absolute_url()
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
+
+
+class Comm_adherent_supprimer(UserPassesTestMixin, DeleteView):
+    model = Comm_adherent
+    template_name_suffix = '_supprimer'
+
+    def get_object(self):
+        comm = Comm_adherent.objects.get(pk=self.kwargs['pk'])
+        self.adherent = comm.adherent
+        return comm
+
+    def get_success_url(self):
+        return self.adherent.get_absolute_url()
+
+    def test_func(self):
+        return is_membre_bureau(self.request.user)
 def get_mails(typeListe="bureau"):
     profils = Adherent.objects.all().order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
@@ -843,6 +876,22 @@ def creerListeDiffusionConf(request):
 
 @login_required
 @user_passes_test(is_membre_bureau)
+def ajouter_comm_adh(request, adherent_pk):
+    if not is_membre_bureau(request.user):
+        return HttpResponseForbidden()
+    adherent = get_object_or_404(Adherent, pk=adherent_pk)
+    form = Comm_adh_form(request.POST or None)
+    if form.is_valid():
+        comm = form.save(commit=False)
+        comm.adherent = adherent
+        comm.save()
+        return redirect(comm.adherent)
+
+    return render(request, 'adherents/comm_adh_ajouter.html', {"form": form})
+
+
+@login_required
+@user_passes_test(is_membre_bureau)
 def ajouterInscription_AdherentListeDiffusionConf(request, listeMail_pk, adherent_pk):
     if not is_membre_bureau(request.user):
         return HttpResponseForbidden()
@@ -909,5 +958,4 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
         return redirect(listeDiffusion)
 
     return render(request, 'adherents/listediffusionconf_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion})
-
 

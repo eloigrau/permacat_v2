@@ -1,0 +1,18 @@
+{% extends 'base_phoning.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col textcenter">
+       <h3> Ajouter un paysan </h3>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-6">
+    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+        enctype="multipart/form-data">
+            {% include 'form_template.html'%}
+    </form>
+        </div>
+</div>
+{% endblock %}

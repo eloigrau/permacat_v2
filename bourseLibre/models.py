@@ -4,7 +4,6 @@ import math
 import os
 import itertools
 from datetime import date
-
 from django.utils.safestring import mark_safe
 import django_filters
 import requests
@@ -24,7 +23,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from django.core.mail import send_mail
 from .constantes import Choix, DEGTORAD
-from .settings.production import SERVER_EMAIL
+from .settings.production import SERVER_EMAIL, LOCALL
 import simplejson
 from datetime import datetime
 from webpush import send_user_notification
@@ -52,7 +51,7 @@ class Adresse(models.Model):
     commune = models.CharField(max_length=50, blank=True, null=True, default="")
     latitude = models.FloatField(blank=True, null=True, default=LATITUDE_DEFAUT)
     longitude = models.FloatField(blank=True, null=True, default=LONGITUDE_DEFAUT)
-    pays = models.CharField(max_length=12, blank=True, null=True, default="France")
+    pays = models.CharField(max_length=12, blank=True, null=True, default="Catalunya")
     telephone = models.CharField(max_length=25, blank=True)
 
 
@@ -67,6 +66,14 @@ class Adresse(models.Model):
         return reverse('profil_courant')
 
     @property
+    def get_update_url(self):
+        return reverse('modifier_adresse',  kwargs={'adresse_pk':self.pk})
+
+    @property
+    def get_delete_url(self):
+        return reverse('supprimer_adresse',  kwargs={'adresse_pk':self.pk})
+
+    @property
     def get_url_map(self):
         return reverse('voirLieu',  kwargs={'id_lieu': self.id})
 
@@ -75,6 +82,19 @@ class Adresse(models.Model):
             return "("+str(self.id)+") " + str(self.commune)
         else:
             return "("+str(self.id)+") " + str(self.code_postal)
+
+    def getStrAll(self):
+        return  "(%d) %s %s %s %s" %(self.id, self.rue, self.commune, self.code_postal, self.telephone)
+
+    def estLieAUnObjet(self):
+        if hasattr(self, 'profil'):
+            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0 or self.profil is not None
+        else:
+            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0
 
     @property
     def getGoogleUrl(self):
@@ -112,45 +132,76 @@ class Adresse(models.Model):
     def __unicode__(self):
         return self.__str__()
 
-    def set_latlon_from_adresse(self):
+
+    def set_lonlat_getadresse(self):
         address = ''
         if self.rue:
             address += self.rue + "+"
         address += str(self.code_postal)
         if self.commune:
             address += "+" + self.commune
-        address = address.replace(" ", "+").replace("++", "+")
+        address = address.replace("  ", "+").replace(" ", "+").replace("++", "+")
+        return address
 
+    def set_latlon_from_adresse_gmail(self, adresse):
+        api_key = os.environ["GAPI_KEY"]
+        api_response = requests.get(
+            'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
+        api_response_dict = api_response.json()
+
+        if api_response_dict['status'] == 'OK':
+            self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
+            self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
+            return 3
+        else:
+            action.send(self, verb='buglatlon', description="gmail_"+str(api_response_dict))
+
+    def set_latlon_from_adresse_osm(self, adresse):
+        url = "http://nominatim.openstreetmap.org/search?q=" + adresse + "&format=json"
+        reponse = requests.get(url)
+        if reponse.status_code != 200 and reponse.status_code != 403:
+            action.send(self, verb='buglatlon', description="2_osm"+str(reponse)+" / "+str(url))
+        data = simplejson.loads(reponse.text)
+        self.latitude = float(data[0]["lat"])
+        self.longitude = float(data[0]["lon"])
+
+    def set_latlon_from_adresse_france(self, adresse):
+        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)+"&lat="+str(LATITUDE_DEFAUT) +"&lon="+str(LONGITUDE_DEFAUT)
+        reponse = requests.get(url)
+        if reponse.status_code != 200 and reponse.status_code != 403 and reponse.status_code != 400:
+            action.send(self, verb='buglatlon', description="1fr_"+str(reponse)+" / "+str(url))
+        data = simplejson.loads(reponse.text)
+        self.latitude = float(data['features'][0]["geometry"]["coordinates"][0])
+        self.longitude = float(data['features'][0]["geometry"]["coordinates"][1])
+
+    def set_latlon_from_adresse(self):
+        if not self.code_postal and not self.commune:
+            self.latitude = LATITUDE_DEFAUT
+            self.longitude = LONGITUDE_DEFAUT
+            return 0
+        adresse = self.set_lonlat_getadresse()
         try:
-            url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-            reponse = requests.get(url)
-            data = simplejson.loads(reponse.text)
-            self.latitude = float(data[0]["lat"])
-            self.longitude = float(data[0]["lon"])
-        except:
+            self.set_latlon_from_adresse_osm(adresse)
+            return 1
+        except Exception as e:
+            address = str(self.code_postal)
+            if self.commune:
+                address += "+" + self.commune
             try:
-                address = str(self.code_postal)
-                if self.commune:
-                    address += "+" + self.commune
-                address = address.replace(" ", "+")
-                url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-                reponse = requests.get(url)
-                data = simplejson.loads(reponse.text)
-                self.latitude = float(data[0]["lat"])
-                self.longitude = float(data[0]["lon"])
-            except:
+                self.set_latlon_from_adresse_osm(address)
+                return 2
+            except Exception as e2:
                 try:
-                    api_key = os.environ["GAPI_KEY"]
-                    api_response = requests.get(
-                        'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
-                    api_response_dict = api_response.json()
-
-                    if api_response_dict['status'] == 'OK':
-                        self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
-                        self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
-                except:
-                    self.latitude = LATITUDE_DEFAUT
-                    self.longitude = LONGITUDE_DEFAUT
+                    self.set_latlon_from_adresse_gmail(adresse)
+                    return 3
+                except Exception as e3:
+                    try:
+                        self.set_latlon_from_adresse_france(adresse)
+                        return 4
+                    except Exception as e3:
+                        self.latitude = LATITUDE_DEFAUT
+                        self.longitude = LONGITUDE_DEFAUT
+        return 0
 
     @property
     def get_latitude(self):
@@ -269,7 +320,7 @@ class Profil(AbstractUser):
     site_web = models.URLField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     competences = models.TextField(null=True, blank=True)
-    adresse = models.OneToOneField(Adresse, on_delete=models.CASCADE)
+    adresse = models.OneToOneField(Adresse, on_delete=models.SET_NULL, null=True)
     date_registration = models.DateTimeField(verbose_name="Date de création", editable=False)
     pseudo_june = models.CharField(_('pseudo Monnaie Libre'), blank=True, default=None, null=True, max_length=50)
     inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=True)
@@ -323,7 +374,10 @@ class Profil(AbstractUser):
         return reverse('profil', kwargs={'user_id':self.id})
 
     def getDistance(self, profil):
-        return self.adresse.getDistance(profil.adresse)
+        if self.adresse:
+            return self.adresse.getDistance(profil.adresse)
+        else:
+            return 0
 
     def getAdhesions(self, abreviationAsso):
         if abreviationAsso == "pc" :

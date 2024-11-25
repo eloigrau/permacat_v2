@@ -731,8 +731,26 @@ class profil_modifier_user(UpdateView):
         return super(profil_modifier_user, self).post(request, **kwargs)
 
 
+
+@login_required
+def modifier_adresse(request, adresse_pk):
+    adresse = get_object_or_404(Adresse, pk=adresse_pk)
+    form_adresse = AdresseForm5(request.POST or None, instance=adresse)
+
+    if form_adresse.is_valid():
+        adresse = form_adresse.save()
+        if not hasattr(adresse, 'profil'):
+            request.user.adresse=adresse
+            request.user.save()
+        return redirect(request.user)
+
+    return render(request, 'registration/modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':adresse })
+
 @login_required
 def profil_modifier_adresse(request):
+    if not request.user.adresse:
+         request.user.adresse = Adresse.objects.create(commune="Perpignan", code_postal='66000')
+         request.user.save()
     form_adresse = AdresseForm5(request.POST or None, instance=request.user.adresse)
 
     if form_adresse.is_valid():
@@ -740,6 +758,23 @@ def profil_modifier_adresse(request):
         return redirect(request.user)
 
     return render(request, 'registration/profil_modifierAdresse.html', {'form_adresse':form_adresse, 'adresse':request.user.adresse })
+
+@login_required
+def supprimer_adresse(request, adresse_pk):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    adresse = get_object_or_404(Adresse, pk=adresse_pk)
+    m = str(adresse)
+    try:
+        adresse.delete()
+    except Exception as e:
+        message = "Erreur "+str(e)
+        return render(request, 'message_admin.html', {'message': message,})
+
+    message = "Adresse supprimée " + m
+    return render(request, 'message_admin.html', {'message': message,})
+
 
 
 @login_required
@@ -1313,9 +1348,10 @@ def salon_accueil(request):
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
     inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) +
                         list( salons_publics.values_list('tags', flat=True).distinct())))
-    inner_qs.remove(None)
-    if (None, ) in inner_qs:
-        inner_qs.remove((None, ))
+    if inner_qs:
+        inner_qs.remove(None)
+        if (None, ) in inner_qs:
+            inner_qs.remove((None, ))
     tags = Tag.objects.filter(id__in=inner_qs)
 
     return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })

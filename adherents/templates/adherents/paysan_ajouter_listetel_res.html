@@ -1,0 +1,20 @@
+{% extends 'base_phoning.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col textcenter">
+       <h3> Ajouter une liste de telephones </h3>
+
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-6">
+<h5>Liste :</h5>
+        <p>{{liste_tel}}</p>
+        <hr>
+<h5>Message :</h5>
+        <p>{{message|safe}}</p>
+        </div>
+</div>
+{% endblock %}

@@ -127,7 +127,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
     fields = ["rue", "code_postal", "commune", "latitude", "longitude", "telephone"]
 
     def test_func(self):
-        self.adresse = Adresse.objects.get(pk=self.kwargs['adresse_pk'])
+        self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
         self.adherent = self.adresse.adherent_set.first()
         return is_membre_bureau(self.request.user) or self.request.user == self.adherent.profil
 

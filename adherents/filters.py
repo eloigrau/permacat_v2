@@ -64,7 +64,7 @@ class PaysanCarteFilter(django_filters.FilterSet):
 
     def get_isatp_filter(self, queryset, field_name, value):
         if value:
-            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut__isnull=True))
+            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut="5")|Q(adherent__statut__isnull=True))
         else:
             return queryset
 

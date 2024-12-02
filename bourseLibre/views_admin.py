@@ -820,3 +820,37 @@ def nettoyerAdresses(request):
 
     return render(request, 'message_admin.html', {'message': m,})
 
+
+def create_permissions(request):
+    from django.contrib.auth.models import Group, Permission
+
+    for asso in Asso.objects.all():
+        creators = Group(name=asso.abreviation +'_phoning')
+        creators.save()
+
+        creator_permissions = [
+            #Permission.objects.get(codename__iexact='add_projetphoning'),
+            #Permission.objects.get(codename='liste_projetphoning'),
+            #Permission.objects.get(codename='change_projetphoning'),
+            #Permission.objects.get(codename='delete_projetphoning'),
+            #Permission.objects.get(codename='view_projetphoning'),
+            Permission.objects.get(codename='add_adherent'),
+            Permission.objects.get(codename='change_adherent'),
+            #Permission.objects.get(codename='delete_adherent'),
+            Permission.objects.get(codename='view_adherent'),
+            Permission.objects.get(codename='add_paysan'),
+            Permission.objects.get(codename='change_paysan'),
+            Permission.objects.get(codename='delete_paysan'),
+            Permission.objects.get(codename='add_adhesion'),
+            Permission.objects.get(codename='change_adhesion'),
+            #Permission.objects.get(codename='delete_adhesion'),
+            Permission.objects.get(codename='add_listediffusion'),
+            Permission.objects.get(codename='change_listediffusion'),
+            #Permission.objects.get(codename='delete_listediffusion'),
+        ]
+
+        creators.permissions.set(creator_permissions)
+
+        if asso.abreviation != "public":
+            for p in asso.profil_set.all():
+                creators.user_set.add(p)

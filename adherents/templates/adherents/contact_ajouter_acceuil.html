@@ -4,7 +4,7 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:accueil_phoning' %}">
+        <a href="{% url 'adherents:phoning_projet_courant' %}">
             <button type="button" class="btn btn-info">
                 Revenir à la liste
             </button>
@@ -16,7 +16,7 @@
     <div class="col-sm-12 textcenter">
         <a href="{% url 'adherents:phoning_paysan_ajouter' %}">
             <button type="button" class="btn btn-success">
-                Ajouter UN Paysan à la liste (manuellement)
+                Ajouter UN Contact à la liste (manuellement)
             </button>
         </a>
     </div>
@@ -35,7 +35,7 @@
             </button>
         </a>
         {% if request.user.is_superuser %}
-        <a href="{% url 'adherents:phoning_ajouterAdherentsConf' %}">
+        <a href="{% url 'adherents:phoning_ajouterAdherents' %}">
             <button type="button" class="btn btn-success">
                 Ajouter LES paysans Conf
             </button>

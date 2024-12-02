@@ -1,16 +1,20 @@
 
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
-
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
+
+from django.http import HttpResponseForbidden
 import csv
 from django.db.models import Q
-from .forms import (Paysan_form, Paysan_update_form, ContactPaysan_form,
-                    ListeTel_form, csvFile_form, csvText_form)
 
-from .models import Adherent, Paysan, ContactPaysan
+from blog.models import Projet
+from .forms import (Contact_form, Contact_update_form, ContactContact_form,
+                    ListeTel_form, csvFile_form, csvText_form, ProjetPhoning_form)
+
+from .models import Adherent, Contact, ContactContact, ProjetPhoning
 from bourseLibre.models import Adresse, Profil, Asso
-from .filters import PaysanCarteFilter
+from .filters import ContactCarteFilter
 from actstream.models import Action
 from datetime import date, timedelta, datetime
 
@@ -21,16 +25,18 @@ from io import StringIO
 from django.db.models import Count, Max
 import re
 from.views import write_csv_data, is_membre_bureau
+from django.contrib.auth.decorators import login_required, permission_required
 
-class Paysan_ajouter(CreateView):
-    model = Paysan
+class Contact_ajouter(CreateView):
+    model = Contact
     template_name_suffix = '_ajouter'
 
     def get_form(self):
-        return Paysan_form(**self.get_form_kwargs())
+        return Contact_form(**self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.projet = self.projet
         self.object.adresse=Adresse.objects.create(rue=form.cleaned_data['rue'],
                                                    commune=form.cleaned_data['commune'],
                                                    code_postal=form.cleaned_data['code_postal'],
@@ -40,24 +46,34 @@ class Paysan_ajouter(CreateView):
         #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
         #             description="a ajouté le Jardin: '%s'" % self.object.titre)
 
-        return redirect("adherents:accueil_phoning")
+        return redirect("adherents:phoning_projet_courant")
 
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        self.projet = Contact.objects.get(pk=self.request.session['projet_courant_pk'])
+        context['projetphoning'] = self.projet
+        return context
 
-class Paysan_modifier(UpdateView):
-    model = Paysan
+class Contact_modifier(UpdateView, UserPassesTestMixin):
+    model = Contact
     template_name_suffix = '_modifier'
 
+    def test_func(self):
+        return self.request.user.has_perm(self.object.asso.abreviation + '_add_contact')
+
     def get_form(self):
-        return Paysan_update_form(**self.get_form_kwargs())
+        self.projet = Contact.objects.get(pk=self.kwargs["pk"])
+        return Contact_update_form(**self.get_form_kwargs())
 
     def get_initial(self):
-        paysan = Paysan.objects.get(pk=self.kwargs["pk"])
+        contact = Contact.objects.get(pk=self.kwargs["pk"])
         return {
-            'rue': paysan.adresse.rue,
-            'commune': paysan.adresse.commune,
-            'code_postal': paysan.adresse.code_postal,
-            'telephone': paysan.adresse.telephone,
+            'rue': contact.adresse.rue,
+            'commune': contact.adresse.commune,
+            'code_postal': contact.adresse.code_postal,
+            'telephone': contact.adresse.telephone,
         }
 
     def form_valid(self, form):
@@ -67,57 +83,68 @@ class Paysan_modifier(UpdateView):
         self.object.adresse.code_postal=form.cleaned_data['code_postal']
         self.object.adresse.telephone=form.cleaned_data['telephone']
         self.object.adresse.save(recalc=True)
+        self.object.save(update_fields=['adresse'])
         #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
         #             description="a ajouté le Jardin: '%s'" % self.object.titre)
 
-        return redirect("adherents:accueil_phoning")
+        return redirect("adherents:phoning_projet_courant")
     # def form_valid(self, form):
     #     desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
     #         form.changed_data) + ")"
     #     action.send(self.request.user, verb='adherent_conf66_modifier', action_object=self.object,
     #                 url=self.object.get_absolute_url(), description=desc)
     #     titre = "[PCAT_adherents] Modification de l'adherent : " + str(self.object)
-    #     action.send(self.request.user, verb='emails', url=self.object.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+    #     action.send(self.request.user, verb='emails', url=self.object.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationcontactne66@gmail.com', ])
     #     return super().form_valid(form)
 
     def get_success_url(self):
         return self.object.get_absolute_url()
 
 
-class Paysan_supprimer(UserPassesTestMixin, DeleteView):
-    model = Paysan
+class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
+    model = Contact
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return True
+        return self.request.user.has_perm(self.object.asso.abreviation + '_delete_contact')
 
     def get_success_url(self):
         #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
         #action.send(self.request.user, verb='adherent_conf66_supprimer', url=reverse('adherents:accueil'), description=desc)
-        return reverse('adherents:accueil_phoning')
+        return reverse('adherents:phoning_projet_courant')
 
 
 @login_required
-def paysan_supprimer(request, paysan_pk):
-    paysan = get_object_or_404(Paysan, pk=paysan_pk)
-    paysan.adresse.delete()
-    paysan.delete()
-    return redirect('adherents:accueil_phoning')
+def contact_supprimer(request, contact_pk):
+    if not request.user.has_perm(request.session["asso_courante"].abreviation + '_delete_contact'):
+        return HttpResponseForbidden()
+    contact = get_object_or_404(Contact, pk=contact_pk)
+    contact.adresse.delete()
+    contact.delete()
+    return redirect('adherents:phoning_projet_courant')
 
-class Paysan_liste(ListView):
-    model = Paysan
-    context_object_name = "paysans"
-    template_name_complet = "adherents/carte_paysans.html"
-    template_name_simple = "adherents/carte_paysans_simple.html"
+class Contact_liste(ListView, UserPassesTestMixin):
+    model = Contact
+    context_object_name = "contacts"
+    template_name_simple = "adherents/carte_contacts_simple.html"
+    template_name_complet = "adherents/carte_contacts.html"
+
+    def test_func(self):
+        return self.request.user.has_perm(self.object.asso.abreviation + '_liste_contact')
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        #self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
-        if "lettre" in self.request.GET:
-            qs = Paysan.objects.filter(nom__istartswith=self.request.GET["lettre"]).order_by("nom","prenom","email","adresse__telephone")
+        if 'projet_pk' in self.kwargs:
+            self.projet = get_object_or_404(ProjetPhoning, pk=self.kwargs.get('projet_pk'))
+            self.request.session["projet_courant_pk"] = self.projet.pk
         else:
-            qs = Paysan.objects.all().order_by("nom","prenom","email","adresse__telephone")
-        profils_filtres = PaysanCarteFilter(self.request.GET, queryset=qs)
+             self.projet = get_object_or_404(ProjetPhoning, pk= self.request.session["projet_courant_pk"])
+
+        if "lettre" in self.request.GET:
+            qs = Contact.objects.filter(projet=self.projet, nom__istartswith=self.request.GET["lettre"]).order_by("nom","prenom","email","adresse__telephone")
+        else:
+            qs = Contact.objects.filter(projet=self.projet).order_by("nom","prenom","email","adresse__telephone")
+        profils_filtres = ContactCarteFilter(self.request.GET, queryset=qs)
         self.qs = profils_filtres.qs.distinct()
         return self.qs
 
@@ -125,8 +152,9 @@ class Paysan_liste(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         qs = self.qs
-        context['titre'] = "Phoning Conf pour EP CA 2024 (%d)" % len(qs)
-        filter = PaysanCarteFilter(self.request.GET, qs)
+        context["projet"] = self.projet
+        context['titre'] = "Phoning : %s (%d)" % (str(self.projet), len(qs))
+        filter = ContactCarteFilter(self.request.GET, qs)
         context["filter"] = filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
@@ -134,42 +162,50 @@ class Paysan_liste(ListView):
 
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
-        if self.request.path == reverse('adherents:accueil_phoning'):
+        if self.request.path == reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':self.request.session['projet_courant_pk']}) or self.request.path == reverse('adherents:phoning_projet_courant') :
             return [self.template_name_simple]  # Return a list that contains "a.html" template name
         return [self.template_name_complet]  # else return "b.html" template name
 
+@login_required
+def phoning_projet_courant(request):
+    if 'projet_courant_pk' in request.session:
+        return redirect('adherents:phoning_projet_simple', projet_pk=request.session['projet_courant_pk'])
+    else:
+        return redirect('adherents:phoning_projet_liste',)
 
 
 
 @login_required
-def contactPaysan_supprimer(request, paysan_contact_pk):
-    c = get_object_or_404(ContactPaysan, pk=paysan_contact_pk)
+def contactContact_supprimer(request, contact_contact_pk):
+    if not request.user.has_perm('delete_contact'):
+        return render
+    c = get_object_or_404(ContactContact, pk=contact_contact_pk)
     c.delete()
-    return redirect('adherents:accueil_phoning')
+    return redirect('adherents:phoning_projet_courant')
 
 @login_required
-def contactPaysan_ajouter(request, paysan_pk):
-    p = get_object_or_404(Paysan, pk=paysan_pk)
-    form = ContactPaysan_form(request.POST or None)
+def contactContact_ajouter(request, contact_pk):
+    p = get_object_or_404(Contact, pk=contact_pk)
+    form = ContactContact_form(request.POST or None)
     if form.is_valid():
         contact = form.save(commit=False)
-        contact.paysan = p
+        contact.contact = p
         form.save(commit=True)
-        return redirect('adherents:accueil_phoning')
+        return redirect('adherents:phoning_projet_courant')
 
-    return render(request, 'adherents/paysan_contact_ajouter.html', {"form": form, "paysan":p})
+    return render(request, 'adherents/contact_contact_ajouter.html', {"form": form, "contact":p})
 
 
 
 @login_required
-def paysan_ajouter_accueil(request):
-    return render(request, 'adherents/paysan_ajouter_acceuil.html', {})
+def contact_ajouter_accueil(request):
+    return render(request, 'adherents/contact_ajouter_acceuil.html', {})
 
 
 @login_required
 def nettoyer_telephones(request):
     m = ""
-    for p in Paysan.objects.all():
+    for p in Contact.objects.all():
         if p.adresse.rue:
             try:
                 ad = re.split("\d{5}", p.adresse.rue)
@@ -211,7 +247,7 @@ def nettoyer_telephones(request):
             #     p.save()
             #     m += "<p>deplacement tel : " + str(p.adresse.telephone) + "</p>"
 
-    return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"message": m})
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
 
 
 @login_required
@@ -223,7 +259,7 @@ def supprimer_doublons(request):
         unique_fields = ['nom', 'prenom', 'adresse__telephone']
 
     duplicates = (
-        Paysan.objects.values(*unique_fields)
+        Contact.objects.values(*unique_fields)
         .order_by('nom')
         .annotate(max_id=Max('id'), count_id=Count('id'))
         .filter(count_id__gt=1)
@@ -231,27 +267,28 @@ def supprimer_doublons(request):
 
     for duplicate in duplicates:
         (
-            Paysan.objects
+            Contact.objects
             .filter(**{x: duplicate[x] for x in unique_fields})
             .exclude(id=duplicate['max_id'])
             .delete()
         )
 
 
-    return redirect('adherents:accueil_phoning')
+    return redirect('adherents:phoning_projet_courant')
 
 
-def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, adherent=None):
+def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, adherent=None):
     #if not telephone:
      #   return 0, None
 
-    if not(telephone or nom or prenom or email or code_postal) or (adherent and Paysan.objects.filter(adherent=adherent).exists()):
+    if not(telephone or nom or prenom or email or code_postal) or (adherent and Contact.objects.filter(adherent=adherent).exists()):
         return 0, None
 
-    if not Paysan.objects.filter(adresse__code_postal=code_postal,
+    if not Contact.objects.filter(adresse__code_postal=code_postal,
                                  adresse__telephone=telephone,
                                 nom=nom,
                                 prenom=prenom,
+                                projet=projet,
                                 email=email).exists():
 
         if code_postal and telephone:
@@ -268,33 +305,36 @@ def creerPaysan(telephone, nom=None, prenom=None, email=None, rue=None, commune=
                                             code_postal=code_postal,
                                             rue=rue,
                                         )
-        p, created = Paysan.objects.get_or_create(
+        p, created = Contact.objects.get_or_create(
                                 nom=nom,
                                 prenom=prenom,
                                 email=email,
                                 adresse=adresse,
                                 adherent=adherent,
+                                projet=projet
         )
         return 1, p
     return 0, None
 
 
 @login_required
-def ajouterAdherentsConf(request):
-    adherents = Adherent.objects.all()
+def ajouterAdherents(request, projet_pk):
+    projet = get_object_or_404(ProjetPhoning, pk=projet_pk)
+    adherents = Adherent.objects.filter(asso=projet.asso)
     m = ""
     j=0
     for i, adherent in enumerate(adherents):
         #if j>5 or i> 200:
          #   break
-        res, p = creerPaysan(telephone=adherent.adresse.telephone,
+        res, p = creerContact(telephone=adherent.adresse.telephone,
                              nom=adherent.nom,
                              prenom=adherent.prenom ,
                              email=adherent.email,
                              rue=adherent.adresse.rue,
                              commune=adherent.adresse.commune,
                              code_postal=adherent.adresse.code_postal,
-                             adherent=adherent)
+                             adherent=adherent,
+                             projet=projet)
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
             j += 1
@@ -302,14 +342,11 @@ def ajouterAdherentsConf(request):
             m += "<p>refus " + str(adherent) +"</p>"
 
 
-
-
-
-    return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"message": m})
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
 
 
 @login_required
-def phoning_paysan_ajouter_listetel(request):
+def phoning_contact_ajouter_listetel(request):
     form = ListeTel_form(request.POST or None)
     if form.is_valid():
         tels = form.cleaned_data['telephones']
@@ -319,7 +356,7 @@ def phoning_paysan_ajouter_listetel(request):
                 m += "<p>" + str(i) +" Errlong " + str(tel) +" > " + "</p>"
                 continue
             try:
-                res, p = creerPaysan(telephone=str(tel))
+                res, p = creerContact(telephone=str(tel))
                 if res:
                     m += "<p>" + str(i) +" ajout " + str(p) +"</p>"
                 else:
@@ -327,12 +364,15 @@ def phoning_paysan_ajouter_listetel(request):
             except Exception as e:
                 m += "<p>" + str(i) +" erreur " + str(tel) +" > " + str(e) + "</p>"
 
-        return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"liste_tel": tels, "message": m})
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": tels, "message": m})
 
-    return render(request, 'adherents/paysan_ajouter_listetel.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_listetel.html', {"form": form})
 
 
-def lireTableauPaysan(csv_reader):
+def lireTableauContact(request, csv_reader):
+    projet_courant= ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
+    if not request.user.has_perm('add_contact'):
+        return HttpResponseForbidden()
     msg = ""
     for i, line in enumerate(csv_reader):
         #if i == 0:
@@ -350,16 +390,17 @@ def lireTableauPaysan(csv_reader):
                                                            commune=line["commune"]  if 'commune' in cles  else "",
                                                            telephone=line["telephone"])
             adres.save()
-            paysan, created = Paysan.objects.get_or_create(
+            contact, created = Contact.objects.get_or_create(
                 nom=line["nom"] if 'nom' in cles else "",
                 prenom=line["prenom"] if 'prenom' in cles else "",
                 adresse=adres,
                 email=line["email"] if 'email' in cles else "",
+                projet=projet_courant
             )
             if created:
-                msg += "<p> ajoute adherent " + str(line) + " / " + str(paysan) + "</p>"
+                msg += "<p> ajoute adherent " + str(line) + " / " + str(contact) + "</p>"
             else:
-                msg += "<p>  adherent  deja present " + str(line) + " / " + str(paysan) + "</p>"
+                msg += "<p>  adherent  deja present " + str(line) + " / " + str(contact) + "</p>"
 
         except Exception as e:
             msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
@@ -367,24 +408,27 @@ def lireTableauPaysan(csv_reader):
 
 
 @login_required
-def phoning_paysan_ajouter_csv(request):
+def phoning_contact_ajouter_csv(request,):
+    if not request.user.has_perm('add_contact'):
+        return HttpResponseForbidden()
     form = csvText_form(request.POST or None)
     if form.is_valid():
         texte_csv = form.cleaned_data['texte_csv']
         msg = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
         if not "telephone" in csv_reader.fieldnames:
-            return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
+            m = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+            return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
-        m = lireTableauPaysan(csv_reader)
-        return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
+        m = lireTableauContact(request, csv_reader)
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
-    return render(request, 'adherents/paysan_ajouter_csv1.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
 
 
 
 @login_required
-def phoning_paysan_ajouter_csv2(request):
+def phoning_contact_ajouter_csv2(request):
     form = csvFile_form(request.POST or None, request.FILE or None)
     if form.is_valid():
         fichier = request.FILES['fichier_csv']
@@ -392,12 +436,13 @@ def phoning_paysan_ajouter_csv2(request):
         with open(fichier, 'r', newline='\n') as data:
             csv_reader = csv.DictReader(data, delimiter=',')
             if not "telephone" in csv_reader.fieldnames:
-                return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
+                m = "Erreur : Le fichier '" + str(fichier) + "'" +" n'a pas de colonne 'telephone'"
+                return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
-            m = lireTableauPaysan(csv_reader)
-        return render(request, 'adherents/paysan_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
+            m = lireTableauContact(request, csv_reader)
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
-    return render(request, 'adherents/paysan_ajouter_csv2.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv2.html', {"form": form})
 
 
 
@@ -405,16 +450,16 @@ def phoning_paysan_ajouter_csv2(request):
 def import_adherents_ggl(request):
     params = dict(request.GET.items())
     # fic = params["fic"]
-
+    msg =""
 
     return render(request, "adherents/accueil_admin.html", {"msg":msg})
 
 
 @login_required
-def get_csv_paysans(request):
+def get_csv_contacts(request):
     """A view that streams a large CSV file."""
-    profils = Paysan.objects.all().order_by("nom","prenom","email")
-    profils_filtres = PaysanCarteFilter(request.GET, queryset=profils)
+    profils = Contact.objects.filter(projet__pk=request.session["projet_courant_pk"]).order_by("nom","prenom","email")
+    profils_filtres = ContactCarteFilter(request.GET, queryset=profils)
     #current_year = date.today().isocalendar()[0]
 
     csv_data = [("NOM","PRENOM","telephone","email","adresse_postale","code_postal","commune","adherent_nom",),]
@@ -422,3 +467,89 @@ def get_csv_paysans(request):
                  for a in profils_filtres.qs.distinct() ]
 
     return write_csv_data(request, csv_data)
+
+
+
+def ajax_projet(request):
+    try:
+        asso_abreviation = request.GET.get('asso_abreviation')
+        projets = ProjetPhoning.objects.filter(asso__abreviation=asso_abreviation)
+
+        return render(request, 'adherents/ajax/projets_dropdown_list_options.html',
+                      {'listeProjets':projets})
+    except:
+        return render(request, 'blog/ajax/projets_dropdown_list_options.html', {'categories':"",} )
+
+
+class ProjetPhoning_ajouter(CreateView, UserPassesTestMixin):
+    model = ProjetPhoning
+    template_name_suffix = '_ajouter'
+
+    def test_func(self):
+        return self.request.user.has_perm(self.object.asso.abreviation + '_add_projetphoning')
+
+    def get_form(self):
+        return ProjetPhoning_form(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        self.object = form.save()
+        #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
+        #             description="a ajouté le Jardin: '%s'" % self.object.titre)
+
+        return redirect(self.object)
+
+
+
+class ProjetPhoning_modifier(UpdateView, UserPassesTestMixin):
+    model = ProjetPhoning
+    template_name_suffix = '_modifier'
+
+    def test_func(self):
+        return self.request.user.has_perm(self.object.asso.abreviation + '_update_projetphoning')
+
+    def get_form(self):
+        return ProjetPhoning_form(**self.get_form_kwargs())
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return redirect("adherents:phoning_projet_omplet")
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+class ProjetPhoning_supprimer(DeleteView, UserPassesTestMixin):
+    model = ProjetPhoning
+    template_name_suffix = '_supprimer'
+
+    def test_func(self):
+        return self.request.user.has_perm(self.object.asso.abreviation + '_delete_projetphoning')
+
+    def get_success_url(self):
+        return reverse('adherents:phoning_projet_courant')
+
+
+
+class ProjetPhoning_liste(ListView,UserPassesTestMixin):
+    model = ProjetPhoning
+    context_object_name = "projets"
+    template_name = "adherents/projetphoning_list.html"
+
+    def test_func(self):
+        return self.request.user.has_perm(self.object.asso.abreviation + '_liste_projetphoning')
+
+    def get_queryset(self):
+        params = dict(self.request.GET.items())
+        if 'asso' in params:
+            self.qs = ProjetPhoning.objects.filter(asso__abreviation=params['asso'])
+        else:
+            self.qs = ProjetPhoning.objects.filter(asso__abreviation__in=self.request.user.getListeAbreviationsAssos())
+        return self.qs
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['asso_list'] = [(x.abreviation, x.nom,) for x in Asso.objects.all().order_by("id") if
+                                self.request.user.est_autorise(x.abreviation)]
+
+        #context["filter"] = filter
+        return context

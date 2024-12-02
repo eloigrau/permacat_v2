@@ -12,7 +12,7 @@
 {% block subtitle %}
 <div class="row titre_adherents">
     <div class="col textcenter">
-        <h3> {{listediffusionconf}} (suivi par {{listediffusionconf.get_liste_inscriptions|length}} personne(s)) </h3>
+        <h3> {{listediffusion}} (suivi par {{listediffusion.get_liste_inscriptions|length}} personne(s)) </h3>
     </div>
 </div>
 
@@ -20,14 +20,14 @@
 {% if request.user.estmembre_bureau_conf %}
 <div class="row justify-content-center">
     <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusionconf.pk %}"> Ajouter un confédéré à la liste</a></li>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk %}"> Ajouter un confédéré à la liste</a></li>
     </div>
 </div>
 {% endif %}
 
 <hr>
 <p class="textcenter">
-    <a onclick="get_infos('{% url 'adherents:get_infos_listeMail' listeMail_pk=listediffusionconf.pk type_info='email' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_listeMail' listeMail_pk=listediffusion.pk type_info='email' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Copier la liste des mails
         </button>
@@ -51,7 +51,7 @@
             </tr>
         </thead>
             <tbody>
-                    {% for m in listediffusionconf.get_liste_inscriptions %}
+                    {% for m in listediffusion.get_liste_inscriptions %}
                     <tr>
                         <td>
                             <a href="{{m.adherent.get_absolute_url}}">{{m.adherent}}</a>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusionConf, ContactPaysan, Paysan
+from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusion, ContactContact, Contact
 
 
 @admin.register(Adherent)
@@ -13,6 +13,6 @@ class Adhesion_Admin(admin.ModelAdmin):
     search_fields = ('adherent', )
 
 admin.site.register(InscriptionMail)
-admin.site.register(ListeDiffusionConf)
-admin.site.register(Paysan)
-admin.site.register(ContactPaysan)
+admin.site.register(ListeDiffusion)
+admin.site.register(Contact)
+admin.site.register(ContactContact)

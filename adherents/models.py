@@ -1,14 +1,12 @@
 
 from django.db import models
 from bourseLibre.models import Profil, Adresse, Asso
-from blog.models import Article
-import simplejson
 from django.urls import reverse
 from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS
 from django.utils import timezone
-import uuid
 import datetime
 from colour import Color
+import json
 
 class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
@@ -20,7 +18,7 @@ class Adherent(models.Model):
                               choices=CHOIX_STATUTS, default='0',)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     email = models.EmailField(verbose_name="Email", blank=True)
-    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name="Groupe", null=True,)
 
     class Meta:
         unique_together = ('nom', 'prenom',)
@@ -102,7 +100,7 @@ class Adhesion(models.Model):
     moyen = models.CharField(max_length=50, blank=False, verbose_name="Moyen de paiement",
                              choices=CHOIX_MOYEN, )
     detail = models.TextField(null=True, blank=True)
-    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.date_cotisation.strftime('%Y')) + ": " + str(self.montant) + " euros (" + str(self.moyen) +")"
@@ -116,9 +114,10 @@ class Adhesion(models.Model):
 
 
 
-class ListeDiffusionConf(models.Model):
+class ListeDiffusion(models.Model):
     nom = models.CharField(max_length=30, blank=False, unique=True)
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name="Groupe associé", null=True,)
 
     def __str__(self):
         return str(self.nom)
@@ -148,7 +147,7 @@ class ListeDiffusionConf(models.Model):
 
 
 class InscriptionMail(models.Model):
-    liste_diffusion = models.ForeignKey(ListeDiffusionConf, on_delete=models.CASCADE, verbose_name="Liste de diffusion", blank=True, null=True)
+    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, verbose_name="Liste de diffusion", blank=True, null=True)
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent", blank=False, null=False)
     commentaire = models.CharField(max_length=50, blank=True)
@@ -192,7 +191,31 @@ class Comm_adherent(models.Model):
     def get_delete_url(self):
         return reverse('adherents:comm_adherent_supprimer', kwargs={'pk': self.pk})
 
-class Paysan(models.Model):
+
+
+class ProjetPhoning(models.Model):
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name="Groupe associé",)
+    titre = models.CharField(verbose_name="Nom du projet", max_length=200, blank=True)
+    date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
+
+    def __str__(self):
+        return str(self.titre)
+
+    def get_absolute_url(self):
+         return reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':self.pk})
+    def get_update_url(self):
+        return reverse('adherents:phoning_projet_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adherents:phoning_projet_supprimer', kwargs={'pk': self.pk})
+
+    def toJSON(self):
+        return json.dumps(
+            self,
+            default=lambda o: o.__dict__,
+            sort_keys=True,
+            indent=4)
+
+class Contact(models.Model):
     nom = models.CharField(verbose_name="Nom", max_length=120, blank=True, null=True, )
     prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True, null=True, )
     email = models.CharField(verbose_name="Email", max_length=150, blank=True, null=True, )
@@ -200,23 +223,24 @@ class Paysan(models.Model):
     commentaire = models.TextField(null=True, blank=True)
     adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name="Adhérent Conf'", null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
+    projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name="Groupe associé", null=True,)
 
     def __str__(self):
         return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"
 
     def get_absolute_url(self):
-         return reverse('adherents:accueil_phoning')
+         return reverse('adherents:phoning_projet_courant')
     def get_update_url(self):
-        return reverse('adherents:phoning_paysan_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_contact_modifier', kwargs={'pk': self.pk})
     def get_delete_url(self):
-        return reverse('adherents:phoning_paysan_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_contact_supprimer', kwargs={'pk': self.pk})
     def get_delete_url2(self):
-        return reverse('adherents:phoning_paysan_supprimer2', kwargs={'paysan_pk': self.pk})
+        return reverse('adherents:phoning_contact_supprimer2', kwargs={'contact_pk': self.pk})
     def get_ajoutContact_url(self):
-        return reverse('adherents:phoning_paysan_contact_ajout', kwargs={'paysan_pk': self.pk})
+        return reverse('adherents:phoning_contact_contact_ajout', kwargs={'contact_pk': self.pk})
 
     def get_contacts(self):
-        return self.contactpaysan_set.all()
+        return self.contactcontact_set.all()
 
     def get_profil_username(self):
         if self.profil:
@@ -241,8 +265,8 @@ class Paysan(models.Model):
             html += "<li>" +str(c) + "</li> "
         return html
 
-class ContactPaysan(models.Model):
-    paysan = models.ForeignKey(Paysan, on_delete=models.CASCADE, verbose_name="Paysan",)
+class ContactContact(models.Model):
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contact",)
     commentaire = models.CharField(verbose_name="commentaire", max_length=200, blank=True)
     date_contact = models.DateTimeField(verbose_name="Date", default=timezone.now)
     statut = models.CharField(verbose_name="Statut", max_length=2,
@@ -250,4 +274,3 @@ class ContactPaysan(models.Model):
 
     def __str__(self):
         return "[" + str(self.date_contact.strftime('%d/%m %H:%M')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)
-

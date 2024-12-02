@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adherent, Adhesion, Paysan
+from .models import Adherent, Adhesion, Contact
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q
@@ -55,7 +55,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         }
 
 
-class PaysanCarteFilter(django_filters.FilterSet):
+class ContactCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ",
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
                                                              'tabindex': 1, 'autofocus': '1'}))
@@ -85,6 +85,6 @@ class PaysanCarteFilter(django_filters.FilterSet):
 
 
     class Meta:
-        model = Paysan
+        model = Contact
         fields = {
                   }

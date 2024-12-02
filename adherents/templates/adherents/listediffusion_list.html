@@ -19,7 +19,7 @@
 {% if request.user.estmembre_bureau_conf %}
 <div class="row ">
     <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusionConf_creer' %}">Ajouter une liste</a>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' %}">Ajouter une liste</a>
     </div>
 </div>
 {% endif %}
@@ -28,7 +28,7 @@
 
 {% block content %}
 
- {% include 'adherents/template_listeDiffusionConf_liste.html'%}
+ {% include 'adherents/template_listeDiffusion_liste.html'%}
 
 {% if request.user.estmembre_bureau_conf %}
         <h4 class="textcenter" >Pour le bureau :</h4>

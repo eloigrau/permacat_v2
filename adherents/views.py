@@ -12,13 +12,13 @@ import csv
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
-from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionConfForm, \
+from .forms import AdhesionForm, AdherentForm, AdherentChangeForm, InscriptionMailForm, ListeDiffusionForm, \
     InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent, Comm_adh_form, \
-    Paysan_form, Paysan_update_form, ContactPaysan_form
-from .models import (Adherent, Adhesion, InscriptionMail, Paysan, ContactPaysan,
-                     ListeDiffusionConf, Comm_adherent)
+    Contact_form, Contact_update_form, ContactContact_form
+from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
+                     ListeDiffusion, Comm_adherent, ProjetPhoning)
 from bourseLibre.models import Adresse, Profil, Asso
-from .filters import AdherentsCarteFilter, PaysanCarteFilter
+from .filters import AdherentsCarteFilter, ContactCarteFilter
 from .constantes import get_slug_salon
 from django.utils.timezone import now
 from actstream.models import Action
@@ -33,10 +33,24 @@ from bourseLibre.models import Salon, InscritSalon
 from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 
-def is_membre_bureau(user):
-    if user.is_anonymous or not user.adherent_conf66:
+def is_membre_bureau(user, asso="conf66"):
+    if user.is_anonymous:
         return False
-    return user.estmembre_bureau_conf
+    elif asso=="conf66":
+        if not user.adherent_conf66:
+            return False
+        return user.estmembre_bureau_conf
+    else:
+        return True
+
+
+@login_required
+def set_projet_phoning(request, asso_abreviation, url_redirect):
+    projet = get_object_or_404(ProjetPhoning, abreviation=asso_abreviation)
+    request.session['projet_courant'] = projet
+    return redirect(url_redirect)
+
+
 
 class ListeAdherents(ListView):
     model = Adherent
@@ -647,7 +661,7 @@ def get_infos_adherent(request, type_info="email"):
 
 @login_required
 def get_infos_listeMail(request, listeMail_pk, type_info="email"):
-    liste = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
+    liste = get_object_or_404(ListeDiffusion, pk=listeMail_pk)
     if type_info == "email":
         mails = liste.get_liste_mails
     else:
@@ -767,10 +781,10 @@ def get_mails(typeListe="bureau"):
         return list(set([a.email for a in profils if not a.get_adhesion_an(current_year).montant and a.email]))
 
 
-class ListeDiffusionConf_liste(ListView):
-    model = ListeDiffusionConf
+class ListeDiffusion_liste(ListView):
+    model = ListeDiffusion
     context_object_name = "listesDiffusion"
-    template_name = "adherents/listeDiffusionConf_list.html"
+    template_name = "adherents/listeDiffusion_list.html"
     ordering = ['nom']
 
     #def get_queryset(self):
@@ -787,8 +801,8 @@ class ListeDiffusionConf_liste(ListView):
 
         return context
 
-class ListeDiffusionConfDetailView(DetailView):
-    model = ListeDiffusionConf
+class ListeDiffusionDetailView(DetailView):
+    model = ListeDiffusion
     ordering = ['nom']
 
 
@@ -797,8 +811,8 @@ class ListeDiffusionConfDetailView(DetailView):
         return context
 
 
-class ListeDiffusionConfDeleteView(UserPassesTestMixin, DeleteView):
-    model = ListeDiffusionConf
+class ListeDiffusionDeleteView(UserPassesTestMixin, DeleteView):
+    model = ListeDiffusion
     template_name_suffix = '_supprimer'
 
     def get_success_url(self):
@@ -812,8 +826,8 @@ class ListeDiffusionConfDeleteView(UserPassesTestMixin, DeleteView):
     def test_func(self):
         return is_membre_bureau(self.request.user)
 
-class ListeDiffusionConfUpdateView(UserPassesTestMixin, UpdateView):
-    model = ListeDiffusionConf
+class ListeDiffusionUpdateView(UserPassesTestMixin, UpdateView):
+    model = ListeDiffusion
     template_name_suffix = '_modifier'
     fields = ["nom"]
 
@@ -860,18 +874,18 @@ def creerInscriptionMail(request,):
 
 @login_required
 @user_passes_test(is_membre_bureau)
-def creerListeDiffusionConf(request):
+def creerListeDiffusion(request):
     if not is_membre_bureau(request.user):
         return HttpResponseForbidden()
 
-    form = ListeDiffusionConfForm(request.POST or None)
+    form = ListeDiffusionForm(request.POST or None)
     if form.is_valid():
         liste = form.save()
         action.send(request.user, verb="listeDiff_conf66_nouvelle", action_object=liste, url=liste.get_absolute_url(),
                      description="a créé une nouvelle liste : '%s'" %(liste.nom))
         return redirect(liste)
 
-    return render(request, 'adherents/listediffusionconf_ajouter.html', {"form": form})
+    return render(request, 'adherents/listediffusion_ajouter.html', {"form": form})
 
 
 @login_required
@@ -892,11 +906,11 @@ def ajouter_comm_adh(request, adherent_pk):
 
 @login_required
 @user_passes_test(is_membre_bureau)
-def ajouterInscription_AdherentListeDiffusionConf(request, listeMail_pk, adherent_pk):
+def ajouterInscription_AdherentListeDiffusion(request, listeMail_pk, adherent_pk):
     if not is_membre_bureau(request.user):
         return HttpResponseForbidden()
 
-    listeMail = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
+    listeMail = get_object_or_404(ListeDiffusion, pk=listeMail_pk)
     adherent = get_object_or_404(Adherent, pk=adherent_pk)
     InscriptionMail.objects.create(liste_diffusion=listeMail,
                                    date_inscription=now(),
@@ -911,19 +925,19 @@ def mesListesMails(request):
         return render(request, 'adherents/profil_inconnu.html')
     adherent = Adherent.objects.get(profil=request.user)
     liste = []
-    for listeMail in ListeDiffusionConf.objects.all():
+    for listeMail in ListeDiffusion.objects.all():
         if InscriptionMail.objects.filter(liste_diffusion=listeMail, adherent=adherent).exists():
             liste.append([listeMail, "inscrit", adherent.pk])
         else:
             liste.append([listeMail, "pasinscrit", adherent.pk])
 
-    return render(request, 'adherents/listediffusionconf_mesListes.html', {'liste_inscriptions': liste, 'adherent':adherent})
+    return render(request, 'adherents/listediffusion_mesListes.html', {'liste_inscriptions': liste, 'adherent':adherent})
 
 
 @login_required
 def swap_inscription(request, listeMail_pk, adherent_pk):
 
-    listeMail = get_object_or_404(ListeDiffusionConf, pk=listeMail_pk)
+    listeMail = get_object_or_404(ListeDiffusion, pk=listeMail_pk)
     adherent = get_object_or_404(Adherent, pk=adherent_pk)
     inscrit = InscriptionMail.objects.filter(liste_diffusion=listeMail,
                                    adherent=adherent)
@@ -941,12 +955,12 @@ def swap_inscription(request, listeMail_pk, adherent_pk):
 
 @login_required
 @user_passes_test(is_membre_bureau)
-def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
+def ajouterAdherentAListeDiffusion(request, listeDiffusion_pk):
     if not is_membre_bureau(request.user):
         return HttpResponseForbidden()
 
     form = InscriptionMailForm(request.POST or None)
-    listeDiffusion = get_object_or_404(ListeDiffusionConf, pk=listeDiffusion_pk)
+    listeDiffusion = get_object_or_404(ListeDiffusion, pk=listeDiffusion_pk)
 
     if form.is_valid():
         adhesion = form.save(commit=False)
@@ -957,5 +971,6 @@ def ajouterAdherentAListeDiffusionConf(request, listeDiffusion_pk):
 
         return redirect(listeDiffusion)
 
-    return render(request, 'adherents/listediffusionconf_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion})
+    return render(request, 'adherents/listdiffusion_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion})
+
 

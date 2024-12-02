@@ -1,7 +1,8 @@
 from django import forms
-from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusionConf, Comm_adherent, Paysan, ContactPaysan
+from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusion, Comm_adherent, Contact, ContactContact
 from .constantes import list_ape
 from local_summernote.widgets import SummernoteWidget
+from .models import ProjetPhoning
 
 
 class AdhesionForm(forms.ModelForm):
@@ -99,9 +100,9 @@ class InscriptionMail_listeAdherent_Form(forms.ModelForm):
         }
 
 
-class ListeDiffusionConfForm(forms.ModelForm):
+class ListeDiffusionForm(forms.ModelForm):
     class Meta:
-        model = ListeDiffusionConf
+        model = ListeDiffusion
         fields = ['nom']
 
 
@@ -112,7 +113,7 @@ class Comm_adh_form(forms.ModelForm):
 
 
 
-class Paysan_form(forms.ModelForm):
+class Contact_form(forms.ModelForm):
     telephone = forms.CharField(label="Téléphone", required=False)
     code_postal = forms.CharField(label="Code postal*", required=False)
     commune = forms.CharField(label="Commune",  required=False)
@@ -120,24 +121,24 @@ class Paysan_form(forms.ModelForm):
     adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
                               label="Adhérent lié ?", )
     class Meta:
-        model = Paysan
+        model = Contact
         fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', 'adherent']
 
 
-class Paysan_update_form(forms.ModelForm):
+class Contact_update_form(forms.ModelForm):
     telephone = forms.CharField(label="Téléphone", required=False)
     code_postal = forms.CharField(label="Code postal", required=False)
     commune = forms.CharField(label="Commune", required=False)
     rue = forms.CharField(label="Rue", required=False)
 
     class Meta:
-        model = Paysan
+        model = Contact
         fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire']
 
 
-class ContactPaysan_form(forms.ModelForm):
+class ContactContact_form(forms.ModelForm):
     class Meta:
-        model = ContactPaysan
+        model = ContactContact
         fields = [ 'statut', 'commentaire',]
 
 
@@ -154,3 +155,10 @@ class csvText_form(forms.Form):
     texte_csv = forms.CharField(label=" copier/coller le contenu du csv ici", required=True,
         widget=forms.Textarea,
     )
+
+
+
+class ProjetPhoning_form(forms.ModelForm):
+    class Meta:
+        model = ProjetPhoning
+        fields = [ "titre", 'asso',]

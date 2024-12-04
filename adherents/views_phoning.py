@@ -369,6 +369,7 @@ def phoning_contact_ajouter_listetel(request):
     return render(request, 'adherents/contact_ajouter_listetel.html', {"form": form})
 
 
+
 def lireTableauContact(request, csv_reader):
     projet_courant = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     if not request.user.has_perm('add_contact'):

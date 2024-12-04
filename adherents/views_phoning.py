@@ -36,7 +36,7 @@ class Contact_ajouter(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.projet = self.projet
+        self.object.projet = get_object_or_404(ProjetPhoning, pk=self.request.session["projet_courant_pk"])
         self.object.adresse=Adresse.objects.create(rue=form.cleaned_data['rue'],
                                                    commune=form.cleaned_data['commune'],
                                                    code_postal=form.cleaned_data['code_postal'],
@@ -52,7 +52,7 @@ class Contact_ajouter(CreateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        self.projet = Contact.objects.get(pk=self.request.session['projet_courant_pk'])
+        self.projet = ProjetPhoning.objects.get(pk=self.request.session['projet_courant_pk'])
         context['projetphoning'] = self.projet
         return context
 
@@ -64,7 +64,7 @@ class Contact_modifier(UpdateView, UserPassesTestMixin):
         return self.request.user.has_perm(self.object.asso.abreviation + '_add_contact')
 
     def get_form(self):
-        self.projet = Contact.objects.get(pk=self.kwargs["pk"])
+        self.projet = ProjetPhoning.objects.get(pk=self.kwargs["pk"])
         return Contact_update_form(**self.get_form_kwargs())
 
     def get_initial(self):
@@ -221,32 +221,27 @@ def nettoyer_telephones(request):
         if p.adresse.telephone:
             if p.adresse.telephone.startswith("6"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
-                m += "<p>ajustement6 tel : " + str(p.adresse.telephone) + "</p>"
+                m += "<p>ajustement06 tel : " + str(p.adresse.telephone) + "</p>"
             elif p.adresse.telephone.startswith("7"):
                 p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
-                m += "<p>ajustement7 tel : " + str(p.adresse.telephone) + "</p>"
+                m += "<p>ajustement07 tel : " + str(p.adresse.telephone) + "</p>"
 
             elif p.adresse.telephone.startswith("33"):
                 p.adresse.telephone = "+" + str(p.adresse.telephone.strip())
-                m += "<p>ajustement+ tel : " + str(p.adresse.telephone) + "</p>"
+                m += "<p>ajustement33 tel : " + str(p.adresse.telephone) + "</p>"
 
             if len(p.adresse.telephone) < 4:
                 p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone.strip())
                 p.adresse.telephone = ""
                 m += "<p>petit tel : " + str(p.adresse.telephone.strip()) + "</p>"
 
-            p.adresse.telephone=p.adresse.telephone.replace('/','').replace('.','').strip()
+            p.adresse.telephone=p.adresse.telephone.replace('/','').replace('.','').replace(' ','').strip()
             p.adresse.save()
             p.save(update_fields=['adresse'])
-            #
-            # try:
-            #     v = int(p.adresse.telephone.strip())
-            # except:
-            #     p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone)
-            #     p.adresse.telephone = ""
-            #     p.adresse.save()
-            #     p.save()
-            #     m += "<p>deplacement tel : " + str(p.adresse.telephone) + "</p>"
+
+            if Contact.objects.filter(adresse__telephone=p.adresse.telephone):
+                m += "<p>DOUBLE tel : " + str(p) + "</p>"
+
 
     return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
 
@@ -327,7 +322,8 @@ def ajouterAdherents(request):
     for i, adherent in enumerate(adherents):
         #if j>5 or i> 200:
          #   break
-        res, p = creerContact(telephone=adherent.adresse.telephone,
+        res, p = creerContact(projet=projet,
+                              telephone=adherent.adresse.telephone,
                              nom=adherent.nom,
                              prenom=adherent.prenom ,
                              email=adherent.email,
@@ -335,7 +331,7 @@ def ajouterAdherents(request):
                              commune=adherent.adresse.commune,
                              code_postal=adherent.adresse.code_postal,
                              adherent=adherent,
-                             projet=projet)
+                              )
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
             j += 1
@@ -348,6 +344,8 @@ def ajouterAdherents(request):
 
 @login_required
 def phoning_contact_ajouter_listetel(request):
+
+    projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     form = ListeTel_form(request.POST or None)
     if form.is_valid():
         tels = form.cleaned_data['telephones']
@@ -357,7 +355,7 @@ def phoning_contact_ajouter_listetel(request):
                 m += "<p>" + str(i) +" Errlong " + str(tel) +" > " + "</p>"
                 continue
             try:
-                res, p = creerContact(telephone=str(tel))
+                res, p = creerContact(projet=projet, telephone=str(tel))
                 if res:
                     m += "<p>" + str(i) +" ajout " + str(p) +"</p>"
                 else:
@@ -465,8 +463,8 @@ def get_csv_contacts(request):
     profils_filtres = ContactCarteFilter(request.GET, queryset=profils)
     #current_year = date.today().isocalendar()[0]
 
-    csv_data = [("NOM","PRENOM","telephone","email","adresse_postale","code_postal","commune","adherent_nom",),]
-    csv_data += [(a.nom, a.prenom, a.adresse.telephone, a.email,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.get_profil_username())
+    csv_data = [("nom","prenom","telephone","email","adresse_postale","code_postal","commune","adherent_nom","commentaire",),]
+    csv_data += [(a.nom, a.prenom, a.adresse.telephone, a.email,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.get_profil_username(), a.commentaire)
                  for a in profils_filtres.qs.distinct() ]
 
     return write_csv_data(request, csv_data)

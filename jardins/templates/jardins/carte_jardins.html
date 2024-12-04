@@ -61,6 +61,25 @@
 {% block content %}
 
 <hr>
+{% if not request.user.is_authenticated %}
+<div class="row textcenter">
+  <div class="col-sm-12 textcenter">
+      <p>Vous n'êtes pas <a href="{% url 'login' %}?next={{request.GET.urlencode}}">connecté</a>,
+          vous ne voyez que ceux qui ont accepté d'apparaitre publiquement ici
+          (d'autres sont dans le réseau aussi ;).</p>
+  </div>
+</div>
+{% else %}
+{% if not request.user.adherent_jp %}
+<div class="row textcenter">
+  <div class="col-sm-12 textcenter">
+      <p>Vous n'êtes pas inscrit dans le groupe des jardins (voir la <a href="{% url jardins:accueil %}">page d'acceuil</a>),
+          vous ne voyez que ceux qui ont accepté d'apparaitre publiquement ici
+          (d'autres sont dans le réseau aussi ;).</p>
+  </div>
+</div>
+{% endif %}
+{% endif %}
 <div class="row cartePleinePage justify-content-center">
     <div class="col-md-12">
         <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>

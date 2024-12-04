@@ -13,10 +13,15 @@
          </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
     <ul class="navbar-nav mx-auto subnavbar align-items-center">
-		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">{% if request.session.projet_phoning_nom %} {{ request.session.projet_phoning_nom }}{% else %}Projets{% endif %}</a></li>
+        {% if request.session.projet_phoning_nom %}
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">{{ request.session.projet_phoning_nom }}</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' %}?istel=true&isatp=true"> Liste Simple</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' %}"> Liste Complète</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' %}"> Outils</a></li>
+         {% else %}
+        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">Choisir un projets</a></li>
+		 {% endif %}
+
         {% if request.user.is_superuser %}
             <li class="nav-item nav-notif"><a class="dropdown-item"   href="https://www.perma.cat/gestion/adherents/"> Admin</a></li>
         {% endif %}

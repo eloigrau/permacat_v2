@@ -34,15 +34,6 @@ def copierListesDiffusion(apps, schema_migration):
         a.asso = asso_conf
         a.save(update_fields=["asso", ])
 
-    Projets = apps.get_model('adherents', 'ProjetPhoning')
-    projet_conf = Projets.objects.create(titre="EP CA 2024", asso=asso_conf)
-
-    Contacts = apps.get_model('adherents', 'Contact')
-
-    for a in Contacts.objects.all():
-        a.projet = projet_conf
-        a.save(update_fields=["projet", ])
-
 
 
 class Migration(migrations.Migration):

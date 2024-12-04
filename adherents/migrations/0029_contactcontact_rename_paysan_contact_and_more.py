@@ -5,6 +5,17 @@ import django.db.models.deletion
 import django.utils.timezone
 
 
+def copierListesDiffusion(apps, schema_migration):
+    Projets = apps.get_model('adherents', 'ProjetPhoning')
+    projet_conf = Projets.objects.create(titre="EP CA 2024", asso=asso_conf)
+
+    Contacts = apps.get_model('adherents', 'Contact')
+
+    for a in Contacts.objects.all():
+        a.projet = projet_conf
+        a.save(update_fields=["projet", ])
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -13,21 +24,13 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='ContactContact',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('commentaire', models.CharField(blank=True, max_length=200, verbose_name='commentaire')),
-                ('date_contact', models.DateTimeField(default=django.utils.timezone.now, verbose_name='Date')),
-                ('statut', models.CharField(choices=[('0', 'Réponse_OK'), ('1', 'Pas de réponse'), ('2', 'A répondu mais à rappeler'), ('3', 'A répondu mais HOSTILE'), ('4', 'Mauvais numéroe')], default='0', max_length=2, verbose_name='Statut')),
-            ],
+        migrations.RenameModel(
+            old_name='ContactPaysan',
+            new_name='ContactContact',
         ),
         migrations.RenameModel(
             old_name='Paysan',
             new_name='Contact',
-        ),
-        migrations.DeleteModel(
-            name='ContactPaysan',
         ),
         migrations.AddField(
             model_name='contactcontact',

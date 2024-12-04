@@ -44,6 +44,7 @@
             {% if paysan.adherent %}
                 {% if paysan.adherent.statut == "1" %} (ATP)
                 {% elif paysan.adherent.statut == "3"%} (CC)
+                {% elif paysan.adherent.statut == "5"%} (ATS)
                 {% else %} (#)
                 {% endif %}
             {% else %}

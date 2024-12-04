@@ -29,7 +29,7 @@
         <tr style="background-color:{{paysan.get_background_color}} ; outline: thin solid;" >
             <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
                     {{ paysan.nom }}  {{ paysan.prenom }} </a>
-                    {% if paysan.adherent.statut == "1" %} (ATP){% elif paysan.adherent.statut == "3"%} (CC){% else %}{%endif%} </a> -
+                    {{ paysan.adherent.get_statut_display}} </a> -
                 {% else %}
                     {{ paysan.nom }}  {{ paysan.prenom }} -
                 {% endif %}

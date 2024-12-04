@@ -370,7 +370,7 @@ def phoning_contact_ajouter_listetel(request):
 
 
 def lireTableauContact(request, csv_reader):
-    projet_courant= ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
+    projet_courant = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     if not request.user.has_perm('add_contact'):
         return HttpResponseForbidden()
     msg = ""
@@ -395,6 +395,7 @@ def lireTableauContact(request, csv_reader):
                 prenom=line["prenom"] if 'prenom' in cles else "",
                 adresse=adres,
                 email=line["email"] if 'email' in cles else "",
+                commentaire=line["commentaire"] if 'commentaire' in cles else "",
                 projet=projet_courant
             )
             if created:

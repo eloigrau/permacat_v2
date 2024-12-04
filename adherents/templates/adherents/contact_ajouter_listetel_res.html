@@ -10,9 +10,12 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-8 col-lg-6">
+        {% if liste_tel %}
 <h5>Liste :</h5>
-        <p>{{liste_tel}}</p>
+        <p>{{liste_tel|safe}}</p>
         <hr>
+        {% endif %}
+
 <h5>Message :</h5>
         <p>{{message|safe}}</p>
         </div>

@@ -57,7 +57,7 @@
              <a>
                 {% else %}-{% endif %}
             </td>
-             <td><ul>
+             <td style="width:100%;"><ul>
                  {{ contact.get_contacts_html|safe }}
              <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
                  </ul>

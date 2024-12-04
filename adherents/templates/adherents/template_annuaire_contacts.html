@@ -32,19 +32,19 @@
             </tr>
         </thead>
         <tbody>
-        {% for paysan in paysans %}
-        <tr style="background-color:{{paysan.get_background_color}} ; outline: thin solid;">
-            <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
-                    {{ paysan.nom }}  {{ paysan.prenom }} </a>
+        {% for contact in contacts %}
+        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;">
+            <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' contact.adherent.pk %}">
+                    {{ contact.nom }}  {{ contact.prenom }} </a>
                 {% else %}
-                    {{ paysan.nom }}  {{ paysan.prenom }}
+                    {{ contact.nom }}  {{ contact.prenom }}
                 {% endif %}
             </td>
             <td>
-            {% if paysan.adherent %}
-                {% if paysan.adherent.statut == "1" %} (ATP)
-                {% elif paysan.adherent.statut == "3"%} (CC)
-                {% elif paysan.adherent.statut == "5"%} (ATS)
+            {% if contact.adherent %}
+                {% if contact.adherent.statut == "1" %} (ATP)
+                {% elif contact.adherent.statut == "3"%} (CC)
+                {% elif contact.adherent.statut == "5"%} (ATS)
                 {% else %} (#)
                 {% endif %}
             {% else %}
@@ -52,23 +52,23 @@
             {% endif %}
 
             </td>
-            <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
+            <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone }}
                <i class="fa fa-phone"></i> </a>
              <a>
                 {% else %}-{% endif %}
             </td>
              <td><ul>
-                 {{ paysan.get_contacts_html|safe }}
-             <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
+                 {{ contact.get_contacts_html|safe }}
+             <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
                  </ul>
              </td>
-            <td>{{ paysan.email }}</td>
-           <td>{%if paysan.adresse.code_postal %}{{ paysan.adresse.code_postal }}{% else %}-{% endif %}</td>
-            <td>{%if paysan.adresse.commune %}{{ paysan.adresse.commune }} {% else %}-{% endif %}</td>
-            <td>{% if paysan.commentaire %}{{ paysan.commentaire }}{% else %}-{% endif %}</td>
+            <td>{{ contact.email }}</td>
+           <td>{%if contact.adresse.code_postal %}{{ contact.adresse.code_postal }}{% else %}-{% endif %}</td>
+            <td>{%if contact.adresse.commune %}{{ contact.adresse.commune }} {% else %}-{% endif %}</td>
+            <td>{% if contact.commentaire %}{{ contact.commentaire }}{% else %}-{% endif %}</td>
             <td>
-                 <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-                 <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
+                 <a class="btn btn-sm btn-warning textleft" href="{{contact.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                 <a class="btn btn-sm btn-danger textleft" href="{{contact.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
             </td>
 
         </tr>
@@ -95,11 +95,11 @@
             </tr>
         </thead>
         <tbody>
-        {% for paysan in paysans %}
+        {% for contact in contacts %}
         <tr>
             <td>{{ adherent.nom }}</td>
-            <td><a href="{% url 'adherents:paysan_detail' paysan.pk %}"> {{ paysan.prenom }}</a></td>
-            <td>{% for ad in paysan.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
+            <td><a href="{% url 'adherents:contact_detail' contact.pk %}"> {{ contact.prenom }}</a></td>
+            <td>{% for ad in contact.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
       </tr>
         {% endfor %}
         </tbody>
@@ -112,5 +112,5 @@
 {% endcomment %}
 </div>
 {% include 'pagination_new.html' %}
-<p class="textcenter textepetit">({{paysans|length}} paysans)</p>
+<p class="textcenter textepetit">({{contacts|length}} contacts)</p>
 

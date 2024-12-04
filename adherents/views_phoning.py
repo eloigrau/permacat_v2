@@ -318,8 +318,8 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
 
 
 @login_required
-def ajouterAdherents(request, projet_pk):
-    projet = get_object_or_404(ProjetPhoning, pk=projet_pk)
+def ajouterAdherents(request):
+    projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     adherents = Adherent.objects.filter(asso=projet.asso)
     m = ""
     j=0

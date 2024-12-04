@@ -27,9 +27,9 @@
 {% if is_membre_bureau %}
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_paysan_ajouter'%}">
+        <a href="{% url 'adherents:phoning_contact_ajouter'%}">
             <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un paysan
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un contact
             </button>
         </a>
         {%if request.user.is_superuser %}
@@ -60,7 +60,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <div class="row justify-content-center">
-                            <h5> Filtrer/rechercher parmi les paysans</h5>
+                            <h5> Filtrer/rechercher parmi les contacts</h5>
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -126,16 +126,16 @@
     </a>
 </p>
 {% endcomment %}
-{% include "adherents/template_annuaire_paysans.html" with profils=filter.qs %}
+{% include "adherents/template_annuaire_contacts.html" with profils=filter.qs %}
 
 <hr>
 
     <div class="textcenter">
-        <button id="btn-archives"  type="button" class="btn btn-lg" onclick="toggle_visibility('carte_paysans');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+        <button id="btn-archives"  type="button" class="btn btn-lg" onclick="toggle_visibility('carte_contacts');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
             Cacher la carte
         </button>
     </div>
-<div class="row cartePleinePage" id="carte_paysans">
+<div class="row cartePleinePage" id="carte_contacts">
     <div class="col-md-12">
         <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
         <script type="text/javascript">
@@ -202,7 +202,7 @@
         });
 
         var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
-        {% for profil in paysans %}
+        {% for profil in contacts %}
             var lat = {{profil.adresse.get_latitude}};
             var lon = {{profil.adresse.get_longitude}};
             {% if profil.statut == '1' %}
@@ -241,7 +241,7 @@
 
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
-    <a href="{% url 'adherents:get_csv_paysans' %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_contacts' %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV

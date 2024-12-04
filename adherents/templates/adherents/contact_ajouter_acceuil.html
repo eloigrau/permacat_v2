@@ -14,7 +14,7 @@
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_paysan_ajouter' %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter' %}">
             <button type="button" class="btn btn-success">
                 Ajouter UN Contact à la liste (manuellement)
             </button>
@@ -24,20 +24,20 @@
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_paysan_ajouter_listetel' %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter_listetel' %}">
             <button type="button" class="btn btn-success">
-                Ajouter DES paysans (liste de numéros de TEL)
+                Ajouter DES contacts (liste de numéros de TEL)
             </button>
         </a>
-        <a href="{% url 'adherents:phoning_paysan_ajouter_csv' %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter_csv' %}">
             <button type="button" class="btn btn-success">
-                Ajouter DES paysans (fichier CSV en texte)
+                Ajouter DES contacts (fichier CSV en texte)
             </button>
         </a>
         {% if request.user.is_superuser %}
         <a href="{% url 'adherents:phoning_ajouterAdherents' %}">
             <button type="button" class="btn btn-success">
-                Ajouter LES paysans Conf
+                Ajouter LES contacts Conf
             </button>
         </a>
         {% endif %}

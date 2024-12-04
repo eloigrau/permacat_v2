@@ -30,7 +30,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <div class="row justify-content-center">
-                            <h5> Filtrer/rechercher parmi les paysans</h5>
+                            <h5> Filtrer/rechercher parmi les contacts</h5>
                         </div>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -74,7 +74,7 @@
 </div>
 <div id="listeMails"></div>
 <hr>
-{% include "adherents/template_annuaire_paysans_simple.html" with profils=filter.qs %}
+{% include "adherents/template_annuaire_contacts_simple.html" with profils=filter.qs %}
 
 <hr>
 
@@ -82,7 +82,7 @@
 
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
-    <a href="{% url 'adherents:get_csv_paysans' %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_contacts' %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV

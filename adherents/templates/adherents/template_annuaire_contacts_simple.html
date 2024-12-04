@@ -41,7 +41,7 @@
                  <a class="btn btn-sm btn-danger textleft" href="{{contact.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
             </td>
              <td>
-                 {% with contacts as contact.get_contacts_html %}
+                 {% with contacts as contact.get_contacts_html|safe %}
                  {%if contacts %}
                      <ul>
                      {{ contacts|safe }}

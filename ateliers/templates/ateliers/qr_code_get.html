@@ -1,0 +1,24 @@
+
+<script>
+function get_qr_code_js(url) {
+    $.ajax({
+        url: url,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: {
+        },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {
+          $("#qr_code_div").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
+<div class="row justify-content-center">
+    <div class="col-sm-12 ">
+       <div id="qr_code_div"> <button class="btn badge" onclick="get_qr_code_js('{% url 'ateliers:get_qr_code' slug=atelier.slug %}')">créer QR code</button>        </div>
+    </div>
+</div>

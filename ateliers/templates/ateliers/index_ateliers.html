@@ -2,7 +2,7 @@
 {% load static %}
 {% load blog_filters %}
 {% load ateliers_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% load activity_tags %}
     {%block header %}
@@ -19,16 +19,16 @@
                  <a href="{% url 'ateliers:suivre_ateliers' %}">
                 {% if request.user|is_following:suivis %}
                 <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez ici pour arreter de recevoir un mail à chaque nouvel atelier">
-                     {% fontawesome_icon 'bell' %}
+                     {% fa5_icon 'bell' %}
                 </button>
                 {% else %}
                 <button type="button" class="btn btn-sm btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez ici pour recevoir un mail à chaque nouvel atelier">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fa5_icon 'bell-slash' %}
                 </button>
                 {% endif %}
                  </a>
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

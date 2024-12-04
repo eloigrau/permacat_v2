@@ -1,18 +1,30 @@
 <div class="infinite-container ">
     {% for atelier in atelier_list %}
-{% ifchanged atelier.atelier.categorie %}
-{% if not forloop.first  %}<hr> {% endif %}{% endifchanged %}
 <div class="infinite-item ">
    <div class="row justify-content-center ">
-    <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
+    <div class="col-sm-12 col-md-10 textcenter " >
         <a  href="{% url 'ateliers:lireAtelier' slug=atelier.slug %}" class="boutonAtelier" >
-            <div style="background-color:{{atelier.atelier.get_couleur}};
-    font-variant: small-caps;" >
-            {% if atelier.categorie == "7" %}(Activité Pro) {% endif %}
-                {{ atelier.titre }}  </div>
+            <div style="font-variant: small-caps;" >
+   <div class="row textcenter">
+    <div class="col-sm-1" >
+        <span class="">{{ atelier.get_logo_nomgroupe_html|safe }}</span>
+    </div>
+    <div class="col-sm-2" >
+            <span class="badge " style="background-color:{{atelier.get_couleur}}; color : #666666;" data-toggle="tooltip" data-placement="bottom" title="Categorie">
+                {{ atelier.get_categorie_display }}
+            </span>
+    </div>
+    <div class="col-sm-6" >
+        {{ atelier.titre }}
+        </div>
+    <div class="col-sm-3" >
             {% if atelier.start_time %}
-        <p class="textepetit">le {{ atelier.start_time|date:"DATE_FORMAT" }}</p>
-        {% endif %}</a>
+        <span class="textepetit">le {{ atelier.start_time|date:"DATE_FORMAT" }}</span>
+        {% endif %}
+    </div>
+    </div>
+    </div>
+    </a>
 
     </div>
    </div>

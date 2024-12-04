@@ -1,0 +1,64 @@
+{% extends 'base_plantes.html' %}
+
+{% load app_filters %}
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+
+{% block subtitle %}
+
+ <div class="row rowcentre">
+        <div class="col-sm-12 textcenter">
+            {%if request.user.is_superuser or request.user.username == grainotheque.referent or request.user == grainotheque.auteur  %}
+            <div class = "btn-group">
+            <a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_modifier' slug=grainotheque.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 &nbsp;Modifier
+               </button></a>
+            </div>
+            {% endif %}
+            {%if request.user.is_superuser or request.user == grainotheque.auteur  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_supprimer' slug=grainotheque.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                 &nbsp;Supprimer la grainothèque
+               </button></a>
+            {% endif %}
+			{% comment %}
+            {%if request.user.is_superuser  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:grainotheque_supprimerGraines' slug=grainotheque.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                 &nbsp;Supprimer les graines
+               </button></a>
+            {% endif %}
+			{% endcomment %}
+        </div>
+ </div>
+<div class="row titre_jardin">
+	<div class="col textcenter" >
+       <h3> {{grainotheque}} </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="anchor_blank" id="idContenu"></div>
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#infos" data-toggle="tab">Infos </a>
+    <a class="nav-item nav-link" href="#graines" data-toggle="tab"> Graines</a>
+</nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="infos">
+            {% include 'jardins/grainotheque_detail_infos.html' %}
+    </div>
+  <div class="tab-pane fade" id="graines">
+        {% include 'jardins/grainotheque_detail_graines.html' %}
+  </div>
+</div>
+
+{% endblock %}

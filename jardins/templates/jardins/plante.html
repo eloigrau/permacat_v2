@@ -1,60 +1,99 @@
-{% extends 'base_fiches.html' %}
-{% load fontawesome %}
+{% extends 'base_plantes.html' %}
+{% load fontawesome_5 %}
 
 {% load jardins_filters %}
 
+
 {% block subtitle %}
 
-<div class="row">
+<div class="row justify-content-center">
     <div class="col textcenter">
-         <p><a href="{% url 'jardins:plantes' %}">
-        <button type="button" class="btn btn-success btn-sm" >
-                       {% fontawesome_icon 'home' %}
-            </button>
-         </a>
+         <p>
+             <button type="cancel" onclick="window.history.back();" class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> </button>
         </p>
        <h3> {{plante.NOM_VERN}}</h3>
        <h4> <a {% if plante.get_inpi_url %}href="{{plante.get_inpi_url}}" {% endif %}>{{plante.NOM_COMPLET_HTML|safe}}</a></h4>
 
-        <p><a  href="https://fr.wikipedia.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Wiki</a>
-        - <a  href="http://www.wikiphyto.org/w/index.php?search=={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Phyto</a>
-         - <a  href="https://www.ekopedia.fr/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Eko</a>
-         - <a  href="https://jardinage.ooreka.fr/plante/recherche?motsClefs={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Ooreka</a>
-        - <a  href="https://www.tela-botanica.org/?in=flore&s={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Tela</a>
-       - <a  href="https://www.google.com/search?q={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Ggl</a>
-       </p>
         <hr>
-        <p>
-        <ul style="list-style: none">
-            <li>Rang: {{plante.get_rang}}</li>
-            <li>Sous-famille: {{plante.SOUS_FAMILLE}}</li>
-            <li>Famille: {{plante.FAMILLE}}</li>
-            <li>Ordre: {{plante.ORDRE}}</li>
-            <li>Classe: {{plante.CLASSE}}</li>
+        <p><i class="fa fa-arrow-right" aria-hidden="true"></i> Voir sur : <a  href="https://fr.wikipedia.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" >Wikipedia</a>
+        - <a  href="https://www.tela-botanica.org/?in=flore&s={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Tela Botanica</a>
+        - <a  href="https://www.gbif.org/search?q={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">GBIF</a>
+        - <a  href="http://www.wikiphyto.org/w/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">WikiPhyto</a>
+         - <a  href="https://www.ekopedia.fr/index.php?search={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow" >Ekopedia</a>
+         - <a  href="https://jardinage.ooreka.fr/plante/recherche?motsClefs={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Ooreka</a>
+       - <a  href="https://www.google.com/search?q={{plante.LB_NOM|rechercher_nom_plante}}"  target="_blank" rel="noopener noreferrer nofollow">Google</a>
+       - <a  href="https://florelocale.fr/encyclopedie/index.php?title=+Sp%C3%A9cial%3ARecherche&search={{plante.LB_NOM|rechercher_nom_plante}}&go=Lire"  target="_blank" rel="noopener noreferrer nofollow">Florelocale</a>
+        &nbsp<i class="fa fa-arrow-left" aria-hidden="true"></i> </p>
         <hr>
-        {%if plante.get_nomvern %}
-            <li>Autres noms: {{plante.get_nomvern}}</li>
-        {% endif %}
-            <li>Habitat: {{plante.get_habitat}}</li>
-        </ul>
-            </p>
-        <p>ID : {{plante.CD_NOM }} {%if plante.infos_supp %} (ou {{plante.get_info_supp_html|safe }}) {% endif %}</p>
-
-            {% if request.user.is_superuser %}
-        <p><ul style="list-style: none">
-            {% for p in plante.get_info_supp_html2 %}
-            <a href="{% url 'jardins:voir_plante_nom' %}?nom={{p}}">{{p}}</a>
-        {% endfor %}
-        </ul>
-        </p>
-            {% endif %}
-    </div>
-</div>
-
-
+</div></div>
 
 {% endblock %}
 {% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-6 textcenter">
+        {% if jardins %}
+        <p>Présente dans les jardins : {% for jardin in jardins %} <a href="{{jardin.get_absolute_url}}">{{jardin.titre}}</a>
+            {% if not forloop.last %}, {% endif %} {% endfor %}
+        </p>
+        {%endif%}
+        {% if grainotheques %}
+        <p>Présente dans les grainothèques : {% for g in grainotheques %} <a href="{{g.get_absolute_url}}">{{g.titre}}</a>
+            {% if not forloop.last %}, {% endif %} {% endfor %}
+        </p>
+        {%endif%}
+        <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_monJardin' plante.pk %}">Ajouter à mon jardin</a>
+        <a class="btn btn-primary" href="{% url 'jardins:ajouterPlante_maGrainotheque' plante.pk %}">Ajouter à ma grainothèque</a>
+
+    </div>
+</div>
+<hr>
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-9 col-lg-7 textcenter">
+    <table class="table table-condensed ">
+        <tbody>
+            <tr><td><i>Rang</i></td><td>{{plante.get_rang}}</td></tr>
+            {% if plante.SOUS_FAMILLE %}
+            <tr><td><i>Sous-famille</i></td><td>{{plante.SOUS_FAMILLE}}</td></tr>
+            {% endif %}
+            {% if plante.FAMILLE %}
+            <tr><td><i>Famille</i></td><td>{{plante.FAMILLE}}</td></tr>
+            {% endif %}
+            {% if plante.ORDRE %}
+            <tr><td><i>Ordre</i></td><td>{{plante.ORDRE}}</td></tr>
+            {% endif %}
+            {% if plante.CLASSE %}
+            <tr><td><i>Classe</i></td><td>{{plante.CLASSE}}</td></tr>
+            {% endif %}
+            {% if plante.get_nomvern %}
+            <tr><td><i>Autres noms</i></td><td>{{plante.get_nomvern}}</td></tr>
+            {% endif %}
+        </tbody>
+    </table >
+        {% comment %}
+        <p> Habitat: {{plante.get_habitat}}</td></tr></p>
+        {% endcomment %}
+</div></div>
+{% if plante.has_info_supp and request.user.is_superuser%}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-9 col-lg-7 textcenter">
+            <p>(Cf :
+                {% for p in plante.get_info_supp_html2 %}
+                <a href="{{p}}">{{forloop.counter}}</a>{%if not forloop.last%}, {%endif%}
+            {% endfor %})
+            </p>
+    </div>
+</div>
+{% endif %}
+
+<hr>
+{% if infos2 %}
+<div class="row justify-content-center">
+    {% for i in infos2 %}
+    <img src="{{i|safe}}" alt="{{i}}" style="height:50vh;padding:5px">
+    {% endfor %}
+</div>
+{% endif %}
 
 {% endblock %}
 

@@ -11,5 +11,6 @@ def resizeImgesDossier(dossier):
 
 dossier = "/home/tchenrezi/Téléchargements/img3/"
 dossier = "/home/tchenrezi/PycharmProjects/permacat_server/bourseLibre/static/agora/img/b/"
+dossier = "/home/tchenrezi/Téléchargements/wetrnsfer/"
 
 resizeImgesDossier(dossier)

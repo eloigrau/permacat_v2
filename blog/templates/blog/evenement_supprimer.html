@@ -1,10 +1,10 @@
-{% extends 'blog/base_blog.html' %}
-{% block title %} - Supprimer l'article{% endblock %}
+{% extends 'blog/base_blog2.html' %}
+{% block title %} - Supprimer un evenement{% endblock %}
 {% block content %}
 <div class="row ">
 <div class="col-sm-12 textcenter">
 <form action="" method="post">{% csrf_token %}
-    <p>Etes vous sûr.e de vouloir supprimer le projet de "{{ projet.titre }}"?</p>
+    <p>Etes vous sûr.e de vouloir supprimer l'evenement ?</p>
     <input type="button"  onclick="window.history.back();"  value="Annuler" />
     <input type="submit" value="Confirmer" />
 </form>

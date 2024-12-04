@@ -2,7 +2,7 @@
 {% load activity_tags %}
 {% load app_filters %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 <a href="{% url 'blog:lireArticle' slug=article.slug %}">
 <div class="content-card">
 <div class="card-big-shadow">
@@ -10,19 +10,19 @@
     <div class="content">
         <div class="category">
              <div>
-              <span class="badge badge-primary" >{{ article.get_categorie_display }}</span>&nbsp;
-                <span class="badge badge-info" data-toggle="tooltip" data-placement="bottom" title="Article {%if article.estPublic%}visible par tous les inscrits{%else%}visible par les membres de {{ article.asso }} seulement{%endif%}">
-                {{ article.asso }} </span>&nbsp;
+                <span class="" data-toggle="tooltip" data-placement="bottom" title="Article {%if article.estPublic%}visible par tous les inscrits{%else%}visible par les membres de {{ article.asso }} seulement{%endif%}">
+                {{ article.get_logo_nomgroupe_html|safe }} </span>&nbsp;
+              <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{{ article.get_categorie_display2 }}</span>&nbsp;
             </div>
         </div>
-        <h5 class="title_card">
+        <h5 class="title_card titre-article-accueil">
             {{ article.titre }}
         </h5>
         <div class="category">
             {% if article.album %}
             {% with photo=article.album.get_photo_sample %}
                 {%if photo %}
-                <img src="{{ photo.0.get_thumbnail_url }}" class="thumbnail" alt="{{ photo.0.title }}">
+                <img src="{{ photo.0.get_thumbnail_url }}" class="thumbnail img_album" alt="{{ photo.0.title }}">
                 {% endif %}
             {% endwith %}
             {% endif %}
@@ -43,16 +43,16 @@
          <span class="badge badge-light">
 
                 {% if request.user|is_following:article %}
-                    {% fontawesome_icon 'bell' %}
+                    {% fa5_icon 'bell' title='abonnement ' %}
 
                     {% else %}
-                    {% fontawesome_icon 'bell-slash' %}
+                    {% fa5_icon 'bell-slash' title='abonnement ' %}
                 {% endif %}
                  &nbsp;&nbsp;
                 {%if article.estArchive %}
                    archivé
                 {% endif %}
-                {%if article.date_modification %}{%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %} &nbsp; Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endifnotequal%} {%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {% endif %}
+                {%if article.date_modification %}{%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %} &nbsp; Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endif%} {%else%}&nbsp; Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {% endif %}
 
              </span>
         </div>

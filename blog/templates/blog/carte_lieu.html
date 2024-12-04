@@ -1,0 +1,99 @@
+{% extends 'blog/base_blog2.html' %}
+{% load carto_filters %}
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+    <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
+  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
+ <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+ <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
+{%endblock%}
+{% block title %} - Carte - {{titre}}
+{% endblock %}
+{% block subtitle %}
+
+<div class="anchor_blank" id="ref-titre"></div>
+<div class="row textcenter">
+  <div class="col-sm-12 textcenter">
+      <p><a href="{{lieu.get_edit_url}}">
+    <button  class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Modifier </button>
+          </a>
+          <a href="{{lieu.get_delete_url}}">
+    <button  class="btn btn-danger btn-sm"><i class="fa fa-delete"></i> Supprimer</button>
+          </a>
+      </p>
+    <h4> {{titre}}</h4>
+ <p>    <a href="{{lieu.article.get_absolute_url}}">
+    <button  class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> Revenir à l'article </button>
+          </a></p>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12" >
+    <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
+      <script type="text/javascript">
+        function map_init_basic (map, options) {
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+            try{
+                var lat = {{lieu.adresse.latitude|to_numeric}};
+                var lon = {{lieu.adresse.longitude|to_numeric}};
+                {% block markers %}
+                  var marker = L.marker([lat, lon], {icon: getIconFromType(L, '{{lieu.type_marqueur}}')}).bindPopup(' <a href="{{ lieu.get_url_map }}"><b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b></a>');
+                  markers.addLayer(marker);
+                {% endblock %}
+            }
+            catch(err){
+            }
+
+      map.addLayer(markers);
+        try{
+        map.panTo(new L.LatLng(lat, lon));
+        }
+            catch(err){
+            }
+    }
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+    <table class="table table-condensed ">
+        <thead>
+        <th class=" textcenter">Titre</th>
+        <th class=" textcenter">Adresse</th>
+        <th></th>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="proprieteJardin">
+                    <a href="{{ lieu.adresse.get_absolute_url }}">{{ lieu.get_titre }}</a>
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    <a href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
+                </td>
+            </tr>
+        {% if lieu.infos %}
+            <tr>
+                <td></td>
+                <td colspan="2">
+                        {{lieu.infos|safe}}
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+    

@@ -1,6 +1,6 @@
 
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 <div class="card article_carte textcenter"  style="background-color:{{suffrage.get_couleur}}">
   <a href="{% url 'vote:lireSuffrage' slug=suffrage.slug %}">
       <div class="article-card-header smallcaps_h ">{{ suffrage.get_type_vote_display }}</div>
@@ -14,7 +14,7 @@
           </span>
 
         <p class="card-subtitle mb-2 ">
-      <p class="text-muted textsmall"> Créé le {{ suffrage.date_creation|date:"DATE_FORMAT" }} {%ifnotequal  suffrage.date_creation suffrage.date_modification %}(dernière modification le {{ suffrage.date_modification|date:"DATE_FORMAT" }}){%endifnotequal%}</p>
+      <p class="text-muted textsmall"> Créé le {{ suffrage.date_creation|date:"DATE_FORMAT" }} {%if suffrage.date_creation != suffrage.date_modification %}(dernière modification le {{ suffrage.date_modification|date:"DATE_FORMAT" }}){%endif%}</p>
   </div>
   </a>
 </div>

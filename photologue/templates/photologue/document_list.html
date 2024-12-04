@@ -1,11 +1,11 @@
 {% extends "photologue/root.html" %}
-{% load fontawesome %}
 {% load i18n %}
 {% load static %}
 {% load activity_tags %}
+{% load fontawesome_5 %}
 
 {% block panel-heading %} {%endblock%}
-{%block header %}
+{% block header %}
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
 {%endblock%}
@@ -15,22 +15,22 @@
 {% block subtitle %}
 <div class="row align-items-center">
     <div class="col-md-4 offset-md-4 textcenter justify-content-center">
-        <h3>Documents/Fichiers</h3>
+        <h3>Documents / Fichiers</h3>
     </div>
     <div class="col-md-4 textcenter">
         <a href="{% url 'photologue:suivre_documents' %}">
             {% if request.user|is_following:suivis %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir un mail à chaque nouveau document">
-                 {% fontawesome_icon 'bell' %}
+                 {% fa5_icon 'bell' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir un mail à chaque nouveau document">
-                 {% fontawesome_icon 'bell-slash' %}
+                 {% fa5_icon 'bell-slash' %}
             </button>
             {% endif %}
         </a>
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -71,19 +71,46 @@
                  <div class="row no-gutters justify-content-center">
     <a href="{% url 'photologue:filtrer_documents' %}">
         <button type="button" class="btn  btn-success" >
-           {% fontawesome_icon 'search' %}&nbsp; Rechercher...
+           {% fa5_icon 'search' title='chercher' %}&nbsp; Rechercher...
         </button>
     </a>&ensp;</div>
 </div>
 </div>
 {% endblock %}
 {% block content %}
-
-
+<hr>
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center" >
+        <div class="navbar-header">
+             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_asso">
+            <ul class="navbar-nav subnavbar2 align-items-center">
+                <a  href="{% url 'photologue:doc-list' %}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
+                          <h6>Tout</h6>
+                    </li>
+                </a>
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'photologue:doc-list' %}?asso={{asso_ab}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+<hr>
 
 {% include 'photologue/document_template.html' with object_list=object_list %}
 
 
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
 <script>
 
 function copyToClipboard(text) {

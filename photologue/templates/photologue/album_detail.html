@@ -8,30 +8,30 @@
 <div class="row ">
 
 <div class="col-md-3 textcenter">
-        <a href="{% url 'photologue:album-list' %}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Tous les albums</a>
+    <a href="{% url 'photologue:album-list' %}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Tous les albums</a>
 </div>
 
 <div class="col-md-6 textcenter">
         <h5>{{ album.title }}
  <small><button class="btn btn-light" id="copyButton" ><i class="fa fa-link"></i></button></small></h5>
+     <p class="">
+    {{ album.asso.get_logo_nomgroupe_html|safe }}
+     </p>
      <p class="infos  textepetit">
 
             <a href="{% url 'profil' object.auteur.id %}">
                 <span class="badge badge-Light">
-                postée par  {{ album.auteur.username }},
+                postée par  {{ album.auteur.username }}
                 </span>
             </a>
-            <span class="badge badge-Light">le {{ album.date_added }}</span>
-            <span class="badge badge-success"> {{ album.asso }}</span>
-                      {% if album.estModifiables %}
+            <span class="badge badge-Light">le {{ album.date_creation }}</span>
+            {% if album.estModifiables %}
             <span class="badge badge-Light"> modifiable </span>
-             {% endif %}
+            {% endif %}
             </p>
         {% if album.tags.names %}
-    <p><em>Mots-clés :</em>
-            {% for tag in album.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
-           {% endfor %}
+    <p><em>Mots-clés : </em>
+        {% include 'listeTags_view_template.html' with tags=album.tags.names %}
     </p>
     {% endif%}
         {% if articles %}
@@ -84,8 +84,9 @@
 {% block content %}
 
 
-<div class="row justify-content-center">
-<div class="col-sm-12 col-md-8 col-lg-6 textcenter">
+<div class="anchor_blank" id="ref-titre"></div>
+<div class="row justify-content-center" style="height:90vh;">
+<div class="col-sm-11 col-md-8 col-lg-5 textcenter">
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
   <ol class="carousel-indicators">
 	    {% for photo in album.public %}
@@ -112,24 +113,24 @@
 </div>
 </div>
 </div>
+{% if album.description %}
 <hr>
 <div class="row justify-content-center">
 <div class="col-sm-12 textcenter">
-        {% if album.description %}<p>{{ album.description|safe }}</p>{% endif %}
+        <p>{{ album.description|safe }}</p>
 
 </div>
 </div>
-
+{% endif %}
 <hr>
 
 <div class="row ">
 <div class="col-sm-12 textcenter">
 	    {% for photo in album.public %}
 	        <a href="{{ photo.get_absolute_url }}">
-	             <img src="{{ photo.get_thumbnail_url }}" class="thumbnail" alt="{{ photo.title }}">
+	             <img src="{{ photo.get_thumbnail_url }}" class="thumbnail " alt="{{ photo.title }}">
 	        </a>
 	    {% endfor %}
-
 </div>
 </div>
 

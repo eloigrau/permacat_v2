@@ -2,38 +2,11 @@
 {% load static %}
 {% load app_filters %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load activity_tags %}
 {% block subtitle %}
 <div class="row">
-    <div class="col-md-2">
-
-    </div>
-    <div class="col-md-8">
-        <p class="infos  textepetit"> <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}"  style="background-color:{{projet.get_couleur}}">Projet : {{ projet.get_categorie_display }}</a>, rédigé par <a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>, le {{ projet.date_creation|date:"DATE_FORMAT" }}
-
-
-        <a href="{% url 'blog:suivre_projet' projet.slug %}">
-            {% if request.user|is_following:projet %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell' %} Suivi
-            </button>
-            {% else %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
-                 {% fontawesome_icon 'bell-slash' %} Non suivi
-            </button>
-            {% endif %}
-        </a>
-            {% if request.user.is_superuser %}
-        <a href="{% url 'blog:suiveursProjet' projet.slug %}">
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir qui est abonné tifications concernant cet article par mail">
-                 {% fontawesome_icon 'list' %}
-            </button>
-        </a>
-            {% endif %}
-        </p>
-    </div>
-    <div class="col-md-2">
+    <div class="col-sm-12 textcenter">
         {%if projet.auteur == request.user or request.user.is_superuser%}
 		<div class="btn-group">
 
@@ -52,57 +25,46 @@
 
 {% endblock %}
 {% block content %}
-<div class="contenu article">
 
-<div class="row " id="contenu_projet">
-	<div class="col-sm-6">
-            <span class="badge {% if projet.estPublic%}badge-success{%else%}  badge-warning{%endif%}">
-                Projet {{projet.asso}}
-            </span>
+
+<div class="row" id="contenu_projet">
+	<div class="col-sm-12 textcenter">
+        {{projet.asso.get_logo_nomgroupe_html|safe }}
+        <a href="{% url 'blog:index_projets'  %}?categorie={{projet.categorie}}" > / <span class="badge" style="background-color:{{projet.get_couleur}}"> {{ projet.get_categorie_display }}</span> </a>
+             -
+        <a href="{% url 'blog:suivre_projet' projet.slug %}">
+            {% if request.user|is_following:projet %}
+                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir des notifications concernant ce projet par mail">
+                     {% fa5_icon 'bell' title='abonnement' %}
+                </button>
+            {% else %}
+                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez pour recevoir les notifications concernant ce projet par mail">
+                     {% fa5_icon 'bell-slash' %}
+                </button>
+            {% endif %}
+        </a>
+            {% if request.user.is_superuser %}
+                <a href="{% url 'blog:suiveursProjet' projet.slug %}">
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Voir qui est abonné aux notifications concernant cet article">
+                         {% fa5_icon 'list' %}
+                    </button>
+                </a>
+            {% endif %}
+
+	</div>
+</div>
+
+<div class="row titre_fiche titre-article-forum justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <h3>{{ projet.titre }}
 
             {% if article.estArchive%}
             <span class="badge badge-Light">
                 archivé
             </span>
             {%endif%}
-	</div>
-	<div class="col-sm-6 textright">
-               <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Statut : {{ projet.get_statut_display }}
-               </button>
-            <button type="button" class="btn" data-toggle="modal" data-target="#historique">
-              {% fontawesome_icon 'bell' %} Historique
-            </button>
-            <!-- Modal -->
-            <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog textcenter" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                      <div class="row justify-content-center">
-                          <div class="col col-sm-12">
-                      <h5 >Historique</h5>
-                          </div>
-                      </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="contenu historique" id="idHistorique">
-                      {%for action in actions %}
-                            {% include "notifications/notifications_template3.html" with action=action%}
-                      {%endfor%}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-	</div>
-</div>
-
-    <hr>
-<div class="row justify-content-center">
-      <h3 class="textcenter">{{ projet.titre }}</h3>
+        </h3>
+    </div>
 </div>
         <div class="row justify-content-center">
             <div class="col textcenter">
@@ -144,12 +106,15 @@
                      </a>
 {%endif  %}
             </div></div>
-    <hr>
-<div class="row">
-<div class="col">
-    {{ projet.contenu|safe}}
-</div>
-</div>
+
+
+<div class="row contenu fiche" >
+    <div class="col-sm-12">
+    <div class="row">
+    <div class="col">
+        {{ projet.contenu|safe}}
+    </div>
+    </div>
     {% comment %}
 <hr>
 <div class="row justify-content-center" >
@@ -163,21 +128,22 @@
 </div>
     {% endcomment %}
 <hr>
- {% if projet.tags.names %}
-<div class="row">
-<div class="col-sm-12">
-    <p><em>Mots-clés :</em>
-            {% for tag in projet.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
-           {% endfor %}
-    </p>
-</div>
-</div>
-    <hr>
-{% endif%}
+
+<div class="row justify-content-center" >
     <div class="col-sm-12 paddingbase">
 		<table class="table table-condensed ">
 			<tbody>
+             {% if projet.tags.names %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Mots-clés :
+					</td>
+					<td class="proprieteProduit">
+						{% include 'listeTags_view_template.html' with tags=projet.tags.names %}
+					</td>
+				</tr>
+            {% endif%}
+
                     {% if projet.coresponsable%}
 				<tr>
 					<td class="nomProprieteProduit">
@@ -188,13 +154,32 @@
 					</td>
 				</tr>
                     {% endif %}
+
 				<tr>
 					<td class="nomProprieteProduit">
-						Type de projet :
+						Statut :
 					</td>
 					<td class="proprieteProduit">
-						{{ projet.get_categorie_display }}
+                       <button type="button" class="btn btn-sm btn-warning">
+                            {{ projet.get_statut_display }}
+                       </button>
 					</td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+                         rédigé par
+					</td>
+					<td class="proprieteProduit">
+						<a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>
+                    </td>
+				</tr>
+				<tr>
+					<td class="nomProprieteProduit">
+                        Créé le :
+					</td>
+					<td class="proprieteProduit">
+						<span class="badge badge-light"> le {{ projet.date_creation|date:"DATE_FORMAT" }} </span>
+                    </td>
 				</tr>
 
                 <tr>
@@ -203,6 +188,33 @@
 					</td>
 					<td class="proprieteProduit">
 						{{ projet.date_modification |date:"DATE_FORMAT"}}
+                         <button type="button" class="btn" data-toggle="modal" data-target="#historique">
+                              {% fa5_icon 'bell' title='abonnement' %}Historique
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="historique" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog textcenter" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                  <div class="row justify-content-center">
+                                      <div class="col col-sm-12">
+                                  <h5 >Historique</h5>
+                                      </div>
+                                  </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="contenu historique" id="idHistorique">
+                                  {%for action in actions %}
+                                        {% include "notifications/notifications_template3.html" with action=action%}
+                                  {%endfor%}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 					</td>
 				</tr>
                     {% if projet.lien_document%}
@@ -266,6 +278,8 @@
             {% endif %}
 			</tbody>
 		</table>
+    </div>
+</div>
 
 <div class="row">
 <div class="col-sm-12 textcenter">
@@ -382,10 +396,8 @@
 </div>
 </div>
 
-	</div>
 </div>
-
-
+</div>
 <hr>
 
 {% include 'commentaires.html' %}

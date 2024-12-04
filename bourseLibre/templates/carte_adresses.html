@@ -1,0 +1,110 @@
+{% extends 'blog/base_blog2.html' %}
+{% load carto_filters %}
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
+  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
+ <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+{%endblock%}
+{% block title %} - Carte - {{asso}}
+{% endblock %}
+{% block subtitle %}
+<div class="anchor_blank" id="ref-titre"></div>
+<div class="row textcenter">
+  <div class="col-sm-12 textcenter">
+    <h4> {{titre}}</h4>
+    <button type="cancel" onclick="window.history.back();" class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> </button>
+
+  </div>
+</div>
+
+
+
+{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12" >
+    <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
+      <script type="text/javascript">
+        function map_init_basic (map, options) {
+          var leafIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+          var greyIcon = L.icon({
+          iconUrl: '{% static 'img/marker-icon-grey.png' %}',
+               shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var greenIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+        {% for adresse in lieux %}
+            try{
+                var lat = {{adresse.latitude|to_numeric}};
+                var lon = {{adresse.longitude|to_numeric}};
+                {% block markers %}
+                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{adresse.get_adresse_str}} ({{adresse.latitude|to_numeric|slice:":10"}}, {{adresse.longitude|to_numeric|slice:":9"}})</b>');
+                  markers.addLayer(marker);
+                {% endblock %}
+            }
+            catch(err){ ;
+            }
+            {%endfor%}
+            map.addLayer(markers);
+            {% if lieux|length >= 1 %}
+              map.panTo(new L.LatLng(lat, lon));
+            {%else%}
+              map.panTo(new L.LatLng(42.62914, 2.49939));
+            {%endif%}
+    }
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+    <table class="table table-condensed ">
+        <tbody>
+        {% for adresse in lieux %}
+            <tr>
+                <td class="proprieteJardin">
+                  Adresse :
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    {{ adresse.getLatLon_html }} - {{ adresse.code_postal }} {{ adresse.commune }}
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    <a href="{{ adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
+                </td>
+            </tr>
+        {%endfor%}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+    

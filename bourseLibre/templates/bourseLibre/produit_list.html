@@ -1,9 +1,9 @@
 {% extends 'bourseLibre/base_produits.html' %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load activity_tags %}
+{% load blog_filters %}
+
 {%block subtitle%}
-
-
 <div class="row justify-content-center">
     <div class="col-md-8 offset-md-2 ">
                 <h3>Petites Annonces</h3>
@@ -14,7 +14,7 @@
             </div>
             <div class="col-md-2 ">
             <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-             {% fontawesome_icon 'question-circle' %}
+             {% fa5_icon 'question-circle' %}
             </button>
             <!-- Modal -->
                 <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -41,11 +41,11 @@
                 <a href="{% url 'suivre_produits' %}">
                 {% if request.user|is_following:suivi %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez ici pour arrêter de recevoir un mail à chaque nouvelle annonce">
-                     {% fontawesome_icon 'bell' %}
+                     {% fa5_icon 'bell' title='abonnement' %}
                 </button>
                 {% else %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné : Cliquez ici  pour recevoir un mail à chaque nouvelle annonce">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fa5_icon 'bell-slash' title='abonnement' %}
                 </button>
                 {% endif %}
                     </a>
@@ -58,7 +58,7 @@
                  <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_produits' %}" method="get" role = "search">
                     {% csrf_token %}
                     <input class="form-control" name="id_recherche" placeholder="rechercher..." type="text">
-                    <button class="btn btn-info" type="submit" >{% fontawesome_icon 'search' %}</button>
+                    <button class="btn btn-info" type="submit" >{% fa5_icon 'search' title='chercher' %}</button>
 
                  </form>
              </div>
@@ -76,7 +76,7 @@
 <hr>
 
 <div class="row justify-content-center sidebar_toggle">
-    <nav class="navbar navbar-expand-md justify-content-center  navbar-light bg-light">
+    <nav class="navbar navbar-expand-md justify-content-center  navbar-light bg-light  shadow-petit">
         <div class="navbar-header">
              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarProduit" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span></button>
@@ -109,11 +109,11 @@
                 </button>
                 </button>
                 <div class="dropdown-menu"  aria-labelledby="menuAliment2">
-                     <a class="dropdown-item"  href="?categorie=offresEtDemandes">Liste d'offres et demandes</a>
-                     <a class="dropdown-item"  href="?categorie=aliment">Aliments</a>
-                     <a class="dropdown-item"  href="?categorie=vegetal">Végétal</a>
-                     <a class="dropdown-item"  href="?categorie=service">Service</a>
-                     <a class="dropdown-item"  href="?categorie=objet">objet</a>
+                     <a class="dropdown-item"  href="?categorie=offresEtDemandes"><i class="fa fa-hand-peace"></i>Liste d'offres et demandes</a>
+                     <a class="dropdown-item"  href="?categorie=aliment"><i class="fa fa-spoon"></i> Aliments</a>
+                     <a class="dropdown-item"  href="?categorie=vegetal"><i class="fa fa-leaf"></i>Végétal</a>
+                     <a class="dropdown-item"  href="?categorie=service"><i class="fa fa-moon"></i>Service</a>
+                     <a class="dropdown-item"  href="?categorie=objet"><i class="fa fa-life-ring"></i>Objet</a>
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
@@ -204,7 +204,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
                 {% for ordre in ordreTriPossibles %}
-                 <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
+                 <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri }}&ordre={{ordre}}">{{ordre}}</a>
                     {% endfor %}
                 </div>
             </li>
@@ -224,7 +224,13 @@
                 </button>
             </a>
             </li>
-
+          <li class="list-group-item py-1">
+            <a href="?producteur={{request.user}}">
+                <button type="button" class="btn btn-primary">
+                    <i class="fa fa-user"></i> &nbsp;Mes annonces
+                </button>
+            </a>
+            </li>
             <li class="list-group-item py-1">
              <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
@@ -285,23 +291,13 @@
                 </button>
                 </button>
                 <div class="dropdown-menu"  aria-labelledby="menuAliment">
-<a class="dropdown-item"  href="{% url 'marche' %}&categorie=listeOffresEtDemandes">Liste d'offres/demandes</a>
+<a class="dropdown-item"  href="{% url 'marche' %}?{{ request.GET.urlencode }}&categorie=listeOffresEtDemandes">Liste d'offres/demandes</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=aliment">Aliments</a>
                      <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=vegetal">Végétal</a>
                      <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=service">Services</a>
                      <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&categorie=objet">Objets</a>
 
-                </div>
-          </li>
- <li class="list-group-item py-1">
-              <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuOrdreTri2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                   Trier par...
-               </button>
-                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri2">
-                {% for ordre in ordreTriPossibles %}
-                 <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
-                    {% endfor %}
                 </div>
           </li>
             <li class="list-group-item py-1">
@@ -314,11 +310,21 @@
                     {% endfor %}
                 </div>
             </li>
+ <li class="list-group-item py-1">
+              <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuOrdreTri2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   Trier par...
+               </button>
+                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri2">
+                {% for ordre in ordreTriPossibles %}
+                 <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
+                    {% endfor %}
+                </div>
+          </li>
           <li class="list-group-item py-1">
             <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_produits' %}" method="get" role = "search">
                     {% csrf_token %}
                      <input class="" name="id_recherche" placeholder="Rechercher..." type="text">
-                     <button class="btn btn-info" type="submit" >{% fontawesome_icon 'search' %}</button>
+                     <button class="btn btn-info" type="submit" >{% fa5_icon 'search' title='chercher' %}</button>
                  </form>
           </li>
 

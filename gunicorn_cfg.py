@@ -1,5 +1,5 @@
-command = '/home/udjango/permacat/permacatenv/bin/gunicorn'
-pythonpath = '/home/udjango/permacat/permacatenv/bin/python'
+command = '/home/udjango/permacat/permacatenv39/bin/gunicorn'
+pythonpath = '/home/udjango/permacat/permacatenv39/bin/python'
 bind = 'unix:/home/udjango/permacat/gunicorn.sock'
 workers = 3
 accesslog = "/home/udjango/gunicorn.access.log"

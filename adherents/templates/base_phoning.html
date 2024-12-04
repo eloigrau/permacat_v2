@@ -1,0 +1,29 @@
+{% extends 'blog/base_blog.html' %}
+{% load static %}
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+{%block banniere %}
+{% endblock  %}
+
+ {% block panel-heading %}{%endblock%}
+{% block submenu %}
+<div class="sticky-top">
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl  shadow-petit">
+        <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+        <div class="navbar-collapse collapse mx-auto" id="navbar2">
+    <ul class="navbar-nav mx-auto subnavbar align-items-center">
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">Projets</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' %}?istel=true&isatp=true"> Liste Simple</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' %}"> Liste Complète</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_paysan_outils' %}"> Outils</a></li>
+        {% if request.user.is_superuser %}
+            <li class="nav-item nav-notif"><a class="dropdown-item"   href="https://www.perma.cat/gestion/adherents/"> Admin</a></li>
+        {% endif %}
+		        </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+{% endblock %}

@@ -1,72 +1,101 @@
-
+{% load fontawesome_5 %}
 {% load app_filters %}
-    {% if object_list %}
-        <div class="infinite-container">
-            <div class="grid-container justify-content-center">
-                {% for doc in object_list %}
-                <div class="infinite-item my-auto mx-auto">
-<div class="card card-block article_carte textcenter d-flex " >
-    <div class="article-card-header">
-          <div class="d-flex justify-content-center smallcaps_h ">
-             <div>
-                <span class="badge badge-success" data-toggle="tooltip" data-placement="bottom" title="Doc {%if doc.estPublic%}visible par tous les inscrits{%else%}visible par les membres de {{ doc.asso }} seulement{%endif%}">
-                {{ doc.asso }} </span>&nbsp;
-            </div>
-              <div>
-                <span class="badge btn-light"> Posté le {{ doc.date_creation|date:"DATE_FORMAT" }}
-                </span>&nbsp;
-              </div>
-              <div>
-                <span class="badge btn-light"> {{ doc.auteur }}
-                </span>&nbsp;
-              </div>
-      </div>
-    </div>
-    <div class="card-body align-items-center justify-content-center">
-        <h5>{{ doc.titre }}</h5>
-        {% if doc.tags.names %}
-            <p class="card-text">
-            <small><em>Mots-clés :</em>
-                    {% for tag in doc.tags.names %}
-                    {{tag}}{%if not forloop.last%}, {%endif%}
-                   {% endfor %}
-            </small>
-            </p>
-        {% endif%}
-        <p class="card-text bg-light" style="transform: rotate(0);">
-            <button class="btn btn-succes stretched-link" onclick="copyToClipboard('https://www.perma.cat{{doc.doc.url}}')"><i class="fa fa-link" aria-hidden="true"></i>  Copier le lien</button>
+{% load static %}
 
-        </p>
+<div class="row">
+    <div class="col-sm-12">
+        {% if object_list %}
+        <table class="table table-condensed table-striped sortable textcenter">
+            <thead>
+            <tr>
+                <th>Groupe</th>
+                <th>Titre</th>
+                <th>Article lié</th>
+                <th>Date</th>
+                <th>Lien</th>
+                <th>Auteur</th>
+                <th>Tags</th>
 
-        <p class="card-text bg-light" style="transform: rotate(0);">
-                    <a href="{{doc.doc.url}}" class="btn  btn-primary stretched-link"><i class="fa fa-download" aria-hidden="true"></i> {% if request.user.is_superuser %}{{doc.getHitNumber}}{% endif %} Télécharger ({{ doc.doc.size|filesizeformat }})</a>
-        </p>
-        {% if doc.article %}
-        <p class="card-text bg-light" style="transform: rotate(0);">
-                    <a href="{{doc.article.get_absolute_url}}" class="btn btn-succes stretched-link"><i class="fa fa-comments" aria-hidden="true"></i> Voir l'article lié ({{ doc.article.titre|couperTexte:20}})</a>
-        </p>
-        {% endif %}
-        {% if request.user ==  doc.auteur or request.user.is_superuser %}
-        <p class="card-text bg-light" style="transform: rotate(0);">
-            <a href="{{doc.get_delete_url}}" class="btn btn-error stretched-link"><i class="fa fa-times" aria-hidden="true"></i> Supprimer</a>
-        </p>
-        {% endif %}
-        {% if request.user ==  doc.auteur or request.user.is_superuser %}
-         <p class="card-text bg-light" style="transform: rotate(0);">
-           <a href="{% url 'photologue:associerDocumentArticle' doc_slug=doc.slug %}" class="btn btn-success stretched-link"><i class="fa fa-times" aria-hidden="true"></i> Associer à un article</a>
-         </p>
-        {% endif %}
-    </div>
+                {%if article.auteur == request.user or request.user.is_superuser %}
+                <th>Edit</th>
+                {% endif %}
 
-</div>
-  </a>
+            </tr>
+            </thead>
+            <tbody class="infinite-container justify-content-center">
+                    {% for doc in object_list %}
+                    <tr class="infinite-item">
+                        <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
+                        <td  class="textleft" style="min-width:40%;">
+                           <h5> <a href="{{doc.doc.url}}" class="btn " style="width:100%;">
+                                {{ doc.titre }} {% fa5_icon 'download' class='iconright' %}
+                            </a>
+                           </h5>
+                        </td>
+                        <td>
+                            {% if doc.article %}
+                            <a href="{{doc.get_absolute_url}}" class="btn btn-light btn-sm">{% fa5_icon 'comments' class='iconleft' %} {{ doc.article.titre|couperTexte:25}}</a>
+                            {% endif %}
+                        </td>
+                        <td>{{ doc.date_creation|date:"DATE_FORMAT" }}</td>
+                        <td>
+                            <button type="button" class="btn btn-succes btn-sm"
+                                    onclick="copyToClipboard('https://www.perma.cat{{doc.doc.url}}')">
+                                {% fa5_icon 'copy' title='Copier le lien' %}
+                            </button>
+                        </td>
+                        <td>{{ doc.auteur }}</td>
+                        <td>
+                            {% if doc.tags.names %}
+                            <p class="card-text">
+                                <small><em>Mots-clés : </em>
+                                    {% include 'listeTags_view_template.html' with tags=doc.tags.names %}
+                                </small>
+                            </p>
+                            {% endif%}
+                        </td>
+                    {%if doc.auteur == request.user or request.user.is_superuser %}
+                        <td>
+                            <a href="{{doc.get_change_url}}">
+                                <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></button>
+                            </a>
+                            <a href="{{doc.get_delete_url}}">
+                                <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times" aria-hidden="true"></i></button>
+                            </a>
+                            {%if request.user.is_superuser %}
+                            <a href="{% url 'photologue:associerDocumentArticle' doc_slug=doc.slug %}">
+                                <button type="button" class="btn btn-success btn-sm">
+                                    <i class="fa fa-link" aria-hidden="true"></i> Associer</button>
+                            </a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    </tr>
+                    {% endfor %}
 
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-{% include 'pagination_new.html' %}
+{% if page_obj.has_next %}
+    <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}">+++</a>
+{% endif %}
 
-    {% else %}
+            </tbody>
+        </table>
+        {% else %}
         <div class="row col-lg-12">Pas de documents</div>
-    {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+
+    <script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container')[0],
+        handler: function(direction) {
+
+    },
+    offset: 'bottom-in-view',
+
+
+    });
+
+    </script>
+

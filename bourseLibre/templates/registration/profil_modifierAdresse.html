@@ -1,0 +1,17 @@
+{% extends 'base_profil.html' %}
+{% block header%}
+{% load static %}
+{% endblock %}
+{% block subtitle %}
+<div class="row">
+    <div class="col textcenter">
+       <h3> Modifier votre adresse</h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+{% include "modifierAdresse.html" %}
+
+{% endblock %}

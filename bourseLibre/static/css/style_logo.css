@@ -1,0 +1,14 @@
+
+.logo_groupe-wrap {
+  background: linear-gradient(to right, green, yellow);
+  padding: 4px;
+  margin: 0;
+    border-radius: 0.6em;
+}
+
+.logo_groupe {
+  background: #222;
+  color: white;
+  margin: 0;
+    border-radius: 0.6em;
+}

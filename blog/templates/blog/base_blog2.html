@@ -1,26 +1,17 @@
 {% extends 'base_forum.html' %}
 {% load static %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% block titreBlog %}
 <h1>Forum</h1>
 {% endblock  %}
 {%block banniere %}
-<div class="row row_banniere_ordi" >
-    <div class="col col-xs-12 d-flex justify-content-around">
-        <img  src="{% static 'img/banniere/forum_icone_ordi.png' %}" width="224" height="120" alt="Forum"/>
-        <img  src="{% static 'img/banniere/forum.png' %}" height="120" alt="Forum"/>
-    </div>
-</div>
-<div class="row row_banniere_smartphone">
-    <div class="col col-xs-12 d-flex justify-content-center">
-        <img class="img_banniere_smartp" src="{% static 'img/banniere/forum_icone_smartp.png' %}" height="120" alt="Forum"/>
-    </div>
-</div>
 {% endblock  %}
 
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+ {% block panel-heading %}{%endblock%}
 
 {% block clspanel %}claspanel{% endblock %}
- {% block content %}
+{% block content %}
 {% block sidebar %}
   <!-- Sidebar -->
 <div class="area"></div>
@@ -121,7 +112,7 @@
     <div class="position-sticky textcenter">
         <a href="{% url 'blog:acceuil' %}" >
         <button type="button" class="btn  btn-info" >
-           {% fontawesome_icon 'home' %}
+           {% fa5_icon 'home' title='home' %}
         </button>
         </a>
       <div class="list-group list-group-flush mx-3 mt-4">

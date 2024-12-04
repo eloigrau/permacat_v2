@@ -1,16 +1,9 @@
-{% extends 'base_defraiement.html' %}
-{% load fontawesome %}
+{% extends 'base_defraiement2.html' %}
+{% load fontawesome_5 %}
 {% load hitcount_tags %}
+{% load app_filters %}
 
 {% block subtitle %}
-
-<p class="textcenter">
-    <a href="{% url 'defraiement:reunions_asso' asso_slug=reunion.asso.abreviation %}">
-        <button type="button" class="btn btn-sm btn-primary">
-        &nbsp;Revenir à la liste des réunions
-        </button>
-    </a>
-</p>
 
  <div class="row rowcentre">
         <div class="col-sm-12 textcenter">
@@ -47,20 +40,18 @@
 {% endif %}
 
     </p>
+
+     {% if reunion.article %}
+            <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre|couperTexte:30}}</a></p>
+{% endif %}
         </div>
     </div>
  	<div class="row">
     <div class="col-md-12 textcenter">
 		<p>
                 {{reunion.get_logo_nomgroupe_html|safe}}
-
-			{% if reunion.article %}
-                <span class="badge badge-info">
-                Article associé : <a href="{{ reunion.article.get_absolute_url}}">{{ reunion.article.titre}}</a>
-                </span>
-            {% endif %}
 		</p>
-        <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil' reunion.auteur.id %}">{{reunion.auteur.username}}</a>, dernière modification le {{ reunion.date_modification|date:"DATE_FORMAT" }}
+        <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil_nom' reunion.auteur.username %}">{{reunion.auteur.username}}</a>, dernière modification le {{ reunion.date_modification|date:"DATE_FORMAT" }}
 
 		</p>
     </div>
@@ -76,7 +67,7 @@
            </button>
         </a>
         {% else %}
-            <p><b>Adresse : </b><a href="https://www.google.com/maps/search/?api=1&query={{reunion.adresse.get_adresse_str}}" target="_blank">{{ reunion.adresse.get_adresse_str}} </a>
+            <p><b>Adresse : </b><a href="{{ reunion.adresse.get_url_map }}" target="_blank" rel="noopener noreferrer nofollow">{{ reunion.adresse.get_adresse_str}} </a>
                     <a href="{% url 'defraiement:modifierAdresseReunion' slug=reunion.slug %}">
                        <button type="button" class="btn btn-s btn-success ">
                             <i class="fa fa-arrow-right"></i> Modifier l'adresse
@@ -103,11 +94,10 @@
             <table class="table table-condensed ">
                 <tr>
                 <th>Participant (conducteur)</th>
-                <th>distance</th>
-
-        {% if request.user.is_superuser %}<th>GMaps</th>
-        {% endif %}
-                <th>Supprimer</th>
+                <th>Distance</th>
+                <th>GMaps</th>
+                <th>Type de trajet</th>
+                <th>Modifier/Supprimer</th>
                 </tr>
             </thead>
 			<tbody>
@@ -122,14 +112,15 @@
 						 {% if request.user.is_superuser %}<a href="{{part.2}}" target='_blank'>{% endif%}{{part.1}} km{% if request.user.is_superuser %}</a>{% endif%}
 					</td>
 
-        {% if request.user.is_superuser %}
                     <td>
-                         <a href="{{part.3}}" target='_blank'> lien </a>
+                         <a href="{{part.3}}" target='_blank'> Gmap </a>
                     </td>
 
-        {% endif %}
                     <td>
-                        <a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
+                         {{part.4.get_type_trajet_display}}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-warning textleft" href="{% url 'defraiement:modifierTrajet' pk=part.4.pk %}"> modifier </a><a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
                     </td>
 				</tr>
             {% endfor %}
@@ -146,7 +137,7 @@
             <p class="textcenter">
                 <a href="{% url 'defraiement:ajouterParticipantsReunion' slug_reunion=reunion.slug %}">
                 <button type="button" class="btn  btn-success ">
-                <i class="fa fa-arrow-right"></i> Ajouter des participants
+                <i class="fa fa-arrow-right"></i> Ajouter des participant-e-s
                 </button>
                 </a>
             </p>

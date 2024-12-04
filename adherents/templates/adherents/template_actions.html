@@ -1,0 +1,22 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <h3>Historique</h3>
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Date</th>
+                <th>Adhérent</th>
+                <th>Action</th>
+            </tr></thead>
+            <tbody>
+{% for act in actions %}
+            <tr>
+                <td><a>{{act.timestamp|date:"l d F"}}</a></td>
+                <td><a href="{{act.actor.get_absolute_url}}">{{act.actor}} </a></td>
+                <td><a href="{{act.data.url}}"> {{act.description}}</a></td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

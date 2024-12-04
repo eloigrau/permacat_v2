@@ -1,0 +1,29 @@
+{% extends 'base_plantes.html' %}
+{% block title %} {% endblock %}
+{% block content %}
+<div class="row ">
+<div class="col-sm-12 textcenter">
+<form id="myForm" action="" method="post">{% csrf_token %}
+    <p>Vous n'avez pas de Jardin associé à votre compte. Vous pouvez <a href="{% url 'jardins:ajouterJardin_intro' %}"> enregistrer votre jardin </a>ou bien devenir référent d'un jardin pour pouvoir y ajouter une plante</p>
+    <input type="button"  onclick="window.history.back();"  value="Retour" />
+</form>
+</div>
+</div>
+
+
+
+<script>
+$(document).ready(function() {
+    $('#myForm').one('submit', function() {
+        var btn = $("#btn-valider");
+        btn.prop("disabled", true);
+        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+        setTimeout(function () {
+             btn.removeAttr("disabled")
+             btn.html( `veuillez patientez...` );
+          }, 8000);
+    });
+});
+</script>
+{% endblock %}

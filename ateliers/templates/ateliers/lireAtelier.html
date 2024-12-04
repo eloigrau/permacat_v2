@@ -1,10 +1,23 @@
 {% extends 'base_ateliers.html' %}
 {% load ateliers_filters %}
-{% load fontawesome %}
+{% load app_filters %}
+{% load fontawesome_5 %}
 {% load hitcount_tags %}
-
+{% load app_filters %}
+{% load qr_code %}
 {% block subtitle %}
 
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+
+<meta property="og:title" content="{{atelier.titre|couperTexte:65}}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{atelier.get_absolute_url_site}}" />
+<meta property="og:description" content="{{atelier.description|couperTexte:155}}" />
+{%endblock%}
 
  <div class="row rowcentre">
         <div class="col-sm-12 textcenter">
@@ -65,8 +78,9 @@
 
 	<div class="anchor_blank" id="idTitreAtelier"></div>
     <div class="row titre_atelier" style="background-color:{{atelier.atelier.get_couleur}};margin-bottom:5px;">
-        <div class="col textcenter" >
-              <h2> Atelier : {{ atelier.titre }}</h2>
+        <div class="col textcenter" ><h2> Atelier : {{ atelier.titre }}</h2>
+
+
         </div>
     </div>
  	<div class="row">
@@ -77,8 +91,6 @@
             </span>
 		</p>
         <p class="infos  textepetit">rédigé le {{ atelier.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil' atelier.auteur.id %}">{{atelier.auteur.username}}</a>, dernière modification le {{ atelier.date_modification|date:"DATE_FORMAT" }}
-
-
             <span class="badge badge-Light">
             {% get_hit_count for atelier as nbvues %}
             {{ nbvues }} vue{{nbvues|pluralize:"s"}}
@@ -93,7 +105,7 @@
     <div class="col-md-12 textcenter">
             <a href="{% url 'ateliers:contacterParticipantsAtelier' slug=atelier.slug %}">
                <button type="button" class="btn btn-sm btn-success">
-                 &nbsp;<i class='fa fa-envelope' ></i> Contacter les participants
+                 &nbsp;<i class='fa fa-envelope' ></i> Contacter les Participant.e.s
                </button></a>
 		<hr>
     </div>
@@ -131,10 +143,13 @@
 
 
                 {% else %}
-
+                    {% if not atelier.est_complet  %}
 <form>
-   <input type="button" class="btn btn-success btn-lg" id="btn-sinscrire" onclick="clicked();" value="S'inscrire à l'atelier">
+   <input type="button" class="btn btn-success" id="btn-sinscrire3" onclick="clicked();" value="S'inscrire à l'atelier">
 </form>
+                    {%else%}
+            <button type="button" class="btn btn-warning">Atelier complet</button>
+                    {%endif%}
                 {% endif %}
             {% else %}
             <p><a href="/auth/login/" >Connectez-vous pour vous inscrire à l'atelier</a></p>
@@ -191,7 +206,7 @@
 					</td>
 				</tr>
 
-					{% if atelier.referent and atelier.referent != "0" %}
+					{% if atelier.referent and atelier.referent != "----------------" %}
 				<tr>
 					<td class="nomProprieteAtelier">
 						Référent :
@@ -232,16 +247,39 @@
 					</td>
 				</tr>
 					{% endif %}
-
 				<tr>
 					<td class="nomProprieteAtelier">
-						Inscrits :
+						QR code de partage :
+					</td>
+					<td class="proprieteAtelier">
+                        {% include 'ateliers/qr_code_get.html'%}
+					</td>
+				</tr>
+
+				<tr>
+                     {% if user_inscrit or request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}
+					<td class="nomProprieteAtelier">
+						Inscrits ({{inscrits|length}}{% if atelier.nbMaxInscriptions %}/{{atelier.nbMaxInscriptions}}{% endif %}):
 					</td>
 					<td class="proprieteAtelier">
                         {% for i in inscrits %}
                         <a href="{% url 'profil_nom' i %}">{{i}}</a>{%if not forloop.last%}, {% endif %}
 					    {% endfor %}
+                        {% if not user_inscrit  %}
+
+                    {% if not atelier.est_complet  %}
+                        <p>
+<form>
+   <input type="button" class="btn btn-success float-right" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
+</form>
+                        </p>
+                    {%else%}
+                        <button type="button" class="btn btn-warning float-right">Atelier complet</button>
+                    {%endif%}
+                    {%endif%}
 					</td>
+                    {%endif%}
+
 				</tr>
 			</tbody>
 		</table>

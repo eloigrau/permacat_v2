@@ -1,81 +1,50 @@
-{% extends 'blog/base_blog.html' %}
+{% extends 'blog/base_blog2.html' %}
 {% load carto_filters %}
-{% block headerDocument%}
+{% block header%}
 {% load leaflet_tags %}
-{%endblock%}
-{% block header %}
 {% load static %}
-{% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
+    <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
+  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
+ <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+ <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
 {%endblock%}
-{% block title %} - Carte - {{asso}}
+{% block title %} - Carte - {{titre}}
 {% endblock %}
 {% block subtitle %}
+
+<div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
     <h4> {{titre}}</h4>
-    <input type="button"  onclick="window.history.back();"  value="Retour" />
+    <button type="cancel" onclick="window.history.back();" class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> </button>
   </div>
 </div>
-
-
-
 {% endblock %}
 {% block content %}
 
-<div class="row" style="min-height:600px;">
+<div class="row">
   <div class="col-md-12" >
-      <style>
-
-    .leaflet-container {  /* all maps */
-        width:  100%;
-        height: 100%;
-    }
-    </style>
+    <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
       <script type="text/javascript">
-
         function map_init_basic (map, options) {
-          var leafIcon = L.icon({
-            iconUrl: '{% static 'img/leafgreen.png' %}',
-            shadowUrl: '{% static 'img/leafshadow.png' %}',
-
-            iconSize:     [38, 95], // size of the icon
-            shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        });
-
-          var greyIcon = L.icon({
-              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-        });
-          var greenIcon = L.icon({
-              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-        });
+        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
 
         {% for lieu in lieux %}
             try{
                 var lat = {{lieu.adresse.latitude|to_numeric}};
                 var lon = {{lieu.adresse.longitude|to_numeric}};
                 {% block markers %}
-                  var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup(' <b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} </b>');
-                  marker.addTo(map);
+                  var marker = L.marker([lat, lon], {icon: getIconFromType(L, '{{lieu.type_marqueur}}')}).bindPopup(' <a href="{{ lieu.get_url_map }}"><b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b></a>');
+                  markers.addLayer(marker);
                 {% endblock %}
             }
-            catch(err){ ;
+            catch(err){
             }
         {%endfor%}
+
+      map.addLayer(markers);
         {% if lieux|length >= 1 %}
         map.panTo(new L.LatLng(lat, lon));
         {%else%}
@@ -87,6 +56,42 @@
 </div>
 </div>
 
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+    <table class="table table-condensed ">
+        <thead>
+        <th>Titre</th>
+        <th>Adresse</th>
+        <th></th>
+        </thead>
+        <tbody>
+        {% for lieu in lieux %}
+            <tr>
+                <td class="proprieteJardin">
+                    {% if lieu.titre %}
+                    <a href="{{ lieu.get_absolute_url }}">{{ lieu.get_titre }}</a>
+                    {% endif %}
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}
+                </td>
+                <td class="nomProprieteJardin textcenter">
+                    <a href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
+                </td>
+            </tr>
+                    {% if lieu.infos %}
+            <tr>
+                <td></td>
+                <td colspan="2">
+                        {{lieu.infos|safe}}
+                </td>
+            </tr>
+                    {% endif %}
+        {%endfor%}
+        </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}
 
     

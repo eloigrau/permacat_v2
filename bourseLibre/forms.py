@@ -2,13 +2,16 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Produit_vegetal, Adresse, \
     Asso, Profil, Message, MessageGeneral, Message_salon, InscriptionNewsletter, Adhesion_permacat, \
-    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie
+    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon
 from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from blog.models import Article
-from .constantes import Choix
+from dal import autocomplete
+#from .constantes import Choix
+#from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
+
 
 fieldsCommunsProduits = ['souscategorie', 'nom_produit',  'description', 'estUneOffre', 'asso',
                          'monnaies', 'prix', 'date_debut', 'date_expiration', ]
@@ -226,13 +229,13 @@ class AdresseForm(forms.ModelForm):
         return adresse
 
 class AdresseForm2(forms.ModelForm):
-    telephone = forms.CharField(label="Téléphone", required=False)
-    latitude = forms.FloatField(label="Latitude", initial="42,2", required=True)
-    longitude = forms.FloatField(label="Longitude", initial="2,2", required=True)
+    telephone = forms.CharField(label="Contact (tel/mail/...)", required=False)
+    latitude = forms.FloatField(label="Latitude", required=True)
+    longitude = forms.FloatField(label="Longitude", required=True)
 
     class Meta:
         model = Adresse
-        exclude = ('rue', 'commune', 'code_postal', 'pays')
+        fields = ('latitude', 'longitude', 'commune', 'code_postal', 'telephone')
 
     def save(self, *args, **kwargs):
         #self.cleaned_data['latitude'] = float(self.cleaned_data['latitude'])
@@ -254,8 +257,44 @@ class AdresseForm3(forms.ModelForm):
         adresse.save()
         return adresse
 
+class AdresseForm4(forms.ModelForm):
+    latitude = forms.FloatField(label="Latitude", initial="", required=False)
+    longitude = forms.FloatField(label="Longitude", initial="", required=False)
+
+    class Meta:
+        model = Adresse
+        fields = ['commune', 'code_postal',  'latitude', 'longitude']
+
+    def save(self, *args, **kwargs):
+        adresse = super(AdresseForm4, self).save(commit=False)
+        if not adresse.latitude or not adresse.longitude:
+            adresse.set_latlon_from_adresse()
+
+        adresse.save()
+        return adresse
+
+class AdresseForm5(forms.ModelForm):
+    rue = forms.CharField(
+        label="Rue",
+        required=False)
+    latitude = forms.FloatField(label="Latitude", initial="", required=False)
+    longitude = forms.FloatField(label="Longitude", initial="", required=False)
+    telephone = forms.CharField(label="Téléphone", required=False)
+
+    class Meta:
+        model = Adresse
+        fields = ['rue', 'commune', 'code_postal',  'latitude', 'longitude', 'telephone']
+
+    def save(self, *args, **kwargs):
+        adresse = super(AdresseForm5, self).save(commit=False)
+        #if not adresse.latitude or not adresse.longitude:
+        #   adresse.set_latlon_from_adresse()
+
+        adresse.save()
+        return adresse
+
 class ProfilCreationForm(UserCreationForm):
-    username = forms.CharField(label="Pseudonyme*", help_text="Attention : Pas d'espace, et les majuscules sont importantes...")
+    username = forms.CharField(label="Pseudonyme (sans espace)*", help_text="Attention : Pas d'espace, et les majuscules sont importantes...")
     description = forms.CharField(label=None, help_text="Une description de vous même", required=False, widget=forms.Textarea)
     competences = forms.CharField(label=None, help_text="Par exemple: electricien, bouturage, aromatherapie, pépinieriste, etc...", required=False, widget=forms.Textarea, )
     site_web = forms.CharField(label="Votre site web", help_text="n'oubliez pas le https://", required=False)
@@ -263,14 +302,17 @@ class ProfilCreationForm(UserCreationForm):
     email = forms.EmailField(label="Email*",)
 
     #statut_adhesion = forms.ChoiceField(choices=Choix.statut_adhesion, label='', required=True)
-    adherent_pc = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Permacat'")
-    adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Ramène Ta Graine'")
-    adherent_fer = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Fermille'")
+    adherent_pc = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'Permacat'")
+    adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'Ramène Ta Graine'")
+    adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'PermAgora'")
+    adherent_jp = forms.BooleanField(required=False, label="Je suis intéressé.e par les jardins partagés")
+    #adherent_fer = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Fermille'")
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
-    accepter_annuaire = forms.BooleanField(required=False, label="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous les inscrits")
+    accepter_annuaire = forms.BooleanField(required=False, initial=True, label="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous les inscrits")
+    inscrit_newsletter = forms.BooleanField(required=False, initial=True, label="J'accepte de m'abonner aux emails de Perma.cat")
     accepter_conditions = forms.BooleanField(required=True, label="J'ai lu et j'accepte les Conditions Générales d'Utilisation du site*",  )
-    pseudo_june = forms.CharField(label="Pseudonyme dans la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
+    #pseudo_june = forms.CharField(label="Pseudonyme dans le réseau de la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
 
 
     def __init__(self, request, *args, **kargs):
@@ -280,7 +322,7 @@ class ProfilCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm):
         model = Profil
-        fields = ['username', 'password1',  'password2', 'first_name', 'last_name', 'email', 'site_web', 'description', 'competences', 'pseudo_june', 'adherent_pc', 'adherent_rtg','adherent_fer', 'adherent_scic', 'adherent_citealt', 'adherent_viure',  'adherent_bzz2022','inscrit_newsletter', 'accepter_annuaire',  'accepter_conditions']
+        fields = ['username', 'password1',  'password2', 'email', 'first_name', 'last_name', 'site_web', 'description', 'competences', 'adherent_jp', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure', 'adherent_bzz2022', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
         exclude = ['slug', ]
 
     def clean(self):
@@ -478,14 +520,14 @@ class nouvelleDateForm(forms.Form):
     date = forms.DateTimeField(initial=timezone.now(), widget=forms.SelectDateWidget(years=years))
 
 class creerAction_articlenouveauForm(forms.Form):
-    article = forms.ModelChoiceField(queryset=Article.objects.all().order_by('titre'), required=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False).order_by('titre'), required=True,
                               label="Article", )
 
 
 class SalonForm(forms.ModelForm):
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic', 'description' ]
+        fields = ['titre', 'estPublic', 'description', 'tags' ]
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -498,12 +540,19 @@ class SalonForm(forms.ModelForm):
         inscrit.save()
         return instance
 
+class ModifierSalonForm(forms.ModelForm):
+    class Meta:
+        model = Salon
+        fields = ['titre', 'estPublic', 'description', 'tags' ]
+        widgets = {
+            'description': SummernoteWidget(),
+        }
 
 class ModifierSalonDesciptionForm(forms.ModelForm):
 
     class Meta:
         model = Salon
-        fields = ['titre', 'description' ]
+        fields = ['titre', 'description', 'tags']
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -514,3 +563,56 @@ class InviterDansSalonForm(forms.Form):
     def __init__(self, salon, *args, **kwargs):
         super(InviterDansSalonForm, self).__init__(*args, **kwargs)
         self.fields['profil_invite'].choices = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username')) if salon.estPublic or not salon.est_autorise(u)]
+
+
+
+class Profil_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Profil_recherche
+        fields = ("profil", )
+        widgets = {
+            'profil': autocomplete.ModelSelect2(url='profil_ac')
+        }
+
+    def save(self):
+        instance = super(Profil_rechercheForm, self).save()
+        return instance
+
+
+
+class EvenementSalonForm(forms.ModelForm):
+    class Meta:
+        model = EvenementSalon
+        fields = ['start_time', 'titre_even', ]
+        widgets = {
+            'start_time':forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+            'end_time': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+        }
+
+    def save(self, request, slug_salon):
+        instance = super(EvenementSalonForm, self).save(commit=False)
+        salon = Salon.objects.get(slug=slug_salon)
+        instance.salon = salon
+        instance.auteur = request.user
+        instance.save()
+        return instance
+
+
+
+
+class AssocierProfil_adherentConf(forms.Form):
+    from adherents.models import Adherent
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=True,
+                              label="Adhérent", )
+
+
+

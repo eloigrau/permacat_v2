@@ -1,4 +1,4 @@
-{% extends 'blog/base_blog.html' %}
+{% extends 'blog/base_blog2.html' %}
 
 {% block subtitle %}
 <div class="row">
@@ -23,7 +23,7 @@
     </div>
 <script>
     $(function() {
-    $('form').areYouSure();
+    	$('form').areYouSure();
     });
 
     $("#id_partagesAsso_0").change(function () {
@@ -59,11 +59,7 @@
 	 if (asso != "1"){
 		  $("#id_partagesAsso").parent().removeClass("cache");
 		  $("#id_partagesAsso").children().each((index, element) => {
-			if (index == asso - 1){
-				element.style.visibility = "hidden";
-			}else{
 				element.style.visibility = "visible";
-			}
 		 });
 		  $("#id_estEpingle").prop('disabled', false);
 		  $("#id_partagesAsso_0").prop('disabled', false);

@@ -2,7 +2,7 @@
     {% load static %}
 {% load blog_filters %}
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% block title %} - Projets {% endblock  %}
 {%block header %}
@@ -26,11 +26,11 @@
 
             {% if request.user|is_following:suivis %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
-                 {% fontawesome_icon 'bell' %}
+                 {% fa5_icon 'bell' title='abonnement' %}
             </button>
             {% else %}
             <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
-                 {% fontawesome_icon 'bell-slash' %}
+                 {% fa5_icon 'bell-slash' title='abonnement' %}
             </button>
             {% endif %}
                 </a>

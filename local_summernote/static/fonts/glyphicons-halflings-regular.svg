@@ -104,12 +104,12 @@
 
   
 
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width"/>
     
       <meta name="description" content="Official Sass port of Bootstrap 2 and 3. Contribute to twbs/bootstrap-sass development by creating an account on GitHub.">
-      <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
-    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
-    <meta property="fb:app_id" content="1401488693436528">
+      <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub"/>
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub"/>
+    <meta property="fb:app_id" content="1401488693436528"/>
     <meta name="apple-itunes-app" content="app-id=1477376905" />
       <meta name="twitter:image:src" content="https://opengraph.githubassets.com/d6baa718828e71e377d258f399a3dcc9f09cccf8b52fb96aa065d494a7c9ac90/twbs/bootstrap-sass" /><meta name="twitter:site" content="@github" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="bootstrap-sass/glyphicons-halflings-regular.svg at master · twbs/bootstrap-sass" /><meta name="twitter:description" content="Official Sass port of Bootstrap 2 and 3. Contribute to twbs/bootstrap-sass development by creating an account on GitHub." />
       <meta property="og:image" content="https://opengraph.githubassets.com/d6baa718828e71e377d258f399a3dcc9f09cccf8b52fb96aa065d494a7c9ac90/twbs/bootstrap-sass" /><meta property="og:image:alt" content="Official Sass port of Bootstrap 2 and 3. Contribute to twbs/bootstrap-sass development by creating an account on GitHub." /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="600" /><meta property="og:site_name" content="GitHub" /><meta property="og:type" content="object" /><meta property="og:title" content="bootstrap-sass/glyphicons-halflings-regular.svg at master · twbs/bootstrap-sass" /><meta property="og:url" content="https://github.com/twbs/bootstrap-sass" /><meta property="og:description" content="Official Sass port of Bootstrap 2 and 3. Contribute to twbs/bootstrap-sass development by creating an account on GitHub." />

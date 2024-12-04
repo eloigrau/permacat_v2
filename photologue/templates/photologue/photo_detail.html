@@ -6,14 +6,9 @@
 {% block subtitle %}
 <div class="row ">
 <div class="col-md-3 textcenter">
-
-        <a href="{{album.get_absolute_url}}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Album : {{album.title}}</a>
-
-        <a href="{% url 'photologue:ajouterPhoto' albumSlug=album.slug %}">
-        <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter une ou des photos
-            </button>
-            </a>&ensp;
+<a href="{{album.get_absolute_url}}" class="btn btn-success">
+          <i class="fa fa-arrow-left"></i> Album : {{album.title}}
+  </a>
 </div>
 <div class="col-md-6 textcenter">
         <h5 class="page-header">{{ object.title }}<small><button class="btn btn-light" id="copyButton" ><i class="fa fa-link"></i></button></small></h5>
@@ -21,11 +16,13 @@
 
             <a href="{% url 'profil' object.auteur.id %}">
                 <span class="badge badge-Light">
-                postée par  {{ object.auteur.username }},
+                postée par  {{ object.auteur.username }}
                 </span>
             </a>
-            <span class="badge badge-Light">le {{ object.date_added }}</span>
+            <span class="badge badge-Light">le {{ object.date_creation }}</span>
             </p>
+
+
 
 </div>
 
@@ -59,14 +56,14 @@
             <a href="{{ object.get_previous_in_album.get_absolute_url }}#photos"><i class="fa fa-arrow-left"></i> précédente</a>
             {% endif %}
         </div>
-        <div class="col-sm-10 textcenter">
-		    <a href="{{ object.image.url }}">
+        <div class="col-sm-10 textcenter carousel_album">
+		    <span class="helper"></span> <a href="{{ object.image.url }}">
 		        <img src="{{ object.get_display_url }}" class="thumbnail" alt="{{ object.title }}">
 		    </a>
         </div>
         <div class="col-sm-1 textcenter my-auto">
             {% if object.get_next_in_album %}
-            <a href="{{ object.get_next_in_album.get_absolute_url }}#photos">suivante <i class="fa fa-arrow-right"></i></a>
+            <a href="{{ object.get_next_in_album.get_absolute_url }}">suivante <i class="fa fa-arrow-right"></i></a>
              {% endif %}
         </div>
     </div>
@@ -83,13 +80,7 @@
 {% if object.tags.names %}
 <div class="row">
 <div class="col-md-8 offset-md-2">
-    {% if object.tags.names %}
-      <p><em>Mots-clés :</em>
-            {% for tag in object.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
-           {% endfor %}
-    </p>
-       {% endif %}
+      <p><em>Mots-clés : </em> {% include 'listeTags_view_template.html' with tags=object.tags.names %} </p>
 </div>
 </div>
 {% endif%}

@@ -13,6 +13,12 @@
   margin-bottom: 2rem;
   background-color: #ffffff;
 }
+
+.table_forum > thead > tr > td.expand,
+.table_forum > tbody > tr > td.expand,
+.table_forum > tfoot > tr > td.expand{
+    width: 100%;
+}
 .table_forum > thead > tr,
 .table_forum > tbody > tr,
 .table_forum > tfoot > tr {
@@ -27,7 +33,7 @@
 .table_forum > tbody > tr > td,
 .table_forum > tfoot > tr > td {
   text-align: left;
-  padding: 1rem;
+  padding: 0.6rem;
   vertical-align: middle;
   border-top: 0;
   -webkit-transition: all 0.3s ease;
@@ -68,7 +74,7 @@
 .table-condensed > thead > tr > td,
 .table-condensed > tbody > tr > td,
 .table-condensed > tfoot > tr > td {
-  padding: 0.8rem;
+  padding: 0.6rem;
 }
 .table-bordered {
   border: 0;
@@ -110,7 +116,7 @@
     display: block;
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
   }
   .table-responsive-vertical > .table_forum > tbody > tr > td {
     background-color: #ffffff;
@@ -548,9 +554,9 @@
 }
 
 .titre_forum{
-    font-size: 1.2em;
-    font-weight: 500;
-    font-variant: small-caps;
-    color:#404040;
+    font-size: 1.1em;
+    font-weight: 400;
+    color:#1a1a1a;
     font-family: Montserrat,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
+

@@ -1,15 +1,14 @@
 # cal/urls.py
 
 from . import views
-from django.urls import path
-from django.conf.urls import include, url
+from django.urls import path, include
 
 app_name = 'agora'
 
 urlpatterns = [
-    url(r'^$', views.accueil, name="acceuil"),
-    url(r'^listeInscription/$', views.listeInscription, name="listeInscription"),
-    #url(r'^articles/$', login_required(views.ListeArticles.as_view(), login_url='/auth/login/'), name="index"),
+    path('', views.accueil, name="acceuil"),
+    path('listeInscription/', views.listeInscription, name="listeInscription"),
+    #re_path(r'^articles/$', login_required(views.ListeArticles.as_view(), login_url='/auth/login/'), name="index"),
     #path(r'articles/<str:asso>', login_required(views.ListeArticles_asso.as_view(), login_url='/auth/login/'), name="index_asso"),
     ]
 

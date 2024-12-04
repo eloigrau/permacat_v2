@@ -40,7 +40,7 @@ class AlbumSitemap(Sitemap):
         return Album.objects.on_site().is_public()
 
     def lastmod(self, obj):
-        return obj.date_added
+        return obj.date_creation
 
 
 class PhotoSitemap(Sitemap):
@@ -51,4 +51,4 @@ class PhotoSitemap(Sitemap):
         return Photo.objects.on_site().is_public()
 
     def lastmod(self, obj):
-        return obj.date_added
+        return obj.date_creation

@@ -1,0 +1,31 @@
+{% extends 'base_plantes.html' %}
+{%block header%}
+{{ form.media }}
+{%endblock%}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Modifier les graines de {{graine}} à la grainotheque {{graino}} </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+            enctype="multipart/form-data">
+            <div class="row justify-content-center">
+                <div class="col-sm-12 textcenter">
+              {% csrf_token %}
+                    {% include 'form_template2.html' with form=form %}
+            </div>
+            </div>
+                {% include 'form_template.html' with form=form_infos %}
+        </form>
+    </div>
+</div>
+{% endblock %}

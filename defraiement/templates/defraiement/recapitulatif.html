@@ -1,29 +1,35 @@
-{% extends 'base_defraiement.html' %}
-{% load fontawesome %}
+{% extends 'base_defraiement2.html' %}
+{% load fontawesome_5 %}
 {% load hitcount_tags %}
 
-{% block subtitle %}
-
-<p class="textcenter">
-    <a href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante %}">
-        <button type="button" class="btn btn-sm btn-primary">
-        &nbsp;Revenir à la liste des réunions
-        </button>
-    </a>
-</p>
-
-{% endblock %}
-
 {% block content %}
-<h4  class="textcenter">Récapitulatif</h4>
+<div class="anchor_blank" id="ref-annee"></div>
+<p class="textcenter">
+<a href="?{{ request.GET.urlencode }}&annee=2022#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2022' %} btn-warning {%else%}btn-info{%endif%} ">2022</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%} ">2023</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2024</button></a>
+ {% comment %}
+<form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante%}?" method="get" role = "search">
+     <span class="input-group-append">
+        <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
+        <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Année...">ok</button>
+    </span>
+ </form>
+{% endcomment %}
+</p>
+<h4  class="textcenter">Récapitulatif {% if 'annee' in request.GET %} ({{request.GET.annee}}) {% elif not request.GET.annee %} {% now "Y" %} {% else%} (toutes années) {% endif%} </h4>
+
 
 <hr>
-<nav class="navbar  navbar-expand-md navbar-light justify-content-center">
 <div class="row justify-content-center">
-        <div class="collapse navbar-collapse" id="navbarType">
+<nav class="navbar  navbar-expand-md navbar-light justify-content-center">
+    <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
                 <li class="nav-item  ">
-                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}">
+                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                           <button type="button" class="btn  btn-block {%if type_courant == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                               <h6>Tout</h6>
                        </button>
@@ -31,7 +37,7 @@
                 </li>
             {% for type_id, type_nom  in type_list %}
                 <li class="nav-item  ">
-                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante  %}?type_reunion={{type_id}}">
+                      <a  href="?{{ request.GET.urlencode }}&type_reunion={{type_id}}">
                           <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
                               <h6>{{type_nom}}</h6>
                        </button>
@@ -69,13 +75,15 @@
 
 <hr>
 <div class="row-sm-12">
-<div class="col-sm-12">
+<div class="col-sm-12 textcenter">
+    <h6>Calculer les frais en euros (frais max et/ou bareme kilometrique):</h6>
 	<form id="reunionForm" class="form-horizontal" role="form" action="" method="post"
 		enctype="multipart/form-data">
 		{% csrf_token %} <input type="hidden" name="Reunion"
 			value="{{ reunion }}"> {% include 'form_template.html'%}
 	</form>
-</div></div>
+</div>
+</div>
 <hr>
 {% if unite == euros %}
 <p class="textcenter">
@@ -87,14 +95,13 @@
 </p>
 <hr>
 {% endif %}
-{% comment %}
+
 <p class="textcenter">
-    <a href="{% url 'defraiement:export_recapitulatif' %}" target="_blank">
+    <a href="{% url 'defraiement:export_recapitulatif' asso=asso_courante type_reunion=type_courant type_export=unite  %}?{% if request.GET.tarifKilometrique %}tarifKilometrique={{ request.GET.tarifKilometrique }}{% endif%}{% if request.GET.prixMax %}&prixMax={{ request.GET.prixMax }}{% endif%}{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
         &nbsp;Exporter en CSV
         </button>
     </a>
 </p>
-{% endcomment %}
 
 {% endblock %}

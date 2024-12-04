@@ -1,0 +1,13 @@
+{% extends 'vote/baseVote.html' %}
+{% block title %} - Modifier le sondage{% endblock %}
+{% block subtitle %}
+<h3>Modifier le sondage : {{sondage_binaire}}</h3>
+
+{% endblock %}
+{% block content %}
+
+<div class="row-sm-12 row-lg-6 mx-auto">
+    {% include 'form_template.html'%}
+</div>
+
+{% endblock %}

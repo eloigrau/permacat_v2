@@ -1,0 +1,39 @@
+{% extends 'base_plantes.html' %}
+{%block header%}
+{{ form.media }}
+{%endblock%}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h4> Ajouter la plante '<a href="{{plante.get_absolute_url}}">{{plante}}</a>' au jardin '<a href="{{jardin.get_absolute_url}}">{{jardin}}</a>'</h4>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+
+    <form class="form-horizontal" role="form" action="{% url 'jardins:voir_plante_recherche' %}" method="get"
+            enctype="multipart/form-data">
+    </form>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+            enctype="multipart/form-data">
+              {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-sm-12 textcenter">
+                    {% include 'form_template2.html' with form=form %}
+                </div>
+            </div>
+                <h4 class="textcenter">Infos complémentaires :</h4>
+                {% include 'form_template.html' with form=form_infos %}
+        </form>
+    </div>
+</div>
+{% endblock %}

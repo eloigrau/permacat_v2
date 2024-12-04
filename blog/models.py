@@ -1,5 +1,5 @@
 from django.db import models
-from bourseLibre.models import Profil, Suivis, Asso, Adresse, username_re
+from bourseLibre.models import Profil, Suivis, Asso, Adresse, username_re, Salon
 from django.urls import reverse
 from django.utils import timezone, html
 from actstream import action
@@ -7,23 +7,25 @@ from actstream.models import followers
 from taggit.managers import TaggableManager
 from photologue.models import Album
 from django.utils.text import slugify
-from jardinpartage.models import Choix as Choix_jpt
 from datetime import datetime, timedelta
-
+from django.utils.safestring import mark_safe
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
+from jardins.models import Jardin
+from django.core.validators import MinLengthValidator
 import uuid
+from bourseLibre.settings import DATE_INPUT_FORMAT
+from tinymce import models as tinymce_models
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
     type_projet = ('Part','Participation à un évènement'), ('AGO',"Organisation d'une AGO"), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
-    type_annonce_base = ('Annonce','Annonce'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
+    type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
                    ('Documentation','Documentation'),  ('covoit','Covoiturage'), \
                     ('Point', 'Idée / Point de vue'),  ('Recette', 'Recette'), ('BonPlan','Bon Plan / achat groupé'), \
                      ('Divers','Divers')
-    type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), (
-    'coordination', "Coordination"), ('reunion', "Réunions"), ('manifestations', 'Manifestations'),
-    ('projets', 'Projets écocides')
+    type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('coordination', "Coordination"), ('reunion', "Réunions"), \
+                         ('manifestations', 'Manifestations'), ('projets', 'Projets écocides')
 
     type_annonce_citealt_orga = ('orga1', "Cercle Organisation"), ('orga2', "Cercle Informatique"), ('orga3', "Cercle Communication"), ('orga4', "Cercle Animation"),  ('orga5', "Cercle Médiation")
     type_annonce_citealt_themes = ('theme1', "Cercle Education"), ('theme2', "Cercle Ecolieux"), ('theme3', "Cercle Santé"), ('theme4', "Cercle Echanges"),  ('theme5', "Cercle Agriculture"),  ('theme6', "Cercle Célébration")
@@ -33,22 +35,33 @@ class Choix:
 
     type_annonce_projets = ('Altermarché', 'Altermarché'),  ('Ecovillage', 'Ecovillage'), \
                    ('Jardin', 'Jardins partagés'), ('ChantPossible', 'Ecolieu Chant des possibles'), ('BD_Fred', 'Les BD de Frédéric') , ('bzzz', 'Projet Bzzzz') #('KitPerma', 'Kit Perma Ecole'),
-    type_annonce_bzz2022 =   ('AgendaBzz', 'AgendaBzz'),  ('Documentation', 'Documentation'), ('rendez-vous', 'Rendez-vous'),
+    type_annonce_bzz2022 = ('AgendaBzz', 'AgendaBzz'),  ('Documentation', 'Documentation'), ('rendez-vous', 'Rendez-vous'),
+    type_annonce_jp_base = ('Discu','Information'), ('Organisation', 'Organisation'), ('Potager','Au potager'), \
+                   ('Documentation','Documentation'), ('Autre','Autre'),
 
+    type_annonce_jp = type_annonce_jp_base + tuple([('jardin_' + str(i), 'Jardin_' + str(i)) for i in range(100)])
+
+    type_annonce_scic = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Avantproj','Avant Projet'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
+                        ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
+                        ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
+
+    type_annonce_conf66 = ('Annonce', 'Information'), ("Idees", "Idées"), ('administratif', 'Gestion de la conf66'), ('evenement', 'Actions/Evènement'), ("elevage", "Elevage"), ("ppam","PPAM"), ("maraichage", "Maraichage"), \
+                          ("arboriculture", "Arboriculture"), ("viticulture", "Viticulture"), ("safer", "SAFER"), ("cdpnaf", "CDPNAF"), ("Commission", "Commission"), ("eau", "Eau"), ("photovolt", "Photovoltaïque")
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,
         "pc": type_annonce_base,
-        "scic": type_annonce_base,
+        "scic": type_annonce_scic,
         "fer": type_annonce_base,
         "rtg": type_annonce_base,
         "viure": type_annonce_viure,
         "citealt": type_annonce_base + type_annonce_citealt,
         "bzz2022": type_annonce_bzz2022,
-        "jp": Choix_jpt.jardins_ptg,
+        "jp": type_annonce_jp,
+        "conf66":type_annonce_conf66
     }
 
-    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022
+    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",
@@ -87,8 +100,14 @@ class Choix:
     'groupe4':'#ff000032',
     'groupe5':'#ff000030',
     'groupe6':'#ff000028',
-
-
+    "Infos":"#A8EF8E",
+    'administratif':"#8CCB75",
+    'evenement':"#ACEADB",
+    "elevage":"#80D8C4",
+    "maraichage":"#59998B",
+    "arboriculture":"##B4E81A",
+    "Commission":"#DFF994",
+    "ppam":"#C9E182",
     }
     couleurs_projets = {
         'Part':"#d0e8da", 'AGO':"#dcc0de", 'Projlong':"#d1d0dc", 'Projcourt':"#ffc09f", 'Projponct':"#e4f9d4",
@@ -104,8 +123,20 @@ class Choix:
                          #"date du dernier commentaire":'-date_dernierMessage',
                          "Type de projet":'categorie', "statut du projet":"statut",
                          'auteur':'auteur', 'titre':'titre'}
+    logo_asso = {
+        "public": "nom_public.webp",
+        "pc": "nom_pc.png",
+        "scic": "nom_scic.png",
+        "fer": "nom_fer.png",
+        "rtg": "nom_rtg.png",
+        "viure": "nom_viure.webp",
+        "citealt": "nom_citealt.webp",
+        "bzz2022": "nom_bzz2022.webp",
+        "jp": "nom_jp.webp",
+        "conf66":"nom_conf66.png"
+    }
 
-    groupes_logo_nom = {'public': 'img/logos/nom_public.png', 'pc': 'img/logos/nom_public.png',}
+    type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
 
     def get_couleur(categorie):
         try:
@@ -120,16 +151,68 @@ class Choix:
             return ""
 
     def get_logo_nomgroupe(abreviation):
-        return 'img/logos/nom_'+abreviation+'.png'
+        return 'img/logos/'+ Choix.logo_asso[abreviation]
+        #return 'img/logos/nom_'+abreviation+'.png'
 
-    def get_logo_nomgroupe_html(abreviation, taille=25):
-        return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
+    def get_logo_nomgroupe_html(abreviation, taille=18):
+        try:
+            return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
+        except Exception as e:
+            return abreviation
 
     def get_type_annonce_asso(asso):
         try:
+            if asso =="jp":
+                return Choix.type_annonce_jp_base + tuple([('jardin_' + str(i.id), "Jardin : " + i.titre) for i in Jardin.objects.all()])
+
             return Choix.type_annonce_asso[asso]
         except:
             return Choix.type_annonce
+
+    def get_categorie_from_id(id_cat):
+        try:
+            return [x[1] for x in Choix.type_annonce if x[0] == id_cat][0]
+        except:
+            try:
+                return [x[1] for x in Choix.type_annonce_jp_base if x[0] == id_cat][0]
+            except:
+                return "dossier inconnu"
+
+
+    type_atelier = ('0','Permaculture'), ('1',"Bricolage"), ('2','Cuisine'), ('3','Bien-être'), ('4',"Musique"), ('6', 'Politique'), ('8', 'Culture'), ('7', 'Activité Pro'), ('9', 'Informatique'), ('5', 'Autre...'),
+    couleurs_ateliers = {
+        '2':'#4DC490', '1':'#C0EDA0', '3':'#00AA8B', '0':'#FCE79C',
+        '5':"#d1ecdc",'3':"#fcf6bd", '4':"#d0f4de", '9':"#fff2a0", '7':"#ffac99",
+        '10':"#ffc4c8", '8':"#bccacf", '6':"#87bfae", '11':"#bcb4b4"
+    }
+    statut_atelier = ('0', 'proposition'), ('1', "accepté, en cours d'organisation"), ('2', "accepté, s'est déroule correctement"), ('3', "a été annulé"),
+    type_difficulte = ('0', 'facile'), ('1', "moyen"), ("2", "difficile")
+    type_jauge = ('1', "1"), ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5")
+    type_budget = ('0', "0"), ('1', "1"), ("2", "2"), ("3", "3")
+    type_temps = ('1', "1h"), ("2", "2h"), ("3", "3h"), ("4", "4h"), ("5", "6h"), ("6", "1 journée"),  ("7", "plusieurs jours"),  ("8", "plusieurs mois"),
+    type_age = ('0', '3-6 ans'), ('1', "7-11 ans"), ("2", "12 ans et plus"), ("3", "3-11ans"), ("4", "Tout public")
+    #type_atelier = ('0', 'Observation'), ('1', "Experience"), ("2", "Jardinage")
+
+    def get_categorie(num):
+        return Choix.type_atelier[int(num)][1]
+
+    def get_difficulte(num):
+        return Choix.type_difficulte[int(num)][1]
+
+    def get_age(num):
+        return Choix.type_atelier[int(num)][1]
+
+    def get_typeAtelier(num):
+        return Choix.type_atelier[int(num)][1]
+
+    def get_couleur_cat(cat):
+            return Choix.couleurs_ateliers[cat]
+
+class Theme(models.Model):
+    nom = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.nom
 
 class Article(models.Model):
     categorie = models.CharField(max_length=30,         
@@ -160,6 +243,9 @@ class Article(models.Model):
 
     partagesAsso = models.ManyToManyField(Asso, related_name="asso_partages", verbose_name="Partagé avec :", blank=True)
 
+    themes = models.ManyToManyField(Theme, related_name="themes", verbose_name="Thèmes :", blank=True)
+
+
     class Meta:
         ordering = ('-date_creation', )
         
@@ -169,11 +255,14 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('blog:lireArticle', kwargs={'slug':self.slug})
 
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
         suiveurs = []
-        url = "https://www.perma.cat" + self.get_absolute_url() + "#ref-titre"
+        url = self.get_absolute_url_site + "#ref-titre"
         if creation or forcerCreationMails:
             titre = "Nouvel article"
             message = "Un article a été posté dans le forum [" + str(
@@ -181,12 +270,12 @@ class Article(models.Model):
             message_notif = "Un article a été posté dans le forum [" + str(
                 self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.abreviation))
-            suiveurs = [suiv for suiv in followers(suivi) if self.auteur != self.est_autorise(suiv)]
+            suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
             for asso in self.partagesAsso.all():
                 suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.abreviation))
                 suiveurs = [suiv for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
-                emails = [suiv.email for suiv in suiveurs]
+                emails += [suiv.email for suiv in suiveurs]
         else:
             temps_depuiscreation = timezone.now() - self.date_creation
             titre = "Article actualisé"
@@ -237,10 +326,14 @@ class Article(models.Model):
 
     @property
     def get_partagesAsso(self):
-        x = self.partagesAsso.filter(abreviation='public')
-        if x:
-            return x
-        return self.partagesAsso.exclude(abreviation=self.asso.abreviation)
+        try:
+            x = self.partagesAsso.filter(abreviation='public')
+            if x:
+                return x
+            return self.partagesAsso.exclude(abreviation=self.asso.abreviation)
+        except Exception as e:
+            action.send(sender=self, verb='bug', description=str(e) + " ;" + str(self))
+            return Asso.objects.none()
 
     @property
     def get_partagesAssotxt(self):
@@ -248,11 +341,22 @@ class Article(models.Model):
 
     @property
     def get_partagesAssoLogo(self):
-        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=20) for p in self.get_partagesAsso])))
+        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=17) for p in self.get_partagesAsso])))
 
     @property
     def get_logo_categorie(self):
         return Choix.get_logo(self.categorie)
+
+
+    @property
+    def get_categorie_display2(self):
+        if self.asso.abreviation == 'jp':
+            try:
+                return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
+            except:
+                pass
+
+        return self.get_categorie_display
 
     @property
     def get_logo_nomgroupe(self):
@@ -260,19 +364,26 @@ class Article(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.get_logo_nomgroupe_html_taille(25)
+        return self.get_logo_nomgroupe_html_taille(18)
 
-    def get_logo_nomgroupe_html_taille(self, taille=25):
-        return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+    def get_logo_nomgroupe_html_taille(self, taille=18):
+        try:
+            return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        except Exception as e:
+            action.send(self, verb='bug', description=str(e) + " ; " + self.titre)
+            return None
 
     @property
     def get_logo_nomgroupespartages_html(self):
-        return self.get_logo_nomgroupes_partages_html_taille(15)
+        return self.get_logo_nomgroupes_partages_html_taille(14)
 
-    def get_logo_nomgroupes_partages_html_taille(self, taille=15):
+    def get_logo_nomgroupes_partages_html_taille(self, taille=14):
         return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
+
     def est_autorise(self, user):
+        if user == self.auteur:
+            return True
         if self.asso.abreviation == "public" or self.partagesAsso.filter(abreviation="public"):
             return True
         adhesion = getattr(user, "adherent_" + self.asso.abreviation)
@@ -294,6 +405,40 @@ class Article(models.Model):
         else:
             return derniere_date
 
+# class ModificationArticle(models.Model):
+#     description = models.CharField(verbose_name="Explication de la modification", max_length=500, null=True, blank=True)
+#     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+#     date_creation = models.DateTimeField(verbose_name="Date de la modif", default=timezone.now)
+#
+#     def __str__(self):
+#         return "(" + str(self.date_creation) + " : " +  self.article + ") "+ str(self.description)
+
+class AssociationSalonArticle(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, verbose_name="Salon lié" )
+
+    class Meta:
+        unique_together = ('article', 'salon',)
+
+    def __str__(self):
+        return str(self.salon) + " - "+ str(self.article)
+
+class DocumentPartage(models.Model):
+    nom = models.CharField(verbose_name="Nom du document (ou lien http)", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+    slug = models.SlugField(max_length=100)
+
+    def __str__(self):
+        return "(" + str(self.nom) + ") "+ str(self.url)
+
+    @property
+    def url(self):
+        if self.nom.startswith("http"):
+            return self.nom
+        return "https://semestriel.framapad.org/p/" + self.slug
+
+    def get_url(self):
+        return self.url
 
 class Evenement(models.Model):
     titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",
@@ -334,6 +479,11 @@ class Evenement(models.Model):
     def get_logo_nomgroupe(self):
         return self.article.get_logo_nomgroupe
 
+    @property
+    def get_logo_nomgroupe_html(self):
+        return self.article.get_logo_nomgroupe_html_taille(taille=18)
+
+
 class Discussion(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     titre = models.CharField(blank=False, max_length=32, verbose_name="Titre de la discussion")
@@ -355,6 +505,8 @@ class Discussion(models.Model):
 class Commentaire(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
     commentaire = models.TextField()
+    #commentaire = models.TextField()
+
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, null=True)
     date_creation = models.DateTimeField(auto_now_add=True)
@@ -362,11 +514,19 @@ class Commentaire(models.Model):
     def __unicode__(self):
         return self.__str__()
 
+    @property
+    def titre(self):
+        return mark_safe(self.commentaire[:150])
+
     def __str__(self):
         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.article)
 
     def get_absolute_url(self):
         return self.article.get_absolute_url() + "#comm_" + str(self.id)
+
+    @property
+    def get_absolute_url_site(self):
+        return self.article.get_absolute_url_site + "#idConversation"
 
     def get_absolute_url_discussion(self):
         return self.article.get_absolute_url() + "#idConversation"
@@ -384,6 +544,7 @@ class Commentaire(models.Model):
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.article.asso.abreviation))
             titre = "Article commenté"
             message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.get_absolute_url_discussion())+ "'>" + str(self.article.titre) + "</a>'"
+            message_notif = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] : '" + str(self.article.titre) + "'"
             suiveurs = [suiv for suiv in followers(self.article) if
                       self.auteur_comm != suiv and self.article.est_autorise(suiv)]
             emails = [suiv.email for suiv in suiveurs]
@@ -392,29 +553,30 @@ class Commentaire(models.Model):
 
         retour = super(Commentaire, self).save(*args, **kwargs)
 
-        try:
-            values = username_re.findall(self.commentaire)
-            if values:
-                for v in values:
-                    p = Profil.objects.get(username__iexact=v)
-                    titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
-                    msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
-                    msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
-                    action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
-                                emails=[p.email, ])
-                    action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
-                               description=msg_mention_notif, )
+        values = username_re.findall(self.commentaire)
+        if values:
+            for v in values:
+                try:
+                    if Profil.objects.filter(username__iexact=v).exists():
+                        p = Profil.objects.get(username__iexact=v)
+                        titre_mention = "Vous avez été mentionné dans un commentaire de l'article '" + self.article.titre  +"'"
+                        msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'article '" + self.article.titre +"'"
+                        msg_mention_notif = " vous a mentionné dans un commentaire de l'article '" + self.article.titre +"'"
+                        action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention, message=msg_mention,
+                                    emails=[p.email, ])
+                        action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+                                   description=msg_mention_notif, )
 
-                    payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
-                    send_user_notification(p, payload=payload, ttl=7200)
-        except:
-            pass
-        
+                        payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
+                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
+                        send_user_notification(p, payload=payload, ttl=7200)
+                except:
+                    pass
+
         if emails:
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
-            payload = {"head": titre, "body":message,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+            payload = {"head": titre, "body":message_notif,
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
             for suiv in suiveurs:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)
@@ -466,6 +628,10 @@ class Projet(models.Model):
     def get_absolute_url(self):
         return reverse('blog:lireProjet', kwargs={'slug':self.slug})
 
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
+
     def get_absolute_url_discussion(self):
         return self.get_absolute_url() + "#idConversation"
 
@@ -499,6 +665,8 @@ class Projet(models.Model):
             return Choix.couleurs_annonces["Autre"]
 
     def est_autorise(self, user):
+        if user == self.auteur:
+            return True
         if self.asso.abreviation == "public":
             return True
 
@@ -507,6 +675,10 @@ class Projet(models.Model):
     @property
     def has_ficheprojet(self):
         return hasattr(self, "ficheprojet")
+
+    @property
+    def get_logo_nomgroupe_html(self, ):
+        return self.asso.get_logo_nomgroupe_html_taille(taille=18)
 
 class FicheProjet(models.Model):
     projet = models.OneToOneField(Projet, on_delete=models.CASCADE, primary_key=True,)
@@ -540,6 +712,9 @@ class FicheProjet(models.Model):
 
         return getattr(user, "adherent_" + self.projet.asso.abreviation)
 
+    @property
+    def titre(self):
+        return self.projet.titre
 
 class CommentaireProjet(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
@@ -555,6 +730,10 @@ class CommentaireProjet(models.Model):
 
     def get_absolute_url(self):
         return self.projet.get_absolute_url()
+
+    @property
+    def get_absolute_url_site(self):
+        return self.projet.get_absolute_url_site
 
     def get_absolute_url_discussion(self):
         return self.projet.get_absolute_url() + "#idConversation"
@@ -590,7 +769,7 @@ class CommentaireProjet(models.Model):
                                 description=msg_mention_notif, )
 
                     payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                               "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
                     send_user_notification(p, payload=payload, ttl=7200)
                 except Exception as e:
                     pass
@@ -628,23 +807,267 @@ class EvenementAcceuil(models.Model):
     def est_autorise(self, user):
         return self.article.est_autorise(user)
 
+
 class AdresseArticle(models.Model):
     titre = models.CharField(verbose_name="Nom du lieu",
                              max_length=100, null=True, blank=True, default="")
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 help_text="L'evenement doit etre associé à un article existant (sinon créez un article avec une date)")
-
+    infos = models.TextField(verbose_name="Infos complémentaires", null=True, blank=True)
+    type_marqueur = models.CharField(max_length=5,
+        choices= Choix.type_marqueur,
+        default='0', verbose_name="type_marqueur")
 
     def __str__(self):
-        if self.titre:
-            return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
-        else:
-            return str(self.adresse.get_adresse_str)
+        try:
+            if self.titre:
+                return str(self.titre) + " : " + str(self.adresse.get_adresse_str)
+            else:
+                return str(self.adresse.get_adresse_str)
+        except:
+            if self.adresse:
+                return str(self.adresse.get_adresse_str)
+            else:
+                return "-"
 
+
+    @property
+    def get_edit_url(self):
+        return reverse('blog:modifierAdresseArticle',  kwargs={'slug_article':self.article.slug, 'id_adresse':self.id})
+
+    @property
+    def get_delete_url(self):
+        return reverse('blog:supprimerAdresseArticle',  kwargs={'slug_article':self.article.slug, 'id_adresse':self.id})
+
+    @property
+    def get_absolute_url(self):
+        return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})
+
+    @property
+    def get_url_map(self):
+        return reverse('blog:voirAdresseArticle',  kwargs={'id_adresseArticle': self.id})
 
     @property
     def get_titre(self):
         if not self.titre:
             return ""
         return self.titre
+
+    @property
+    def get_marqueur(self):
+        if self.type_marqueur:
+            return Choix.nom_marqueur[self.type_marqueur]
+        else:
+            return 'greenIcon'
+
+class TodoArticle(models.Model):
+    titre = models.CharField(max_length=150)
+    slug = models.SlugField(max_length=100)
+    description = models.CharField(max_length=500, blank=True, null=True)
+    date_creation = models.DateTimeField('Créé le', auto_now_add=True)
+    date_modification = models.DateTimeField('Modifié le', auto_now=True)
+    estFait = models.BooleanField(default=False)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article lié")
+
+    def __str__(self):
+        return self.titre
+
+    def get_absolute_url(self):
+        return self.article.get_absolute_url()
+
+#
+#
+# class Atelier_new(models.Model):
+#     categorie = models.CharField(max_length=30,
+#         choices=(Choix.type_atelier),
+#         default='0', verbose_name="categorie")
+#     statut = models.CharField(max_length=30,
+#         choices=(Choix.statut_atelier),
+#         default='proposition', verbose_name="Statut de l'atelier")
+#     titre = models.CharField(verbose_name="Titre de l'atelier",max_length=120)
+#     slug = models.SlugField(max_length=100, default=uuid.uuid4)
+#     description = models.TextField(null=True, blank=True)
+#     materiel = models.TextField(null=True, blank=True, verbose_name="Matériel/outils nécessaires")
+#     referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name="Référent(e.s)")
+#     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
+# #    projet = models.OneToOneField(Projet)
+#     start_time = models.DateField(verbose_name="Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
+#     heure_atelier = models.TimeField(verbose_name="Heure de début", help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
+#     heure_atelier_fin = models.TimeField(verbose_name="Heure de fin ", help_text="Horaire de fin (hh:mm)",
+#                                     default="17:00", blank=True, null=True)
+#
+#     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
+#     date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
+#     tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name="Tarif de l'atelier par personne", )
+#     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+#     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
+#
+#     estArchive = models.BooleanField(default=False, verbose_name="Archiver l'atelier")
+#     nbMaxInscriptions = models.IntegerField( verbose_name="Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
+#
+#     class Meta:
+#         ordering = ('-date_creation',)
+#
+#     def __str__(self):
+#         return self.titre
+#
+#     def get_absolute_url(self):
+#         return reverse('ateliers:lireAtelier', kwargs={'slug': self.slug})  # + "#idTitreAtelier"
+#
+#     def save(self, sendMail=True, *args, **kwargs):
+#         ''' On save, update timestamps '''
+#         emails, suiveurs = [], []
+#         message_notif = ""
+#         if not self.id:
+#             self.date_creation = timezone.now()
+#
+#             try:
+#                 self.auteur
+#             except:
+#                 self.auteur = Profil.objects.first()
+#
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
+#             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
+#             if sendMail:
+#                 emails = [suiv.email for suiv in suiveurs]
+#             else:
+#                 emails = []
+#             titre = "Nouvel atelier proposé"
+#             if self.start_time:
+#                 message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
+#                     DATE_INPUT_FORMAT) + " a été proposé"
+#                 message_notif = "L'atelier [" + self.asso.nom + "] '" + self.titre + "' le " + self.start_time.strftime(
+#                     DATE_INPUT_FORMAT) + " a été proposé"
+#             else:
+#                 message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
+#                 message_notif = "L'atelier [" + self.asso.nom + "] '" + self.titre + "' a été proposé"
+#         else:
+#             if sendMail:
+#                 titre = "Atelier modifié"
+#                 if self.start_time:
+#                     message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
+#                         DATE_INPUT_FORMAT) + " a été modifié"
+#                     message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + "' le " + self.start_time.strftime(
+#                         DATE_INPUT_FORMAT) + " a été modifié"
+#                 else:
+#                     message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
+#                     message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + " a été modifié"
+#
+#         ret = super(Atelier_new, self).save(*args, **kwargs)
+#         if emails:
+#             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
+#             payload = {"head": titre, "body": message_notif,
+#                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+#             for suiv in suiveurs:
+#                 try:
+#                     send_user_notification(suiv, payload=payload, ttl=7200)
+#                 except:
+#                     pass
+#         return ret
+#
+#     @property
+#     def get_couleur(self):
+#         try:
+#             return Choix.couleurs_ateliers[self.categorie]
+#         except:
+#             return Choix.couleurs_ateliers['0']
+#
+#     #@property
+#     #def get_inscrits(self):
+#     #    return [x[0] for x in InscriptionAtelier.objects.filter(atelier=self).values_list('user__username')]
+#
+#     @property
+#     def get_couleur_cat(self, cat):
+#         try:
+#             return Choix.couleurs_ateliers[cat]
+#         except:
+#             return Choix.couleurs_ateliers['0']
+#
+#     def est_autorise(self, user):
+#         if user == self.auteur:
+#             return True
+#         if self.asso.abreviation == "public":
+#             return True
+#
+#         return getattr(user, "adherent_" + self.asso.abreviation)
+#
+#     def est_complet(self):
+#         if not self.nbMaxInscriptions:
+#             return False
+#         return len(self.get_inscrits) >= self.nbMaxInscriptions
+#
+#     @property
+#     def heure_fin_atelier(self, ):
+#         if self.start_time and self.heure_atelier_fin:
+#             return self.heure_atelier_fin
+#         else:
+#             return None
+#
+#     @property
+#     def get_logo_nomgroupe_html(self, ):
+#         return self.asso.get_logo_nomgroupe_html_taille(taille=18)
+#
+#
+# class InscriptionAtelier_new(models.Model):
+#     user = models.ForeignKey(Profil, on_delete=models.CASCADE)
+#     atelier = models.ForeignKey(Atelier_new, on_delete=models.CASCADE)
+#     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+#
+#     def __unicode__(self):
+#         return self.__str()
+#
+#     def __str__(self):
+#         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(self.atelier)
+#
+#
+#
+# class CommentaireAtelier_new(models.Model):
+#     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
+#     commentaire = models.TextField()
+#     atelier = models.ForeignKey(Atelier_new, on_delete=models.CASCADE)
+#     date_creation = models.DateTimeField(auto_now_add=True)
+#
+#     def __unicode__(self):
+#         return self.__str__()
+#
+#     def __str__(self):
+#         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.atelier)
+#
+#     @property
+#     def get_edit_url(self):
+#         return reverse('ateliers:modifierCommentaireAtelier',  kwargs={'id':self.id})
+#
+#
+#     def get_absolute_url(self):
+#         return self.atelier.get_absolute_url()
+#
+#     def get_absolute_url_discussion(self):
+#         return self.atelier.get_absolute_url() + "#idConversation"
+#
+#     def save(self, *args, **kwargs):
+#         ''' On save, update timestamps '''
+#         retour = super(CommentaireAtelier_new, self).save(*args, **kwargs)
+#
+#         values = username_re.findall(self.commentaire)
+#         if values:
+#             for v in values:
+#                 try:
+#                     p = Profil.objects.get(username__iexact=v)
+#                     titre_mention = "Vous avez été mentionné dans un commentaire de l'atelier '" + self.atelier.titre  +"'"
+#                     msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'atelier '" + self.atelier.titre +"'"
+#                     msg_mention_notif = " vous a mentionné dans un commentaire de l'atelier '" + self.atelier.titre +"'"
+#                     action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention,
+#                                 message=msg_mention,
+#                                 emails=[p.email, ])
+#                     action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
+#                                 description=msg_mention_notif, )
+#
+#                     payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
+#                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+#                     send_user_notification(p, payload=payload, ttl=7200)
+#
+#                 except Exception as e:
+#                     pass
+#
+#         return retour

@@ -1,16 +1,22 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
-from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, Discussion, Choix
+from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
+    DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle, TodoArticle
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from django.urls import reverse
 from bourseLibre.settings import SUMMERNOTE_CONFIG as summernote_config
 from bourseLibre.models import Asso, Choix as choix_globaux
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from defraiement.models import Reunion
+from django.templatetags.static import static
 from photologue.models import Album
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 import re
+from bourseLibre.utils import slugify_pcat
+#from dal import autocomplete
+#from taggit.models import Tag
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -39,6 +45,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
                 # Use proper language setting automatically (default)
 
             "toolbar": [
+                ['emoji', ['emoji']],
                 ['style', ['bold', 'italic', 'underline', 'clear', 'style', ]],
                 ['fontsize', ['fontsize']],
                 ['fontSizes', ['8', '9', '10', '11', '12', '14', '18', '22', '24', '36']],
@@ -58,6 +65,7 @@ class SummernoteWidgetWithCustomToolbar(SummernoteWidget):
                     ['link', ['linkDialogShow', 'unlink']]
                 ],
                 "air": [
+                ['emoji', ['emoji']],
                 ['style', ['bold', 'italic', 'underline', 'clear', 'style', ]],
                 ['fontsize', ['fontsize']],
                 ['fontSizes', ['8', '9', '10', '11', '12', '14', '18', '22', '24', '36']],
@@ -77,9 +85,12 @@ class ArticleForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
+    #themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
+    #                                         widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
+
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'estModifiable', 'estEpingle','tags']
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'tags', 'estModifiable', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
@@ -92,13 +103,16 @@ class ArticleForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
+           # 'tags': autocomplete.TaggitSelect2(
+           #     'blog:tag_autocomplete'
+            #),
         }
 
     def save(self, userProfile, sendMail=True, forcerCreationMails=False):
         instance = super(ArticleForm, self).save(commit=False)
 
         max_length = Article._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Article.objects.filter(slug=instance.slug).exists():
@@ -135,9 +149,13 @@ class ArticleChangeForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
+    themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
+                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
+    description_modif = forms.CharField(label="Description courte de la modification de l'article", required=False, )
+
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'album', 'start_time', 'tags', 'estModifiable', 'estArchive', 'estEpingle']
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'themes', 'tags', 'estModifiable', 'estArchive', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(
@@ -154,12 +172,44 @@ class ArticleChangeForm(forms.ModelForm):
 
     def save(self, sendMail=True, commit=True):
         instance = super(ArticleChangeForm, self).save(commit=commit)
+        #ModificationArticle.objects.create(article=instance, description=self.cleaned_data['description_modif'])
+
         for asso in Asso.objects.all():
             if asso in self.cleaned_data["partagesAsso"]:
                 instance.partagesAsso.add(asso)
             elif instance.partagesAsso.filter(abreviation=asso.abreviation).exists():
                 instance.partagesAsso.remove(asso)
+        for theme in Theme.objects.all():
+            if theme in self.cleaned_data["themes"]:
+                instance.themes.add(theme)
+            elif instance.themes.filter(nom=theme.nom).exists():
+                instance.themes.remove(theme)
         return instance
+
+#
+# class ModificationArticleForm(forms.ModelForm):
+#     class Meta:
+#         model = ModificationArticle
+#         fields = ['description',]
+
+
+class AssociationSalonArticleForm(forms.ModelForm):
+
+    class Meta:
+        model = AssociationSalonArticle
+        fields = ['salon',]
+
+    def save(self, article):
+        instance = super(AssociationSalonArticleForm, self).save(commit=False)
+        instance.article = article
+        instance.save()
+        return instance
+
+    def __init__(self, request, *args, **kwargs):
+        super(AssociationSalonArticleForm, self).__init__(*args, **kwargs)
+        salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by( "salon__titre")
+        salons = [x for x in Salon.objects.filter(estPublic=True).order_by("titre")] + [s.salon for s in salons_inscrit]
+        self.fields["salon"].choices = [(x.id, x.titre) for x in salons]
 
 class ArticleAddAlbum(forms.ModelForm):
     album = forms.ModelChoiceField(queryset=Album.objects.all(), required=True,
@@ -246,7 +296,7 @@ class ProjetForm(forms.ModelForm):
         instance = super(ProjetForm, self).save(commit=False)
 
         max_length = Projet._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Projet.objects.filter(slug=instance.slug).exists():
@@ -311,7 +361,7 @@ class ProjetForm(forms.ModelForm):
         instance = super(ProjetForm, self).save(commit=False)
 
         max_length = Projet._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Projet.objects.filter(slug=instance.slug).exists():
@@ -435,13 +485,13 @@ class EvenementArticleForm(forms.ModelForm):
                        }),
         }
 
-    def save(self, request, slug_article):
+    def save(self, request, article):
         instance = super(EvenementArticleForm, self).save(commit=False)
-        article = Article.objects.get(slug=slug_article)
         instance.article = article
         instance.auteur = request.user
         instance.save()
         return instance
+
 
 class SalonArticleForm(forms.ModelForm):
 
@@ -449,11 +499,9 @@ class SalonArticleForm(forms.ModelForm):
         model = Salon
         fields = ['titre', 'estPublic' ]
 
-    def save(self, request, slug_article):
+    def save(self, request, article):
         instance = super(SalonArticleForm, self).save(commit=False)
-        article = Article.objects.get(slug=slug_article)
         instance.article = article
-        instance.asso = article.asso
         instance.save()
         inscrit = InscritSalon(salon=instance, profil=request.user)
         inscrit.save()
@@ -462,7 +510,11 @@ class SalonArticleForm(forms.ModelForm):
 class AdresseArticleForm(forms.ModelForm):
     class Meta:
         model = AdresseArticle
-        fields = ['titre',]
+        fields = ['titre', 'type_marqueur', 'infos']
+
+        widgets = {
+            'infos': SummernoteWidget(),
+        }
 
     def save(self, article, adresse):
         instance = super(AdresseArticleForm, self).save(commit=False)
@@ -470,3 +522,104 @@ class AdresseArticleForm(forms.ModelForm):
         instance.adresse = adresse
         instance.save()
         return instance
+
+class AdresseArticleChangeForm(forms.ModelForm):
+    class Meta:
+        model = AdresseArticle
+        fields = ['titre', 'type_marqueur', 'infos']
+
+        widgets = {
+            'infos': SummernoteWidget(),
+        }
+
+class DocumentPartageArticleForm(forms.ModelForm):
+    class Meta:
+        model = DocumentPartage
+        fields = ['nom', ]
+
+    def save(self, article):
+        instance = super(DocumentPartageArticleForm, self).save(commit=False)
+
+        max_length = DocumentPartage._meta.get_field('slug').max_length
+        instance.slug = orig = slugify(instance.nom)[:max_length]
+
+        for x in itertools.count(1):
+            if not DocumentPartage.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.article = article
+        instance.save()
+        return instance
+
+class DocumentPartageArticleModifierForm(forms.ModelForm):
+    class Meta:
+        model = DocumentPartage
+        fields = ['nom', ]
+
+class TodoArticleForm(forms.ModelForm):
+    class Meta:
+        model = TodoArticle
+        fields = ['titre', 'description' ]
+
+    def save(self, article):
+        instance = super(TodoArticleForm, self).save(commit=False)
+
+        max_length = TodoArticle._meta.get_field('slug').max_length
+        instance.slug = orig = slugify(instance.titre)[:max_length]
+
+        for x in itertools.count(1):
+            if not TodoArticle.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.article = article
+        instance.save()
+        return instance
+
+
+class TodoArticleChangeForm(forms.ModelForm):
+    class Meta:
+        model = TodoArticle
+        fields = ['titre', 'description']
+
+class ReunionArticleForm(forms.ModelForm):
+
+    class Meta:
+        model = Reunion
+        fields = ['categorie', 'titre', 'description', 'start_time']
+        widgets = {
+            'contenu': SummernoteWidget(),
+            'start_time': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+        }
+
+    def save(self, auteur, article):
+        instance = super(ReunionArticleForm, self).save(commit=False)
+        max_length = DocumentPartage._meta.get_field('slug').max_length
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
+
+        for x in itertools.count(1):
+            if not Reunion.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.article = article
+        instance.auteur = auteur
+        instance.asso = article.asso
+        instance.save()
+        return instance
+
+
+class AssocierReunionArticleForm(forms.Form):
+    reunion = forms.ModelChoiceField(queryset=Reunion.objects.order_by('-start_time'), required=True,
+                              label="Réunion à associer à l'article", )

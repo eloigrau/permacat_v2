@@ -32,53 +32,69 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-LOCALL = False
-try:
-    SECRET_KEY = os.environ['SECRET_KEY']
-    DB_PWD = os.environ['SECRET_KEY_DB']
-    EMAIL_PWD = os.environ['EMAIL_DB']
-    DEBUG = False
-except:
-    LOCALL  = True
-    DB_PWD = ""
-    SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
-    EMAIL_PWD = "test"
-    DEBUG = True
 
-print('LOCALL : ' + str(LOCALL))
+def get_local():
+    try:
+        toto= os.environ['LOCAL_django']
+        return True
+    except:
+        return False
+    return False
+
+LOCALL = get_local()
+DEBUG = get_local()
+
+SECRET_KEY = 'aersd68fgsfdgsdvcbvcb563873gbgfthhfhdjd'
+EMAIL_PWD = "test"
+
+print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))
+
+
 #DEBUG_PROPAGATE_EXCEPTIONS = True
 
 #SECURE_SSL_REDIRECT = False
 #SESSION_COOKIE_SECURE = True
-SESSION_EXPIRE_AT_BROWSER_CLOSE=False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #SECURE_HSTS_SECONDS = 518400
 #SECURE_CONTENT_TYPE_NOSNIFF = True
 #SECURE_BROWSER_XSS_FILTER = True
 #SECURE_SSL_REDIRECT  = True
 #CSRF_COOKIE_SECURE = True
 
+# Database
+if LOCALL:
+    DATABASES = {
+       'default': {
+          'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.db'),
+        }
+    }
+else:
+    DATABASES = dict()
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
-if not LOCALL:
+
+
+if  LOCALL == False:
     SECURE_HSTS_SECONDS = 604800
     SECURE_CONTENT_TYPE_NOSNIFF = True
     #SECURE_BROWSER_XSS_FILTER = True
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    #X_FRAME_OPTIONS = 'DENY'
+    X_FRAME_OPTIONS = 'SAMEORIGIN'
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_COOKIE_PATH = '/;HttpOnly'
 
-ALLOWED_HOSTS = ['www.perma.cat', 'perma.cat']
 #print("local" + str(LOCALL))
 # Application definition
 
 # pip install django-fontawesome django-model_utils django-debug_toolbar django-haystack django-bootstrap django-extensions django-leaflet django-filter django-rest-framework django-scheduler django-widget-tweaks
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -86,7 +102,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.postgres',
     #'django.contrib.gis',
-    'bootstrap','fontawesome','cookielaw_local',
+    'bootstrap','fontawesome_5','cookielaw_local',
     #'haystack',
     'model_utils',
     'bourseLibre',
@@ -94,14 +110,14 @@ INSTALLED_APPS = [
     'jardinpartage',
     'fiches',
     'ateliers',
-    'django_extensions',
-    'django_filters',
+    #'django_extensions',
+    #'django_filters',
     'cal',
-    'carto',
+    #'carto',
     'vote',
     'widget_tweaks',
     'leaflet',
-    'captcha',
+    #'captcha',
     'bourseLibre.captcha_local',
     'local_summernote',
     'actstream',
@@ -112,16 +128,26 @@ INSTALLED_APPS = [
     'avatar',
     'defraiement',
     'agoratransition',
-    'acme_challenge',
+    #'acme_challenge',
     'rest_framework',
     'permagora',
     'jardins',
-
+    'adherents',
+    'phonebook',
+    #'tinymce',
     'dal',
     'dal_select2',
     'webpush',
-    'exo_mentions',
-    #"django_minify_html",
+    #'exo_mentions',
+    #'newsletter',
+    'django_social_share',
+    'qr_code',
+    #'urlshortner',
+    #'fontawesome',
+    #'CarPool',
+    #'WebUI',
+     #'emoji_picker',
+    "django_minify_html",
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',
@@ -136,12 +162,12 @@ INSTALLED_APPS = [
     #'polymorphic',  # We need polymorphic installed for the shop
     'django.contrib.humanize.apps.HumanizeConfig',
     #'django_nyt.apps.DjangoNytConfig',
-    'mptt',
-    'sekizai',
-    'sorl.thumbnail',
+    #'mptt',
+    #'sekizai',
+    #'sorl.thumbnail',
      'sortedm2m',
     'photologue',
-    'anymail',
+    #'anymail',
     #'wiki.apps.WikiConfig',
    # 'wiki.plugins.attachments.apps.AttachmentsConfig',
     #'wiki.plugins.notifications.apps.NotificationsConfig',
@@ -176,19 +202,17 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
+    #'django.template.context_processors.media',
     #"django_minify_html.middleware.MinifyHtmlMiddleware",
-    #"visits.middleware.BotVisitorMiddleware",
-     #"visits.middleware.CounterMiddleware",
     #'django.core.context_processors.request',
-
 ]
 #if LOCALL:
 #    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware',)
@@ -203,7 +227,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
+                #'django.template.context_processors.debug',
                 'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -221,19 +245,6 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'bourseLibre.wsgi.application'
-# Database
-if LOCALL:
-    DATABASES = {
-       'default': {
-          'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.db'),
-        }
-    }
-    ALLOWED_HOSTS = ['127.0.0.1']
-else:
-    DATABASES = dict()
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
 
 
 # except:
@@ -265,8 +276,6 @@ TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 DATE_FORMAT = "l d F Y"
@@ -284,6 +293,8 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 INTERNAL_IPS = ['127.0.0.1']
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 ########################
 import re
@@ -308,20 +319,25 @@ BASE_URL = "https://www.perma.cat"
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files/')
-STATIC_ADD_ROOT = os.path.join(BASE_DIR, 'static_files_ajoutes/')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media_new/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_new')
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 MAX_UPLOAD_SIZE = 20971520
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+WHITENOISE_MANIFEST_STRICT = False
 
-# LOCATION_FIELD = {
-#     'map.provider': 'openstreetmap',
-# }
+STORAGES = {
+    "default": {
+        "BACKEND": 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 DJANGO_ADMIN_LOGS_ENABLED = False
 
 LEAFLET_CONFIG = {
@@ -329,6 +345,7 @@ LEAFLET_CONFIG = {
 'DEFAULT_ZOOM': 10,
 'MIN_ZOOM': 3,
 'MAX_ZOOM': 18,
+'NO_GLOBALS': False,
 }
 
 CACHES = {
@@ -343,7 +360,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale/'),
 )
 
-gettext =  lambda x: x
+gettext = lambda x: x
 LANGUAGES = (
    ('fr', gettext('French')),
    ('ca', gettext('Catalan')),
@@ -372,6 +389,7 @@ SUMMERNOTE_CONFIG = {
         'lang': 'fr-FR',
     },
     "toolbar": [
+        ['emoji', ['emoji']],
         ['style', ['bold', 'italic', 'underline', 'clear', 'style', ]],
         ['fontsize', ['fontsize']],
         ['fontSizes', ['8', '9', '10', '11', '12', '14', '18', '22', '24', '36']],
@@ -480,9 +498,8 @@ BOWER_INSTALLED_APPS = (
 #CRON_CLASSES = [
 #    "bourseLibre.views_notifications.EnvoiMailsCronJob"
 #]
-
 CRONJOBS = [
-    ('0 22 * * 0,2,4,6', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
+    ('0 6 * * 1,4', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
 ]
 
 GRAPH_MODELS = {
@@ -495,16 +512,26 @@ NBMAX_ARTICLES = 5
 
 
 AVATAR_GRAVATAR_DEFAULT = "identicon"
-AVATAR_AUTO_GENERATE_SIZES = (80, 40)
+AVATAR_AUTO_GENERATE_SIZES = (40,)
 AVATAR_MAX_AVATARS_PER_USER = 5
 AVATAR_EXPOSE_USERNAMES = False
+AVATAR_DEFAULT_SIZE = "40"
+#AVATAR_THUMB_FORMAT = 'JPEG'
 
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
-HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 500 }
+HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
 #on met ça a la fin pour importer les settings de production sur le serveur
+
 try:
-    from production import *
+    from .production import *
 except ImportError:
+    print("Impossible d'importer production.py")
     pass
 
+# export POSTGRES_HOST=postgres
+# export POSTGRES_PORT=5432
+# export POSTGRES_DB=marketing
+# export POSTGRES_USER=username
+# export POSTGRES_PASSWORD=password
+# export DATABASE_URL=postgres://username:password@localhost:5432/marketing

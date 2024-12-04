@@ -1,7 +1,7 @@
 
 {% load activity_tags %}
 {% load app_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
   <a href="{% url 'blog:lireArticle' slug=article.slug %}" >
 <div class="card card-block article_carte textcenter d-flex "  style="background-color:{{article.get_couleur}}">
 
@@ -11,7 +11,7 @@
                 <span class="badge badge-success" data-toggle="tooltip" data-placement="bottom" title="Article {%if article.estPublic%}visible par tous les inscrits{%else%}visible par les membres de {{ article.asso }} seulement{%endif%}">
                 {{ article.asso }} </span>&nbsp;
 
-              <span class="badge badge-primary" >{{ article.get_categorie_display }}</span>&nbsp;
+              <span class="badge badge-primary" >{{ article.get_categorie_display2 }}</span>&nbsp;
             </div>
               <div>
                 {%if article.estArchive %}
@@ -19,16 +19,16 @@
                  archivé
                 </span>&nbsp;
                 {% endif %}
-                <span class="badge btn-light"> {%ifnotequal  article.date_creation|date:"DATE_FORMAT" article.date_modification|date:"DATE_FORMAT" %}Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endifnotequal%}
+                <span class="badge btn-light"> {%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %}Dernière modif le {{ article.date_modification|date:"DATE_FORMAT" }}{%else%}Posté le {{ article.date_creation|date:"DATE_FORMAT" }} {%endif%}
                 </span>&nbsp;
                 {% if request.user|is_following:article %}
                 <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant cet article par mail">
-                     {% fontawesome_icon 'bell' %}
+                     {% fa5_icon 'bell' title='abonnement' %}
                 </span>
 
                 {% else %}
                 <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant cet article par mail">
-                     {% fontawesome_icon 'bell-slash' %}
+                     {% fa5_icon 'bell-slash' %}title='abonnement'  %}
                 </span>
                 {% endif %}
               </div>
@@ -43,7 +43,7 @@
             {% if article.album %}
               {% with photo=article.album.get_photo_sample %}
                 {%if photo %}
-               <img src="{{ photo.0.get_thumbnail_url }}" class="thumbnail" alt="{{ photo.0.title }}">
+               <img src="{{ photo.0.get_thumbnail_url }}" class="thumbnail img_album" alt="{{ photo.0.title }}">
             {% endif %}
                 {% endwith %}
             {% endif %}

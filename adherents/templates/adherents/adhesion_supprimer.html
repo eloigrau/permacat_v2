@@ -1,0 +1,30 @@
+{% extends 'base_adherents.html' %}
+{% block title %} - Supprimer une adhesion{% endblock %}
+{% block content %}
+<div class="row ">
+<div class="col-sm-12 textcenter">
+<form id="myForm" action="" method="post">{% csrf_token %}
+    <p>Etes vous sûr.e de vouloir supprimer l'adhesion: "{{ adhesion }}"?</p>
+    <input type="button"  onclick="window.history.back();"  value="Annuler" />
+    <input type="submit" id="btn-valider" value="Confirmer" />
+</form>
+</div>
+</div>
+
+
+
+<script>
+$(document).ready(function() {
+    $('#myForm').one('submit', function() {
+        var btn = $("#btn-valider");
+        btn.prop("disabled", true);
+        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+        setTimeout(function () {
+             btn.removeAttr("disabled")
+             btn.html( `veuillez patientez...` );
+          }, 8000);
+    });
+});
+</script>
+{% endblock %}

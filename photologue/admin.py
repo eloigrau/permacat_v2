@@ -1,13 +1,13 @@
 from django import forms
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import path, include, re_path
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import helpers
 from django.contrib.sites.models import Site
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.translation import ungettext, gettext_lazy  as _
+from django.utils.translation import ngettext, gettext_lazy as _
 
 from .forms import UploadZipForm
 from .models import Album, Photo, PhotoEffect, PhotoSize, Document, Watermark
@@ -25,11 +25,11 @@ class AlbumAdminForm(forms.ModelForm):
 
 
 class AlbumAdmin(admin.ModelAdmin):
-    list_display = ('title', 'asso', 'date_added', 'photo_count')
-    list_filter = ['date_added', 'asso']
+    list_display = ('title', 'asso', 'date_creation', 'photo_count')
+    list_filter = ['date_creation', 'asso']
     if MULTISITE:
         list_filter.append('sites')
-    date_hierarchy = 'date_added'
+    date_hierarchy = 'date_creation'
     prepopulated_fields = {'slug': ('title',)}
     form = AlbumAdminForm
     if MULTISITE:
@@ -56,7 +56,7 @@ class AlbumAdmin(admin.ModelAdmin):
         super().save_related(request, form, *args, **kwargs)
         #orphaned_photos = form.instance.orphaned_photos()
         #if orphaned_photos:
-        #    msg = ungettext(
+        #    msg = ngettext(
         #        'The following photo does not belong to the same site(s)'
         #        ' as the album, so will never be displayed: %(photo_list)s.',
          #       'The following photos do not belong to the same site(s)'
@@ -68,7 +68,7 @@ class AlbumAdmin(admin.ModelAdmin):
     def add_to_current_site(modeladmin, request, queryset):
         current_site = Site.objects.get_current()
         current_site.album_set.add(*queryset)
-        msg = ungettext(
+        msg = ngettext(
             "The album has been successfully added to %(site)s",
             "The galleries have been successfully added to %(site)s",
             len(queryset)
@@ -81,7 +81,7 @@ class AlbumAdmin(admin.ModelAdmin):
     def remove_from_current_site(modeladmin, request, queryset):
         current_site = Site.objects.get_current()
         current_site.album_set.remove(*queryset)
-        msg = ungettext(
+        msg = ngettext(
             "The album has been successfully removed from %(site)s",
             "The selected galleries have been successfully removed from %(site)s",
             len(queryset)
@@ -95,7 +95,7 @@ class AlbumAdmin(admin.ModelAdmin):
         photos = Photo.objects.filter(galleries__in=queryset)
         current_site = Site.objects.get_current()
         current_site.photo_set.add(*photos)
-        msg = ungettext(
+        msg = ngettext(
             'All photos in album %(galleries)s have been successfully added to %(site)s',
             'All photos in galleries %(galleries)s have been successfully added to %(site)s',
             len(queryset)
@@ -110,7 +110,7 @@ class AlbumAdmin(admin.ModelAdmin):
         photos = Photo.objects.filter(galleries__in=queryset)
         current_site = Site.objects.get_current()
         current_site.photo_set.remove(*photos)
-        msg = ungettext(
+        msg = ngettext(
             'All photos in album %(galleries)s have been successfully removed from %(site)s',
             'All photos in galleries %(galleries)s have been successfully removed from %(site)s',
             len(queryset)
@@ -135,8 +135,8 @@ class PhotoAdminForm(forms.ModelForm):
 
 
 class PhotoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date_added',  'image')
-    list_filter = ['date_added',]
+    list_display = ('title', 'date_creation',  'image')
+    list_filter = ['date_creation',]
     if MULTISITE:
         list_filter.append('sites')
     search_fields = ['title', 'slug', 'caption']
@@ -158,7 +158,7 @@ class PhotoAdmin(admin.ModelAdmin):
     def add_photos_to_current_site(modeladmin, request, queryset):
         current_site = Site.objects.get_current()
         current_site.photo_set.add(*queryset)
-        msg = ungettext(
+        msg = ngettext(
             'The photo has been successfully added to %(site)s',
             'The selected photos have been successfully added to %(site)s',
             len(queryset)
@@ -171,7 +171,7 @@ class PhotoAdmin(admin.ModelAdmin):
     def remove_photos_from_current_site(modeladmin, request, queryset):
         current_site = Site.objects.get_current()
         current_site.photo_set.remove(*queryset)
-        msg = ungettext(
+        msg = ngettext(
             'The photo has been successfully removed from %(site)s',
             'The selected photos have been successfully removed from %(site)s',
             len(queryset)
@@ -184,7 +184,7 @@ class PhotoAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
-            url(r'^upload_zip/$',
+            re_path(r'^upload_zip/$',
                 self.admin_site.admin_view(self.upload_zip),
                 name='photologue_upload_zip')
         ]

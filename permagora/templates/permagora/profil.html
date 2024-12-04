@@ -1,10 +1,8 @@
 
 {% extends 'permagora/base_sanscommentaire.html' %}
-{% block headerDocument%}
+{% block header%}
 {% load leaflet_tags %}
 {% load static %}
-{%endblock%}
-{%block header %}
 {% leaflet_js %}
 {% leaflet_css %}
 {%endblock%}
@@ -143,13 +141,7 @@
 <div class="row justify-content-center">
 
   <div class="col-md-6">
-              <style>
-
-            .leaflet-container {  /* all maps */
-                width:  100%;
-                height: 100%;
-            }
-            </style>
+    <style>leaflet-container {width:  100%;height: 90vh;}</style>
               <script type="text/javascript">
                 function map_init_basic (map, options) {
 

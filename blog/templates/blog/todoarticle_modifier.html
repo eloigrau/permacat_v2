@@ -1,0 +1,18 @@
+{% extends 'blog/base_blog.html' %}
+{% block title %} - Modifier un todo{% endblock %}
+{% block subtitle %}
+<h3>Modifier le todo {{form.instance}}</h3>
+{% endblock %}
+{% block content %}
+
+<div class="row-sm-12 row-lg-6 mx-auto">
+    <form id="articleForm" class="form-horizontal" role="form" action="" method="post"
+	enctype="multipart/form-data" >
+	{% csrf_token %}
+        {% include 'form_template.html'%}
+</form>
+</div>
+
+{% endblock %}
+
+{% block comment %}{% endblock %}

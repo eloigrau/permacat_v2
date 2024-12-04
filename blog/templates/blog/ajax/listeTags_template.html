@@ -1,0 +1,25 @@
+
+<script>
+function get_articles_fromtag(url_tag) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {
+          $("#articles_tagges").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+    {% for url, tag in tags %}
+        <span class="btn badge badge-info" onclick="get_articles_fromtag('{{url}}')">{{ tag }}</span>
+    {% endfor %}
+    </div>
+</div>

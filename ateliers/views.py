@@ -12,20 +12,22 @@ from bourseLibre.settings.production import SERVER_EMAIL
 from datetime import timedelta
 
 from django.utils.timezone import now
-
+from django.dispatch import Signal
 from bourseLibre.models import Suivis, Profil
 from bourseLibre.views_base import DeleteAccess
 from bourseLibre.views_admin import send_mass_html_mail
+from django.contrib import messages
 
 from bourseLibre.constantes import Choix as Choix_global
 from actstream import actions, action
 from actstream.models import Action as Actstream_action
+from django.db.models import Q
 
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
 from bs4 import BeautifulSoup
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 
 def accueil(request):
     return redirect("ateliers:index_ateliers")
@@ -89,8 +91,12 @@ def inscriptionAtelier(request, slug):
         inscript = InscriptionAtelier(user=request.user, atelier=atelier)
         inscript.save()
         action.send(request.user, verb='atelier_inscription', action_object=atelier, url=atelier.get_absolute_url(),
-                     description="s'est inscrit.e à l'atelier: '%s'" % atelier.titre)
-    #messages.info(request, 'Vous êtes bien inscrit.e à cet atelier !')
+                     description="s'est inscrit-e à l'atelier: '%s'" % atelier.titre)
+        #act = Actstream_action.objects.model_actions(atelier, actor_content_type=3, actor_object_id=request.user.id)
+        #for a in act:
+        #    a.delete()
+
+    messages.info(request, 'Vous êtes bien inscrit.e à cet atelier, notez le dans votre agenda !')
     return redirect(atelier.get_absolute_url())
 
 @login_required
@@ -136,7 +142,7 @@ def lireAtelier_id(request, id):
 @login_required
 def lireAtelier(request, atelier):
     commentaires = CommentaireAtelier.objects.filter(atelier=atelier).order_by("date_creation")
-    inscrits = [x[0] for x in InscriptionAtelier.objects.filter(atelier=atelier).values_list('user__username')]
+    inscrits = atelier.get_inscrits
 
     if not request.user.is_anonymous:
         user_inscrit = request.user.username in inscrits
@@ -152,21 +158,20 @@ def lireAtelier(request, atelier):
         comment = form_comment.save(commit=False)
         comment.atelier = atelier
         comment.auteur_comm = request.user
-        atelier.date_dernierMessage = comment.date_creation
-        atelier.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(comment.commentaire))[:96] + "..."
         atelier.save()
         comment.save()
-
-        action.send(request.user, verb='atelier_message', url=atelier.get_absolute_url(),
+        url = atelier.get_absolute_url() + "#comm_"+str(comment.id)
+        action.send(request.user, verb='atelier_message', url=url,
                     description="a commenté l'atelier: '%s'" % atelier.titre)
         suiveurs = [Profil.objects.get(username=atelier.auteur), ] + [x.user for x in InscriptionAtelier.objects.filter(atelier=atelier)]
         emails = [suiv.email for suiv in suiveurs]
-        message = "L'atelier <a href='https://www.perma.cat" + atelier.get_absolute_url() + "'>%s</a> a été commenté" %atelier.titre
-        message_notif = "L'atelier %s a été commenté" % atelier.titre
-        action.send(request.user, verb='emails', url=atelier.get_absolute_url(),
+        message = "L'atelier <a href='https://www.perma.cat" + url + "'>%s</a> a été commenté" %atelier.titre
+        message_notif = "L'atelier %s a été commenté par %s" % (atelier.titre, request.user.username)
+        action.send(request.user, verb='emails', url=url,
                     titre="a commenté l'atelier: '%s'" % atelier.titre,  message=message, emails=emails)
+
         payload = {"head": "atelier: '%s'" % atelier.titre, "body": message_notif,
-                   "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url()}
+                   "icon": static('android-chrome-256x256.png'), "url": atelier.get_absolute_url_site + "#comm_"+str(comment.id)}
         for suiv in suiveurs:
             try:
                 send_user_notification(suiv, payload=payload, ttl=7200)
@@ -194,7 +199,7 @@ class ListeAteliers(ListView):
         if "ordreTri" in params:
             self.qs = self.qs.order_by(params['ordreTri'])
         else:
-            self.qs = self.qs.order_by('start_time', 'categorie', '-date_dernierMessage', )
+            self.qs = self.qs.order_by('start_time', 'categorie')
 
         return self.qs.filter(start_time__gte=now(), start_time__isnull=False).order_by('start_time')
 
@@ -210,7 +215,7 @@ class ListeAteliers(ListView):
         context['typeFiltre'] = "aucun"
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="ateliers")
 
-        context['ordreTriPossibles'] = ['-date_creation', '-date_dernierMessage', 'categorie', 'titre' ]
+        context['ordreTriPossibles'] = ['-date_creation', 'categorie', 'titre' ]
 
         if 'categorie' in self.request.GET:
             context['typeFiltre'] = "categorie"
@@ -235,7 +240,7 @@ class ModifierCommentaire(UpdateView):
         return CommentaireAtelier.objects.get(id=self.kwargs['id'])
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
         if self.object.commentaire and self.object.commentaire !='<br>':
             self.object.date_modification = now()
             self.object.save()
@@ -255,3 +260,79 @@ def suivre_ateliers(request, actor_only=True):
     else:
         actions.follow(request.user, suivi, actor_only=actor_only)
     return redirect('ateliers:index_ateliers')
+
+#
+# def copierAteliers(request):
+#     for at in Atelier.objects.all():
+#         if not Atelier_new.objects.filter(slug=at.slug).exists():
+#             at_new = Atelier_new(categorie=at.categorie,
+#                                statut=at.statut,
+#                                titre=at.titre,
+#                                slug=at.slug,
+#                                description=at.description,
+#                                materiel=at.materiel,
+#                                referent=at.referent,
+#                                auteur=at.auteur,
+#                                start_time=at.start_time,
+#                                heure_atelier=at.heure_atelier,
+#                                heure_atelier_fin=at.heure_atelier_fin,
+#                                date_creation=at.date_creation,
+#                                date_modification=at.date_modification,
+#                                tarif_par_personne=at.tarif_par_personne,
+#                                asso=at.asso,
+#                                article=at.article,
+#                                estArchive=at.estArchive,
+#                                nbMaxInscriptions=at.nbMaxInscriptions,
+#                    )
+#             at_new.save(sendMail=False)
+#             for i in InscriptionAtelier.objects.filter(atelier=at):
+#                 InscriptionAtelier_new.objects.create(user=i.user, atelier=at_new, date_inscription=i.date_inscription)
+#
+#             for c in CommentaireAtelier.objects.filter(atelier=at):
+#                 CommentaireAtelier_new.objects.create(auteur_comm=c.auteur_comm, commentaire=c.commentaire,
+#                                                       atelier=at_new,date_creation=c.date_creation)
+#
+#
+#     return redirect('ateliers:index_ateliers')
+#
+#
+#
+# def copierAteliers_inverse(request):
+#     for at in Atelier_new.objects.all():
+#         if not Atelier.objects.filter(slug=at.slug).exists():
+#             at_new = Atelier(categorie=at.categorie,
+#                                statut=at.statut,
+#                                titre=at.titre,
+#                                slug=at.slug,
+#                                description=at.description,
+#                                materiel=at.materiel,
+#                                referent=at.referent,
+#                                auteur=at.auteur,
+#                                start_time=at.start_time,
+#                                heure_atelier=at.heure_atelier,
+#                                heure_atelier_fin=at.heure_atelier_fin,
+#                                date_creation=at.date_creation,
+#                                date_modification=at.date_modification,
+#                                tarif_par_personne=at.tarif_par_personne,
+#                                asso=at.asso,
+#                                article=at.article,
+#                                estArchive=at.estArchive,
+#                                nbMaxInscriptions=at.nbMaxInscriptions,
+#                    )
+#             at_new.save(sendMail=False)
+#             for i in InscriptionAtelier_new.objects.filter(atelier=at):
+#                 InscriptionAtelier.objects.create(user=i.user, atelier=at_new, date_inscription=i.date_inscription)
+#
+#             for c in CommentaireAtelier_new.objects.filter(atelier=at):
+#                 CommentaireAtelier.objects.create(auteur_comm=c.auteur_comm, commentaire=c.commentaire,
+#                                                       atelier=at_new,date_creation=c.date_creation)
+#
+#
+#     return redirect('ateliers:index_ateliers')
+#
+
+@login_required
+def get_qr_code(request, slug):
+    qr_url = Atelier.objects.get(slug=slug).get_absolute_url_site
+    return render(request, 'qr_code_template.html', {'qr_url': qr_url})
+

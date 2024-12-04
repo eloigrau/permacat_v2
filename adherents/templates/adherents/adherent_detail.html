@@ -1,0 +1,218 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+
+<div class="row rowcentre" id="titre">
+    <div class="col-sm-12 textcenter">
+        {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
+        <div class="btn-group">
+            <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_modifier' pk=adherent.pk %}{% endif %}">
+                <button type="button" class="btn btn-sm btn-warning">
+                    &nbsp;Modifier
+                </button>
+            </a>
+        </div>
+        {% endif %}
+        {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
+        <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_supprimer' pk=adherent.pk %}{% endif %}">
+            <button type="button" class="btn btn-sm btn-danger">
+                &nbsp;Supprimer
+            </button>
+        </a>
+        {% endif %}
+    </div>
+</div>
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3> {{adherent}} </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+{% if request.user == adherent.profil %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 textcenter">
+        <a class="btn btn-success" href="{% url 'adherents:mesListesMails' %}">Voir mes abonnements aux listes de diffusion</a>
+    </div>
+</div>
+{% endif %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10">
+        <table class="table table-condensed tablepanier table-striped">
+            <tbody>
+            {% if adherent.profil %}
+            <tr>
+                <td style="width:250px">Profil :</td>
+                <td><a href="{{adherent.profil.get_absolute_url}}">{{adherent.profil}}</a></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td style="width:250px">Nom :</td>
+                <td>{{adherent.nom}}</td>
+            </tr>
+            <tr>
+                <td style="width:250px">Prénom :</td>
+                <td>{{adherent.prenom}}</td>
+            </tr>
+            <tr>
+                <td style="width:250px">Gaec :</td>
+                <td>{{adherent.nom_gaec}}</td>
+            </tr>
+            <tr>
+                <td style="width:250px">Statut :</td>
+                <td>{{adherent.get_statut_display}}</td>
+            </tr>
+            <tr>
+                <td style="width:250px">Email :</td>
+                <td>{{adherent.email}}</td>
+            </tr>
+            {% if adherent.adresse.telephone %}
+            <tr>
+                <td style="width:250px">Telephone *:</td>
+                <td>{{ adherent.adresse.telephone }}</td>
+            </tr>
+            {% endif %}
+
+            <tr>
+                <td style="width:250px">Production :</td>
+                <td>{{adherent.get_production_str}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        {%if request.user.is_superuser or request.user.estmembre_bureau_conf  %}
+        <a href="{% url 'adherents:adherents_modifier_adresse' pk=adherent.adresse.pk %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+            </button>
+        </a>
+        {%endif%}
+        {%if request.user.is_superuser %}
+        <a href="https://www.perma.cat/gestion/bourseLibre/adresse/{{adherent.adresse.id}}/change/">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Admin Modifier
+            </button>
+        </a>
+        {%endif%}
+        <table class="table table-condensed tablepanier table-striped">
+            <tbody>
+            {%if adherent.adresse.rue %}
+            <tr>
+                <td style="width:250px">Adresse ^:</td>
+                <td>{{ adherent.adresse.rue }}</td>
+            </tr>
+            {% endif %}
+            {%if adherent.adresse.commune %}
+            <tr>
+                <td style="width:250px">Commune :</td>
+                <td>{{ adherent.adresse.commune }}</td>
+            </tr>
+            {% endif %}
+            {%if adherent.adresse.code_postal %}
+            <tr>
+                <td style="width:250px">Code postal :</td>
+                <td>{{ adherent.adresse.code_postal }}</td>
+            </tr>
+            {% endif %}
+            {%if adherent.adresse.pays %}
+            <tr>
+                <td style="width:250px">Pays ^:</td>
+                <td>{{ adherent.adresse.pays }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td style="width:200px">lat/lon ^:</td>
+                <td>{{ adherent.adresse.latitude }} / {{ adherent.adresse.longitude }}</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <style>leaflet-container {width:  100%;height: 90vh;}</style>
+        <script type="text/javascript">
+                function map_init_basic (map, options) {
+                var greenIcon = L.icon({
+                      iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
+                      shadowUrl: '{% static 'img/marker-shadow.png' %}',
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 41],
+                      popupAnchor: [1, -34],
+                      shadowSize: [41, 41]
+                });
+                var lat = {{adherent.adresse.get_latitude}};
+                var lon = {{adherent.adresse.get_longitude}};
+                L.marker([lat, lon], {icon: greenIcon}).addTo(map);
+                map.panTo(new L.LatLng(lat, lon));
+            }
+
+
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+    </div>
+</div>
+
+{% if is_membre_bureau or request.user == adherent.profil  %}
+<hr>
+<h5>Cotisations :</h5>
+{% include 'adherents/template_adhesion_liste2.html' %}
+
+{% if is_membre_bureau %}
+<div class="row">
+    <div class="col-md-12 textcenter">
+        <a href="{% url 'adherents:adhesion_creer' adherent.pk %}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="fa fa-plus"></span>&nbsp;Ajouter une cotisation
+            </button>
+        </a>
+    </div>
+</div>
+<hr>
+{% endif %}
+<h5>Listes de diffusion :</h5>
+{% include 'adherents/template_inscriptionmail_liste.html' %}
+
+{% if is_membre_bureau %}
+<div class="row">
+    <div class="col-md-12 textcenter">
+        <a href="{% url 'adherents:inscriptionMail_adherent' adherent.pk %}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="fa fa-plus"></span>&nbsp;Ajouter l'adhérent à une liste
+            </button>
+        </a>
+    </div>
+</div>
+
+<hr>
+<h5>Commentaires :</h5>
+{% include 'adherents/template_comm_adh_liste.html' %}
+
+<div class="row">
+    <div class="col-md-12 textcenter">
+<a href="{% url 'adherents:ajouter_comm_adh' adherent.pk %}">
+    <button type="button" class="btn btn-sm btn-danger">
+        <span class="fa fa-plus"></span>&nbsp;Ajouter un commentaire
+    </button>
+</a>
+    </div>
+</div>
+{% endif %}
+
+
+{% endif %}
+
+{% endblock %}

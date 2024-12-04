@@ -1,18 +1,21 @@
 {% extends 'base_site.html' %}
 {% block subtitle %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 <h4><b>Bienvenue dans la FAQ !</b></h4>
 <h5>(Foire Aux Questions, ou Frequently Asked Questions)</h5>
-	<p class="'textcenter">N'hésitez pas à poser vos questions dans <a href="../forum/article/faq-du-site">l'article consacré</a></p>
+	<p class="textcenter">N'hésitez pas à poser vos questions dans <a href="../forum/article/faq-du-site">l'article consacré</a></p>
+
+	<p class="textcenter">Vous pouvez consulter les tutoriels d'utilisation du site dans <a href="../forum/article/tentative-de-tutoriel-dutilisation-de-la-plateforme#ref-titre">l'article consacré</a></p>
 
 {% endblock %}
 {% block content %}
-
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
 <div class="accordion" id="accordionFaq">
   <div class="card">
     <div class="card-header" >
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed  btn-faq" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed  btn-faq" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseThree">
          Présentation générale...
         </button>
       </h5>
@@ -28,7 +31,7 @@
   <div class="card">
     <div class="card-header" >
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed  btn-faq" type="button" data-toggle="collapse" data-target="#collapse11" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed  btn-faq" type="button" data-toggle="collapse" data-target="#collapse11" aria-expanded="false" aria-controls="collapseThree">
          Comment ça marche ? (Video tuto)
         </button>
       </h5>
@@ -48,7 +51,7 @@
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
-        <button class="btn btn-link btn-faq" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn btn-lightbtn-faq" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
          Comment est organisé le site ? Utilisation du menu principal (en haut)
         </button>
       </h5>
@@ -93,7 +96,7 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" id="heading2">
       <h5 class="mb-0">
-        <button class="btn btn-link btn-faq" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn btn-lightbtn-faq" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapseOne">
          A quoi correspondent les différents pictogrammes utilisés sur le site ?
         </button>
       </h5>
@@ -106,12 +109,12 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
 
         </p>
         <ul>
-        <li> {% fontawesome_icon 'question-circle' %} : cliquer dessus pour avoir une explication </li>
+        <li> {% fa5_icon 'question-circle' %} : cliquer dessus pour avoir une explication </li>
         <li>
     <i class="fa fa-bars"></i> : cliquer dessus pour ouvrir le menu</li>
-        <li> {% fontawesome_icon 'bell' %} : vous êtes abonné.e à cette page, cliquer dessus pour vous désabonner</li>
-        <li> {% fontawesome_icon 'bell-slash' %} : vous n'êtes pas abonné.e à cette page, cliquer dessus pour vous abonner </li>
-        <li> {% fontawesome_icon 'list' %} : cliquer dessus pour voir les personnes qui sont abonnées à cette page</li>
+        <li> {% fa5_icon 'bell' title='abonnement' %}: vous êtes abonné.e à cette page, cliquer dessus pour vous désabonner</li>
+        <li> {% fa5_icon 'bell-slash' %}: vous n'êtes pas abonné.e à cette page, cliquer dessus pour vous abonner </li>
+        <li> {% fa5_icon 'list' %} : cliquer dessus pour voir les personnes qui sont abonnées à cette page</li>
         </ul>
 
       </div>
@@ -121,7 +124,7 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" id="heading8">
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapsealerte" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapsealerte" aria-expanded="false" aria-controls="collapseThree">
          Comment fonctionnent les alertes mails?
         </button>
       </h5>
@@ -148,7 +151,7 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" id="headingMails">
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapsemail" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapsemail" aria-expanded="false" aria-controls="collapseThree">
          Comment ne plus recevoir de mails ?
         </button>
       </h5>
@@ -157,6 +160,7 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
       <div class="card-body">
         <p>Si vous ne souhaitez plus recevoir d'emails de suivi, il vous suffit de cliquer sur les cloches que vous trouverez dans les sections pour lesquelles vous ne voulez plus recevoir d'emails. Par exemple, si vous souhaitez ne plus recevoir d'email au sujet des nouveaux articles, vous cliquez sur la cloche qui se trouve dans "forum > articles"</p>
         <p>Les cloches barrées signifient que vous n'êtes pas abonné</p>
+        <p>Vous pouvez gérer tous vos abonnements sur <a href ="{% url 'mesSuivis' %}">la page dédiée (menu Profil -> abonnements)</a></p>
       </div>
     </div>
   </div>
@@ -164,14 +168,14 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" id="heading4">
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapseThree">
          Qu'est-ce qu'un "Altermarché" ?
         </button>
       </h5>
     </div>
     <div id="collapse4" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
       <div class="card-body">
-       C'est un marché en monnaie alternatives (June, SEL, Soudaqui, troc, etc. - hors euro).
+       C'est un marché en monnaie alternatives (June, SEL, Soudaqui, troc, etc. - hors euro). Un moment convivial de rencontres et d'achange. Sur le site, il correspond à la section "Annonces", pour passer des petites annonces.
       </div>
     </div>
   </div>
@@ -180,7 +184,7 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" id="heading5">
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-light collapsed " type="button" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapseThree">
          Qu'est-ce qu'un "Article" ?
         </button>
       </h5>
@@ -196,7 +200,7 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" id="heading6">
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapseThree">
          Qu'est-ce qu'un "Projet" ?
         </button>
       </h5>
@@ -212,47 +216,18 @@ Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>
   <div class="card">
     <div class="card-header" >
       <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse8" aria-expanded="false" aria-controls="collapseThree">
+        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse8" aria-expanded="false" aria-controls="collapseThree">
          Comment devenir membre du collectif ?
         </button>
       </h5>
     </div>
     <div id="collapse8" class="collapse" aria-labelledby="heading5" data-parent="#accordionFaq">
       <div class="card-body">
-       Il faut en faire la demande par mail aux administrateurs qui changeront votre statut sur le site si vous remplissez les critères (adhésion à l'asso ou autre, suivant le reglement du collectif)   </div>
+          Pour les associations, il faut devenir adhérent. Pour certains collectifs il faut juste cliquer sur le bouton "s'incrire"" sur leur page de présentation. Pour d'autres il faut en faire la demande par mail. </div>
     </div>
   </div>
 
-
-  <div class="card">
-    <div class="card-header" id="headingTwo">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          je n'arrive pas à mettre une photo dans mon article/projet, pourquoi ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionFaq">
-      <div class="card-body">
-        Vérifiez que la taille de votre image ne dépasse pas 1Mo (au mieux : 100ko)
-	  </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" id="headingThree">
-      <h5 class="mb-0">
-        <button class="btn btn-link collapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-         Je n’apparaîs pas ou pas au bon endroit sur la carte ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
-      <div class="card-body">
-       Pour apparaitre sur la carte, il faut avoir coché la case "j'accepte d'apparaitre dans l'annuaire/carte" de votre profil. La position du marqueur sur la carte est calculée d'après l'adresse que vous avez indiquée. A chaque changement d'adresse, la position est recalculée.<br>
-	</div>
-    </div>
-  </div>
 </div>
-
+</div>
+</div>
 {% endblock %}

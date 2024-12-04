@@ -61,10 +61,10 @@ L'association CITE ALTRUISTE pourrait mettre en œuvre le développement et l’
 
 			{% if request.user.adherent_citealt %}
 			<p class="textcenter">
-				 <a class="btn btn-warning" href="{% url 'inscription_citealt' %}"> Je suis inscrit -> Je me désinscris du groupe en cliquant ici</a>
+				 <a class="btn btn-warning" href="{% url 'inscription_citealt' %}"> Tu es inscrit-e -> Tu peux te désinscrire du groupe en cliquant ici</a>
 			</p>
 			<p class="textcenter">
-				 <a class="btn btn-warning" href="https://bit.ly/altruiste" target="_blank"> <i class="fa fa-arrow-right"></i> Remplir le formulaire pour la Ressourcerie 66</a>
+				 <a class="btn btn-warning" href="https://bit.ly/altruiste" target="_blank" rel="noopener noreferrer nofollow"> <i class="fa fa-arrow-right"></i> Remplir le formulaire pour la Ressourcerie 66</a>
 			</p>
 			{% else %}
 			<p class="textcenter">

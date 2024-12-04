@@ -16,12 +16,13 @@ import itertools
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
     type_reunion_asso = {
-        "rtg": ["Réunion équipe", 'Troc de Graine', 'Atelier', 'Rencontre', 'Réunion FestiGraines', 'Autre'],
-        "scic": ['Cercle Ancrage', 'Cercle thématique', 'Cercle Education', 'Cercle Jardins', 'Evenement', 'Agora', 'Graines de joie 1', 'Divers',]
+        "rtg": ["Réunion équipe", 'Troc de Graine', 'Atelier', 'Rencontre', 'FestiGraines', 'Visite de Jardin', 'Autre'],
+        "scic": ['Cercle Ancrage', 'Cercle thématique', 'Cercle Education', 'Cercle Jardins', 'Evenement', 'Divers',],
+        "conf66": ['Réunion CS', 'Evenement', 'Manifestation']
       }
 
     type_reunion = [(str(i), y) for i, y in enumerate([x for x in list(itertools.chain.from_iterable(type_reunion_asso.values()))])]
-
+    type_trajet = ('0', 'Véhicule personnel'), ('1', 'Covoiturage'), ('2', 'Distanciel')
     ordre_tri_reunions = {
                         "Date <":'-start_time',
                         "Date >":'start_time',
@@ -30,7 +31,7 @@ class Choix:
     }
 
 def get_typereunion(asso):
-    return [(str(i), y) for i, y in enumerate([x for x in Choix.type_reunion_asso[asso]])]
+    return [(i, j) for i, j in Choix.type_reunion if j in Choix.type_reunion_asso[asso]]
 
 
 class ParticipantReunion(models.Model):
@@ -65,19 +66,32 @@ class ParticipantReunion(models.Model):
             return 0
 
     def get_url(self, reunion):
-        latlon_1 = str(self.adresse.longitude).replace(',', '.') + "," + str(self.adresse.latitude).replace(',', '.')
-        latlon_2 = str(reunion.adresse.longitude).replace(',', '.') + "," + str(reunion.adresse.latitude).replace(',',
-                                                                                                                  '.')
-        url = "http://router.project-osrm.org/route/v1/driving/" + latlon_1 + ";" + latlon_2 + "?overview=false"
-
+        if not self.adresse.longitude or not self.adresse.latitude:
+            return ""
+        try:
+            latlon_1 = str(self.adresse.longitude).replace(',', '.') + "," + str(self.adresse.latitude).replace(',', '.')
+            latlon_2 = str(reunion.adresse.longitude).replace(',', '.') + "," + str(reunion.adresse.latitude).replace(',',
+                                                                                                     '.')
+            url = "http://router.project-osrm.org/route/v1/driving/" + latlon_1 + ";" + latlon_2 + "?overview=false"
+        except:
+            url = ''
         return url
 
     def get_gmaps_url(self, reunion):
-        latlon_1 = str(self.adresse.latitude).replace(',', '.') + "," + str(self.adresse.longitude).replace(',', '.')
-        latlon_2 = str(reunion.adresse.latitude).replace(',', '.') + "," + str(reunion.adresse.longitude).replace(',','.')
-        url = "https://www.google.com/maps/dir/'" + latlon_1 + "'/'" + latlon_2 +"'"
-
+        if not self.adresse.longitude or not self.adresse.latitude:
+            return ""
+        try:
+            latlon_1 = str(self.adresse.latitude).replace(',', '.') + "," + str(self.adresse.longitude).replace(',', '.')
+            latlon_2 = str(reunion.adresse.latitude).replace(',', '.') + "," + str(reunion.adresse.longitude).replace(',','.')
+            url = "https://www.google.com/maps/dir/'" + latlon_1 + "'/'" + latlon_2 +"'"
+        except:
+            url = ''
         return url
+
+
+    def getDistance_objet(self, reunion):
+        distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
+        return distanceObject
 
     def getDistance_route(self, reunion, recalculer=False):
         distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
@@ -86,6 +100,16 @@ class ParticipantReunion(models.Model):
         else:
             return float(distanceObject.calculerDistance())
 
+    def getDistance_route_allerretour(self, reunion, recalculer=False):
+        distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
+        if distanceObject.type_trajet == '0':
+            return self.getDistance_route(reunion, recalculer)*2.0
+        elif distanceObject.type_trajet == '1':
+            return self.getDistance_route(reunion, recalculer)
+        elif distanceObject.type_trajet == '2':
+            return 0
+        else:
+            return 0
 
     def getDistance_routeTotale(self):
         dist = 0
@@ -93,14 +117,19 @@ class ParticipantReunion(models.Model):
             dist += float(self.getDistance_route(r))
         return round(dist, 1)
 
+    def getDistance_routeTotale_allerretour(self):
+        dist = 0
+        for r in self.reunion_set.all():
+            dist += float(self.getDistance_route_allerretour(r))
+        return round(dist, 1)
 
 class Reunion(models.Model):
     categorie = models.CharField(max_length=30,
                                  choices=(Choix.type_reunion),
-                                 default='0', verbose_name="categorie")
+                                 default='0', verbose_name="Dossier")
     titre = models.CharField(verbose_name="Titre de la rencontre", max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True, verbose_name="Description / compte rendu")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
     start_time = models.DateField(verbose_name="Date de la rencontre", help_text="(jj/mm/an)",
                                   default=timezone.now, blank=True, null=True)
@@ -108,7 +137,7 @@ class Reunion(models.Model):
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
     date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
+    article = models.ForeignKey(Article,  verbose_name="article lié", on_delete=models.CASCADE, null=True, blank=True)
     estArchive = models.BooleanField(default=False, verbose_name="Archiver la réunion")
     participants = models.ManyToManyField(ParticipantReunion,
                                 help_text="Le participant doit etre associé à une reunion existante (sinon créez d'abord la reunion)")
@@ -134,7 +163,7 @@ class Reunion(models.Model):
         dist = 0
         for p in self.participants.all():
             try:
-                dist += p.getDistance_route(self)
+                dist += p.getDistance_route_allerretour(self)
             except:
                 return -1
         return round(dist, 2)
@@ -149,19 +178,25 @@ class Reunion(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.get_logo_nomgroupe_html_taille(20)
+        return self.get_logo_nomgroupe_html_taille(18)
 
-    def get_logo_nomgroupe_html_taille(self, taille=20):
+    def get_logo_nomgroupe_html_taille(self, taille=18):
         return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
 class Distance_ParticipantReunion(models.Model):
     reunion = models.ForeignKey(Reunion, on_delete=models.CASCADE, null=True, blank=True, )
     participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
-    distance = models.TextField(blank=True, null=True, verbose_name="Distance calculée")
+    distance = models.FloatField(blank=True, null=True, verbose_name="Distance aller (en km)", help_text="Mettre juste le nombre de kilomètres (sans ajouter 'km')")
     contexte_distance = models.TextField(blank=True, null=True, verbose_name="Description du contexte")
+    type_trajet = models.CharField(max_length=30,
+                                 choices=(Choix.type_trajet),
+                                 default='0', verbose_name="Type de trajet")
 
     class Meta:
         unique_together = (('reunion', 'participant',), )
+
+    def get_absolute_url(self):
+        return reverse('defraiement:lireReunion', kwargs={'slug': self.reunion.slug})
 
     def save(self, calculerDistance=False, *args, **kwargs):
         ''' On save, update timestamps '''
@@ -172,28 +207,36 @@ class Distance_ParticipantReunion(models.Model):
 
     def getDistance(self):
         if self.distance:
-            return self.distance
+            try:
+                return float(self.distance.replace(",", "."))
+            except:
+                return self.distance
         else:
             return self.calculerDistance()
 
     def calculerDistance(self):
-        try:
-            reponse = requests.get(self.participant.get_url(self.reunion))
-            data = simplejson.loads(reponse.text)
-            if data["code"] != "Ok":
-                raise Exception("erreur de calcul de trajet")
-            routes = data["routes"]
-            self.contexte_distance = str(routes)
-            dist = 100000000
-            for r in routes[0]:
-                if routes[0]["distance"] < dist:
-                    dist = float(routes[0]["distance"])
-            if dist == 100000000:
+        if self.type_trajet == '0':
+            try:
+                reponse = requests.get(self.participant.get_url(self.reunion))
+                data = simplejson.loads(reponse.text)
+                if data["code"] != "Ok":
+                    raise Exception("erreur de calcul de trajet")
+                routes = data["routes"]
+                self.contexte_distance = str(routes)
+                dist = 100000000
+                for r in routes[0]:
+                    if routes[0]["distance"] < dist:
+                        dist = float(routes[0]["distance"])
+                if dist == 100000000:
+                    dist = -1
+            except:
                 dist = -1
-        except:
-            dist = -1
-        self.distance = str(round(dist/1000.0, 2))
-        self.save(calculerDistance=False)
+            self.distance = str(round(dist/1000.0, 2))
+            self.save(calculerDistance=False)
+        elif self.type_trajet == '2':
+            self.distance = 0
+        else:
+            self.distance = 0
         return self.distance
 
 

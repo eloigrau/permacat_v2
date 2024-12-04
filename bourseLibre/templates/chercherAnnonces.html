@@ -1,0 +1,35 @@
+
+{% extends 'bourseLibre/base_produits.html' %}
+{% load fontawesome_5 %}
+{% load activity_tags %}
+{% load blog_filters %}
+{% block title %} - rechercher dans les annonces{% endblock %}
+
+{% block subtitle %}<h5>Résultats de la recherche dans les annonces : "{{recherche}}" ({{produits_list|length}}</h5>
+
+        <div class="row justify-content-center">
+            <div class="col-sm-12">
+             <div class="row no-gutters justify-content-center">
+                 <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_articles' %}" method="get" role = "search">
+                    {% csrf_token %}
+                    <div class="col" style="padding-right:0;">
+                            <input class="form-control border-secondary border-right-0 rounded-0" name="id_recherche" placeholder="{{recherche}}" type="text">
+                                </div>
+                    <div class="col-auto" style="padding-left:0;">
+                                <button class="btn btn-outline-secondary border-left-0 rounded-0 rounded-right" type="submit" >{% fa5_icon 'search' title='chercher' %}</button>
+                    </div>
+                 </form>
+             </div>
+            </div></div>
+{% endblock %}
+{% block content %}
+
+{%if produits_list %}
+
+<div class="card-deck listOffres infinite-container">
+    {% for produit in produits_list %}
+        {% include "bourseLibre/produit_template3.html" with produit=produit %}
+    {% endfor %}
+</div>
+{% endif%}
+{% endblock %}

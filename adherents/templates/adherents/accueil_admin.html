@@ -1,0 +1,55 @@
+{% extends 'base_adherents.html' %}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Adherents</h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <div class="btn-group btn-group-justified">
+         <a href="{% url 'adherents:accueil' %}">
+        <button type="button" class="btn btn-success" >
+               Liste des adherents
+            </button>
+         </a>
+         <a href="{% url 'adherents:adhesion_liste' %}">
+            <button type="button" class="btn btn-success" >
+               liste adhesions
+            </button>
+         </a>
+        {% if request.user.is_superuser %}
+             <a href="{% url 'adherents:import_csv' %}">
+                <button type="button" class="btn btn-success" >
+                   import DB adherents
+                </button>
+             </a>
+             <a href="{% url 'adherents:modif_APE' %}">
+                <button type="button" class="btn btn-success" >
+                   Modif APE
+                </button>
+             </a>
+             <a href="{% url 'adherents:normaliser_adherents' %}">
+                <button type="button" class="btn btn-success" >
+                   normaliser_adherents
+                </button>
+             </a>
+        {% endif %}
+    </div>
+   </div>
+
+   </div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        {{msg|safe}}
+   </div>
+
+   </div>
+
+{% endblock %}
+

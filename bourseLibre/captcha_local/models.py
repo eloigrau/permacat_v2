@@ -1,8 +1,8 @@
 from bourseLibre.captcha_local.conf import settings as captcha_settings
 from django.db import models
 from django.utils import timezone
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.encoding import smart_text
+from six import python_2_unicode_compatible
+from django.utils.encoding import smart_str
 import datetime
 import hashlib
 import logging
@@ -34,10 +34,10 @@ class CaptchaStore(models.Model):
             self.expiration = timezone.now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
         if not self.hashkey:
             key_ = (
-                smart_text(randrange(0, MAX_RANDOM_KEY)) +
-                smart_text(time.time()) +
-                smart_text(self.challenge, errors='ignore') +
-                smart_text(self.response, errors='ignore')
+                smart_str(randrange(0, MAX_RANDOM_KEY)) +
+                smart_str(time.time()) +
+                smart_str(self.challenge, errors='ignore') +
+                smart_str(self.response, errors='ignore')
             ).encode('utf8')
             self.hashkey = hashlib.sha1(key_).hexdigest()
             del(key_)

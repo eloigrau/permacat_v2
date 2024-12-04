@@ -5,7 +5,7 @@ from django.views.generic import ListView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from .models import Photo, Album, Document
 from django.shortcuts import render, redirect
-from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentAssocierArticleForm
+from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, DocumentAssocierArticleForm
 from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -32,6 +32,9 @@ class AlbumListView(ListView):
     def get_queryset(self):
         qs = Album.objects.on_site()
 
+        if 'asso' in self.request.GET:
+            qs = qs.filter(asso__abreviation=self.request.GET["asso"])
+
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):
                 qs = qs.exclude(asso__abreviation=nomAsso)
@@ -42,10 +45,15 @@ class AlbumListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="albums")
+        context['asso_list'] = self.request.user.getListeAbreviationsNomsAssoEtPublic()  # [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+
+        if 'asso' in self.request.GET:
+            context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"]).nom
+            context['asso_courante_abreviation'] = self.request.GET["asso"]
         return context
 
 class AlbumDetailView(DetailView):
-    queryset = Album.objects.on_site().order_by("-date_added")
+    queryset = Album.objects.on_site().order_by("-date_creation")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,7 +63,7 @@ class AlbumDetailView(DetailView):
 
 class AlbumDateView:
     queryset = Album.objects.on_site()
-    date_field = 'date_added'
+    date_field = 'date_creation'
     allow_empty = True
 
 
@@ -102,12 +110,13 @@ class PhotoDetailView(DetailView):
         return context
 
 
-
 class DocListView(ListView):
-    paginate_by = 20
+    paginate_by = 50
 
     def get_queryset(self):
         qs = Document.objects.all().order_by("-date_creation")
+        if "asso" in self.request.GET:
+            qs = qs.filter(asso__abreviation=self.request.GET["asso"])
 
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):
@@ -119,11 +128,20 @@ class DocListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="documents")
+        context['asso_list'] = [(x.abreviation, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+
+        if 'asso' in self.request.GET:
+            context['asso_abreviation'] = self.request.GET['asso']
+            context['asso_courante'] = Asso.objects.get(abreviation= context['asso_abreviation']).nom
+        else:
+            context['asso_courante'] = None
+            context['asso_abreviation'] = None
+
         return context
 
 class PhotoDateView:
     queryset = Photo.objects.on_site()
-    date_field = 'date_added'
+    date_field = 'date_creation'
     allow_empty = True
 
 
@@ -286,23 +304,24 @@ def telechargerDocument(request, slug):
 
 @login_required
 def ajouterDocument(request, article_slug=None):
-    if request.method == 'POST':
-        form = DocumentForm(request, request.POST, request.FILES)
-        if form.is_valid():
-            if article_slug and article_slug != 'None':
-                article = Article.objects.get(slug=article_slug)
-            else:
-                article = None
-            doc = form.save(request, article)
-            action.send(request.user, verb='document_nouveau' + "_" + doc.asso.abreviation, action_object=doc, url=doc.get_absolute_url(),
-                        description="a ajouté le document: '%s'" % doc.titre)
-
-            # Redirect to the document list after POST
-            if article:
-                return redirect(article)
-            return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
+    if article_slug and article_slug != 'None':
+        article = Article.objects.get(slug=article_slug)
     else:
-        form = DocumentForm(request) # A empty, unbound form
+        article = None
+    form = DocumentForm(request, article, request.POST or None, request.FILES or None)
+    if form.is_valid():
+        doc = form.save(request, article)
+        if article :
+            action.send(request.user, verb="article_modifier_" + doc.asso.abreviation, action_object=article, url=article.get_absolute_url(),
+                        description="a ajouté le document: '%s'" % doc.titre)
+        else:
+            action.send(request.user, verb='document_nouveau' + "_" + doc.asso.abreviation, action_object=doc, url=doc.get_absolute_url(),
+                            description="a ajouté le document: '%s'" % doc.titre)
+
+        # Redirect to the document list after POST
+        if article:
+            return redirect(article)
+        return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
 
     # Render list page with the documents and the form
     return render(request, 'photologue/document_ajouter.html', { "form": form})
@@ -332,20 +351,41 @@ def filtrer_documents(request):
         if not getattr(request.user, "adherent_" + nomAsso):
             doc_list = doc_list.exclude(asso__abreviation=nomAsso)
     f = DocumentFilter(request.GET, queryset=doc_list)
+    #f=doc_list
 
     return render(request, 'photologue/document_filter.html', {'filter': f})
 
 class SupprimerDocument(DeleteAccess, DeleteView):
     model = Document
     template_name_suffix = '_supprimer'
-#    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
-        return Document.objects.get(slug=self.kwargs['slug'])
+        self.object = Document.objects.get(slug=self.kwargs['slug'])
+        self.article = self.object.article
+        return self.object
 
     def get_success_url(self):
+        if self.article:
+            return self.article.get_absolute_url()
         return reverse_lazy("photologue:doc-list")
 
+
+class ModifierDocument(UpdateView):
+    model = Document
+    template_name_suffix = '_modifier'
+
+    def get_object(self):
+        self.object = Document.objects.get(slug=self.kwargs['slug'])
+        self.article = self.object.article
+        return self.object
+
+    def get_form(self):
+        return DocumentChangeForm(self.request, **self.get_form_kwargs())
+
+    def get_success_url(self):
+        if self.article:
+            return self.article.get_absolute_url()
+        return reverse_lazy("photologue:doc-list")
 
 
 @login_required

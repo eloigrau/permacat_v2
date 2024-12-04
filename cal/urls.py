@@ -1,9 +1,9 @@
 # cal/urls.py
 
-from django.conf.urls import url
+from django.urls import path, include, re_path
 from . import views
 
 app_name = 'cal'
 urlpatterns = [
-    url(r'', views.agenda, name='agenda'),
+    re_path(r'', views.agenda, name='agenda'),
 ]

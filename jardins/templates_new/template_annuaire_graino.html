@@ -1,0 +1,51 @@
+{% load app_filters %}
+{% load static %}
+
+{% block content %}
+{%include 'pagination_alphabet.html' %}
+
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tablejardins table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th style="min-width:40%;">Nom</th>
+                <th>Type</th>
+                <th>Email</th>
+                <th>Commune</th>
+                <th>Distance</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for grainotheque in grainotheques %}
+        <tr>
+           <td style="width-min:50%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug %}">{{ grainotheque.titre }}</a></td>
+            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.get_categorie_display }}</a></td>
+           <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>
+            {% if not request.user.is_authenticated %}
+                {% if grainotheque.visibilite_annuaire == '0' %}
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
+                 {% else %}
+                <td> - </td>
+                {% endif %}
+            {% else %}
+                {% if grainotheque.visibilite_annuaire == '0' or grainotheque.visibilite_annuaire == '1' %}
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} {% else %}-{% endif %}</td>
+                {% else %}
+                <td> - </td>
+                {% endif %}
+            {% endif %}
+            <td>{{ grainotheque.adresse|distance:request.user }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+    <p class="textcenter textepetit">(**la distance est calculée en km à vol d'oiseau entre l'adresse indiquée sur votre profil, et l'adresse du jardin)</p>
+
+
+{% endblock %}

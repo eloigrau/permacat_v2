@@ -44,7 +44,7 @@ def ajouterArticle(request):
         if form.is_valid():
             article = form.save(request.user)
             url = article.get_absolute_url()
-            #suffix = "_" + article.jardin.nom
+            #suffix = "_" + article.jardin.titre
             action.send(request.user, verb='article_nouveau', action_object=article, url=url,
                         description="a ajouté un article : (Jardins Partagés) '%s'" % article.titre, type="article_jardin_partage")
             return redirect(article.get_absolute_url())

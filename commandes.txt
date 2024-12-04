@@ -21,6 +21,7 @@ sudo service nginx status
 sudo service nginx configtest
 sudo nano /etc/nginx/sites-enabled/permacat
 sudo certbot --expand --nginx -d perma.cat,www.perma.cat
+sudo /etc/init.d/cron restart
 
 #pg_restore -U postgres -h 82.64.236.35 -p 32770 -c -d site data.dump
 pg_dump -h 82.64.236.35 -p 32770 -U postgres -F c -b -v -d -f site permacat.dump
@@ -32,17 +33,29 @@ sudo -u postgres -i
 #scp /home/udjango/permacat/permacat.dump tchenrezi@tchenrezi-N750BU:/home/tchenrezi/
 cp -P 32768 eloi@82.64.236.35:/root/backups/site/pg_dump_site_2021-11-25_02-50-01.backup /home/tchenrezi/
 cp -P 32768 eloi@82.64.236.35:/root/backups/site/pg_dump_site_2021-09-07_02-50-01.backup /home/tchenrezi/backups_site/
+scp -P 32768 /home/tchenrezi/XX.csv  udjango@82.64.236.35:/home/udjango/permacat/
 
 cd /home/udjango/permacat
 git pull
-source /home/udjango/permacat/permacatenv/bin/activate
+source /home/udjango/permacat/permacatenv39/bin/activate
 export DJANGO_SETTINGS_MODULE=bourseLibre.settings.production
 python manage.py migrate
 sudo supervisorctl restart permacat_supervisor
+
+python manage.py changepassword nom_user apres l'export
 
 
 python manage.py crontab add
 python manage.py crontab show
 python manage.py crontab remove
 
-test
+mogrify -format png *.jpeg
+
+
+python manage.py remove_stale_contenttypes --settings=bourseLibre.settings.production
+
+#source /home/tchenrezi/Django/venv3.6/bin/activate
+
+#/home/tchenrezi/Django/venv3.6/bin/python /PycharmProjects/mercatLliure/manage.py migrate --run-syncdb
+#./manage.py clear_index
+#./manage.py update_index

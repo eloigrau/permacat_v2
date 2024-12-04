@@ -1,6 +1,7 @@
-{% extends 'base_defraiement.html' %}
+{% extends 'base_defraiement2.html' %}
 {% load static %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
+{% load blog_filters %}
 
 {% load activity_tags %}
 {%block header %}
@@ -16,26 +17,24 @@
 <h4 class="textcenter">
     Liste des événements (réunions, trocs...)
 </h4>
-<p class="textcenter">
-    <a href="{% url 'defraiement:participants' asso_slug=asso_courante.abreviation %}">
-    <button type="button" class="btn btn-primary btn-sm" >
-            <i class="fa fa-arrow-right"></i> Liste des participants
-        </button>
-    </a>
-</p>
 <div class="row align-items-center reunion_titre_page_index">
     <div class="col-md-4 offset-md-4 textcenter justify-content-center">
 
         <a href="{% url 'defraiement:ajouterReunion' asso_slug=asso_courante.abreviation %}">
         <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter une réunion
+                <i class="fa fa-plus"></i> Ajouter une réunion / un déplacement
+            </button>
+        </a>
+        <a href="{% url 'defraiement:carte_reunions' asso_slug=asso_courante.abreviation %}">
+        <button type="button" class="btn btn-success" >
+                <i class="fa fa-compass"></i> Voir sur une carte
             </button>
         </a>
     </div>
     <div class="col-md-4 textcenter">
 
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -57,24 +56,33 @@
         </div>
     </div>
 </div>
+<hr>
+
+{%endblock%}
+{% block content %}
+<div class="anchor_blank" id="ref-annee"></div>
 <p class="textcenter">
+<a href="?{{ request.GET.urlencode }}&annee=2022#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2022' %} btn-warning {%else%}btn-info{%endif%}">2022</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%}">2023</button></a>
+<a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning {%elif not request.GET.annee %} btn-warning  {% else%}btn-info{%endif%}">2024</button></a>
+ {% comment %}
  <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation%}?" method="get" role = "search">
      <span class="input-group-append">
         <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">ok</button>
     </span>
  </form>
+{% endcomment %}
 </p>
-<hr>
-
-{%endblock%}
-{% block content %}
 <nav class="navbar  navbar-expand-md navbar-light justify-content-center">
 <div class="row justify-content-center">
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
-            <li class="nav-item  ">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}">
+            <li class="nav-item  subnavbar2 align-items-center">
+                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                       <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>Tout</h6>
                       </button>
@@ -82,7 +90,7 @@
             </li>
         {% for type_id, type_nom  in categorie_list %}
             <li class="nav-item  ">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation  %}?categorie={{type_id}}">
+                  <a  href="?{{ request.GET.urlencode }}&categorie={{type_id}}">
                       <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>{{type_nom}}</h6>
                    </button>
@@ -102,7 +110,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
                 {% for ordreTri,type  in ordreTriPossibles.items %}
-                 <a class="dropdown-item"  href="?ordreTri={{type}}">{{ordreTri}}</a>
+                 <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri }}&ordreTri={{type}}">{{ordreTri}}</a>
                     {% endfor %}
                 </div>
     </div></div>
@@ -111,17 +119,24 @@
 
 <div class="infinite-item ">
    <div class="row justify-content-center ">
-    <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelier" >
-            <div></div>
-            <div style="background-color:{{reunion.get_couleur}};
-    font-variant: small-caps;" > {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }} - {{ reunion.titre }}  </div>
+    <div class="col-sm-12 col-ms-12 col-lg-10 textcenter" >
+        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelieDefraiementList" >
+
+            <table style="width:100%; ">
+                <tr>
+            <td style="background-color:{{reunion.get_couleur}}; width:25%;"> {{reunion.get_logo_nomgroupe_html|safe}} {{ reunion.get_categorie_display }}
+            </td>
+            <td style="background-color:{{reunion.get_couleur}}; width:40%;
+    font-variant: small-caps;" > {{ reunion.titre }}
+            </td>
+
+        <td class="textepetit" style=" width:20%; "> {{reunion.participants.all | length}} participant.es, {{reunion.getDistanceTotale}}km</td>
+
             {% if reunion.start_time %}
-        <p class="textepetit">le {{ reunion.start_time|date:"DATE_FORMAT" }}</p>
+        <td class="textepetit " style=" width:15%; ">{{ reunion.start_time|date:"DATE_FORMAT" }}</td>
         {% endif %}
-
-        <p class="textepetit"> {{reunion.participants.all | length}} participants, {{reunion.getDistanceTotale}}km</p>
-
+           </tr>
+            </table>
         </a>
     </div>
    </div>

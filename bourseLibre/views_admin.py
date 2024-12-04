@@ -1,22 +1,37 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from actstream.models import Action, Follow
-from .models import Profil, Conversation, Suivis, Adresse, InscriptionNewsletter
-from .settings import LOCALL
-from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD
+
+from permagora.models import LATITUDE_DEFAUT
+from .models import Profil, Adhesion_asso, Suivis, Adresse, InscriptionNewsletter, InscriptionNewsletterAsso, Asso
+from ateliers.models import Atelier
+from .settings.production import SERVER_EMAIL, EMAIL_HOST_PASSWORD, LOCALL
 from django.http import HttpResponseForbidden
 from django.core.mail.message import EmailMultiAlternatives
 import re
 from django.core import mail
 from actstream import actions
 from bs4 import BeautifulSoup
-from .forms import Adhesion_permacatForm, Adhesion_assoForm, creerAction_articlenouveauForm
+from .forms import Adhesion_permacatForm, Adhesion_assoForm, creerAction_articlenouveauForm, AssocierProfil_adherentConf
 from actstream import action
 from actstream.models import followers
 from datetime import datetime, timedelta
 from django.utils.html import strip_tags
 from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
+from actstream.models import following
+from django.db.models import Q
+
+from enum import Enum
+
+class ErreurSetLatLon(Enum):
+    ECHEC = 0
+    OSM = 1
+    OSM2 = 2
+    GMAPS = 3
+    FRA = 4
+
 
 def getMessage(action):
     message = action.data['message']
@@ -28,7 +43,6 @@ def getMessage(action):
 
 def getListeMailsAlerte():
     actions = Action.objects.filter(verb='emails')
-    print('Nb actions : ' + str(len(actions)))
     messagesParMails = {}
     for action in actions:
         if 'emails' in action.data:
@@ -99,10 +113,11 @@ def nettoyerActions(request):
         return HttpResponseForbidden()
     actions = Action.objects.all()
     for action in actions:
-        try:
-            print(action)
-        except:
+        if action is None or not hasattr(action,'_base_manager'):
             action.delete()
+        else:
+            if not action or not action.actor or not action.verb:
+                action.delete()
     return redirect("bienvenue")
 
 
@@ -121,19 +136,71 @@ def abonnerAdherentsCiteAlt(request, ):
 def nettoyerFollows(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    follows = Follow.objects.filter(user=request.user)
+
+    params = dict(request.GET.items())
+    if "user" in params:
+        follows = Follow.objects.filter(user__username=params["user"])
+    else:
+        follows = Follow.objects.all()
+
+    nombre = 0
+    follow = []
+    follow_bug = []
     for action in follows:
-        if not action.follow_object:
-            pass
-            #action.delete()
+        try:
+            if action is None or not hasattr(action,'_base_manager'):
+                follow.append(["not base", action])
+                nombre += 1
 
-        #if isinstance(action.follow_object, Conversation):
-            # print("follow supprimé " + action)
-            #action.delete()
+            if not action.follow_object:
+                follow.append(["not foll", action])
+                nombre += 1
+        except Exception as e:
+            follow.append(["bug" + str(e), action])
+            nombre += 1
 
-    actions = Action.objects.all()
 
-    return render(request, 'admin/voirActions.html', {'actions': actions, })
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, 'follow':follow})
+
+def nettoyerFollowsValide(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    nombre = 0
+    params = dict(request.GET.items())
+
+    #follows = Follow.objects.filter(id__isnull=True).delete()
+
+    if "user" in params:
+        follows = Follow.objects.filter(user__username=params["user"])
+    else:
+        follows = Follow.objects.all()
+
+    follow_bug = []
+    for action in follows:
+        try:
+            if action is None or not hasattr(action,'_base_manager'):
+                action.delete()
+                nombre += 1
+
+            if not action.follow_object:
+                action.delete()
+                nombre += 1
+
+        except Exception as e:
+            follow_bug.append([str(e), "except"])
+            nombre += 1
+
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre,"follow":follow_bug })
+
+def nettoyerFollowsValideUser(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    nombre = 0
+    params = dict(request.GET.items())
+    if "user" in params:
+        follows = Follow.objects.filter(user__username=params["user"]).delete()
+        nombre = 1
+    return render(request, 'admin/voirNettoyes.html', {'nombre': nombre, "follow": []})
 
 
 def nettoyerHistoriqueAdmin(request):
@@ -160,42 +227,48 @@ def get_articles_a_archiver():
         if article.start_time:
             liste.append(article)
     liste2 = []
-    from jardinpartage.models import Article as Article_jardin, Evenement as Evenement_jardin
-    articles = Article_jardin.objects.filter(estArchive=False, start_time__lte=date_limite)
-    for article in articles:
-        if article.start_time:
-            liste2.append(article)
+    #from jardinpartage.models import Article as Article_jardin, Evenement as Evenement_jardin
+    #articles = Article_jardin.objects.filter(estArchive=False, start_time__lte=date_limite)
+    #for article in articles:
+        #if article.start_time:
+        #    liste2.append(article)
+
+    liste4 = []
+    ateliers = Atelier.objects.filter(estArchive=False, start_time__lte=date_limite)
+    for a in ateliers:
+        if a.start_time:
+            liste4.append(a)
+
     liste3 = []
     for art in liste:
         eve = Evenement.objects.filter(start_time__lt=date_limite, end_time__lte=date_limite, article=art)
         if eve:
             liste3.append(art)
 
-    for art in liste2:
-        eve = Evenement_jardin.objects.filter(start_time__lt=date_limite, end_time__lte=date_limite, article=art)
-        if eve:
-            liste3.append(art)
+    # for art in liste2:
+    #     eve = Evenement_jardin.objects.filter(start_time__lt=date_limite, end_time__lte=date_limite, article=art)
+    #     if eve:
+    #         liste3.append(art)
 
-    return liste, liste2, liste3
+    return liste, liste2, liste3, liste4
 
 
 def voir_articles_a_archiver(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    liste, liste2, liste3 = get_articles_a_archiver()
-    return render(request, 'admin/voirArchivage.html', {'liste': liste, 'liste2': liste2, 'liste3': liste3})
+    listes = get_articles_a_archiver()
+    return render(request, 'admin/voirArchivage.html', {'listes': listes})
 
 
 def archiverArticles(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    liste, liste2, liste3 = get_articles_a_archiver()
-    for art in liste:
-        art.estArchive = True
-        art.save(sendMail=False)
-    for art in liste2:
-        art.estArchive = True
-        art.save(sendMail=False)
+    listes = get_articles_a_archiver()
+    for liste in listes:
+        for art in liste:
+            art.estArchive = True
+            art.save(sendMail=False)
+
     return redirect('voir_articles_a_archiver', )
 
 
@@ -216,9 +289,12 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
     If auth_user and auth_password are set, use them to log in.
     If auth_user is None, use the EMAIL_HOST_USER setting.
     If auth_password is None, use the EMAIL_HOST_PASSWORD setting.
+
+     datatuple = [(subject, message, html_message, sender, recipient), ]
     """
-    #import re
-    #EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    # import re
+    # EMAIL_REGEX = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    # decoupage en tranches de 90 receveurs max par mail
     data = []
     for subject, message, html_message, sender, recipient in datatuple:
         if len(recipient) > 90:
@@ -232,23 +308,37 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
         password=EMAIL_HOST_PASSWORD,
         fail_silently=fail_silently,
     )
-    messages = [
-        EmailMultiAlternatives(subject, message, sender, to=[SERVER_EMAIL, ],
-                               bcc=recipient,
-                               alternatives=[(html_message, 'text/html')],
-                               connection=connection)
-        for subject, message, html_message, sender, recipient in data if recipient != [SERVER_EMAIL,]
-    ]
+    messages = []
+    for subject, message, html_message, sender, recipient in data:
+        if recipient and recipient != [SERVER_EMAIL, ] and recipient != SERVER_EMAIL:
+            if len(recipient) == 1:
+                messages.append(
+                    EmailMultiAlternatives(subject, message, sender, to=recipient,
+                                           alternatives=[(html_message, 'text/html')],
+                                           connection=connection)
+                )
+            else:
+                messages.append(
+                    EmailMultiAlternatives(subject, message, sender, to=[SERVER_EMAIL, ],
+                                           bcc=recipient,
+                                           alternatives=[(html_message, 'text/html')],
+                                           connection=connection)
+                )
+    if LOCALL:
+        return
     return connection.send_messages(messages)
+
 
 def envoyerEmailsRequete(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     listeMails = getListeMailsAlerte()
     send_mass_html_mail(listeMails, fail_silently=False)
+
     supprimerActionsEmails()
     supprimerActionsStartedFollowing()
     return redirect('voirEmails', )
+
 
 def envoyerEmailsTest(request):
     listeMails = []
@@ -256,6 +346,7 @@ def envoyerEmailsTest(request):
         listeMails.append(("titre", "messagetxt", "message_" + str(i), SERVER_EMAIL, [j for j in range(205)]))
 
     send_mass_html_mail(listeMails, fail_silently=False)
+
 
 def envoyerEmails():
     print('Récupération des mails')
@@ -374,23 +465,25 @@ def voirPbProfils(request):
     return render(request, 'admin/voirPbProfils.html', {'pb_profils': pb_profils, 'pb_adresses': pb_adresses})
 
 
-
 def ajouterAdhesion(request, abreviationAsso):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    if abreviationAsso == 'pc' :
+    if abreviationAsso == 'pc':
         form = Adhesion_permacatForm(request.POST or None)
-    elif abreviationAsso == 'scic' :
+    elif abreviationAsso == 'scic':
         form = Adhesion_assoForm(abreviationAsso, request.POST or None)
 
     if form.is_valid():
         form.save()
-        return redirect('listeContacts', abreviationAsso)
+        return redirect(reverse('listeAdhesions', kwargs={"asso": abreviationAsso}))
 
-    return render(request, 'asso/adhesion_ajouter.html', { "form": form,})
 
-    return render(request, 'erreur.html', {'msg':"Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
+    return render(request, 'asso/adhesion_ajouter.html', {"form": form, })
+
+    #return render(request, 'erreur.html', {
+    #    'msg': "Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
+
 
 def creerAction_articlenouveau(request):
     if not request.user.is_superuser:
@@ -406,69 +499,358 @@ def creerAction_articlenouveau(request):
                 article.asso.nom) + "] : '<a href='https://www.perma.cat" + article.get_absolute_url() + "'>" + article.titre + "</a>'"
             emails = [suiv.email for suiv in followers(suivi) if article.auteur != suiv and article.est_autorise(suiv)]
             if emails:
-                action.send(article, verb='emails', url=article.get_absolute_url(), titre=titre, message=message, emails=emails)
+                action.send(article, verb='emails', url=article.get_absolute_url(), titre=titre, message=message,
+                            emails=emails)
             return redirect("bienvenue")
     else:
         form = creerAction_articlenouveauForm()
 
-    return render(request, 'admin/creerAction_articlenouveau.html', { "form": form,})
+    return render(request, 'admin/creerAction_articlenouveau.html', {"form": form, })
 
 
-def getVieuxComptes():
-    date_ajd = datetime.now().date()
-    date_limite = datetime(datetime.now().year - 1, datetime.now().month, day=datetime.now().day)
-    profil_jamais = Profil.objects.filter(last_login__isnull=True)
-    profil_old = Profil.objects.filter(last_login__lt=date_limite)
-    mail = {"titre": "Suppression de votre compte",
-            "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
+def getVieuxComptes(request, avertissement=False):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    if avertissement:
+        date_limite = datetime(datetime.now().year - 1, datetime.now().month - 1, day=datetime.now().day)
+    else:
+        date_limite = datetime(datetime.now().year - 1, datetime.now().month, day=datetime.now().day)
+    profil_jamais = Profil.objects.filter(Q(last_login__isnull=True) & ~Q(username='bot_permacat'))
+    profil_old = Profil.objects.filter(Q(last_login__lt=date_limite) & ~Q(username='bot_permacat'))
+    mail_jamais = {"titre": "[Perma.Cat] Suppression de votre compte",
+            "contenu_html": "<p>Bonjour,</p> <br><p>il semble que vous ne vous êtes jamais connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a>. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.</p> "+ \
+                      " <p>Le site a beaucoup évolué depuis votre inscription, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez.</p> <br><p>Fins Aviat !</p>",
+            "contenu": "Bonjour, il semble que vous ne vous êtes jamais connecté.e à www.perma.cat. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.  "+ \
+                      " Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez. Fins Aviat !",
+            }
+    mail_old = {"titre": "[Perma.Cat] Suppression de votre compte",
+                "contenu_html": "<p>Bonjour,</p> <br><p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.</p> " +\
+                           "<p>Le site a beaucoup évolué depuis votre dernière venue, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez.</p><br> <p>Fins Aviat !</p>",
+               "contenu": "Bonjour, il semble que vous ne vous êtes jamais connecté.e à www.perma.cat. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à contact@perma.cat si besoin ou pour tout commentaire.  " + \
+                          " Le site a beaucoup évolué depuis votre inscription, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours vous réinscrire quand vous voudrez. Fins Aviat !",
+
     }
-    mail_old = {"titre": "Suppression de votre compte",
-            "Contenu": "<p>Bonjour,</p> <p>il semble que vous ne vous êtes pas connecté.e à <a href='https://www.perma.cat'>www.perma.cat</a> depuis plus d'un an. Voulez-vous de l'aide pour y arriver ? N'hésitez pas à envoyer un mail à eloi@perma.cat si besoin ou pour tout commentaire.</p> <p>Le site a beaucoup évolué depuis, n'hésitez pas à venir y faire un tour. Si vous ne vous connectez pas d'ici 1 mois, nous supprimerons votre compte. Mais pas de panique, vous pourrez toujours revenir quand vous voudrez !</p> <p>Fins Aviat !</p>"
-    }
-    return profil_jamais, profil_old, mail, mail_old
+    return profil_jamais, profil_old, mail_jamais, mail_old
 
 def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
-    #todo implementer suppression
-    return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
+    profil_jamais, profil_old, mail, mail_old = getVieuxComptes(request, avertissement=False)
+    # todo implementer suppression
+    return render(request, 'admin/voirProfil_anciens.html',
+                  {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 def envoyerMailVieuxComptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    profil_jamais, profil_old, mail, mail_old = getVieuxComptes()
+    profil_jamais, profil_old, mail_jamais, mail_old = getVieuxComptes(request, avertissement=True)
+    listeMails = [] #subject, message, html_message, sender, recipient
 
-    return render(request, 'admin/voirProfil_anciens.html', {"mail2":mail_old,"mail":mail,'profil_jamais': profil_jamais, 'profil_old': profil_old})
+    listeMails.append([mail_jamais['titre'], mail_jamais['contenu'], mail_jamais['contenu_html'], SERVER_EMAIL, [p.email for p in profil_jamais]])
+
+    listeMails.append([mail_old['titre'], mail_old['contenu'], mail_old['contenu_html'], SERVER_EMAIL, [p.email for p in profil_old]])
+
+    #send_mass_html_mail(listeMails, fail_silently=False)
+
+    return render(request, 'admin/voirProfil_anciens.html',
+                  {"listeMails": listeMails, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
 
-def getMailsNewsletter():
-    #profils_1 = Profil.objects.filter(inscrit_newsletter=True)
+def getMailsNewsletter(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    # profils_1 = Profil.objects.filter(inscrit_newsletter=True)
     profils_2 = InscriptionNewsletter.objects.all()
 
-    #return set([x.email for x in profils_1] + [x.email for x in profils_2])
+    # return set([x.email for x in profils_1] + [x.email for x in profils_2])
     return set([x.email for x in profils_2])
 
+
 def envoiNewsletter2023(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
     titre, contenu_html = get_emailNexsletter2023()
-    emails = getMailsNewsletter()
+    emails = getMailsNewsletter(request)
     contenu_txt = strip_tags(contenu_html)
-    #emails = ("eloi.grau@gmail.com", )
-    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email for email in emails ]) ]
-    #send_mass_html_mail(datatuple)
-    return render(request, 'admin/voirMailsNewletter.html', {"titre":titre, "contenu_txt":contenu_txt, "contenu_html":contenu_html, "emails":emails})
+    # emails = ("eloi.grau@gmail.com", )
+    datatuple = [(titre, contenu_txt, contenu_html, SERVER_EMAIL, [email for email in emails])]
+    # send_mass_html_mail(datatuple)
+    return render(request, 'admin/voirMailsNewletter.html',
+                  {"titre": titre, "contenu_txt": contenu_txt, "contenu_html": contenu_html, "emails": emails})
 
 
 def supprimerHitsAnciens(request):
-    date = datetime.now().date() - timedelta(days=366)
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    date = datetime.now().date() - timedelta(days=int(366 * 1.2))
     hit_counts = HitCount.objects.filter(hit__created__lte=date)
+    for hit in hit_counts:
+        hit.delete()
 
-    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+    hit_counts2 = HitCount.objects.filter(hit__isnull=True)
+    for hit in hit_counts2:
+        hit.delete()
+
+    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
+
 
 def supprimerActionsAnciens(request):
-    date = datetime.now().date() - timedelta(days=365*2)
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    date = datetime.now().date() - timedelta(days=int(366 * 1.2))
     hit_counts = Action.objects.filter(timestamp__lte=date)
     for hit in hit_counts:
         hit.delete()
-    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts":hit_counts, })
+    return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
 
+
+def transforBlogJpToForum(request):
+    from blog.models import Article as Article_blog
+    from jardinpartage.models import Article as Article_jardin, Choix as Choix_jpt
+    from .models import Asso
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    asso_jp = Asso.objects.get(abreviation="jp")
+
+    for art in Article_jardin.objects.all():
+        if not Article_blog.objects.filter(slug=art.slug).exists():
+            new = Article_blog(
+                categorie=art.categorie,
+                titre="[" + Choix_jpt.getNomJardinFromNombre(art.jardin) + "] " + art.titre,
+                auteur=art.auteur,
+                slug=art.slug,
+                contenu=art.contenu,
+                date_creation=art.date_creation,
+                date_modification=art.date_modification,
+                estModifiable=art.estModifiable,
+                asso=asso_jp,
+                estArchive=art.estArchive,
+                start_time=art.start_time,
+                estEpingle=False
+            ).save(sendMail=False)
+
+    return redirect("blog:index_asso", asso='jp')
+
+
+def movePermagoraInscritsToNewsletter(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    users = Profil.objects.filter(adherent_scic=True)
+    asso = Asso.objects.get(abreviation="scic")
+
+    #for u in users:
+    #    InscriptionNewsletterAsso.objects.get_or_create(asso=asso, nom_newsletter="sympathisants", profil=u, email=u.email, )
+    #    if not Adhesion_asso.objects.filter(user=u, asso=asso).exists():
+    #        u.adherent_scic = False
+    #        u.save()
+
+    return redirect('listeContacts', "scic")
+
+
+def reinitialiserAbonnementsPermAgora(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_scic')
+    m = ""
+    for p in Profil.objects.filter(adherent_scic=False):
+        if suivi in following(p):
+            actions.unfollow(p, suivi, send_action=False)
+            m += "<p>"+p.username+" ne suit plus les articles permagora"+"</p>"
+
+    for s in Suivis.objects.filter(nom_suivi__startswith='agora'):
+        s.delete()
+    return render(request, 'admin/admin_message.html', {"msg": m})
+
+
+def inscrireProfilAuGroupe(request, id_profil, asso_abreviation):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    p = Profil.objects.get(id=id_profil)
+    setattr(p, "adherent_" + asso_abreviation, True)
+    p.save()
+    suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + asso_abreviation)
+    actions.follow(p, suivi, send_action=False)
+    return redirect(p.get_absolute_url())
+
+
+def associerProfil_adherent(request, profil_pk):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    profil = Profil.objects.get(pk=profil_pk)
+    form = AssocierProfil_adherentConf(request.POST or None)
+    if form.is_valid():
+        adherent = form.cleaned_data["adherent"]
+        adherent.profil = profil
+        adherent.save()
+        return redirect(adherent)
+
+    return render(request, 'adherents/associer_profil_adherent.html', {'form': form, "profil": profil})
+
+
+def reabonner_tous_profils(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    from .utils import reabonnerProfil_base, reabonnerProfil_salons
+    msg = "DEBUG : pas de reabonnement - modifier le code iciii"
+    err = ""
+    nb = 0
+    for p in Profil.objects.filter(newsletter_envoyee=False).order_by('username'):
+        if p.is_active:
+            try:
+                #reabonnerProfil_base(p)
+                #reabonnerProfil_salons(p)
+                msg += "<p>reabonnement " + str(p) + " ; " + str(p.email) +" ;</p>"
+                p.newsletter_envoyee = True
+                p.save()
+                nb+= 1
+            except Exception as e:
+                err += str(p) + " : " + str(e)
+
+    return render(request, 'message_admin.html', {'message':msg +" <p>œNB : " + str(nb) + "</p>", "erreur":err})
+
+
+def envoyer_emails_reabonnement(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    from django.template.loader import render_to_string
+    from django.utils.html import strip_tags
+
+    template_name = "emails/newsletter_reabonnement_2024.html"
+    convert_to_html_content = render_to_string(
+        template_name=template_name,
+    )
+    sujet = "[Perma.Cat] Newletter spéciale : Réinitialiation des abonnements"
+    message = strip_tags(convert_to_html_content)
+    html_message = convert_to_html_content
+    sender = SERVER_EMAIL
+
+    recipient = [p.email for p in Profil.objects.all()]
+    #recipient = ["eloi.grau@gmail.com", ]
+    datatuple = [(sujet, message, html_message, sender, recipient), ]
+
+    if LOCALL:
+        return render(request, 'message_admin.html', {'message':"<p>envoi test : </p>" + html_message})
+
+    #envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
+
+    return render(request, 'message_admin.html', {'message':"<p>envoi maisl : " + str(envoi_ok) + "</p>", "msg":"<p>envoyé à : </p>" + str(recipient)})
+
+
+
+
+def recalculerAdresses(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    actions = Action.objects.filter(verb='buglatlon')
+    for action in actions:
+        action.delete()
+    add = Adresse.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
+    count=0
+    m=""
+    for a in add[:10]:
+        if a.code_postal:
+            if a.commune == " St Paul deF.":
+                try:
+                    a.delete()
+                    m += "D: " + str(a) +", "
+                    continue
+                except Exception as e:
+                    m += "Erreur " + str(e)
+            res = a.set_latlon_from_adresse()
+            if res:
+                a.save()
+                count+=1
+                m += "O: " + str(a.id) +", "
+            else:
+                m += "N: <a href='" + a.get_update_url+"'>" + str(a.id) +"</a>, "
+
+        #message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
+        #         str(a.latitude) + " " + str(a.longitude) + "</p>"
+
+    message ="Nb ajustés : " +str(count) +"/" +str(add.count()) + " - "+ m
+    return render(request, 'message_admin.html', {'message': message,})
+
+
+def recalculerAdressesConf(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    from adherents.models import Adherent
+
+    actions = Action.objects.filter(verb='buglatlon')
+    for action in actions:
+        action.delete()
+
+    add = Adherent.objects.filter(latitude=LATITUDE_DEFAUT).exclude(code_postal__isnull=True).exclude(code_postal__iexact='')
+    message = ""
+    for a in add:
+        if str(a.adresse.latitude) == str(LATITUDE_DEFAUT):
+            res = a.adresse.set_latlon_from_adresse()
+            if res != 0:
+                a.adresse.save()
+            message += "<p> "+str(a.id)+ ": " +str(a)+ "; res: " + str(ErreurSetLatLon(res)) +  \
+                     str(a.adresse.latitude) + " " + str(a.adresse.longitude) + "</p>"
+
+    return render(request, 'message_admin.html', {'message': message,})
+
+
+
+def nettoyerAdresses(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+
+    supprimer = False
+    if "vrai" in request.GET:
+        supprimer = True
+
+    m = ""
+    for i, add in enumerate(Adresse.objects.all()):
+        if not add.estLieAUnObjet():
+            m +=  "<p>" + add.getStrAll() + 'Supprimer ' + str(not add.estLieAUnObjet()) + "</p>"
+            if supprimer:
+                try:
+                    add.delete()
+                except Exception as e:
+                    m +=  "<p>ERR " + str(e)+ "</p>"
+
+
+    return render(request, 'message_admin.html', {'message': m,})
+
+
+def create_permissions(request):
+    from django.contrib.auth.models import Group, Permission
+
+    for asso in Asso.objects.all():
+        creators = Group(name=asso.abreviation +'_phoning')
+        creators.save()
+
+        creator_permissions = [
+            #Permission.objects.get(codename__iexact='add_projetphoning'),
+            #Permission.objects.get(codename='liste_projetphoning'),
+            #Permission.objects.get(codename='change_projetphoning'),
+            #Permission.objects.get(codename='delete_projetphoning'),
+            #Permission.objects.get(codename='view_projetphoning'),
+            Permission.objects.get(codename='add_adherent'),
+            Permission.objects.get(codename='change_adherent'),
+            #Permission.objects.get(codename='delete_adherent'),
+            Permission.objects.get(codename='view_adherent'),
+            Permission.objects.get(codename='add_paysan'),
+            Permission.objects.get(codename='change_paysan'),
+            Permission.objects.get(codename='delete_paysan'),
+            Permission.objects.get(codename='add_adhesion'),
+            Permission.objects.get(codename='change_adhesion'),
+            #Permission.objects.get(codename='delete_adhesion'),
+            Permission.objects.get(codename='add_listediffusion'),
+            Permission.objects.get(codename='change_listediffusion'),
+            #Permission.objects.get(codename='delete_listediffusion'),
+        ]
+
+        creators.permissions.set(creator_permissions)
+
+        if asso.abreviation != "public":
+            for p in asso.profil_set.all():
+                creators.user_set.add(p)

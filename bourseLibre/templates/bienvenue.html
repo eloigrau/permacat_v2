@@ -1,23 +1,17 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load cookielaw_tags %}
 {%block header %}
  <script src="{% static 'js/cookielaw.js'%}" type="text/javascript"></script>
 {%endblock%}
 {%block bodyEntete%}
-style="background-image:linear-gradient(40deg, white, #f2f2f2);"
+style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 {%endblock%}
 
 {%block banniere %}
-	<div class="row row_banniere_ordi" >
-		<div class="col col-xs-12 d-flex justify-content-around">
-            <img  src="{% static 'img/banniere/accueil_ordi.png' %}" width="224" height="120" alt="Logo_accueil"/>
-            <img  src="{% static 'img/banniere/accueil.png' %}" height="120" alt="Logo_accueil"/>
-        </div>
-    </div>
-	<div class="row row_banniere_smartphone">
+	<div class="row ">
 		<div class="col col-xs-12 d-flex justify-content-center">
             <img class="img_banniere_smartp" src="{% static 'img/banniere/accueil_smart.png' %}" height="120" alt="Logo_accueil"/>
         </div>
@@ -25,21 +19,14 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 {% endblock  %}
 
 {% block subtitle %}
-<div class="row align-items-center row_banniere_ordi">
+{%if request.user.is_authenticated %}
+<div class="row align-items-center">
 	<div class="col-md-12">
-		<h4 class = "textcenter rowbienvenue">{% trans "Benvingut " %} {%if request.user.is_authenticated %} {{request.user.username}} {%endif%} !</h4>
+		<h4 class = "textcenter rowbienvenue">{% trans "Bon dia " %}  {{request.user.username}} !</h4>
 	</div>
 </div>
-
- {% if not request.user.is_authenticated %}
-<div class="row-sm-12 justify-content-center">
-	<div class="col-sm-12 textcenter">
-		<button class="btn btn-lg btn-primary" type="button"><a href="{% url 'presentation_site_pkoi'  %}"> Pourquoi s'inscrire sur Perma.Cat ?</a></button>
-	</div>
-</div>
-{% else %}
-	{% cookielaw_banner %}
 {% endif %}
+{% cookielaw_banner %}
 {%endblock%}
 {% block content %}
 <div class="row">
@@ -74,11 +61,18 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 
 				 {% if not request.user.is_authenticated %}
 
+
 		<div class="row textcenter">
 			<div class="col">
 				<a  href="{% url 'gallerie' %}" ><img class="imgbienvenue" src="{{STATIC_URL}}{{nomImage}}" alt="gallerie" ></a>
 			</div>
 		</div>
+					<hr>
+				<div class="row-sm-12 justify-content-center">
+					<div class="col-sm-12 textcenter">
+						<button class="btn btn-lg btn-primary" type="button"><a href="{% url 'presentation_site_pkoi'  %}"> Pourquoi s'inscrire sur Perma.Cat ?</a></button>
+					</div>
+				</div>
 					<hr>
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">
@@ -95,11 +89,19 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 						  </b>
 					  </div>
 					</div>
+				{% comment %}
 					<hr>
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">
 						  <b> <a href="{% url 'inscription_newsletter' %}" class="btn btn-light btn-radius"><i class="fa fa-envelope-o"></i> S'inscrire à la newsletter</a>
-
+						  </b>
+					  </div>
+					</div>
+				{% endcomment %}
+					<hr>
+					<div class="row" >
+					  <div class="col-sm-12 textcenter">
+						  <b> <a href="{% url 'contact_admins' %}" class="btn btn-light btn-radius"><i class='fa fa-envelope iconleft ' ></i> Nous contacter</a>
 						  </b>
 					  </div>
 					</div>
@@ -112,36 +114,43 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 	</div>
 	<div class="col-sm-12 my-auto">
 		 {% if request.user.is_authenticated %}
-
 					<div class="row" >
 					  <div class="col-sm-12 textcenter" style ="color:#0f7407;">
 						{% if nbNotif %}
-						  <b><a href="{% url 'notifications_news' %}">{% fontawesome_icon 'bell' %}  Vous avez {{nbNotif}} notification{{ nbNotif|pluralize:",s" }} </a></b>
+						  <b><a href="{% url 'notifications_news' %}">{% fa5_icon 'bell' title='abonnement' %} Vous avez {{nbNotif}} notification{{ nbNotif|pluralize:",s" }} </a></b>
 						{%else%}
-						  <b><a href="{% url 'notifications_news' %}">{% fontawesome_icon 'bell' %}  Notifications</a></b>
+						  <b><a href="{% url 'notifications_news' %}">{% fa5_icon 'bell' title='abonnement' %} Notifications</a></b>
 						{%endif%}
 					  </div>
 					</div>
 
 					<hr>
-		<div class="row" >
+
+					<div class="row" >
 					  <div class="col-sm-12 textcenter">
+						  <b><a href="{% url 'blog:acceuil' %}"> Forum</a></b> -
+						  <b><a href="{% url 'marche' %}">Annonces</a></b> -
+						  <b><a href="{% url 'salon_accueil' %}">Salons</a></b> -
+						  <b><a href="{% url 'ateliers:index_ateliers' %}">Ateliers</a></b> -
+						  <b><a href="{% url 'cal:agenda' %}">Agenda</a></b>
+					  </div>
+					</div>
+					<hr>
+		<div class="row justify-content-center" >
+					  <div class="col-sm-12 col-md-10 col-lg-6">
 
 				<div class="card" >
 				  <div class="card-header  textcenter">
-					  <b><a href="{% url 'cal:agenda' %}">{% fontawesome_icon 'calendar' %} Agenda</a></b>
-				  </div>
-				  <div class="card-header  textcenter">
 						<b>	Cette semaine :</b>
 				  </div>
-					<ul class="list-group list-group-flush textcenter">
+					<ul class="list-group list-group-flush">
 
 						{% for jour, liste_ev in evenements_semaine_passes %}
 							<li class="list-group-item" style="background-color:#F2F2F2;">
-						 		<div class=''><span  style='font-variant: small-caps ;'>{{jour|date:"l d F"}}</span></div>
+						 		<div class='textcenter'><span  style='font-variant: small-caps ; '>{{jour|date:"l d F"}}</span></div>
 
 							{% for ev in liste_ev %}
-								<p><a href="{{ev.get_absolute_url}}">{{ev.titre}}</a> </p>
+								<p style="padding:0 0 0 1.8em"><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
 							{% endfor %}
 							</li>
 						{% endfor %}
@@ -155,7 +164,7 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 						{%endif%}
 						 		<div class=''><span  style='font-variant: small-caps ;'>{{jour|date:"l d F"}}</span></div>
 							{% for ev in liste_ev %}
-								<p><a href="{{ev.get_absolute_url}}">{{ev.titre}}</a> </p>
+						<p style="padding:0 0 0 2em"><a href="{{ev.get_absolute_url}}"><span>{{ev.get_logo_nomgroupe_html|safe}}</span> {{ev.titre}}</a> </p>
 							{% endfor %}
 							</li>
 						{% endfor %}
@@ -173,20 +182,6 @@ style="background-image:linear-gradient(40deg, white, #f2f2f2);"
 				</div>
 					  </div>
 			</div>
-
-
-					<div class="row" >
-					  <div class="col-sm-12 textcenter">
-						  <b><a href="{% url 'blog:acceuil' %}">{% fontawesome_icon 'comments' %} Forum</a></b>
-					  </div>
-					</div>
-					<hr>
-					<div class="row" >
-					  <div class="col-sm-12 textcenter">
-						  <b><a href="{% url 'jardinpartage:index' %}">{% fontawesome_icon 'pagelines' %} Jardins Partagés</a></b>
-					  </div>
-					</div>
-				<hr>
 
 		{% endif %}
 

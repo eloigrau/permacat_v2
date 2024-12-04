@@ -12,6 +12,13 @@
     {{ hidden_field }}
   {% endfor %}
 {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
     {% for error in form.non_field_errors %}
         <div class="alert alert-danger">
             <strong>{{ error|escape }}</strong>
@@ -19,7 +26,7 @@
     {% endfor %}
 {% endif %}
 
-  {% for field in form.visible_fields %}
+{% for field in form.visible_fields %}
 <div class="form-group">
 {% with tyype=field|field_type %}
 {% with entete=field|field_entete %}
@@ -28,13 +35,13 @@
     {%endif%}
     {% if form.is_bound %}
         {% if field.errors %}
-            {% if tyype != 'SummernoteWidget'  and tyype != 'CheckboxSelectMultiple' %}
-              {% render_field field class="form-control invalid" %}
               {% for error in field.errors %}
                 <div class="invalid-feedback">
                   {{ error }}
                 </div>
               {% endfor %}
+            {% if tyype != 'SummernoteWidget'  and tyype != 'CheckboxSelectMultiple' %}
+              {% render_field field class="form-control invalid" %}
             {% else %}
                 {{field}}
             {% endif %}
@@ -45,17 +52,33 @@
                 {% else %}
                   {% render_field field class="form-control valid" placeholder=field.label%}
                 {% endif %}
+            {%elif tyype == 'CheckboxSelectMultiple'%}
+              {{field}} {{field.label}}
             {%else%}
                 {{field}}
             {% endif %}
         {% endif %}
     {% else %}
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback">
+                  {{ error }}
+                </div>
+              {% endfor %}
+                {% if tyype != 'SummernoteWidget'  and tyype != 'CheckboxSelectMultiple' %}
+                  {% render_field field class="form-control invalid" %}
+                {% else %}
+                    {{field}}
+                {% endif %}
+            {% endif %}
         {% if tyype != 'SummernoteWidget' and tyype != 'CheckboxSelectMultiple' %}
             {% if tyype == 'CheckboxInput' %}
               {{field}} {{field.label}}
             {% else %}
                 {% render_field field class="form-control" placeholder=field.label %}
             {% endif %}
+        {%elif tyype == 'CheckboxSelectMultiple'%}
+              {{field}} {{field.label}}
         {%else%}
             {{field}}
         {% endif %}

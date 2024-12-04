@@ -4,7 +4,7 @@ Created on 25 mai 2017
 
 @author: tchenrezi
 '''
-from django.shortcuts import  render, redirect
+from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from .forms import ContactForm, InscriptionNewsletterForm, DesInscriptionNewsletterForm
 from .models import Profil, Choix, Asso, Suivis, InscriptionNewsletter, Salon
@@ -19,6 +19,7 @@ from actstream.models import Follow, following
 from bourseLibre.settings.production import SERVER_EMAIL
 from bourseLibre.settings import LOCALL
 from .views import testIsMembreAsso, testIsMembreSalon
+from .utils import reabonnerProfil_base, desabonnerProfil_base, desabonnerProfil_particuliers, reabonnerProfil_salons, desabonnerProfil_salons
 CharField.register_lookup(Lower, "lower")
 
 @login_required
@@ -48,55 +49,65 @@ def suivre_produits(request, actor_only=True):
 
 @login_required
 def sereabonner(request,):
-    for suiv in Choix.suivisPossibles:
-        suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
-
-        if not suivi in following(request.user):
-            actions.follow(request.user, suivi, send_action=False)
-
-    for abreviation in Choix.abreviationsAsso + ['public']:
-        if request.user.est_autorise(abreviation):
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
-            actions.follow(request.user, suivi, send_action=False)
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
-            actions.follow(request.user, suivi, send_action=False)
-
+    reabonnerProfil_base(request.user)
     return redirect('mesSuivis')
+#
+# @login_required
+# def sedesabonner(request,):
+#     for suiv in Choix.suivisPossibles:
+#         suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
+#
+#         if suivi in following(request.user):
+#             actions.unfollow(request.user, suivi, send_action=False)
+#
+#     for abreviation in Choix.abreviationsAsso + ['public']:
+#         if request.user.est_autorise(abreviation):
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
+#             actions.unfollow(request.user, suivi, send_action=False)
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
+#             actions.unfollow(request.user, suivi, send_action=False)
+#
+#     for salon in request.user.get_salons():
+#         actions.unfollow(request.user, salon.getSuivi(), send_action=False)
+#
+#     return redirect('mesSuivis')
 
 @login_required
 def sedesabonner(request,):
-    for suiv in Choix.suivisPossibles:
-        suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
+    desabonnerProfil_base(request.user)
+    return redirect('mesSuivis')
 
-        if suivi in following(request.user):
-            actions.unfollow(request.user, suivi, send_action=False)
+@login_required
+def sedesabonner_salons(request,):
+    desabonnerProfil_salons(request.user)
+    return redirect('mesSuivis')
 
-    for abreviation in Choix.abreviationsAsso + ['public']:
-        if request.user.est_autorise(abreviation):
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
-            actions.unfollow(request.user, suivi, send_action=False)
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
-            actions.unfollow(request.user, suivi, send_action=False)
-
+@login_required
+def sereabonner_salons(request,):
+    reabonnerProfil_salons(request.user)
     return redirect('mesSuivis')
 
 @login_required
 def sedesabonner_particuliers(request,):
+    params = dict(request.GET.items())
+    if "user" in params and request.user.is_superuser:
+        desabonnerProfil_particuliers(Profil.objects.get(username=params["user"]))
+    else:
+        desabonnerProfil_particuliers(request.user)
+    return redirect('mesSuivis')
 
-    follows = Follow.objects.filter(user=request.user)
-    follows_base, follows_agora, follows_autres, follows_forum = [], [], [], []
-    for action in follows:
-        if not action.follow_object:
-            action.delete()
-        elif 'articles' in str(action.follow_object) and not str(action.follow_object) == "articles_jardin":
-            pass
-        elif 'agora' in str(action.follow_object):
-            pass
-        elif str(action.follow_object) in Choix.suivisPossibles:
-            pass
-        else:
-            action.delete()
 
+@login_required
+def supprimerTousMesAbonnement(request):
+    desabonnerProfil_particuliers(request.user)
+    desabonnerProfil_salons(request.user)
+    desabonnerProfil_base(request.user)
+    return redirect('mesSuivis')
+
+@login_required
+def reinitialiserTousMesAbonnement(request):
+    reabonnerProfil_salons(request.user)
+    reabonnerProfil_base(request.user)
     return redirect('mesSuivis')
 
 def inscription_newsletter(request):
@@ -140,7 +151,7 @@ def inscription_permagora(request):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_scic')
         actions.unfollow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_permagora', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe PermAgora")
+                    description="s'est retiré.e du groupe PermAgora")
     else:
         request.user.adherent_scic = True
         request.user.save()
@@ -160,7 +171,7 @@ def inscription_citealt(request):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_citealt')
         actions.unfollow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_citealt', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe Cité Altruiste")
+                    description="s'est retiré.e du groupe Cité Altruiste")
     else:
         request.user.adherent_citealt = True
         request.user.save()
@@ -180,7 +191,7 @@ def inscription_viure(request):
         actions.unfollow(request.user, suivi, send_action=False)
         url = reverse('presentation_asso', kwargs={'asso': 'viure'})
         action.send(request.user, verb='inscription_viure', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe Viure")
+                    description="s'est retiré.e du groupe Viure")
     else:
         request.user.adherent_viure = True
         request.user.save()
@@ -200,7 +211,7 @@ def inscription_bzz2022(request):
         actions.unfollow(request.user, suivi, send_action=False)
         url = reverse('presentation_asso', kwargs={'asso': 'bzz2022'})
         action.send(request.user, verb='inscription_bzz2022', target=asso, url=request.user.get_absolute_url(),
-                    description="s'est retiré du groupe Bzzz")
+                    description="s'est retiré.e du groupe Bzzz")
     else:
         request.user.adherent_bzz2022 = True
         request.user.save()
@@ -209,6 +220,25 @@ def inscription_bzz2022(request):
         action.send(request.user, verb='inscription_bzz2022', target=asso, url=request.user.get_absolute_url(),
                     description="s'est inscrit.e dans le groupe Bzzz")
     return redirect('presentation_asso', asso='bzz2022')
+
+@login_required
+def inscription_jp(request):
+    asso=Asso.objects.get(abreviation='jp')
+    if request.user.adherent_jp:
+        request.user.adherent_jp = False
+        request.user.save()
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_jp')
+        actions.unfollow(request.user, suivi, send_action=False)
+        action.send(request.user, verb='inscription_jp', target=asso, url=request.user.get_absolute_url(),
+                    description="s'est retiré.e du groupe des Jardins Partagés")
+    else:
+        request.user.adherent_jp = True
+        request.user.save()
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_jp')
+        actions.follow(request.user, suivi, send_action=False)
+        action.send(request.user, verb='inscription_jp', target=asso, url=request.user.get_absolute_url(),
+                    description="s'est inscrit.e dans le groupe des Jardins Partagés")
+    return redirect('jardins:accueil')
 
 @login_required
 def contacter_newsletter(request):

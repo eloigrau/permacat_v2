@@ -1,6 +1,7 @@
 from django import forms
 from .models import Suffrage, Vote, Commentaire, Question_majoritaire, Question_binaire, ReponseQuestion_b, ReponseQuestion_m, \
     Proposition_m, Choix
+from .models_simple import Sondage_binaire
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -10,6 +11,7 @@ from bourseLibre.models import Asso
 from django.forms import formset_factory, BaseFormSet
 from django.utils.timezone import now
 from datetime import timedelta
+from bourseLibre.utils import slugify_pcat
 
 class SuffrageForm(forms.ModelForm):
     asso = forms.ModelChoiceField(queryset=Asso.objects.all().all(), required=True, label="Suffrage public ou réservé aux adhérents de l'asso :",)
@@ -47,7 +49,7 @@ class SuffrageForm(forms.ModelForm):
         instance = super(SuffrageForm, self).save(commit=False)
 
         max_length = Suffrage._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Suffrage.objects.filter(slug=instance.slug).exists():
@@ -255,3 +257,20 @@ class VoteChangeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['commentaire'].required = False
+
+
+class Sondage_binaireForm(forms.ModelForm):
+
+    class Meta:
+        model = Sondage_binaire
+        fields = ['question', ]
+
+    def save(self, userProfile, article):
+        instance = super(Sondage_binaireForm, self).save(commit=False)
+        instance.auteur = userProfile
+        instance.article = article
+        instance.save()
+
+        return instance
+
+

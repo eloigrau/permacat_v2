@@ -1,0 +1,77 @@
+{% extends 'base_plantes.html' %}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{%endblock%}
+{% block subtitle %}
+
+ <div class="row rowcentre" id="titre">
+        <div class="col-sm-12 textcenter">
+            {%if request.user.is_superuser or request.user.username == jardin.referent or request.user == jardin.auteur  %}
+            <div class = "btn-group">
+            <a href="{%if request.user.is_authenticated %}{% url 'jardins:jardin_modifier' slug=jardin.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 &nbsp;Modifier
+               </button></a>
+            </div>
+            {% endif %}
+            {%if request.user.is_superuser or request.user == jardin.auteur  %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:jardin_supprimer' slug=jardin.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-danger">
+                 &nbsp;Supprimer le Jardin
+               </button></a>
+            {% endif %}
+            {%if request.user == jardin.auteur %}
+				<a href="{%if request.user.is_authenticated %}{% url 'jardins:voir_autreJardin' %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-info">
+                 &nbsp;Changer de Jardin
+               </button></a>
+            {% endif %}
+        </div>
+ </div>
+<div class="row titre_jardin">
+	<div class="col textcenter" >
+       <h3> {{jardin}} </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="anchor_blank" id="idContenu"></div>
+    <nav class="nav nav-tabs justify-content-center">
+      	<a class="nav-item nav-link active" href="#infos" data-toggle="tab">Infos </a>
+		<a class="nav-item nav-link" href="#contact" data-toggle="tab"> Contact</a>
+      	<a class="nav-item nav-link" href="#plantes" data-toggle="tab"> Plantes</a>
+    </nav>
+
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="infos">
+        <div class="">
+   {% include 'jardins/jardin_detail_infos.html' %}
+  </div>
+</div>
+
+  <div class="tab-pane fade" id="contact">
+    <div class="">
+   {% include 'jardins/jardin_detail_contact.html' %}
+
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="plantes">
+    <div class="">
+   {% include 'jardins/jardin_detail_plantes.html' %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load app_filters %}
+{% load avatar_tags %}
+
+{% block header %}
+{% load static %}
+{% endblock %}
+
+{% block content %}
+
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tablejardin table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th style="min-width:40%;">Nom</th>
+                <th>Type</th>
+                {% if request.user.is_authenticated %}<th>Email</th>{% endif %}
+                <th>Commune</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for grainotheque in grainotheques %}
+        <tr>
+           <td style="width-min:50%;" class="titre_forum"><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug %}">{{ grainotheque.titre }}</a></td>
+            <td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.get_categorie_display }}</a></td>
+           {% if request.user.is_authenticated %}<td><a href="{% url 'jardins:grainotheque_lire' grainotheque.slug  %}">{{ grainotheque.email_contact }}</a></td>{% endif %}
+            {% if not request.user.is_authenticated %}
+                {% if grainotheque.visibilite_annuaire == '0' %}
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} ({{ grainotheque|distance:request.user }} km){% else %}-{% endif %}</td>
+                 {% else %}
+                <td> - </td>
+                {% endif %}
+            {% else %}
+                {% if grainotheque.visibilite_annuaire == '0' or grainotheque.visibilite_annuaire == '1' %}
+                <td>{%if grainotheque.adresse.commune %}{{ grainotheque.adresse.commune }} ({{ grainotheque|distance:request.user}} km) {% else %}-{% endif %}</td>
+                {% else %}
+                <td> - </td>
+                {% endif %}
+            {% endif %}
+            <td></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+    <p class="textcenter textepetit">(*qui ont accepté d'apparaitre dans l'annuaire)</p>
+
+
+{% endblock %}

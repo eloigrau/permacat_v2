@@ -4,14 +4,14 @@
 <h4>Liste des articles à archiver ({{liste|length}}, {{liste2|length}}, )</h4>
 {% endblock %}
 {% block content %}
+{% for liste in listes %}
 <div class="row justify-content-center">
-<p>Articles</p>
 <div class="card-deck notif ">
 <div class="card notif3 d-md-flex">
   <ul class="list-group list-group-flush " >
 
 {% for article in liste %}
-      <li class="list-group-item "  style=""  >
+      <li class="list-group-item "    >
          <a href="{{article.get_absolute_url}}"> {{article}}, {{article.start_time}}, {{article.end_time}}</a>
       </li>
 {%endfor%}
@@ -20,22 +20,8 @@
 </div>
 </div>
 </div>
-<p>Jardin</p>
-<div class="row justify-content-center">
-<div class="card-deck notif ">
-<div class="card notif3 d-md-flex">
-  <ul class="list-group list-group-flush " >
-
-{% for article in liste2 %}
-      <li class="list-group-item "  style=""  >
-         <a href="{{article.get_absolute_url}}"> {{article}}, {{article.start_time}}, {{article.end_time}}</a>
-      </li>
 {%endfor%}
 
-  </ul>
-</div>
-</div>
-</div>
 
 
 <div class="row justify-content-center"

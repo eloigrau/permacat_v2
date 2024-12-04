@@ -1,0 +1,15 @@
+{% extends 'base_asso.html' %}
+{% load static %}
+{% block title %} - Accueil{% endblock %}
+{% block subtitle %}
+
+<h2 class = "textcenter rowbienvenue">Confédération Paysanne des Pyrénées Orientales</h2>
+{% include "asso/presentation_asso_template.html" with adherent=request.user.adherent_conf66 assos='conf66' %}
+{% endblock %}
+
+<p class = "textcenter"> <a class="btn btn-success" href=https://www.helloasso.com/associations/confederation-paysanne-66/adhesions/formulaire-d-adhesion-conf-66""> Adhérer en ligne </a></p>
+{% block content %}
+<div class="container">
+	<iframe id="haWidget" allowtransparency="true" scrolling="auto" src="https://pyrenees-orientales.confederationpaysanne.fr/" style="width:100%;height:100vh;border:none;" onload="window.scroll(0, this.offsetTop)"></iframe>
+</div>
+{% endblock %}

@@ -143,8 +143,6 @@ TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 DATE_FORMAT = "l d F Y"
@@ -292,6 +290,7 @@ SUMMERNOTE_CONFIG = {
         'lang': 'fr-FR',
 },
 "toolbar": [
+    ['insert', ['emoji']],
     ['style', ['bold', 'italic', 'underline', 'clear']],
     ['fontsize', ['fontsize']],
     ['fontSizes', ['8', '9', '10', '11', '12', '14', '18', '22', '24', '36']],
@@ -311,6 +310,7 @@ SUMMERNOTE_CONFIG = {
     ['link', ['linkDialogShow', 'unlink']]
   ],
   "air": [
+    ['insert', ['emoji']],
     ['color', ['color']],
     ['font', ['bold', 'underline', 'clear']],
     ['para', ['ul', 'paragraph']],
@@ -376,5 +376,5 @@ if not LOCALL:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    X_FRAME_OPTIONS = 'DENY'
+    X_FRAME_OPTIONS = 'SAMEORIGIN'
     SESSION_EXPIRE_AT_BROWSER_CLOSE=False

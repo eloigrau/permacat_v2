@@ -19,7 +19,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.urls import reverse
-from django.utils.encoding import force_text, smart_str, filepath_to_uri
+from django.utils.encoding import force_str, smart_str, filepath_to_uri
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from io import BytesIO
@@ -37,6 +37,7 @@ from actstream.models import followers
 from bourseLibre.settings import LOCALL
 from actstream import action
 from hitcount.models import HitCount
+#from urlshortner.utils import shorten_url
 
 logger = logging.getLogger('photologue.models')
 
@@ -71,7 +72,7 @@ if PHOTOLOGUE_PATH is not None:
         get_storage_path = getattr(module, parts[-1])
 else:
     def get_storage_path(instance, filename):
-        fn = unicodedata.normalize('NFKD', force_text(filename)).encode('ascii', 'ignore').decode('ascii')
+        fn = unicodedata.normalize('NFKD', force_str(filename)).encode('ascii', 'ignore').decode('ascii')
         return os.path.join(PHOTOLOGUE_DIR, 'photos', fn)
 
 # Support CACHEDIR.TAG spec for backups for ignoring cache dir.
@@ -163,7 +164,7 @@ class TagField(models.CharField):
 
 
 class Album(models.Model):
-    date_added = models.DateTimeField(_('date published'),
+    date_creation = models.DateTimeField(_('date published'),
                                       default=now)
     title = models.CharField(_('title'),
                              max_length=250,
@@ -172,7 +173,7 @@ class Album(models.Model):
                             unique=True,
                             max_length=250,
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
-    description = models.TextField(_('description'),
+    description = models.TextField(_('Description'),
                                    blank=True)
 
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
@@ -190,8 +191,8 @@ class Album(models.Model):
     objects = AlbumQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
+        ordering = ['-date_creation']
+        get_latest_by = 'date_creation'
         verbose_name = _('album')
         verbose_name_plural = _('albums')
 
@@ -222,8 +223,12 @@ class Album(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def titre(self):
+        return self.title
+
     def get_absolute_url(self):
-        return reverse('photologue:album', args=[self.slug])
+        return reverse('photologue:album', args=[self.slug]) + "#ref-titre"
 
     def get_absolute_url_photos(self):
         photos = self.photos.all()
@@ -304,27 +309,33 @@ class Document(models.Model):
     def get_delete_url(self):
         return reverse("photologue:supprimerDocument", kwargs={"slug":self.slug})
 
+    def get_change_url(self):
+        return reverse("photologue:modifierDocument", kwargs={"slug":self.slug})
+
     def save(self, sendMail=True, *args, **kwargs):
         emails = []
         if not self.id:
             self.date_creation = timezone.now()
             if sendMail:
                 suivi, created = Suivis.objects.get_or_create(nom_suivi='albums')
-                titre = "Nouveau document"
-                message = "Un document a été ajouté : ["+ self.asso.nom +"] '<a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>'"
                 emails = [suiv.email for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
-                if emails and not LOCALL:
-                    creation = True
+
 
         retour = super().save(*args, **kwargs)
 
         if emails:
+            titre = "Nouveau document"
+            message = "Un document a été ajouté : [" + self.asso.nom + "] '<a href='https://www.perma.cat" + self.doc.url + "'>" + self.titre + "</a>'"
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
 
         return retour
 
     def get_absolute_url(self):
-        return reverse('photologue:doc-list')
+        if self.article:
+            return self.article.get_absolute_url()
+        #return reverse('photologue:doc-list')
+        return self.doc.path
+
 
     def est_autorise(self, user):
         if not self.asso:
@@ -336,6 +347,10 @@ class Document(models.Model):
     @property
     def getHitNumber(self,):
         return HitCount.objects.get_for_object(self).hits
+
+    @property
+    def get_logo_nomgroupe_html(self,):
+        return self.asso.get_logo_nomgroupe_html_taille(taille=18)
 
 class ImageModel(models.Model):
     image = models.ImageField(_('image'),
@@ -396,7 +411,7 @@ class ImageModel(models.Model):
         return '/'.join([os.path.dirname(self.image.url), "cache"])
 
     def image_filename(self):
-        return os.path.basename(force_text(self.image.name))
+        return os.path.basename(force_str(self.image.name))
 
     def _get_filename_for_size(self, size):
         size = getattr(size, 'name', size)
@@ -477,7 +492,7 @@ class ImageModel(models.Model):
                 box = (int(xd), int(y_diff), int(x), int(y_diff + new_height))
             else:
                 box = (int(x_diff), int(y_diff), int(x_diff + new_width), int(y_diff + new_height))
-            im = im.resize((int(x), int(y)), Image.ANTIALIAS).crop(box)
+            im = im.resize((int(x), int(y)), Image.Resampling.LANCZOS).crop(box)
         else:
             if not new_width == 0 and not new_height == 0:
                 ratio = min(float(new_width) / cur_width,
@@ -493,7 +508,7 @@ class ImageModel(models.Model):
                     new_dimensions[1] > cur_height:
                 if not photosize.upscale:
                     return im
-            im = im.resize(new_dimensions, Image.ANTIALIAS)
+            im = im.resize(new_dimensions, Image.Resampling.LANCZOS)
         return im
 
     def create_size(self, photosize, recreate=False):
@@ -621,7 +636,7 @@ class Photo(ImageModel):
                             max_length=250,
                             help_text=_('A "slug" is a unique URL-friendly title for an object.'))
     caption = models.TextField(_('caption'), blank=True)
-    date_added = models.DateTimeField(_('date added'), default=now)
+    date_creation = models.DateTimeField(_('date added'), default=now)
     sites = models.ManyToManyField(Site, verbose_name=_('sites'),blank=True)
 
 
@@ -630,8 +645,8 @@ class Photo(ImageModel):
     objects = PhotoQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-date_added']
-        get_latest_by = 'date_added'
+        ordering = ['-date_creation']
+        get_latest_by = 'date_creation'
         verbose_name = _("photo")
         verbose_name_plural = _("photos")
 
@@ -651,7 +666,7 @@ class Photo(ImageModel):
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('photologue:photo', kwargs={'slug':self.slug})
+        return reverse('photologue:photo', kwargs={'slug':self.slug}) + "#photos"
 
     def get_album(self):
         albums = self.albums.filter()

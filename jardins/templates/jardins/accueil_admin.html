@@ -1,0 +1,70 @@
+{% extends 'base_plantes.html' %}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Jardins</h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <div class="btn-group btn-group-justified">
+         <a href="{% url 'jardins:plantes' %}">
+        <button type="button" class="btn btn-success" >
+               Liste des plantes (à partager)
+            </button>
+         </a>
+            {% if request.user.is_superuser %}
+         <a href="{% url 'jardins:import_db_inpn_0' %}?j_min=0&j_max=500000">
+        <button type="button" class="btn btn-success" >
+               import DB Plantes
+            </button>
+         </a>
+         <a href="{% url 'jardins:import_db_inpn_1' %}">
+        <button type="button" class="btn btn-success" >
+               import DB 1
+            </button>
+         </a>
+         <a href="{% url 'jardins:import_db_inpn_2' %}">
+        <button type="button" class="btn btn-success" >
+               import DB 2
+            </button>
+         </a>
+         <a href="{% url 'jardins:import_db_inpn_3' %}">
+        <button type="button" class="btn btn-success" >
+               import DB 3
+            </button>
+         </a>
+         <a href="{% url 'jardins:import_db_inpn_4' %}">
+        <button type="button" class="btn btn-success" >
+               import DB 4
+            </button>
+         </a>
+         <a href="{% url 'jardins:import_grainotheque_rtg_1' %}">
+        <button type="button" class="btn btn-success" >
+              import_rtg
+            </button>
+         </a>
+         <a href="{% url 'jardins:import_grainotheque_rtg_2' %}">
+        <button type="button" class="btn btn-success" >
+              import_rtg 2
+            </button>
+         </a>
+            {% endif %}
+    </div>
+   </div>
+
+   </div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        {{msg|safe}}
+   </div>
+
+   </div>
+
+{% endblock %}
+

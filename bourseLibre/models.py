@@ -4,7 +4,6 @@ import math
 import os
 import itertools
 from datetime import date
-
 from django.utils.safestring import mark_safe
 import django_filters
 import requests
@@ -24,15 +23,17 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from django.core.mail import send_mail
 from .constantes import Choix, DEGTORAD
-from .settings.production import SERVER_EMAIL
+from .settings.production import SERVER_EMAIL, LOCALL
 import simplejson
 from datetime import datetime
 from webpush import send_user_notification
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from taggit.managers import TaggableManager
+from django.templatetags.static import static
 import re
+from django.utils import timezone
+from django.core.exceptions import MultipleObjectsReturned
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
-
 
 def get_categorie_from_subcat(subcat):
     for type_produit, dico in Choix.choix.items():
@@ -46,12 +47,12 @@ LONGITUDE_DEFAUT = '2.8954'
 #from django.contrib.gis.db import models as models_gis
 class Adresse(models.Model):
     rue = models.CharField(max_length=200, blank=True, null=True)
-    code_postal = models.CharField(max_length=5, blank=True, null=True, default="66000")
+    code_postal = models.CharField(max_length=5, blank=True, null=True, default="")
     commune = models.CharField(max_length=50, blank=True, null=True, default="")
     latitude = models.FloatField(blank=True, null=True, default=LATITUDE_DEFAUT)
     longitude = models.FloatField(blank=True, null=True, default=LONGITUDE_DEFAUT)
-    pays = models.CharField(max_length=12, blank=True, null=True, default="France")
-    telephone = models.CharField(max_length=15, blank=True)
+    pays = models.CharField(max_length=12, blank=True, null=True, default="Catalunya")
+    telephone = models.CharField(max_length=25, blank=True)
 
 
     def save(self, recalc=False, *args, **kwargs):
@@ -60,15 +61,44 @@ class Adresse(models.Model):
             self.set_latlon_from_adresse()
         return super(Adresse, self).save(*args, **kwargs)
 
+    @property
     def get_absolute_url(self):
-        return reverse_lazy('profil_courant')
+        return reverse('profil_courant')
+
+    @property
+    def get_update_url(self):
+        return reverse('modifier_adresse',  kwargs={'adresse_pk':self.pk})
+
+    @property
+    def get_delete_url(self):
+        return reverse('supprimer_adresse',  kwargs={'adresse_pk':self.pk})
+
+    @property
+    def get_url_map(self):
+        return reverse('voirLieu',  kwargs={'id_lieu': self.id})
 
     def __str__(self):
         if self.commune:
-            return "("+str(self.id)+") " + self.commune
+            return "("+str(self.id)+") " + str(self.commune)
         else:
-            return "("+str(self.id)+") "+self.code_postal
+            return "("+str(self.id)+") " + str(self.code_postal)
 
+    def getStrAll(self):
+        return  "(%d) %s %s %s %s" %(self.id, self.rue, self.commune, self.code_postal, self.telephone)
+
+    def estLieAUnObjet(self):
+        if hasattr(self, 'profil'):
+            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0 or self.profil is not None
+        else:
+            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0
+
+    @property
+    def getGoogleUrl(self):
+        return "https://maps.google.com/maps?q="+self.getLatLon_html +"&entry=gps"
 
     def getDistance(self, adresse):
         try:
@@ -87,14 +117,14 @@ class Adresse(models.Model):
     def get_adresse_str(self):
         if self.commune:
             adress = ''
-            if self.rue:
-                adress += self.rue
-            if self.code_postal:
-                adress += ", " + self.code_postal
-            if self.commune:
-                adress += ", " + self.commune
             if self.telephone:
-                adress += " (" + self.telephone +")"
+                adress += "Tel : " + self.telephone +" ,"
+            if self.rue:
+                adress += self.rue + ", "
+            if self.code_postal:
+                adress += self.code_postal + ", "
+            if self.commune:
+                adress += self.commune
             return adress
         else:
             return str(self.latitude) + ", " + str(self.longitude)
@@ -102,60 +132,101 @@ class Adresse(models.Model):
     def __unicode__(self):
         return self.__str__()
 
-    def set_latlon_from_adresse(self):
+
+    def set_lonlat_getadresse(self):
         address = ''
         if self.rue:
             address += self.rue + "+"
         address += str(self.code_postal)
         if self.commune:
             address += "+" + self.commune
-        address = address.replace(" ", "+")
+        address = address.replace("  ", "+").replace(" ", "+").replace("++", "+")
+        return address
 
+    def set_latlon_from_adresse_gmail(self, adresse):
+        api_key = os.environ["GAPI_KEY"]
+        api_response = requests.get(
+            'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
+        api_response_dict = api_response.json()
+
+        if api_response_dict['status'] == 'OK':
+            self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
+            self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
+            return 3
+        else:
+            action.send(self, verb='buglatlon', description="gmail_"+str(api_response_dict))
+
+    def set_latlon_from_adresse_osm(self, adresse):
+        url = "http://nominatim.openstreetmap.org/search?q=" + adresse + "&format=json"
+        reponse = requests.get(url)
+        if reponse.status_code != 200 and reponse.status_code != 403:
+            action.send(self, verb='buglatlon', description="2_osm"+str(reponse)+" / "+str(url))
+        data = simplejson.loads(reponse.text)
+        self.latitude = float(data[0]["lat"])
+        self.longitude = float(data[0]["lon"])
+
+    def set_latlon_from_adresse_france(self, adresse):
+        url = "https://api-adresse.data.gouv.fr/search?q=" + adresse + "&format=json&postcode="+str(self.code_postal)+"&lat="+str(LATITUDE_DEFAUT) +"&lon="+str(LONGITUDE_DEFAUT)
+        reponse = requests.get(url)
+        if reponse.status_code != 200 and reponse.status_code != 403 and reponse.status_code != 400:
+            action.send(self, verb='buglatlon', description="1fr_"+str(reponse)+" / "+str(url))
+        data = simplejson.loads(reponse.text)
+        self.latitude = float(data['features'][0]["geometry"]["coordinates"][0])
+        self.longitude = float(data['features'][0]["geometry"]["coordinates"][1])
+
+    def set_latlon_from_adresse(self):
+        if not self.code_postal and not self.commune:
+            self.latitude = LATITUDE_DEFAUT
+            self.longitude = LONGITUDE_DEFAUT
+            return 0
+        adresse = self.set_lonlat_getadresse()
         try:
-            url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-            reponse = requests.get(url)
-            data = simplejson.loads(reponse.text)
-            self.latitude = float(data[0]["lat"])
-            self.longitude = float(data[0]["lon"])
-        except:
+            self.set_latlon_from_adresse_osm(adresse)
+            return 1
+        except Exception as e:
+            address = str(self.code_postal)
+            if self.commune:
+                address += "+" + self.commune
             try:
-                address = str(self.code_postal)
-                if self.commune:
-                    address += "+" + self.commune
-                address = address.replace(" ", "+")
-                url = "http://nominatim.openstreetmap.org/search?q=" + address + "&format=json"
-                reponse = requests.get(url)
-                data = simplejson.loads(reponse.text)
-                self.latitude = float(data[0]["lat"])
-                self.longitude = float(data[0]["lon"])
-            except:
+                self.set_latlon_from_adresse_osm(address)
+                return 2
+            except Exception as e2:
                 try:
-                    api_key = os.environ["GAPI_KEY"]
-                    api_response = requests.get(
-                        'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
-                    api_response_dict = api_response.json()
+                    self.set_latlon_from_adresse_gmail(adresse)
+                    return 3
+                except Exception as e3:
+                    try:
+                        self.set_latlon_from_adresse_france(adresse)
+                        return 4
+                    except Exception as e3:
+                        self.latitude = LATITUDE_DEFAUT
+                        self.longitude = LONGITUDE_DEFAUT
+        return 0
 
-                    if api_response_dict['status'] == 'OK':
-                        self.latitude = float(api_response_dict['results'][0]['geometry']['location']['lat'])
-                        self.longitude = float(api_response_dict['results'][0]['geometry']['location']['lng'])
-                except:
-                    self.latitude = LATITUDE_DEFAUT
-                    self.longitude = LONGITUDE_DEFAUT
-
-        self.save()
-
+    @property
     def get_latitude(self):
         if not self.latitude:
             return LATITUDE_DEFAUT
         return str(self.latitude).replace(",",".")
 
+    @property
     def get_longitude(self):
         if not self.longitude:
             return LONGITUDE_DEFAUT
         return str(self.longitude).replace(",",".")
 
     def getLatLon(self):
-        return str(self.latitude) + ", " + str(self.longitude)
+        return str(round(self.latitude, 8)) + ", " + str(round(self.longitude, 8))
+
+    @property
+    def getLatLon_html(self):
+        return self.getLatLon()
+
+    @property
+    def get_commune(self):
+        if self.commune:
+            return self.commune
+        return ""
 
 class Asso(models.Model):
     nom = models.CharField(max_length=100)
@@ -182,6 +253,12 @@ class Asso(models.Model):
             return False
         return True
 
+    def getEmails_sympathisants(self):
+        return [p.email for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
+
+    def getProfils_sympathisants(self):
+        return [p for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
+
     def getProfils_cotisationAJour(self):
         return [p for p in self.getProfils() if p.isCotisationAJour(self.abreviation)]
 
@@ -204,28 +281,14 @@ class Asso(models.Model):
             return Profil.objects.filter(adherent_bzz2022=True).order_by("username")
         elif self.abreviation == "viure":
             return Profil.objects.filter(adherent_viure=True).order_by("username")
-        return []
+        elif self.abreviation == "jp":
+            return Profil.objects.filter(adherent_jp=True).order_by("username")
+        elif self.abreviation == "conf66":
+            return Profil.objects.filter(adherent_conf66=True).order_by("username")
+        return  Profil.objects.none()
 
     def getProfils_Annuaire(self):
-        if self.abreviation == "public":
-            return Profil.objects.filter(accepter_annuaire=True).order_by("username")
-        elif self.abreviation == "pc":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_pc=True).order_by("username")
-        elif self.abreviation == "rtg":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_rtg=True).order_by("username")
-        elif self.abreviation == "fer":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_fer=True).order_by("username")
-        #elif self.abreviation == "gt":
-        #    return Profil.objects.filter(accepter_annuaire=True, adherent_gt=True).order_by("username")
-        elif self.abreviation == "scic":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_scic=True).order_by("username")
-        elif self.abreviation == "citealt":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_citealt=True).order_by("username")
-        elif self.abreviation == "viure":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_viure=True).order_by("username")
-        elif self.abreviation == "bzz2022":
-            return Profil.objects.filter(accepter_annuaire=True, adherent_bzz2022=True).order_by("username")
-        return []
+        return self.getProfils().filter(accepter_annuaire=True)
 
 
     def get_absolute_url(self):
@@ -247,25 +310,20 @@ class Asso(models.Model):
 
     @property
     def get_logo_nomgroupe_html_15(self):
-        return self.get_logo_nomgroupe_html_taille(15)
+        return self.get_logo_nomgroupe_html_taille(18)
 
-    def get_logo_nomgroupe_html_taille(self, taille=25):
-        return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+    def get_logo_nomgroupe_html_taille(self, taille=18):
+        return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px' alt='"+self.nom+"'/>"
 
 class Profil(AbstractUser):
     username_validator = ASCIIUsernameValidator()
     site_web = models.URLField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     competences = models.TextField(null=True, blank=True)
-    adresse = models.OneToOneField(Adresse, on_delete=models.CASCADE)
-    #avatar = StdImageField(null=True, blank=True, upload_to='avatars/', variations={
-    #    'large': (640, 480),
-    #    'thumbnail2': (100, 100, True)})
-
+    adresse = models.OneToOneField(Adresse, on_delete=models.SET_NULL, null=True)
     date_registration = models.DateTimeField(verbose_name="Date de création", editable=False)
     pseudo_june = models.CharField(_('pseudo Monnaie Libre'), blank=True, default=None, null=True, max_length=50)
-
-    inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=False)
+    inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=True)
     #statut_adhesion = models.IntegerField(choices=Choix.statut_adhesion, default="0")
     adherent_pc = models.BooleanField(verbose_name="Je suis adhérent de Permacat", default=False)
     adherent_rtg = models.BooleanField(verbose_name="Je suis adhérent de Ramene Ta Graine", default=False)
@@ -275,13 +333,16 @@ class Profil(AbstractUser):
     adherent_citealt = models.BooleanField(verbose_name="Je fais partie de 'la Cité Altruiste'", default=False)
     adherent_viure = models.BooleanField(verbose_name="Je fais partie du collectif 'Viure'", default=False)
     adherent_bzz2022 = models.BooleanField(verbose_name="Je fais partie du collectif 'Bzzz'", default=False)
-    accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=False, null=False)
-    accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
+    adherent_conf66 = models.BooleanField(verbose_name="Je suis adhérent à la confédération Paysanne 66", default=False)
     adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
+
+    accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=True, null=False)
+    accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
 
     date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications",default=now)
     afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
 
+    newsletter_envoyee = models.BooleanField(verbose_name="Newletterenvoyee", default=False)
 
     def __str__(self):
         return self.username
@@ -297,6 +358,14 @@ class Profil(AbstractUser):
              self.adresse = Adresse.objects.create()
 
         return super(Profil, self).save(*args, **kwargs)
+    @property
+    def get_username_annuaire(self):
+       if self.accepter_annuaire:
+           return self.username
+       else:
+          nb = len(self.username)
+          return self.username[:3] + "".join(['*' for i in range(nb-3)])
+
 
     def get_nom_class(self):
         return "Profil"
@@ -305,7 +374,10 @@ class Profil(AbstractUser):
         return reverse('profil', kwargs={'user_id':self.id})
 
     def getDistance(self, profil):
-        return self.adresse.getDistance(profil.adresse)
+        if self.adresse:
+            return self.adresse.getDistance(profil.adresse)
+        else:
+            return 0
 
     def getAdhesions(self, abreviationAsso):
         if abreviationAsso == "pc" :
@@ -344,7 +416,8 @@ class Profil(AbstractUser):
             return self.adherent_viure
         elif asso == "bzz2022":
             return self.adherent_bzz2022
-
+        elif asso == "conf66":
+            return self.adherent_conf66
 
     @property
     def statutMembre_str_asso(self, asso):
@@ -353,41 +426,47 @@ class Profil(AbstractUser):
                 return "membre actif de Permacat"
             else:
                 return "Non membre de Permacat"
-        if asso == "rtg":
+        elif asso == "rtg":
             if self.adherent_rtg:
                 return "membre actif de 'Ramene Ta Graine'"
             else:
                 return "Non membre de 'Ramene Ta Graine'"
-        if asso == "fer":
+        elif asso == "fer":
             if self.adherent_fer:
                 return "membre actif de 'Fermille'"
             else:
                 return "Non membre de 'Fermille'"
-        if asso == "jp":
+        elif asso == "jp":
             if self.adherent_jp:
                 return "membre actif des 'Jardins Partagés'"
             else:
                 return "Non membre des 'Jardins Partagés'"
-        if asso == "scic":
+        elif asso == "scic":
             if self.adherent_scic:
                 return "membre actif de 'PermAgora'"
             else:
                 return "Non membre de 'PermAgora'"
-        if asso == "citealt":
+        elif asso == "citealt":
             if self.adherent_citealt:
                 return "membre actif de la 'Cité Altruiste'"
             else:
                 return "Non membre de la 'Cité Altruiste'"
-        if asso == "viure":
+        elif asso == "viure":
             if self.adherent_viure:
                 return "membre actif du Collectif Viure'"
             else:
                 return "Non membre du Collectif Viure'"
-        if asso == "bzz2022":
+        elif asso == "bzz2022":
             if self.adherent_bzz2022:
                 return "membre actif du Collectif Bzzz'"
             else:
                 return "Non membre du Collectif Bzzz'"
+        elif asso == "conf66":
+            if self.adherent_conf66:
+                return "adhérent de la Confédération Paysanne 66"
+            else:
+                return "Non adhérent de la Confédération Paysanne 66"
+
 
     def estMembre_str(self, nom_asso):
         if nom_asso == "Public" or nom_asso == "public":
@@ -406,10 +485,24 @@ class Profil(AbstractUser):
             return True
         elif self.adherent_bzz2022 and (nom_asso == "bzz2022" or nom_asso == "bzz2022") :
             return True
-        #elif self.adherent_gt and (nom_asso == "Gardiens de la Terre" or nom_asso == "gt") :
-        #    return True
+        elif self.adherent_jp and (nom_asso == "jp" or nom_asso == "Jardins Partagés") :
+            return True
+        elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
+            return True
         else:
             return False
+
+    def estmembre_bureau(self, asso_abreviation):
+        if not self.is_anonymous:
+            if asso_abreviation == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
+                salon = Salon.objects.get(slug="conf66_bureau_2023")
+                return salon.est_autorise(self)
+
+        return False
+
+    @property
+    def estmembre_bureau_conf(self,):
+        return self.estmembre_bureau("conf66")
 
     def getQObjectsAssoArticles(self):
         q_objects = Q()
@@ -421,7 +514,13 @@ class Profil(AbstractUser):
         return [a for a in Choix.abreviationsAsso if self.est_autorise(a)]
 
     def getListeAbreviationsAssosEtPublic(self):
-        return ["public", ] + [a for a in Choix.abreviationsAsso if self.est_autorise(a)]
+        return ["public", ] + self.getListeAbreviationsAssos()
+
+    def getListeAbreviationsNomAssos(self):
+        return [a for a in Choix.abreviationsNomsAsso if self.est_autorise(a[0])]
+
+    def getListeAbreviationsNomsAssoEtPublic(self):
+        return [a for a in Choix.abreviationsNomsAssoEtPublic if self.est_autorise(a[0])]
 
     def est_autorise(self, abreviation_asso):
         if abreviation_asso == "public":
@@ -437,6 +536,29 @@ class Profil(AbstractUser):
     def a_signe_permagora(self):
         from permagora.models import Signataire
         return Signataire.objects.filter(auteur=self).exists()
+
+    def estMembre_salon(self, salon):
+        return salon.est_membre(self)
+
+    def get_salons(self, ):
+        return [s.salon for s in InvitationDansSalon.objects.filter(profil_invite=self)] + \
+            [s.salon for s in InscritSalon.objects.filter(profil=self)]
+
+
+    @property
+    def get_jardins(self,):
+        return list(set([i.jardin for i in self.jardin_suiveur.all()] +
+        list(self.auteur_jardin.all()) + list(self.referent_jardin.all())))
+
+    @property
+    def get_grainotheques(self,):
+        return list(set([i.grainotek for i in self.grainotheque_suiveur.all()] +
+                   list(self.auteur_grainotheque.all()) + list(self.referent_grainotheque.all())))
+
+class Profil_recherche(models.Model):
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
+
+
 
 def envoyerMailBienvenue(user):
     titre = "[Permacat] Inscription sur le site"
@@ -458,7 +580,7 @@ def envoyerMailBienvenue(user):
 <ul>\
 <li dir='auto'>pour suivre ce qu'il se passe sur le site, utilisez les <a href='https://www.perma.cat/notifications/activite/'>notifications</a> (et n'oubliez pas d'appuyer sur 'marquer comme lu' apres les avoir lu).</li>\
 <li dir='auto'>l'<a href='https://www.perma.cat/agenda/'>agenda</a> est un bon moyen de savoir ce qu'il se passe dans la vraie vie, visuellement.</li>\
-<li dir='auto'>l'<a href='https://www.perma.cat/annuaire/public'>annuaire</a> ou <a href='https://www.perma.cat/cooperateurs/carte/public'>la carte</a> sont de bons moyens de faire connaissance avec de belles personnes, près de chez vous</li>\
+<li dir='auto'><a href='https://www.perma.cat/cooperateurs/carte/public'>la carte / annuaire</a> est un bon moyen de faire connaissance avec de belles personnes, près de chez vous</li>\
 <li dir='auto'>utilisez plutôt l'<a href='https://www.perma.cat/marche/lister/'>altermarch&eacute;</a> pour les petites annonces, le <a href='https://www.perma.cat/forum/accueil/'>forum</a> pour annoncer les &eacute;v&eacute;nements ou pr&eacute;senter des id&eacute;es, et les <a href='https://www.perma.cat/ateliers/liste/'>ateliers</a> pour... proposer des ateliers</li>\
 <li dir='auto'>vous pouvez configurer les infos que vous recevez par mail sur la page <a href='https://www.perma.cat/accounts/mesSuivis/'>abonnements</a> de votre profil</li>\
 <li dir='auto'>prenez le temps d'explorer les diff&eacute;rentes sections du site pour vous familiariser et comprendre comment le site fonctionne et ce que vous pouvez en faire</li>\
@@ -480,22 +602,14 @@ def envoyerMailBienvenue(user):
 def create_user_profile(sender, instance, created, **kwargs):
     if created :
         if instance.inscrit_newsletter:
-            for suiv in Choix.suivisPossibles:
-                suivi, created = Suivis.objects.get_or_create(nom_suivi=suiv)
-                actions.follow(instance, suivi, actor_only=True, send_action=False)
-            for abreviation in Choix.abreviationsAsso + ['public', ]:
-                if instance.est_autorise(abreviation):
-                    suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_"+abreviation)
-                    actions.follow(instance, suivi, actor_only=True, send_action=False)
-                    suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_"+abreviation)
-                    actions.follow(instance, suivi, actor_only=True, send_action=False)
-                    suivi, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
-                    actions.follow(instance, suivi, actor_only=True, send_action=False)
+            from .utils import reabonnerProfil_base
+            reabonnerProfil_base(instance)
+
         action.send(instance, verb='inscription', url=instance.get_absolute_url(),
                     description="s'est inscrit.e sur le site")
         envoyerMailBienvenue(instance)
-        if instance.is_superuser:
-            Panier.objects.create(user=instance)
+        #if instance.is_superuser:
+            #Panier.objects.create(user=instance)
 
 
 class Adhesion_permacat(models.Model):
@@ -526,6 +640,12 @@ class Adhesion_asso(models.Model):
 
     def __str__(self):
         return self.user.username + " le " + str(self.date_cotisation) + " " + str(self.montant) + " " + str(self.moyen) + "(" + self.asso.nom + ")"
+
+    def get_update_url(self):
+        return reverse('adhesion_asso_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('adhesion_asso_supprimer', kwargs={'pk': self.pk})
+
 
 class Monnaie(models.Model):
     nom = models.CharField(
@@ -578,6 +698,10 @@ class Produit(models.Model):  # , BaseProduct):
         return slugify(self.nom_produit)
 
     @property
+    def titre(self):
+        return self.nom_produit
+
+    @property
     def est_perimee(self):
         if not self.date_expiration:
             return False
@@ -614,7 +738,7 @@ class Produit(models.Model):  # , BaseProduct):
                     msg_notif = "Demande [" + self.asso.nom + "] " + self.nom_produit
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
             payload = {"head": titre, "body": msg_notif,
-                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                       "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
             for suiv in suiveurs:
                 try:
                     send_user_notification(suiv, payload=payload, ttl=7200)
@@ -630,6 +754,9 @@ class Produit(models.Model):  # , BaseProduct):
     def get_absolute_url(self):
         return reverse('produit_detail', kwargs={'produit_id':self.id})
 
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def get_type_prix(self):
         return Produit.objects.get_subclass(id=self.id).type_prix
@@ -1032,10 +1159,9 @@ class Conversation(models.Model):
     def __str__(self):
         return "Conversation entre " + self.profil1.username + " et " + self.profil2.username
 
+    @property
     def titre(self):
         return self.__str__()
-
-    titre = property(titre)
 
     @property
     def auteur_1(self):
@@ -1045,10 +1171,16 @@ class Conversation(models.Model):
     def auteur_2(self):
         return self.profil2.username
 
+    def get_destinataire(self, request):
+        if request.user == self.profil1:
+            return self.profil2
+        else:
+            return self.profil1
+
+
     @property
     def messages(self):
         return self.__str__()
-
 
     def get_absolute_url(self):
         return reverse('lireConversation_2noms', kwargs={'destinataire1': self.profil1.username, 'destinataire2': self.profil2.username})
@@ -1066,6 +1198,8 @@ def getOrCreateConversation(nom1, nom2):
         profil_1 = Profil.objects.get(username=liste[0])
         profil_2 = Profil.objects.get(username=liste[1])
         convers, created = Conversation.objects.get_or_create(profil1=profil_1, profil2=profil_2)
+    except MultipleObjectsReturned:
+        return Conversation.objects.filter(slug=get_slug_from_names(nom1, nom2)).order_by('date_creation')[0]
 
     return convers
 
@@ -1082,8 +1216,11 @@ class Salon(models.Model):
     estPublic = models.BooleanField(verbose_name="Salon public ou privé (public si coché)", default=False)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Le salon doit être associé à un article existant (sinon créez un article avec une date)", blank=True, null=True)
+    jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
+                                help_text="Le salon peut être associé à un jardin", blank=True, null=True)
 
-    #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True, related_name="tag_salon")
+
 
     class Meta:
         ordering = ('titre',)
@@ -1093,6 +1230,10 @@ class Salon(models.Model):
 
     def get_absolute_url(self):
         return reverse('salon', kwargs={'slug': self.slug})
+
+    @property
+    def get_absolute_url_site(self):
+        return "https://www.perma.cat" + self.get_absolute_url()
 
     def save(self, *args, **kwargs):
         max_length = 99
@@ -1112,7 +1253,10 @@ class Salon(models.Model):
 
 
     def est_autorise(self, user):
-        return self.estPublic or user in self.membres.all()
+        return self.estPublic or user in self.getInscrits() or user in self.getInvites()
+
+    def est_membre(self, user):
+        return user in self.membres.all()
 
     def getInscrits(self):
         return [u.profil for u in InscritSalon.objects.filter(salon=self)]
@@ -1120,10 +1264,22 @@ class Salon(models.Model):
     def getInvites(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
+    def getInscritsEtInvites(self):
+        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)] + [u.profil for u in InscritSalon.objects.filter(salon=self)]
+
+    def getArticles(self):
+        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
+
+    def getSuivi(self):
+        return Suivis.objects.get_or_create(nom_suivi="salon_" + str(self.slug))[0]
+
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
+
+    def __str__(self):
+        return str(self.salon) + "' - " + self.profil.username
 
 class InvitationDansSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
@@ -1132,7 +1288,8 @@ class InvitationDansSalon(models.Model):
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
 
     def __str__(self):
-        return " "
+        return str(self.salon) + "' - invitant : " + self.profil_invitant.username + " - invité : " + self.profil_invite.username
+
     @property
     def texte(self):
         return "%s a invité %s dans le salon %s" %(self.profil_invitant, self.profil_invite, self.salon.titre)
@@ -1173,6 +1330,10 @@ class Message_salon(models.Model):
     def get_absolute_url(self):
         return self.salon.get_absolute_url() + "#comm_" + str(self.id)
 
+    @property
+    def get_absolute_url_site(self):
+        return self.salon.get_absolute_url_site + "#comm_" + str(self.id)
+
     def save(self, *args, **kwargs):
         super(Message_salon, self).save(*args, **kwargs)
         self.salon.date_dernierMessage = now()
@@ -1193,12 +1354,41 @@ class Message_salon(models.Model):
                                     description=msg_mention_notif, )
 
                         payload = {"head": titre_mention, "body": str(self.auteur.username) + msg_mention_notif,
-                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
+                                   "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url_site}
                         send_user_notification(p, payload=payload, ttl=7200)
                     except Exception as e:
                         pass
         except Exception as e:
             pass
+
+
+class EvenementSalon(models.Model):
+    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre du salon de discussion)",
+                             max_length=100, null=True, blank=True, default="")
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, help_text="L'evenement doit etre associé à un salon" )
+    start_time = models.DateField(verbose_name="Date", null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
+    end_time = models.DateField(verbose_name="Date de fin (optionnel pour un evenement sur plusieurs jours)",  null=True,blank=True, help_text="jj/mm/année")
+    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "(" + str(self.titre) + ") "+ str(self.start_time) + ": " + str(self.salon)
+
+    def get_absolute_url(self):
+        return self.salon.get_absolute_url()
+
+    @property
+    def slug(self):
+        return self.salon.slug
+
+    @property
+    def titre(self):
+        if not self.titre_even:
+            return self.salon.titre
+        return self.titre_even
+
+    def est_autorise(self, user):
+        return self.salon.est_autorise(user)
+
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
@@ -1217,7 +1407,7 @@ class Message(models.Model):
         return reverse('modifierMessage',  kwargs={'id':self.id, 'type_msg':'conversation', 'asso':'convers'})
 
     def get_absolute_url(self):
-        return self.conversation.get_absolute_url() + "#msg_" + str(self.id)
+        return self.conversation.get_absolute_url() + "#comm_" + str(self.id)
 
 
     def save(self, *args, **kwargs):
@@ -1274,12 +1464,6 @@ class Suivis(models.Model):
     def get_absolute_url(self):
         return ""
 
-#class Gestionnaire_Suivis():
-        #    def get_suivi_articles(self, asso):
-        #suivis, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.abreviation))
-        #return suivis
-
-
 class InscriptionNewsletter(models.Model):
     email = models.EmailField()
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
@@ -1296,12 +1480,42 @@ class InscriptionNewsletter(models.Model):
             self.date_inscription = now()
         return super(InscriptionNewsletter, self).save(*args, **kwargs)
 
-    # def getArticles(self):
-    #     if self.nom == "public":
-    #         return Article.objects.filter(asso="0")
-    #     if self.nom == "permacat":
-    #         return Article.objects.filter(asso="1")
-    #     elif self.nom == "rtg":
-    #         return Article.objects.filter(asso="2")
-    #     elif self.nom == "ame":
-    #         return Article.objects.filter(asso="3")
+
+class InscriptionNewsletterGenerique(models.Model):
+    nom_newsletter = models.CharField(max_length=30, blank=False)
+    email = models.EmailField()
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="profil_newsletter",
+                                 verbose_name="Profil du membre (si inscrit)", blank=True, null=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return str(self.nom_newsletter) + ": " + str(self.email)
+
+class InscriptionNewsletterAsso(InscriptionNewsletterGenerique):
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+
+
+class ListeDiffusion(models.Model):
+    nom = models.CharField(max_length=30, blank=False, unique=True)
+
+    def __str__(self):
+        return "Liste diffusion : " + str(self.nom)
+
+class InscriptionListeDiffusion(models.Model):
+    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, related_name="liste_diffusion",
+                                 verbose_name="Liste de diffusion", blank=True, null=True)
+    email = models.EmailField()
+    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="profil_listediff",
+                                 verbose_name="Profil du membre (si inscrit)", blank=True, null=True)
+    commentaire = models.CharField(max_length=50, blank=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return str(self.nom_newsletter) + ": " + str(self.email)

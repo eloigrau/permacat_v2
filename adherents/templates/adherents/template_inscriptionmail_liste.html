@@ -1,0 +1,28 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Nom</th>
+                <th>Date</th>
+                <th>Details</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+{% for inscription in inscriptionsMail %}
+            <tr>
+                <td><a href="{{inscription.liste_diffusion.get_absolute_url}}"> {{inscription.liste_diffusion.nom}}</a></td>
+                <td>{{inscription.date_inscription|date:"d/m/Y"}}</td>
+                <td>{{inscription.commentaire}}</td>
+                <td>
+                    {% if is_membre_bureau %}
+                    <a class="btn btn-sm btn-warning textleft" href="{{inscription.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{inscription.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                    {% endif %}
+                </td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,116 @@
+{% load app_filters %}
+{% load avatar_tags %}
+{% load static %}
+
+{%include 'pagination_alphabet.html' %}
+{% include 'pagination_new.html' %}
+{% if is_membre_bureau %}
+<nav class="nav nav-tabs justify-content-center">
+        {% comment %}
+    <a class="nav-item nav-link active" href="#adresse" data-toggle="tab"><h6>Liste</h6></a>
+      <a class="nav-item nav-link" href="#adhesions" data-toggle="tab"><h6>Adhésions</h6></a>
+    {% endcomment %}
+</nav>
+{% endif %}
+<div class="tab-content">
+  <div class="tab-pane fade show active" id="adresse">
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable table-phoning">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Nom Prénom</th>
+                <th>ATP</th>
+                <th>Tel</th>
+                <th>Contacts</th>
+                <th>Email</th>
+                <th>Code postal</th>
+                <th>Commune</th>
+                <th>Commentaire</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paysan in paysans %}
+        <tr style="background-color:{{paysan.get_background_color}} ; outline: thin solid;">
+            <td> {% if paysan.adherent %} <a href="{% url 'adherents:adherent_detail' paysan.adherent.pk %}">
+                    {{ paysan.nom }}  {{ paysan.prenom }} </a>
+                {% else %}
+                    {{ paysan.nom }}  {{ paysan.prenom }}
+                {% endif %}
+            </td>
+            <td>
+            {% if paysan.adherent %}
+                {% if paysan.adherent.statut == "1" %} (ATP)
+                {% elif paysan.adherent.statut == "3"%} (CC)
+                {% elif paysan.adherent.statut == "5"%} (ATS)
+                {% else %} (#)
+                {% endif %}
+            {% else %}
+                -
+            {% endif %}
+
+            </td>
+            <td>{% if paysan.adresse.telephone %}<a href="tel:{{ paysan.adresse.telephone }}">{{ paysan.adresse.telephone }}
+               <i class="fa fa-phone"></i> </a>
+             <a>
+                {% else %}-{% endif %}
+            </td>
+             <td><ul>
+                 {{ paysan.get_contacts_html|safe }}
+             <a class="btn btn-sm btn-primary textleft" href="{{paysan.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
+                 </ul>
+             </td>
+            <td>{{ paysan.email }}</td>
+           <td>{%if paysan.adresse.code_postal %}{{ paysan.adresse.code_postal }}{% else %}-{% endif %}</td>
+            <td>{%if paysan.adresse.commune %}{{ paysan.adresse.commune }} {% else %}-{% endif %}</td>
+            <td>{% if paysan.commentaire %}{{ paysan.commentaire }}{% else %}-{% endif %}</td>
+            <td>
+                 <a class="btn btn-sm btn-warning textleft" href="{{paysan.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                 <a class="btn btn-sm btn-danger textleft" href="{{paysan.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+  </div>
+{% comment %}
+{% if is_membre_bureau %}
+  <div class="tab-pane fade" id="adhesions">
+   <div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Adhésions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for paysan in paysans %}
+        <tr>
+            <td>{{ adherent.nom }}</td>
+            <td><a href="{% url 'adherents:paysan_detail' paysan.pk %}"> {{ paysan.prenom }}</a></td>
+            <td>{% for ad in paysan.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
+      </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+  </div>
+{% endif %}
+{% endcomment %}
+</div>
+{% include 'pagination_new.html' %}
+<p class="textcenter textepetit">({{paysans|length}} paysans)</p>
+

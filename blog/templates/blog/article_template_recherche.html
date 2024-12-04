@@ -1,6 +1,6 @@
 
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {%ifchanged %}
 <div class="card article_recherche " style="background-color:{{article.get_couleur}}">
   <a href="{% url 'blog:lireArticle' slug=article.slug %}">
@@ -14,7 +14,7 @@
             {% endif %}
         </div>
         <h6 class="card-subtitle mb-2 ">
-               <p class="text-muted"> Catégorie: <em>{{ article.get_categorie_display }}</em>, rédigé par {{ article.auteur }}</p>
+               <p class="text-muted"> Catégorie: <em>{{ article.get_categorie_display2 }}</em>, rédigé par {{ article.auteur }}</p>
             </h6>
     </div>
   </a>

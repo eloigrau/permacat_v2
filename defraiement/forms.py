@@ -4,8 +4,10 @@ import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso
 from photologue.models import Album
-from .models import Choix, ParticipantReunion, Reunion
+from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion
 from django.core.exceptions import ValidationError
+from bourseLibre.utils import slugify_pcat
+from adherents.models import Adherent
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -32,7 +34,7 @@ class ReunionForm(forms.ModelForm):
         instance = super(ReunionForm, self).save(commit=False)
 
         max_length = Reunion._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Reunion.objects.filter(slug=instance.slug).exists():
@@ -80,8 +82,8 @@ class ParticipantReunionChoiceForm(forms.Form):
         self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__abreviation=asso_slug).order_by('nom')]
 
 class PrixMaxForm(forms.Form):
-    prixMax = forms.CharField(required=True, label="Defraiement maximum",initial="1000" )
-    tarifKilometrique = forms.CharField(required=True, label="Tarif kilometrique maximum", initial="0.5")
+    prixMax = forms.CharField(required=True, label="Defraiement maximum (euros)",initial="2000" )
+    tarifKilometrique = forms.CharField(required=True, label="Tarif kilometrique maximum", initial="0.6")
 
 
 class ParticipantReunionForm(forms.ModelForm):
@@ -111,3 +113,85 @@ class AdresseReunionForm(forms.ModelForm):
         instance.adresse = adresse
         instance.save()
         return instance
+
+
+class Distance_ParticipantReunionForm(forms.ModelForm):
+
+    class Meta:
+        model = Distance_ParticipantReunion
+        fields = ['type_trajet', 'distance', 'contexte_distance',]
+
+
+
+"""
+An example of minimum requirements to make MultiValueField-MultiWidget for Django forms.
+"""
+import pickle
+
+from django.http import HttpResponse
+from django import forms
+from django.template import Context, Template
+from django.views.decorators.csrf import csrf_exempt
+
+
+class MultiWidgetBasic(forms.widgets.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = [forms.TextInput(),
+                   forms.TextInput()]
+        super(MultiWidgetBasic, self).__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            return pickle.loads(value)
+        else:
+            return ['', '']
+
+
+class MultiExampleField(forms.fields.MultiValueField):
+    widget = MultiWidgetBasic
+
+    def __init__(self, *args, **kwargs):
+        list_fields = [forms.fields.CharField(max_length=31),
+                       forms.fields.CharField(max_length=31)]
+        super(MultiExampleField, self).__init__(list_fields, *args, **kwargs)
+
+    def compress(self, values):
+        ## compress list to single object
+        ## eg. date() >> u'31/12/2012'
+        return pickle.dumps(values)
+
+class MultiWidgetBool(forms.widgets.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = [forms.CheckboxInput(), forms.CheckboxInput(), ]
+        super(MultiWidgetBool, self).__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            return pickle.loads(value)
+        else:
+            return ['', '']
+
+
+class MultiBoolField(forms.fields.MultiValueField):
+    widget = MultiWidgetBool
+
+    def __init__(self, *args, **kwargs):
+        list_fields = [forms.fields.BooleanField(),
+                       forms.fields.BooleanField()]
+        super(MultiBoolField, self).__init__(list_fields, *args, **kwargs)
+
+class FormForm(forms.Form):
+    a = forms.BooleanField()
+    b = forms.CharField(max_length=32)
+    c = forms.CharField(max_length=32, widget=forms.widgets.Textarea())
+    d = forms.CharField(max_length=32, widget=forms.widgets.SplitDateTimeWidget())
+    e = forms.CharField(max_length=32, widget=MultiWidgetBasic())
+    #f = MultiExampleField()
+    f = MultiBoolField()
+
+
+class ChoixAdherentConf(forms.Form):
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Adhérent", )
+
+    class Meta:
+        fields = ['adherent']

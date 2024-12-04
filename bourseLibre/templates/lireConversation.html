@@ -1,26 +1,42 @@
 {% extends 'base_forum.html' %}
 {% load blog_filters %}
+{% load avatar_tags %}
 {%block message%}{%endblock%}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
 <div class="row">
-<div class="col-sm-4">
+<div class="col-sm-12 textcenter">
     <a href="{% url 'conversations' %}" class="btn btn-info"> <i class="fa fa-arrow-left"></i> Conversations </a>
 </div>
-    <div class="col-sm-8">
-Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% url 'profil_nom' destinataire  %}"> {{ destinataire }} </a></span> depuis le {{ conversation.date_creation|date:"SHORT_DATE_FORMAT"}}
-    </div>
 </div>
 {% endblock %}
 {% block content %}
     <div class="anchor_blank" id="idConversation"></div>
-<div class="contenu conversation">
 
 {% include 'pagination_new.html' %}
+<div class="conversation">
+    <div class="conversation-container">
+    {% for comment in page_obj %}
+	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
+        <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
+
+                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
+                <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
+
+                {% if request.user == comment.auteur or request.user.is_superuser %}
+                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+                {% endif %}
+                   </span>
+                <p>{{ comment.message|safe}}</p>
+        </div>
+{% endfor %}
+    </div>
+    </div>
+
+{% comment %}
 
 {% for mess in page_obj %}
-    <div class="anchor_blank" id="msg_{{mess.id}}"></div>
 
     {% ifchanged %}
     <div class="row msg-date">
@@ -45,19 +61,28 @@ Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% 
 
 {% endfor %}
 
+{% endcomment %}
 {% include 'pagination_new.html' %}
 
 </div>
-    <script>
-    var messageBody = document.querySelector('#idConversation_2');
-    messageBody.scrollTop = idConversation_2.scrollHeight - idConversation_2.clientHeight;
+<script>
 </script>
 
 <hr>
-<h5>Répondre : </h5>
+<div class="row">
+    <div class="col-sm-8">
+        {% if not page_obj %}
+            <h5>Commencer la discussion :</h5>
+        {% else %}
+            <h5>Répondre :</h5>
+        {% endif %}
+    </div>
+    <div class="col-sm-4 textright">
+        <a href="{% url 'partagerPosition' slug_conversation=conversation.slug %}#ref-titre" class="btn btn-info"> <i class="fa fa-map-marker"></i> Partager une position </a>
+    </div>
+</div>
 <div>
-    <input type="hidden" name="Nouveau Message" value="{{ message }}">
-
+<input type="hidden" name="Nouveau Message" value="{{ message }}">
 <div>
 <form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -65,6 +90,7 @@ Messages échangés avec <span style="background-color:PapayaWhip;"><a href="{% 
     {% include 'form_template3.html'  with boutonAnnuler=False %}
 </form>
 </div>
+
 
 
 {% endblock %}

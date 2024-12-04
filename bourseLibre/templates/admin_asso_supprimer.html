@@ -1,0 +1,29 @@
+{% extends 'base_asso.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block subtitle %}
+<h4 class = "textcenter rowbienvenue">{% trans "Administration et fichiers de l'association" %} {{asso.nom}}</h4>
+{% endblock %}
+
+{% block content %}
+
+<div class="row textcenter">
+    <div class="col-sm-12">
+        <h2> Modifier adhésion </h2>
+    </div>
+</div>
+<hr>
+<div class="row-sm-12 row-lg-6 mx-auto">
+    <div class="col-sm-12">
+    <form id="articleForm" class="form-horizontal" role="form" action="" method="post"
+	enctype="multipart/form-data" >
+	{% csrf_token %}
+        {% include 'form_template.html'%}
+</form>
+</div>
+</div>
+
+{% endblock %}
+
+

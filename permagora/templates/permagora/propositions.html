@@ -1,5 +1,5 @@
 {% extends 'permagora/base.html' %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load static %}
 
     {%block header %}
@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="row mb-5 justify-content-center">
-    <p><a href="https://www.perma.cat/media/documents/2022/05/16/SondageTablesRondes.pdf" target="_blank">voir la liste des questions établies par sondage</a> </p>
+    <p><a href="https://www.perma.cat/media/documents/2022/05/16/SondageTablesRondes.pdf" target="_blank" rel="noopener noreferrer nofollow">voir la liste des questions établies par sondage</a> </p>
         </div>
         <div class="row mb-5 justify-content-center">
             {%if request.user.is_authenticated %}
@@ -60,8 +60,8 @@
 {% for point in domaine.1 %}
     <th id="{{point.slug}}"> {{ forloop.counter }}. <a href="{{point.permagora:get_absolute_url}}" > {{point|safe}}</a></th>
     <th width="15%">
-      <a href="{% url 'permagora:ajouterVote_plus' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}"> {% fontawesome_icon 'thumbs-up' %} {{point.compteur_plus}}</a> &nbsp
-      <a href="{% url 'permagora:ajouterVote_moins' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}" >{% fontawesome_icon 'thumbs-down' %} {{point.compteur_moins}} </a> &nbsp
+      <a href="{% url 'permagora:ajouterVote_plus' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}"> {% fa5_icon 'thumbs-up' %} {{point.compteur_plus}}</a> &nbsp
+      <a href="{% url 'permagora:ajouterVote_moins' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}" >{% fa5_icon 'thumbs-down' %} {{point.compteur_moins}} </a> &nbsp
     </th>
   </tr>
 {% endfor%}
@@ -77,8 +77,8 @@
 
                   <p><a id="{{point.slug}}">                  </a>{{forloop.parentloop.counter}}.{{ forloop.counter }}/   <a href="{{point.get_absolute_url}}" > {{point|safe}}</a></p>
                       {% comment %}<p class="text-right">
-      <a href="{% url 'permagora:ajouterVote_plus' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}"> {% fontawesome_icon 'thumbs-up' %} {{point.compteur_plus}}</a> &nbsp
-      <a href="{% url 'permagora:ajouterVote_moins' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}" >{% fontawesome_icon 'thumbs-down' %} {{point.compteur_moins}} </a> &nbsp
+      <a href="{% url 'permagora:ajouterVote_plus' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}"> {% fa5_icon 'thumbs-up' %} {{point.compteur_plus}}</a> &nbsp
+      <a href="{% url 'permagora:ajouterVote_moins' point.slug %}?next={%url 'permagora:propositions'%}#{{domaine.0.slug}}" >{% fa5_icon 'thumbs-down' %} {{point.compteur_moins}} </a> &nbsp
                       </p>
                   {% endcomment %}
               {%endfor%}

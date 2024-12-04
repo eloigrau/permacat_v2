@@ -1,0 +1,25 @@
+{% extends 'base_defraiement.html' %}
+
+{% block subtitle %}
+<div class="row justify-content-center">
+    <div class="col col-md-12 textcenter">
+        <h3>Modifier le trajet</h3>
+    </div>
+</div>
+{% endblock  %}
+{% block content %}
+{% if error_message %}
+<p>
+    <strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row justify-content-sm-center">
+    <div class="col-sm-12 col-md-10 col-lg-9 text-center">
+        <form method="post">
+            {% csrf_token %}
+            {% include 'form_template2.html' with form=form %}
+            <button type="submit" name="gpsbtn" class="btn btn-primary">Valider la distance</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

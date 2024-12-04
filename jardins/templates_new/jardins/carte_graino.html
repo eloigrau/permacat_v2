@@ -1,0 +1,125 @@
+{% extends 'base_plantes.html' %}
+{% load carto_filters %}
+{% load app_filters %}
+{% load widget_tweaks %}
+{% block header %}
+{% load leaflet_tags %}
+{% endblock %}
+{% block header %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+{%endblock%}
+{% block title %} - Carte des grainotheques du 66
+{% endblock %}
+
+{%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+
+{% block titreJardin %}
+<div class="col-lg-9 pt-5 text-center text-lg-start">
+    <h1 class="display-4 text-white mb-4 animated_old">{{titre}}</h1>
+
+    <a href="{% url 'jardins:grainotheque_ajouter' %}" class="btn btn-secondary py-sm-3 px-sm-5 me-3 animated_old">
+ <i class="fa fa-plus"></i>&nbsp; Ajouter une grainothèque
+    </a>
+</div>
+{% endblock %}
+{% block content %}
+{% leaflet_js %}
+{% leaflet_css %}
+<div class="row cartePleinePage justify-content-center ">
+  <div class="col-md-12" >
+    <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
+      <script type="text/javascript">
+
+        function map_init_basic (map, options) {
+          var leafIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+          var greenIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+
+        {% for graino in filter.qs %}
+            {% if graino.adresse.get_latitude %}
+                var lat = {{ graino.adresse.get_latitude }};
+                var lon = {{ graino.adresse.get_longitude }};
+                var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'jardins:grainotheque_lire' graino.slug%}"> {{graino.titre}} </a>');
+                marker.addTo(map);
+            {% endif %}
+        {%endfor%}
+
+        {% if filter.qs|length == 1 %}
+        map.panTo(new L.LatLng(lat, lon));
+        {%else%}
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+        {%endif%}
+    }
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
+
+<hr>
+<div class="row">
+    <div class="col-sm-12 textcenter">
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
+Filtrer / rechercher...
+</button>
+<!-- Modal -->
+<div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog textaide" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <div class="row justify-content-center">
+           <h5 > Filtrer/rechercher </h5>
+          </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body textleft">
+<form method="get">
+    <div class="well">
+      <div class="row">
+        <div class="form-group col-sm-12">
+            <label>Rechercher :</label>
+          {% render_field filter.form.compet_descrip class="form-control" %}
+        </div>
+          <br>
+      </div>
+
+    <div class="row">
+    <div class="col-md-12 textcenter">
+      <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-search"></span> Rechercher....
+      </button>
+    </div>
+    </div>
+</div>
+  </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<hr>
+{% include "template_annuaire_graino.html" with grainotheques=filter.qs %}
+
+{% endblock %}
+
+    

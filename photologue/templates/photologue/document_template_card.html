@@ -1,0 +1,69 @@
+
+{% load fontawesome_5 %}
+{% load app_filters %}
+
+    {% if object_list %}
+        <div class="infinite-container">
+            <div class="grid-container justify-content-center">
+{% for doc in object_list %}
+<div class="infinite-item my-auto mx-auto">
+    <div class="card card-block article_carte textcenter d-flex " >
+    <div class="article-card-header">
+          <div class="d-flex justify-content-center smallcaps_h ">
+             <div>
+                {{ doc.get_logo_nomgroupe_html|safe }}
+            </div>
+              <div>
+                <span class="badge btn-light"> Posté le {{ doc.date_creation|date:"DATE_FORMAT" }}
+                </span>&nbsp;
+              </div>
+              <div>
+                <span class="badge btn-light"> {{ doc.auteur }}
+                </span>&nbsp;
+              </div>
+      </div>
+    </div>
+    <div class="card-body align-items-center justify-content-center">
+        <h5>{{ doc.titre }}</h5>
+        {% if doc.tags.names %}
+            <p class="card-text">
+            <small><em>Mots-clés : </em>
+                {% include 'listeTags_view_template.html' with tags=doc.tags.names %}
+            </small>
+            </p>
+        {% endif%}
+        <p class="card-text bg-light" style="transform: rotate(0);">
+            <button class="btn btn-succes  btn-sm stretched-link" onclick="copyToClipboard('https://www.perma.cat{{doc.doc.url}}')"><i class="fa fa-link" aria-hidden="true"></i>  Copier le lien</button>
+
+        </p>
+
+        <p class="card-text bg-light" style="transform: rotate(0);">
+                    <a href="{{doc.doc.url}}" class="btn btn-success stretched-link"><i class="fa fa-download" aria-hidden="true"></i>Télécharger </a>
+        </p>
+        {% if doc.article %}
+        <p class="card-text bg-light" style="transform: rotate(0);">
+                    <a href="{{doc.article.get_absolute_url}}" class="btn btn-info  btn-sm stretched-link">{% fa5_icon 'comments'  %} Voir l'article lié ({{ doc.article.titre|couperTexte:20}})</a>
+        </p>
+        {% endif %}
+        {% if request.user ==  doc.auteur or request.user.is_superuser %}
+        <p class="card-text bg-light" style="transform: rotate(0);">
+            <a href="{{doc.get_change_url}}" class="btn btn-warning btn-sm"><i class="fa fa-edit" aria-hidden="true"></i> Modifier</a>
+            <a href="{{doc.get_delete_url}}" class="btn btn-danger  btn-sm"><i class="fa fa-times" aria-hidden="true"></i> Supprimer</a>
+        </p>
+         <p class="card-text bg-light" style="transform: rotate(0);">
+           <a href="{% url 'photologue:associerDocumentArticle' doc_slug=doc.slug %}" class="btn btn-success btn-sm stretched-link"><i class="fa fa-times" aria-hidden="true"></i> Associer à un article</a>
+         </p>
+        {% endif %}
+            </div>
+
+        </div>
+
+</div>
+{% endfor %}
+</div>
+</div>
+{% include 'pagination_new.html' %}
+
+    {% else %}
+        <div class="row col-lg-12">Pas de documents</div>
+    {% endif %}

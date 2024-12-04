@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+
+        .email-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+
+        .header {
+            background-color: #f0f0f0;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .image {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .footer {
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <a class="navbar-brand" href="{% url 'bienvenue' %}"><img src="{% static 'favicon.ico' %}" width="30"
+                                                                      height="30" alt=""/> Newsletter Spéciale</a>
+    </div>
+    <div class="content">
+        <h1>Bonjour, bon dia !</h1>
+        <p><br></p>
+        <p>Je vous envoie ce mail parce que vous êtes inscrit à la plateforme <a href="https://www.perma.cat/"
+                                                                                 target="_blank">www.Perma.Cat</a>.&nbsp; Je
+            profite de ces chaleurs estivales pour faire évoluer le site quand il fait trop chaud pour le jardin...
+            Voici quelques nouvelles (lisez au moins la première, svp) et pensées du jour :<br></p>
+        <p><br></p>
+        <h3>Abonnement aux mails : <br></h3>
+        <p>Suite à des changements
+            récents et l'amélioration constante de la plateforme, j'ai dû
+            réinitialiser les abonnements mail : vous êtes maintenant re-abonné à
+            toutes les nouvelles publications (articles, petites annonces, projets,
+            documents, ateliers, etc.). Vous recevrez donc toutes les infos nouvelles par
+            mail. </p>
+        <p>Vous pouvez bien sûr <a href="https://www.perma.cat/accounts/mesSuivis/" target="_blank">configurer vos
+            abonnements en cliquant ici</a>,
+            pour choisir quelles infos vous intéressent en particulier pour
+            recevoir sur votre boite mail, ou pas. </p>
+        <p>Désolé pour ceux qui avaient
+            précédemment désactivé les abonnements mails, cela ne vous prendra que
+            quelques secondes pour supprimer vos abonnements (alors que je passe de
+            heures à faire un outil pour vous... merci de votre compréhension :). Si vous ne désirez plus utiliser la
+            plateforme, vous pouvez toujours supprimer votre compte <a
+                    href="https://www.perma.cat/accounts/profil_modifier/" target="_blank">en bas de la page de
+                modification de votre compte utilisateur</a> ou en m'envoyant un mail.<br></p>
+        <p><br></p>
+        <p></p>
+        <h3>Rappel sur la plateforme<br></h3>
+        <p>Pour rappel : <b>la
+            plateforme Perma.Cat est un "service public" (non-Étatique, collaboratif et citoyen), un espace&nbsp;</b><b>commun</b><b>
+            de liberté pour
+            l’intérêt général, gratuit, open-source, sans publicité, sans GAFAM,
+            développé et mis à disposition bénévolement afin de faire converger
+            différents réseaux du territoire catalan, pour faire en actes la
+            Transition dont nous avons besoin</b>. C'est un outil d'émancipation collective avant tout !<br></p>
+        <p>Actuellement
+            nous subissons un système fou (et furieux) : un capitalisme destructeur,
+            meurtrier, débilitant, individualiste, industrialisé, guerrier,
+            colonialiste, mafieux, exploiteur, intolérant, voleur, corrompu, machiste, mensonger et j'en passe...
+            Malgré les apparences au quotidien, notre avenir est gravement menacé car cela ne pourra pas durer bien
+            longtemps à ce rythme (ressources limitées, changement climatique, montée du fascisme, etc.), quand
+            allons-nous enfin réagir vraiment ?<br></p>
+        <p> Halte au saccage, organisons-nous et défendons-nous, défendons le Vivant ! Perma.Cat
+            est une proposition de sortie collective... la saisirons-nous ? <br></p>
+        <p>Les valeurs que je veux
+            défendre avec cette plateforme sont : la liberté, l'égalité, la
+            fraternité et la sororité, la joie, le partage, la coopération, le respect,
+            l'intelligence collective, l'entraide, la compassion, la vérité... </p>
+        <p>(je n'ai pas dit que j'y arriverai, surtout si je suis le seul à défendre et développer... mais il faut bien
+            essayer !)<br></p>
+        <p>C'est
+            à chacun de nous de l'utiliser et le promouvoir afin de faciliter nos
+            activités et nos échanges. Si au lieu d'envoyer des mails ou des message
+            whatsapp on prenait le temps d'apprendre à utiliser le site et de dire à
+            nos contacts de l'utiliser aussi, on gagnerait tous énormément de temps
+            et de cohésion pour nos actions et pour faire circuler les informations. <b>Reprenons collectivement la main
+                sur nos média et sur l'Internet </b>! Nous pouvons le faire ici et maintenant.<br></p>
+        <p><br></p><h4>Ce qu'on peut faire, de base, avec Perma.Cat :</h4>
+        <p>- <a href="https://www.perma.cat/forum/accueil/" target="_blank">Forum</a>
+            : faire passer des infos, à différentes communautés locales (associations, collectifs, jardiniers, etc.), en
+            intra- ou inter-collectif.
+            Cela permet notamment d'envoyer l'info par mail de façon simple et
+            automatique sans avoir à gérer des listes de diffusion (grâce aux
+            "abonnements")<br></p>
+        <p>- <a href="https://www.perma.cat/ateliers/liste/" target="_blank">Ateliers</a> : organiser des temps
+            d'échange, d'entraide ou de formation<br></p>
+        <p>- <a href="https://www.perma.cat/agenda/" target="_blank">Agenda</a>
+            (partagé) : informer sur différents évènements du coin, que vous
+            organisez ou qui vous semblent intéressant pour les autres. Voir ce
+            qu'il se passe autour de nous.<br></p>
+        <p>- <a href="https://www.perma.cat/jardins/" target="_blank">Jardinothèque</a> : participer au réseau des
+            jardins/grainothèques, expérimenter et apprendre ensemble les plantes et la permaculture<br></p>
+        <p>- <a href="https://www.perma.cat/salon/accueil" target="_blank">Salons</a> : créer des petits groupes de
+            discussion en toute discrétion</p>
+        <p>- <a href="https://www.perma.cat/forum/projets/" target="_blank">Projets</a> : proposer des projets à
+            construire ensemble</p>
+        <p>- <a href="https://www.perma.cat/marche/lister/" target="_blank">Marché</a> : proposer des petites annonces
+            en dehors du système marchand (sur la base du troc, du JEU, du SEL ou de l'entraide...), ou promouvoir ses
+            produits lorsqu'on est paysan, artisan... ou même proposer ses services ou demander de l'aide.<br></p>
+        <p>- <a href="https://www.perma.cat/photolog/doclist/" target="_blank">Documents</a>/<a
+                href="https://www.perma.cat/photolog/albumlist/" target="_blank">photos</a> : partager des fichiers sans
+            passer par un drive (très polluant...)</p>
+        <p>- <a href="https://www.perma.cat/cooperateurs/carte/public" target="_blank">Carte/annuaire</a> : trouver des
+            gens motivés autour de chez vous, chercher une compétence, ...<br></p>
+        <p><br>Mais
+            aussi pour faire des sondages, participer à des discussions, faire des
+            cartographies participatives, avoir des "todo list", créer des documents
+            partagés, calculer des défraiements kilométriques, etc...</p>
+        <p>Tout ça avec une garantie de protection de vos
+            données personnelles (tant que faire ce peut), et de non utilisation de vos "data" (contrairement
+            à google, microsoft, facebook, etc.), 100% gratuit, accessible depuis votre téléphone (comme une appli) ou
+            l'ordinateur, avec un fonctionnement collaboratif et décentralisé. Que vous faut-il de plus (vraie question)
+            ?</p>
+        <p><br></p>
+        <h3>Co-construction et contact :<br></h3>
+        <p>Le
+            site est loin d'être parfait, je sais, c'est évident. Mais il est évolutif, on peut tout changer/améliorer
+            (dans la mesure de mon temps disponible, de mes compétences, et de vos idées...), à vous de me dire ce qui
+            ne va
+            pas ou ce qui pourrait être mieux. Pour l'instant j'essaie de tout faire pour vous, avec toutes les
+            limites que cela entraine de le faire seul, mais je reste disponible et tous les premiers
+            mercredi du mois je vous propose une visio pour discuter, échanger, apprendre à s'en servir et le
+            co-construire. </p>
+        <p>Si ça ne vous plait pas, si
+            vous n’êtes pas d'accord, si vous pensez que ça sert a rien, ou qu’il y a mieux à faire... au moins
+            dites-le, et on en discute ! Ici vous pouvez vous exprimer librement, votre parole sera entendue (en plus,
+            je ne mords pas et j'essaie de ne pas le prendre personnellement), et votre avis est important.<br></p>
+        <p>Pour toute question, remarque ou suggestion, vous pouvez m'envoyer un <a
+                href="https://www.perma.cat/conversations/Eloi" target="_blank">message privé </a>ou un mail à
+            eloi@perma.cat ou bien sur <a href="https://www.perma.cat/forum/article/proposition-de-newsletter-de-la-plateforme-permacat-reinitialiation-des-abonnements" >le forum</a><br></p>
+        <p><br></p>
+        <p>Je vous souhaite une belle fin d'été, pleine de bonheur et de ressourcement pour attaquer la rentrée
+            prochaine plus motivé-es que jamais, pour aller enfin vers notre émancipation collective...&nbsp; ;)<br></p>
+        <p><br></p>
+        <p>Fins aviat !</p>
+        <p><br></p>
+        <p>Eloi<br></p>
+        <p></p>
+    </div>
+    <div class="footer">
+        <a class="navbar-brand" href="{% url 'bienvenue' %}"><img src="{% static 'favicon.ico' %}" width="28"
+                                                                      height="28" alt="Perma.Cat"/></a>
+    </div>
+</div>
+</body>
+</html>

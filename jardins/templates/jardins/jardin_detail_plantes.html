@@ -1,0 +1,46 @@
+{% load app_filters %}
+{% load static %}
+
+{% if not request.user.is_authenticated %}
+<div class="row">
+	<div class="col-sm-12 textcenter">
+		Vous devez être connecté pour voir ce contenu
+	</div>
+</div>
+{% else %}
+
+<div class="row">
+	<div class="col-sm-12 textcenter">
+		<h4>Liste des plantes à échanger du jardin ({{plantes|length}})</h4>
+			{% if plantes %}
+			<table  class="table table-condensed tablejardin table-striped sortable">
+				<thead><tr><th style="width:0%;"> Nom</th><th style="width:20%;"> Espèce</th><th style="width:50%;">Informations</th>
+					{%if request.user.is_superuser or request.user == jardin.auteur  or request.user == jardin.referent %}<th>Edit</th>{% endif %}
+				</tr></thead>
+				<tbody>
+				{% for pdj in plantes %}
+		   			<tr>
+						<td>{{pdj.get_nom}}</td>
+						<td>{% if pdj.plante %}<a href="{{ pdj.plante.get_absolute_url}}">{{pdj.plante.LB_NOM}}</a>{% endif %}</td>
+						<td>{{ pdj.infos | safe | couperTexte_avecbouton_150:pdj.id}} </td>
+						 {%if request.user.is_superuser or request.user == jardin.auteur  or request.user == jardin.referent  %}
+						<td>
+							<a class="boutonediter btn btn-warning" href="{{ pdj.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+							<a class="boutonediter btn btn-danger" href="{{ pdj.get_delete_url  }}" role="button" help_text="supprimer"><i class="fa fa-times"></i></a>
+							</td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			{% endif %}
+
+        <a href="{% url 'jardins:jardin_ajouterPlante' slug=jardin.slug %}">
+        	<button type="button" class="btn btn-success" >
+                <i class="fa fa-plus"></i> Ajouter une plante à échanger
+            </button>
+		</a>
+	</div>
+</div>
+
+{% endif %}

@@ -47,11 +47,12 @@ class Choix():
      #               (2, _("Je suis déjà membre de l'association Permacat")))
 
 
-    abreviationsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022"]
-    abreviationsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022")]
+    abreviationsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66"]
+    abreviationsAssoEtPublic = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66", "public"]
+    abreviationsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"), ("conf66", "Confédération Paysanne 66")]
     abreviationsNomsAssoEtPublic = [('public', "Public"), ] + abreviationsNomsAsso
 
-    suivisPossibles = ["articles_public"] + ['articles_jardin', 'projets', 'produits', 'conversations', 'documents', 'albums', 'ateliers', 'suffrages', 'salon_accueil']
+    suivisPossibles = ["articles_public"] + ['projets', 'produits', 'conversations', 'documents', 'albums', 'ateliers', 'suffrages', 'salon_accueil']
     suivisPossibles_groupes = [('public', "articles_public"),] + [(abreviation,"articles_"+abreviation) for abreviation in abreviationsAsso]
 
     nomSuivis = {"articles_"+abreviation:'Article "' + nom_asso + '" du forum' for abreviation, nom_asso in abreviationsNomsAsso}
@@ -64,7 +65,7 @@ class Choix():
                           'conversations':"Message privé",
                           'documents': "Document téléchargeable",
                           'albums': "Album photo",
-                          'ateliers': "Proposition d'Atelier",
+                          'ateliers': "Atelier",
                           'suffrages': "Suffrage (vote)",
                           'salon_accueil': "Salons de discussion publics",
                   })

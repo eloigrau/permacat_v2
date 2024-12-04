@@ -1,0 +1,8 @@
+<p class="textcenter"> Salons avec le mot-clé : <badge class="btn badge badge-success" >{{tag}}</badge></p>
+<div class="row justify-content-center">
+    <div class="col-sm-12">
+    {% for salon in salons %}
+        {% include 'salon/template_salonBouton.html' %}
+    {% endfor %}
+    </div>
+</div>

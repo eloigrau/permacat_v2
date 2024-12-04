@@ -1,0 +1,91 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Les Listes de diffusion par Mail </h3>
+
+        <a class="btn btn-primary"   href="{% url 'adherents:mesListesMails' %}">Voir mes abonnements</a>
+    </div>
+</div>
+{% if request.user.estmembre_bureau_conf %}
+<div class="row ">
+    <div class="col textcenter">
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' %}">Ajouter une liste</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+
+ {% include 'adherents/template_listeDiffusion_liste.html'%}
+
+{% if request.user.estmembre_bureau_conf %}
+        <h4 class="textcenter" >Pour le bureau :</h4>
+<hr>
+<div class="row ">
+    <div class="col textcenter">
+
+    <a href="{% url 'adherents:get_csv_listeMails' %}" target="_blank" rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+            &nbsp;Exporter en CSV pour Google
+        </button>
+    </a>
+		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' %}">Gérer la liste des inscriptions</a></li>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped ²">
+            <thead><tr>
+                <th>Nom de la liste</th>
+                <th>Adhérents</th>
+                <th></th>
+            </tr></thead>
+            <tbody>
+{% for nom, adherents in dico_ListesBase.items %}
+            <tr>
+                <td> {{nom}}({{adherents|length}})</td>
+                <td>
+                    {%for m in adherents %}
+                        {{m}} {% if not forloop.last %}, {% endif%}
+                    {%endfor%}
+                </td>
+                <td>
+                    <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
+                        <button type="button" class="btn btn-sm btn-primary">
+                            Copier la liste des mails
+                        </button>
+                    </a>
+                </td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<hr>
+ <div class="textcenter">
+        <button id="btn-archives"  type="button" class="btn btn-lg" onclick="toggle_visibility('historique');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+            Afficher l'historique
+        </button>
+    </div>
+    <div id="historique" style='display:none;'>
+ {% include 'adherents/template_actions.html'%}
+    </div>
+
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base_plantes.html' %}
+{% load fontawesome_5 %}
+
+
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Chercher une plante </h3>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <p>Rechercher un mot ou une syllabe dans l'ensemble de la base de donnée (nom scientifique, nom commun, etc.)</p>
+     <form class="form-inline justify-content-center" action="{% url 'jardins:chercher_plante' %}" method="get" role = "search">
+        {% csrf_token %}
+            <input class="form-control fmr-sm-2" name="id_recherche" type="text" placeholder="Rechercher...">
+            <button class="btn navbar-btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fa5_icon 'search' title='chercher' %}</button>
+        </div>
+     </form>
+</div>
+<hr>
+<div class="row">
+    <div class="col textcenter">
+        <h5>Résultats de la recherche : "{{recherche}}"</h5>
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+    <div class="textcenter justify-content-center">
+        <table class="table sortable table-condensed tablejardin table-striped sortable"  style="width:100%;">
+    {% for plante in plante_list %}
+            <tr>
+                <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+            </tr>
+    {% endfor %}
+            </table>
+    </div>
+</div>
+
+{% endblock %}
+

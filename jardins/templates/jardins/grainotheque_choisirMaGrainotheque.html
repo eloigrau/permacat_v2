@@ -1,0 +1,21 @@
+{% extends 'base_plantes.html' %}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Pour quelle grainothèque ?</h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+            enctype="multipart/form-data">
+              {% csrf_token %}
+                {% include 'form_template.html' %}
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base_adherents.html' %}
+
+{% load app_filters %}
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Les Projets de Phoning </h3>
+    </div>
+</div>
+{% if request.user.estmembre_bureau_conf %}
+<div class="row ">
+    <div class="col textcenter">
+        <a class="btn btn-danger"   href="{% url 'adherents:phoning_projet_ajouter' %}">Ajouter un projet</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center">
+        <div class="navbar-header">
+             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_asso">
+            <ul class="navbar-nav subnavbar2 align-items-center">
+                <a  href="{% url 'adherents:phoning_projet_liste' %}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
+                          <h6>Tout</h6>
+                    </li>
+                </a>
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'adherents:phoning_projet_liste' %}?{{ request.GET.urlencode|sansAsso}}&asso={{asso_ab}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+
+ {% include 'adherents/projetphoning_list_template.html'%}
+
+{% endblock %}

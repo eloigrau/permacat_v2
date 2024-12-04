@@ -1,6 +1,6 @@
 {% extends 'base_notifications.html' %}
 {% load activity_tags %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% block subtitle %}
 
 <p class = "textcenter justify-content-center">
@@ -17,7 +17,7 @@
                 <button class="btn btn-sm btn-info" type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> ce mois-ci</button>
         </a>
     <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -58,6 +58,7 @@
         </a>
     </p>
     {% else %}
+<hr>
     <p class = "textcenter ">Pas de nouvelle activité </p>
     {% endif %}
 {% endif %}

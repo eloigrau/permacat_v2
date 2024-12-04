@@ -1,12 +1,9 @@
 from django import forms
 from django.core.validators import RegexValidator
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import Profil, Message_permagora, Choix, Commentaire_charte, PropositionCharte, PoleCharte
-from captcha.fields import CaptchaField
-from local_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
-import itertools
-from django.utils.text import slugify
+from .models import Profil, Message_permagora, Choix, Commentaire_charte, PropositionCharte
+from local_summernote.widgets import SummernoteWidget
 import re
+from bourseLibre.utils import slugify_pcat
 
 no_space_validator = RegexValidator(
       r' ',
@@ -124,7 +121,7 @@ class PropositionCharteCreationForm(forms.ModelForm):
         instance = super(PropositionCharteCreationForm, self).save(commit=False)
 
         max_length = PropositionCharte._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         x = 1
         while PropositionCharte.objects.filter(slug=instance.slug).exists():

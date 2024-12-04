@@ -1,7 +1,7 @@
 {% extends 'vote/index_base.html' %}
 {% load static %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% load activity_tags %}
     {%block header %}
@@ -88,7 +88,7 @@
            </button>
                 <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
                     {% for ordre in ordreTriPossibles %}
-                     <a class="dropdown-item"  href="?{{ request.GET.urlencode }}&ordreTri={{ordre}}">{{ordre|ordreTri}}</a>
+                     <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri }}&ordreTri={{ordre}}">{{ordre|ordreTri}}</a>
                     {% endfor %}
                 </div>
             </li>

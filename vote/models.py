@@ -12,6 +12,8 @@ from django.core.validators import MinLengthValidator
 from django.core.exceptions import ValidationError
 
 class Choix():
+    type_vote_bm =(('', '-----------'), (0, "Question binaire"))
+
     vote_ouinon = (('', '-----------'),
                      (0, ("Oui")),
                     (1, ("Non")),
@@ -132,7 +134,6 @@ class SuffrageBase(models.Model):
 
     class Meta:
         abstract = True
-
 
 
 class Suffrage(SuffrageBase):

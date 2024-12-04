@@ -1,0 +1,101 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3> {{listediffusion}} (suivi par {{listediffusion.get_liste_inscriptions|length}} personne(s)) </h3>
+    </div>
+</div>
+
+
+{% if request.user.estmembre_bureau_conf %}
+<div class="row justify-content-center">
+    <div class="col textcenter">
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk %}"> Ajouter un confédéré à la liste</a></li>
+    </div>
+</div>
+{% endif %}
+
+<hr>
+<p class="textcenter">
+    <a onclick="get_infos('{% url 'adherents:get_infos_listeMail' listeMail_pk=listediffusion.pk type_info='email' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+            Copier la liste des mails
+        </button>
+    </a>
+</p>
+<div id="listeMails"></div>
+<hr>
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-11 col-lg-10 textcenter">
+        <table class="table table-condensed  table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Adhérent</th>
+                <th>Mail</th>
+                <th>Commentaire</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+            <tbody>
+                    {% for m in listediffusion.get_liste_inscriptions %}
+                    <tr>
+                        <td>
+                            <a href="{{m.adherent.get_absolute_url}}">{{m.adherent}}</a>
+                        </td>
+                        <td>
+                             {{m.adherent.get_email}}
+                        </td>
+                        <td>
+                             {{m.commentaire}}
+                        </td>
+                        <td>
+                             {{m.date_inscription|date:"d/m/Y"}}
+                        </td>
+                    <td>
+                        {% if request.user.estmembre_bureau_conf %}
+                            <a class="btn btn-sm btn-warning textleft" href="{{m.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                            <a class="btn btn-sm btn-danger textleft" href="{{m.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+
+                        {% endif %}
+                    </td>
+                    </tr>
+                    {%endfor%}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function get_infos(url_tag) {
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#listeMails").html(data);  // replace the contents of the city input with the data that came from the server
+          copyToClipboardElement($("#listeMails"));
+        }
+    });
+}
+
+</script>
+{% endblock %}

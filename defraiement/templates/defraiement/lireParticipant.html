@@ -1,16 +1,8 @@
 {% extends 'base_defraiement.html' %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% load hitcount_tags %}
 
 {% block subtitle %}
-
-<p class="textcenter">
-    <a href="{% url 'defraiement:participants' asso_slug=part.asso.abreviation %}">
-        <button type="button" class="btn btn-sm btn-primary">
-        &nbsp; <i class="fa fa-arrow-left"></i> Revenir à la liste des participants
-        </button>
-    </a>
-</p>
 
  <div class="row rowcentre">
         <div class="col-sm-12 textcenter">
@@ -20,7 +12,7 @@
                  &nbsp;Modifier
                </button></a>
             </div>
-				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerParticipant' id=part.id %}{% endif %}">
+				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerParticipant' asso_abrev=asso_courante.abreviation id=part.id  %}{% endif %}">
                <button type="button" class="btn btn-sm btn-danger">
                  &nbsp;Supprimer
                </button></a>
@@ -41,7 +33,7 @@
  	<div class="row">
     <div class="col-md-12 textcenter">
         <p>
-            <a href="https://www.google.com/maps/search/?api=1&query={{part.adresse.get_adresse_str}}" target="_blank">su : {{ part.adresse.get_adresse_str}}</a>
+            <a href="https://www.google.com/maps/search/?api=1&query={{part.adresse.get_adresse_str}}" target="_blank" rel="noopener noreferrer nofollow">su : {{ part.adresse.get_adresse_str}}</a>
 		</p>
     </div>
     </div>

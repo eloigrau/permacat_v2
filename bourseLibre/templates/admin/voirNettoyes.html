@@ -1,0 +1,27 @@
+{% extends 'base_notifications.html' %}
+{% load activity_tags %}
+{% block subtitle %}
+<h4>Nombre nettoyés : {{nombre}}</h4>
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <tbody>
+        {% for f in followw %}
+        <tr>
+            <td>{{f.0}}</td>
+            <td>{{f.1}}</td>
+        </tr>
+        {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col textcenter">
+        <a class="dropdown-item" href="{% url 'nettoyerFollowsValide' %}"> Valider</a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,7 +1,7 @@
 {% extends 'base_fiches.html' %}
 {% load fiches_filters %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% block subtitle %}
 
 
@@ -40,7 +40,7 @@
             <p class="textright"> 
                 {% if fiche.tags.names  %}<em>Mots-clés:</em>
            {% for tag in fiche.tags.names %}
-            {{tag}}{%if not forloop.last%}, {%endif%}
+            <span class="badge badge-info"> {{tag}}</span>
            {% endfor %}
            {% endif %}  </p>
         </div>

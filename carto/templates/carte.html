@@ -1,13 +1,13 @@
 {% extends 'base_site.html' %}
 {% load carto_filters %}
-{% block headerDocument%}
+{% block header%}
 {% load leaflet_tags %}
-{%endblock%}
-{%block header %}
 {% load static %}
-{% load staticfiles %}
 {% leaflet_js %}
 {% leaflet_css %}
+    <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
+  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
+ <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
 {%endblock%}
 {% block title %} - Carte Transiscope
 {% endblock %}
@@ -23,15 +23,8 @@
 
 <div class="row" style="min-height:600px;">
   <div class="col-md-12" >
-      <style>
-
-    .leaflet-container {  /* all maps */
-        width:  100%;
-        height: 100%;
-    }
-    </style>
+    <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
       <script type="text/javascript">
-
         function map_init_basic (map, options) {
           var greenIcon = L.icon({
               iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',

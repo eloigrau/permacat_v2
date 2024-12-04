@@ -1,0 +1,19 @@
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Nom de la liste</th>
+                <th>Asso</th>
+            </tr></thead>
+            <tbody>
+{% for liste in projets %}
+            <tr>
+                <td>{{liste.asso.get_logo_nomgroupe_html|safe }} </td>
+                <td><a href="{{liste.get_absolute_url}}"> {{liste}} </a></td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

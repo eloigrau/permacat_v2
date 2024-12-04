@@ -1,0 +1,35 @@
+{% load app_filters %}
+{% load avatar_tags %}
+{% load static %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div style="overflow-x:auto;">
+    <table class="table table-condensed tableprofils table-striped sortable">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Catégorie</th>
+                <th>Titre</th>
+                <th>Nb participants</th>
+                <th>Lieu</th>
+                <th>total km</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in reunions %}
+        <tr>
+            <td> {{r.get_logo_nomgroupe_html|safe}} {{ r.get_categorie_display }}</td>
+            <td><a href="{{r.get_absolute_url}}"> {{ r.titre }}</a></td>
+            <td> {{ r.participants.all | length}}</td>
+            <td> {% if r.adresse %} {{ r.adresse.commune}} {% endif %} </td>
+            <td> {{ r.getDistanceTotale}}km</td>
+            <td> {{ r.start_time|date:"DATE_FORMAT" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    </div>
+</div>
+

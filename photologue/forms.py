@@ -6,13 +6,12 @@ from io import BytesIO
 
 from PIL import Image
 
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.conf import settings
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from django.forms import ClearableFileInput
@@ -24,6 +23,7 @@ from blog.models import Article
 from local_summernote.widgets import SummernoteWidget
 from django.utils.text import slugify
 import itertools
+from bourseLibre.utils import slugify_pcat
 
 logger = logging.getLogger('photologue.forms')
 
@@ -99,7 +99,7 @@ class UploadZipForm(forms.Form):
             album = self.cleaned_data['album']
         else:
             logger.debug(
-                force_text('Creating new album "{0}".').format(self.cleaned_data['title']))
+                force_str('Creating new album "{0}".').format(self.cleaned_data['title']))
             album = Album.objects.create(title=self.cleaned_data['title'],
                                              slug=slugify(self.cleaned_data['title']),
                                              description=self.cleaned_data['description'],
@@ -183,7 +183,7 @@ class UploadZipForm(forms.Form):
 class AlbumForm(forms.ModelForm):
     asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
                               label="Album public ou réservé aux adhérents de l'asso :", )
-    article = forms.ModelChoiceField(queryset=Article.objects.all(), required=False, empty_label=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False), required=False, empty_label=True,
                               label="Associer l'album à un article du forum ?",)
 
     class Meta:
@@ -237,7 +237,7 @@ class PhotoForm(forms.ModelForm):
         fields = ['image', 'title', 'caption']
         widgets = {
             'caption': SummernoteWidget(),
-            'image': ClearableFileInput(attrs={'multiple': True}),
+            'image': ClearableFileInput(attrs={'allow_multiple_selected': True}),
         }
 
     def clean_content(self):
@@ -267,13 +267,13 @@ class PhotoChangeForm(forms.ModelForm):
 
 
 class DocumentAssocierArticleForm(forms.Form):
-    article = forms.ModelChoiceField(queryset=Article.objects.all().order_by('titre'), required=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False).order_by('titre'), required=True,
                               label="Document public ou réservé aux adhérents de l'asso :", )
 
 class DocumentForm(forms.ModelForm):
     doc = forms.FileField(
         label='Choisir un fichier',
-        help_text='max. 20 megabytes'
+        help_text='max. 20 Mo'
     )
 
     asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
@@ -283,14 +283,17 @@ class DocumentForm(forms.ModelForm):
         model = Document
         fields = ['asso', 'titre', 'doc', 'tags']
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, article=None, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
+        if article:
+            self.fields["asso"].initial = [article.asso.id,]
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+
 
     def save(self, request, article, commit=True):
         instance = super(DocumentForm, self).save(commit=False)
         max_length = Photo._meta.get_field('slug').max_length
-        instance.slug = orig = slugify(instance.titre)[:max_length]
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
 
         for x in itertools.count(1):
             if not Photo.objects.filter(slug=instance.slug).exists():
@@ -302,6 +305,55 @@ class DocumentForm(forms.ModelForm):
         instance.auteur = request.user
         if article:
             instance.article = article
+
+        if commit:
+            instance.save()
+
+
+        return instance
+
+
+class DocumentChangeForm(forms.ModelForm):
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+                              label="Document public ou réservé aux adhérents de l'asso :", )
+
+    class Meta:
+        model = Document
+        fields = ['asso', 'titre', 'tags']
+
+    def __init__(self, request, *args, **kwargs):
+        super(DocumentChangeForm, self).__init__(*args, **kwargs)
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+
+
+class DocumentFormAsso(forms.ModelForm):
+    doc = forms.FileField(
+        label='Choisir un fichier',
+        help_text='max. 20 Mo'
+    )
+
+    class Meta:
+        model = Document
+        fields = [ 'titre', 'doc', 'tags']
+
+    def __init__(self, *args, **kwargs):
+        super(DocumentFormAsso, self).__init__(*args, **kwargs)
+
+    def save(self, request, article, commit=True):
+        instance = super(DocumentFormAsso, self).save(commit=False)
+        max_length = Photo._meta.get_field('slug').max_length
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
+
+        for x in itertools.count(1):
+            if not Photo.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.auteur = request.user
+        instance.article = article
+        instance.asso = article.asso
 
         if commit:
             instance.save()

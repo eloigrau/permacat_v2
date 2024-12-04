@@ -1,9 +1,9 @@
 # cal/urls.py
 
-from django.conf.urls import url
+from django.urls import path, include, re_path
 from . import views
 
 app_name = 'carto'
 urlpatterns = [
-    url(r'', views.carte, name='carte'),
+    re_path(r'', views.carte, name='carte'),
 ]

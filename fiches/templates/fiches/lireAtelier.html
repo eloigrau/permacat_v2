@@ -1,7 +1,7 @@
 {% extends 'base_fiches.html' %}
 {% load fiches_filters %}
 {% load blog_filters %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 {% block subtitle %}
 
 
@@ -65,8 +65,8 @@
 
       <img  style="max-width: 80%; height: auto;" src="{{STATIC_URL}}img/monnaie{{atelier.get_budget}}.png" alt="cout"/>
     {%for i in atelier.get_budget_length %}
-               {% fontawesome_icon 'coins' %}
-               {% comment %}{% fontawesome_icon 'euro-sign' %} {% endcomment %}
+               {% fa5_icon 'coins' %}
+               {% comment %}{% fa5_icon 'euro-sign' %} {% endcomment %}
     {%endfor%}
 
 </td>
@@ -74,8 +74,8 @@
         {{ atelier.get_temps_display }}
          {% comment %}
     {%for i in atelier.get_temps_length %}
-               {% fontawesome_icon 'link' %}
-               {% fontawesome_icon 'clock' %}
+               {% fa5_icon 'link' %}
+               {% fa5_icon 'clock' %}
     {%endfor%}
          {% endcomment %}
 </td>

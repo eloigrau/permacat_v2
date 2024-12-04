@@ -1,6 +1,6 @@
-{% extends 'base_defraiement.html' %}
+{% extends 'base_defraiement2.html' %}
 {% load static %}
-{% load fontawesome %}
+{% load fontawesome_5 %}
 
 {% load activity_tags %}
 {%block header %}
@@ -31,7 +31,7 @@
     <div class="col-md-4 textcenter">
 
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-         {% fontawesome_icon 'question-circle' %}
+         {% fa5_icon 'question-circle' %}
         </button>
         <!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

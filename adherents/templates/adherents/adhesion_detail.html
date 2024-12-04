@@ -1,0 +1,44 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3> {{adhesion}} </h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tablepanier table-striped">
+            <tbody>
+            <tr>
+                <td style="width:250px">adherent :</td>
+                <td>{{adhesion.adherent}}</td>
+            </tr>
+            {% if adhesion.user.adherent %}
+            <tr>
+                <td style="width:250px">adherent :</td>
+                <td><a href="{{adhesion.adherent.profil.get_absolute_url}}"{{adhesion.adherent.profil}}</a></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td style="width:250px">date_cotisation :</td>
+                <td>{{adhesion.date_cotisation}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

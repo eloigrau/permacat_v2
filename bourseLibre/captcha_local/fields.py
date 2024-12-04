@@ -4,64 +4,7 @@ from bourseLibre.captcha_local.conf import settings
 from bourseLibre.captcha_local.models import CaptchaStore
 import django
 from django.core.exceptions import ImproperlyConfigured
-if django.VERSION < (1, 10):  # NOQA
-    from django.core.urlresolvers import reverse, NoReverseMatch  # NOQA
-else:  # NOQA
-    from django.urls import reverse, NoReverseMatch  # NOQA
-from django.forms import ValidationError
-from django.forms.fields import CharField, MultiValueField
-from django.forms.widgets import TextInput, MultiWidget, HiddenInput
-from django.utils.translation import gettext_lazy
-from django.utils import timezone
-from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
-from six import u
-
-
-class CaptchaAnswerInput(TextInput):
-    """Text input for captcha answer."""
-
-    # Use *args and **kwargs because signature changed in Django 1.11
-    def build_attrs(self, *args, **kwargs):
-        """Disable automatic corrections and completions."""
-        attrs = super(CaptchaAnswerInput, self).build_attrs(*args, **kwargs)
-        attrs['autocapitalize'] = 'off'
-        attrs['autocomplete'] = 'off'
-        attrs['autocorrect'] = 'off'
-        attrs['spellcheck'] = 'false'
-        return attrs
-
-
-class BaseCaptchaTextInput(MultiWidget):
-    """
-    Base class for Captcha widgets
-    """
-    def __init__(self, attrs=None):
-        widgets = (
-            HiddenInput(attrs),
-            CaptchaAnswerInput(attrs),
-        )
-        super(BaseCaptchaTextInput, self).__init__(widgets, attrs)
-
-    def decompress(self, value):
-        if value:
-            return value.split(',')
-        return [None, None]
-
-    def fetch_captcha_store(self, name, value, attrs=None, generator=None):
-        """
-        Fetches a new CaptchaStore
-        This has to be called inside render
-        """
-        try:
-            reverse('captcha-image', args=('dummy',))
-        except NoReverseMatch:
-            raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
-
-        if settings.CAPTCHA_GET_FROM_POOL:
-            key = CaptchaStore.pick()
-        else:
-            key = CaptchaStore.generate_key(generator)
+        key = CaptchaStore.generate_key(generator)
 
         # these can be used by format_output and render
         self._value = [key, u('')]
@@ -170,9 +113,8 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             return self._direct_render(name, attrs)
 
         extra_kwargs = {}
-        if django.VERSION >= (1, 11):
-            # https://docs.djangoproject.com/en/1.11/ref/forms/widgets/#django.forms.Widget.render
-            extra_kwargs['renderer'] = renderer
+        # https://docs.djangoproject.com/en/1.11/ref/forms/widgets/#django.forms.Widget.render
+        extra_kwargs['renderer'] = renderer
 
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs, **extra_kwargs)
 

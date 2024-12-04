@@ -1,0 +1,32 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Les adhésions </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col textcenter">
+        <a href="{% url 'adherents:adhesion_creer_adherent'%}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter une adhésion
+            </button>
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+     {% include 'adherents/template_adhesion_liste.html'%}
+{% endblock %}

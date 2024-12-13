@@ -262,6 +262,8 @@ urlpatterns = [
     path('admin/envoyer_emails_reabonnement/', views_admin.envoyer_emails_reabonnement,  name="envoyer_emails_reabonnement"),
     path('admin/recalculerAdresses/', views_admin.recalculerAdresses,  name="recalculerAdresses"),
     path('admin/recalculerAdressesConf/', views_admin.recalculerAdressesConf,  name="recalculerAdressesConf"),
+    path('admin/listeContactsMails/', views_admin.listeContactsMails,  name="listeContactsMails"),
+
 
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),

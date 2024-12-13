@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .models import Adresse, Produit, Panier, Item, Adhesion_asso, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso, InvitationDansSalon, InscritSalon, Monnaie
+from .models import Adresse, Produit, Panier, MessageAdmin, Item, Adhesion_asso, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso, InvitationDansSalon, InscritSalon, Monnaie
 from blog.models import Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement, EvenementAcceuil, AdresseArticle
 #from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
@@ -86,6 +86,7 @@ class Salon_Admin(admin.ModelAdmin):
     #form = SalonForm
 
 #admin.site.register(Art_jardin, Article_jardinAdmin)
+admin.site.register(MessageAdmin)
 admin.site.register(Evenement)
 admin.site.register(EvenementAcceuil)
 admin.site.register(FicheProjet)

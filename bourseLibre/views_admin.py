@@ -821,6 +821,20 @@ def nettoyerAdresses(request):
     return render(request, 'message_admin.html', {'message': m,})
 
 
+def listeContactsMails(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    listeMails = []
+    emails = Profil.objects.filter(inscrit_newsletter=True)
+
+    for i in range(0, len(emails), 90):
+        listeMails.append({"type": 'user_adherent_ajour',
+                       "profils": emails[i:i + 90],
+                       "titre": "Liste des mails de ceux qui ont accepté de recevoir des mails "})
+
+    return render(request, 'asso/listeContacts.html', {"listeMails": listeMails})
+
+
 def create_permissions(request):
     from django.contrib.auth.models import Group, Permission
 

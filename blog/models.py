@@ -270,7 +270,7 @@ class Article(models.Model):
             message_notif = "Un article a été posté dans le forum [" + str(
                 self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.abreviation))
-            suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
+            suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
             emails = [suiv.email for suiv in suiveurs]
             for asso in self.partagesAsso.all():
                 suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.abreviation))
@@ -283,7 +283,7 @@ class Article(models.Model):
             message_notif = "L'article [" + str(self.asso.nom) + "] " + self.titre + " a été modifié"
 
             if temps_depuiscreation > timedelta(minutes=10):
-                suiveurs = [suiv for suiv in followers(self) if self.est_autorise(suiv)]
+                suiveurs = [suiv for suiv in followers(self) if self.est_autorise(suiv) and self.auteur != suiv]
                 emails = [suiv.email for suiv in suiveurs]
 
         if emails:

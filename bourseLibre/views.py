@@ -14,7 +14,7 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
-   Adhesion_asso, Adhesion_permacat, EvenementSalon
+   Adhesion_asso, Adhesion_permacat, EvenementSalon,MessageAdmin
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -65,7 +65,7 @@ from itertools import chain
 from .filters import ProfilCarteFilter
 from django.db.models.functions import Greatest, Lower
 CharField.register_lookup(Lower, "lower")
-
+from bourseLibre.settings.production import LOCALL
 
 def getEvenementsSemaine(request):
     current_week = date.today().isocalendar()[1]
@@ -356,6 +356,7 @@ def annuaire(request, asso):
     nb_profils = len(prof)
     prof = prof.filter(accepter_annuaire=True)
     return render(request, 'annuaire.html', {'profils':prof, "nb_profils":nb_profils, "asso":asso} )
+
 
 @login_required
 def listeContacts(request, asso):
@@ -652,18 +653,27 @@ def contact_admins(request):
 
         if request.user.is_anonymous:
             envoyeur = "Anonyme : " + form.cleaned_data['email']
+            email = form.cleaned_data['email']
         else:
             envoyeur = request.user.username + " (" + request.user.email + ") "
+            email = request.user.email
         sujet = form.cleaned_data['sujet']
         message_txt = envoyeur + " a envoyé l'email suivant : "+ form.cleaned_data['msg']
         message_html = envoyeur + " a envoyé l'email' suivant : " + form.cleaned_data['msg']
+        MessageAdmin.objects.create(email=email, message=message_txt, sujet=sujet)
+
+        admin = Profil.objects.get(username="Eloi")
+        action.send(request.user, verb='envoi_salon_prive',  url="/gestion/bourseLibre/messageadmin/",
+                description="a envoyé un message aux admin (%s)" %admin.username)
+
         try:
-            mail_admins(sujet, message_txt, html_message=message_html)
-            if form.cleaned_data['renvoi']:
-                if request.user.is_anonymous:
-                    send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, form.cleaned_data['email'], [form.cleaned_data['email'],], fail_silently=False, html_message=message_html)
-                else:
-                    send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, request.user.email, [request.user.email,], fail_silently=False, html_message=message_html)
+            if not LOCALL:
+                mail_admins(sujet, message_txt, html_message=message_html)
+                if form.cleaned_data['renvoi']:
+                    if request.user.is_anonymous:
+                        send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, form.cleaned_data['email'], [form.cleaned_data['email'],], fail_silently=False, html_message=message_html)
+                    else:
+                        send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, request.user.email, [request.user.email,], fail_silently=False, html_message=message_html)
 
             return render(request, 'contact/message_envoye.html', {'sujet': sujet, 'msg': message_html,
                                                    'envoyeur': envoyeur ,

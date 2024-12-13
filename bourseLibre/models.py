@@ -1519,3 +1519,13 @@ class InscriptionListeDiffusion(models.Model):
 
     def __str__(self):
         return str(self.nom_newsletter) + ": " + str(self.email)
+
+
+class MessageAdmin(models.Model):
+    email = models.EmailField(blank=True)
+    date = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    message = models.TextField(blank=True)
+    sujet = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return "(" + self.email + ") " +str(self.sujet) + ": " + str(self.message)

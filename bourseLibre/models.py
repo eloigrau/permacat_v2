@@ -171,8 +171,8 @@ class Adresse(models.Model):
         if reponse.status_code != 200 and reponse.status_code != 403 and reponse.status_code != 400:
             action.send(self, verb='buglatlon', description="1fr_"+str(reponse)+" / "+str(url))
         data = simplejson.loads(reponse.text)
-        self.latitude = float(data['features'][0]["geometry"]["coordinates"][0])
-        self.longitude = float(data['features'][0]["geometry"]["coordinates"][1])
+        self.latitude = float(data['features'][0]["geometry"]["coordinates"][1])
+        self.longitude = float(data['features'][0]["geometry"]["coordinates"][0])
 
     def set_latlon_from_adresse(self):
         if not self.code_postal and not self.commune:

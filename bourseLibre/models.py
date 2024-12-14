@@ -146,7 +146,7 @@ class Adresse(models.Model):
     def set_latlon_from_adresse_gmail(self, adresse):
         api_key = os.environ["GAPI_KEY"]
         api_response = requests.get(
-            'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(address, api_key))
+            'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key={1}'.format(adresse, api_key))
         api_response_dict = api_response.json()
 
         if api_response_dict['status'] == 'OK':

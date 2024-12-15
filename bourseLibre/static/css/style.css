@@ -75,7 +75,7 @@ body {
     background-size:cover;
     margin: auto;
     width: 100%;
-    background-color:#2B2A33;
+    background-color:#18533f; /* #2B2A33 ou #386094 */
     padding-top: 5px;
     color:black;
      -webkit-font-smoothing: antialiased;
@@ -83,13 +83,13 @@ body {
       text-rendering: optimizeLegibility;
     /* font-family: "The Antiqua B",Georgia,Droid-serif,serif;*/
 }
-
+/*
 @media screen and (max-width: 475px) {
     body{
         background: url("/static/img/background/bckgrnd-2-grain-lg.jpg") 0 0 no-repeat fixed;
         background-size:cover;
     }
-}
+}*/
 #top{
 padding-top:50px;
 }

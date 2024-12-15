@@ -541,6 +541,7 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
     def get_queryset(self):
         params = dict(self.request.GET.items())
         if 'asso' in params:
+            self.request.session["asso_abreviation"] = params['asso']
             self.qs = ProjetPhoning.objects.filter(asso__abreviation=params['asso'])
         else:
             self.qs = ProjetPhoning.objects.filter(asso__abreviation__in=self.request.user.getListeAbreviationsAssos())

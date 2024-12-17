@@ -142,6 +142,9 @@ def getNbNewNotifications(request):
 
     return len(actions)
 
+@login_required
+def getFavoris(request):
+    return request.user.getFavoris()
 
 @login_required
 def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):

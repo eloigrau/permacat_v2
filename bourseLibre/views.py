@@ -11,10 +11,10 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
-    SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm
+    SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm, FavorisForm
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
-   Adhesion_asso, Adhesion_permacat, EvenementSalon,MessageAdmin
+   Adhesion_asso, Adhesion_permacat, EvenementSalon,MessageAdmin, Favoris
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -1658,5 +1658,46 @@ def accesfichier(request, path):
     response['X-Accel-Redirect'] = '/protected/media/' + path
     return response
 
+
+
+class Favoris_list(ListView):
+    model = Favoris
+    template_name = "favoris/mesFavoris.html"
+    ordering = ("nom")
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class Favoris_supprimer(DeleteView):
+    model = Favoris
+    template_name = 'favoris/favoris_supprimer.html'
+
+    def get_success_url(self):
+        return reverse('mesFavoris')
+
+    def get_object(self):
+        ad = Favoris.objects.get(pk=self.kwargs['pk'])
+        return ad
+
+
+class Favoris_update(UpdateView):
+    model = Favoris
+    template_name = 'favoris/favoris_modifier.html'
+    fields = ["nom", "url"]
+
+    def get_success_url(self):
+        return reverse('mesFavoris')
+
+
+def favoris_ajouter(request):
+    form = FavorisForm(request.POST or None)
+    if form.is_valid():
+        fav = form.save(request)
+        return redirect(reverse("mesFavoris"))
+
+    return render(request, 'favoris/favoris_ajouter.html', {"form": form})
 
 

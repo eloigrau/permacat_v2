@@ -1,6 +1,6 @@
-from .models import Produit, Salon
+from .models import Produit, Salon, Favoris
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from django.contrib.auth.decorators import login_required
 #from rest_framework import permissions
@@ -31,8 +31,26 @@ def ajax_annonces(request):
     qs = Produit.objects.filter(asso__abreviation="public").select_subclasses()
     return render(request, 'ajax/annonces_list.html', {"qs":qs})
 
+def ajax_annonces(request):
+    cle = request.GET.get('cle')
+    if not cle == "thomas":
+        return render(request, 'ajax/annonces_list.html', {})
+    qs = Produit.objects.filter(asso__abreviation="public").select_subclasses()
+    return render(request, 'ajax/annonces_list.html', {"qs":qs})
+
 @login_required
 def salonsParTag(request, tag):
     salons = Salon.objects.filter(tags__name__in=[tag, ]).distinct()
     return render(request, 'salon/salons_list_template_motcle.html', {'salons': salons, 'tag':tag})
 
+
+@login_required
+def ajax_ajouterFavoris(request):
+    url_path = request.GET.get('url_path', None)
+    nom = request.GET.get('nom', None)
+    if nom is None:
+        nb = Favoris.objects.filter(profil=request.user, nom__startswith='favoris').count()
+        nom = 'favoris ' + str(nb)
+    favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
+
+    return redirect(url_path)

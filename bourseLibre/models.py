@@ -555,6 +555,10 @@ class Profil(AbstractUser):
         return list(set([i.grainotek for i in self.grainotheque_suiveur.all()] +
                    list(self.auteur_grainotheque.all()) + list(self.referent_grainotheque.all())))
 
+    @property
+    def getFavoris(self):
+        return self.favoris_set.all()
+
 class Profil_recherche(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
 
@@ -1529,3 +1533,17 @@ class MessageAdmin(models.Model):
 
     def __str__(self):
         return "(" + self.email + ") " +str(self.sujet) + ": " + str(self.message)
+
+
+class Favoris(models.Model):
+    nom = models.CharField(max_length = 50)
+    url = models.CharField(max_length = 300)
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name="Profil", blank=False, null=False)
+
+    def __str__(self):
+        return self.nom + ": " + str(self.url)
+
+    def get_update_url(self):
+        return reverse('favoris_update', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('favoris_delete', kwargs={'pk': self.pk})

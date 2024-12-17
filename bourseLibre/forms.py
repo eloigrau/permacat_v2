@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Produit_vegetal, Adresse, \
     Asso, Profil, Message, MessageGeneral, Message_salon, InscriptionNewsletter, Adhesion_permacat, \
-    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon
+    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon, Favoris
 from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
@@ -616,3 +616,16 @@ class AssocierProfil_adherentConf(forms.Form):
 
 
 
+
+class FavorisForm(forms.ModelForm):
+
+    class Meta:
+        model = Favoris
+        fields = ['nom', 'url']
+
+
+    def save(self, request):
+        instance = super(FavorisForm, self).save(commit=False)
+        instance.profil = request.user
+        instance.save()
+        return instance

@@ -1,0 +1,48 @@
+{% extends 'base_profil.html' %}
+
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Mes Favoris</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col textcenter">
+        <a href="{% url 'favoris_ajouter' %}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un favori
+            </button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped sortable">
+            <thead><tr>
+                <th>Nom</th>
+                <th>Url</th>
+                <th>Edit</th>
+            </tr></thead>
+            <tbody>
+{% for fav in favoris_list %}
+            <tr>
+                <td>{{fav.nom}}</td>
+                <td><a href="{{fav.url}}" rel="noopener noreferrer nofollow">{{fav.url}}</a></td>
+                <td>
+                    <a class="btn btn-sm btn-warning textleft" href="{{fav.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{fav.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                </td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

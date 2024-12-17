@@ -8,8 +8,9 @@ from django.utils.functional import SimpleLazyObject
 def navbar(request):
     def complicated_query():
         context_data = dict()
-        context_data['notification_count'] = getNbNewNotifications(request)
-        context_data['favoris_list'] = request.user.getFavoris
+        if request.user.is_authenticated:
+            context_data['favoris_list'] = request.user.getFavoris
+            context_data['notification_count'] = getNbNewNotifications(request)
 
         #if request.user.is_authenticated:
             #qs_projets = Projet.objects.filter(estArchive=False, statut='accep').order_by('categorie','titre')

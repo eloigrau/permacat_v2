@@ -702,7 +702,7 @@
                              <i class="fa fa-heart" title="Favoris"></i> </a>
                         <ul class="dropdown-menu dropdown-menu-left nav6-dropdown"
                             aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="{% url 'favoris_ajouterPage_ajax' %}?url_path={{request.get_full_path|urlencode}}{%if titre %}&titre={{titre}}{%endif%}">Ajouter la page</a></li>
+                            <li><a class="dropdown-item" href="{% url 'favoris_ajouterPage_ajax' %}?url_path={{request.get_full_path|urlencode}}{%if titre %}&titre={{titre}}{%endif%}">Ajouter la page actuelle</a></li>
                             <li class="divider" role="separator"></li>
                             {% for fav in favoris_list %}
                             <li><a class="dropdown-item" href="{{fav.url}}"> <i class='fa fa-sticky-note iconleft'></i> {{fav.nom}}</a></li>

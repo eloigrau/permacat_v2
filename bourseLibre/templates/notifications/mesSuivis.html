@@ -1,5 +1,6 @@
 {% extends 'base_profil.html' %}
 {% load app_filters %}
+{% load static %}
 {% load fontawesome_5 %}
 {% block header%}
 {% load webpush_notifications %}
@@ -204,10 +205,9 @@
         </div>
 
 {% else %}
-        <p class="textcenter">Vous n'avez cucun abonnement dans cette catégorie</p>
+        <p class="textcenter" >Vous n'avez cucun abonnement dans cette catégorie</p>
 {% endif %}
     </div>
 </div>
-
 
 {% endblock %}

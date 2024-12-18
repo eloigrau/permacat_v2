@@ -14,7 +14,8 @@
 {% endblock %}
 {% block subtitle %}
 <div class="row">
-  <div class="col-md-12 textcenter">
+  <div class="col-md-12 textcenter" id="titre">
+
     <h3> {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.get_username }} {% endif %}
     </h3>
   </div>
@@ -68,7 +69,7 @@
 
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="row justify-content-center" id="titre2">
   <div class="col-sm-12 col-md-10">
       {%if request.user == user or request.user.is_superuser%}
         <a href="{% url 'profil_modifier' %}">
@@ -327,7 +328,7 @@
       <small> {% if  request.user == user %}Les champs notés par un ^ ne sont visibles que par vous et l'administrateur du site. {%endif%}Les champs notés par un * ne sont visibles que par les membres du collectif concerné</small>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-6" id="titre3">
 {% if user.accepter_annuaire or request.user == user%}
     <style>leaflet-container {width:  100%;height: 90vh;}</style>
               <script type="text/javascript">
@@ -355,6 +356,76 @@
 </div>
 </div>
 
+
+{% comment %}
+<script src="{% static 'js/scrollTo.js' %}"></script>
+<script src="{% static 'js/aSimpleTour.js' %}"></script>
+    <script>
+    var tour = {
+        autoStart: true,
+        data: [{
+            element: '#titre',
+            tooltip: "ça c'est le titre",
+            position: 'T',
+            text: 'la ICI'
+        }, {
+            element: '#titre2',
+            text: 'On peut voir la djhfdfqdq',
+            tooltip: "ça c'est pour chercher dans le forum",
+            position: 'T',
+        },{
+            element: '#titre3',
+            text: 'On peut voir la djhfdfqdq',
+            position: 'T',
+            tooltip: 'Please use it'
+        },{
+            element: '#titre3',
+            text: 'On peut voir la djhfdfqdq',
+            position: 'T',
+            tooltip: 'Please use it'
+        },{
+            element: '#titre4',
+            position: 'R',
+            tooltip: 'Wanna see some demos?',
+            text: '<h2>Look out for our demos</h2>',
+            callback: function() {
+                $('[data-toggle=dropdown]').dropdown('toggle');
+            }
+        },
+        ],
+        controlsPosition: 'TR',
+        buttons: {
+            next: {
+                text: 'Next &rarr;',
+                class: 'btn btn-default'
+            },
+            prev: {
+                text: '&larr; Previous',
+                class: 'btn btn-default'
+            },
+            start: {
+                text: 'Start',
+                class: 'btn btn-primary'
+            },
+            end: {
+                text: 'End',
+                class: 'btn btn-primary'
+            }
+        },
+        controlsCss: {
+            background: 'rgba(55, 59, 65, 0.95)',
+            color: '#fff',
+            width: '400px',
+            'border-radius': 0
+        }
+    };
+
+$(document).ready(function() {
+    $.aSimpleTour(tour);
+});
+
+{% endcomment %}
+</script>
 {% endblock %}
 
     

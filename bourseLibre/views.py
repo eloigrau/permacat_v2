@@ -1665,6 +1665,11 @@ class Favoris_list(ListView):
     template_name = "favoris/mesFavoris.html"
     ordering = ("nom")
 
+
+    def get_queryset(self):
+        return Favoris.objects.filter(profil=request.user).distinct().order_by('nom')
+
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)

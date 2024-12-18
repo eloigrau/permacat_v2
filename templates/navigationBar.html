@@ -696,16 +696,16 @@
                                                        href="{% url 'conversations' %}">
                         <i class="fa fa-envelope" title="messages privés"></i></a>
                     </li>
-                    <li class="nav-item dropdown nav6">
+                    <li class="nav-item dropdown nav6 nav-icone">
                         <a data-toggle="dropdown" class="nav-link nav-link2  dropdown-toggle navbar-menu "
                           aria-haspopup="true" aria-expanded="false">
                              <i class="fa fa-heart" title="Favoris"></i> </a>
-                        <ul class="dropdown-menu dropdown-menu-left nav6-dropdown"
+                        <ul class="dropdown-menu  nav6-dropdown dropdown-menu-right"
                             aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="{% url 'favoris_ajouterPage_ajax' %}?url_path={{request.get_full_path|urlencode}}{%if titre %}&titre={{titre}}{%endif%}">Ajouter la page actuelle</a></li>
                             <li class="divider" role="separator"></li>
                             {% for fav in favoris_list %}
-                            <li><a class="dropdown-item" href="{{fav.url}}"> <i class='fa fa-sticky-note iconleft'></i> {{fav.nom}}</a></li>
+                            <li><a class="dropdown-item" href="{{fav.url}}"> <i class='fa fa-link iconleft'></i> {{fav.nom}}</a></li>
                             {% endfor %}
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'mesFavoris' %}">Gérer mes favoris</a></li>
@@ -716,7 +716,7 @@
                         <a data-toggle="dropdown" class="nav-link nav-link2  dropdown-toggle  navbar-menu"
                            href="{% url 'profil_courant' %}" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-user iconleft" title="Profil"></i> </a></a>
-                        <ul class="dropdown-menu nav4-dropdown dropdown-menu-right"
+                        <ul class="dropdown-menu  nav6-dropdown dropdown-menu-right"
                             aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
                             <li class="divider" role="separator"></li>

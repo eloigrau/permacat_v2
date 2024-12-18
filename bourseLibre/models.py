@@ -1534,7 +1534,6 @@ class MessageAdmin(models.Model):
     def __str__(self):
         return "(" + self.email + ") " +str(self.sujet) + ": " + str(self.message)
 
-
 class Favoris(models.Model):
     nom = models.CharField(max_length = 50)
     url = models.CharField(max_length = 300)

@@ -1667,7 +1667,7 @@ class Favoris_list(ListView):
 
 
     def get_queryset(self):
-        return Favoris.objects.filter(profil=request.user).distinct().order_by('nom')
+        return Favoris.objects.filter(profil=self.request.user).distinct().order_by('nom')
 
 
     def get_context_data(self, **kwargs):

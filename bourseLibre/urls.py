@@ -232,6 +232,7 @@ urlpatterns = [
     path(r'compte/mesFavoris/', views.Favoris_list.as_view(), name='mesFavoris', ),
     path(r'compte/favoris/ajouter/', login_required(views.favoris_ajouter), name='favoris_ajouter' ),
     path(r'compte/favoris/ajouter/ajax/', views_ajax.ajax_ajouterFavoris, name='favoris_ajouterPage_ajax'),
+    path(r'compte/favoris/ajouter/modal/', views_ajax.modal_ajouterFavoris, name='favoris_ajouterPage_modal'),
     path(r'compte/favoris/supprimer/<int:pk>', views.Favoris_supprimer.as_view(), name='favoris_delete' ),
     path(r'compte/favoris/update/<int:pk>', views.Favoris_update.as_view(), name='favoris_update' ),
 

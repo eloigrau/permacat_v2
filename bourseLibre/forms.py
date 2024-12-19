@@ -629,3 +629,19 @@ class FavorisForm(forms.ModelForm):
         instance.profil = request.user
         instance.save()
         return instance
+
+
+
+class FavorisFormSansUrl(forms.ModelForm):
+
+    class Meta:
+        model = Favoris
+        fields = ['nom',]
+
+
+    def save(self, request, url):
+        instance = super(FavorisFormSansUrl, self).save(commit=False)
+        instance.url = url
+        instance.profil = request.user
+        instance.save()
+        return instance

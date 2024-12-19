@@ -1,11 +1,10 @@
 from .models import Produit, Salon, Favoris
-
+from .forms import FavorisFormSansUrl
 from django.shortcuts import render, redirect
 from rest_framework import viewsets
 from django.contrib.auth.decorators import login_required
 #from rest_framework import permissions
 from .serializers import ProduitSerializer
-
 
 class AnnoncesViewSet(viewsets.ModelViewSet):
     """
@@ -51,6 +50,19 @@ def ajax_ajouterFavoris(request):
     if nom is None:
         nb = Favoris.objects.filter(profil=request.user, nom__startswith='favoris').count()
         nom = 'favoris ' + str(nb)
+    favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
+
+    return redirect(url_path)
+
+
+def modal_ajouterFavoris(request):
+    url_path = request.GET.get('url_path', None)
+    if 'nom_favoris' in request.POST:
+        nom = request.POST.get('nom_favoris', None)
+    else:
+        nb = Favoris.objects.filter(profil=request.user, nom__startswith='favoris').count()
+        nom = 'favoris ' + str(nb)
+
     favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
 
     return redirect(url_path)

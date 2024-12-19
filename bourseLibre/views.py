@@ -1705,4 +1705,3 @@ def favoris_ajouter(request):
 
     return render(request, 'favoris/favoris_ajouter.html', {"form": form})
 
-

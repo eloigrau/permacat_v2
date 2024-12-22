@@ -35,23 +35,28 @@ self.addEventListener('push', function (event) {
 });
 
 
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
+self.addEventListener('notificationclick', function(event) {
 
-  const link = event.notification.data?.link || self.location.origin
-
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      for(const client of clientList)
-        if(client.url === link && "focus" in client) return client.focus();
-
-      try
-      {
-        if(clients.openWindow) return clients.openWindow(link);
-      }
-      catch (error) {
-        console.error('catch', err);
-      }
+    if (Notification.prototype.hasOwnProperty('data')) {
+    console.log('Using Data');
+    var url = event.notification.data.url;
+    event.waitUntil(clients.openWindow(url));
+    } else {
+     event.waitUntil(
+    clients.matchAll({
+        type: "window"
     })
-  );
+    .then(function(clientList) {
+        for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
+        if (client.url == '/' && 'focus' in client)
+            return client.focus();
+        }
+        if (clients.openWindow) {
+        return clients.openWindow('/');
+        }
+    })
+    );
+    }));
+    }
 });

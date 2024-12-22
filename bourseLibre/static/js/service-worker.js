@@ -38,25 +38,24 @@ self.addEventListener('push', function (event) {
 self.addEventListener('notificationclick', function(event) {
 
     if (Notification.prototype.hasOwnProperty('data')) {
-    console.log('Using Data');
-    var url = event.notification.data.url;
-    event.waitUntil(clients.openWindow(url));
+        console.log('Using Data');
+        var url = event.notification.data.url;
+        event.waitUntil(clients.openWindow(url));
     } else {
-     event.waitUntil(
-    clients.matchAll({
-        type: "window"
-    })
-    .then(function(clientList) {
-        for (var i = 0; i < clientList.length; i++) {
-        var client = clientList[i];
-        if (client.url == '/' && 'focus' in client)
-            return client.focus();
-        }
-        if (clients.openWindow) {
-        return clients.openWindow('/');
-        }
-    })
-    );
-    }));
+         event.waitUntil(
+            clients.matchAll({
+                type: "window"
+            })
+            .then(function(clientList) {
+                for (var i = 0; i < clientList.length; i++) {
+                var client = clientList[i];
+                if (client.url == '/' && 'focus' in client)
+                    return client.focus();
+                }
+                if (clients.openWindow) {
+                return clients.openWindow('/');
+                }
+            })
+        );
     }
 });

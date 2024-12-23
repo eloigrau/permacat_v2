@@ -218,7 +218,11 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 
 </div>
 
-
+<script>
+  if (typeof navigator.serviceWorker !== 'undefined') {
+    navigator.serviceWorker.register('js/service-worker.js')
+  }
+</script>
 {% endblock %}
 
 

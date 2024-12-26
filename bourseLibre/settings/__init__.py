@@ -519,8 +519,8 @@ AVATAR_DEFAULT_SIZE = "40"
 #AVATAR_THUMB_FORMAT = 'JPEG'
 AVATAR_PROVIDERS = (
     'avatar.providers.PrimaryAvatarProvider',
-    'avatar.providers.DefaultAvatarProvider',
     'avatar.providers.GravatarAvatarProvider',
+    'avatar.providers.DefaultAvatarProvider',
     'avatar.providers.LibRAvatarProvider',
 )
 

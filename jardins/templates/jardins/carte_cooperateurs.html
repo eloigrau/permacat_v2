@@ -57,8 +57,8 @@
         var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
         {% for profil in filter.qs %}
             {% if profil.accepter_annuaire %}
-            var lat = {{profil.adresse.get_latitude}};
-            var lon = {{profil.adresse.get_longitude}};
+            var lat = {{profil.get_latitude}};
+            var lon = {{profil.get_longitude}};
             var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'profil' profil.id %}"> {{profil.username}} </a>');
 
             markers.addLayer(marker);

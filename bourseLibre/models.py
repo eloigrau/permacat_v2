@@ -366,6 +366,17 @@ class Profil(AbstractUser):
           nb = len(self.username)
           return self.username[:3] + "".join(['*' for i in range(nb-3)])
 
+    @property
+    def get_latitude(self):
+        if self.adresse:
+            return self.adresse.get_latitude
+        return LATITUDE_DEFAUT
+
+    @property
+    def get_longitude(self):
+        if self.adresse:
+            return self.adresse.get_longitude
+        return LONGITUDE_DEFAUT
 
     def get_nom_class(self):
         return "Profil"

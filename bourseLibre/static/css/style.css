@@ -1828,6 +1828,7 @@ table.greenTable tfoot .links a{
     min-height: 350px;
 
     max-width: 1600px;
+    box-sizing: border-box;
 }
 
 

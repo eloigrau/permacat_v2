@@ -203,8 +203,8 @@
 
         var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
         {% for profil in contacts %}
-            var lat = {{profil.adresse.get_latitude}};
-            var lon = {{profil.adresse.get_longitude}};
+            var lat = {{profil.get_latitude}};
+            var lon = {{profil.get_longitude}};
             {% if profil.statut == '1' %}
             var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '2' or profil.statut == 'CotSol'%}

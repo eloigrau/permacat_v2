@@ -2699,17 +2699,19 @@ padding-bottom:10px;
   min-width:40px;
   max-width:200px;
   text-align:center;
-  text-size:small;
+  font-size:small;
 }
 .sidebarli{
-    display:block;
+    display:flex;
     margin-bottom:1.5em;
   padding: 0;
   margin-left: 0;
   text-align: center;
+  justify-content:center;
 }
 .sidebarli2{
-  display:block;
+  display:flex;
+  justify-content:center;
   padding: 0;
   margin-left: 0;
   text-align: center;
@@ -2722,10 +2724,6 @@ padding-bottom:10px;
     text-align:center;
     text-size:small;
     line-height:1.5;
-}
-#sidebar_menu > li{
-  display: block;
-    text-align:center;
 }
 #sidebar_menu>li>a:visited{
   color:white;

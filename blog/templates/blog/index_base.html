@@ -462,7 +462,7 @@ function get_tags_articles(url_tag) {
     {%if articles_epingles%}
     <a class="nav-item nav-link active" href="#art_groupe_epingle" data-toggle="tab" id="navtab_epingles"> Epinglés</a>
     {% endif%}
-<a class="nav-item nav-link " href="#art_groupe" data-toggle="tab" id="navtab_groupe"> Fil d'actu</a>
+<a class="nav-item nav-link     {%if not articles_epingles%}active {% endif%}" href="#art_groupe" data-toggle="tab" id="navtab_groupe"> Fil d'actu</a>
 
     {% if categorie_list %}
     <a class="nav-item nav-link" href="#art_dossier" data-toggle="tab" id="navtab_dossier"> Par dossier</a>

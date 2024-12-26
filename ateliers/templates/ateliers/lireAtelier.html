@@ -8,15 +8,13 @@
 {% block subtitle %}
 
 {% block header%}
-{% load leaflet_tags %}
 {% load static %}
-{% leaflet_js %}
-{% leaflet_css %}
-
 <meta property="og:title" content="{{atelier.titre|couperTexte:65}}" />
-<meta property="og:type" content="article" />
+<meta property="og:type" content="website" />
 <meta property="og:url" content="{{atelier.get_absolute_url_site}}" />
 <meta property="og:description" content="{{atelier.description|couperTexte:155}}" />
+<meta property="og:site_name" content="Perma.Cat" />
+<meta property="og:image:secure_url" itemprop="image" content="{% static 'android-chrome-256x256.png' %}" />
 {%endblock%}
 
  <div class="row rowcentre">
@@ -41,35 +39,35 @@
             {% block sidebar_menu %}
           <li class="sidebarli">
               <a href="#ref-titre">
-                #Titre
+                <i class="fa fa-angle-up"></i>
             </a>
           </li>
           <li class="sidebarli">
               <a href="#idDescription">
-                #Description
+                <i class="fa fa-book"></i>
             </a>
           </li>
 		{% if atelier.materiel %}
           <li class="sidebarli">
               <a href="#idMateriel">
-                #Matériel
+                <i class="fa fa-tools"></i>
             </a>
           </li>
 		{% endif %}
           <li class="sidebarli">
               <a href="#idDetail">
-                #Infos
+                Infos
             </a>
           </li>
           <li class="sidebarli">
               <a href="#idConversation">
-                #Discussion
+       <i class="fa fa-comments"></i>
             </a>
           </li>
-  <li class="">
-      <a href="#idComenter">
-        #Commenter
-    </a>
+          <li class="sidebarli">
+              <a href="#idComenter">
+       <i class="fa fa-edit"></i>
+            </a>
   </li>
             {% endblock %}
 {% block contenu %}

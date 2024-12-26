@@ -5,49 +5,48 @@
 <h1>Ateliers </h1>
 {% endblock  %}
 {%block banniere %}
-	<div class="row row_banniere_ordi" >
-		<div class="col col-xs-12 d-flex justify-content-around">
-            <img  src="{% static 'img/banniere/ateliers_ordi.png' %}" width="224" height="120" alt="Logo_ateliers"/>
-            <img  src="{% static 'img/banniere/ateliers.png' %}" height="120" alt="Logo_ateliers"/>
-        </div>
+<div class="row row_banniere_ordi">
+    <div class="col col-xs-12 d-flex justify-content-around">
+        <img src="{% static 'img/banniere/ateliers_ordi.png' %}" width="224" height="120" alt="Logo_ateliers"/>
+        <img src="{% static 'img/banniere/ateliers.png' %}" height="120" alt="Logo_ateliers"/>
     </div>
-	<div class="row row_banniere_smartphone">
-		<div class="col col-xs-12 d-flex justify-content-center">
-            <img class="img_banniere_smartp" src="{% static 'img/banniere/ateliers_smart.png' %}" height="120" alt="Logo_ateliers"/>
-        </div>
+</div>
+<div class="row row_banniere_smartphone">
+    <div class="col col-xs-12 d-flex justify-content-center">
+        <img class="img_banniere_smartp" src="{% static 'img/banniere/ateliers_smart.png' %}" height="120"
+             alt="Logo_ateliers"/>
     </div>
+</div>
 {% endblock  %}
 
 {% block clspanel %}claspanel{% endblock %}
- {% block content %}
+{% block content %}
 {% block sidebar %}
-  <!-- Sidebar -->
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar">
+<!-- Sidebar -->
+<nav id="sidebarMenu" class="d-lg-block sidebar">
     <div class="position-sticky textcenter">
-            <a href="{% url 'ateliers:index_ateliers' %}" >
-            <button type="button" class="btn  btn-info" >
-               {% fa5_icon 'home' title='home' %}
-            </button>
-            </a>
-      <div class="">
-        <!-- Collapse 1 -->
-        <!-- Collapsed content -->
         <ul id="sidebar_menu" class="">
-          <li class="sidebarli">
-              <a href="{% url 'ateliers:ajouterAtelier' %}">
-                <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i>
-            </button>
-            </a>&ensp;
-          </li>
+            <li class="sidebarli">
+                <a href="{% url 'ateliers:index_ateliers' %}">
+                    <button type="button" class="btn btn-info">
+                        <i class="fa fa-home"></i>
+                    </button>
+                </a>
+            </li>
+            <li class="sidebarli">
+                <a href="{% url 'ateliers:ajouterAtelier' %}">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </a>
+            </li>
             {% block sidebar_menu %}
             {% endblock %}
         </ul>
         <!-- Collapse 2 -->
-      </div>
     </div>
-  </nav>
-  <!-- Sidebar -->
+</nav>
+<!-- Sidebar -->
 {% endblock  %}
 {% block contenu %}
 {% endblock %}

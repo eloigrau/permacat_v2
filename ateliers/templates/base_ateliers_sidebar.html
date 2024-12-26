@@ -1,0 +1,29 @@
+{% extends 'base_ateliers.html' %}
+
+{% block sidebar %}
+<!-- Sidebar -->
+<nav id="sidebarMenu" class="collapse d-lg-block sidebar">
+    <div class="position-sticky textcenter">
+        <ul id="sidebar_menu" class="">
+            <li class="sidebarli">
+                <a href="{% url 'ateliers:index_ateliers' %}">
+                    <button type="button" class="btn btn-info">
+                        <i class="fa fa-home"></i>
+                    </button>
+                </a>
+            </li>
+            <li class="sidebarli">
+                <a href="{% url 'ateliers:ajouterAtelier' %}">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </a>
+            </li>
+            {% block sidebar_menu %}
+            {% endblock %}
+        </ul>
+        <!-- Collapse 2 -->
+    </div>
+</nav>
+<!-- Sidebar -->
+{% endblock  %}

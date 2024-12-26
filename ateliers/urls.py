@@ -41,4 +41,7 @@ urlpatterns = [
 #    path('copierAteliers_inverse/', views.copierAteliers_inverse, name='copierAteliers_inverse'),
 
     path('get_qr_code/<slug:slug>', views.get_qr_code, name='get_qr_code'),
+
+    path('ajax/ateliersArchives/', views.ateliersArchives, name='ateliersArchives'),
+
 ]

@@ -521,6 +521,12 @@ class Profil(AbstractUser):
             q_objects |= Q(asso__abreviation=asso) | Q(partagesAsso__abreviation=asso)
         return q_objects
 
+    def getQObjectsAssoAteliers(self):
+        q_objects = Q()
+        for asso in self.getListeAbreviationsAssosEtPublic():
+            q_objects |= Q(asso__abreviation=asso)
+        return q_objects
+
     def getListeAbreviationsAssos(self):
         return [a for a in Choix.abreviationsAsso if self.est_autorise(a)]
 

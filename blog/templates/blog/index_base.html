@@ -150,6 +150,7 @@
 {% block content %}
 {% block sidebar %}
 <!-- Sidebar -->
+{% comment %}
 <div class="area"></div>
 <nav id="sidebarMenu" class="collapse d-lg-block sidebar">
     <div class="position-sticky textcenter">
@@ -160,8 +161,6 @@
         <div class="">
             <!-- Collapse 1 -->
             <!-- Collapsed content -->
-
-                {% comment %}
             <ul id="sidebar_menu" class="">
                 {% if asso_courante %}
                 <li class="sidebarli">
@@ -212,20 +211,18 @@
                 {%endif%}
                 {% endblock %}
             </ul>
-                {% endcomment %}
             <!-- Collapse 2 -->
         </div>
     </div>
 </nav>
 <!-- Sidebar -->
+{% endcomment  %}
 {% endblock  %}
 
 {% block contenu %}
 
 
 <script>
-
-
 function get_articles_archives(url_tag) {
 
     $.ajax({
@@ -593,6 +590,10 @@ function get_tags_articles(url_tag) {
  $(document).ready(function() {
      {% if request.GET.ancre_navtab %}
         $("#navtab_{{request.GET.ancre_navtab}}").trigger('click');
+    {% else %}
+    {%if not articles_epingles%}
+        $("#navtab_groupe").trigger('click');
+    {% endif %}
     {% endif %}
 
      {% if request.GET.categorie %}

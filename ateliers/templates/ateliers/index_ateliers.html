@@ -69,12 +69,31 @@
 {% block clspanel %}{% endblock %}
 {% block content %}
 
+<script>
+function get_ateliers_archives(url_tag) {
 
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#ateliers_archives_html").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
     <nav class="nav nav-tabs justify-content-center">
       <a class="nav-item nav-link active" href="#prevus" data-toggle="tab">Prévus</a>
       <a class="nav-item nav-link " href="#passes" data-toggle="tab">Passés</a>
       <a class="nav-item nav-link " href="#propositions" data-toggle="tab">Proposés</a>
-      <a class="nav-item nav-link " href="#archives" data-toggle="tab">Archivés</a>
+        <a class="nav-item nav-link" href="#archives"
+       onclick="get_ateliers_archives('{% url 'ateliers:ateliersArchives' %}')" data-toggle="tab"
+       id="navtab_archives"> Archivés</a>
     </nav>
 <div class="tab-content">
   <div class="tab-pane fade show active" id="prevus">
@@ -89,7 +108,7 @@
 {% include 'ateliers/listAtelier_template.html' with atelier_list=list_propositions %}
   </div>
   <div class="tab-pane fade" id="archives">
-{% include 'ateliers/listAtelier_template.html' with atelier_list=list_archive %}
+        <div id="ateliers_archives_html"></div>
   </div>
 </div>
 

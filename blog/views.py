@@ -1397,6 +1397,7 @@ def ajaxListeArticles(request):
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
 
 
+
 class TagAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !

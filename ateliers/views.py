@@ -191,7 +191,8 @@ class ListeAteliers(ListView):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        self.qs = Atelier.objects.filter(estArchive=False)
+
+        self.qs = Atelier.objects.filter(self.request.user.getQObjectsAssoAteliers() & Q(estArchive=False))
 
         if "categorie" in params:
             self.qs = self.qs.filter(categorie=params['categorie'])
@@ -206,7 +207,6 @@ class ListeAteliers(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['list_archive'] = Atelier.objects.filter(estArchive=True).order_by('-start_time')
         context['list_propositions'] = self.qs.filter(start_time__isnull=True).order_by('start_time')
         context['list_passes'] = self.qs.filter(start_time__lt=now(), start_time__isnull=False).order_by('-start_time')
 
@@ -336,3 +336,9 @@ def get_qr_code(request, slug):
     qr_url = Atelier.objects.get(slug=slug).get_absolute_url_site
     return render(request, 'qr_code_template.html', {'qr_url': qr_url})
 
+
+
+@login_required
+def ateliersArchives(request):
+    atelier_list = Atelier.objects.filter(request.user.getQObjectsAssoAteliers()).filter(estArchive=True)
+    return render(request, 'ateliers/listAtelier_template.html', {'atelier_list': atelier_list})

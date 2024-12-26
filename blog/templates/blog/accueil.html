@@ -128,23 +128,37 @@
     </nav>
 </div>
 <hr>
-<div class="row">
-<div class="col-sm-12 col-lg-12">
-    <div class="row justify-content-center">
-        <h4>Derniers articles : </h4>
-    </div>
+
+<nav class="nav nav-tabs justify-content-center">
+        <a class="nav-item nav-link" href="#der_articles" data-toggle="tab"> Derniers Articles</a>
+       {%comment%} <a class="nav-item nav-link" href="#der_comm" data-toggle="tab"> Derniers Commentaires</a>{%endcomment%}
+</nav>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active " id="der_articles">
+            <div class="row justify-content-center">
+                <div class="col contenu fiche">
 
  {% include "blog/articles_template_tableau.html" with article_list=derniers_articles %}
 
-</div>
-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="der_comm">
+            <div class="contenu atelier">
+ {% include "blog/template_commentaires_tableau.html" with comm_list=derniers_commentaires %}
+            </div>
+        </div>
+    </div>
+
 
 
     <div class="row justify-content-center">
 	<a href="{% url 'blog:index_asso' asso='public' %}">
         <button type="button" class="btn btn-success" >
                 <i class="fa fa-arrow-right"></i> Voir tous les articles Publics du forum
-            </button>
+        </button>
 	</a>&ensp;
 	</div>
 {% comment %}

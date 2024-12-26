@@ -22,21 +22,21 @@
  {% block content %}
 {% block sidebar %}
   <!-- Sidebar -->
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse">
+  <nav id="sidebarMenu" class="d-lg-block sidebar">
     <div class="position-sticky textcenter">
             <a href="{% url 'ateliers:index_ateliers' %}" >
             <button type="button" class="btn  btn-info" >
-               {% fa5_icon 'home' title='home' %} Ateliers
+               {% fa5_icon 'home' title='home' %}
             </button>
             </a>
-      <div class="list-group list-group-flush mx-3 mt-4">
+      <div class="">
         <!-- Collapse 1 -->
         <!-- Collapsed content -->
-        <ul id="sidebar_menu" class="collapse show list-group list-group-flush">
-          <li class="list-group-item py-1">
+        <ul id="sidebar_menu" class="">
+          <li class="">
               <a href="{% url 'ateliers:ajouterAtelier' %}">
                 <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter un atelier
+                <i class="fa fa-plus"></i>
             </button>
             </a>&ensp;
           </li>

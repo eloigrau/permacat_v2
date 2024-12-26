@@ -1,4 +1,3 @@
-
 const offlineFallbackPage = "bienvenue.html";
 
 self.addEventListener("message", (event) => {
@@ -13,7 +12,6 @@ self.addEventListener('install', async (event) => {
       .then((cache) => cache.add(offlineFallbackPage))
   );
 });
-
 
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
@@ -37,7 +35,6 @@ self.addEventListener('fetch', (event) => {
   }
 });
 
-
 // Register event listener for the 'push' event.
 self.addEventListener('push', function(event) {
   // Retrieve the textual payload from event.data (a PushMessageData object).
@@ -59,7 +56,7 @@ self.addEventListener('push', function(event) {
     self.registration.showNotification(head, {
       body: body,
       icon: icon,
-      data: {url: url}
+      data: {url: url}	
     })
   );
 });

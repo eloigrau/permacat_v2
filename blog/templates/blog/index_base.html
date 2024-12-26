@@ -151,67 +151,68 @@
 {% block sidebar %}
 <!-- Sidebar -->
 <div class="area"></div>
-<nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse">
+<nav id="sidebarMenu" class="collapse d-lg-block sidebar">
     <div class="position-sticky textcenter">
         <a href="#ref-titre">
-            <button type="button" class="btn  btn-info">
-                <i class="fa fa-angle-up"></i>
-            </button>
+            <i class="fa fa-angle-up"></i>
         </a>
 
-        <div class="list-group list-group-flush mx-3 mt-4">
+        <div class="">
             <!-- Collapse 1 -->
             <!-- Collapsed content -->
-            <ul id="sidebar_menu" class="collapse show list-group list-group-flush">
+
+                {% comment %}
+            <ul id="sidebar_menu" class="">
                 {% if asso_courante %}
-                <li class="list-group-item py-1">
+                <li class="">
                     {{asso_courante.get_logo_nomgroupe_html|safe}}
                 </li>
                 {% endif %}
                 {% if dossier_courant %}
-                <li class="list-group-item py-1">
+                <li class="">
                     {{dossier_courant}}
                 </li>
                 {% endif %}
                 {% block sidebar_menu %}
                 {%if articles_epingles%}
-                <li class="list-group-item py-1">
+                <li class="">
                     <a href="#articles_epingles">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles épinglés</p>
+                            {% fa5_icon 'people'%}
                         </button>
                     </a>
                 </li>
                 {%endif%}
                 {% if article_list %}
-                <li class="list-group-item py-1">
+                <li class="">
                     <a href="#article_list">
-                        <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles du groupe</p>
+                        <button type="button" class="btn-block btn-light btn-sm">
+                            {% fa5_icon 'group'%}
                         </button>
                     </a>
                 </li>
                 {%endif%}
                 {% if page_partages_obj %}
-                <li class="list-group-item py-1">
+                <li class="">
                     <a href="#articles_partages">
-                        <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles partagés</p>
+                        <button type="button" class="btn-block btn-light btn-sm">
+                             {% fa5_icon 'bell'%}
                         </button>
                     </a>
                 </li>
                 {%endif%}
                 {% if page_archives_obj %}
-                <li class="list-group-item py-1">
+                <li class="">
                     <a href="#articles_archives">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles archivés</p>
+                            <p> archives</p>
                         </button>
                     </a>
                 </li>
                 {%endif%}
                 {% endblock %}
             </ul>
+                {% endcomment %}
             <!-- Collapse 2 -->
         </div>
     </div>

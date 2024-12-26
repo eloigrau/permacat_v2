@@ -1123,7 +1123,7 @@ def lireConversation(request, destinataire):
             action.send(request.user, verb='emails', url=url, titre=titre, message=msg, emails=emails)
             payload = {"head": titre, "body": msg_notif,
                        "icon": static('android-chrome-256x256.png'),
-                       "url": url}
+                       "url": message.get_absolute_url_site()}
             try:
                 send_user_notification(profil_destinataire, payload=payload, ttl=7200)
             except:
@@ -1438,7 +1438,7 @@ def salon(request, slug):
 
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message_notif, emails=emails)
 
-        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":message.get_absolute_url_site}
+        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":message.get_absolute_url_site()}
         for suiv in followers(suivis):
             if request.user != suiv:
                 try:

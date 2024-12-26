@@ -14,17 +14,17 @@
  {% block content %}
 {% block sidebar %}
   <!-- Sidebar -->
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse ">
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar ">
     <div class="position-sticky textcenter">
         <a href="{% url 'marche' %}" >
             <button type="button" class="btn  btn-info" >
                {% fa5_icon 'home' title='home' %}
             </button>
         </a>
-      <div class="list-group list-group-flush mx-3 mt-4">
+      <div class="">
         <!-- Collapse 1 -->
 
-        <ul id="sidebar_menu" class="collapse show list-group list-group-flush">
+        <ul id="sidebar_menu" class="">
           {% block sidebar_sousmenu %}
             {% endblock  %}
         </ul>

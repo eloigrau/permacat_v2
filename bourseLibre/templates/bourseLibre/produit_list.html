@@ -217,21 +217,21 @@
 {% block clspanel %}claspanel{% endblock %}
 {% block sidebar_sousmenu %}
         <!-- Collapsed content -->
-          <li class="list-group-item py-1">
+          <li class="">
             <a href="{% url 'produit_proposer_entree' %}">
                 <button type="button" class="btn btn-success">
-                    <i class="fa fa-plus"></i> &nbsp;Ajouter une annonce
+                    <i class="fa fa-plus"></i>
                 </button>
             </a>
             </li>
-          <li class="list-group-item py-1">
+          <li class="">
             <a href="?producteur={{request.user}}">
                 <button type="button" class="btn btn-primary">
                     <i class="fa fa-user"></i> &nbsp;Mes annonces
                 </button>
             </a>
             </li>
-            <li class="list-group-item py-1">
+            <li class="">
              <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
                 {% if asso_courante %}{{asso_courante}}{%else%}Groupe{%endif%}
@@ -243,7 +243,7 @@
                 </div>
             </li>
                 {% comment %}
-          <li class="list-group-item py-1">
+          <li class="">
             <button class="btn btn-light dropdown-toggle btn-block" type="button" id="menuOffreOuDemande" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{typeOffre}}
                   </button>
@@ -257,7 +257,7 @@
                 {% endcomment %}
 
              {%if producteur_list %}
-            <li class="list-group-item py-1">
+            <li class="">
                 <button class="btn dropdown-toggle  btn-block {% if request.GET.producteur %}btn-primary{%else%}btn-light{%endif%}" type="button" id="menuproducteur" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    {% if request.GET.producteur %} Par: {{request.GET.producteur}} {%else%}Auteur{%endif%}
            </button>
@@ -271,7 +271,7 @@
 
 
             {%if monnaie_list %}
-            <li class="list-group-item py-1">
+            <li class="">
                 <button class="btn dropdown-toggle  btn-block {% if request.GET.monnaie %}btn-primary{%else%}btn-light{%endif%}" type="button" id="menuMonnaie" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    {% if request.GET.monnaie %} Monnaie: {{request.GET.monnaie}} {%else%}Monnaie{%endif%}
            </button>
@@ -284,7 +284,7 @@
         {%endif%}
 
 
-          <li class="list-group-item py-1"> <button class="btn dropdown-toggle btn-block
+          <li class=""> <button class="btn dropdown-toggle btn-block
                 {% if categorie_parent == 'aliment' or categorie_parent == 'vegetal' or categorie_parent == 'service' or categorie_parent == 'objet' or categorie_parent == 'offresEtDemandes' %}btn-primary {%else%}btn-light{%endif%}"
                         type="button" id="menuAliment" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% if categorie_parent %} {{categorie_parent}} {% else %}Type d'annonce{% endif %}
@@ -300,7 +300,7 @@
 
                 </div>
           </li>
-            <li class="list-group-item py-1">
+            <li class="">
                 <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuDistance2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    Rayon
            </button>
@@ -310,7 +310,7 @@
                     {% endfor %}
                 </div>
             </li>
- <li class="list-group-item py-1">
+ <li class="">
               <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuOrdreTri2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    Trier par...
                </button>
@@ -320,7 +320,7 @@
                     {% endfor %}
                 </div>
           </li>
-          <li class="list-group-item py-1">
+          <li class="">
             <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_produits' %}" method="get" role = "search">
                     {% csrf_token %}
                      <input class="" name="id_recherche" placeholder="Rechercher..." type="text">

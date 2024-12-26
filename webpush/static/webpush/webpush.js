@@ -40,13 +40,25 @@ window.addEventListener('load', function() {
         showMessage(gettext('Showing notifications are not supported in your browser.'));
         return;
     }
-
+    Notification.requestPermission(function (result) {
+                if (result === 'granted') {
+                    navigator.serviceWorker.ready.then(function (registration) {
+                        registration.showNotification('Perma.Cat', {
+                            body: 'Hola, votre première Notification de la plateforme, ça marche ;)',
+                            icon: '/android-chrome-256x256.png',
+                            tag: 'test'
+                        }).then(function(event){
+                            console.log(event);
+                        });
+                    });
+                }
+            });
     // Check the current Notification permission.
     // If its denied, it's a permanent block until the
     // user changes the permission
     if (Notification.permission === 'denied') {
       // Show a message and activate the button
-      subBtn.textContent = gettext("S'abonner aux notifications instantanées");
+      subBtn.textContent = gettext("Les notifications sont bloquées par votre navigateur");
       subBtn.disabled = false;
       showMessage(gettext('Push notifications are blocked by your browser.'));
       return;
@@ -55,7 +67,7 @@ window.addEventListener('load', function() {
     // Check if push messaging is supported
     if (!('PushManager' in window)) {
       // Show a message and activate the button
-      subBtn.textContent = "S'abonner aux notifications instantanées";
+      subBtn.textContent = "Les notifications ne sont pas possible avec votre navigateur (choisissez firefox) ";
       subBtn.disabled = false;
       showMessage(gettext('Push notifications are not available in your browser.'));
       return;

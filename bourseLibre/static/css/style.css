@@ -279,6 +279,7 @@ section.p3 {
 .rowprincipal{
     margin-bottom: 30px;
     margin-top: 2px;
+    padding-left:30px;
 }
 
 .colprincipal{
@@ -1512,10 +1513,8 @@ ul.errorlist{
     }
 
 .rowprincipal{
-    padding-left:2%;
-    padding-right:2%;
-        padding-left:0px;
-        padding-right:0px;
+    padding-left:1%;
+    padding-right:1%;
         margin-left:0px;
         margin-right:0px;
         }
@@ -1817,6 +1816,7 @@ table.greenTable tfoot .links a{
     padding: 10px;
     margin: 12px;
     min-height: 350px;
+    min-height: 350px;
 }
 .fiche {
     border: 7px inset rgba(49,184,0,0.65);
@@ -1826,6 +1826,8 @@ table.greenTable tfoot .links a{
     padding: 10px;
     margin: 12px;
     min-height: 350px;
+
+    max-width: 1600px;
 }
 
 
@@ -2697,6 +2699,8 @@ padding-bottom:10px;
   color:white;
   min-width:40px;
   max-width:200px;
+  text-align:center;
+  text-size:small;
 }
 .sidebarli{
     display:block;
@@ -2706,12 +2710,15 @@ padding-bottom:10px;
   text-align: center;
 }
 #sidebar_menu{
-padding:0;
-text-align:center;
+    padding:0;
+    text-align:center;
+    text-size:small;
+    line-height:1.5;
 }
 #sidebar_menu > li{
   /*background-color:#141433;*/
   display: block;
+    margin-bottom:1.5em;
 }
 #sidebar_menu>li>a:visited{
   color:white;
@@ -2760,19 +2767,7 @@ text-align:center;
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
-.sidebar:hover {
-    .hover-app{
-        display: none;
-    }
-    .hover-icon:hover + .hover-app{
-        display: block;
-    }
 
-    .myDIV:hover + .hide {
-      display: block;
-      color: red;
-    }
-}
 
 .leaflet-container {  /* all maps */
     min-height:0.6vh;

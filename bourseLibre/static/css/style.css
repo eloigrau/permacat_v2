@@ -2727,8 +2727,6 @@ padding-bottom:10px;
 #sidebar_menu > li{
   display: block;
     text-align:center;
-
-    margin-bottom:1.5em;
 }
 #sidebar_menu>li>a:visited{
   color:white;

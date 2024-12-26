@@ -161,12 +161,12 @@
       {% block sidebar_sousmenu %}
 	{% if user.id != produit.user.id %}
 
-            <li class="">
+            <li class="sidebarli">
 		<a href="{%url 'agora_conversation' produit.user.username %}" class="btn btn-success btn-block " type="button">Envoyer un message privé</a>
 			</li>
 
 	{%elif user.id == produit.user.id%}
-            <li class="">
+            <li class="sidebarli">
 		<a href="{%url 'produit_modifier' produit.id %}" class="btn btn-warning btn-lg btn-block" type="button">
 			Modifier</a>
 		<a href="{%url 'produit_supprimer' produit.id %}" class="btn btn-danger btn-lg btn-block" type="button">
@@ -175,7 +175,7 @@
 	{%endif%}
 
 		{% if request.user.is_superuser %}
-            <li class="">
+            <li class="sidebarli">
 		<a href="https://www.perma.cat/gestion/bourseLibre/produit/{{produit.id}}/change/" class="btn btn-danger btn-lg btn-block" type="button">
 			SU : Admin </a>
 		{% endif %}

@@ -518,10 +518,10 @@ AVATAR_EXPOSE_USERNAMES = False
 AVATAR_DEFAULT_SIZE = "40"
 #AVATAR_THUMB_FORMAT = 'JPEG'
 AVATAR_PROVIDERS = (
-    'avatar.providers.GravatarAvatarProvider',
     'avatar.providers.PrimaryAvatarProvider',
-    'avatar.providers.LibRAvatarProvider',
     'avatar.providers.DefaultAvatarProvider',
+    'avatar.providers.GravatarAvatarProvider',
+    'avatar.providers.LibRAvatarProvider',
 )
 
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }

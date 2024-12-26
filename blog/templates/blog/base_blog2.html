@@ -111,11 +111,19 @@
 {% endcomment %}
   <nav id="sidebarMenu" class="collapse d-lg-block sidebar ">
     <div class="position-sticky textcenter">
+        {% if asso_courante %}
+        <a href="{% url 'blog:index_asso' asso_courante %}" >
+        <button type="button" class="btn  btn-info" >
+           {% fa5_icon 'home' title='home' %}
+        </button>
+        </a>
+        {% else %}
         <a href="{% url 'blog:acceuil' %}" >
         <button type="button" class="btn  btn-info" >
            {% fa5_icon 'home' title='home' %}
         </button>
         </a>
+        {% endif %}
       <div class="">
         <!-- Collapse 1 -->
         <!-- Collapsed content -->

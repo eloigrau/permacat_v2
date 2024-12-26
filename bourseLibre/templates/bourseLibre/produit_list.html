@@ -9,9 +9,7 @@
                 <h3>Petites Annonces</h3>
         <h4>{% if asso_courante %}Annonces du groupe : {{asso_courante}}{% endif %}</h4>
         <h5> {% if typeOffre %} Type : {{typeOffre}} {% endif %} {% if categorie_parent %} {{categorie_parent}} {% endif %}{% if request.GET.monnaie %} Monnaie : {{request.GET.monnaie}} {% endif %}</h5>
-
-        <p class="textsmall sidebar_toggle_inverse">(Passez la souris à gauche pour faire apparaître le menu)</p>
-            </div>
+           </div>
             <div class="col-md-2 ">
             <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
              {% fa5_icon 'question-circle' %}
@@ -231,7 +229,7 @@
                 </button>
             </a>
             </li>
-            <li class="">
+            <li class="" style="width: 90%; margin-bottom:0px;">
              <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
                 {% if asso_courante %}{{asso_courante}}{%else%}Groupe{%endif%}
@@ -243,7 +241,7 @@
                 </div>
             </li>
                 {% comment %}
-          <li class="">
+          <li class="" style="width: 90%; margin-bottom:0px;">
             <button class="btn btn-light dropdown-toggle btn-block" type="button" id="menuOffreOuDemande" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{typeOffre}}
                   </button>
@@ -257,7 +255,7 @@
                 {% endcomment %}
 
              {%if producteur_list %}
-            <li class="">
+            <li class="" style="width: 90%; margin-bottom:0px;">
                 <button class="btn dropdown-toggle  btn-block {% if request.GET.producteur %}btn-primary{%else%}btn-light{%endif%}" type="button" id="menuproducteur" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    {% if request.GET.producteur %} Par: {{request.GET.producteur}} {%else%}Auteur{%endif%}
            </button>
@@ -271,7 +269,7 @@
 
 
             {%if monnaie_list %}
-            <li class="">
+            <li class="" style="width: 90%; margin-bottom:0px;">
                 <button class="btn dropdown-toggle  btn-block {% if request.GET.monnaie %}btn-primary{%else%}btn-light{%endif%}" type="button" id="menuMonnaie" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    {% if request.GET.monnaie %} Monnaie: {{request.GET.monnaie}} {%else%}Monnaie{%endif%}
            </button>
@@ -284,7 +282,7 @@
         {%endif%}
 
 
-          <li class=""> <button class="btn dropdown-toggle btn-block
+          <li class="" style="width: 90%; margin-bottom:0px;"> <button class="btn dropdown-toggle btn-block
                 {% if categorie_parent == 'aliment' or categorie_parent == 'vegetal' or categorie_parent == 'service' or categorie_parent == 'objet' or categorie_parent == 'offresEtDemandes' %}btn-primary {%else%}btn-light{%endif%}"
                         type="button" id="menuAliment" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {% if categorie_parent %} {{categorie_parent}} {% else %}Type d'annonce{% endif %}
@@ -300,7 +298,7 @@
 
                 </div>
           </li>
-            <li class="">
+            <li class="" style="width: 90%; margin-bottom:0px;">
                 <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuDistance2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    Rayon
            </button>
@@ -310,7 +308,7 @@
                     {% endfor %}
                 </div>
             </li>
- <li class="">
+ <li class="" style="width: 90%; margin-bottom:0px;">
               <button class="btn dropdown-toggle btn-block btn-light" type="button" id="menuOrdreTri2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                    Trier par...
                </button>
@@ -320,7 +318,7 @@
                     {% endfor %}
                 </div>
           </li>
-          <li class="">
+          <li class="" style="width: 90%;  margin-bottom:0px;">
             <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_produits' %}" method="get" role = "search">
                     {% csrf_token %}
                      <input class="" name="id_recherche" placeholder="Rechercher..." type="text">

@@ -2703,7 +2703,7 @@ padding-bottom:10px;
   text-size:small;
 }
 .sidebarli{
-    display:block;
+    display:inline-block;
     margin-bottom:1.5em;
   padding: 0;
   margin-left: 0;
@@ -2716,8 +2716,9 @@ padding-bottom:10px;
     line-height:1.5;
 }
 #sidebar_menu > li{
-  /*background-color:#141433;*/
-  display: block;
+  display: inline-block;
+    text-align:center;
+
     margin-bottom:1.5em;
 }
 #sidebar_menu>li>a:visited{

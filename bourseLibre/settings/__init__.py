@@ -517,6 +517,12 @@ AVATAR_MAX_AVATARS_PER_USER = 5
 AVATAR_EXPOSE_USERNAMES = False
 AVATAR_DEFAULT_SIZE = "40"
 #AVATAR_THUMB_FORMAT = 'JPEG'
+AVATAR_PROVIDERS = (
+    'avatar.providers.GravatarAvatarProvider',
+    'avatar.providers.PrimaryAvatarProvider',
+    'avatar.providers.LibRAvatarProvider',
+    'avatar.providers.DefaultAvatarProvider',
+)
 
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
 HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }

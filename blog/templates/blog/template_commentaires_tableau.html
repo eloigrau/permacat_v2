@@ -9,7 +9,7 @@
 {% endblock  %}
 <div class="table-responsive-vertical shadow-z-1 ">
     <!-- Table starts here -->
-    <table id="table" class="table_forum table-mc-amber ">
+    <table id="table" class="table_forum table-hover table-bordered table-mc-amber ">
         {% comment %}
         <thead>
         <tr>
@@ -35,12 +35,12 @@
             </td>
             <td class="expand" data-title="Commentaire">
                 <a href="{{ comm.get_absolute_url }}">
-                    {% avatar comm.auteur_comm class="img-circle-profil" %}
+                    {% avatar comm.auteur_comm class="img-circle-profil"%}
                     {{comm.auteur_comm}} le {{ comm.date_creation|date:"DATE_FORMAT" }}
                     {{comm.commentaire|safe|couperTexte:200}}
                 </a>
             </td>
-
+            <td></td>
         </tr>
                 {% endifchanged %}
         {% endfor %}

@@ -663,7 +663,11 @@ def contact_admins(request):
         MessageAdmin.objects.create(email=email, message=message_txt, sujet=sujet)
 
         admin = Profil.objects.get(username="Eloi")
-        action.send(request.user, verb='envoi_salon_prive',  url="/gestion/bourseLibre/messageadmin/",
+        if request.user.is_anonymous:
+            action.send(admin, verb='envoi_salon_prive',  url="/gestion/bourseLibre/messageadmin/",
+                description="a envoyé un message aux admin (%s)" %admin.username)
+        else:
+            action.send(request.user, verb='envoi_salon_prive',  url="/gestion/bourseLibre/messageadmin/",
                 description="a envoyé un message aux admin (%s)" %admin.username)
 
         try:

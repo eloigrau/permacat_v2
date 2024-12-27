@@ -131,6 +131,7 @@ def recapitulatif(request, asso_slug):
 
     return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
 
+
 def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
@@ -297,8 +298,11 @@ def ajouterParticipant(request, asso_slug):
     if form.is_valid() and form_adresse2.is_valid():
         adresse = form_adresse2.save()
         part = form.save(adresse, asso)
+        try:
+            return redirect(request.session.get('reunion_courante_url'))
+        except:
+            return redirect('defraiement:participants', asso_slug=asso_slug)
 
-        return redirect(request.session.get('reunion_courante_url'))
 
     return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2, "asso_courante":asso }) # 'form_adresse':form_adresse,
 

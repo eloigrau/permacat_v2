@@ -21,6 +21,7 @@
     {% endcomment %}
       <tbody style="display:block;">
         {% for comm in comm_list %}
+        {% ifchanged comm.article %}
         <tr>
           <td data-title="Groupe" class="center shrink" style="vertical-align: middle;">
               <a href="{% url 'blog:index_asso' asso=comm.article.asso.abreviation %}#ref-titre" >{{ comm.article.get_logo_nomgroupe_html|safe }}</a>
@@ -37,22 +38,14 @@
             </td>
           <td class="expand"  data-title="Titre">
             <a href="{{ comm.get_absolute_url }}">
-                {% avatar comm.auteur_comm 20 class="img-circle-profil" id="user_avatar" %}
-                {{comm.auteur_comm}} : {{comm.commentaire|safe|couperTexte:200}}
+                {% avatar comm.auteur_comm 40 class="img-circle-profil" id="user_avatar" %}
+                {{comm.auteur_comm}} le {{ comm.date_creation|date:"DATE_FORMAT" }}
+                {{comm.commentaire|safe|couperTexte:200}}
             </a>
           </td>
-            <td  data-title="Infos" class="shrink">
-                <span class="badge badge-light" style=" display: inline-block;">
-                {% if request.user|is_following:comm.article %}
-                    {% fa5_icon 'bell' %}
-                    {% else %}
-                    {% fa5_icon 'bell-slash' %}
-                {% endif %}&nbsp;
-                    Publié le {{ comm.date_creation|date:"DATE_FORMAT" }}
-                </span>
-            </td>
 
         </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
     </table>

@@ -12,7 +12,7 @@
 <a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
     <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2024</button></a>
  {% comment %}
-<form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante%}?" method="get" role = "search">
+<form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante.abreviation %}?" method="get" role = "search">
      <span class="input-group-append">
         <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Année...">ok</button>
@@ -29,7 +29,7 @@
     <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
                 <li class="nav-item  ">
-                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
+                      <a  href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante.abreviation %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                           <button type="button" class="btn  btn-block {%if type_courant == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                               <h6>Tout</h6>
                        </button>
@@ -87,7 +87,7 @@
 <hr>
 {% if unite == euros %}
 <p class="textcenter">
-    <a href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante %}" >
+    <a href="{% url 'defraiement:recapitulatif' asso_slug=asso_courante.abreviation %}" >
         <button type="button" class="btn btn-sm btn-primary">
          Kilométrages
         </button>
@@ -97,7 +97,7 @@
 {% endif %}
 
 <p class="textcenter">
-    <a href="{% url 'defraiement:export_recapitulatif' asso=asso_courante type_reunion=type_courant type_export=unite  %}?{% if request.GET.tarifKilometrique %}tarifKilometrique={{ request.GET.tarifKilometrique }}{% endif%}{% if request.GET.prixMax %}&prixMax={{ request.GET.prixMax }}{% endif%}{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
+    <a href="{% url 'defraiement:export_recapitulatif' asso=asso_courante.abreviation type_reunion=type_courant type_export=unite  %}?{% if request.GET.tarifKilometrique %}tarifKilometrique={{ request.GET.tarifKilometrique }}{% endif%}{% if request.GET.prixMax %}&prixMax={{ request.GET.prixMax }}{% endif%}{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
         &nbsp;Exporter en CSV
         </button>

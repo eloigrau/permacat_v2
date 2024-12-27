@@ -5,48 +5,45 @@
 {% load avatar_tags %}
 
 {%block header %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
 {% endblock  %}
 <div class="table-responsive-vertical shadow-z-1 ">
-  <!-- Table starts here -->
-  <table id="table" class="table_forum table-hover table-bordered table-mc-amber ">
-    {% comment %}
-      <thead>
+    <!-- Table starts here -->
+    <table id="table" class="table_forum table-mc-amber ">
+        {% comment %}
+        <thead>
         <tr>
-          <th>Groupe</th>
-          <th>Article</th>
-          <th>Commentaire</th>
+            <th>Groupe</th>
+            <th>Article</th>
+            <th>Commentaire</th>
         </tr>
-      </thead>
-    {% endcomment %}
-      <tbody style="display:block;">
+        </thead>
+        {% endcomment %}
+        <tbody style="display:block;">
         {% for comm in comm_list %}
         {% ifchanged comm.article.slug %}
         <tr>
-          <td data-title="Groupe" class="center shrink" style="vertical-align: middle;">
-              <a href="{% url 'blog:index_asso' asso=comm.article.asso.abreviation %}#ref-titre" >{{ comm.article.get_logo_nomgroupe_html|safe }}</a>
-              {% if comm.article.partagesAsso %} <span>{% for p in comm.article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> {% endif %}
-          </td>
-            <td data-title="Dossier" class="center shrink">
+            <td data-title="Groupe" class="center shrink" style="vertical-align: middle;">
+                <a href="{% url 'blog:index_asso' asso=comm.article.asso.abreviation %}#ref-titre">
+                    {{ comm.article.get_logo_nomgroupe_html|safe }}</a>
+            </td>
+            <td data-title="Article" class="center shrink">
                 <a href="{{ comm.get_absolute_url }}">
-                <p class="titre_forum">{{comm.article.titre}}
-            {%if comm.article.estModifiable %}
-                <span class="fa fa-edit"  title="Article modifiable">    </span>
-            {% endif %}
-                </p>
+                    <p class="titre_forum">{{comm.article.titre}}
+                    </p>
                 </a>
             </td>
-          <td class="expand"  data-title="Titre">
-            <a href="{{ comm.get_absolute_url }}">
-                {% avatar comm.auteur_comm 40 class="img-circle-profil" id="user_avatar" %}
-                {{comm.auteur_comm}} le {{ comm.date_creation|date:"DATE_FORMAT" }}
-                {{comm.commentaire|safe|couperTexte:200}}
-            </a>
-          </td>
+            <td class="expand" data-title="Commentaire">
+                <a href="{{ comm.get_absolute_url }}">
+                    {% avatar comm.auteur_comm class="img-circle-profil" %}
+                    {{comm.auteur_comm}} le {{ comm.date_creation|date:"DATE_FORMAT" }}
+                    {{comm.commentaire|safe|couperTexte:200}}
+                </a>
+            </td>
 
         </tr>
-        {% endif %}
+                {% endifchanged %}
         {% endfor %}
-      </tbody>
+        </tbody>
     </table>
-  </div>
+</div>

@@ -1442,7 +1442,7 @@ def salon(request, slug):
 
         action.send(salon, verb='emails', url=salon.get_absolute_url(), titre="Salon commenté", message=message_notif, emails=emails)
 
-        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":message.get_absolute_url_site()}
+        payload = {"head": "Salon " + salon.titre, "body": "Nouveau message de " + request.user.username , "icon":static('android-chrome-256x256.png'), "url":message.get_absolute_url_site}
         for suiv in followers(suivis):
             if request.user != suiv:
                 try:

@@ -37,12 +37,11 @@
                 <a href="{{ comm.get_absolute_url }}">
                     {% avatar comm.auteur_comm class="img-circle-profil"%}
                     {{comm.auteur_comm}} le {{ comm.date_creation|date:"DATE_FORMAT" }}
-                    {{comm.commentaire|safe|couperTexte:200}}
+                    {{comm.commentaire|htmlClean|safe|couperTexte:200}}
                 </a>
             </td>
-            <td></td>
         </tr>
-                {% endifchanged %}
+        {% endifchanged %}
         {% endfor %}
         </tbody>
     </table>

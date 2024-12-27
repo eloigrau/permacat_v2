@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.template.defaultfilters import stringfilter
 from bourseLibre.constantes import Choix
 from bourseLibre.models import Asso, username_re, Profil
+from  django_html_cleaner.cleaner import Cleaner
 import random
 import string
 import re
@@ -264,5 +265,5 @@ def filtrer_media_url(url):
 
 @register.filter(is_safe=True)
 def htmlClean(html):
-    from  django_html_cleaner.cleaner import Cleaner
-    return Cleaner.clean(html)
+    c = Cleaner()
+    return c.clean(html)

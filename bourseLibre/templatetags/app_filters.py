@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.template.defaultfilters import stringfilter
 from bourseLibre.constantes import Choix
 from bourseLibre.models import Asso, username_re, Profil
+from  django_html_cleaner.cleaner import Cleaner
 import random
 import string
 import re
@@ -260,3 +261,8 @@ def cacherUser(value):
 @register.filter(is_safe=True)
 def filtrer_media_url(url):
     return url
+
+
+@register.filter(is_safe=True)
+def htmlClean(html):
+    return Cleaner.clean(html)

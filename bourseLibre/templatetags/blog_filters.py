@@ -42,8 +42,3 @@ def getCategorie_display(cat):
 # def dejavu(article, user):
 #     newvalue = Hit.objects.filter(hitcount_content_object=article, user=user)
 #     return newvalue.count
-
-@register.filter(is_safe=True)
-def htmlClean(html):
-    from  django_html_cleaner.cleaner import Cleaner
-    return Cleaner.clean(html)

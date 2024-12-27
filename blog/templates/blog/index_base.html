@@ -490,7 +490,7 @@ function get_tags_articles(url_tag) {
 
     </div>
     {%endif%}
-    <div class="tab-pane fade" id="art_groupe">
+    <div class="tab-pane fade  {%if not articles_epingles%}show active {% endif%}" id="art_groupe">
         <div class="anchor_blank" id="article_list"></div>
         <div class="row ">
             <div class="col-sm-12 my-auto">

@@ -30,7 +30,7 @@
                 <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
                 </a>
             </td>
-          <td class="shrink"  data-title="Commentaire">
+          <td data-title="Commentaire" class="shrink" >
             <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
                 <p class="titre_forum">{{article.titre}}
             {%if article.estModifiable %}
@@ -62,7 +62,7 @@
                     {% include 'listeTags_view_template.html' with tags=article.tags.names %}
                 </p>
           </td>
-            <td  data-title="Infos" class="shrink badge_ordi">
+            <td  data-title="Infos" class="shrink">
                 <span class="badge badge-light" style=" display: inline-block;">
                 {% if request.user|is_following:article %}
                     {% fa5_icon 'bell' %}

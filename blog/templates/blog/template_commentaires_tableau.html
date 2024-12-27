@@ -10,15 +10,6 @@
 <div class="table-responsive-vertical shadow-z-1 ">
     <!-- Table starts here -->
     <table id="table" class="table_forum table-hover table-bordered table-mc-amber ">
-        {% comment %}
-        <thead>
-        <tr>
-            <th>Groupe</th>
-            <th>Article</th>
-            <th>Commentaire</th>
-        </tr>
-        </thead>
-        {% endcomment %}
         <tbody style="display:block;">
         {% for comm in comm_list %}
         {% ifchanged comm.article.slug %}
@@ -39,6 +30,8 @@
                     {{comm.auteur_comm}} le {{ comm.date_creation|date:"DATE_FORMAT" }}
                     {{comm.commentaire|htmlClean|safe|couperTexte:200}}
                 </a>
+            </td>
+            <td  data-title="Infos" class="shrink ">
             </td>
         </tr>
         {% endifchanged %}

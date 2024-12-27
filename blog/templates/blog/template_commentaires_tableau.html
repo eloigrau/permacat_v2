@@ -1,6 +1,8 @@
 {% load activity_tags %}
 {% load fontawesome_5 %}
 {% load static %}
+{% load app_filters %}
+{% load avatar_tags %}
 
 {%block header %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
@@ -18,51 +20,26 @@
       </thead>
     {% endcomment %}
       <tbody style="display:block;">
-        {% for comm in commentaires_list %}
+        {% for comm in comm_list %}
         <tr>
           <td data-title="Groupe" class="center shrink" style="vertical-align: middle;">
               <a href="{% url 'blog:index_asso' asso=comm.article.asso.abreviation %}#ref-titre" >{{ comm.article.get_logo_nomgroupe_html|safe }}</a>
               {% if comm.article.partagesAsso %} <span>{% for p in comm.article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> {% endif %}
           </td>
             <td data-title="Dossier" class="center shrink">
-                <a href="{% url 'blog:index_asso' asso=comm.article.asso.abreviation %}?categorie={{comm.article.categorie}}&ancre_navtab=dossier#ref-navbargroupe" >
-                <span class="badge badge-primary" style="background-color:{{comm.article.get_couleur}}; color : #666666;">{% if comm.article.get_logo_categorie %}  <img  src="{% static comm.article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ comm.article.get_categorie_display2 }} </span>
-                </a>
-            </td>
-          <td class="expand"  data-title="Titre">
-            <a href="{% url 'blog:lireArticle' slug=comm.article.slug %}#ref-titre">
+                <a href="{{ comm.get_absolute_url }}">
                 <p class="titre_forum">{{comm.article.titre}}
             {%if comm.article.estModifiable %}
                 <span class="fa fa-edit"  title="Article modifiable">    </span>
             {% endif %}
                 </p>
-
-
-
-            {%if comm.article.estArchive or comm.article.start_time %}
-              <p>
-          {% if comm.article.start_time %}
-              <span class="badge badge-success">
-              {% if comm.article.end_time %}
-              du {{ comm.article.start_time|date:"DATE_FORMAT" }} au {{ comm.article.end_time|date:"DATE_FORMAT" }}
-              {%else%}
-              le {{ comm.article.start_time|date:"DATE_FORMAT" }}
-              {% endif %}
-              </span>
-            {% endif %}
-
-            {%if comm.article.estArchive %}
-              <span class="badge badge-light">
-                   archivé
-             </span>
-            {% endif %}
-              </p>
-            {% endif %}
                 </a>
-
-                <p class="textleft">
-                    {% include 'listeTags_view_template.html' with tags=comm.article.tags.names %}
-                </p>
+            </td>
+          <td class="expand"  data-title="Titre">
+            <a href="{{ comm.get_absolute_url }}">
+                {% avatar comm.auteur_comm 20 class="img-circle-profil" id="user_avatar" %}
+                {{comm.auteur_comm}} : {{comm.commentaire|safe|couperTexte:200}}
+            </a>
           </td>
             <td  data-title="Infos" class="shrink">
                 <span class="badge badge-light" style=" display: inline-block;">
@@ -71,15 +48,7 @@
                     {% else %}
                     {% fa5_icon 'bell-slash' %}
                 {% endif %}&nbsp;
-                {%if comm.article.date_modification %}
-                    {%if  comm.article.date_creation|date:"DATE_FORMAT" != comm.article.date_modification|date:"DATE_FORMAT" %} &nbsp;
-                         Modifié le {{ comm.article.date_modification|date:"DATE_FORMAT" }}
-                    {%else%}&nbsp;
-                        Publié le {{ comm.article.date_creation|date:"DATE_FORMAT" }}
-                    {%endif%}
-                {%else%}&nbsp;
-                    Publié le {{ comm.article.date_creation|date:"DATE_FORMAT" }}
-                {% endif %}
+                    Publié le {{ comm.date_creation|date:"DATE_FORMAT" }}
                 </span>
             </td>
 

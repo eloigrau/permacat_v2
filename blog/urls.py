@@ -109,6 +109,7 @@ urlpatterns = [
     path('ajax/articlesParTag/<str:asso>/<str:tag>/', views.articlesParTag, name='articlesParTag'),
     path('ajax/get_articles_pardossier/', views.get_articles_pardossier, name='get_articles_pardossier'),
     path('ajax/get_tags_articles/', views.get_tags_articles, name='get_tags_articles'),
+    path('ajax/ajax_dernierscommentaires/', views.ajax_dernierscommentaires, name='ajax_dernierscommentaires'),
     path('voirTousLieux/', views.voirLieux, name='voirTousLieux'),
 
     path('ac/tag_autocomplete/', views.TagAutocomplete.as_view(), name='tag_autocomplete'),

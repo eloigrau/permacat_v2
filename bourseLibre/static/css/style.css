@@ -1827,7 +1827,7 @@ table.greenTable tfoot .links a{
 
     max-width: 1600px;
     box-sizing: border-box;
-    overflow: scroll;
+    overflow: visible;
 }
 
 

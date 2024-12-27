@@ -7,6 +7,24 @@
 {% block title %} - Forum {% endblock  %}
 {% block subtitle %}
 
+<script>
+function get_derniers_commentaires(url_tag) {
+
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#derniers_comm").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+</script>
 <div class="row justify-content-center">
 
     <div class="col-sm-12 col-md-12 col-lg-4">
@@ -130,14 +148,16 @@
 <hr>
 
 <nav class="nav nav-tabs justify-content-center">
-        <a class="nav-item nav-link" href="#der_articles" data-toggle="tab"> Derniers Articles</a>
-       {%comment%} <a class="nav-item nav-link" href="#der_comm" data-toggle="tab"> Derniers Commentaires</a>{%endcomment%}
+        <a class="nav-item nav-link active" href="#der_articles" data-toggle="tab"> Derniers Articles</a>
+    <a class="nav-item nav-link" href="#der_comm"
+       onclick="get_derniers_commentaires('{% url 'blog:ajax_dernierscommentaires' %}')" data-toggle="tab"
+       id="navtab_archives"> Derniers Commentaires</a>
 </nav>
 
     <div class="tab-content">
         <div class="tab-pane fade show active " id="der_articles">
             <div class="row justify-content-center">
-                <div class="col contenu fiche">
+                <div class="col ">
 
  {% include "blog/articles_template_tableau.html" with article_list=derniers_articles %}
 
@@ -146,8 +166,9 @@
         </div>
 
         <div class="tab-pane fade" id="der_comm">
-            <div class="contenu atelier">
- {% include "blog/template_commentaires_tableau.html" with comm_list=derniers_commentaires %}
+            <div class="row justify-content-center">
+                <div class="col contenu " id="derniers_comm">
+
             </div>
         </div>
     </div>

@@ -3,12 +3,15 @@
 {% load i18n %}
 {% load fontawesome_5 %}
 {% load cookielaw_tags %}
-{%block header %}
+{%if request.user.is_authenticated %}
+{% load webpush_notifications %}
+{% endif %}
+{% block header %}
  <script src="{% static 'js/cookielaw.js'%}" type="text/javascript"></script>
-{%endblock%}
-{%block bodyEntete%}
+{% endblock%}
+{% block bodyEntete%}
 style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
-{%endblock%}
+{% endblock %}
 
 {%block banniere %}
 	<div class="row ">
@@ -218,11 +221,6 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 
 </div>
 
-<script>
-  if (typeof navigator.serviceWorker !== 'undefined') {
-    navigator.serviceWorker.register('js/service-worker.js')
-  }
-</script>
 {% endblock %}
 
 

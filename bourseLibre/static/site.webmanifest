@@ -451,7 +451,7 @@
       "src": "ios/1024.png",
       "sizes": "1024x1024"
     }
-  ]
+  ],
   "theme_color": "#ffffff",
   "background_color": "#18533f",
   "display": "standalone",

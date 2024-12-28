@@ -23,7 +23,15 @@ window.addEventListener('load', function() {
     navigator.serviceWorker.register(serviceWorker).then(
       function(reg) {
         registration = reg;
+            if (registration.installing) {
+            console.log("Service worker installing");
+          } else if (registration.waiting) {
+            console.log("Service worker installed");
+          } else if (registration.active) {
+            console.log("Service worker active");
+          }
         initialiseState(reg);
+
       });
   }
   // If service worker not supported, show warning to the message box
@@ -44,9 +52,9 @@ window.addEventListener('load', function() {
                 if (result === 'granted') {
                     navigator.serviceWorker.ready.then(function (registration) {
                         registration.showNotification('Perma.Cat', {
-                            body: 'Hola, votre première Notification de la plateforme, ça marche ;)',
+                            body: 'Hola, votre première Notification de la plateforme perma.Cat, tout fonctionne ;)',
                             icon: '/android-chrome-256x256.png',
-                            tag: 'test'
+                            tag: 'Premier message'
                         }).then(function(event){
                             console.log(event);
                         });
@@ -60,16 +68,16 @@ window.addEventListener('load', function() {
       // Show a message and activate the button
       subBtn.textContent = gettext("Les notifications sont bloquées par votre navigateur");
       subBtn.disabled = false;
-      showMessage(gettext('Push notifications are blocked by your browser.'));
+      showMessage(gettext('Les notifications sont bloquées par votre navigateur'));
       return;
     }
 
     // Check if push messaging is supported
     if (!('PushManager' in window)) {
       // Show a message and activate the button
-      subBtn.textContent = "Les notifications ne sont pas possible avec votre navigateur (choisissez firefox) ";
+      subBtn.textContent = "Les notifications ne sont pas possibles avec votre navigateur (choisissez firefox ou chrome) ";
       subBtn.disabled = false;
-      showMessage(gettext('Push notifications are not available in your browser.'));
+      showMessage(gettext('Les notifications ne sont pas possibles avec votre navigateur (choisissez firefox ou chrome)'));
       return;
     }
 
@@ -85,7 +93,7 @@ window.addEventListener('load', function() {
                 subBtn.textContent = gettext("Se désabonner des notifications instantanées");
                 subBtn.disabled = false;
                 isPushEnabled = true;
-                showMessage(gettext('Successfully subscribed to push notifications.'));
+                showMessage(gettext('Vous êtes bien abonné-e aux notifications sur cet appareil'));
               }
             });
         }
@@ -132,7 +140,7 @@ function subscribe(reg) {
                   subBtn.textContent = gettext("Se désabonner des notifications instantanées");
                   subBtn.disabled = false;
                   isPushEnabled = true;
-                  showMessage(gettext('Successfully subscribed to push notifications.'));
+                  showMessage(gettext('Vous êtes bien abonné-e aux notifications sur cet appareil'));
                 }
               });
           })
@@ -170,7 +178,7 @@ function unsubscribe(reg) {
           // No subscription object, so set the state
           // to allow the user to subscribe to push
           subBtn.disabled = false;
-          showMessage(gettext('Subscription is not available.'));
+          showMessage(gettext('Vous ne pouvez pas souscrire aux notifications sur cet appareil avec ce navigateur'));
           return;
         }
         postSubscribeObj('unsubscribe', subscription,
@@ -182,8 +190,8 @@ function unsubscribe(reg) {
               subscription.unsubscribe()
                 .then(
                   function(successful) {
-                    subBtn.textContent = gettext("S'abonner aux notifications instantanées");
-                    showMessage(gettext('Successfully unsubscribed from push notifications.'));
+                    subBtn.textContent = gettext("S'abonner aux notifications instantanées sur cet appareil");
+                    showMessage(gettext("Vous n'êtes plus abonné-e aux notifications sur cet appareil"));
                     isPushEnabled = false;
                     subBtn.disabled = false;
                   }
@@ -191,7 +199,7 @@ function unsubscribe(reg) {
                 .catch(
                   function(error) {
                     subBtn.textContent = gettext("Se désabonner des notifications instantanées");
-                    showMessage(gettext('Error while unsubscribing from push notifications.'));
+                    showMessage(gettext('Une erreur est survenue lors de votre désabonnement, désolé !'));
                     subBtn.disabled = false;
                   }
                 );

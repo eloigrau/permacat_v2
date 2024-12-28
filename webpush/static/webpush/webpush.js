@@ -107,6 +107,7 @@ function showMessage(message) {
   if (messageBox) {
     messageBox.textContent = message;
     messageBox.style.display = 'block';
+    messageBox.hidden = false;
   }
 }
 

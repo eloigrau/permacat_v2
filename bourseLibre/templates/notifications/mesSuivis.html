@@ -51,11 +51,6 @@
 
 
 
-<div class="row justify-content-center textcenter">
-    <div class="col-sm-12  col-md-10">
-        <h5 id="webpush-message"></h5>
-    </div>
-</div>
 
 <div class="tab-content">
     <div class="tab-pane fade show active" id="presentation">
@@ -75,6 +70,7 @@
         <p>Pour recevoir les notifications sur navigateur (firefox/chrome, sur smartphone et/ou ordi), et ainsi être informé "en direct" des pages auxquelles vous êtes abonné-e, vous pouvez aussi recevoir les notifications
              sur votre smartphone ou ordinateur (indépendamment pour chaque appareil) en cliquant sur le bouton ci-dessous</p>
             <p class="textcenter"> {% webpush_button with_class="btn btn-info" %}</p>
+
             </div>
         </div>
 
@@ -207,6 +203,13 @@
 {% else %}
         <p class="textcenter" >Vous n'avez cucun abonnement dans cette catégorie</p>
 {% endif %}
+    </div>
+</div>
+
+
+<div class="row justify-content-center textcenter">
+    <div class="col-sm-12  col-md-10">
+        <h4 id="webpush-message"></h4>
     </div>
 </div>
 

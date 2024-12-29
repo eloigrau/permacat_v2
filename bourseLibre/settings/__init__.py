@@ -73,9 +73,6 @@ else:
     DATABASES = dict()
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
-
-
-if  LOCALL == False:
     SECURE_HSTS_SECONDS = 604800
     SECURE_CONTENT_TYPE_NOSNIFF = True
     #SECURE_BROWSER_XSS_FILTER = True

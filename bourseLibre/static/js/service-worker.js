@@ -1,18 +1,3 @@
-const offlineFallbackPage = "bienvenue.html";
-
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.type === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
-
-self.addEventListener('install', async (event) => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then((cache) => cache.add(offlineFallbackPage))
-  );
-});
-
 self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith((async () => {
@@ -68,7 +53,7 @@ self.addEventListener('notificationclick', function(event) {
     clickedNotification.close();
 
     //exit if the url could not be found
-    if (!event.notification.data || !event.notification.data.url) return;
+    if (!event.notification.data || !event.notification.data.url) return clients.openWindow("/");
 
     //get url from event
     var url = event.notification.data.url;
@@ -109,7 +94,17 @@ self.addEventListener('notificationclick', function(event) {
             // If not, then open the target URL in a new window/tab.
             if (self.clients.openWindow) {
                 return self.clients.openWindow(url);
+            }else{
+                return self.clients.openWindow("/");
             }
         })
     );
 });
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener('activate', () => self.clients.claim());

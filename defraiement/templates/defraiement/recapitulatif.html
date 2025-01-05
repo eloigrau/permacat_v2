@@ -10,7 +10,9 @@
 <a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
     <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%} ">2023</button></a>
 <a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2024</button></a>
+    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning {%else%}btn-info{%endif%} ">2024</button></a>
+ <a href="?{{ request.GET.urlencode }}&annee=2025#ref-annee">
+    <button type="button" class="btn {% if request.GET.annee == '2025' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2025</button></a>
  {% comment %}
 <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:recapitulatif' asso_slug=asso_courante.abreviation %}?" method="get" role = "search">
      <span class="input-group-append">

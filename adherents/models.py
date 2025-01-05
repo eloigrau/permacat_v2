@@ -1,7 +1,9 @@
 
 from django.db import models
-from bourseLibre.models import Profil, Adresse, Asso
+from bourseLibre.models import Profil, Adresse, Asso, LONGITUDE_DEFAUT
 from django.urls import reverse
+
+from permagora.models import LATITUDE_DEFAUT
 from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS
 from django.utils import timezone
 import datetime
@@ -33,6 +35,19 @@ class Adherent(models.Model):
     def get_adresse_str(self):
         return self.adresse.get_adresse_str
 # Create your models here.
+
+
+    @property
+    def get_latitude(self):
+        if hasattr(self, 'adresse') and self.adresse:
+            return self.adresse.get_latitude
+        return LATITUDE_DEFAUT
+
+    @property
+    def get_longitude(self):
+        if hasattr(self, 'adresse') and self.adresse:
+            return self.adresse.get_longitude
+        return LONGITUDE_DEFAUT
 
     @property
     def get_adhesions(self):

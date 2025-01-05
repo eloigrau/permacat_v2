@@ -281,6 +281,19 @@ class Contact(models.Model):
             html += "<li>" +str(c) + "</li> "
         return html
 
+
+    @property
+    def get_latitude(self):
+        if hasattr(self, 'adresse') and self.adresse:
+            return self.adresse.get_latitude
+        return LATITUDE_DEFAUT
+
+    @property
+    def get_longitude(self):
+        if hasattr(self, 'adresse') and self.adresse:
+            return self.adresse.get_longitude
+        return LONGITUDE_DEFAUT
+
 class ContactContact(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contact",)
     commentaire = models.CharField(verbose_name="commentaire", max_length=200, blank=True)

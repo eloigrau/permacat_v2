@@ -243,10 +243,11 @@ class Contact(models.Model):
         return self.contactcontact_set.all()
 
     def get_profil_username(self):
-        if self.profil:
+        if hasattr(self, 'profil'):
             return str(self.profil)
         else:
             return ""
+
     @property
     def get_background_color(self):
         length = len(self.get_contacts())

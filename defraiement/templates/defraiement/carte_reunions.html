@@ -50,7 +50,7 @@
               shadowSize: [41, 41]
         });
 
-        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+        var markers = L.markerClusterGroup({ maxClusterRadius: 5 });
         {% for r in reunions %}
          {% if r.adresse %}
             var lat = {{r.adresse.get_latitude}};

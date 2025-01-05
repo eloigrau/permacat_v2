@@ -38,7 +38,7 @@
     <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
       <script type="text/javascript">
         function map_init_basic (map, options) {
-        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+        var markers = L.markerClusterGroup({ maxClusterRadius: 20 });
             try{
                 var lat = {{lieu.adresse.latitude|to_numeric}};
                 var lon = {{lieu.adresse.longitude|to_numeric}};

@@ -113,7 +113,7 @@
               shadowSize: [41, 41]
         });
 
-        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+        var markers = L.markerClusterGroup({ maxClusterRadius: 10 });
         {% for jardin in jardins_filtres.qs %}
             {% if jardin.adresse.get_latitude %}
                 var lat = {{ jardin.adresse.get_latitude }};

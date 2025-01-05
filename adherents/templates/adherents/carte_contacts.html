@@ -201,7 +201,7 @@
               shadowSize: [41, 41]
         });
 
-        var markers = L.markerClusterGroup({ maxClusterRadius: 30 });
+        var markers = L.markerClusterGroup({ maxClusterRadius: 10 });
         {% for profil in contacts %}
             var lat = {{profil.get_latitude}};
             var lon = {{profil.get_longitude}};

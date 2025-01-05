@@ -1,3 +1,5 @@
+from colour import Color
+
 dict_ape = {
     "-": "Non renseigné",
     "0111Z": "Culture de céréales (à l exception du riz), de légumineuses et de graines oléagineuses",
@@ -48,3 +50,7 @@ def get_slug_salon(nom="bureau"):
 
 
 CHOIX_CONTACTS = ("0", "Réponse_OK"), ("1", "Pas de réponse"), ("2", "A répondu mais à rappeler"), ("3", "A répondu mais HOSTILE"), ("4", "Mauvais numéroe")
+
+red = Color("#ffffcc")
+NB_COLORS_RANGE = 5
+RANGE_COLORS_PHONING = list(red.range_to(Color("#f9f06b"), NB_COLORS_RANGE))

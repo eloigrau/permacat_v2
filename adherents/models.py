@@ -4,10 +4,9 @@ from bourseLibre.models import Profil, Adresse, Asso, LONGITUDE_DEFAUT
 from django.urls import reverse
 
 from permagora.models import LATITUDE_DEFAUT
-from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS
+from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS, NB_COLORS_RANGE, RANGE_COLORS_PHONING
 from django.utils import timezone
 import datetime
-from colour import Color
 import json
 
 class Adherent(models.Model):
@@ -257,6 +256,10 @@ class Contact(models.Model):
     def get_contacts(self):
         return self.contactcontact_set.all()
 
+    @property
+    def get_contacts_nb(self):
+        return len(self.contactcontact_set.all())
+
     def get_profil_username(self):
         if hasattr(self, 'profil'):
             return str(self.profil)
@@ -265,14 +268,11 @@ class Contact(models.Model):
 
     @property
     def get_background_color(self):
-        length = len(self.get_contacts())
-        red = Color("#ffffcc")
-        nb = 5
-        colors = list(red.range_to(Color("#f9f06b"), nb))
-        if length<nb:
-            return colors[length]
+        length = self.get_contacts_nb
+        if length<NB_COLORS_RANGE:
+            return RANGE_COLORS_PHONING[length]
         else:
-            return  colors[nb]
+            return  RANGE_COLORS_PHONING[NB_COLORS_RANGE]
 
     @property
     def get_contacts_html(self):

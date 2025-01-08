@@ -53,7 +53,7 @@ print('LOCALL : ' + str(LOCALL) +" debug " + str(DEBUG))
 #DEBUG_PROPAGATE_EXCEPTIONS = True
 
 #SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'Strict'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 #SECURE_HSTS_SECONDS = 518400
@@ -78,8 +78,8 @@ else:
     #SECURE_BROWSER_XSS_FILTER = True
     #SECURE_SSL_REDIRECT = True
     #SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    X_FRAME_OPTIONS = 'SAMEORIGIN'
+    #CSRF_COOKIE_SECURE = True
+    #X_FRAME_OPTIONS = 'SAMEORIGIN'
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_COOKIE_PATH = '/;HttpOnly'
 
@@ -207,6 +207,8 @@ MIDDLEWARE = [
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
      'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
+    #'django.template.context_processors.request',
+     #'cookielaw_local.context_processors.cookielaw',
     #'django.template.context_processors.media',
     #"django_minify_html.middleware.MinifyHtmlMiddleware",
     #'django.core.context_processors.request',

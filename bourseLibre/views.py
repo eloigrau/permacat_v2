@@ -151,8 +151,7 @@ def bienvenue(request):
     yesterday = (datetime.now() - timedelta(hours=12)).replace(tzinfo=utc)
     evenements = EvenementAcceuil.objects.filter(date__gt=yesterday).order_by('date')
     evenements_passes, evenements_semaine = getEvenementsSemaine(request)
-    derniers = []
-    votes = []
+    derniers, articles, votes = [], [], []
     invit_salons = 0
 
     if request.user.is_authenticated:

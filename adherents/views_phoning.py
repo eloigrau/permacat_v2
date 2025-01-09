@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, HttpResponseRedirect
 
 from django.http import HttpResponseForbidden
 import csv
-from django.db.models import Q
+from django.db.models import BooleanField, ExpressionWrapper, Q
 
 from blog.models import Projet
 from .forms import (Contact_form, Contact_update_form, ContactContact_form,
@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 from io import StringIO
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Min
 import re
 from.views import write_csv_data, is_membre_bureau
 from django.contrib.auth.decorators import login_required, permission_required
@@ -236,7 +236,8 @@ def nettoyer_telephones(request):
                 m += "<p>ajustement33 tel : " + str(p.adresse.telephone) + "</p>"
 
             if len(p.adresse.telephone) < 4:
-                p.commentaire = p.commentaire if p.commentaire else "" + " " + str(p.adresse.telephone.strip())
+                p.commentaire = p.commentaire if p.commentaire else ""
+                p.commentaire +=  " " + str(p.adresse.telephone.strip())
                 p.adresse.telephone = ""
                 m += "<p>petit tel : " + str(p.adresse.telephone.strip()) + "</p>"
 
@@ -261,8 +262,7 @@ def supprimer_doublons(request):
 
     duplicates = (
         Contact.objects.values(*unique_fields)
-        .order_by('nom')
-        .annotate(max_id=Max('id'), count_id=Count('id'))
+        .annotate(max_id=Min('id'), count_id=Count('id'))
         .filter(count_id__gt=1)
     )
 
@@ -270,12 +270,13 @@ def supprimer_doublons(request):
         (
             Contact.objects
             .filter(**{x: duplicate[x] for x in unique_fields})
-            .exclude(id=duplicate['max_id'])
+            .exclude(Q(adherent__isnull=False) | Q(id=duplicate['max_id']))
             .delete()
         )
 
 
-    return redirect('adherents:phoning_projet_courant')
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": str(duplicates)})
+
 
 
 def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, adherent=None):

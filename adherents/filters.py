@@ -59,12 +59,19 @@ class ContactCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ",
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
                                                              'tabindex': 1, 'autofocus': '1'}))
-    isatp = django_filters.BooleanFilter(label="ATP (ou statut inconnu)", method='get_isatp_filter', widget=forms.CheckboxInput(),)
+    isatp = django_filters.BooleanFilter(label="Votant (ATP, CC, ...)", method='get_isatp_filter', widget=forms.CheckboxInput(),)
+    isinconnu = django_filters.BooleanFilter(label="statut inconnu", method='get_isinconnu_filter', widget=forms.CheckboxInput(),)
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
 
     def get_isatp_filter(self, queryset, field_name, value):
         if value:
-            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut="5")|Q(adherent__statut__isnull=True))
+            return queryset.filter(Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut="5"))
+        else:
+            return queryset
+
+    def get_isinconnu(self, queryset, field_name, value):
+        if value:
+            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True))
         else:
             return queryset
 

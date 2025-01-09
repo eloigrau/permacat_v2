@@ -470,7 +470,7 @@ def phoning_contact_ajouter_csv_inversernomprenom(request,):
             except Exception as e:
                 msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
 
-        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": msg})
 
     return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
 

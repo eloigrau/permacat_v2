@@ -9,6 +9,14 @@ from datetime import date
 annees = [(str(an), str(an)) for an in range(2020, date.today().isocalendar()[0] + 1)] #('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023'), ('2023', '2023')
 
 
+NBCONTACTS_CHOICES = (
+    (0, 'Pas contacté'),
+    (1, 'Un contact'),
+    (2, 'Au moins une fois'),
+    (3, "Plus d'une fois"),
+)
+
+
 def get_choix_Production():
     return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
 
@@ -62,7 +70,7 @@ class ContactCarteFilter(django_filters.FilterSet):
     isatp = django_filters.BooleanFilter(label="Votant (ATP, CC, ...)", method='get_isatp_filter', widget=forms.CheckboxInput(),)
     isinconnu = django_filters.BooleanFilter(label="statut inconnu", method='get_isinconnu_filter', widget=forms.CheckboxInput(),)
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
-    dejacontacte = django_filters.BooleanFilter(label="Déjà contacté", method='get_dejacontacte_filter', widget=forms.CheckboxInput(),)
+    dejacontacte = django_filters.ChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter', )
 
     def get_isatp_filter(self, queryset, field_name, value):
         if value:
@@ -71,7 +79,7 @@ class ContactCarteFilter(django_filters.FilterSet):
             return queryset
 
     def get_isinconnu_filter(self, queryset, field_name, value):
-        if value:
+        if value == 0:
             return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True))
         else:
             return queryset
@@ -92,8 +100,14 @@ class ContactCarteFilter(django_filters.FilterSet):
                                )
 
     def get_dejacontacte_filter(self, queryset, field_name, value):
-        if value:
-            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=value)
+        if value == '0':
+            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b=0)
+        elif value == '1':
+            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b=1)
+        if value == '2':
+            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
+        if value == '3':
+            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=1)
         else:
             return queryset
 

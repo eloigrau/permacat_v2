@@ -61,7 +61,8 @@ class Contact_modifier(UpdateView, UserPassesTestMixin):
     template_name_suffix = '_modifier'
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_add_contact')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_add_contact')
 
     def get_form(self):
         self.projet = ProjetPhoning.objects.get(pk=self.kwargs["pk"])
@@ -106,7 +107,8 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_delete_contact')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_delete_contact')
 
     def get_success_url(self):
         #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
@@ -116,8 +118,8 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
 
 @login_required
 def contact_supprimer(request, contact_pk):
-    if not request.user.has_perm(request.session["asso_courante"].abreviation + '_delete_contact'):
-        return HttpResponseForbidden()
+    #if not request.user.has_perm(request.session["asso_courante"].abreviation + '_delete_contact'):
+    #    return HttpResponseForbidden()
     contact = get_object_or_404(Contact, pk=contact_pk)
     contact.adresse.delete()
     contact.delete()
@@ -130,7 +132,8 @@ class Contact_liste(ListView, UserPassesTestMixin):
     template_name_complet = "adherents/carte_contacts.html"
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_liste_contact')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_liste_contact')
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -181,8 +184,8 @@ def phoning_projet_courant(request):
 
 @login_required
 def contactContact_supprimer(request, contact_contact_pk):
-    if not request.user.has_perm('delete_contact'):
-        return render
+    #if not request.user.has_perm('delete_contact'):
+    #    return render
     c = get_object_or_404(ContactContact, pk=contact_contact_pk)
     c.delete()
     return redirect('adherents:phoning_projet_courant')
@@ -374,8 +377,8 @@ def phoning_contact_ajouter_listetel(request):
 
 def lireTableauContact(request, csv_reader):
     projet_courant = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
-    if not request.user.has_perm('add_contact'):
-        return HttpResponseForbidden()
+    #if not request.user.has_perm('add_contact'):
+   #     return HttpResponseForbidden()
     msg = ""
     for i, line in enumerate(csv_reader):
         #if i == 0:
@@ -413,8 +416,8 @@ def lireTableauContact(request, csv_reader):
 
 @login_required
 def phoning_contact_ajouter_csv(request,):
-    if not request.user.has_perm('add_contact'):
-        return HttpResponseForbidden()
+    #if not request.user.has_perm('add_contact'):
+    #    return HttpResponseForbidden()
     form = csvText_form(request.POST or None)
     if form.is_valid():
         texte_csv = form.cleaned_data['texte_csv']
@@ -490,7 +493,8 @@ class ProjetPhoning_ajouter(CreateView, UserPassesTestMixin):
     template_name_suffix = '_ajouter'
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_add_projetphoning')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_add_projetphoning')
 
     def get_form(self):
         return ProjetPhoning_form(**self.get_form_kwargs())
@@ -509,7 +513,8 @@ class ProjetPhoning_modifier(UpdateView, UserPassesTestMixin):
     template_name_suffix = '_modifier'
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_update_projetphoning')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_update_projetphoning')
 
     def get_form(self):
         return ProjetPhoning_form(**self.get_form_kwargs())
@@ -526,7 +531,8 @@ class ProjetPhoning_supprimer(DeleteView, UserPassesTestMixin):
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_delete_projetphoning')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_delete_projetphoning')
 
     def get_success_url(self):
         return reverse('adherents:phoning_projet_courant')
@@ -539,7 +545,8 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
     template_name = "adherents/projetphoning_list.html"
 
     def test_func(self):
-        return self.request.user.has_perm(self.object.asso.abreviation + '_liste_projetphoning')
+        return True
+        #return self.request.user.has_perm(self.object.asso.abreviation + '_liste_projetphoning')
 
     def get_queryset(self):
         params = dict(self.request.GET.items())

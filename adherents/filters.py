@@ -16,6 +16,12 @@ NBCONTACTS_CHOICES = (
     (3, "Plus d'une fois"),
 )
 
+STATUT_CHOICES = (
+    (0, 'Tous'),
+    (1, 'Votant (ATP, ATS, CC)'),
+    (2, 'Statut inconnu'),
+    (3, 'Non votants (CotSol, porteur de projet'),
+)
 
 def get_choix_Production():
     return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
@@ -67,20 +73,19 @@ class ContactCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ",
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
                                                              'tabindex': 1, 'autofocus': '1'}))
-    isatp = django_filters.BooleanFilter(label="Votant (ATP, CC, ...)", method='get_isatp_filter', widget=forms.CheckboxInput(),)
-    isinconnu = django_filters.BooleanFilter(label="statut inconnu", method='get_isinconnu_filter', widget=forms.CheckboxInput(),)
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
     dejacontacte = django_filters.ChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter', )
+    statut = django_filters.ChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter', )
 
-    def get_isatp_filter(self, queryset, field_name, value):
-        if value:
-            return queryset.filter(Q(adherent__statut="1" )|Q(adherent__statut="3")|Q(adherent__statut="5"))
-        else:
+    def get_statut_filter(self, queryset, field_name, value):
+        if value == '0':
             return queryset
-
-    def get_isinconnu_filter(self, queryset, field_name, value):
-        if value == 0:
-            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True))
+        elif value == '1':
+            return queryset.filter(Q(adherent__statut="1") | Q(adherent__statut="3") | Q(adherent__statut="5"))
+        elif value == '2':
+            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True)|Q(adherent__statut="0"))
+        elif value == '3':
+            return queryset.filter(Q(adherent__statut="2") | Q(adherent__statut="4"))
         else:
             return queryset
 

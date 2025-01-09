@@ -65,7 +65,6 @@ class Contact_modifier(UpdateView, UserPassesTestMixin):
         #return self.request.user.has_perm(self.object.asso.abreviation + '_add_contact')
 
     def get_form(self):
-        self.projet = ProjetPhoning.objects.get(pk=self.kwargs["pk"])
         return Contact_update_form(**self.get_form_kwargs())
 
     def get_initial(self):

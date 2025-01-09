@@ -271,5 +271,11 @@ def htmlClean(html):
 
 @register.filter(is_safe=True)
 def phonenumber(value):
-    phone = '%s %s %s %s %s' %(value[0:2],value[2:4],value[4:6],value[6:8],value[8:])
+    try:
+        if value.startswith("+33"):
+            phone = '%s %s %s %s %s' %(value[0:4],value[4:6],value[6:8],value[8:10],value[10:])
+        else:
+            phone = '%s %s %s %s %s' %(value[0:2],value[2:4],value[4:6],value[6:8],value[8:])
+    except:
+        return value
     return phone

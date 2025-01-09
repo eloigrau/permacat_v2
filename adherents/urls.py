@@ -84,6 +84,7 @@ urlpatterns = [
     path(r'phoning/projet/courant/ajouter', login_required(views_phoning.Contact_ajouter.as_view()), name="phoning_contact_ajouter"),
     path(r'phoning/projet/courant/ajouter/listetel', views_phoning.phoning_contact_ajouter_listetel, name="phoning_contact_ajouter_listetel"),
     path(r'phoning/ajouter/csv', views_phoning.phoning_contact_ajouter_csv, name="phoning_contact_ajouter_csv"),
+    path(r'phoning/ajouter/csv_inversernomprenom', views_phoning.phoning_contact_ajouter_csv_inversernomprenom, name="phoning_csv_inversernomprenom"),
     path(r'phoning/ajouter/adherents', views_phoning.ajouterAdherents, name="phoning_ajouterAdherents"),
     path(r'phoning/supprimer/doublons', views_phoning.supprimer_doublons, name="phoning_supprimer_doublons"),
     path(r'phoning/supprimer/nettoyer_telephones', views_phoning.nettoyer_telephones, name="nettoyer_telephones"),

@@ -443,6 +443,37 @@ def phoning_contact_ajouter_csv(request,):
 
     return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
 
+@login_required
+def phoning_contact_ajouter_csv_inversernomprenom(request,):
+    #if not request.user.has_perm('add_contact'):
+    #    return HttpResponseForbidden()
+    form = csvText_form(request.POST or None)
+    if form.is_valid():
+        texte_csv = form.cleaned_data['texte_csv']
+        msg = "import texte_csv : "
+        csv_reader = csv.DictReader(StringIO(texte_csv))
+        if not "telephone" in csv_reader.fieldnames:
+            msg = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+            return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
+
+        for i, line in enumerate(csv_reader):
+            try:
+                if line["telephone"] and line["nom"]:
+                    for cont in Contact.objects.filter(adresse__telephone__iexact=line["telephone"]):
+                        if line["nom"] == cont.prenom:
+                            cont.nom = line["nom"]
+                            cont.prenom = line["prenom"]
+                            cont.adresse.commune = line["commune"]
+                            cont.save()
+                            msg += "modif" + str(cont)
+
+            except Exception as e:
+                msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
+
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
+
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+
 
 
 @login_required

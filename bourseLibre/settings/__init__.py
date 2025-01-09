@@ -497,7 +497,7 @@ BOWER_INSTALLED_APPS = (
 #    "bourseLibre.views_notifications.EnvoiMailsCronJob"
 #]
 CRONJOBS = [
-    ('0 6 * * 1', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
+    #('0 6 * * 1', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
 ]
 
 GRAPH_MODELS = {

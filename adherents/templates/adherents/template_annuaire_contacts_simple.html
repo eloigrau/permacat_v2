@@ -28,7 +28,7 @@
         {% for contact in contacts %}
         <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" >
             <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' contact.adherent.pk %}">
-                    {{ contact.nom }}  {{ contact.prenom }} </a>
+                    {{ contact.nom }}  {{ contact.prenom }} </a> -
                     {{ contact.adherent.get_statut_display}} </a> -
                 {% else %}
                     {{ contact.nom }}  {{ contact.prenom }} -

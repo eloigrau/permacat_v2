@@ -2,7 +2,7 @@ from django import forms
 from .models import Adherent, Adhesion, Contact
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
-from django.db.models import Q
+from django.db.models import Q, Count
 from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
 from datetime import date
 
@@ -62,6 +62,7 @@ class ContactCarteFilter(django_filters.FilterSet):
     isatp = django_filters.BooleanFilter(label="Votant (ATP, CC, ...)", method='get_isatp_filter', widget=forms.CheckboxInput(),)
     isinconnu = django_filters.BooleanFilter(label="statut inconnu", method='get_isinconnu_filter', widget=forms.CheckboxInput(),)
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
+    dejacontacte = django_filters.BooleanFilter(label="Déjà contacté", method='get_dejacontacte_filter', widget=forms.CheckboxInput(),)
 
     def get_isatp_filter(self, queryset, field_name, value):
         if value:
@@ -89,6 +90,10 @@ class ContactCarteFilter(django_filters.FilterSet):
                                Q(nom__icontains=value)|
                                Q(prenom__icontains=value)
                                )
+
+
+    def get_dejacontacte_filter(self, queryset, field_name, value):
+        return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
 
 
     class Meta:

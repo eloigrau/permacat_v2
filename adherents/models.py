@@ -237,9 +237,9 @@ class Contact(models.Model):
     email = models.CharField(verbose_name="Email", max_length=150, blank=True, null=True, )
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE)
     commentaire = models.TextField(null=True, blank=True)
-    adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name="Adhérent Conf'", null=True)
+    adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name="Adhérent Conf'",  blank=True, null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name="Groupe associé", null=True,)
+    projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name="Projet associé",  blank=True, null=True,)
 
     def __str__(self):
         return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusion, ContactContact, Contact
+from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusion, ContactContact, Contact, ProjetPhoning
 
 
 @admin.register(Adherent)
@@ -16,3 +16,4 @@ admin.site.register(InscriptionMail)
 admin.site.register(ListeDiffusion)
 admin.site.register(Contact)
 admin.site.register(ContactContact)
+admin.site.register(ProjetPhoning)

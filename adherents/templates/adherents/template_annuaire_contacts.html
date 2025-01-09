@@ -45,6 +45,9 @@
                 {% if contact.adherent.statut == "1" %} (ATP)
                 {% elif contact.adherent.statut == "3"%} (CC)
                 {% elif contact.adherent.statut == "5"%} (ATS)
+                {% elif contact.adherent.statut == "2"%} (CotSol)
+                {% elif contact.adherent.statut == "4"%} (Retraité-e)
+                {% elif contact.adherent.statut == "6"%} (PorteurProjet)
                 {% else %} (#)
                 {% endif %}
             {% else %}

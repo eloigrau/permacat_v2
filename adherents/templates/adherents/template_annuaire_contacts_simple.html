@@ -28,8 +28,16 @@
         {% for contact in contacts %}
         <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" >
             <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' contact.adherent.pk %}">
-                    {{ contact.nom }}  {{ contact.prenom }} </a> -
-                    {{ contact.adherent.get_statut_display}} </a> -
+                    {{ contact.nom }}  {{ contact.prenom }} -
+                    {% if contact.adherent.statut == "1" %} (ATP)
+                    {% elif contact.adherent.statut == "3"%} (CC)
+                    {% elif contact.adherent.statut == "5"%} (ATS)
+                    {% elif contact.adherent.statut == "2"%} (CotSol)
+                    {% elif contact.adherent.statut == "4"%} (Retraité-e)
+                    {% elif contact.adherent.statut == "6"%} (PorteurProjet)
+                    {% else %} (#)
+                    {% endif %}
+                    </a> -
                 {% else %}
                     {{ contact.nom }}  {{ contact.prenom }} -
                 {% endif %}

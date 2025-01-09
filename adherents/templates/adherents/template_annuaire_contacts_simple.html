@@ -41,7 +41,7 @@
                 {% else %}
                     {{ contact.nom }}  {{ contact.prenom }} -
                 {% endif %}
-                {% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone }}
+                {% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
                <i class="fa fa-phone"></i> </a>
                 {% else %} - {% endif %}
                 {% if contact.commentaire %}[{{ contact.commentaire }}]{% endif %}

@@ -55,7 +55,7 @@
             {% endif %}
 
             </td>
-            <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone }}
+            <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
                <i class="fa fa-phone"></i> </a>
              <a>
                 {% else %}-{% endif %}

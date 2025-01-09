@@ -267,3 +267,9 @@ def filtrer_media_url(url):
 def htmlClean(html):
     c = Cleaner()
     return c.clean(html)
+
+
+@register.filter(is_safe=True)
+def phonenumber(value):
+    phone = '%s %s %s %s %s' %(value[0:2],value[2:4],value[4:6],value[6:8],value[8:])
+    return phone

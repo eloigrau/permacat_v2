@@ -283,7 +283,7 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
     #if not telephone:
      #   return 0, None
 
-    if not(telephone or nom or prenom or email or code_postal) or (adherent and Contact.objects.filter(adherent=adherent).exists()):
+    if not(telephone or nom or prenom or email or code_postal):
         return 0, None
 
     if Contact.objects.filter(adresse__code_postal=code_postal,
@@ -293,14 +293,15 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
                                 projet=projet,
                                 email=email).exists():
         if adherent:
-            contact = Contact.objects.filter(adresse__code_postal=code_postal,
+            contacts = Contact.objects.filter(adresse__code_postal=code_postal,
                                      adresse__telephone=telephone,
                                     nom=nom,
                                     prenom=prenom,
                                     projet=projet,
-                                    email=email)[0]
-            contact.adherent=adherent
-            contact.save()
+                                    email=email)
+            for c in contacts:
+                c.adherent=adherent
+                c.save()
     else:
 
         if code_postal and telephone:

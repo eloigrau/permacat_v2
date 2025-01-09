@@ -459,7 +459,7 @@ def phoning_contact_ajouter_csv_inversernomprenom(request,):
         for i, line in enumerate(csv_reader):
             try:
                 if line["telephone"] and line["nom"]:
-                    for cont in Contact.objects.filter(adresse__telephone__iexact=line["telephone"]):
+                    for cont in Contact.objects.filter(adresse__telephone__iexact=line["telephone"].replace('/','').replace('.','').replace(' ','').strip()):
                         if line["nom"] == cont.prenom:
                             cont.nom = line["nom"]
                             cont.prenom = line["prenom"]

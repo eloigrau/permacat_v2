@@ -93,7 +93,10 @@ class ContactCarteFilter(django_filters.FilterSet):
 
 
     def get_dejacontacte_filter(self, queryset, field_name, value):
-        return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
+        if value:
+            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=value)
+        else:
+            return queryset
 
 
     class Meta:

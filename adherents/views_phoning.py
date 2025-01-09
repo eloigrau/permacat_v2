@@ -516,7 +516,7 @@ class ProjetPhoning_modifier(UpdateView, UserPassesTestMixin):
 
     def form_valid(self, form):
         self.object = form.save()
-        return redirect("adherents:phoning_projet_omplet")
+        return redirect("adherents:phoning_projet_complet")
 
     def get_success_url(self):
         return self.object.get_absolute_url()

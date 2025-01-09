@@ -69,7 +69,7 @@ class ContactCarteFilter(django_filters.FilterSet):
         else:
             return queryset
 
-    def get_isinconnu(self, queryset, field_name, value):
+    def get_isinconnu_filter(self, queryset, field_name, value):
         if value:
             return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True))
         else:

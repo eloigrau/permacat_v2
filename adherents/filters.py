@@ -100,6 +100,7 @@ class ContactCarteFilter(django_filters.FilterSet):
                                Q(adresse__rue__icontains=value)|
                                Q(adresse__commune__icontains=value)|
                                Q(adresse__code_postal__icontains=value)|
+                               Q(adresse__telephone__icontains=value)|
                                Q(nom__icontains=value)|
                                Q(prenom__icontains=value)
                                )

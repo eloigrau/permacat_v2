@@ -211,6 +211,8 @@ class ProjetPhoning(models.Model):
     asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name="Groupe associé",)
     titre = models.CharField(verbose_name="Nom du projet", max_length=200, blank=True)
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
+    description = models.TextField(null=True, blank=True)
+
 
     def __str__(self):
         return str(self.titre)

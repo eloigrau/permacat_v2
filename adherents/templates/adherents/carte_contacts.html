@@ -12,14 +12,17 @@
  <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
  <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
 {%endblock%}
-{% block title %} - Carte - Phoning Conf
+{% block title %} - Carte - Phoning
 {% endblock %}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
-<div class="row textcenter">
+<div class="row textcenter justify-content-center">
     <div class="col-sm-12 textcenter">
         <h4> {{titre}}</h4>
+    </div>
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
+        <p> {{projet.description|safe}}</p>
     </div>
 </div>
 

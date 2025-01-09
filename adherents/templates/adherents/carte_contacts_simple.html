@@ -8,12 +8,14 @@
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
-<div class="row textcenter">
+<div class="row textcenter justify-content-center">
     <div class="col-sm-12 textcenter">
         <h4> {{titre}}</h4>
     </div>
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
+        <p> {{projet.description|safe}}</p>
+    </div>
 </div>
-
 {% endblock %}
 
 {% block content %}

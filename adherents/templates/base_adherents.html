@@ -23,11 +23,11 @@
                 <li class="nav-item nav-jardin"><a class="dropdown-item"
                                                    href="{% url 'adherents:listeDiffusion_liste' %}"> Les Listes
                     Mails</a></li>
+                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:phoning_projet_courant' %}">
+                    Phoning</a></li>
                 {% if request.user.estmembre_bureau_conf %}
                 <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:adhesion_liste' %}">
                     Gérer les Adhésions</a></li>
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:phoning_projet_courant' %}">
-                    Phoning</a></li>
 
                 {% else %}
                 {% endif %}

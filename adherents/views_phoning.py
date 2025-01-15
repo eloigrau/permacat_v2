@@ -646,7 +646,7 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
 def nettoyer_noms(request):
     m = ""
     for p in Contact.objects.filter(projet__asso__abreviation="conf66"):
-            p.nom = p.nom.replace("é","e").replace("è","e").upper()
+            p.nom = p.nom.replace("é","e").replace("è","e").replace("É","E").replace("È","E").upper()
             p.prenom = p.prenom.replace("é","e").replace("è","e").upper()
             p.save()
 

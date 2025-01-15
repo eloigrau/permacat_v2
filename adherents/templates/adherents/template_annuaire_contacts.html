@@ -57,13 +57,13 @@
             </td>
             <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
                <i class="fa fa-phone"></i> </a>
-             <a>
+
                 {% else %}-{% endif %}
             </td>
-             <td style="width:100%;"><ul>
+             <td style="width:100%;"><ol>
                  {{ contact.get_contacts_html|safe }}
              <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
-                 </ul>
+                 </ol>
              </td>
             <td>{{ contact.email }}</td>
            <td>{%if contact.adresse.code_postal %}{{ contact.adresse.code_postal }}{% else %}-{% endif %}</td>

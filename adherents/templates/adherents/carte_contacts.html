@@ -221,17 +221,17 @@
             var lat = {{profil.get_latitude}};
             var lon = {{profil.get_longitude}};
             {% if profil.get_contacts_nb == 0 %}
-            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
             {% elif profil.get_contacts_nb == 1 %}
-            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
             {% elif profil.get_contacts_nb == 2 %}
-            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
             {% elif profil.get_contacts_nb == 3 %}
-            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
             {% elif profil.get_contacts_nb == 4 %}
-            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
             {% else %}
-            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' profil.pk %}"> {{profil.nom}} {{profil.prenom}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
             {% endif %}
             markers.addLayer(marker);
         {%endfor%}

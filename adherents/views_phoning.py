@@ -27,6 +27,9 @@ import re
 from.views import write_csv_data, is_membre_bureau
 from django.contrib.auth.decorators import login_required, permission_required
 
+from unidecode import unidecode
+
+
 class Contact_ajouter(CreateView):
     model = Contact
     template_name_suffix = '_ajouter'
@@ -251,7 +254,6 @@ def nettoyer_telephones(request):
 
     return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
 
-
 @login_required
 def supprimer_doublons(request):
     params = dict(request.GET.items())
@@ -450,10 +452,10 @@ def phoning_contact_ajouter_csv_inversernomprenom(request,):
     form = csvText_form(request.POST or None)
     if form.is_valid():
         texte_csv = form.cleaned_data['texte_csv']
-        msg = "import texte_csv : "
+        m = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
         if not "telephone" in csv_reader.fieldnames:
-            msg = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+            m = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
             return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
         for i, line in enumerate(csv_reader):
@@ -464,6 +466,35 @@ def phoning_contact_ajouter_csv_inversernomprenom(request,):
                             cont.nom = line["nom"]
                             cont.prenom = line["prenom"]
                             cont.adresse.commune = line["commune"]
+                            cont.save()
+                            m += "modif" + str(cont)
+
+            except Exception as e:
+                m += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
+
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
+
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+
+@login_required
+def phoning_contact_ajouter_csv_editNonVotants(request,):
+    #if not request.user.has_perm('add_contact'):
+    #    return HttpResponseForbidden()
+    form = csvText_form(request.POST or None)
+    if form.is_valid():
+        texte_csv = form.cleaned_data['texte_csv']
+        msg = "import texte_csv : "
+        csv_reader = csv.DictReader(StringIO(texte_csv))
+
+        for i, line in enumerate(csv_reader):
+            try:
+                if line["NOM_PATRONYMIQUE"]:
+                    for cont in Contact.objects.filter(nom=line["NOM_PATRONYMIQUE"], prenom=line["PRENOMS"].split(' ')[0]):
+                            cont.adresse.commune = line["LIBELLE_COMMUNE_RESIDENCE"]
+                            cont.adresse.code_postal = line["CODE_POSTAL_RESIDENCE"]
+                            cont.adresse.rue = line["ADRESSE1"] + " " + line["ADRESSE2"]
+                            cont.adresse.save(recalc=True)
+                            cont.commentaire = "Votant Vérifié "+ cont.commentaire if cont.commentaire else "Votant Vérifié"
                             cont.save()
                             msg += "modif" + str(cont)
 
@@ -607,3 +638,16 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
 
         #context["filter"] = filter
         return context
+
+
+
+@login_required
+def nettoyer_noms(request):
+    m = ""
+    for p in Contact.objects.filter(projet__asso__abreviation="conf66"):
+            p.nom = p.nom.replace("é","e").replace("è","e").upper()
+            p.prenom = p.prenom.replace("é","e").replace("è","e").upper()
+            p.save()
+
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
+

@@ -485,7 +485,7 @@ def phoning_contact_ajouter_csv_editNonVotants(request,):
         texte_csv = form.cleaned_data['texte_csv']
         msg = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
-
+        j =0
         for i, line in enumerate(csv_reader):
             try:
                 if line["NOM_PATRONYMIQUE"]:
@@ -499,7 +499,7 @@ def phoning_contact_ajouter_csv_editNonVotants(request,):
                                     cont.adresse.save(recalc=True)
                                 cont.commentaire = "Votant Vérifié "+ cont.commentaire if cont.commentaire else "Votant Vérifié"
                                 cont.save()
-                                msg += "modif" + str(cont)
+                                j += 1
                     except:
                         for cont in Contact.objects.filter(nom=line["NOM_PATRONYMIQUE"], prenom=line["PRENOMS"]):
                             if not cont.commentaire or not "Votant" in cont.commentaire:
@@ -510,11 +510,11 @@ def phoning_contact_ajouter_csv_editNonVotants(request,):
                                     cont.adresse.save(recalc=True)
                                 cont.commentaire = "Votant Vérifié "+ cont.commentaire if cont.commentaire else "Votant Vérifié"
                                 cont.save()
-                                msg += "modif2" + str(cont)
+                                j += 1
 
             except Exception as e:
                 msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
-
+        msg += "nbModifs :" + str(j)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": msg})
 
     return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})

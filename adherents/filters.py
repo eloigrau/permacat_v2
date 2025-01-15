@@ -105,7 +105,8 @@ class ContactCarteFilter(django_filters.FilterSet):
                                Q(adresse__code_postal__icontains=value)|
                                Q(adresse__telephone__icontains=value)|
                                Q(nom__icontains=value)|
-                               Q(prenom__icontains=value)
+                               Q(prenom__icontains=value)|
+                               Q(commentaire__icontains=value)
                                )
 
     def get_dejacontacte_filter(self, queryset, field_name, value):

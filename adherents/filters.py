@@ -84,8 +84,10 @@ class ContactCarteFilter(django_filters.FilterSet):
         elif value == '1':
             return queryset.filter(Q(adherent__statut="1") | Q(adherent__statut="3") | Q(adherent__statut="5"))
         elif value == '2':
-            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True)|Q(adherent__statut="0"))
+            return queryset.filter(Q(commentaire__isnull=False) & Q(commentaire__icontains="Votant"))
         elif value == '3':
+            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True)|Q(adherent__statut="0"))
+        elif value == '4':
             return queryset.filter(Q(adherent__statut="2") | Q(adherent__statut="4"))
         else:
             return queryset
@@ -112,10 +114,8 @@ class ContactCarteFilter(django_filters.FilterSet):
         elif value == '1':
             return queryset.annotate(num_b=Count('contactcontact')).filter(num_b=1)
         if value == '2':
-            return queryset.filter(commentaire__contains="Votant")
-        if value == '3':
             return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
-        if value == '4':
+        if value == '3':
             return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=1)
         else:
             return queryset

@@ -18,9 +18,10 @@ NBCONTACTS_CHOICES = (
 
 STATUT_CHOICES = (
     (0, 'Tous'),
-    (1, 'Votant (ATP, ATS, CC)'),
-    (2, 'Statut inconnu'),
-    (3, 'Non votants (CotSol, porteur de projet'),
+    (1, 'Votant Conf (ATP, ATS, CC)'),
+    (2, 'Votant NonConf vérfié'),
+    (3, 'Statut inconnu'),
+    (4, 'Non votants (CotSol, porteur de projet'),
 )
 
 def get_choix_Production():
@@ -111,8 +112,10 @@ class ContactCarteFilter(django_filters.FilterSet):
         elif value == '1':
             return queryset.annotate(num_b=Count('contactcontact')).filter(num_b=1)
         if value == '2':
-            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
+            return queryset.filter(commentaire__contains="Votant")
         if value == '3':
+            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
+        if value == '4':
             return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=1)
         else:
             return queryset

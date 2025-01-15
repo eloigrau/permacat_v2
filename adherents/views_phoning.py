@@ -183,7 +183,6 @@ def phoning_projet_courant(request):
         return redirect('adherents:phoning_projet_liste',)
 
 
-
 @login_required
 def contactContact_supprimer(request, contact_contact_pk):
     #if not request.user.has_perm('delete_contact'):

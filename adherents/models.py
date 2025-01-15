@@ -271,7 +271,7 @@ class Contact(models.Model):
     @property
     def get_background_color(self):
         length = self.get_contacts_nb
-        if length<NB_COLORS_RANGE:
+        if length < NB_COLORS_RANGE:
             return RANGE_COLORS_PHONING[length]
         else:
             return  RANGE_COLORS_PHONING[NB_COLORS_RANGE]
@@ -301,7 +301,11 @@ class ContactContact(models.Model):
     commentaire = models.CharField(verbose_name="commentaire", max_length=200, blank=True)
     date_contact = models.DateTimeField(verbose_name="Date", default=timezone.now)
     statut = models.CharField(verbose_name="Statut", max_length=2,
-                              choices=CHOIX_CONTACTS, default='0',)
+                              choices=CHOIX_CONTACTS, default='',)
+    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, verbose_name="Profil pcat", blank=True,
+                                 null=True)
 
     def __str__(self):
+        if self.profil:
+            return "[" + str(self.date_contact.strftime('%d/%m %H:%M')) + ", " + str(self.profil) +"] " + str(self.get_statut_display()) + " " + str(self.commentaire)
         return "[" + str(self.date_contact.strftime('%d/%m %H:%M')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)

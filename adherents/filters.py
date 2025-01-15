@@ -1,5 +1,5 @@
 from django import forms
-from .models import Adherent, Adhesion, Contact
+from .models import Adherent, Adhesion, Contact, ContactContact
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q, Count
@@ -75,6 +75,7 @@ class ContactCarteFilter(django_filters.FilterSet):
                                         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
                                                              'tabindex': 1, 'autofocus': '1'}))
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
+    mescontacts = django_filters.BooleanFilter(label="Mes contacts", method='get_mescontacts_filter', widget=forms.CheckboxInput(),)
     dejacontacte = django_filters.ChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter', )
     statut = django_filters.ChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter', )
 
@@ -121,8 +122,18 @@ class ContactCarteFilter(django_filters.FilterSet):
         else:
             return queryset
 
+    def get_mescontacts_filter(self, queryset, field_name, value):
+        if value:
+            contacts = ContactContact.objects.filter(profil=self.request.user)
+            return queryset.filter(contactcontact__in=contacts)
+        else:
+            return queryset
 
     class Meta:
         model = Contact
         fields = {
                   }
+
+
+    def __init__(self, *args, **kwargs):
+        super(ContactCarteFilter, self).__init__(*args, **kwargs)

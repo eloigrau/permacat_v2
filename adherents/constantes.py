@@ -49,7 +49,7 @@ def get_slug_salon(nom="bureau"):
     return "test"
 
 
-CHOIX_CONTACTS = ("0", "Réponse OK"), ("1", "Pas de réponse"), ("2", "A répondu mais à rappeler"), ("3", "A répondu mais HOSTILE"), ("4", "Mauvais numéro"), ("5", "Je l'appellerai")
+CHOIX_CONTACTS = ("", "--------"), ("0", "Réponse OK"), ("1", "Pas de réponse"), ("2", "A répondu mais à rappeler"), ("3", "A répondu mais HOSTILE"), ("4", "Mauvais numéro"), ("5", "Je l'appellerai")
 
 red = Color("#ffffcc")
 NB_COLORS_RANGE = 5

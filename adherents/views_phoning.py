@@ -192,6 +192,7 @@ def contactContact_supprimer(request, contact_contact_pk):
     c.delete()
     return redirect('adherents:phoning_projet_courant')
 
+
 @login_required
 def contactContact_ajouter(request, contact_pk):
     p = get_object_or_404(Contact, pk=contact_pk)

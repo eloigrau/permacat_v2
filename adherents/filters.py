@@ -124,7 +124,7 @@ class ContactCarteFilter(django_filters.FilterSet):
 
     def get_mescontacts_filter(self, queryset, field_name, value):
         if value:
-            contacts = ContactContact.objects.filter(profil=self.request.user)
+            contacts = ContactContact.objects.filter(profil=self.user)
             return queryset.filter(contactcontact__in=contacts)
         else:
             return queryset
@@ -135,5 +135,6 @@ class ContactCarteFilter(django_filters.FilterSet):
                   }
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
+        self.user = request.user
         super(ContactCarteFilter, self).__init__(*args, **kwargs)

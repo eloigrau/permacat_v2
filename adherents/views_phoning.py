@@ -153,7 +153,7 @@ class Contact_liste(ListView, UserPassesTestMixin):
             qs = Contact.objects.filter(projet=self.projet, nom__istartswith=self.request.GET["lettre"]).order_by("nom","prenom","email","adresse__telephone")
         else:
             qs = Contact.objects.filter(projet=self.projet).order_by("nom","prenom","email","adresse__telephone")
-        profils_filtres = ContactCarteFilter(self.request.GET, queryset=qs)
+        profils_filtres = ContactCarteFilter(self.request, self.request.GET, queryset=qs)
         self.qs = profils_filtres.qs.distinct()
         return self.qs
 
@@ -163,7 +163,7 @@ class Contact_liste(ListView, UserPassesTestMixin):
         qs = self.qs
         context["projet"] = self.projet
         context['titre'] = "Phoning : %s (%d)" % (str(self.projet), len(qs))
-        filter = ContactCarteFilter(self.request.GET, qs)
+        filter = ContactCarteFilter(self.request, self.request.GET, qs)
         context["filter"] = filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
@@ -593,7 +593,7 @@ def import_adherents_ggl(request):
 def get_csv_contacts(request):
     """A view that streams a large CSV file."""
     profils = Contact.objects.filter(projet__pk=request.session["projet_courant_pk"]).order_by("nom","prenom","email")
-    profils_filtres = ContactCarteFilter(request.GET, queryset=profils)
+    profils_filtres = ContactCarteFilter(request, request.GET, queryset=profils)
     #current_year = date.today().isocalendar()[0]
 
     csv_data = [("nom","prenom","telephone","email","adresse_postale","code_postal","commune","adherent_nom","commentaire",),]

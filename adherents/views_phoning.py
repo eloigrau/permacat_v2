@@ -489,15 +489,28 @@ def phoning_contact_ajouter_csv_editNonVotants(request,):
         for i, line in enumerate(csv_reader):
             try:
                 if line["NOM_PATRONYMIQUE"]:
-                    for cont in Contact.objects.filter(nom=line["NOM_PATRONYMIQUE"], prenom=line["PRENOMS"].split(' ')[0]):
-                        if not "Votant" in cont.commentaire:
-                            cont.adresse.commune = line["LIBELLE_COMMUNE_RESIDENCE"]
-                            cont.adresse.code_postal = line["CODE_POSTAL_RESIDENCE"]
-                            cont.adresse.rue = line["ADRESSE1"] + " " + line["ADRESSE2"]
-                            cont.adresse.save(recalc=True)
-                            cont.commentaire = "Votant Vérifié "+ cont.commentaire if cont.commentaire else "Votant Vérifié"
-                            cont.save()
-                            msg += "modif" + str(cont)
+                    try:
+                        for cont in Contact.objects.filter(nom=line["NOM_PATRONYMIQUE"], prenom=line["PRENOMS"].split(' ')[0]):
+                            if not "Votant" in cont.commentaire:
+                                if cont.adresse:
+                                    cont.adresse.commune = line["LIBELLE_COMMUNE_RESIDENCE"]
+                                    cont.adresse.code_postal = line["CODE_POSTAL_RESIDENCE"]
+                                    cont.adresse.rue = line["ADRESSE1"] + " " + line["ADRESSE2"]
+                                    cont.adresse.save(recalc=True)
+                                cont.commentaire = "Votant Vérifié "+ cont.commentaire if cont.commentaire else "Votant Vérifié"
+                                cont.save()
+                                msg += "modif" + str(cont)
+                    except:
+                        for cont in Contact.objects.filter(nom=line["NOM_PATRONYMIQUE"], prenom=line["PRENOMS"]):
+                            if not "Votant" in cont.commentaire:
+                                if cont.adresse:
+                                    cont.adresse.commune = line["LIBELLE_COMMUNE_RESIDENCE"]
+                                    cont.adresse.code_postal = line["CODE_POSTAL_RESIDENCE"]
+                                    cont.adresse.rue = line["ADRESSE1"] + " " + line["ADRESSE2"]
+                                    cont.adresse.save(recalc=True)
+                                cont.commentaire = "Votant Vérifié "+ cont.commentaire if cont.commentaire else "Votant Vérifié"
+                                cont.save()
+                                msg += "modif2" + str(cont)
 
             except Exception as e:
                 msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
@@ -646,12 +659,13 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
 def nettoyer_noms(request):
     m = ""
     for p in Contact.objects.filter(projet__asso__abreviation="conf66"):
-        try:
-            p.nom = p.nom.replace("é","e").replace("è","e").replace("É","E").replace("È","E").upper()
-            p.prenom = p.prenom.replace("é","e").replace("è","e").replace("É","E").replace("È","E").upper()
-            p.save()
-        except Exception as e:
-            m+= "erreur : "+str(e)
+        if p.nom:
+            try:
+                p.nom = p.nom.replace("é","e").replace("è","e").replace("É","E").replace("È","E").upper()
+                p.prenom = p.prenom.replace("é","e").replace("è","e").replace("É","E").replace("È","E").upper()
+                p.save()
+            except Exception as e:
+                m+= "erreur : "+str(e)
 
     return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
 

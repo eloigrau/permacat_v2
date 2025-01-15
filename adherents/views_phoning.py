@@ -199,6 +199,7 @@ def contactContact_ajouter(request, contact_pk):
     if form.is_valid():
         contact = form.save(commit=False)
         contact.contact = p
+        contact.commentaire = "(" + str(request.user.username) + ") " + contact.commentaire if contact.commentaire else "(" + str(request.user.username) + ") "
         form.save(commit=True)
         return redirect('adherents:phoning_projet_courant')
 

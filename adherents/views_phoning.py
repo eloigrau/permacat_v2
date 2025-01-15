@@ -445,6 +445,36 @@ def phoning_contact_ajouter_csv(request,):
 
     return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
 
+
+@login_required
+def phoning_contact_ajouter_csv_viti(request,):
+    #if not request.user.has_perm('add_contact'):
+    #    return HttpResponseForbidden()
+    form = csvText_form(request.POST or None)
+    if form.is_valid():
+        texte_csv = form.cleaned_data['texte_csv']
+        m = "import texte_csv : "
+        csv_reader = csv.DictReader(StringIO(texte_csv))
+        if not "telephone" in csv_reader.fieldnames:
+            m += "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+            return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
+
+        for i, line in enumerate(csv_reader):
+            try:
+                if line["telephone"] :
+                    contacts = Contact.objects.filter(adresse__telephone__iexact=line["telephone"].replace('/', '').replace('.', '').replace(' ','').strip())
+                    if len(contacts) >1:
+                        m += "doublon: " + str(line)
+                    elif len(contacts) == 1:
+                        contacts[0].commentaire = contacts[0].commentaire  + " - Viti CP" if contacts[0].commentaire else "Viti CP"
+                        contacts[0].save()
+
+            except Exception as e:
+                m += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
+        return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
+
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+
 @login_required
 def phoning_contact_ajouter_csv_inversernomprenom(request,):
     #if not request.user.has_perm('add_contact'):

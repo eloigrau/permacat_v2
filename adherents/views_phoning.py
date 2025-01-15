@@ -466,8 +466,12 @@ def phoning_contact_ajouter_csv_viti(request,):
                     if len(contacts) >1:
                         m += "doublon: " + str(line)
                     elif len(contacts) == 1:
-                        contacts[0].commentaire = contacts[0].commentaire  + " - Viti CP" if contacts[0].commentaire else "Viti CP"
-                        contacts[0].save()
+                        if not contacts[0].commentaire or not "Viti CP" in contacts[0].commentaire
+                            contacts[0].commentaire = contacts[0].commentaire  + " - Viti CP" if contacts[0].commentaire else "Viti CP"
+                            contacts[0].save()
+                        m += " ajout Viti" + str(i)
+                    else:
+                        m += "pas ajout Viti" + str(i) + " "+ strline["telephone"])
 
             except Exception as e:
                 m += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)

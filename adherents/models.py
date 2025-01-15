@@ -280,7 +280,7 @@ class Contact(models.Model):
     def get_contacts_html(self):
         html = ""
         for c in self.get_contacts():
-            html += "<li>" +str(c) + "</li> "
+            html += "<ol>" +str(c) + "</ol> "
         return html
 
 

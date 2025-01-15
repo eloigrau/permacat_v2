@@ -471,7 +471,10 @@ def phoning_contact_ajouter_csv_viti(request,):
                             contacts[0].save()
                         m += " ajout Viti" + str(i)
                     else:
-                        m += "pas ajout Viti" + str(i) + " "+ strline["telephone"])
+                        m += "pas ajout Viti" + str(i) + " "+ str(line["telephone"])
+                else:
+                    m += "pas tel Viti" + str(i) + " "+ str(line["telephone"])
+
 
             except Exception as e:
                 m += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)

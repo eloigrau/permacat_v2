@@ -490,6 +490,7 @@ def phoning_contact_ajouter_csv_editNonVotants(request,):
             try:
                 if line["NOM_PATRONYMIQUE"]:
                     for cont in Contact.objects.filter(nom=line["NOM_PATRONYMIQUE"], prenom=line["PRENOMS"].split(' ')[0]):
+                        if not "Votant" in cont.commentaire:
                             cont.adresse.commune = line["LIBELLE_COMMUNE_RESIDENCE"]
                             cont.adresse.code_postal = line["CODE_POSTAL_RESIDENCE"]
                             cont.adresse.rue = line["ADRESSE1"] + " " + line["ADRESSE2"]

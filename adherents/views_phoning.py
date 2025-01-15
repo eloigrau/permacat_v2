@@ -472,6 +472,7 @@ def phoning_contact_ajouter_csv_viti(request,):
                         m += " ajout Viti" + str(i)
                     else:
                         m += "pas ajout Viti" + str(i) + " "+ str(line["telephone"])
+
                 else:
                     m += "pas tel Viti" + str(i) + " "+ str(line["telephone"])
 

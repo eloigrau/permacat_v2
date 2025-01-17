@@ -33,7 +33,7 @@
         </thead>
         <tbody>
         {% for contact in contacts %}
-        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;">
+        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}">
             <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' contact.adherent.pk %}">
                     {{ contact.nom }}  {{ contact.prenom }} </a>
                 {% else %}
@@ -62,7 +62,7 @@
             </td>
              <td style="width:100%;"><ol>
                  {{ contact.get_contacts_html|safe }}
-             <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'" ><i class="fa fa-plus"></i> </a>
+             <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
                  </ol>
              </td>
             <td>{{ contact.email }}</td>

@@ -272,10 +272,17 @@ def htmlClean(html):
 @register.filter(is_safe=True)
 def phonenumber(value):
     try:
-        if value.startswith("+33"):
-            phone = '%s %s %s %s %s' %(value[0:4],value[4:6],value[6:8],value[8:10],value[10:])
+        if len(value)<14:
+            if value.startswith("+33"):
+                phone = '%s %s %s %s %s' %(value[0:4],value[4:6],value[6:8],value[8:10],value[10:])
+            else:
+                phone = '%s %s %s %s %s' %(value[0:2],value[2:4],value[4:6],value[6:8],value[8:])
         else:
-            phone = '%s %s %s %s %s' %(value[0:2],value[2:4],value[4:6],value[6:8],value[8:])
+            phone = value
     except:
         return value
     return phone
+
+@register.filter(is_safe=True)
+def escapeETUrl(url):
+    return url.replace('&', "%26")

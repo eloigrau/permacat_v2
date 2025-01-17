@@ -274,7 +274,7 @@ class Contact(models.Model):
         if length < NB_COLORS_RANGE:
             return RANGE_COLORS_PHONING[length]
         else:
-            return  RANGE_COLORS_PHONING[NB_COLORS_RANGE]
+            return  RANGE_COLORS_PHONING[-1]
 
     @property
     def get_contacts_html(self):

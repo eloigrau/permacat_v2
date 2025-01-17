@@ -26,7 +26,7 @@
         </thead>
         <tbody>
         {% for contact in contacts %}
-        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" >
+        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}" >
             <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' contact.adherent.pk %}">
                     {{ contact.nom }}  {{ contact.prenom }} -
                     {% if contact.adherent.statut == "1" %} (ATP)
@@ -52,7 +52,7 @@
                  {%if contact.get_contacts_html %}
                      <ul>
                      {{ contact.get_contacts_html|safe }}
-                        <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>
+                        <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
                      </ul>
                  {% else %}
                  <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}" ><i class="fa fa-plus"></i> </a>

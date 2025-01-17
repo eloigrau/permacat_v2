@@ -204,8 +204,6 @@ def contactContact_ajouter(request, contact_pk):
         form.save(commit=True)
         if 'next' in request.GET:
             return HttpResponseRedirect(request.GET['next'].replace("%26",'&').replace("'",''))
-        elif 'HTTP_REFERER' in request.META:
-            return redirect(request.META['HTTP_REFERER'])
         else:
             return redirect('adherents:phoning_projet_courant')
 

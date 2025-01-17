@@ -202,8 +202,13 @@ def contactContact_ajouter(request, contact_pk):
         contact.profil = request.user
         #contact.commentaire = "(" + str(request.user.username) + ") " + contact.commentaire if contact.commentaire else "(" + str(request.user.username) + ") "
         form.save(commit=True)
-        return HttpResponseRedirect(request.GET['next'].replace("%26",'&').replace("'",''))
-        #return redirect(request.META['HTTP_REFERER'])
+        if 'next' in request.GET:
+            return HttpResponseRedirect(request.GET['next'].replace("%26",'&').replace("'",''))
+        elif 'HTTP_REFERER' in request.META:
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            return redirect('adherents:phoning_projet_courant')
+
 
     return render(request, 'adherents/contact_contact_ajouter.html', {"form": form, "contact":p})
 

@@ -153,8 +153,8 @@ class Contact_liste(ListView, UserPassesTestMixin):
             qs = Contact.objects.filter(projet=self.projet, nom__istartswith=self.request.GET["lettre"]).order_by("nom","prenom","email","adresse__telephone")
         else:
             qs = Contact.objects.filter(projet=self.projet).order_by("nom","prenom","email","adresse__telephone")
-        profils_filtres = ContactCarteFilter(self.request, self.request.GET, queryset=qs)
-        self.qs = profils_filtres.qs.distinct()
+        self.filter = ContactCarteFilter(self.request, self.request.GET, queryset=qs)
+        self.qs = self.filter.qs.distinct()
         return self.qs
 
     def get_context_data(self, **kwargs):
@@ -163,8 +163,8 @@ class Contact_liste(ListView, UserPassesTestMixin):
         qs = self.qs
         context["projet"] = self.projet
         context['titre'] = "Phoning : %s (%d)" % (str(self.projet), len(qs))
-        filter = ContactCarteFilter(self.request, self.request.GET, qs)
-        context["filter"] = filter
+        #filter = ContactCarteFilter(self.request, self.request.GET, qs)
+        context["filter"] = self.filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
         return context

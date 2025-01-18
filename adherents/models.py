@@ -256,7 +256,7 @@ class Contact(models.Model):
         return reverse('adherents:phoning_contact_contact_ajout', kwargs={'contact_pk': self.pk})
 
     def get_contacts(self):
-        return self.contactcontact_set.all()
+        return self.contactcontact_set.all().order_by('-date_contact')
 
     @property
     def get_contacts_nb(self):
@@ -307,5 +307,5 @@ class ContactContact(models.Model):
 
     def __str__(self):
         if self.profil:
-            return "[" + str(self.date_contact.strftime('%d/%m %Hh')) + ", " + str(self.profil) +"] " + str(self.get_statut_display()) + " " + str(self.commentaire)
-        return "[" + str(self.date_contact.strftime('%d/%m %Hh')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)
+            return "[" + str(self.date_contact.strftime('%d/%m')) + ", " + str(self.profil) +"] " + str(self.get_statut_display()) + " " + str(self.commentaire)
+        return "[" + str(self.date_contact.strftime('%d/%m')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)

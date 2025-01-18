@@ -7,7 +7,7 @@
  {% block panel-heading %}{%endblock%}
 {% block submenu %}
 <div class="sticky-top">
-    <nav class="navbar navbar-light bs-dark navbar-expand-xl  shadow-petit">
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl shadow-petit" >
         <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
          </button>
@@ -15,11 +15,11 @@
     <ul class="navbar-nav mx-auto subnavbar align-items-center">
         {% if request.session.projet_phoning_nom %}
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">{{ request.session.projet_phoning_nom }}</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' %}?istel=true&isatp=true"> Liste Simple</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' %}"> Liste Complète</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' %}?{{ request.GET.urlencode }}%26istel=true%26isatp=true"> Liste Simple</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' %}?{{ request.GET.urlencode }}"> Liste Complète</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' %}"> Outils</a></li>
          {% else %}
-        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">Choisir un projets</a></li>
+        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">Choisir un projet</a></li>
 		 {% endif %}
 
         {% if request.user.is_superuser %}

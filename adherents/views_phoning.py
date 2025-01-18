@@ -147,7 +147,7 @@ class Contact_liste(ListView, UserPassesTestMixin):
             if 'projet_courant_pk' in self.request.session:
                 self.projet = get_object_or_404(ProjetPhoning, pk= self.request.session["projet_courant_pk"])
             else:
-                return redirect('phoning_projet_liste')
+                return redirect('phoning_projet_liste', )
 
         if "lettre" in self.request.GET:
             qs = Contact.objects.filter(projet=self.projet, nom__istartswith=self.request.GET["lettre"]).order_by("nom","prenom","email","adresse__telephone")
@@ -177,6 +177,7 @@ class Contact_liste(ListView, UserPassesTestMixin):
 
 @login_required
 def phoning_projet_courant(request):
+    request.session['GET'] = request.GET
     if 'projet_courant_pk' in request.session:
         return redirect('adherents:phoning_projet_simple', projet_pk=request.session['projet_courant_pk'])
     else:

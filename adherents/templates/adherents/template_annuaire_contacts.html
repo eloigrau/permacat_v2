@@ -60,7 +60,7 @@
 
                 {% else %}-{% endif %}
             </td>
-             <td style="width:100%;"><ol>
+             <td style="width:25%;"><ol>
                  {{ contact.get_contacts_html|safe }}
              <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
                  </ol>

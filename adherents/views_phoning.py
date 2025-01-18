@@ -177,12 +177,10 @@ class Contact_liste(ListView, UserPassesTestMixin):
 
 @login_required
 def phoning_projet_courant(request):
-    request.session['GET'] = request.GET
     if 'projet_courant_pk' in request.session:
-        return redirect('adherents:phoning_projet_simple', projet_pk=request.session['projet_courant_pk'])
+        return redirect(f"{'adherents:phoning_projet_simple'}?{request.GET}", projet_pk=request.session['projet_courant_pk'])
     else:
-        return redirect('adherents:phoning_projet_liste',)
-
+        return redirect('adherents:phoning_projet_liste')
 
 @login_required
 def contactContact_supprimer(request, contact_contact_pk):

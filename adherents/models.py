@@ -307,5 +307,5 @@ class ContactContact(models.Model):
 
     def __str__(self):
         if self.profil:
-            return "[" + str(self.date_contact.strftime('%d/%m %H:%M')) + ", " + str(self.profil) +"] " + str(self.get_statut_display()) + " " + str(self.commentaire)
-        return "[" + str(self.date_contact.strftime('%d/%m %H:%M')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)
+            return "[" + str(self.date_contact.strftime('%d/%m %Hh')) + ", " + str(self.profil) +"] " + str(self.get_statut_display()) + " " + str(self.commentaire)
+        return "[" + str(self.date_contact.strftime('%d/%m %Hh')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)

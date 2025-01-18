@@ -447,7 +447,7 @@
                                     {% if request.user.adherent_conf66 %}
                                     <li class="metanavbar"> Espace Adhérents :</li>
 
-                                            <li class="dropdown-item"><a class="dropdown-item" href="{% url 'adherents:phoning_projet_courant' %}">
+                                            <li class="dropdown-item"><a class="dropdown-item" href="{% url 'adherents:phoning_projet_simple' projet_pk=2 %}">
                                                 Phoning</a></li>
                                             <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
                                                     class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>

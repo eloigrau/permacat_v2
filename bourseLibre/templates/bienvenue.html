@@ -62,9 +62,10 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 				{% if request.user.adherent_conf66 %}
 					<hr>
 					<div class="row" >
-					  <div class="col-sm-12 textcenter" style ="color:#0f7407;">
-                <a class="dropdown-item" href="{% url 'adherents:phoning_projet_courant' %}">
-                    Phoning Conf'</a></div>
+					  <div class="col-sm-12 textcenter" ">
+                <b><a class="dropdown-item" href="{% url 'adherents:phoning_projet_simple' projet_pk=2 %}">
+                    => Phoning Conf'</a></b>
+					</div>
 					</div>
 				{%endif%}
 

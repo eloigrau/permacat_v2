@@ -24,7 +24,6 @@
                 <th>ATP</th>
                 <th>Telephone______</th>
                 <th>Contacts</th>
-                <th>Email</th>
                 <th>Code postal</th>
                 <th>Commune</th>
                 <th>Commentaire</th>
@@ -65,7 +64,6 @@
              <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
                  </ol>
              </td>
-            <td>{{ contact.email }}</td>
            <td>{%if contact.adresse.code_postal %}{{ contact.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if contact.adresse.commune %}{{ contact.adresse.commune }} {% else %}-{% endif %}</td>
             <td>{% if contact.commentaire %}{{ contact.commentaire }}{% else %}-{% endif %}</td>

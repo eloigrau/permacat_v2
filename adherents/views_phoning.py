@@ -220,41 +220,42 @@ def contact_ajouter_accueil(request):
 def nettoyer_telephones(request):
     m = ""
     for p in Contact.objects.all():
-        if p.adresse.rue:
-            try:
-                ad = re.split("\d{5}", p.adresse.rue)
-                if len(ad)>1:
-                    code = re.findall("\d{5}", p.adresse.rue)[0]
-                    p.adresse.rue = ad[0]
-                    p.adresse.code_postal=code
-                    p.adresse.commune = ad[1]
-                    m+= "<p>MAJ " + str(p.adresse) + "</p>"
-            except:
-                m+= "<p>pb " + p.adresse.rue + "</p>"
-        if p.adresse.telephone:
-            if p.adresse.telephone.startswith("6"):
-                p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
-                m += "<p>ajustement06 tel : " + str(p.adresse.telephone) + "</p>"
-            elif p.adresse.telephone.startswith("7"):
-                p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
-                m += "<p>ajustement07 tel : " + str(p.adresse.telephone) + "</p>"
+        if p.adresse:
+            if p.adresse.rue:
+                try:
+                    ad = re.split("\d{5}", p.adresse.rue)
+                    if len(ad)>1:
+                        code = re.findall("\d{5}", p.adresse.rue)[0]
+                        p.adresse.rue = ad[0]
+                        p.adresse.code_postal=code
+                        p.adresse.commune = ad[1]
+                        m+= "<p>MAJ " + str(p.adresse) + "</p>"
+                except:
+                    m+= "<p>pb " + p.adresse.rue + "</p>"
+            if p.adresse.telephone:
+                if p.adresse.telephone.startswith("6"):
+                    p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
+                    m += "<p>ajustement06 tel : " + str(p.adresse.telephone) + "</p>"
+                elif p.adresse.telephone.startswith("7"):
+                    p.adresse.telephone = "0" + str(p.adresse.telephone.strip())
+                    m += "<p>ajustement07 tel : " + str(p.adresse.telephone) + "</p>"
 
-            elif p.adresse.telephone.startswith("33"):
-                p.adresse.telephone = "+" + str(p.adresse.telephone.strip())
-                m += "<p>ajustement33 tel : " + str(p.adresse.telephone) + "</p>"
+                elif p.adresse.telephone.startswith("33"):
+                    p.adresse.telephone = "+" + str(p.adresse.telephone.strip())
+                    m += "<p>ajustement33 tel : " + str(p.adresse.telephone) + "</p>"
 
-            if len(p.adresse.telephone) < 4:
-                p.commentaire = p.commentaire if p.commentaire else ""
-                p.commentaire +=  " " + str(p.adresse.telephone.strip())
-                p.adresse.telephone = ""
-                m += "<p>petit tel : " + str(p.adresse.telephone.strip()) + "</p>"
+                if len(p.adresse.telephone) < 4:
+                    p.commentaire = p.commentaire if p.commentaire else ""
+                    p.commentaire +=  " " + str(p.adresse.telephone.strip())
+                    p.adresse.telephone = ""
+                    m += "<p>petit tel : " + str(p.adresse.telephone.strip()) + "</p>"
 
-            p.adresse.telephone=p.adresse.telephone.replace('/','').replace('.','').replace(' ','').strip()
-            p.adresse.save()
-            p.save(update_fields=['adresse'])
+                p.adresse.telephone=p.adresse.telephone.replace('/','').replace('.','').replace(' ','').strip()
+                p.adresse.save()
+                p.save(update_fields=['adresse'])
 
-            if Contact.objects.filter(adresse__telephone=p.adresse.telephone):
-                m += "<p>DOUBLE tel : " + str(p) + "</p>"
+                if Contact.objects.filter(adresse__telephone=p.adresse.telephone):
+                    m += "<p>DOUBLE tel : " + str(p) + "</p>"
 
 
     return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})

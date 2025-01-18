@@ -446,6 +446,9 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_conf66 %}
                                     <li class="metanavbar"> Espace Adhérents :</li>
+
+                                            <li class="dropdown-item"><a class="dropdown-item" href="{% url 'adherents:phoning_projet_courant' %}">
+                                                Phoning</a></li>
                                             <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
                                                     class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
                                             <li><a class="dropdown-item"

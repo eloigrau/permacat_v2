@@ -22,7 +22,7 @@
     </div>
 </div>
 <div class="row textcenter justify-content-center">
-    <div class="col-sm-12 col-md-10 col-lg-8 textcenter offset-md-1 offset-lg-2 ">
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
        {% if projet.description %}
         <p>{{projet.description|safe}}</p>
        {% endif %}
@@ -179,10 +179,10 @@ function get_infocontact(url_tag) {
             console.log(error_msg);
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#infoContacts").html(data);  // replace the contents of the city input with the data that came from the server
+          $("#info_contacts").html(data);  // replace the contents of the city input with the data that came from the server
         }
     });
-});
+}
 </script>
 
 {% endblock %}

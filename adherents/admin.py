@@ -12,8 +12,13 @@ class Adhesion_Admin(admin.ModelAdmin):
     list_display = ('adherent', 'date_cotisation', 'montant')
     search_fields = ('adherent', )
 
+@admin.register(ContactContact)
+class ContactContact_Admin(admin.ModelAdmin):
+    list_display = ('profil', 'date_contact',  'contact', 'statut', 'commentaire')
+    search_fields = ('profil', 'statut', 'contact', )
+
+
 admin.site.register(InscriptionMail)
 admin.site.register(ListeDiffusion)
 admin.site.register(Contact)
-admin.site.register(ContactContact)
 admin.site.register(ProjetPhoning)

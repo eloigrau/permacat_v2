@@ -102,4 +102,6 @@ urlpatterns = [
     path(r'phoning/projet/ajouter', login_required(views_phoning.ProjetPhoning_ajouter.as_view()), name="phoning_projet_ajouter"),
     path(r'phoning/projet/<int:pk>/modifier', login_required(views_phoning.ProjetPhoning_modifier.as_view()), name="phoning_projet_modifier"),
     path(r'phoning/projet/<int:pk>/supprimer', login_required(views_phoning.ProjetPhoning_supprimer.as_view()), name="phoning_projet_supprimer"),
+
+    path(r'phoning/projet/<int:pk>/ajax_infocontact', views_phoning.ajax_infocontact, name="phoning_ajax_infocontact"),
 ]

@@ -302,7 +302,7 @@ class ContactContact(models.Model):
     date_contact = models.DateTimeField(verbose_name="Date", default=timezone.now)
     statut = models.CharField(verbose_name="Statut", max_length=2,
                               choices=CHOIX_CONTACTS, default='',)
-    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, verbose_name="Profil pcat", blank=True,
+    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, verbose_name="Auteur", blank=True,
                                  null=True)
 
     def __str__(self):

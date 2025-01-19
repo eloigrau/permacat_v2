@@ -713,3 +713,25 @@ def nettoyer_noms(request):
 
     return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
 
+
+
+@login_required
+def ajax_infocontact(request, pk):
+
+    projet = get_object_or_404(ProjetPhoning, pk=pk)
+    contacts = Contact.objects.filter(projet=projet)
+    contact_contacts = ContactContact.objects.filter(contact__in=contacts)
+    nb_total = contacts.count()
+    nb_contacts_total = contact_contacts.count()
+    nb_contactes = contacts.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0).count()
+    nb_contactes_ok = contacts.filter(contactcontact__statut="0").annotate(num_b=Count('contactcontact')).filter(num_b__gt=0).count()
+    nb_contactes_pasok  = contacts.filter(Q(contactcontact__statut="0") | Q(contactcontact__statut="1")| Q(contactcontact__statut="2")| Q(contactcontact__statut="3")| Q(contactcontact__statut="4")).annotate(num_b=Count('contactcontact')).filter(num_b__gt=0).count()
+    return render(request, 'adherents/ajax/nb_contacts.html',
+                  {
+                      'nb_total':nb_total,
+                      'nb_contacts_total':nb_contacts_total,
+                      'nb_contactes':nb_contactes,
+                      'nb_contactes_ok':nb_contactes_ok,
+                      'nb_contactes_pasok':nb_contactes_pasok
+                  })
+

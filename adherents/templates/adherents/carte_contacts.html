@@ -19,13 +19,22 @@
 {% block subtitle %}
 <div class="row textcenter justify-content-center">
     <div class="col-sm-12 textcenter">
-        <h4> {{titre}}</h4>
+        <h4> {{titre}} </h4>
+        <a class="btn btn-sm btn-warning textleft" href="{{projet.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+
+        <a onclick="get_infocontact()">
+            <button type="button" class="btn btn-sm btn-primary">
+                 <i class="fa fa-info"></i>
+            </button>
+        </a>
+        <div id="info_contacts"></div>
     </div>
-    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
-    {% if projet.description %}
-        <p> {{projet.description|safe}}</p>
-   {% endif %}
-     <a class="btn btn-sm btn-warning textleft" href="{{projet.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+</div>
+<div class="row textcenter justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter offset-md-1 offset-lg-2 ">
+       {% if projet.description %}
+        <p>{{projet.description|safe}}</p>
+       {% endif %}
     </div>
 </div>
 
@@ -299,8 +308,7 @@
           btn.textContent = "Cacher la carte";
       }
    }
-</script>
-<script>
+
 function get_infos(url_tag) {
     $.ajax({
         url: url_tag,
@@ -317,6 +325,24 @@ function get_infos(url_tag) {
         }
     });
 }
+
+
+function get_infocontact(url_tag) {
+    $.ajax({
+        url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk %}",
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#info_contacts").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+
 
 </script>
 

@@ -78,7 +78,7 @@ else:
     #SECURE_BROWSER_XSS_FILTER = True
     #SECURE_SSL_REDIRECT = True
     #SESSION_COOKIE_SECURE = True
-    #CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
     #X_FRAME_OPTIONS = 'SAMEORIGIN'
     SESSION_EXPIRE_AT_BROWSER_CLOSE = False
     SESSION_COOKIE_PATH = '/;HttpOnly'
@@ -497,7 +497,7 @@ BOWER_INSTALLED_APPS = (
 #    "bourseLibre.views_notifications.EnvoiMailsCronJob"
 #]
 CRONJOBS = [
-    #('0 6 * * 1', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
+    ('0 6 * * 1', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
 ]
 
 GRAPH_MODELS = {

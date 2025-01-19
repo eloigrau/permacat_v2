@@ -15,7 +15,7 @@
     <ul class="navbar-nav mx-auto subnavbar align-items-center">
         {% if request.session.projet_phoning_nom %}
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' %}">{{ request.session.projet_phoning_nom }}</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' %}?{{ request.GET.urlencode }}%26istel=true%26isatp=true"> Liste Simple</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' %}?{{ request.GET.urlencode }}&istel=true&isatp=true"> Liste Simple</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' %}?{{ request.GET.urlencode }}"> Liste Complète</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' %}"> Outils</a></li>
          {% else %}

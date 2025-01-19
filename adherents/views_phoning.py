@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.http import HttpResponseForbidden
 import csv
 from django.db.models import BooleanField, ExpressionWrapper, Q
-
+from urllib import parse
 from blog.models import Projet
 from .forms import (Contact_form, Contact_update_form, ContactContact_form,
                     ListeTel_form, csvFile_form, csvText_form, ProjetPhoning_form)
@@ -178,7 +178,12 @@ class Contact_liste(ListView, UserPassesTestMixin):
 @login_required
 def phoning_projet_courant(request):
     if 'projet_courant_pk' in request.session:
-        return redirect(f"{'adherents:phoning_projet_simple'}?{request.GET}", projet_pk=request.session['projet_courant_pk'])
+        #return redirect('adherents:phoning_projet_simple', projet_pk=request.session['projet_courant_pk'])
+        reversed = reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':request.session['projet_courant_pk']})  # create a base url
+
+        if request.GET:  # append the remaining parameters
+            reversed += '?' + parse.urlencode(request.GET)
+        return HttpResponseRedirect(reversed)
     else:
         return redirect('adherents:phoning_projet_liste')
 

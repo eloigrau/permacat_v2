@@ -109,7 +109,8 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return True
+        return self.request.user.estmembre_bureau_conf
+        #return True
         #return self.request.user.has_perm(self.object.asso.abreviation + '_delete_contact')
 
     def get_success_url(self):
@@ -121,7 +122,9 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
 @login_required
 def contact_supprimer(request, contact_pk):
     #if not request.user.has_perm(request.session["asso_courante"].abreviation + '_delete_contact'):
-    #    return HttpResponseForbidden()
+
+    if request.user.estmembre_bureau_conf:
+        return HttpResponseForbidden()
     contact = get_object_or_404(Contact, pk=contact_pk)
     contact.adresse.delete()
     contact.delete()
@@ -134,7 +137,7 @@ class Contact_liste(ListView, UserPassesTestMixin):
     template_name_complet = "adherents/carte_contacts.html"
 
     def test_func(self):
-        return True
+        return self.request.user.estmembre_bureau_conf
         #return self.request.user.has_perm(self.object.asso.abreviation + '_liste_contact')
 
     def get_queryset(self):
@@ -681,7 +684,8 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
     template_name = "adherents/projetphoning_list.html"
 
     def test_func(self):
-        return True
+        return self.request.user.estmembre_bureau_conf
+        #return True
         #return self.request.user.has_perm(self.object.asso.abreviation + '_liste_projetphoning')
 
     def get_queryset(self):

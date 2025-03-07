@@ -5,6 +5,7 @@ import django_filters
 from django.db.models import Q, Count
 from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
 from datetime import date
+from bourseLibre.settings import LOCALL
 
 annees = [(str(an), str(an)) for an in range(2020, date.today().isocalendar()[0] + 1)] #('2020', '2020'), ('2021', '2021'), ('2022', '2022'), ('2023', '2023'), ('2023', '2023')
 
@@ -25,8 +26,10 @@ STATUT_CHOICES = (
 )
 
 def get_choix_Production():
-    return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
-
+    if not LOCALL:
+        return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
+    else:
+        return []
 
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ", required=False)

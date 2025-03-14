@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from blog.models import Article
 from dal import autocomplete
+#from captcha.fields import CaptchaField
 #from .constantes import Choix
 #from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
 
@@ -397,6 +398,7 @@ class ContactForm(forms.Form):
     renvoi = forms.BooleanField(label="recevoir une copie",
                                      help_text="Cochez si vous souhaitez obtenir une copie du mail envoyé.", required=False
                                  )
+    #captcha = CaptchaField()
 
 
 class ContactMailForm(forms.Form):

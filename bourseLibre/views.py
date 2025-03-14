@@ -670,7 +670,8 @@ def contact_admins(request):
                 description="a envoyé un message aux admin (%s)" %admin.username)
 
         try:
-            if not LOCALL:
+            envoiMailAdmin = False
+            if envoiMailAdmin and not LOCALL:
                 mail_admins(sujet, message_txt, html_message=message_html)
                 if form.cleaned_data['renvoi']:
                     if request.user.is_anonymous:

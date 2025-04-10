@@ -10,7 +10,7 @@ LOCALL = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
-DATABASES = {
+DATABASES_ = {
 
     'default': {
           'ENGINE': 'django.db.backends.sqlite3',

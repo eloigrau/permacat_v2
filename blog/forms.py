@@ -1,7 +1,7 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
 from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
-    DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle, TodoArticle
+    DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -623,3 +623,30 @@ class ReunionArticleForm(forms.ModelForm):
 class AssocierReunionArticleForm(forms.Form):
     reunion = forms.ModelChoiceField(queryset=Reunion.objects.order_by('-start_time'), required=True,
                               label="Réunion à associer à l'article", )
+
+class ArticleLiensForm(forms.ModelForm):
+
+    class Meta:
+        model = ArticleLiens
+        fields = ['article_lie', 'type_lien']
+
+    def save(self, auteur, article):
+        instance = super(ArticleLiensForm, self).save(commit=False)
+        instance.article = article
+        instance.auteur = auteur
+        instance.save()
+        return instance
+
+class ArticleLienProjetForm(forms.ModelForm):
+
+    class Meta:
+        model = ArticleLienProjet
+        fields = ['projet_lie', 'type_lien']
+
+
+    def save(self, auteur, article):
+        instance = super(ArticleLienProjetForm, self).save(commit=False)
+        instance.article = article
+        instance.auteur = auteur
+        instance.save()
+        return instance

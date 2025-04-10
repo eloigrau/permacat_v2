@@ -138,6 +138,18 @@ class Choix:
 
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
 
+    LIENS_ARTICLES = (
+        ("0", "sous-article"),
+        ("1", "article connexe"),
+        ("2", "Autre"),
+    )
+
+    LIENS_PROJET = (
+        ("0", "info projet"),
+        ("1", "info connexe"),
+        ("3", "Autre"),
+    )
+
     def get_couleur(categorie):
         try:
             return Choix.couleurs_annonces[categorie]
@@ -877,16 +889,27 @@ class TodoArticle(models.Model):
         return self.article.get_absolute_url()
 
 
-class ArticleJointure(models.Model):
-    titre = models.CharField(max_length=150)
-    slug = models.SlugField(max_length=100)
-    description = models.CharField(max_length=500, blank=True, null=True)
+class ArticleLiens(models.Model):
     date_creation = models.DateTimeField('Créé le', auto_now_add=True)
-    article_1 = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article lié")
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article lié")
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article de base")
+    article_lie = models.ForeignKey(Article, on_delete=models.SET_NULL, blank=True, null=True, related_name="article_lie")
+    type_lien = models.CharField(choices=Choix.LIENS_ARTICLES, default="0", max_length=2)
 
     def __str__(self):
-        return self.titre
+        return str(self.article) + " " + str(self.type_lien) + " " + str(self.article_lie)
+
+    def get_absolute_url(self):
+        return self.article.get_absolute_url()
+
+
+class ArticleLienProjet(models.Model):
+    date_creation = models.DateTimeField('Créé le', auto_now_add=True)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article de base")
+    projet_lie = models.ForeignKey(Projet, on_delete=models.SET_NULL, blank=True, null=True, related_name="projet_lie")
+    type_lien = models.CharField(choices=Choix.LIENS_PROJET, default="0", max_length=2)
+
+    def __str__(self):
+        return str(self.article) + " " + str(self.type_lien) + " " + str(self.article_lie)
 
     def get_absolute_url(self):
         return self.article.get_absolute_url()

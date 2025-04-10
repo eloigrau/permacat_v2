@@ -4,12 +4,12 @@ from django.http import HttpResponseForbidden
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
-    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle
+    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
-    AdresseArticleChangeForm
+    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -1421,3 +1421,37 @@ def ajax_dernierscommentaires(request):
     return render(request, 'blog/template_commentaires_tableau.html', {'comm_list': derniers_comm})
 
 
+
+@login_required
+def ajouterArticleLiens(request, slug_article):
+    article = Article.objects.get(slug=slug_article)
+    form = ArticleLiensForm(request.POST or None)
+
+    if form.is_valid():
+        form.save(auteur, article,)
+        action.send(request.user,
+                    action_object=article,
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.abreviation,
+                    description="a ajouté un todo à l'article '%s'"%article.titre)
+        return redirect(article)
+
+    return render(request, 'blog/ajouterTodoArticle.html', {'article':article, 'form': form})
+
+
+class SupprimerArticleLiens(DeleteView):
+    model = ArticleLiens
+    template_name_suffix = '_supprimer'
+
+    def get_success_url(self):
+        return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
+
+    def delete(self, request, *args, **kwargs):
+        # the Post object
+        self.object = self.get_object()
+        if self.object.article.estModifiable or self.object.auteur == request.user or request.user.is_superuser:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")

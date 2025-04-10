@@ -114,8 +114,9 @@ INSTALLED_APPS = [
     'vote',
     'widget_tweaks',
     'leaflet',
-    #'captcha',
-    'bourseLibre.captcha_local',
+    'local_captcha',
+    'django.forms',
+    'django_ledger',
     'local_summernote',
     'actstream',
     'taggit',
@@ -525,8 +526,9 @@ AVATAR_PROVIDERS = (
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
 HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
-#on met ça a la fin pour importer les settings de production sur le serveur
+#FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
+#on met ça a la fin pour importer les settings de production sur le serveur
 try:
     from .production import *
 except ImportError:

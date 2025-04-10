@@ -114,9 +114,12 @@ class DocListView(ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        qs = Document.objects.all().order_by("-date_creation")
         if "asso" in self.request.GET:
-            qs = qs.filter(asso__abreviation=self.request.GET["asso"])
+            self.request.session["asso_abreviation"] = self.request.GET["asso"]
+            self.request.session.modified = True
+            qs = Document.objects.filter(asso__abreviation=self.request.GET["asso"])
+        else:
+            qs = Document.objects.all().order_by("-date_creation")
 
         for nomAsso in Choix_global.abreviationsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):
@@ -329,14 +332,12 @@ def ajouterDocument(request, article_slug=None):
 @login_required
 def associerDocumentArticle(request, doc_slug):
     doc = Document.objects.get(slug=doc_slug)
-    if request.method == 'POST':
-        form = DocumentAssocierArticleForm(request.POST)
-        if form.is_valid():
-            doc.article = form.cleaned_data["article"]
-            doc.save()
-            return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
-    else:
-        form = DocumentAssocierArticleForm()
+    asso_courante = request.session.get("asso_courante", None)
+    form = DocumentAssocierArticleForm(asso_courante, request.POST)
+    if form.is_valid():
+        doc.article = form.cleaned_data["article"]
+        doc.save()
+        return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
 
     return render(request, 'photologue/document_associerArticle.html', { "form": form, 'doc':doc})
 
@@ -345,11 +346,11 @@ def associerDocumentArticle(request, doc_slug):
 def filtrer_documents(request):
     if request.GET:
         doc_list = Document.objects.all()
+        for nomAsso in Choix_global.abreviationsAsso:
+            if not getattr(request.user, "adherent_" + nomAsso):
+                doc_list = doc_list.exclude(asso__abreviation=nomAsso)
     else:
         doc_list = Document.objects.none()
-    for nomAsso in Choix_global.abreviationsAsso:
-        if not getattr(request.user, "adherent_" + nomAsso):
-            doc_list = doc_list.exclude(asso__abreviation=nomAsso)
     f = DocumentFilter(request.GET, queryset=doc_list)
     #f=doc_list
 

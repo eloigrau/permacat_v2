@@ -267,8 +267,17 @@ class PhotoChangeForm(forms.ModelForm):
 
 
 class DocumentAssocierArticleForm(forms.Form):
-    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False).order_by('titre'), required=True,
+    article = forms.ModelChoiceField(queryset=Article.objects.none(), required=True,
                               label="Document public ou réservé aux adhérents de l'asso :", )
+
+    def __init__(self, asso_courante=None, *args, **kwargs):
+        super(DocumentAssocierArticleForm, self).__init__(*args, **kwargs)
+        if asso_courante:
+            self.fields['article'].queryset = Article.objects.filter(estArchive=False, asso__abreviation=asso_courante).order_by('titre')
+        else:
+            self.fields['article'].queryset = Article.objects.filter(estArchive=False, ).order_by('titre')
+
+
 
 class DocumentForm(forms.ModelForm):
     doc = forms.FileField(

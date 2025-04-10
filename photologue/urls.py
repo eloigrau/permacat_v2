@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 from django.views.generic import RedirectView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+
 from . import views
 
 

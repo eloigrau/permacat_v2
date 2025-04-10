@@ -717,7 +717,7 @@ def produitContacterProducteur(request, produit_id):
     receveur = prod.user
     form = ContactForm(request.POST or None)
     if form.is_valid():
-        sujet =  "[Permacat] " + request.user.username + "(" + request.user.email+ ") vous contacte au sujet de: "  + form.cleaned_data['sujet']
+        sujet = "[Permacat] " + request.user.username + "(" + request.user.email+ ") vous contacte au sujet de: "  + form.cleaned_data['sujet']
         message = form.cleaned_data['message'] + '(par : ' + request.username + ')'
 
         send_mail( sujet, message, request.user.email, receveur.email, fail_silently=False,)

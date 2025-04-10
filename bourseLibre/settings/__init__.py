@@ -116,7 +116,7 @@ INSTALLED_APPS = [
     'leaflet',
     'local_captcha',
     'django.forms',
-    'django_ledger',
+    #'django_ledger',
     'local_summernote',
     'actstream',
     'taggit',
@@ -526,6 +526,9 @@ AVATAR_PROVIDERS = (
 HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
 HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
+
+#CAPTCHA_FONT_PATH =
+#CAPTCHA_IMAGE_SIZE = (50, 25)
 #FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
 #on met ça a la fin pour importer les settings de production sur le serveur
@@ -534,10 +537,3 @@ try:
 except ImportError:
     print("Impossible d'importer production.py")
     pass
-
-# export POSTGRES_HOST=postgres
-# export POSTGRES_PORT=5432
-# export POSTGRES_DB=marketing
-# export POSTGRES_USER=username
-# export POSTGRES_PASSWORD=password
-# export DATABASE_URL=postgres://username:password@localhost:5432/marketing

@@ -332,14 +332,14 @@ def ajouterDocument(request, article_slug=None):
 @login_required
 def associerDocumentArticle(request, doc_slug):
     doc = Document.objects.get(slug=doc_slug)
-    asso_courante = request.session.get("asso_courante", None)
+    asso_courante = request.session.get("asso_abreviation", None)
     form = DocumentAssocierArticleForm(asso_courante, request.POST)
     if form.is_valid():
         doc.article = form.cleaned_data["article"]
         doc.save()
         return HttpResponseRedirect(reverse_lazy("photologue:doc-list"))
 
-    return render(request, 'photologue/document_associerArticle.html', { "form": form, 'doc':doc})
+    return render(request, 'photologue/document_associerArticle.html', {"form": form, 'doc': doc})
 
 
 @login_required

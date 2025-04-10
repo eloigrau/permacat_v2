@@ -25,12 +25,16 @@ except ImportError:
 # Distance of the drawn text from the top of the captcha image
 DISTANCE_FROM_TOP = 4
 
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 def getsize(font, text):
     if hasattr(font, 'getoffset'):
         return tuple([x + y for x, y in zip(font.getsize(text), font.getoffset(text))])
     else:
-        return font.getsize(text)
+        size = font.getbbox(text)
+        size = (size[2] * 2, int(size[3] * 1.5))
+        return size
 
 
 def makeimg(size):
@@ -66,7 +70,6 @@ def captcha_image(request, key, scale=1):
         size = settings.CAPTCHA_IMAGE_SIZE
     else:
         size = getsize(font, text)
-        size = (size[0] * 2, int(size[1] * 1.4))
 
     image = makeimg(size)
     xpos = 2
@@ -152,7 +155,7 @@ def captcha_audio(request, key):
 
 def captcha_refresh(request):
     """  Return json with new captcha for ajax refresh request """
-    if not request.is_ajax():
+    if not is_ajax(request):
         raise Http404
 
     new_key = CaptchaStore.pick()

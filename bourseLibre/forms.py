@@ -444,7 +444,7 @@ class ContactMailForm(forms.Form):
                                 help_text="Cochez si vous souhaitez obtenir une copie du mail envoyé.", required=False
                                 )
 
-    #captcha = CaptchaField()
+    captcha = CaptchaField()
 
 class MessageForm(forms.ModelForm):
     class Meta:

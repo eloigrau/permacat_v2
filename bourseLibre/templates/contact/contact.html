@@ -6,11 +6,23 @@
 {% endblock %}
 {% block content %}
 
-    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
-        enctype="multipart/form-data">
-            {% include 'form_template.html'%}
-    </form>
+{% include 'form_template.html'%}
 
+{% if request.user.is_anonymous %}
+<p class="textcenter">
+    <button class='js-captcha-refresh btn btn-info btn-small'> Rafraichir le captcha</button>
+</p>
+{% endif %}
+
+<script>
+    $('.js-captcha-refresh').click(function () {
+    $.getJSON("/captcha/refresh/", function (result) {
+        $('.captcha').attr('src', result['image_url']);
+        $('#id_captcha_0').val(result['key'])
+    });
+});
+
+</script>
 {% endblock %}
 
     

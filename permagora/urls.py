@@ -29,7 +29,7 @@ app_name = 'permagora'
 urlpatterns = [
     path('gestion/', admin.site.urls),
     re_path(r'^summernote/', include('local_summernote.urls')),
-    re_path(r'^captcha/', include('bourseLibre.captcha_local.urls')),
+    re_path(r'^captcha/', include('local_captcha.urls')),
     re_path(r'^$', views.bienvenue, name='bienvenue'),
     re_path(r'^planSite/$', views.planSite, name='planSite'),
     re_path(r'^risques/$', views.risques, name='risques'),

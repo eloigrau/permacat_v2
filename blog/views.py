@@ -1428,7 +1428,7 @@ def ajouterArticleLiens(request, slug_article):
     form = ArticleLiensForm(request.POST or None)
 
     if form.is_valid():
-        form.save(auteur, article,)
+        form.save(request.user, article)
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),

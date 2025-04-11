@@ -1,6 +1,6 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
-from .models import Article, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
+from .models import Article, Article_recherche, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
     DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from django.utils.text import slugify
 import itertools
@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 import re
 from bourseLibre.utils import slugify_pcat
-#from dal import autocomplete
+from dal import autocomplete
 #from taggit.models import Tag
 
 class DateInput(forms.DateInput):
@@ -628,13 +628,15 @@ class ArticleLiensForm(forms.ModelForm):
 
     class Meta:
         model = ArticleLiens
-        fields = ['article_lie', 'type_lien']
+        fields = ['type_lien']
 
-    def save(self, auteur, article):
+    def save(self, auteur, article, article_lie):
         instance = super(ArticleLiensForm, self).save(commit=False)
-        instance.article = article
-        instance.auteur = auteur
-        instance.save()
+        if article != article_lie:
+            instance.article = article
+            instance.article_lie = article_lie
+            instance.auteur = auteur
+            instance.save()
         return instance
 
 class ArticleLienProjetForm(forms.ModelForm):
@@ -649,4 +651,18 @@ class ArticleLienProjetForm(forms.ModelForm):
         instance.article = article
         instance.auteur = auteur
         instance.save()
+        return instance
+
+
+class Article_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Article_recherche
+        fields = ("article", )
+        widgets = {
+            'article': autocomplete.ModelSelect2(url='blog:article-ac')
+        }
+
+    def save(self):
+        instance = super(Article_recherche, self).save()
         return instance

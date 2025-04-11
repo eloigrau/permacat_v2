@@ -1,0 +1,41 @@
+{% extends 'blog/base_blog2.html' %}
+
+{% block subtitle %}
+<div class="row justify-content-center">
+    <div class="col col-md-12 textcenter"><h3>Ajouter un article lié à l'article : '{{article.titre}}'</h3>
+    </div>
+</div>
+{% endblock  %}
+{% block content %}
+{% if error_message %}
+<p>
+    <strong>{{ error_message }}</strong>
+</p>
+{% endif %}
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" role="form" action="" method="get" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-sm-10 textcenter">
+                    {% include 'form_template2.html' with form=form_article %}
+                </div>
+            </div>
+        </form>
+        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+                <div class="col-sm-10 textcenter">
+                    {% include 'form_template2.html'%}
+
+                    {% if not boutonAnnuler %}
+                    <input type="button" class="btn btn-secondary" onclick="window.history.back();" value="Annuler"/>
+                    {% endif %}
+                    <button id="btn-valider" type="submit" class="btn btn-primary">Lier les articles</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

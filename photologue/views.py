@@ -116,7 +116,6 @@ class DocListView(ListView):
     def get_queryset(self):
         if "asso" in self.request.GET:
             self.request.session["asso_abreviation"] = self.request.GET["asso"]
-            self.request.session.modified = True
             qs = Document.objects.filter(asso__abreviation=self.request.GET["asso"])
         else:
             qs = Document.objects.all().order_by("-date_creation")

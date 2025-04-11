@@ -633,6 +633,12 @@
                     <div class="row justify-content-center">
                         <div class="col-sm-12 textcenter">
                             <h4>Partager l'article</h4>
+
+                        <div class="col-sm-12 col-md-4 textcenter">
+                        <h4><a class="btn btn-sm btn-success textleft"
+                              href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
+                                class="fa fa-plus"></i> Ajouter un lien</a></h4>
+                        </div>
                         </div>
                     </div>
                     <table class="table textcenter" style="border:none;">
@@ -682,6 +688,10 @@
                             <span class="badge badge-info"> {{tag}}</span>
                             {% endfor %}
                         </div>
+                        <div class="col-sm-12 ">
+                        {% get_hit_count for article as nbvues %}
+                        {{ nbvues }} vue{{nbvues|pluralize:"s"}}
+                        </div>
                     </div>
                     {% endif %}
                     <p>
@@ -692,8 +702,6 @@
 
                         rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}}
 
-                        {% get_hit_count for article as nbvues %}
-                        - {{ nbvues }} vue{{nbvues|pluralize:"s"}}
                         {% if article.estArchive%}
                         - archivé
                         {%endif%}

@@ -9,7 +9,7 @@ from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, Comment
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
-    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm
+    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_rechercheForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -1426,22 +1426,33 @@ def ajax_dernierscommentaires(request):
 def ajouterArticleLiens(request, slug_article):
     article = Article.objects.get(slug=slug_article)
     form = ArticleLiensForm(request.POST or None)
+    form_article = Article_rechercheForm(request.GET or None)
 
-    if form.is_valid():
-        form.save(request.user, article)
+    if form.is_valid() and form_article.is_valid():
+        article_lie = form_article.cleaned_data["article"]
+        lien = form.save(request.user, article, article_lie)
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.abreviation,
-                    description="a ajouté un todo à l'article '%s'"%article.titre)
+                    description="a lié l'article '%s' à '%s'" % (article.titre, lien.article_lie.titre))
         return redirect(article)
 
-    return render(request, 'blog/ajouterTodoArticle.html', {'article':article, 'form': form})
+    return render(request, 'blog/articleliens_ajouter.html', {'article':article, 'form': form, 'form_article': form_article})
+
+class ModifierArticleLiens(UpdateView):
+    model = ArticleLiens
+    form_class = ArticleLiensForm
+    template_name_suffix = '_modifier'
+    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
 
 class SupprimerArticleLiens(DeleteView):
     model = ArticleLiens
     template_name_suffix = '_supprimer'
+
+    def get_object(self):
+        return TodoArticle.objects.get(slug=self.kwargs['slug_todo'])
 
     def get_success_url(self):
         return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
@@ -1455,3 +1466,21 @@ class SupprimerArticleLiens(DeleteView):
             return HttpResponseRedirect(success_url)
         else:
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
+
+
+
+class ArticleAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Article.objects.none()
+
+        if "asso_abreviation" in self.request.session:
+            qs = Article.objects.filter(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
+
+
+
+        if self.q:
+            qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
+
+        return qs

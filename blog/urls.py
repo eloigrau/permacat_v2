@@ -27,6 +27,7 @@ urlpatterns = [
     path(r'articles/<str:asso>', login_required(views.ListeArticles_asso.as_view(), login_url='/auth/login/'), name="index_asso"),
     # re_path(r'^newPost/', views.ajouterArticle, name='ajouterArticle'),
     # re_path(r'^article/(?P<slug>.+)$', views.lire, name='lire'),
+    re_path(r'^article-ac/$', views.ArticleAutocomplete.as_view(), name='article-ac',),
 
     path(r'article/<str:slug>', views.lireArticle, name='lireArticle'),
     path(r'article/<int:id>', views.lireArticle_id, name='lireArticle_id'),
@@ -114,5 +115,14 @@ urlpatterns = [
 
     path('ac/tag_autocomplete/', views.TagAutocomplete.as_view(), name='tag_autocomplete'),
 
+
+
+    path(r'ajouterArticleLiens/<str:slug_article>', views.ajouterArticleLiens, name='ajouterArticleLiens'),
+    path(r'supprimerArticleLiens/<str:slug_article>/<int:pk>',
+         login_required(views.SupprimerArticleLiens.as_view(), login_url='/auth/login/'),
+         name='supprimerArticleLiens'),
+    path(r'modifierArticleLiens/<str:slug_article>/<int:pk>',
+         login_required(views.ModifierArticleLiens.as_view(), login_url='/auth/login/'),
+         name='modifierArticleLiens'),
 
 ]

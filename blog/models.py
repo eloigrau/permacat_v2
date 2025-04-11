@@ -913,7 +913,11 @@ class ArticleLienProjet(models.Model):
 
     def get_absolute_url(self):
         return self.article.get_absolute_url()
-#
+
+
+
+class Article_recherche(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
 #
 # class Atelier_new(models.Model):
 #     categorie = models.CharField(max_length=30,

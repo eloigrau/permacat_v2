@@ -633,11 +633,6 @@
                         <div class="col-sm-12 textcenter">
                             <h4>Partager l'article</h4>
 
-                        <div class="col-sm-12 col-md-4 textcenter">
-                        <h4><a class="btn btn-sm btn-success textleft"
-                              href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
-                                class="fa fa-plus"></i> Ajouter un lien</a></h4>
-                        </div>
                         </div>
                     </div>
                     <table class="table textcenter" style="border:none;">
@@ -681,11 +676,14 @@
                         </div>
                     </div>
 
+                    <p>
                         rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}},
 
                         {% get_hit_count for article as nbvues %}
                         {{ nbvues }} vue{{nbvues|pluralize:"s"}}
+                    </p>
                     {% if article.tags.names %}
+                    <hr>
                     <div class="row-sm-12 justify-content-center">
                         <div class="col-sm-12 ">
                             <em> Mots-clés: </em>{% for tag in article.tags.names %}
@@ -724,16 +722,24 @@
                     {% endif %}
                     {% if articles_liens %}
                     <hr>
-                        {% for lien in articles_liens %}
-                            <p class="textcenter">
-                                {% if lien.article == article %}
-                                    {{lien.type_lien}}: {{lien.article_lie}}
-                                {% else %}
-                                    {{lien.type_lien}}: {{lien.article}}
-                                {% endif %}
-                            </p>
-                        {% endfor %}
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 col-md-4 textcenter">
+                            <em>Article liés </em>
+                            {% for lien in articles_liens %}
+                                <p class="textcenter">
+                                    {% if lien.article == article %}
+                                        {{lien.get_type_lien_display}}: <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
+                                    {% else %}
+                                        {{lien.get_type_lien_display}}: <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
+                                    {% endif %}
+                                </p>
+                            {% endfor %}
                     {% endif %}
+
+                        <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
+                                class="fa fa-plus"></i> Ajouter un lien vers un autre article </a></h4>
+                        </div>
+                    </div>
                     <hr>
                     <div class="row justify-content-center">
                         <div class="col-sm-12 textcenter">

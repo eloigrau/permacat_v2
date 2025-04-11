@@ -920,6 +920,8 @@ class ArticleLienProjet(models.Model):
 
 class Article_recherche(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
+
+
 #
 # class Atelier_new(models.Model):
 #     categorie = models.CharField(max_length=30,

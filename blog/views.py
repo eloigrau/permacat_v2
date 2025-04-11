@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from django.http import HttpResponseForbidden
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
-from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
+from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, Article_recherche, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
@@ -1427,16 +1427,17 @@ def ajax_dernierscommentaires(request):
 def ajouterArticleLiens(request, slug_article):
     article = Article.objects.get(slug=slug_article)
     form = ArticleLiensForm(request.POST or None)
-    form_article = Article_rechercheForm(None)
+    form_article = Article_rechercheForm(request.POST or None)
 
     if form.is_valid() and form_article.is_valid():
-        article_lie = form_article.cleaned_data["article"]
+        article_lie = form_article.cleaned_data['article']
         lien = form.save(request.user, article, article_lie)
-        action.send(request.user,
-                    action_object=article,
-                    url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation,
-                    description="a lié l'article '%s' à '%s'" % (article.titre, lien.article_lie.titre))
+        if lien:
+            action.send(request.user,
+                        action_object=article,
+                        url=article.get_absolute_url(),
+                        verb="article_modifier_" + article.asso.abreviation,
+                        description="a lié l'article '%s' à '%s'" % (article.titre, lien.article_lie.titre))
         return redirect(article)
 
     return render(request, 'blog/articleliens_ajouter.html', {'article':article, 'form': form, 'form_article': form_article})

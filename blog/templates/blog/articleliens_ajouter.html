@@ -20,8 +20,7 @@
                 <div class="col-sm-10 textcenter">
 
                     {% include 'form_template2.html' with form=form_article %}
-
-                    {% include 'form_template2.html'%}
+                    {% include 'form_template2.html' with form=form%}
 
                     {% if not boutonAnnuler %}
                     <input type="button" class="btn btn-secondary" onclick="window.history.back();" value="Annuler"/>

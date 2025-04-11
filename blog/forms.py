@@ -632,12 +632,14 @@ class ArticleLiensForm(forms.ModelForm):
 
     def save(self, auteur, article, article_lie):
         instance = super(ArticleLiensForm, self).save(commit=False)
-        if article != article_lie:
+        if article_lie and article != article_lie:
             instance.article = article
             instance.article_lie = article_lie
             instance.auteur = auteur
             instance.save()
-        return instance
+            return instance
+        else:
+            return None
 
 class ArticleLienProjetForm(forms.ModelForm):
 
@@ -660,9 +662,9 @@ class Article_rechercheForm(forms.ModelForm):
         model = Article_recherche
         fields = ("article", )
         widgets = {
-            'article': autocomplete.ModelSelect2(url='blog:article-ac')
+            'articleee': autocomplete.ModelSelect2(url='blog:article-ac')
         }
 
     def save(self):
-        instance = super(Article_recherche, self).save()
+        instance = super(Article_rechercheForm, self).save()
         return instance

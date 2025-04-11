@@ -365,7 +365,7 @@ class PlanteAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return Plante.objects.none()
 
-        qs = Plante.objects.filter(RANG="ES").order_by("NOM_VERN")
+        qs = Plante.objects.filter().order_by("NOM_VERN")
 
         if self.q:
             qs = qs.filter(Q(NOM_VERN__istartswith=self.q) | Q(NOM_VERN__icontains=self.q)| Q(LB_NOM__icontains=self.q)).order_by("NOM_VERN")

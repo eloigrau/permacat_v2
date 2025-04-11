@@ -18,8 +18,7 @@
 <meta property="og:title" content="{{article.titre}}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="{{article.get_absolute_url_site}}" />
-<meta property="og:description"
-  content="{{article.contenu|couperTexte:150}}"/>
+<meta property="og:description" content="{{article.contenu|couperTexte:150}}"/>
 <meta property="og:site_name" content="Perma.Cat" />
 <meta property="og:image" content="{% static 'android-chrome-256x256.png' %}" />
 {%endblock%}
@@ -681,26 +680,26 @@
                             <h4>Informations générales : </h4>
                         </div>
                     </div>
+
+                        rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}},
+
+                        {% get_hit_count for article as nbvues %}
+                        {{ nbvues }} vue{{nbvues|pluralize:"s"}}
                     {% if article.tags.names %}
                     <div class="row-sm-12 justify-content-center">
                         <div class="col-sm-12 ">
-                            Mots-clés: {% for tag in article.tags.names %}
+                            <em> Mots-clés: </em>{% for tag in article.tags.names %}
                             <span class="badge badge-info"> {{tag}}</span>
                             {% endfor %}
-                        </div>
-                        <div class="col-sm-12 ">
-                        {% get_hit_count for article as nbvues %}
-                        {{ nbvues }} vue{{nbvues|pluralize:"s"}}
                         </div>
                     </div>
                     {% endif %}
                     <p>
                         {% if article.get_partagesAsso %}
-                        Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec
+                        <em>Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec</em>
                         {{article.get_partagesAssoLogo|safe}},
                         {%endif%}
 
-                        rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}}
 
                         {% if article.estArchive%}
                         - archivé
@@ -710,12 +709,30 @@
                         {%endif%}
                     </p>
                     {% if article.themes.all %}
+                    <hr>
                     <p class="textcenter">
                         <em>Thème{{article.themes.all|pluralize:"s"}}: </em>
                         {% for tag in article.themes.all %}
                         <a href="{% url 'blog:index' %}?theme={{tag}}"> {{tag}}</a>{%if not forloop.last%}, {%endif%}
                         {% endfor %}
                     </p>
+                    {% endif %}
+                    {% if article.zonegeo %}
+                    <p class="textcenter">
+                        <em>Zone géographique : </em> {{article.zonegeo}}
+                    </p>
+                    {% endif %}
+                    {% if articles_liens %}
+                    <hr>
+                        {% for lien in articles_liens %}
+                            <p class="textcenter">
+                                {% if lien.article == article %}
+                                    {{lien.type_lien}}: {{lien.article_lie}}
+                                {% else %}
+                                    {{lien.type_lien}}: {{lien.article}}
+                                {% endif %}
+                            </p>
+                        {% endfor %}
                     {% endif %}
                     <hr>
                     <div class="row justify-content-center">

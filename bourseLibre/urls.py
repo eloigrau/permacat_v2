@@ -34,7 +34,6 @@ admin.sites.site_title ="Admin Permacat"
 urlpatterns = [
     path('qr_code/', include('qr_code.urls', namespace="qr_code")),
     re_path(r'^summernote/', include('local_summernote.urls')),
-    #re_path(r'^captcha/', include('bourseLibre.captcha_local.urls')),
     re_path(r'^photolog/', include('photologue.urls', namespace='photologue')),
     # path('tinymce/', include('tinymce.urls')),
     # re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
@@ -50,7 +49,7 @@ urlpatterns = [
     path(r'phonebook/', include('phonebook.urls')),
     re_path('^', include('django.contrib.auth.urls')),
     re_path('avatar/', include('avatar.urls')),
-    #path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
+    path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
     path('captcha/', include('local_captcha.urls')),
     #path("r/", include("urlshortner.urls")),
     path(r'webpush/', include('webpush.urls')),

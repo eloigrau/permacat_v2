@@ -116,7 +116,7 @@ INSTALLED_APPS = [
     'leaflet',
     'local_captcha',
     'django.forms',
-    #'django_ledger',
+    'django_ledger',
     'local_summernote',
     'actstream',
     'taggit',
@@ -537,3 +537,5 @@ try:
 except ImportError:
     print("Impossible d'importer production.py")
     pass
+
+from bourseLibre.safelogging.settings import *

@@ -220,7 +220,8 @@ def lireArticle(request, slug):
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
     todos = TodoArticle.objects.filter(article=article).order_by('titre')
-    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).order_by('-date_creation')[:20]
+    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).exclude(slug=slug).order_by('-date_creation')[:15]
+    articles_liens = ArticleLiens.objects.filter(Q(article=article) | Q(article_lie=article)).order_by('-date_creation')
 
     sondages = Sondage_binaire.objects.filter(article=article).order_by('-date_creation')
     documents_partages = DocumentPartage.objects.filter(article=article)
@@ -250,7 +251,7 @@ def lireArticle(request, slug):
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                        'articles_dossier':articles_dossier,'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
-                       "documents_partages":documents_partages, "reunions":reunions,"todos":todos, "ancre": discu.slug}
+                       "documents_partages":documents_partages, "reunions":reunions,"todos":todos, "ancre": discu.slug, "articles_liens":articles_liens}
 
     elif form.is_valid() and 'message_discu' in request.POST:
         discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#",""))
@@ -285,11 +286,11 @@ def lireArticle(request, slug):
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                'articles_dossier':articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
-                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "todos":todos, "reunions":reunions, }
+                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "todos":todos, "reunions":reunions, "articles_liens":articles_liens }
 
     else:
         context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
-                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"todos":todos, "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions,  }
+                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"todos":todos, "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions, "articles_liens":articles_liens,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required
@@ -1426,7 +1427,7 @@ def ajax_dernierscommentaires(request):
 def ajouterArticleLiens(request, slug_article):
     article = Article.objects.get(slug=slug_article)
     form = ArticleLiensForm(request.POST or None)
-    form_article = Article_rechercheForm(request.GET or None)
+    form_article = Article_rechercheForm(None)
 
     if form.is_valid() and form_article.is_valid():
         article_lie = form_article.cleaned_data["article"]
@@ -1478,9 +1479,8 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
         if "asso_abreviation" in self.request.session:
             qs = Article.objects.filter(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
 
-
-
         if self.q:
             qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
 
         return qs
+

@@ -226,6 +226,14 @@ class Theme(models.Model):
     def __str__(self):
         return self.nom
 
+
+class ZoneGeo(models.Model):
+    """Zone géographique """
+    titre = models.CharField(max_length=250,)
+
+    def __str__(self):
+        return self.titre
+
 class Article(models.Model):
     categorie = models.CharField(max_length=30,         
         choices= Choix.type_annonce,
@@ -239,23 +247,17 @@ class Article(models.Model):
     estPublic = models.BooleanField(default=False, verbose_name='Public ou réservé aux membres permacat')
     estModifiable = models.BooleanField(default=False, verbose_name="Modifiable par les autres")
     estEpingle = models.BooleanField(default=False, verbose_name="Article épinglé")
-
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-
     date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=False, null=True, blank=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
     estArchive = models.BooleanField(default=False, verbose_name="Archiver l'article")
-
     start_time = models.DateField(verbose_name="Date de l'événement (pour apparaitre sur l'agenda, sinon vous pourrez ajouter des évènements depuis l'article) ", null=True, blank=True, help_text="jj/mm/année")
     end_time = models.DateField(verbose_name="Date de fin (optionnel, pour affichage dans l'agenda)",  null=True,blank=True, help_text="jj/mm/année")
-
     tags = TaggableManager(verbose_name="Mots clés",  help_text="Liste de mots-clés séparés par une virgule", blank=True)
-
     album = models.ForeignKey(Album, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Album photo associé",  )
-
     partagesAsso = models.ManyToManyField(Asso, related_name="asso_partages", verbose_name="Partagé avec :", blank=True)
-
     themes = models.ManyToManyField(Theme, related_name="themes", verbose_name="Thèmes :", blank=True)
+    zonegeo = models.ForeignKey(ZoneGeo, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Zone géographique",  )
 
 
     class Meta:

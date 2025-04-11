@@ -31,12 +31,20 @@
     <div class="col-sm-12 textcenter">
     <div class="textcenter justify-content-center">
         <table class="table sortable table-condensed tablejardin table-striped sortable"  style="width:100%;">
-    {% for plante in plante_list %}
-            <tr>
-                <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
-                <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
-            </tr>
-    {% endfor %}
+           <thead>
+           <th> Nom vernaculaire
+           </th>
+           <th> Nom scientifique
+           </th>
+           </thead>
+            <tbody>
+            {% for plante in plante_list %}
+                <tr>
+                    <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                    <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
             </table>
     </div>
 </div>

@@ -902,7 +902,7 @@ class ArticleLiens(models.Model):
     date_creation = models.DateTimeField('Créé le', auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article de base")
     article_lie = models.ForeignKey(Article, on_delete=models.SET_NULL, blank=True, null=True, related_name="article_lie")
-    type_lien = models.CharField(label="Type de lien", choices=Choix.LIENS_ARTICLES, default="0", max_length=2)
+    type_lien = models.CharField("Type de lien", choices=Choix.LIENS_ARTICLES, default="0", max_length=2)
 
     def __str__(self):
         return str(self.article) + " " + str(self.type_lien) + " " + str(self.article_lie)

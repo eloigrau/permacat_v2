@@ -869,8 +869,7 @@ class ListeProduit(ListView):
         if not self.request.user.is_authenticated:
             qs = qs.filter(asso__abreviation="public")
         else:
-            for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
-                qs = qs.exclude(asso__abreviation=nomAsso)
+            qs = qs.exclude(self.request.user.getQObjectsExcluAssoNonMembre())
 
         params = dict(self.request.GET.items())
 

@@ -35,8 +35,7 @@ class AlbumListView(ListView):
         if 'asso' in self.request.GET:
             qs = qs.filter(asso__abreviation=self.request.GET["asso"])
 
-        for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
-            qs = qs.exclude(asso__abreviation=nomAsso)
+        qs = qs.exclude(self.request.user.getQObjectsExcluAssoNonMembre())
 
         return qs
 

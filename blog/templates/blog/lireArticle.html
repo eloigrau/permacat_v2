@@ -785,7 +785,7 @@
                             <td>{{lien.get_type_lien_display}}
                             </td>
                             <td><a href="{{lien.projet_lie.get_absolute_url}}">{{lien.projet_lie}}</a></td>
-                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <td>
                     <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                     <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>

@@ -140,6 +140,25 @@
 						Articles :
 					</td>
 					<td class="proprieteProduit">
+
+                            <table class="table table-condensed sortable">
+        <tbody>
+                        {% for lien in articles_lies %}
+
+                        <tr>
+                            <td>{{lien.get_type_lien_display}}
+                            </td>
+                            <td><a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a></td>
+                            {%if projet.auteur == request.user or request.user.is_superuser %}
+                            <td>
+                                <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                                <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor%}
+        </tbody>
+    </table>
                         {% for lien in articles_lies %}
                             <p class="textcenter">
                                     {{lien.get_type_lien_display}}: <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>

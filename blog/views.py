@@ -1438,8 +1438,6 @@ class SupprimerArticleLiens(DeleteView):
         else:
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
-def voir_articles_liens(request, slug_article):
-    return render(request, 'blog/voir_articlesliens.html',)
 
 @login_required
 def ajouterArticleLienProjet(request, slug_article):
@@ -1488,6 +1486,10 @@ class SupprimerArticleLienProjet(DeleteView):
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
 
+def voir_articles_liens(request, slug_article):
+    return render(request, 'blog/voir_articlesliens_d3.html',)
+
+
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         calc = len(self.q) > 2
@@ -1512,3 +1514,4 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
             return Projet.objects.none()
 
         return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False, titre__icontains=self.q).order_by("titre")
+

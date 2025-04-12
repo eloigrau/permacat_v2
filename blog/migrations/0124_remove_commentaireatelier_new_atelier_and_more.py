@@ -10,29 +10,29 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='commentaireatelier_new',
-            name='atelier',
-        ),
-        migrations.RemoveField(
-            model_name='commentaireatelier_new',
-            name='auteur_comm',
-        ),
-        migrations.RemoveField(
-            model_name='inscriptionatelier_new',
-            name='atelier',
-        ),
-        migrations.RemoveField(
-            model_name='inscriptionatelier_new',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='Atelier_new',
-        ),
-        migrations.DeleteModel(
-            name='CommentaireAtelier_new',
-        ),
-        migrations.DeleteModel(
-            name='InscriptionAtelier_new',
-        ),
+        # migrations.RemoveField(
+        #     model_name='commentaireatelier_new',
+        #     name='atelier',
+        # ),
+        # migrations.RemoveField(
+        #     model_name='commentaireatelier_new',
+        #     name='auteur_comm',
+        # ),
+        # migrations.RemoveField(
+        #     model_name='inscriptionatelier_new',
+        #     name='atelier',
+        # ),
+        # migrations.RemoveField(
+        #     model_name='inscriptionatelier_new',
+        #     name='user',
+        # ),
+        # migrations.DeleteModel(
+        #     name='Atelier_new',
+        # ),
+        # migrations.DeleteModel(
+        #     name='CommentaireAtelier_new',
+        # ),
+        # migrations.DeleteModel(
+        #     name='InscriptionAtelier_new',
+        # ),
     ]

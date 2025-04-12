@@ -12,8 +12,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('blog', '0123_atelier_new_commentaireatelier_new_inscriptionatelier_new'),
-        ('bourseLibre', '0111_auto_20240220_1317'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

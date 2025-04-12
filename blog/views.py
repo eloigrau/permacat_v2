@@ -1520,8 +1520,7 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return Projet.objects.none()
 
-        if "asso_abreviation" in self.request.session:
-            qs = Projet.objects.filter(estArchive=False).order_by("titre")
+        qs = Projet.objects.filter(estArchive=False).order_by("titre")
 
         if self.q:
             qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")

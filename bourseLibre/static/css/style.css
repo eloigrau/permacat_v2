@@ -2699,7 +2699,6 @@ padding-bottom:10px;
   /*background-color:#141433;*/
   color:white;
   min-width:40px;
-  max-width:100px;
   text-align:center;
   font-size:small;
 }
@@ -2745,7 +2744,7 @@ padding-bottom:10px;
 .sidebar_toggle_inverse {
   display:inherit;
 }
-@media (max-width: 991.98px) {
+@media (max-width: 990px) {
 
 
 .sidebar {

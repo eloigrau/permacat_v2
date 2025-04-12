@@ -6,6 +6,13 @@
 {% block header %}
     <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
     <script src="{% static 'js/infinite.min.js' %}"></script>
+<style>
+    @media (min-width: 800px){
+        .rowprincipal{
+            padding-left:150px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block title %} - AlterMarché {% endblock %}
@@ -14,10 +21,10 @@
  {% block content %}
 {% block sidebar %}
   <!-- Sidebar -->
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar ">
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar " style="max-width:">
     <div class="position-sticky textcenter">
         <a href="{% url 'marche' %}" >
-            <button type="button" class="btn  btn-info" >
+            <button type="button" class="btn  btn-info btn-sm" >
                {% fa5_icon 'home' title='home' %}
             </button>
         </a>

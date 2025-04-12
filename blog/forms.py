@@ -647,7 +647,7 @@ class Article_rechercheForm(forms.ModelForm):
         model = Article_recherche
         fields = ("article", )
         widgets = {
-            'articleee': autocomplete.ModelSelect2(url='blog:article-ac')
+            'article': autocomplete.ModelSelect2(url='blog:article-ac')
         }
 
     def save(self):

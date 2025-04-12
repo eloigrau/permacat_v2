@@ -130,14 +130,12 @@
                         title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
                 {% endcomment %}
 
-                {% if request.user.is_superuser %}
                 <a href="{% url 'blog:suiveursArticle' article.slug %}">
                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom"
                             title="Voir abonnés">
                         {% fa5_icon 'list' %}
                     </button>
                 </a>
-                {% endif %}
 
             </p>
             <div class="row titre_fiche titre-article-forum">

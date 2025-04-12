@@ -49,7 +49,7 @@ urlpatterns = [
     path(r'phonebook/', include('phonebook.urls')),
     re_path('^', include('django.contrib.auth.urls')),
     re_path('avatar/', include('avatar.urls')),
-    path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
+    #path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
     path('captcha/', include('local_captcha.urls')),
     #path("r/", include("urlshortner.urls")),
     path(r'webpush/', include('webpush.urls')),

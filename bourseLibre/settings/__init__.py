@@ -116,7 +116,7 @@ INSTALLED_APPS = [
     'leaflet',
     'local_captcha',
     'django.forms',
-    'django_ledger',
+    #'django_ledger',
     'local_summernote',
     'actstream',
     'taggit',

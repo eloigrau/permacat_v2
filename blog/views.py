@@ -1502,10 +1502,13 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             if "asso_abreviation" in self.request.session:
-                qs = Article.objects.filter(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
+                qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
             else:
-                qs = Article.objects.filter(estArchive=False).order_by("titre")
-            qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
+                qs = Article.objects.filter(titre__icontains=self.q, estArchive=False).order_by("titre")
+
+            for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
+                qs = qs.exclude(asso__abreviation=nomAsso)
+
 
         return qs
 
@@ -1523,7 +1526,7 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
             else:
                 qs = Projet.objects.filter(estArchive=False, titre__icontains=self.q)
 
-        for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
-            qs = qs.exclude(asso__abreviation=nomAsso)
+            for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
+                qs = qs.exclude(asso__abreviation=nomAsso)
 
         return qs

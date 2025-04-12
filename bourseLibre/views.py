@@ -865,11 +865,9 @@ class ListeProduit(ListView):
     paginate_by = 32
 
     def get_qs(self):
-        qs = Produit.objects.select_subclasses()
+        qs = Produit.objects.select_subclasses().exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
         if not self.request.user.is_authenticated:
             qs = qs.filter(asso__abreviation="public")
-        else:
-            qs = qs.exclude(self.request.user.getQObjectsExcluAssoNonMembre())
 
         params = dict(self.request.GET.items())
 

@@ -3,6 +3,10 @@
 {% block subtitle %}
 <div class="row justify-content-center">
     <div class="col col-md-12 textcenter"><h3>Lier un projet à l'article : '{{article.titre}}'</h3>
+
+        {% if request.user.session.asso_abreviation %}
+        <p>Groupe courant : {{ request.user.session.asso_abreviation}} </p>
+        {% endif  %}
     </div>
 </div>
 {% endblock  %}

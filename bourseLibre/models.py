@@ -533,11 +533,6 @@ class Profil(AbstractUser):
             q_objects |= Q(asso__abreviation=asso)
         return q_objects
 
-    def getQObjectsExcluAssoNonMembre(self):
-        q_objects = Q()
-        for asso in self.getListeAbreviationsAssos_nonmembre():
-            q_objects |= Q(asso__abreviation=asso)
-        return q_objects
 
     def getListeAbreviationsAssos(self):
         return [a for a in Choix.abreviationsAsso if self.est_autorise(a)]

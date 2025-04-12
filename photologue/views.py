@@ -30,7 +30,7 @@ class AlbumListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        qs = Album.objects.on_site().exclude(self.request.user.getQObjectsExcluAssoNonMembre())
+        qs = Album.objects.on_site().exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
 
         if 'asso' in self.request.GET:
             qs = qs.filter(asso__abreviation=self.request.GET["asso"])
@@ -112,9 +112,9 @@ class DocListView(ListView):
     def get_queryset(self):
         if "asso" in self.request.GET:
             self.request.session["asso_abreviation"] = self.request.GET["asso"]
-            qs = Document.objects.filter(asso__abreviation=self.request.GET["asso"]).exclude(self.request.user.getQObjectsExcluAssoNonMembre()).order_by("-date_creation")
+            qs = Document.objects.filter(asso__abreviation=self.request.GET["asso"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("-date_creation")
         else:
-            qs = Document.objects.all().exclude(self.request.user.getQObjectsExcluAssoNonMembre()).order_by("-date_creation")
+            qs = Document.objects.all().exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("-date_creation")
 
         return qs
 

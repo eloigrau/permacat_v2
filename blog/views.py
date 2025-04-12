@@ -1500,7 +1500,7 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
         if calc:
             #if "asso_abreviation" in self.request.session:
-                qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+                qs = Article.objects.filter(titre__icontains=self.q, estArchive=False).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
             #else:
             #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
 

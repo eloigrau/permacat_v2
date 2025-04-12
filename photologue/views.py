@@ -35,9 +35,8 @@ class AlbumListView(ListView):
         if 'asso' in self.request.GET:
             qs = qs.filter(asso__abreviation=self.request.GET["asso"])
 
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(self.request.user, "adherent_" + nomAsso):
-                qs = qs.exclude(asso__abreviation=nomAsso)
+        for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
+            qs = qs.exclude(asso__abreviation=nomAsso)
 
         return qs
 
@@ -120,9 +119,8 @@ class DocListView(ListView):
         else:
             qs = Document.objects.all().order_by("-date_creation")
 
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(self.request.user, "adherent_" + nomAsso):
-                qs = qs.exclude(asso__abreviation=nomAsso)
+        for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
+            qs = qs.exclude(asso__abreviation=nomAsso)
 
         return qs
 

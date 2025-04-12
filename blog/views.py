@@ -737,9 +737,8 @@ class ListeProjets(ListView):
         if not self.request.user.is_authenticated:
             qs = qs.filter(asso__abreviation="public")
         else:
-            for nomAsso in Choix_global.abreviationsAsso:
-                if not getattr(self.request.user, "adherent_" + nomAsso):
-                    qs = qs.exclude(asso__abreviation=nomAsso)
+            for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
+                qs = qs.exclude(asso__abreviation=nomAsso)
 
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])
@@ -1368,9 +1367,8 @@ def ajaxListeArticles(request):
                       {'qs': qs})
     except:
         qs = Article.objects.filter(estArchive=False)
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                qs = qs.exclude(asso__abreviation=nomAsso)
+        for nomAsso in request.user.getListeAbreviationsAssos_nonmembre():
+            qs = qs.exclude(asso__abreviation=nomAsso)
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
 
 
@@ -1521,13 +1519,11 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
 
         if self.q:
             if "asso_abreviation" in self.request.session:
-                qs = Projet.objects.filter(Q(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]) & (Q(titre__istartswith=self.q) | Q(titre__icontains=self.q))).order_by("titre")
+                qs = Projet.objects.filter(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"], titre__icontains=self.q).order_by("titre")
             else:
-                qs = Projet.objects.filter(estArchive=False)
+                qs = Projet.objects.filter(estArchive=False, titre__icontains=self.q)
 
-            qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
+        for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
+            qs = qs.exclude(asso__abreviation=nomAsso)
 
-        for nomAsso in self.request.user.abreviationsAsso:
-            if not getattr(self.request.user, "adherent_" + nomAsso):
-                qs = qs.exclude(asso__abreviation=nomAsso)
         return qs

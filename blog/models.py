@@ -147,10 +147,14 @@ class Choix:
     )
 
     LIENS_PROJET = (
-        ("0", "info sur le projet"),
-        ("1", "info en lien avec le projet"),
-        ("2", "budget ou organisation"),
-        ("3", "Autre"),
+        ("0", "Info sur le projet"),
+        ("1", "Info en lien avec le projet"),
+        ("2", "Budget"),
+        ("3", "Organisation"),
+        ("4", "Logistique"),
+        ("5", "Partenaires"),
+        ("6", "Atelier/rencontre"),
+        ("6", "Autre"),
     )
 
     def get_couleur(categorie):
@@ -898,7 +902,7 @@ class ArticleLiens(models.Model):
     date_creation = models.DateTimeField('Créé le', auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article de base")
     article_lie = models.ForeignKey(Article, on_delete=models.SET_NULL, blank=True, null=True, related_name="article_lie")
-    type_lien = models.CharField(choices=Choix.LIENS_ARTICLES, default="0", max_length=2)
+    type_lien = models.CharField(label="Type de lien", choices=Choix.LIENS_ARTICLES, default="0", max_length=2)
 
     def __str__(self):
         return str(self.article) + " " + str(self.type_lien) + " " + str(self.article_lie)
@@ -916,7 +920,7 @@ class ArticleLienProjet(models.Model):
     date_creation = models.DateTimeField('Créé le', auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="Article de base")
     projet_lie = models.ForeignKey(Projet, on_delete=models.SET_NULL, blank=True, null=True, related_name="projet_lie")
-    type_lien = models.CharField(choices=Choix.LIENS_PROJET, default="0", max_length=2)
+    type_lien = models.CharField("Type de lien", choices=Choix.LIENS_PROJET, default="0", max_length=2)
 
     def __str__(self):
         return str(self.article) + " " + str(self.type_lien) + " " + str(self.projet_lie)
@@ -932,12 +936,19 @@ class ArticleLienProjet(models.Model):
 
 
 class Article_recherche(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE,
+                               help_text=mark_safe(
+                                   "<p style='color:teal'>Taper 3 lettres du titre de l'article recherché'</p>"
+                               ))
 
 
 
 class Projet_recherche(models.Model):
-    projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE,
+                               help_text=mark_safe(
+                                   "<p style='color:teal'>Taper 3 lettres du titre du projet recherché'</p>"
+                               ))
+
 
 #
 # class Atelier_new(models.Model):

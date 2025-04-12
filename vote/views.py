@@ -303,10 +303,9 @@ class ListeSuffrages(ListView):
 
 
         if not self.request.user.is_authenticated:
-            qs = qs.filter(asso__abreviation="public")
+            qs = qs.none()
         else:
-            for nomAsso in self.request.user.getListeAbreviationsAssos_nonmembre():
-                qs = qs.exclude(asso__abreviation=nomAsso)
+            qs = qs.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
 
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])

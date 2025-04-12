@@ -452,10 +452,7 @@ class ListeArticles_asso(ListView):
         #     qs = qs.filter(asso__abreviation=self.asso.abreviation)
         context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.get_type_annonce_asso(self.asso.abreviation)]
 
-        proj = Projet.objects.filter(estArchive=False)
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(self.request.user, "adherent_" + nomAsso):
-                proj = proj.exclude(asso__abreviation=nomAsso)
+        proj = Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False)
 
         context['projets_list'] = [(x.slug, x.titre, x.get_couleur) for x in proj]
         #
@@ -1365,7 +1362,7 @@ def ajaxListeArticles(request):
         return render(request, 'blog/ajax/listeArticles.html',
                       {'qs': qs})
     except:
-        qs = Article.objects.filter(estArchive=False).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
+        qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False)
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
 
 
@@ -1500,9 +1497,9 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
         if calc:
             #if "asso_abreviation" in self.request.session:
-                qs = Article.objects.filter(titre__icontains=self.q, estArchive=False).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
             #else:
-            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(titre__icontains=self.q, estArchive=False)
 
         return qs
 
@@ -1514,4 +1511,4 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated or calc:
             return Projet.objects.none()
 
-        return Projet.objects.filter(estArchive=False, titre__icontains=self.q).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+        return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False, titre__icontains=self.q).order_by("titre")

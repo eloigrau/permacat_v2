@@ -73,36 +73,23 @@ def getEvenementsSemaine(request):
     eve_passe, eve_futur, evenements,  = [], [], []
 
     if not request.user.is_anonymous:
-        ev = Evenement.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        ev = Evenement.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
-        for nomAsso in Choix_global.abreviationsAsso:
-            ev = ev.exclude(article__asso__abreviation=nomAsso)
+        ev_art = Evenement.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
-        ev_art = Evenement.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                ev_art = ev_art.exclude(article__asso__abreviation=nomAsso)
+        ev_2 = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
-        ev_2 = Article.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                ev_2 = ev_2.exclude(asso__abreviation=nomAsso)
 
         evenements.append(ev_2)
         #ev_3 = []
         #if request.user.adherent_jp:
         #    ev_3 = Article_jardin.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
-        ev_4 = Projet.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                ev_4 = ev_4.exclude(asso__abreviation=nomAsso)
+        ev_4 = Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
 
-        ev_5 = Atelier.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                ev_5 = ev_5.exclude(asso__abreviation=nomAsso)
+        ev_5 = Atelier.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+
         utc = pytz.UTC
         y = []
         y2 = []
@@ -1021,9 +1008,9 @@ def chercher(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     if recherche:
         from blog.models import Commentaire, CommentaireProjet
-        produits_list = Produit.objects.filter(Q(description__icontains=recherche) | Q(nom_produit__lower__contains=recherche), ).select_subclasses().distinct()
-        articles_list = Article.objects.filter(request.user.getQObjectsAssoArticles(), Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)).distinct()
-        projets_list = Projet.objects.filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
+        produits_list = Produit.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(description__icontains=recherche) | Q(nom_produit__lower__contains=recherche), ).select_subclasses().distinct()
+        articles_list = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(request.user.getQObjectsAssoArticles(), Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)).distinct()
+        projets_list = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
         profils_list = Profil.objects.filter(Q(username__lower__contains=recherche)  | Q(description__icontains=recherche)| Q(competences__icontains=recherche), ).distinct()
         commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
         commentairesProjet_list = CommentaireProjet.objects.filter(Q(commentaire__icontains=recherche)).distinct()
@@ -1034,11 +1021,6 @@ def chercher(request):
         projets_list = []
         profils_list = []
         commentaires_list, commentairesProjet_list, salon_list = [],[],[]
-
-    for nomAsso in Choix_global.abreviationsAsso:
-        if not getattr(request.user, "adherent_" + nomAsso):
-            produits_list = produits_list.exclude(asso__abreviation=nomAsso)
-            projets_list = projets_list.exclude(asso__abreviation=nomAsso)
 
     return render(request, 'chercher.html', {'recherche':recherche, 'articles_list':articles_list, 'produits_list':produits_list, "projets_list": projets_list, 'profils_list':profils_list,'commentaires_list': commentaires_list, 'commentairesProjet_list':commentairesProjet_list, 'salon_list':salon_list})
 
@@ -1068,10 +1050,7 @@ def chercher_annonces(request):
 def chercher_produits(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     if recherche:
-        produits_list = Produit.objects.filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                produits_list = produits_list.exclude(asso__abreviation=nomAsso)
+        produits_list = Produit.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
     else:
         produits_list = Produit.objects.none()
 

@@ -112,9 +112,9 @@ class DocListView(ListView):
     def get_queryset(self):
         if "asso" in self.request.GET:
             self.request.session["asso_abreviation"] = self.request.GET["asso"]
-            qs = Document.objects.filter(asso__abreviation=self.request.GET["asso"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("-date_creation")
+            qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(asso__abreviation=self.request.GET["asso"]).order_by("-date_creation")
         else:
-            qs = Document.objects.all().exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("-date_creation")
+            qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("-date_creation")
 
         return qs
 
@@ -336,10 +336,7 @@ def associerDocumentArticle(request, doc_slug):
 @login_required
 def filtrer_documents(request):
     if request.GET:
-        doc_list = Document.objects.all()
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(request.user, "adherent_" + nomAsso):
-                doc_list = doc_list.exclude(asso__abreviation=nomAsso)
+        doc_list = Document.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre())
     else:
         doc_list = Document.objects.none()
     f = DocumentFilter(request.GET, queryset=doc_list)

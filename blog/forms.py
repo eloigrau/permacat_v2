@@ -149,13 +149,13 @@ class ArticleChangeForm(forms.ModelForm):
     partagesAsso = forms.ModelMultipleChoiceField(label='Partager avec :', required=False, queryset=Asso.objects.order_by("id"),
                                              widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
 
-    themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
-                                             widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
+    #themes = forms.ModelMultipleChoiceField(label='Thèmes :', required=False, queryset=Theme.objects.all(),
+    #                                         widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }) )
     description_modif = forms.CharField(label="Description courte de la modification de l'article", required=False, )
 
     class Meta:
         model = Article
-        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'zonegeo', 'themes', 'tags', 'estModifiable', 'estArchive', 'estEpingle', ]
+        fields = ['asso', 'partagesAsso', 'categorie', 'titre', 'contenu', 'start_time', 'album', 'zonegeo', 'tags', 'estModifiable', 'estArchive', 'estEpingle', ]
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(

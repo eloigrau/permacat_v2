@@ -536,6 +536,9 @@ class Profil(AbstractUser):
     def getListeAbreviationsAssos(self):
         return [a for a in Choix.abreviationsAsso if self.est_autorise(a)]
 
+    def getListeAbreviationsAssos_nonmembre(self):
+        return [a for a in Choix.abreviationsAsso if not self.est_autorise(a)]
+
     def getListeAbreviationsAssosEtPublic(self):
         return ["public", ] + self.getListeAbreviationsAssos()
 

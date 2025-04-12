@@ -1405,6 +1405,7 @@ def ajouterArticleLiens(request, slug_article):
     form = ArticleLiensForm(request.POST or None)
     form_article = Article_rechercheForm(request.POST or None)
 
+
     if form.is_valid() and form_article.is_valid():
         article_lie = form_article.cleaned_data['article']
         lien = form.save(request.user, article, article_lie)
@@ -1501,15 +1502,12 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return Article.objects.none()
 
-        if "asso_abreviation" in self.request.session:
-            qs = Article.objects.filter(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
-
         if self.q:
+            if "asso_abreviation" in self.request.session:
+                qs = Article.objects.filter(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
+            else:
+                qs = Article.objects.filter(estArchive=False).order_by("titre")
             qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
-
-        for nomAsso in Choix_global.abreviationsAsso:
-            if not getattr(self.request.user, "adherent_" + nomAsso):
-                qs = qs.exclude(asso__abreviation=nomAsso)
 
         return qs
 
@@ -1520,12 +1518,16 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return Projet.objects.none()
 
-        qs = Projet.objects.filter(estArchive=False).order_by("titre")
 
         if self.q:
+            if "asso_abreviation" in self.request.session:
+                qs = Projet.objects.filter(Q(estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]) & (Q(titre__istartswith=self.q) | Q(titre__icontains=self.q))).order_by("titre")
+            else:
+                qs = Projet.objects.filter(estArchive=False)
+
             qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
 
-        for nomAsso in Choix_global.abreviationsAsso:
+        for nomAsso in self.request.user.abreviationsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):
                 qs = qs.exclude(asso__abreviation=nomAsso)
         return qs

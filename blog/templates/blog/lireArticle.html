@@ -225,9 +225,6 @@
                         <hr>
                     <p class="textright textepetit" style="font-style: italic;text-align:right;position: absolute; bottom:0; right:10px;">
                         rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}}
-
-                        {% get_hit_count for article as nbvues %}
-                        - {{ nbvues }} vue{{nbvues|pluralize:"s"}}
                     </p>
                 </div>
             </div>
@@ -720,30 +717,51 @@
                         <em>Zone géographique : </em> {{article.zonegeo}}
                     </p>
                     {% endif %}
-                    {% if articles_liens %}
                     <hr>
                     <div class="row justify-content-center">
                         <div class="col-sm-12 col-md-4 textcenter">
+                    {% if articles_liens %}
                             <em>Article liés </em>
                             {% for lien in articles_liens %}
                                 <p class="textcenter">
                                     {% if lien.article == article %}
                                         {{lien.get_type_lien_display}}: <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
+
                                     {% else %}
                                         {{lien.get_type_lien_display}}: <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
                                     {% endif %}
+
+                    <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+
                                 </p>
                             {% endfor %}
-                    {% endif %}
 
+                    {% endif %}
                         <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
                                 class="fa fa-plus"></i> Ajouter un lien vers un autre article </a></h4>
                         </div>
                     </div>
                     <hr>
                     <div class="row justify-content-center">
+                        <div class="col-sm-12 col-md-4 textcenter">
+                    {% if projets_liens %}
+                            <em>Projets liés </em>
+                            {% for lien in projets_liens %}
+                                <p class="textcenter">
+                                    {{lien.get_type_lien_display}}: <a href="{{lien.projet_lie.get_absolute_url}}">{{lien.projet_lie}}</a>
+                                </p>
+                            {% endfor %}
+
+                    {% endif %}
+                        <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLienProjet' slug_article=article.slug %}"><i
+                                class="fa fa-plus"></i> Ajouter un lien vers un projet </a></h4>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row justify-content-center">
                         <div class="col-sm-12 textcenter">
-                            <h4>Historique: </h4>
+                            <h4>Historique :</h4>
                         </div>
                     </div>
                     <div class="row textcenter">

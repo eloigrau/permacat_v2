@@ -1,0 +1,65 @@
+{% extends 'blog/base_blog2.html' %}
+{% load static %}
+
+{% block header%}
+    <link rel="stylesheet" href="{% static 'Jit/Examples/css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'Jit/Examples/css/ForceDirected.css' %}" />
+ <script src="{% static 'Jit/jit.js' %}"></script>
+ <script src="{% static 'Jit/jit-yc.js' %}"></script>
+<script language="javascript" type="text/javascript" src="{% static 'Jit/Examples/ForceDirected/example1.js' %}"></script>
+{%endblock%}
+{%block divbody %}
+onload="init();"
+{%endblock%}
+{% block title %} - Liens - {{titre}}
+{% endblock %}
+{% block subtitle %}
+
+<div class="anchor_blank" id="ref-titre"></div>
+<div class="row textcenter">
+  <div class="col-sm-12 textcenter">
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div id="container">
+
+<div id="left-container">
+
+
+
+        <div class="text">
+        <h4>
+Force Directed Static Graph
+        </h4>
+
+            A static JSON Graph structure is used as input for this visualization.<br /><br />
+            You can <b>zoom</b> and <b>pan</b> the visualization by <b>scrolling</b> and <b>dragging</b>.<br /><br />
+            You can <b>change node positions</b> by <b>dragging the nodes around</b>.<br /><br />
+            The clicked node's connections are displayed in a relations list in the right column.<br /><br />
+            The JSON static data is customized to provide different node types, colors and widths.
+
+        </div>
+
+        <div id="id-list"></div>
+
+
+<div style="text-align:center;"><a href="example1.js">See the Example Code</a></div>
+</div>
+
+<div id="center-container">
+    <div id="infovis"></div>
+</div>
+
+<div id="right-container">
+
+<div id="inner-details"></div>
+
+</div>
+
+<div id="log"></div>
+</div>
+{% endblock %}
+
+

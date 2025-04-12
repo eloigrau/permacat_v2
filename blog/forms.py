@@ -1,6 +1,6 @@
 from django import forms
 from bourseLibre.models import Salon, InscritSalon
-from .models import Article, Article_recherche, Commentaire, Projet, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
+from .models import Article, Article_recherche, Commentaire, Projet, Projet_recherche, FicheProjet, CommentaireProjet, Evenement, AdresseArticle, \
     DocumentPartage, Discussion, Choix, Theme, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from django.utils.text import slugify
 import itertools
@@ -641,21 +641,6 @@ class ArticleLiensForm(forms.ModelForm):
         else:
             return None
 
-class ArticleLienProjetForm(forms.ModelForm):
-
-    class Meta:
-        model = ArticleLienProjet
-        fields = ['projet_lie', 'type_lien']
-
-
-    def save(self, auteur, article):
-        instance = super(ArticleLienProjetForm, self).save(commit=False)
-        instance.article = article
-        instance.auteur = auteur
-        instance.save()
-        return instance
-
-
 class Article_rechercheForm(forms.ModelForm):
 
     class Meta:
@@ -667,4 +652,33 @@ class Article_rechercheForm(forms.ModelForm):
 
     def save(self):
         instance = super(Article_rechercheForm, self).save()
+        return instance
+
+class ArticleLienProjetForm(forms.ModelForm):
+
+    class Meta:
+        model = ArticleLienProjet
+        fields = ['type_lien']
+
+
+    def save(self, auteur, article, projet_lie):
+        instance = super(ArticleLienProjetForm, self).save(commit=False)
+        instance.article = article
+        instance.auteur = auteur
+        instance.projet_lie = projet_lie
+        instance.save()
+        return instance
+
+
+class Projet_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Projet_recherche
+        fields = ("projet", )
+        widgets = {
+            'projet': autocomplete.ModelSelect2(url='blog:projet-ac')
+        }
+
+    def save(self):
+        instance = super(Projet_rechercheForm, self).save()
         return instance

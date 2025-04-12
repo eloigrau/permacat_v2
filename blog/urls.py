@@ -28,6 +28,7 @@ urlpatterns = [
     # re_path(r'^newPost/', views.ajouterArticle, name='ajouterArticle'),
     # re_path(r'^article/(?P<slug>.+)$', views.lire, name='lire'),
     re_path(r'^article-ac/$', views.ArticleAutocomplete.as_view(), name='article-ac',),
+    re_path(r'^projet-ac/$', views.ProjetAutocomplete.as_view(), name='projet-ac',),
 
     path(r'article/<str:slug>', views.lireArticle, name='lireArticle'),
     path(r'article/<int:id>', views.lireArticle_id, name='lireArticle_id'),
@@ -124,5 +125,19 @@ urlpatterns = [
     path(r'modifierArticleLiens/<str:slug_article>/<int:pk>',
          login_required(views.ModifierArticleLiens.as_view(), login_url='/auth/login/'),
          name='modifierArticleLiens'),
+    path(r'voir_articles_liens/<str:slug_article>/',
+         views.voir_articles_liens,
+         name='voir_articles_liens'),
+
+    path(r'ajouterArticleLienProjet/<str:slug_article>', views.ajouterArticleLienProjet, name='ajouterArticleLienProjet'),
+    path(r'supprimerArticleLienProjet/<str:slug_article>/<int:pk>',
+         login_required(views.SupprimerArticleLienProjet.as_view(), login_url='/auth/login/'),
+         name='supprimerArticleLienProjet'),
+    path(r'modifierArticleLienProjet/<str:slug_article>/<int:pk>',
+         login_required(views.ModifierArticleLienProjet.as_view(), login_url='/auth/login/'),
+         name='modifierArticleLienProjet'),
+    #path(r'voir_articles_liens/<str:slug_article>/',
+    #     views.voir_articles_liens_projet,
+     #    name='voir_articles_liens'),
 
 ]

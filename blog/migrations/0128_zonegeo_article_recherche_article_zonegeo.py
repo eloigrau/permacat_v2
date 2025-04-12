@@ -23,13 +23,6 @@ class Migration(migrations.Migration):
                 ('titre', models.CharField(max_length=250)),
             ],
         ),
-        migrations.CreateModel(
-            name='Article_recherche',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='blog.article')),
-            ],
-        ),
         migrations.AddField(
             model_name='article',
             name='zonegeo',

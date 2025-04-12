@@ -4,7 +4,7 @@
 <div class="row ">
 <div class="col-sm-12 textcenter">
 <form id="myForm" action="" method="post">{% csrf_token %}
-    <p>Etes vous sûr.e de vouloir supprimer le lien "{{ articlelienprojet }}"</p>
+    <p>Etes vous sûr.e de vouloir supprimer le lien "{{ articlelienprojet }}"?</p>
     <input type="button"  onclick="window.history.back();"  value="Annuler" />
     <input id="btn-valider" type="submit" value="Confirmer" />
 </form>

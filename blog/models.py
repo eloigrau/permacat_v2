@@ -139,14 +139,17 @@ class Choix:
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
 
     LIENS_ARTICLES = (
-        ("0", "sous-article"),
-        ("1", "article connexe"),
-        ("2", "Autre"),
+        ("0", "thème commun"),
+        ("1", "info complémentaire"),
+        ("2", "info mère"),
+        ("3", "info fille"),
+        ("3", "info soeur"),
     )
 
     LIENS_PROJET = (
-        ("0", "info projet"),
-        ("1", "info connexe"),
+        ("0", "info sur le projet"),
+        ("1", "info en lien avec le projet"),
+        ("2", "budget ou organisation"),
         ("3", "Autre"),
     )
 
@@ -903,6 +906,11 @@ class ArticleLiens(models.Model):
     def get_absolute_url(self):
         return self.article.get_absolute_url()
 
+    def get_delete_url(self):
+        return reverse("blog:supprimerArticleLiens", kwargs={"slug_article":self.article.slug, "pk":self.pk})
+
+    def get_update_url(self):
+        return reverse("blog:modifierArticleLiens", kwargs={"slug_article":self.article.slug, "pk":self.pk})
 
 class ArticleLienProjet(models.Model):
     date_creation = models.DateTimeField('Créé le', auto_now_add=True)
@@ -916,11 +924,20 @@ class ArticleLienProjet(models.Model):
     def get_absolute_url(self):
         return self.article.get_absolute_url()
 
+    def get_delete_url(self):
+        return reverse("blog:supprimerArticleLienProjet", kwargs={"slug_article":self.article.slug,"pk":self.pk})
+
+    def get_update_url(self):
+        return reverse("blog:modifierArticleLienProjet", kwargs={"slug_article":self.article.slug,"pk":self.pk})
 
 
 class Article_recherche(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
 
+
+
+class Projet_recherche(models.Model):
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
 
 #
 # class Atelier_new(models.Model):

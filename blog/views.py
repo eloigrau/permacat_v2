@@ -3,13 +3,13 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from django.http import HttpResponseForbidden
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
-from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, Article_recherche, \
+from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
-    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_rechercheForm
+    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_rechercheForm, Projet_rechercheForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -222,6 +222,7 @@ def lireArticle(request, slug):
     todos = TodoArticle.objects.filter(article=article).order_by('titre')
     articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).exclude(slug=slug).order_by('-date_creation')[:15]
     articles_liens = ArticleLiens.objects.filter(Q(article=article) | Q(article_lie=article)).order_by('-date_creation')
+    projets_liens = ArticleLienProjet.objects.filter(article=article).order_by('-date_creation')
 
     sondages = Sondage_binaire.objects.filter(article=article).order_by('-date_creation')
     documents_partages = DocumentPartage.objects.filter(article=article)
@@ -251,7 +252,7 @@ def lireArticle(request, slug):
 
             context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                        'articles_dossier':articles_dossier,'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
-                       "documents_partages":documents_partages, "reunions":reunions,"todos":todos, "ancre": discu.slug, "articles_liens":articles_liens}
+                       "documents_partages":documents_partages, "reunions":reunions,"todos":todos, "ancre": discu.slug, "projets_liens":projets_liens, "articles_liens":articles_liens}
 
     elif form.is_valid() and 'message_discu' in request.POST:
         discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#",""))
@@ -286,11 +287,12 @@ def lireArticle(request, slug):
             #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
                'articles_dossier':articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
-                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "todos":todos, "reunions":reunions, "articles_liens":articles_liens }
+                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "todos":todos, "reunions":reunions, "projets_liens":projets_liens,"articles_liens":articles_liens }
 
     else:
         context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
-                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"todos":todos, "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "reunions":reunions, "articles_liens":articles_liens,  }
+                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"todos":todos, "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages,
+                   "reunions":reunions, "projets_liens":projets_liens,"articles_liens":articles_liens,  }
     return render(request, 'blog/lireArticle.html', context,)
 
 @login_required
@@ -641,34 +643,6 @@ class SupprimerProjet(DeleteAccess, DeleteView):
         return Projet.objects.get(slug=self.kwargs['slug'])
 
 @login_required
-def lireProjet(request, slug):
-    projet = get_object_or_404(Projet, slug=slug)
-
-    if not projet.est_autorise(request.user):
-        return render(request, 'notMembre.html', {"asso":"Permacat"})
-
-    commentaires = CommentaireProjet.objects.filter(projet=projet).order_by("date_creation")
-    actions = action_object_stream(projet)
-
-    form = CommentProjetForm(request.POST or None)
-    if form.is_valid():
-        comment = form.save(commit=False)
-        comment.projet = projet
-        comment.auteur_comm = request.user
-        projet.date_dernierMessage = comment.date_creation
-        projet.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(strip_tags(comment.commentaire).replace('&nspb',' ')))[:96] + "..."
-        projet.save(sendMail=False)
-        comment.save()
-        url = projet.get_absolute_url()+"#idConversation"
-        suffix = "_" + projet.asso.abreviation
-        action.send(request.user, verb='projet_message'+suffix, action_object=projet, url=url,
-                    description="a réagit au projet: '%s'" % projet.titre)
-        #envoi_emails_articleouprojet_modifie(projet, request.user.username + " a réagit au projet: " +  projet.titre, False)
-        return redirect(request.path)
-
-    return render(request, 'blog/lireProjet.html', {'projet': projet, 'form': form, 'commentaires':commentaires, 'actions':actions},)
-
-@login_required
 def ajouterFicheProjet(request, slug):
     form = FicheProjetForm(request.POST or None)
     projet = Projet.objects.get(slug=slug)
@@ -718,6 +692,7 @@ class SupprimerFicheProjet(DeleteAccess, DeleteView):
     def get_success_url(self):
         return reverse('blog:lire_projet', kwargs={'slug':self.object.projet.slug})
 
+
 @login_required
 def lireProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
@@ -727,6 +702,7 @@ def lireProjet(request, slug):
 
     commentaires = CommentaireProjet.objects.filter(projet=projet).order_by("date_creation")
     actions = action_object_stream(projet)
+    articles_lies = ArticleLienProjet.objects.filter(projet_lie=projet).order_by('-date_creation')
 
     form = CommentProjetForm(request.POST or None)
     if form.is_valid():
@@ -744,7 +720,7 @@ def lireProjet(request, slug):
         #envoi_emails_articleouprojet_modifie(projet, request.user.username + " a réagit au projet: " +  projet.titre, False)
         return redirect(request.path)
 
-    return render(request, 'blog/lireProjet.html', {'projet': projet, 'form': form, 'commentaires':commentaires, 'actions':actions},)
+    return render(request, 'blog/lireProjet.html', {'projet': projet, 'form': form, 'commentaires':commentaires, 'actions':actions, "articles_lies":articles_lies},)
 
 
 class ListeProjets(ListView):
@@ -1454,7 +1430,56 @@ class SupprimerArticleLiens(DeleteView):
     template_name_suffix = '_supprimer'
 
     def get_object(self):
-        return TodoArticle.objects.get(slug=self.kwargs['slug_todo'])
+        return ArticleLiens.objects.get(pk=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
+
+    def delete(self, request, *args, **kwargs):
+        # the Post object
+        self.object = self.get_object()
+        if self.object.article.estModifiable or self.object.auteur == request.user or request.user.is_superuser:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
+
+def voir_articles_liens(request, slug_article):
+    return render(request, 'blog/voir_articlesliens.html',)
+
+@login_required
+def ajouterArticleLienProjet(request, slug_article):
+    article = Article.objects.get(slug=slug_article)
+    form = ArticleLienProjetForm(request.POST or None)
+    form_projet = Projet_rechercheForm(request.POST or None)
+
+    if form.is_valid() and form_projet.is_valid():
+        projet_lie = form_projet.cleaned_data['projet']
+        lien = form.save(request.user, article, projet_lie)
+        if lien:
+            action.send(request.user,
+                        action_object=article,
+                        url=article.get_absolute_url(),
+                        verb="article_modifier_" + article.asso.abreviation,
+                        description="a lié l'article '%s' au projet '%s'" % (article.titre, lien.projet_lie.titre))
+        return redirect(article)
+
+    return render(request, 'blog/articlelienprojet_ajouter.html', {'article':article, 'form': form, 'form_projet': form_projet})
+
+class ModifierArticleLienProjet(UpdateView):
+    model = ArticleLienProjet
+    form_class = ArticleLiensForm
+    template_name_suffix = '_modifier'
+    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+
+class SupprimerArticleLienProjet(DeleteView):
+    model = ArticleLienProjet
+    template_name_suffix = '_supprimer'
+
+    def get_object(self):
+        return ArticleLienProjet.objects.get(pk=self.kwargs['pk'])
 
     def get_success_url(self):
         return Article.objects.get(slug=self.kwargs['slug_article']).get_absolute_url()
@@ -1470,7 +1495,6 @@ class SupprimerArticleLiens(DeleteView):
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
 
-
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -1483,5 +1507,26 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
 
+        for nomAsso in Choix_global.abreviationsAsso:
+            if not getattr(self.request.user, "adherent_" + nomAsso):
+                qs = qs.exclude(asso__abreviation=nomAsso)
+
         return qs
 
+
+class ProjetAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Projet.objects.none()
+
+        if "asso_abreviation" in self.request.session:
+            qs = Projet.objects.filter(estArchive=False).order_by("titre")
+
+        if self.q:
+            qs = qs.filter(Q(titre__istartswith=self.q) | Q(titre__icontains=self.q)).order_by("titre")
+
+        for nomAsso in Choix_global.abreviationsAsso:
+            if not getattr(self.request.user, "adherent_" + nomAsso):
+                qs = qs.exclude(asso__abreviation=nomAsso)
+        return qs

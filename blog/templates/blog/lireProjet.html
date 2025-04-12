@@ -58,7 +58,7 @@
     <div class="col-sm-12 textcenter">
         <h3>{{ projet.titre }}
 
-            {% if article.estArchive%}
+            {% if projet.estArchive%}
             <span class="badge badge-Light">
                 archivé
             </span>
@@ -133,6 +133,26 @@
     <div class="col-sm-12 paddingbase">
 		<table class="table table-condensed ">
 			<tbody>
+
+             {% if articles_lies %}
+				<tr>
+					<td class="nomProprieteProduit">
+						Articles :
+					</td>
+					<td class="proprieteProduit">
+                        {% for lien in articles_lies %}
+                            <p class="textcenter">
+                                    {{lien.get_type_lien_display}}: <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
+                    <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+
+                            </p>
+                        {% endfor %}
+					</td>
+				</tr>
+            {% endif%}
+
+
              {% if projet.tags.names %}
 				<tr>
 					<td class="nomProprieteProduit">

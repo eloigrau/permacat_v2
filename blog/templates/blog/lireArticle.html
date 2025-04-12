@@ -634,6 +634,10 @@
                     </div>
                     <table class="table textcenter" style="border:none;">
                         <tr>
+                            <td><i class="fa fa-copy iconleft"></i>
+                                {% copy_to_clipboard article "Copier le lien" %}</td>
+                        </tr>
+                        <tr>
                             <td>
                             {% fa5_icon 'envelope' %}
                                 {% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}
@@ -653,10 +657,6 @@
                             <td>
                                 {% qr_from_text article.get_absolute_url_site size="T" image_format="png" %}
                             </td>
-                        </tr>
-                        <tr>
-                            <td><i class="fa fa-copy iconleft"></i>
-                                {% copy_to_clipboard article "Copier le lien" %}</td>
                         </tr>
                     </table>
                 </div>
@@ -719,43 +719,85 @@
                     {% endif %}
                     <hr>
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 col-md-4 textcenter">
-                    {% if articles_liens %}
-                            <em>Article liés </em>
-                            {% for lien in articles_liens %}
-                                <p class="textcenter">
-                                    {% if lien.article == article %}
-                                        {{lien.get_type_lien_display}}: <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
+                        <div class="col-sm-12 textcenter">
+                             <em>Articles liés </em>
+                        <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
+                                class="fa fa-plus"></i> Lier à un autre article  </a></h4>
+                    {% if articls_liens %}
 
-                                    {% else %}
-                                        {{lien.get_type_lien_display}}: <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
-                                    {% endif %}
+                            <table class="table table-condensed sortable">
+        <thead><th>Date</th><th>Type de lien</th><th>Articl</th>
+        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                     <th>Modifier/Supprimer</th>
+        {% endif %}
 
+        </thead>
+        <tbody>
+                        {% for lien in articles_liens %}
+
+                        <tr><td>
+                            {{ lien.date_creation|date:"d/m/Y" }}
+                        </td>
+                            <td>{{lien.get_type_lien_display}}
+                            </td>
+                            <td>
+                                {% if lien.article == article %}
+                                     <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
+                                {% else %}
+                                     <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
+                                {% endif %}
+                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <td>
                     <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                     <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor%}
+        </tbody>
+    </table>
 
-                                </p>
-                            {% endfor %}
 
                     {% endif %}
-                        <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
-                                class="fa fa-plus"></i> Lier à un autre article </a></h4>
                         </div>
                     </div>
                     <hr>
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 col-md-4 textcenter">
-                    {% if projets_liens %}
-                            <em>Projets liés </em>
-                            {% for lien in projets_liens %}
-                                <p class="textcenter">
-                                    {{lien.get_type_lien_display}}: <a href="{{lien.projet_lie.get_absolute_url}}">{{lien.projet_lie}}</a>
-                                </p>
-                            {% endfor %}
-
-                    {% endif %}
+                        <div class="col-sm-12 textcenter">
+                             <em>Projets liés </em>
                         <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLienProjet' slug_article=article.slug %}"><i
                                 class="fa fa-plus"></i> Lier à un projet </a></h4>
+                    {% if projets_liens %}
+
+                            <table class="table table-condensed sortable">
+        <thead><th>Date</th><th>Type de lien</th><th>Projet</th>
+        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                     <th>Modifier/Supprimer</th>
+        {% endif %}
+
+        </thead>
+        <tbody>
+                        {% for lien in projets_liens %}
+
+                        <tr><td>
+                            {{ lien.date_creation|date:"d/m/Y" }}
+                        </td>
+                            <td>{{lien.get_type_lien_display}}
+                            </td>
+                            <td><a href="{{lien.projet_lie.get_absolute_url}}">{{lien.projet_lie}}</a></td>
+                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <td>
+                    <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor%}
+        </tbody>
+    </table>
+
+
+                    {% endif %}
                         </div>
                     </div>
                     <hr>

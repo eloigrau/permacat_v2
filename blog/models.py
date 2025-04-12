@@ -919,7 +919,7 @@ class ArticleLienProjet(models.Model):
     type_lien = models.CharField(choices=Choix.LIENS_PROJET, default="0", max_length=2)
 
     def __str__(self):
-        return str(self.article) + " " + str(self.type_lien) + " " + str(self.article_lie)
+        return str(self.article) + " " + str(self.type_lien) + " " + str(self.projet_lie)
 
     def get_absolute_url(self):
         return self.article.get_absolute_url()

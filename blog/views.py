@@ -1493,11 +1493,12 @@ class SupprimerArticleLienProjet(DeleteView):
 
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
+        calc = len(self.q) > 2
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated or not self.q:
+        if not self.request.user.is_authenticated or not calc:
             return Article.objects.none()
 
-        if self.q:
+        if calc:
             #if "asso_abreviation" in self.request.session:
                 qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
             #else:
@@ -1508,11 +1509,9 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
 class ProjetAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
+        calc = len(self.q) > 2
         # Don't forget to filter out results depending on the visitor !
-        if not self.request.user.is_authenticated or not self.q:
+        if not self.request.user.is_authenticated or calc:
             return Projet.objects.none()
 
-        if self.q:
-            qs = Projet.objects.filter(estArchive=False, titre__icontains=self.q).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
-
-        return qs
+        return Projet.objects.filter(estArchive=False, titre__icontains=self.q).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")

@@ -721,10 +721,10 @@
                              <em>Articles liés </em>
                         <h4><a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
                                 class="fa fa-plus"></i> Lier à un autre article  </a></h4>
-                    {% if articls_liens %}
+                    {% if articles_liens %}
 
                             <table class="table table-condensed sortable">
-        <thead><th>Date</th><th>Type de lien</th><th>Articl</th>
+        <thead><th>Date</th><th>Type de lien</th><th>Article</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
         {% endif %}

@@ -1515,8 +1515,6 @@ class SupprimerArticleLienProjet(DeleteView):
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
 
-def voir_articles_liens(request, slug_article):
-    return render(request, 'blog/voir_articlesliens_d3.html',)
 
 
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
@@ -1557,4 +1555,15 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
             return Projet.objects.none()
 
         return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False, titre__icontains=self.q).order_by("titre")
+
+
+
+def voir_articles_liens(request, slug_article):
+    import simplejson
+    liens = ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"])
+
+    data_dict = [{"adjacencies":{"nodeTo": l.article_lie.slug, "data": {"$color": "#909291"}}, "data": {"$color": "#416D9C","$type": "circle","$dim": 7},"id": l.article.slug,"name": l.article.titre} for l in liens if l.article_lie]
+    data_json = simplejson.dumps(data_dict)
+
+    return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 

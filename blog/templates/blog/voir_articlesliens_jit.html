@@ -8,9 +8,6 @@
  <script src="{% static 'Jit/jit-yc.js' %}"></script>
 <script language="javascript" type="text/javascript" src="{% static 'Jit/Examples/ForceDirected/example1.js' %}"></script>
 {%endblock%}
-{%block divbody %}
-onload="init();"
-{%endblock%}
 {% block title %} - Liens - {{titre}}
 {% endblock %}
 {% block subtitle %}
@@ -60,6 +57,9 @@ Force Directed Static Graph
 
 <div id="log"></div>
 </div>
+<script>
+init('{{data_json|escapejs}}');
+</script>
 {% endblock %}
 
 

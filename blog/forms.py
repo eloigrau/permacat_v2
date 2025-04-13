@@ -179,11 +179,11 @@ class ArticleChangeForm(forms.ModelForm):
                 instance.partagesAsso.add(asso)
             elif instance.partagesAsso.filter(abreviation=asso.abreviation).exists():
                 instance.partagesAsso.remove(asso)
-        for theme in Theme.objects.all():
-            if theme in self.cleaned_data["themes"]:
-                instance.themes.add(theme)
-            elif instance.themes.filter(nom=theme.nom).exists():
-                instance.themes.remove(theme)
+        # for theme in Theme.objects.all():
+        #     if theme in self.cleaned_data["themes"]:
+        #         instance.themes.add(theme)
+        #     elif instance.themes.filter(nom=theme.nom).exists():
+        #         instance.themes.remove(theme)
         return instance
 
 #

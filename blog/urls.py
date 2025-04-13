@@ -138,8 +138,8 @@ urlpatterns = [
     path(r'modifierArticleLienProjet/<str:slug_article>/<int:pk>',
          login_required(views.ModifierArticleLienProjet.as_view(), login_url='/auth/login/'),
          name='modifierArticleLienProjet'),
-    #path(r'voir_articles_liens/<str:slug_article>/',
-    #     views.voir_articles_liens_projet,
-     #    name='voir_articles_liens'),
+    path(r'voir_articles_liens/<str:slug_article>/',
+         views.voir_articles_liens,
+        name='voir_articles_liens'),
 
 ]

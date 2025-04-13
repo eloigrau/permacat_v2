@@ -1362,7 +1362,7 @@ def ajaxListeArticles(request):
         return render(request, 'blog/ajax/listeArticles.html',
                       {'qs': qs})
     except:
-        qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False)
+        qs = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False)
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
 
 

@@ -31,11 +31,11 @@ class Migration(migrations.Migration):
                 ('projet_lie', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='projet_lie', to='blog.projet')),
             ],
         ),
-        # migrations.CreateModel(
-        #     name='Article_recherche',
-        #     fields=[
-        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-        #         ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='blog.article')),
-        #     ],
-        # ),
+        migrations.CreateModel(
+            name='Article_recherche',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='blog.article')),
+            ],
+        ),
     ]

@@ -1050,7 +1050,7 @@ def chercher_annonces(request):
 def chercher_produits(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     if recherche:
-        produits_list = Produit.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
+        produits_list = Produit.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
     else:
         produits_list = Produit.objects.none()
 

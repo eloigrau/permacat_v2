@@ -139,11 +139,13 @@ class Choix:
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
 
     LIENS_ARTICLES = (
-        ("0", "thème commun"),
-        ("1", "info complémentaire"),
-        ("2", "info mère"),
-        ("3", "info fille"),
-        ("3", "info soeur"),
+        ("0", "Thème commun ou similaire"),
+        ("1", "Collectif/projet commun ou similaire"),
+        ("2", "L'article englobe/contient (choisir l'article qui est contenu)"),
+        ("3", "L'article est inclu dans l'autre (choisir l'article qui le contient)"),
+        ("4", "info mère (choisir l'article qui hérite)"),
+        ("5", "info fille (choisir l'article qui lègue)"),
+        ("6", "info soeur"),
     )
 
     LIENS_PROJET = (

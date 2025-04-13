@@ -654,6 +654,19 @@ class Article_rechercheForm(forms.ModelForm):
         instance = super(Article_rechercheForm, self).save()
         return instance
 
+class Article_asso_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Article_recherche
+        fields = ("article", )
+        widgets = {
+            'article': autocomplete.ModelSelect2(url='blog:article-ac-asso')
+        }
+
+    def save(self):
+        instance = super(Article_rechercheForm, self).save()
+        return instance
+
 class ArticleLienProjetForm(forms.ModelForm):
 
     class Meta:

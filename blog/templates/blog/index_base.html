@@ -24,7 +24,6 @@
 {%block subtitle%}
 <div class="row">
     <div class="col-md-12 textcenter">
-
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-4">
                 <div class="row no-gutters justify-content-center">
@@ -32,14 +31,12 @@
                           action="{% url 'chercher_articles' %}" method="get" role="search">
                         {% csrf_token %}
                         <div class="col" style="padding-right:0;">
-                            {% comment %} <input class="form-control " name="id_recherche"
-                                                 placeholder="Recherche rapide..." type="text">{%endcomment %}
-                            <span class="input-group-append">
-                        <input class="form-control fmr-sm-2" name="id_recherche" type="text"
+                            <input class="form-control fmr-sm-2" name="id_recherche" type="text"
                                placeholder="Recherche rapide...">
+                        </div>
+                        <div class="col" style="padding-left:0;">
                         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip"
                                 data-placement="bottom" title="Recherche rapide...">{% fa5_icon 'search' title='chercher' %}</button>
-                    </span>
                         </div>
                     </form>
                 </div>
@@ -54,11 +51,28 @@
             </div>
 
             <div class="col-md-6 col-lg-4 justify-content-center">
+                <div>
                 <a href="{% url 'blog:ajouterNouvelArticle' %}">
                     <button type="button" class="btn  btn-success">
                         <i class="fa fa-plus"></i>&nbsp; Ajouter un article
                     </button>
                 </a>&ensp;
+                </div>
+                <p>
+                <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row justify-content-center">
+                            <div class="col-sm-10 textcenter" style="padding-right:0;">
+                                {% include 'form_template2.html' with form=form_article_recherche %}
+                            </div>
+
+                            <div class="col-sm-2 textcenter" style="padding-left:0;">
+                                <button class="btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip"
+                                data-placement="bottom" title="Lire">Lire</button>
+                            </div>
+                        </div>
+                    </form>
+                </p>
             </div>
 
             <div class="col-md-6 col-lg-4 justify-content-center">
@@ -108,7 +122,7 @@
                             <div class="modal-header">
                                 <div class="row justify-content-center">
                                     <h5> Abonnements au forum</h5>
-                                    <p>Cliquez sur la cloche barrée pour vous abonner. Si la cloche n'est aps barrée
+                                    <p>Cliquez sur la cloche barrée pour vous abonner. Si la cloche n'est pas barrée
                                         vous êtes abonné. Vous pouvez alors vous désabonner en cliquant dessus.
                                     </p>
                                 </div>
@@ -204,7 +218,7 @@
                 <li class="sidebarli">
                     <a href="#articles_archives">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p> archives</p>
+                            archives
                         </button>
                     </a>
                 </li>
@@ -301,7 +315,7 @@ function get_tags_articles(url_tag) {
             <button class="btn btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;"
                     type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent"
                     aria-expanded="false" aria-label="Toggle navigation">
-                <h6>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </h6>
+                {% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %}
             </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
@@ -399,7 +413,7 @@ function get_tags_articles(url_tag) {
                 <li class="nav-item  ">
                     <a href="#articles_epingles">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles épinglés</p>
+                            Articles épinglés
                         </button>
                     </a>
                 </li>
@@ -408,7 +422,7 @@ function get_tags_articles(url_tag) {
                 <li class="nav-item  ">
                     <a href="#article_list">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles du groupe</p>
+                            Articles du groupe
                         </button>
                     </a>
                 </li>
@@ -417,7 +431,7 @@ function get_tags_articles(url_tag) {
                 <li class="nav-item  ">
                     <a href="#articles_partages">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles partagés</p>
+                            Articles partagés
                         </button>
                     </a>
                 </li>
@@ -426,7 +440,7 @@ function get_tags_articles(url_tag) {
                 <li class="nav-item  ">
                     <a href="#articles_archives">
                         <button type="button" class="btn  btn-block btn-light btn-sm">
-                            <p>Articles archivés</p>
+                            Articles archivés
                         </button>
                     </a>
                 </li>
@@ -518,8 +532,8 @@ function get_tags_articles(url_tag) {
                         <a class="nav-item btn-block" id="menuDossier" data-toggle="dropdown">
                             <button class="btn  {% if dossier_courant %}btn-warning{% else %}btn-info {% endif %} dropdown-toggle"
                                     id="btn-categorie">
-                                <h6 id="titreDossier"> {% if dossier_courant %} Dossier :
-                                    {{categorie_courante|getCategorie_display}} {% else %} Choisir un dossier {% endif %}</h6></button>
+                                <span id="titreDossier"> {% if dossier_courant %} Dossier :
+                                    {{categorie_courante|getCategorie_display}} {% else %} Choisir un dossier {% endif %}</span>
                             </button>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="menuDossier" id="idmenuDossier">

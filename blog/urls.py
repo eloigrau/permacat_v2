@@ -28,10 +28,12 @@ urlpatterns = [
     # re_path(r'^newPost/', views.ajouterArticle, name='ajouterArticle'),
     # re_path(r'^article/(?P<slug>.+)$', views.lire, name='lire'),
     re_path(r'^article-ac/$', views.ArticleAutocomplete.as_view(), name='article-ac',),
+    re_path(r'^article-ac-asso/$', views.ArticleAutocomplete_asso.as_view(), name='article-ac-asso',),
     re_path(r'^projet-ac/$', views.ProjetAutocomplete.as_view(), name='projet-ac',),
 
     path(r'article/<str:slug>', views.lireArticle, name='lireArticle'),
     path(r'article/<int:id>', views.lireArticle_id, name='lireArticle_id'),
+    path(r'article/recherche/', views.lireArticle_recherche, name='lireArticle_recherche'),
     re_path(r'^modifierArticle/(?P<slug>[-\w]+)$', login_required(views.ModifierArticle.as_view(), login_url='/auth/login/'), name='modifierArticle'),
     re_path(r'^Article/AjouterAlbum/(?P<slug>[-\w]+)$', login_required(views.ArticleAddAlbum.as_view(), login_url='/auth/login/'), name='ajouterAlbumArticle'),
     re_path(r'^Article/SupprimerAlbum/(?P<slug>[-\w]+)$', views.articleSupprimerAlbum, name='supprimerAlbumArticle'),

@@ -538,4 +538,5 @@ except ImportError:
     print("Impossible d'importer production.py")
     pass
 
-from bourseLibre.safelogging.settings import *
+if not LOCALL:
+    from bourseLibre.safelogging.settings import *

@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
+from django.views.generic.edit import FormMixin
+
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
-    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_rechercheForm, Projet_rechercheForm
+    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_asso_rechercheForm, Article_rechercheForm, Projet_rechercheForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -51,7 +53,7 @@ import itertools
 
 @login_required
 def accueil(request):
-    assos = request.user.getListeAbreviationsAssosEtPublic()
+    #assos = request.user.getListeAbreviationsAssosEtPublic()
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
 
     #derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__abreviation__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
@@ -73,7 +75,12 @@ def accueil(request):
     hit_count = HitCount.objects.get_for_object(suivi)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
     #'categorie_list':categorie_list,'categorie_list_pc':categorie_list_pc,'categorie_list_rtg':categorie_list_rtg,'categorie_list_fer':categorie_list_fer,'categorie_list_gt':categorie_list_gt,'categorie_list_citealt':categorie_list_citealt,'categorie_list_viure':categorie_list_viure,'projets_list':projets_list,'ateliers_list':ateliers_list, 'categorie_list_projets':categorie_list_projets,
-    return render(request, 'blog/accueil.html', {'asso_list':asso_list,'derniers_articles':derniers, 'suivis':suivis})
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid():
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/accueil.html', {'asso_list':asso_list,'derniers_articles':derniers, 'suivis':suivis, 'form_article_recherche':form_article_recherche})
 
 def envoyerActionArticle(request, article, verb, description):
     action.send(request.user, verb=verb, action_object=article, url=article.get_absolute_url(),
@@ -300,6 +307,13 @@ def lireArticle_id(request, id):
     article = get_object_or_404(Article, id=id)
     return lireArticle(request, slug=article.slug)
 
+@login_required
+def lireArticle_recherche(request):
+    if not "article" in request.GET:
+        return HttpResponseBadRequest()
+    article = get_object_or_404(Article, id=request.GET["article"])
+    return lireArticle(request, slug=article.slug)
+
 
 class ListeArticles(ListView):
     model = Article
@@ -383,15 +397,28 @@ class ListeArticles(ListView):
         return context
 
 
-class ListeArticles_asso(ListView):
+class ListeArticles_asso(ListView, FormMixin):
     model = Article
     context_object_name = "article_list"
     template_name = "blog/index.html"
     paginate_by = 50
 
+    form_class = Article_asso_rechercheForm
+
+    # no get_context_data override
+
+    def post(self, request, *args, **kwargs):
+        # first construct the form to avoid using it as instance
+        self.success_url = self.request.get_full_path()
+        form = self.get_form()
+        if form.is_valid():
+            self.success_url = form.cleaned_data["article"].get_absolute_url()
+        return HttpResponseRedirect(self.success_url)
+
     def get_queryset(self):
         params = dict(self.request.GET.items())
         self.asso = Asso.objects.get(abreviation=self.kwargs['asso'])
+        self.request.session["asso_abreviation"] = self.kwargs['asso']
         #self.q_objects = self.request.user.getQObjectsAssoArticles()
         #qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation) & self.q_objects).distinct()
         if self.request.user.est_autorise(self.asso.abreviation):
@@ -472,6 +499,8 @@ class ListeArticles_asso(ListView):
         context['asso_courante_abreviation'] = self.asso.abreviation
         context['typeFiltre'] = "aucun"
         context['suivis'] = get_suivis_forum(self.request)
+        self.form = Article_rechercheForm(self.request.GET or None)
+        context['form_article_recherche'] = self.get_form()
 
         context['ordreTriPossibles'] = Choix.ordre_tri_articles
 
@@ -1505,6 +1534,20 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
         return qs
 
+class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        calc = len(self.q) > 2
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated or not calc:
+            return Article.objects.none()
+
+        if calc:
+            if "asso_abreviation" in self.request.session:
+                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).order_by("titre")
+            else:
+                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(titre__icontains=self.q, estArchive=False)
+
+        return qs
 
 class ProjetAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

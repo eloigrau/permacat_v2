@@ -938,7 +938,7 @@ class ArticleLienProjet(models.Model):
 
 
 class Article_recherche(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE,
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True,
                                help_text=mark_safe(
                                    "<p style='color:teal'>Taper 3 lettres du titre de l'article recherché'</p>"
                                ))

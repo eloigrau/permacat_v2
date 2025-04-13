@@ -77,7 +77,7 @@ def accueil(request):
     #'categorie_list':categorie_list,'categorie_list_pc':categorie_list_pc,'categorie_list_rtg':categorie_list_rtg,'categorie_list_fer':categorie_list_fer,'categorie_list_gt':categorie_list_gt,'categorie_list_citealt':categorie_list_citealt,'categorie_list_viure':categorie_list_viure,'projets_list':projets_list,'ateliers_list':ateliers_list, 'categorie_list_projets':categorie_list_projets,
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
-    if form_article_recherche.is_valid():
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
     return render(request, 'blog/accueil.html', {'asso_list':asso_list,'derniers_articles':derniers, 'suivis':suivis, 'form_article_recherche':form_article_recherche})

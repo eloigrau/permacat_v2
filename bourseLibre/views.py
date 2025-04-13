@@ -73,9 +73,7 @@ def getEvenementsSemaine(request):
     eve_passe, eve_futur, evenements,  = [], [], []
 
     if not request.user.is_anonymous:
-        ev = Evenement.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
-
-        ev_art = Evenement.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        ev_art = Evenement.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
         ev_2 = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 

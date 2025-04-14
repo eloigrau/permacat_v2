@@ -1582,7 +1582,7 @@ def get_article_liens_ajax(request,):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#416D9C", "$type": "circle", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre,
+                    "name": l.article.titre.replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.article_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1607,7 +1607,7 @@ def get_article_liens_ajax(request,):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre,
+                    "name": l.titre.replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.projet_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1621,7 +1621,7 @@ def get_article_liens_ajax(request,):
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
             "id": p.slug,
-            "name": p.titre.replace('"',"'" ),
+            "name": p.titre.replace('"',"-").replace("'","-"),
             "adjacencies": [
             ],
         }

@@ -1607,7 +1607,7 @@ def get_article_liens_ajax(request,):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.titre.replace('"',"-").replace("'","-"),
+                    "name": l.projet_lie.titre.replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.projet_lie.slug,
                          # "data": {"$color": "#909291"}

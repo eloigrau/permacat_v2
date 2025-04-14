@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
-from django.http import HttpResponseForbidden, HttpResponseBadRequest
+from django.http import HttpResponseForbidden, HttpResponseBadRequest, JsonResponse
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormMixin
@@ -1557,13 +1557,95 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False, titre__icontains=self.q).order_by("titre")
 
 
+def get_article_liens_ajax(request,):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    liens = ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
+    data_dict = {}
+    for l in liens:
+        if l.article_lie:
+            if l.article.slug in data_dict.keys():
+                data_dict[l.article.slug]["adjacencies"].append(
+                                       {"nodeTo": l.article_lie.slug,
+                                       # "data": {"$color": "#909291"}
+                                        })
+            else:
+                data_dict[l.article.slug]={
+                                   "data": {"$color": "#416D9C","$type": "circle","$dim": 7},
+                                   "id": l.article.slug,
+                                   "name": l.article.titre,
+                                    "adjacencies":[
+                                       {"nodeTo": l.article_lie.slug,
+                                       # "data": {"$color": "#909291"}
+                                        },
+                                    ],
+                                    }
+
+    # import json
+    #data_json = json.dumps(list(data_dict.values()))
+    return JsonResponse(data_dict.values())
 
 def voir_articles_liens(request, slug_article):
-    import simplejson
-    liens = ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"])
+    import json
+    if not "asso_abreviation" in request.session:
+        return redirect("blog:accueil")
+    liens = ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
+    data_dict = {}
+    i = 0
+    for l in liens:
+        if l.article_lie:
+            if l.article.slug in data_dict.keys():
+                if not  {"nodeTo": l.article_lie.slug} in data_dict[l.article.slug]["adjacencies"]:
+                    data_dict[l.article.slug]["adjacencies"].append(
+                                           {"nodeTo": l.article_lie.slug,
+                                           # "data": {"$color": "#909291"}
+                                            })
+            else:
+                data_dict[l.article.slug]={
+                                   "data": {"$color": "#416D9C","$type": "circle","$dim": 7},
+                                   "id": l.article.slug,
+                                   "name": l.article.titre,
+                                    "adjacencies":[
+                                       {"nodeTo": l.article_lie.slug,
+                                       # "data": {"$color": "#909291"}
+                                        },
+                                    ],
+                                    }
 
-    data_dict = [{"adjacencies":{"nodeTo": l.article_lie.slug, "data": {"$color": "#909291"}}, "data": {"$color": "#416D9C","$type": "circle","$dim": 7},"id": l.article.slug,"name": l.article.titre} for l in liens if l.article_lie]
-    data_json = simplejson.dumps(data_dict)
+    liens_projets = ArticleLienProjet.objects.exclude(projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(projet_lie__estArchive=False, projet_lie__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
+
+    for l in liens_projets:
+        if l.article:
+            if l.article.slug in data_dict.keys():
+                if not  {"nodeTo": l.projet_lie.slug} in data_dict[l.article.slug]["adjacencies"]:
+                    data_dict[l.article.slug]["adjacencies"].append(
+                                           {"nodeTo": l.projet_lie.slug,
+                                           # "data": {"$color": "#909291"}
+                                            })
+            else:
+                data_dict[l.article.slug]={
+                                   "data": {"$color": "#00cc00","$type": "square","$dim": 7},
+                                   "id": l.article.slug,
+                                   "name": l.article.titre,
+                                    "adjacencies":[
+                                       {"nodeTo": l.projet_lie.slug,
+                                       # "data": {"$color": "#909291"}
+                                        },
+                                    ],
+                                    }
+
+
+    projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True)
+    for p in projets:
+        data_dict[p.slug] = {
+            "data": {"$color": "#909291", "$type": "square", "$dim": 10},
+            "id": p.slug,
+            "name": p.titre,
+            "adjacencies": [
+            ],
+        }
+
+    data_json = json.dumps(list(data_dict.values()))
 
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 

@@ -141,5 +141,8 @@ urlpatterns = [
     path(r'voir_articles_liens/<str:slug_article>/',
          views.voir_articles_liens,
         name='voir_articles_liens'),
+    path(r'get_article_liens_ajax/',
+         views.get_article_liens_ajax,
+        name='get_article_liens_ajax'),
 
 ]

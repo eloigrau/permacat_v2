@@ -1630,6 +1630,7 @@ def get_article_liens_ajax(request,):
     #return JsonResponse(list(data_dict.values()), safe=False, json_dumps_params={'ensure_ascii': False})
     return data_json
 
+@login_required
 def voir_articles_liens(request, slug_article):
     if not "asso_abreviation" in request.session:
         return redirect("blog:accueil")

@@ -159,14 +159,6 @@
                         {% endfor%}
         </tbody>
     </table>
-                        {% for lien in articles_lies %}
-                            <p class="textcenter">
-                                    {{lien.get_type_lien_display}}: <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
-                    <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
-
-                            </p>
-                        {% endfor %}
 					</td>
 				</tr>
             {% endif%}

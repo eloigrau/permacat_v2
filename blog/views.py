@@ -1616,7 +1616,7 @@ def get_article_liens_ajax(request,):
                 }
 
     projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
-                                     estArchive=True)
+                                     estArchive=True).filter(estArchive=False, asso__abreviation=request.session["asso_abreviation"])
     for p in projets:
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},

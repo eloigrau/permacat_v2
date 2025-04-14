@@ -11,11 +11,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.AlterField(
-        #     model_name='article_recherche',
-        #     name='article',
-        #     field=models.ForeignKey(help_text="<p style='color:teal'>Taper 3 lettres du titre de l'article recherché'</p>", on_delete=django.db.models.deletion.CASCADE, to='blog.article'),
-        # ),
+        migrations.AlterField(
+            model_name='article_recherche',
+            name='article',
+            field=models.ForeignKey(help_text="<p style='color:teal'>Taper 3 lettres du titre de l'article recherché'</p>", on_delete=django.db.models.deletion.CASCADE, to='blog.article'),
+        ),
         migrations.AlterField(
             model_name='articlelienprojet',
             name='type_lien',

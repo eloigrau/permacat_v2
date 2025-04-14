@@ -28,5 +28,5 @@ class Migration(migrations.Migration):
             name='zonegeo',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='blog.zonegeo', verbose_name='Zone géographique'),
         ),
-        #migrations.RunPython(creer_zones_geo, ),
+        migrations.RunPython(creer_zones_geo, ),
     ]

@@ -1621,7 +1621,7 @@ def get_article_liens_ajax(request,):
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
             "id": p.slug,
-            "name": p.titre,
+            "name": p.titre.replace('"',"'" ),
             "adjacencies": [
             ],
         }

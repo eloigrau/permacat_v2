@@ -641,6 +641,13 @@ class ArticleLiensForm(forms.ModelForm):
         else:
             return None
 
+class ArticleLiensChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = ArticleLiens
+        fields = ['type_lien']
+
+
 class Article_rechercheForm(forms.ModelForm):
 
     class Meta:
@@ -682,6 +689,12 @@ class ArticleLienProjetForm(forms.ModelForm):
         instance.save()
         return instance
 
+
+class ArticleLienProjetChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = ArticleLienProjet
+        fields = ['type_lien']
 
 class Projet_rechercheForm(forms.ModelForm):
 

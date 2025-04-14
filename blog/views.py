@@ -11,7 +11,8 @@ from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, Comment
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
-    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_asso_rechercheForm, Article_rechercheForm, Projet_rechercheForm
+    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_asso_rechercheForm, Article_rechercheForm, Projet_rechercheForm, \
+    ArticleLienProjetChangeForm, ArticleLiensChangeForm
 from .filters import ArticleFilter
 from.utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
@@ -41,9 +42,10 @@ from vote.models import Suffrage
 from vote.models_simple import Sondage_binaire
 from dal import autocomplete
 from taggit.models import Tag
-from django.core.paginator import Paginator
-from django.core.exceptions import PermissionDenied
-import itertools
+import json
+#from django.core.paginator import Paginator
+#from django.core.exceptions import PermissionDenied
+#import itertools
 
 # @login_required
 # def forum(request):
@@ -1442,9 +1444,14 @@ def ajouterArticleLiens(request, slug_article):
 
 class ModifierArticleLiens(UpdateView):
     model = ArticleLiens
-    form_class = ArticleLiensForm
+    form_class = ArticleLiensChangeForm
     template_name_suffix = '_modifier'
     #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class SupprimerArticleLiens(DeleteView):
@@ -1489,7 +1496,7 @@ def ajouterArticleLienProjet(request, slug_article):
 
 class ModifierArticleLienProjet(UpdateView):
     model = ArticleLienProjet
-    form_class = ArticleLiensForm
+    form_class = ArticleLienProjetChangeForm
     template_name_suffix = '_modifier'
     #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
@@ -1556,86 +1563,60 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
 
         return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False, titre__icontains=self.q).order_by("titre")
 
-
+@login_required
 def get_article_liens_ajax(request,):
-    if not request.user.is_superuser:
-        return HttpResponseForbidden()
-    liens = ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
-    data_dict = {}
-    for l in liens:
-        if l.article_lie:
-            if l.article.slug in data_dict.keys():
-                data_dict[l.article.slug]["adjacencies"].append(
-                                       {"nodeTo": l.article_lie.slug,
-                                       # "data": {"$color": "#909291"}
-                                        })
-            else:
-                data_dict[l.article.slug]={
-                                   "data": {"$color": "#416D9C","$type": "circle","$dim": 7},
-                                   "id": l.article.slug,
-                                   "name": l.article.titre,
-                                    "adjacencies":[
-                                       {"nodeTo": l.article_lie.slug,
-                                       # "data": {"$color": "#909291"}
-                                        },
-                                    ],
-                                    }
-
-    # import json
-    #data_json = json.dumps(list(data_dict.values()))
-    return JsonResponse(data_dict.values())
-
-def voir_articles_liens(request, slug_article):
-    import json
-    if not "asso_abreviation" in request.session:
-        return redirect("blog:accueil")
-    liens = ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
+    liens = ArticleLiens.objects.exclude(
+        article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
     data_dict = {}
     i = 0
     for l in liens:
         if l.article_lie:
             if l.article.slug in data_dict.keys():
-                if not  {"nodeTo": l.article_lie.slug} in data_dict[l.article.slug]["adjacencies"]:
+                if not {"nodeTo": l.article_lie.slug} in data_dict[l.article.slug]["adjacencies"]:
                     data_dict[l.article.slug]["adjacencies"].append(
-                                           {"nodeTo": l.article_lie.slug,
-                                           # "data": {"$color": "#909291"}
-                                            })
+                        {"nodeTo": l.article_lie.slug,
+                         # "data": {"$color": "#909291"}
+                         })
             else:
-                data_dict[l.article.slug]={
-                                   "data": {"$color": "#416D9C","$type": "circle","$dim": 7},
-                                   "id": l.article.slug,
-                                   "name": l.article.titre,
-                                    "adjacencies":[
-                                       {"nodeTo": l.article_lie.slug,
-                                       # "data": {"$color": "#909291"}
-                                        },
-                                    ],
-                                    }
+                data_dict[l.article.slug] = {
+                    "data": {"$color": "#416D9C", "$type": "circle", "$dim": 7},
+                    "id": l.article.slug,
+                    "name": l.article.titre,
+                    "adjacencies": [
+                        {"nodeTo": l.article_lie.slug,
+                         # "data": {"$color": "#909291"}
+                         },
+                    ],
+                }
 
-    liens_projets = ArticleLienProjet.objects.exclude(projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(projet_lie__estArchive=False, projet_lie__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
+    liens_projets = ArticleLienProjet.objects.exclude(
+        projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        projet_lie__estArchive=False, projet_lie__asso__abreviation=request.session["asso_abreviation"]).order_by(
+        'article')
 
     for l in liens_projets:
         if l.article:
             if l.article.slug in data_dict.keys():
-                if not  {"nodeTo": l.projet_lie.slug} in data_dict[l.article.slug]["adjacencies"]:
+                if not {"nodeTo": l.projet_lie.slug} in data_dict[l.article.slug]["adjacencies"]:
                     data_dict[l.article.slug]["adjacencies"].append(
-                                           {"nodeTo": l.projet_lie.slug,
-                                           # "data": {"$color": "#909291"}
-                                            })
+                        {"nodeTo": l.projet_lie.slug,
+                         # "data": {"$color": "#909291"}
+                         })
             else:
-                data_dict[l.article.slug]={
-                                   "data": {"$color": "#00cc00","$type": "square","$dim": 7},
-                                   "id": l.article.slug,
-                                   "name": l.article.titre,
-                                    "adjacencies":[
-                                       {"nodeTo": l.projet_lie.slug,
-                                       # "data": {"$color": "#909291"}
-                                        },
-                                    ],
-                                    }
+                data_dict[l.article.slug] = {
+                    "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
+                    "id": l.article.slug,
+                    "name": l.article.titre,
+                    "adjacencies": [
+                        {"nodeTo": l.projet_lie.slug,
+                         # "data": {"$color": "#909291"}
+                         },
+                    ],
+                }
 
-
-    projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True)
+    projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
+                                     estArchive=True)
     for p in projets:
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
@@ -1645,7 +1626,14 @@ def voir_articles_liens(request, slug_article):
             ],
         }
 
-    data_json = json.dumps(list(data_dict.values()))
+    data_json = json.dumps(list(data_dict.values()), ensure_ascii=False)
+    #return JsonResponse(list(data_dict.values()), safe=False, json_dumps_params={'ensure_ascii': False})
+    return data_json
 
+def voir_articles_liens(request, slug_article):
+    if not "asso_abreviation" in request.session:
+        return redirect("blog:accueil")
+
+    data_json = get_article_liens_ajax(request)
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 

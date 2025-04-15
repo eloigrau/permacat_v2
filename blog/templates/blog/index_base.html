@@ -490,9 +490,11 @@ function get_tags_articles(url_tag) {
        onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab"
        id="navtab_archives"> Archivés</a>
 
+    {% if request.usr.is_superuser %}
     <a class="nav-item nav-link" href="#visu"
        onclick="" data-toggle="tab"
        id="navtab_visu"> Visualisation</a>
+    {% endif %}
     {% endif%}
 </nav>
 {% endif%}

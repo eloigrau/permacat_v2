@@ -409,7 +409,6 @@ class Profil(AbstractUser):
     def isCotisationAJour_scic(self):
         return self.isCotisationAJour("scic")
 
-    @property
     def statutMembre_asso(self, asso):
         if asso == "permacat" or "pc":
             return self.adherent_pc

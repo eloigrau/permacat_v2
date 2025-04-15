@@ -67,12 +67,13 @@
                             </div>
 
                             <div class="col-sm-2 textcenter" style="padding-left:0;">
-                                <button class="btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip"
+                                <button class="btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
                                 data-placement="bottom" title="Lire">Lire</button>
                             </div>
                         </div>
                     </form>
                 </p>
+
             </div>
 
             <div class="col-md-6 col-lg-4 justify-content-center">
@@ -488,6 +489,10 @@ function get_tags_articles(url_tag) {
     <a class="nav-item nav-link" href="#art_archive"
        onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab"
        id="navtab_archives"> Archivés</a>
+
+    <a class="nav-item nav-link" href="#visu"
+       onclick="" data-toggle="tab"
+       id="navtab_visu"> Visualisation</a>
     {% endif%}
 </nav>
 {% endif%}
@@ -568,6 +573,24 @@ function get_tags_articles(url_tag) {
             </div>
         </div>
         <div id="articles_archives_html"></div>
+    </div>
+    <div class="tab-pane fade" id="visu">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 textcenter">
+                <h4>Visualiser les liens entre les articles : </h4>
+                {%if user_membreAsso and asso_courante %}
+                <p>
+                    <a href="{% url 'blog:voir_articles_liens' asso=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens
+                                    </button>
+                    </a>
+                </p>
+                {% endif %}
+            </div>
+        </div>
     </div>
     <div class="tab-pane fade" id="art_motscles">
         <div class="row justify-content-center">

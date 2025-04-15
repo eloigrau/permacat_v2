@@ -558,13 +558,19 @@ def articlesArchives(request, asso):
     article_list = Article.objects.filter(asso=asso, estArchive=True)
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
 
+
+@login_required
+def get_articlesParTag(asso, tag):
+    q_objects = Q(asso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation=asso.abreviation)| Q(asso__abreviation='public')| Q(partagesAsso__abreviation='public')
+    article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
+    return article_list
+
 @login_required
 def articlesParTag(request, asso, tag):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
         return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso':asso})
-    q_objects = Q(asso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation=asso.abreviation)| Q(asso__abreviation='public')| Q(partagesAsso__abreviation='public')
-    article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
+    article_list = get_articlesParTag(asso, tag)
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'tag':tag})
 
 @login_required
@@ -587,14 +593,11 @@ def get_articles_pardossier(request):
 
 @login_required
 def get_tags_articles(request):
-    from django.urls import reverse
-
     tags = []
     if "asso" in request.GET:
         asso = testIsMembreAsso_bool(request, request.GET['asso'])
         if asso:
-            q_objects = Q(asso=asso)
-            inner_qs = set(list(Article.objects.filter(q_objects & Q(estArchive=False)).order_by('tags__name').values_list('tags', flat=True).distinct()))
+            inner_qs = set(list(Article.objects.filter(asso=asso , estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
         else:
             inner_qs = []
     else:
@@ -1564,10 +1567,10 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False, titre__icontains=self.q).order_by("titre")
 
 @login_required
-def get_article_liens_ajax(request,):
+def get_article_liens_ajax(request, asso):
     liens = ArticleLiens.objects.exclude(
         article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-        article__estArchive=False, article__asso__abreviation=request.session["asso_abreviation"]).order_by('article')
+        article__estArchive=False, article__asso__abreviation=asso).order_by('article')
     data_dict = {}
     i = 0
     for l in liens:
@@ -1592,7 +1595,7 @@ def get_article_liens_ajax(request,):
 
     liens_projets = ArticleLienProjet.objects.exclude(
         projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-        projet_lie__estArchive=False, projet_lie__asso__abreviation=request.session["asso_abreviation"]).order_by(
+        projet_lie__estArchive=False, projet_lie__asso__abreviation=asso).order_by(
         'article')
 
     for l in liens_projets:
@@ -1607,7 +1610,7 @@ def get_article_liens_ajax(request,):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.projet_lie.titre.replace('"',"-").replace("'","-"),
+                    "name": l.article.titre.replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.projet_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1616,7 +1619,7 @@ def get_article_liens_ajax(request,):
                 }
 
     projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
-                                     estArchive=True).filter(estArchive=False, asso__abreviation=request.session["asso_abreviation"])
+                                     estArchive=True).filter(estArchive=False, asso__abreviation=asso)
     for p in projets:
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
@@ -1631,10 +1634,10 @@ def get_article_liens_ajax(request,):
     return data_json
 
 @login_required
-def voir_articles_liens(request, slug_article):
-    if not "asso_abreviation" in request.session:
-        return redirect("blog:accueil")
+def voir_articles_liens(request, asso):
+    if not request.user.statutMembre_asso(asso):
+        return HttpResponseForbidden()
 
-    data_json = get_article_liens_ajax(request)
+    data_json = get_article_liens_ajax(request, asso)
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 

@@ -1,33 +1,15 @@
 {% extends 'blog/base_blog2.html' %}
 {% load carto_filters %}
 {% block header%}
-{% load leaflet_tags %}
 {% load static %}
-{% leaflet_js %}
-{% leaflet_css %}
-    <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
-  <link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
- <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
- <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
-{%endblock%}
-{% block title %} - Carte - {{titre}}
+<script src="http://d3js.org/d3.v3.js"></script>
+{% endblock %}
+{% block title %} - Visualisation Forum
 {% endblock %}
 {% block subtitle %}
-
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
-      <p><a href="{{lieu.get_edit_url}}">
-    <button  class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Modifier </button>
-          </a>
-          <a href="{{lieu.get_delete_url}}">
-    <button  class="btn btn-danger btn-sm"><i class="fa fa-delete"></i> Supprimer</button>
-          </a>
-      </p>
-    <h4> {{titre}}</h4>
- <p>    <a href="{{lieu.article.get_absolute_url}}">
-    <button  class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> Revenir à l'article </button>
-          </a></p>
   </div>
 </div>
 {% endblock %}
@@ -35,65 +17,94 @@
 
 <div class="row">
   <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
-      <script type="text/javascript">
-        function map_init_basic (map, options) {
-        var markers = L.markerClusterGroup({ maxClusterRadius: 20 });
-            try{
-                var lat = {{lieu.adresse.latitude|to_numeric}};
-                var lon = {{lieu.adresse.longitude|to_numeric}};
-                {% block markers %}
-                  var marker = L.marker([lat, lon], {icon: getIconFromType(L, '{{lieu.type_marqueur}}')}).bindPopup(' <a href="{{ lieu.get_url_map }}"><b>{{lieu.get_titre}} {{lieu.adresse.get_adresse_str}} ({{lieu.adresse.latitude|to_numeric|slice:":10"}}, {{lieu.adresse.longitude|to_numeric|slice:":9"}})</b></a>');
-                  markers.addLayer(marker);
-                {% endblock %}
-            }
-            catch(err){
-            }
-
-      map.addLayer(markers);
-        try{
-        map.panTo(new L.LatLng(lat, lon));
-        }
-            catch(err){
-            }
-    }
-</script>
-{% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
 </div>
 
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8" >
-    <table class="table table-condensed ">
-        <thead>
-        <th class=" textcenter">Titre</th>
-        <th class=" textcenter">Adresse</th>
-        <th></th>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="proprieteJardin">
-                    <a href="{{ lieu.adresse.get_absolute_url }}">{{ lieu.get_titre }}</a>
-                </td>
-                <td class="nomProprieteJardin textcenter">
-                    {{ lieu.adresse.getLatLon_html }} {% if lieu.adresse.code_postal %}- {{ lieu.adresse.code_postal }} {% endif %}{% if lieu.adresse.commune %}{{ lieu.adresse.commune }}{% endif %}
-                </td>
-                <td class="nomProprieteJardin textcenter">
-                    <a href="{{ lieu.adresse.getGoogleUrl }}" target="_blank" rel="noopener noreferrer nofollow">voir sur google</a>
-                </td>
-            </tr>
-        {% if lieu.infos %}
-            <tr>
-                <td></td>
-                <td colspan="2">
-                        {{lieu.infos|safe}}
-                </td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
   </div>
 </div>
+
+
+      <script type="text/javascript">
+     chart = {
+  // Specify the dimensions of the chart.
+  const width = 928;
+  const height = width;
+  const margin = 1; // to avoid clipping the root circle stroke
+  const name = d => d.id.split(".").pop(); // "Strings" of "flare.util.Strings"
+  const group = d => d.id.split(".")[1]; // "util" of "flare.util.Strings"
+  const names = d => name(d).split(/(?=[A-Z][a-z])|\s+/g); // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
+
+  d3.json("{% url "play_count_by_month" %}", function(error, data) {
+  data.forEach(function(d) {
+    d.month = parseDate(d.month);
+    d.count_items = +d.count_items;
+  });
+
+  // Specify the number format for values.
+  const format = d3.format(",d");
+
+  // Create a categorical color scale.
+  const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+  // Create the pack layout.
+  const pack = d3.pack()
+      .size([width - margin * 2, height - margin * 2])
+      .padding(3);
+
+  // Compute the hierarchy from the (flat) data; expose the values
+  // for each node; lastly apply the pack layout.
+  const root = pack(d3.hierarchy({children: data})
+      .sum(d => d.value));
+
+  // Create the SVG container.
+  const svg = d3.create("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [-margin, -margin, width, height])
+      .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif;")
+      .attr("text-anchor", "middle");
+
+  // Place each (leaf) node according to the layout’s x and y values.
+  const node = svg.append("g")
+    .selectAll()
+    .data(root.leaves())
+    .join("g")
+      .attr("transform", d => `translate(${d.x},${d.y})`);
+
+  // Add a title.
+  node.append("title")
+      .text(d => `${d.data.id}\n${format(d.value)}`);
+
+  // Add a filled circle.
+  node.append("circle")
+      .attr("fill-opacity", 0.7)
+      .attr("fill", d => color(group(d.data)))
+      .attr("r", d => d.r);
+
+  // Add a label.
+  const text = node.append("text")
+      .attr("clip-path", d => `circle(${d.r})`);
+
+  // Add a tspan for each CamelCase-separated word.
+  text.selectAll()
+    .data(d => names(d.data))
+    .join("tspan")
+      .attr("x", 0)
+      .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.35}em`)
+      .text(d => d);
+
+  // Add a tspan for the node’s value.
+  text.append("tspan")
+      .attr("x", 0)
+      .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
+      .attr("fill-opacity", 0.7)
+      .text(d => format(d.value));
+
+  return Object.assign(svg.node(), {scales: {color}});
+}
+</script>
 {% endblock %}
 
     

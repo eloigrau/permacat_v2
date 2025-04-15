@@ -1619,7 +1619,7 @@ def get_article_liens_ajax(request, asso):
                 }
 
     projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
-                                     estArchive=True).filter(estArchive=False, asso__abreviation=asso)
+                                     estArchive=True).filter(asso__abreviation=asso)
     for p in projets:
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
@@ -1640,4 +1640,23 @@ def voir_articles_liens(request, asso):
 
     data_json = get_article_liens_ajax(request, asso)
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
+
+
+@login_required
+def get_articles_asso_ajax(request, asso):
+    asso = testIsMembreAsso(asso)
+    data = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(asso=asso)
+
+    return JsonResponse(list(data), safe=False)
+
+@login_required
+def voir_articles_liens_d3(request, asso):
+    asso = testIsMembreAsso(asso)
+    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(asso=asso)
+
+    data = []
+
+    return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data})
+
+
 

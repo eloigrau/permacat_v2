@@ -142,7 +142,9 @@ function init(json){
     }
   });
   // load JSON data.
+
   fd.loadJSON(JSON.parse(json));
+
   // compute positions incrementally and animate.
   fd.computeIncremental({
     iter: 40,

@@ -1689,7 +1689,7 @@ def get_articles_asso_d3(request, asso_abreviation):
                     ajoutes.append(liens.article_lie.id)
                     dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug #titre.replace('"',"-").replace("'","-")
                                          })
-                if not a.id in ajoutes:
+                if not art.id in ajoutes:
                     ajoutes.append(art.id)
                     dico["nodes"].append({"id":art.id, "name": art.slug #titre.replace('"',"-").replace("'","-")
                                            })
@@ -1814,14 +1814,13 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
     #dico += ["article." + art.categorie + "." + art.slug + ",100" for art in articles]
 
     #dico = ["article." + art.categorie + "." + art.slug + ",100" for art in articles]
-
     dico = [{"type": "article",
-             "group":art.categorie,
-             "id":art.slug,
-             "name":art.slug,
-             "value":"100",
-             "url2":art.get_absolute_url(),
-             "url":"<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>"}
+             "group": art.categorie,
+             "id": art.slug,
+             "name": art.slug,
+             "value": len(HitCount.objects.get_for_object(art).hits)+10,
+             "url2": art.get_absolute_url(),
+             "url": "<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>"}
             for art in articles]
     #for art in articles: #parcourt des articles de l'asso non archives
    #     dico = "article." + art.categorie + "." + art.slug

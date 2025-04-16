@@ -1679,7 +1679,10 @@ def get_articles_asso_d3(request, asso_abreviation):
                         ajoutes.append(a.id)
                         dico["nodes"].append({"id":a.id, "name": a.slug #titre.replace('"',"-").replace("'","-")
                          }) #on ajoute les articles en tant que noeuds
-
+                    if not art.id in ajoutes:
+                        ajoutes.append(art.id)
+                        dico["nodes"].append({"id":art.id, "name": art.slug, "group":art.categorie #titre.replace('"',"-").replace("'","-")
+                                                })
                     if art != a: # on les ajoute en tant que lien
                         dico["links"].append({"source": art.id, "target": a.id})
 
@@ -1756,7 +1759,10 @@ def get_articles_asso_d3_network(request, asso_abreviation):
                         ajoutes.append(a.id)
                         dico["nodes"].append({"id":a.id, "name": a.slug, "group":a.categorie #titre.replace('"',"-").replace("'","-")
                          }) #on ajoute les articles en tant que noeuds
-
+                    if not art.id in ajoutes:
+                        ajoutes.append(art.id)
+                        dico["nodes"].append({"id": art.id, "name": art.slug, "group":art.categorie  # titre.replace('"',"-").replace("'","-")
+                            })
                     if art != a: # on les ajoute en tant que lien
                         dico["links"].append({"source": art.id, "target": a.id})
 

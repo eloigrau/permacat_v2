@@ -1693,7 +1693,7 @@ def get_articles_asso_d3(request, asso_abreviation):
                     ajoutes.append(art.id)
                     dico["nodes"].append({"id":art.id, "name": art.slug #titre.replace('"',"-").replace("'","-")
                                            })
-                dico["links"].append({"source": art.id, "target": a.id})
+                dico["links"].append({"source": art.id, "target": liens.article_lie.id})
 
 
         for liens in ArticleLiens.objects.exclude(article_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article_lie__estArchive=True).filter(article_lie=art):
@@ -1770,7 +1770,7 @@ def get_articles_asso_d3_network(request, asso_abreviation):
                     ajoutes.append(art.id)
                     dico["nodes"].append({"id":art.id, "name": art.slug, "group":art.categorie #titre.replace('"',"-").replace("'","-")
                                            })
-                dico["links"].append({"source": art.id, "target": a.id})
+                dico["links"].append({"source": art.id, "target": liens.article_lie.id})
 
 
         for liens in ArticleLiens.objects.exclude(article_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article_lie__estArchive=True).filter(article_lie=art):

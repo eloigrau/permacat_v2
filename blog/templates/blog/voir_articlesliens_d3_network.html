@@ -70,7 +70,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
     .selectAll()
     .data(nodes)
     .join("circle")
-      .attr("r", 5)
+      .attr("r", 10)
       .attr("fill", d => color(d.group));
 
   node.append("title")

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.urls import path, include, re_path
 
-from . import views, forms
+from . import views
 from django.contrib.auth.decorators import login_required
 
 app_name = 'blog'

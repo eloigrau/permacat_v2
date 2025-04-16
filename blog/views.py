@@ -43,6 +43,9 @@ from vote.models_simple import Sondage_binaire
 from dal import autocomplete
 from taggit.models import Tag
 import json
+
+from django.utils.safestring import mark_safe
+from hitcount.models import HitCount
 #from django.core.paginator import Paginator
 #from django.core.exceptions import PermissionDenied
 #import itertools
@@ -1825,8 +1828,8 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
              "id": art.slug,
              "name": art.slug,
              "value": HitCount.objects.get_for_object(art).hits,
-             "url2": art.get_absolute_url(),
-             "url": "<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>"}
+             "url2": mark_safe(art.get_absolute_url()),
+             "url": mark_safe("<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>")}
             for art in articles]
     #for art in articles: #parcourt des articles de l'asso non archives
    #     dico = "article." + art.categorie + "." + art.slug

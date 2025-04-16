@@ -34,7 +34,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
   const width = 928;
   const height = width;
   const margin = 1; // to avoid clipping the root circle stroke
-  const name = d => d.url2; // "Strings" of "flare.util.Strings"
+  const name = d => d.name; // "Strings" of "flare.util.Strings"
   const group = d => d.group; // "util" of "flare.util.Strings"
   const names = d => d.name.split("-"); // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
 
@@ -81,9 +81,9 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
 
   // Add a label.
   const text = node
-        //.append("svg:a").attr("xlink:xlink:href", function(d){return d.url;})
+        //.append("svg:a").attr("xlink:href", d => d.name)
         .append("text")
-        .attr("clip-path", d => `circle(${d.r})`)
+        .attr("clip-path", d => `circle(${d.r})`);
 
 
   // Add a tspan for each CamelCase-separated word.

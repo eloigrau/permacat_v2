@@ -31,13 +31,13 @@
 d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abreviation %}")
 .then(function(data) {
 // Specify the dimensions of the chart.
-    const width = 928;
+  const width = 928;
   const height = width;
   const margin = 1; // to avoid clipping the root circle stroke
-  const name = d => d.name; // "Strings" of "flare.util.Strings"
+  const name = d => d.url2; // "Strings" of "flare.util.Strings"
   const group = d => d.group; // "util" of "flare.util.Strings"
-  const names = d => [d.name, ]; // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
-  const url = d => d.url2; // url
+  const names = d => d.name.split("-"); // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
+
 
   // Specify the number format for values.
   const format = d3.format(",d");
@@ -80,9 +80,11 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
       .attr("r", d => d.r);
 
   // Add a label.
-  const text = node.append("text")
-      .attr("clip-path", d => `circle(${d.r})`)
-        .append("a").attr("xlink:href", d => url(d));
+  const text = node
+        //.append("svg:a").attr("xlink:xlink:href", function(d){return d.url;})
+        .append("text")
+        .attr("clip-path", d => `circle(${d.r})`)
+
 
   // Add a tspan for each CamelCase-separated word.
   text.selectAll()
@@ -93,11 +95,11 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
       .text(d => d);
 
   // Add a tspan for the node’s value.
-  //text.append("tspan")
-  //    .attr("x", 0)
-  //    .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
-  //    .attr("fill-opacity", 0.7)
-  //    .text(d => format(d.value));
+  text.append("tspan")
+      .attr("x", 0)
+      .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
+      .attr("fill-opacity", 0.7)
+      .text(d => format(d.value));
 
   return Object.assign(svg.node(), {scales: {color}});
 

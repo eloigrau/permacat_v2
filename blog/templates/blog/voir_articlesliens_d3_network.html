@@ -74,7 +74,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
       .attr("fill", d => color(d.group));
 
   node.append("title")
-      .text(d => d.id);
+      .text(d => d.name);
 
   // Add a drag behavior.
   node.call(d3.drag()

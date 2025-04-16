@@ -490,7 +490,7 @@ function get_tags_articles(url_tag) {
        onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab"
        id="navtab_archives"> Archivés</a>
 
-    {% if request.usr.is_superuser %}
+    {% if request.user.is_superuser %}
     <a class="nav-item nav-link" href="#visu"
        onclick="" data-toggle="tab"
        id="navtab_visu"> Visualisation</a>
@@ -583,6 +583,29 @@ function get_tags_articles(url_tag) {
                 {%if user_membreAsso and asso_courante %}
                 <p>
                     <a href="{% url 'blog:voir_articles_liens' asso=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens
+                                    </button>
+                    </a>
+
+                    <a href="{% url 'blog:voir_articles_liens_d3' asso=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens
+                                    </button>
+                    </a>
+
+                    <a href="{% url 'blog:voir_articles_liens_d3_network' asso=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens
+                                    </button>
+                    </a>
+                     <a href="{% url 'blog:voir_articles_liens_d3_bubble' asso=asso_courante_abreviation %}">
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">

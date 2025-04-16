@@ -141,5 +141,23 @@ urlpatterns = [
     #path(r'get_article_liens_ajax/',
     #     views.get_article_liens_ajax,
      #   name='get_article_liens_ajax'),
+    path(r'get_articles_asso_d3/<str:asso_abreviation>/',
+         views.get_articles_asso_d3,
+        name='get_articles_asso_d3'),
+    path(r'voir_articles_liens_d3/<str:asso_abreviation>/',
+         views.voir_articles_liens_d3,
+        name='voir_articles_liens_d3'),
+    path(r'voir_articles_liens_d3_network/<str:asso_abreviation>/',
+         views.voir_articles_liens_d3_network,
+        name='voir_articles_liens_d3_network'),
+    path(r'get_articles_asso_d3_network/<str:asso_abreviation>/',
+         views.get_articles_asso_d3_network,
+        name='get_articles_asso_d3_network'),
+    path(r'voir_articles_liens_d3_bubble/<str:asso_abreviation>/',
+         views.voir_articles_liens_d3_bubble,
+        name='voir_articles_liens_d3_bubble'),
+    path(r'get_articles_asso_d3_bubble/<str:asso_abreviation>/',
+         views.get_articles_asso_d3_bubble,
+        name='get_articles_asso_d3_bubble')
 
 ]

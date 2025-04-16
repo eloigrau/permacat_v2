@@ -1,11 +1,9 @@
 {% extends 'blog/base_blog2.html' %}
 {% load carto_filters %}
-{% block header%}
 {% load static %}
-<script src="http://d3js.org/d3.v3.js"></script>
+{% block header%}
 {% endblock %}
-{% block title %} - Visualisation Forum
-{% endblock %}
+{% block title %} - Visualisation Forum{% endblock %}
 {% block subtitle %}
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
@@ -16,7 +14,8 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-12" >
+  <div class="col-md-12" id="graph">
+      <div id="my_dataviz"></div>
 </div>
 </div>
 
@@ -25,85 +24,70 @@
   </div>
 </div>
 
+<script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
 
       <script type="text/javascript">
-     chart = {
-  // Specify the dimensions of the chart.
-  const width = 928;
-  const height = width;
-  const margin = 1; // to avoid clipping the root circle stroke
-  const name = d => d.id.split(".").pop(); // "Strings" of "flare.util.Strings"
-  const group = d => d.id.split(".")[1]; // "util" of "flare.util.Strings"
-  const names = d => name(d).split(/(?=[A-Z][a-z])|\s+/g); // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
 
-  d3.json("{% url "play_count_by_month" %}", function(error, data) {
-  data.forEach(function(d) {
-    d.month = parseDate(d.month);
-    d.count_items = +d.count_items;
-  });
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 40},
+  width = 800 - margin.left - margin.right,
+  height = 800 - margin.top - margin.bottom;
 
-  // Specify the number format for values.
-  const format = d3.format(",d");
-
-  // Create a categorical color scale.
-  const color = d3.scaleOrdinal(d3.schemeTableau10);
-
-  // Create the pack layout.
-  const pack = d3.pack()
-      .size([width - margin * 2, height - margin * 2])
-      .padding(3);
-
-  // Compute the hierarchy from the (flat) data; expose the values
-  // for each node; lastly apply the pack layout.
-  const root = pack(d3.hierarchy({children: data})
-      .sum(d => d.value));
-
-  // Create the SVG container.
-  const svg = d3.create("svg")
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+.append("svg")
       .attr("width", width)
       .attr("height", height)
-      .attr("viewBox", [-margin, -margin, width, height])
-      .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif;")
-      .attr("text-anchor", "middle");
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;");
 
-  // Place each (leaf) node according to the layout’s x and y values.
-  const node = svg.append("g")
-    .selectAll()
-    .data(root.leaves())
-    .join("g")
-      .attr("transform", d => `translate(${d.x},${d.y})`);
+d3.json("{% url 'blog:get_articles_asso_d3' asso_abreviation=asso_abreviation %}")
+.then(function(data) {
 
-  // Add a title.
-  node.append("title")
-      .text(d => `${d.data.id}\n${format(d.value)}`);
+  // Initialize the links
+  var link = svg
+    .selectAll("line")
+    .data(data.links)
+    .enter()
+    .append("line")
+      .style("stroke", "#aaa")
 
-  // Add a filled circle.
-  node.append("circle")
-      .attr("fill-opacity", 0.7)
-      .attr("fill", d => color(group(d.data)))
-      .attr("r", d => d.r);
+  // Initialize the nodes
+  var node = svg
+    .selectAll("circle")
+    .data(data.nodes)
+    .enter()
+    .append("circle")
+      .attr("r", 20)
+      .style("fill", "#69b3a2")
 
-  // Add a label.
-  const text = node.append("text")
-      .attr("clip-path", d => `circle(${d.r})`);
+  // Let's list the force we wanna apply on the network
+  var simulation = d3.forceSimulation(data.nodes)                 // Force algorithm is applied to data.nodes
+      .force("link", d3.forceLink()                               // This force provides links between nodes
+            .id(function(d) { return d.id; })                     // This provide  the id of a node
+            .links(data.links)                                    // and this the list of links
+      )
+      .force("charge", d3.forceManyBody().strength(-400))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+      .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
+      .on("end", ticked);
 
-  // Add a tspan for each CamelCase-separated word.
-  text.selectAll()
-    .data(d => names(d.data))
-    .join("tspan")
-      .attr("x", 0)
-      .attr("y", (d, i, nodes) => `${i - nodes.length / 2 + 0.35}em`)
-      .text(d => d);
+  // This function is run at each iteration of the force algorithm, updating the nodes position.
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 
-  // Add a tspan for the node’s value.
-  text.append("tspan")
-      .attr("x", 0)
-      .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
-      .attr("fill-opacity", 0.7)
-      .text(d => format(d.value));
+    node
+         .attr("cx", function (d) { return d.x+6; })
+         .attr("cy", function(d) { return d.y-6; });
+  }
 
-  return Object.assign(svg.node(), {scales: {color}});
-}
+}).catch(function(error) {
+    console.warn(error)
+  });
+
 </script>
 {% endblock %}
 

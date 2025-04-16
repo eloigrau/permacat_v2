@@ -1766,7 +1766,7 @@ def get_articles_asso_d3_network(request, asso_abreviation):
                     ajoutes.append(liens.article_lie.id)
                     dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "group":liens.article_lie.categorie #titre.replace('"',"-").replace("'","-")
                                          })
-                if not a.id in ajoutes:
+                if not art.id in ajoutes:
                     ajoutes.append(art.id)
                     dico["nodes"].append({"id":art.id, "name": art.slug, "group":art.categorie #titre.replace('"',"-").replace("'","-")
                                            })

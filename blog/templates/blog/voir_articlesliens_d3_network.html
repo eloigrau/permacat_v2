@@ -76,6 +76,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
   node.append("title")
       .text(d => d.name);
 
+
   // Add a drag behavior.
   node.call(d3.drag()
         .on("start", dragstarted)

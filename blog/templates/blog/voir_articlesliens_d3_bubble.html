@@ -14,6 +14,9 @@
 {% block content %}
 
 <div class="row">
+  <div class="col-md-12 textcenter">
+      <div id="soustitre"></div>
+</div>
   <div class="col-md-12" id="graph">
       <div id="my_dataviz"></div>
 </div>
@@ -30,14 +33,46 @@
 
 d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abreviation %}")
 .then(function(data) {
+
 // Specify the dimensions of the chart.
   const width = 928;
   const height = width;
   const margin = 1; // to avoid clipping the root circle stroke
   const name = d => d.name; // "Strings" of "flare.util.Strings"
   const group = d => d.group; // "util" of "flare.util.Strings"
-  const names = d => d.name.split("-"); // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
+  const names = d => d.name.split(" "); // ["Legend", "Item"] of "flare.vis.legend.LegendItems"
+// -1- Create a tooltip div that is hidden by default:
+  const tooltip = d3.select("#my_dataviz")
+    .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "black")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+      .style("color", "white")
 
+  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+  const showTooltip = function(event, d) {
+    tooltip
+      .transition()
+      .duration(200)
+    tooltip
+      .style("opacity", 1)
+      .html(d.data.name)
+      .style("left", (event.x)/2 + "px")
+      .style("top", (event.y)/2+30 + "px")
+  }
+  const moveTooltip = function(event, d) {
+    tooltip
+      .style("left", (event.x)/2 + "px")
+      .style("top", (event.y)/2+30 + "px")
+  }
+  const hideTooltip = function(event, d) {
+    tooltip
+      .transition()
+      .duration(200)
+      .style("opacity", 0)
+  }
 
   // Specify the number format for values.
   const format = d3.format(",d");
@@ -53,7 +88,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
   // Compute the hierarchy from the (flat) data; expose the values
   // for each node; lastly apply the pack layout.
   const root = pack(d3.hierarchy({children: data})
-      .sum(d => d.value));
+      .sum(d => d.value)).sort(function(a, b) { return -(a.value - b.value); });
 
   // Create the SVG container.
   const svg = d3.select("#my_dataviz").append("svg")
@@ -71,19 +106,22 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
       .attr("transform", d => `translate(${d.x},${d.y})`);
 
   // Add a title.
-  node.append("title").text(d => name(d))
+  node.append("title").text(d => d.data.name)
 
   // Add a filled circle.
   node.append("circle")
       .attr("fill-opacity", 0.7)
       .attr("fill", d => color(group(d.data)))
-      .attr("r", d => d.r);
+      .attr("r", d => d.r)
+      .on("mouseover", showTooltip )
+    .on("mousemove", moveTooltip )
+    .on("mouseleave", hideTooltip );
 
   // Add a label.
   const text = node
-        //.append("svg:a").attr("xlink:href", d => d.name)
         .append("text")
-        .attr("clip-path", d => `circle(${d.r})`);
+        .attr("clip-path", d => `circle(${d.r})`)
+        .append("svg:a").attr("xlink:href", d => d.data.url2);
 
 
   // Add a tspan for each CamelCase-separated word.
@@ -100,6 +138,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
       .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
       .attr("fill-opacity", 0.7)
       .text(d => format(d.value));
+
 
   return Object.assign(svg.node(), {scales: {color}});
 

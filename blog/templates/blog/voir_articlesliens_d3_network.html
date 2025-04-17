@@ -33,6 +33,41 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
   const width = 928;
   const height = 600;
 
+console.log(data)
+
+// -1- Create a tooltip div that is hidden by default:
+  const tooltip = d3.select("#my_dataviz")
+    .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "black")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+      .style("color", "white")
+
+  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+  const showTooltip = function(event, d) {
+    tooltip
+      .transition()
+      .duration(200)
+    tooltip
+      .style("opacity", 1)
+      .html(d.data.name)
+      .style("left", (event.x)/2 + "px")
+      .style("top", (event.y)/2+30 + "px")
+  }
+  const moveTooltip = function(event, d) {
+    tooltip
+      .style("left", (event.x)/2 + "px")
+      .style("top", (event.y)/2+30 + "px")
+  }
+  const hideTooltip = function(event, d) {
+    tooltip
+      .transition()
+      .duration(200)
+      .style("opacity", 0)
+  }
+
   // Specify the color scale.
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -72,9 +107,6 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
     .join("circle")
       .attr("r", 10)
       .attr("fill", d => color(d.group));
-
-  node.append("title")
-      .text(d => d.name);
 
 
   // Add a drag behavior.

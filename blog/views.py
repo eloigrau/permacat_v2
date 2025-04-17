@@ -1736,18 +1736,6 @@ def get_articles_asso_d3(request, asso_abreviation):
 def get_articles_asso_d3_network(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-      #articles_liens = ArticleLiens.objects.exclude(
-    #    article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-    #    article__estArchive=False, article__asso__abreviation=asso).order_by('article')
-        #for art in articles:
-        #    dico[art.slug] =
-    #for l in liens:
-
-    #tags = get_tags_asso(asso)
-    # dico = {"nodes": [], "links": [] }
-    #for tag in tags:
-
-
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
                                        estArchive=True).filter(asso=asso)
 
@@ -1760,11 +1748,11 @@ def get_articles_asso_d3_network(request, asso_abreviation):
                 for a in art_tags: # on parcourt les articles tagges
                     if not a.id in ajoutes:
                         ajoutes.append(a.id)
-                        dico["nodes"].append({"id":a.id, "name": a.slug, "group":a.categorie #titre.replace('"',"-").replace("'","-")
+                        dico["nodes"].append({"id":a.id, "name": a.slug, "url":a.get_absolute_url(), "group":a.categorie #titre.replace('"',"-").replace("'","-")
                          }) #on ajoute les articles en tant que noeuds
                     if not art.id in ajoutes:
                         ajoutes.append(art.id)
-                        dico["nodes"].append({"id": art.id, "name": art.slug, "group":art.categorie  # titre.replace('"',"-").replace("'","-")
+                        dico["nodes"].append({"id": art.id, "name": art.slug, "url":art.get_absolute_url(), "group":art.categorie  # titre.replace('"',"-").replace("'","-")
                             })
                     if art != a: # on les ajoute en tant que lien
                         dico["links"].append({"source": art.id, "target": a.id})
@@ -1773,11 +1761,11 @@ def get_articles_asso_d3_network(request, asso_abreviation):
             if liens.article_lie:
                 if not liens.article_lie.id in ajoutes:
                     ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "group":liens.article_lie.categorie #titre.replace('"',"-").replace("'","-")
+                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "url":liens.article_lie.get_absolute_url(), "group":liens.article_lie.categorie #titre.replace('"',"-").replace("'","-")
                                          })
                 if not liens.article.id in ajoutes:
                     ajoutes.append(liens.article.id)
-                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug, "group":liens.article.categorie #titre.replace('"',"-").replace("'","-")
+                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug, "url":liens.article.get_absolute_url(), "group":liens.article.categorie #titre.replace('"',"-").replace("'","-")
                                            })
                 dico["links"].append({"source": art.id, "target": liens.article_lie.id})
 
@@ -1786,11 +1774,11 @@ def get_articles_asso_d3_network(request, asso_abreviation):
             if liens.article:
                 if not liens.article.id in ajoutes:
                     ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug, "group":liens.article.categorie #titre.replace('"',"-").replace("'","-")
+                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug, "url":liens.article.get_absolute_url(), "group":liens.article.categorie #titre.replace('"',"-").replace("'","-")
                      })
                 if not liens.article_lie.id in ajoutes:
                     ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "group":art.categorie #titre.replace('"',"-").replace("'","-")
+                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "url":liens.article_lie.get_absolute_url(), "group":art.categorie #titre.replace('"',"-").replace("'","-")
                                            })
                 dico["links"].append({"source": liens.article.id, "target": liens.article_lie.id})
         #
@@ -1801,11 +1789,11 @@ def get_articles_asso_d3_network(request, asso_abreviation):
         for l in liens_projets:
             if not art.id in ajoutes:
                 ajoutes.append(art.id)
-                dico["nodes"].append({"id":art.id, "name": art.titre.slug, "group":art.categorie #replace('"',"-").replace("'","-")
+                dico["nodes"].append({"id":art.id, "name": art.titre.slug, "url":art.get_absolute_url(), "group":art.categorie #replace('"',"-").replace("'","-")
                                        })
             id_proj = l.projet_lie.id + 100000
             if not id_proj in ajoutes:
-                dico["nodes"].append({"id":id_proj, "name": l.projet_lie.slug #titre.replace('"',"-").replace("'","-")
+                dico["nodes"].append({"id":id_proj, "name": l.projet_lie.slug, "url":l.get_absolute_url(),  "group":l.categorie #titre.replace('"',"-").replace("'","-")
                                      })
             dico["links"][{"source": id_proj, "target":art.id }]
 
@@ -1825,11 +1813,11 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
     #dico = ["article." + art.categorie + "." + art.slug + ",100" for art in articles]
     dico = [{"type": "article",
              "group": art.categorie,
-             "id": art.slug,
-             "name": art.slug,
+             "id": art.id,
+             "name": art.slug.replace("-", " "),
              "value": HitCount.objects.get_for_object(art).hits,
              "url2": mark_safe(art.get_absolute_url()),
-             "url": mark_safe("<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>")}
+             "url1": mark_safe("<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>")}
             for art in articles]
     #for art in articles: #parcourt des articles de l'asso non archives
    #     dico = "article." + art.categorie + "." + art.slug

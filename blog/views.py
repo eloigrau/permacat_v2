@@ -1731,24 +1731,33 @@ class Noeuds():
         self.rayon = {"article":10, "categorie":20, "projet":15, "centre":25}
         self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
 
+    def get_categorie_id(self, cat):
+        if not cat in self.categories_id:
+            self.categories_id[cat] = 2000000 + len(self.categories_id)
+        return self.categories_id[cat]
+
     def get_dico_d3(self):
         return {"links": [{"source": k,"target":v["target"], "type":v["type"]} for k, v in self.dicoliens.items()],
          "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]}
 
+    def ajouterLien(self, source_id, target_id, type_lien):
+        self.dicoliens[source_id] = {"target":target_id,"type":type_lien}
+
     def ajouterNoeud(self, noeud_id, nom, group, url, type_noeud):
-        self.diconoeuds[noeud_id]={"name": nom.replace('"',"-").replace("'","-"),
+        if not noeud_id in self.diconoeuds.keys():
+            self.diconoeuds[noeud_id]={"name": nom.replace('"',"-").replace("'","-"),
                                 "url":url,
                                 "group":group,
                                "type_noeud":type_noeud}
 
     def ajouterNoeudArticle(self, art):
         self.ajouterNoeud(art.id, art.titre, art.categorie, art.get_absolute_url(), "article")
+        id_cat =  self.get_categorie_id(art.categorie)
+        self.ajouterLien(art.id, id_cat, "dossier")
 
     def ajouterNoeudProjet(self, art):
         self.ajouterNoeud(art.id + 1000000, art.titre, art.categorie, art.get_absolute_url(), "projet")
 
-    def ajouterLien(self, source_id, target_id, type_lien):
-        self.dicoliens[source_id] = {"target":target_id,"type":type_lien}
 
     def ajouterNoeudsEtLiens_articles(self, art1, art2, type_lien):
         self.ajouterNoeudArticle(art1)
@@ -1760,18 +1769,18 @@ class Noeuds():
         self.ajouterNoeudProjet(proj2)
         self.ajouterLien(article.id, proj2.id, type_lien="projet")
 
+
     def ajouterLienArticleCategorie(self, art):
         if art:
             if not art.categorie in self.categories_id:
                 self.categories_id[art.categorie] = 2000000 + len(self.categories_id)
-            id = self.categories_id[art.categorie]
+            id = self.get_categorie_id(art.categorie)
             self.ajouterNoeud(id,
-                              art.categorie,
+                              art.get_categorie_display(),
                               art.categorie,
                               reverse('blog:index_asso', kwargs={"asso":self.asso + "?categorie=" + art.categorie}),
                               "categorie")
             self.ajouterNoeudArticle(art)
-            self.ajouterLien(id, art.id, "categorie")
             self.ajouterLien(id, 999999, "centre")
 
 @login_required

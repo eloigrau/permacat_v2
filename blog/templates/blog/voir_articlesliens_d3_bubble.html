@@ -133,11 +133,11 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
       .text(d => d);
 
   // Add a tspan for the node’s value.
-  text.append("tspan")
-      .attr("x", 0)
-      .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
-      .attr("fill-opacity", 0.7)
-      .text(d => format(d.value));
+  //text.append("tspan")
+  //    .attr("x", 0)
+  //    .attr("y", d => `${names(d.data).length / 2 + 0.35}em`)
+  //    .attr("fill-opacity", 0.7)
+  //    .text(d => format(d.value));
 
 
   return Object.assign(svg.node(), {scales: {color}});

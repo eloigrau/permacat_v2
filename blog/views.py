@@ -1651,75 +1651,125 @@ def voir_articles_liens(request, asso):
     data_json = get_article_liens_ajax(request, asso)
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 
+#
+# @login_required
+# def get_articles_asso_d3(request, asso_abreviation):
+#     asso = testIsMembreAsso(request, asso_abreviation)
+#
+#     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
+#                                        estArchive=True).filter(asso=asso)
+#
+#     ajoutes = []
+#     dico = {"nodes": [], "links": [] }
+#     for art in articles: #parcourt des articles de l'asso non archives
+#         for tag in art.tags.all(): #on parcourt les tags de l'article
+#             art_tags = get_articlesParTag(asso, tag)# pour chaque tag on recupere les articles tagges pareil
+#             if len(art_tags) > 1: #si plus de 2 articles,
+#                 for a in art_tags: # on parcourt les articles tagges
+#                     if not a.id in ajoutes:
+#                         ajoutes.append(a.id)
+#                         dico["nodes"].append({"id":a.id, "name": a.slug #titre.replace('"',"-").replace("'","-")
+#                          }) #on ajoute les articles en tant que noeuds
+#                     if not art.id in ajoutes:
+#                         ajoutes.append(art.id)
+#                         dico["nodes"].append({"id":art.id, "name": art.slug, "group":art.categorie #titre.replace('"',"-").replace("'","-")
+#                                                 })
+#                     if art != a: # on les ajoute en tant que lien
+#                         dico["links"].append({"source": art.id, "target": a.id})
+#
+#         for liens in ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article__estArchive=True).filter(article=art):
+#             if liens.article_lie:
+#                 if not liens.article_lie.id in ajoutes:
+#                     ajoutes.append(liens.article_lie.id)
+#                     dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug #titre.replace('"',"-").replace("'","-")
+#                                          })
+#                 if not art.id in ajoutes:
+#                     ajoutes.append(art.id)
+#                     dico["nodes"].append({"id":art.id, "name": art.slug #titre.replace('"',"-").replace("'","-")
+#                                            })
+#                 dico["links"].append({"source": art.id, "target": liens.article_lie.id})
+#
+#
+#         for liens in ArticleLiens.objects.exclude(article_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article_lie__estArchive=True).filter(article_lie=art):
+#             if liens.article:
+#                 if not liens.article.id in ajoutes:
+#                     ajoutes.append(liens.article.id)
+#                     dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug #titre.replace('"',"-").replace("'","-")
+#                      })
+#                 if not liens.article_lie.id in ajoutes:
+#                     ajoutes.append(liens.article_lie.id)
+#                     dico["nodes"].append({"id":liens.article_lie.id, "name": art.slug #titre.replace('"',"-").replace("'","-")
+#                                            })
+#                 dico["links"].append({"source": art.id, "target": liens.article.id})
+#
+#         liens_projets = ArticleLienProjet.objects.exclude(
+#             projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), projet_lie__estArchive=True).filter(
+#              projet_lie__asso__abreviation=asso, article=art)
+#
+#         for l in liens_projets:
+#             if not art.id in ajoutes:
+#                 ajoutes.append(art.id)
+#                 dico["nodes"].append({"id":art.id, "name": art.titre.slug, "url":art.get_absolute_url(), "group":art.categorie #replace('"',"-").replace("'","-")
+#                                        })
+#             id_proj = l.projet_lie.id + 100000
+#             if not id_proj in ajoutes:
+#                 ajoutes.append(id_proj)
+#                 dico["nodes"].append({"id":id_proj, "name": l.projet_lie.slug, "url":l.get_absolute_url(),  "group":l.categorie #titre.replace('"',"-").replace("'","-")
+#                                      })
+#             dico["links"][{"source": id_proj, "target":art.id }]
+#
+#     return JsonResponse(dico, safe=True)
 
-@login_required
-def get_articles_asso_d3(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
-                                       estArchive=True).filter(asso=asso)
+class Noeuds():
+    diconoeuds = {}
+    dicoliens = {}
+    categories_id = {}
 
-    ajoutes = []
-    dico = {"nodes": [], "links": [] }
-    for art in articles: #parcourt des articles de l'asso non archives
-        for tag in art.tags.all(): #on parcourt les tags de l'article
-            art_tags = get_articlesParTag(asso, tag)# pour chaque tag on recupere les articles tagges pareil
-            if len(art_tags) > 1: #si plus de 2 articles,
-                for a in art_tags: # on parcourt les articles tagges
-                    if not a.id in ajoutes:
-                        ajoutes.append(a.id)
-                        dico["nodes"].append({"id":a.id, "name": a.slug #titre.replace('"',"-").replace("'","-")
-                         }) #on ajoute les articles en tant que noeuds
-                    if not art.id in ajoutes:
-                        ajoutes.append(art.id)
-                        dico["nodes"].append({"id":art.id, "name": art.slug, "group":art.categorie #titre.replace('"',"-").replace("'","-")
-                                                })
-                    if art != a: # on les ajoute en tant que lien
-                        dico["links"].append({"source": art.id, "target": a.id})
+    def __init__(self, asso_abreviation):
+        self.asso = asso_abreviation
+        self.rayon = {"article":10, "categorie":20, "projet":15}
 
-        for liens in ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article__estArchive=True).filter(article=art):
-            if liens.article_lie:
-                if not liens.article_lie.id in ajoutes:
-                    ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug #titre.replace('"',"-").replace("'","-")
-                                         })
-                if not art.id in ajoutes:
-                    ajoutes.append(art.id)
-                    dico["nodes"].append({"id":art.id, "name": art.slug #titre.replace('"',"-").replace("'","-")
-                                           })
-                dico["links"].append({"source": art.id, "target": liens.article_lie.id})
+    def get_dico_d3(self):
+        return {"links": [{"source": k,"target":v["target"], "type":v["type"]} for k, v in self.dicoliens.items()],
+         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]}
+
+    def ajouterNoeud(self, noeud_id, nom, group, url, type_noeud):
+        self.diconoeuds[noeud_id]={"name": nom.replace('"',"-").replace("'","-"),
+                                "url":url,
+                                "group":group,
+                               "type_noeud":type_noeud}
+
+    def ajouterNoeudArticle(self, art):
+        self.ajouterNoeud(art.id, art.titre, art.categorie, art.get_absolute_url(), "article")
 
 
-        for liens in ArticleLiens.objects.exclude(article_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article_lie__estArchive=True).filter(article_lie=art):
-            if liens.article:
-                if not liens.article.id in ajoutes:
-                    ajoutes.append(liens.article.id)
-                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug #titre.replace('"',"-").replace("'","-")
-                     })
-                if not liens.article_lie.id in ajoutes:
-                    ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article_lie.id, "name": art.slug #titre.replace('"',"-").replace("'","-")
-                                           })
-                dico["links"].append({"source": art.id, "target": liens.article.id})
+    def ajouterNoeudProjet(self, art):
+        self.ajouterNoeud(art.id + 1000000, art.titre, art.categorie, art.get_absolute_url(), "projet")
 
-        liens_projets = ArticleLienProjet.objects.exclude(
-            projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), projet_lie__estArchive=True).filter(
-             projet_lie__asso__abreviation=asso, article=art)
+    def ajouterLien(self, source_id, target_id, type_lien):
+        self.dicoliens[source_id] = {"target":target_id,"type":type_lien}
 
-        for l in liens_projets:
-            if not art.id in ajoutes:
-                ajoutes.append(art.id)
-                dico["nodes"].append({"id":art.id, "name": art.titre.slug, "url":art.get_absolute_url(), "group":art.categorie #replace('"',"-").replace("'","-")
-                                       })
-            id_proj = l.projet_lie.id + 100000
-            if not id_proj in ajoutes:
-                ajoutes.append(id_proj)
-                dico["nodes"].append({"id":id_proj, "name": l.projet_lie.slug, "url":l.get_absolute_url(),  "group":l.categorie #titre.replace('"',"-").replace("'","-")
-                                     })
-            dico["links"][{"source": id_proj, "target":art.id }]
+    def ajouterNoeudsEtLiens_articles(self, art1, art2, type_lien):
+        self.ajouterNoeudArticle(art1)
+        self.ajouterNoeudArticle(art2)
+        self.ajouterLien(art1.id, art2.id, type_lien)
 
-    return JsonResponse(dico, safe=True)
+    def ajouterNoeudsEtLiens_projet(self, article, proj2):
+        self.ajouterNoeudArticle(article)
+        self.ajouterNoeudProjet(proj2)
+        self.ajouterLien(article.id, proj2.id, type_lien="projet")
 
+    def ajouterLienArticleCategorie(self, art):
+        if not art.categorie in self.categories_id:
+            self.categories_id[art.categorie] = 2000000 + len(self.categories_id)
+        id = self.categories_id[art.categorie]
+        self.ajouterNoeud(id,
+                          art.categorie,
+                          art.categorie,
+                          reverse('blog:index_asso', kwargs={"asso":self.asso + "?categorie=" + art.categorie}),
+                          "categorie")
+        self.ajouterLien(id, art.id, "categorie")
 
 @login_required
 def get_articles_asso_d3_network(request, asso_abreviation):
@@ -1728,65 +1778,30 @@ def get_articles_asso_d3_network(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
                                        estArchive=True).filter(asso=asso)
 
-    ajoutes = []
-    dico = {"nodes": [], "links": [] }
+    noeuds = Noeuds(asso_abreviation)
     for art in articles: #parcourt des articles de l'asso non archives
         for tag in art.tags.all(): #on parcourt les tags de l'article
             art_tags = get_articlesParTag(asso, tag)# pour chaque tag on recupere les articles tagges pareil
             if len(art_tags) > 1: #si plus de 2 articles,
                 for a in art_tags: # on parcourt les articles tagges
-                    if not a.id in ajoutes:
-                        ajoutes.append(a.id)
-                        dico["nodes"].append({"id":a.id, "name": a.slug, "url":a.get_absolute_url(), "group":a.categorie #titre.replace('"',"-").replace("'","-")
-                         }) #on ajoute les articles en tant que noeuds
-                    if not art.id in ajoutes:
-                        ajoutes.append(art.id)
-                        dico["nodes"].append({"id": art.id, "name": art.slug, "url":art.get_absolute_url(), "group":art.categorie  # titre.replace('"',"-").replace("'","-")
-                            })
-                    if art != a: # on les ajoute en tant que lien
-                        dico["links"].append({"source": art.id, "target": a.id})
+                    noeuds.ajouterNoeudsEtLiens_articles(a, art, type_lien="tags")
 
-        for liens in ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article__estArchive=True).filter(article=art):
-            if liens.article_lie:
-                if not liens.article_lie.id in ajoutes:
-                    ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "url":liens.article_lie.get_absolute_url(), "group":liens.article_lie.categorie #titre.replace('"',"-").replace("'","-")
-                                         })
-                if not liens.article.id in ajoutes:
-                    ajoutes.append(liens.article.id)
-                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug, "url":liens.article.get_absolute_url(), "group":liens.article.categorie #titre.replace('"',"-").replace("'","-")
-                                           })
-                dico["links"].append({"source": art.id, "target": liens.article_lie.id})
+        for liens in (ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article__estArchive=True) \
+                .filter(Q(article=art) | Q(article_lie=art))):
 
+            if liens.article_lie and liens.article:
+                noeuds.ajouterNoeudsEtLiens_articles(liens.article, liens.article_lie, type_lien="liens")
 
-        for liens in ArticleLiens.objects.exclude(article_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article_lie__estArchive=True).filter(article_lie=art):
-            if liens.article:
-                if not liens.article.id in ajoutes:
-                    ajoutes.append(liens.article.id)
-                    dico["nodes"].append({"id":liens.article.id, "name": liens.article.slug, "url":liens.article.get_absolute_url(), "group":liens.article.categorie #titre.replace('"',"-").replace("'","-")
-                     })
-                if not liens.article_lie.id in ajoutes:
-                    ajoutes.append(liens.article_lie.id)
-                    dico["nodes"].append({"id":liens.article_lie.id, "name": liens.article_lie.slug, "url":liens.article_lie.get_absolute_url(), "group":art.categorie #titre.replace('"',"-").replace("'","-")
-                                           })
-                dico["links"].append({"source": liens.article.id, "target": liens.article_lie.id})
-        #
         liens_projets = ArticleLienProjet.objects.exclude(
             projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), projet_lie__estArchive=True).filter(
              projet_lie__asso__abreviation=asso, article=art)
 
         for l in liens_projets:
-            if not art.id in ajoutes:
-                ajoutes.append(art.id)
-                dico["nodes"].append({"id":art.id, "name": art.titre.slug, "url":art.get_absolute_url(), "group":art.categorie #replace('"',"-").replace("'","-")
-                                       })
-            id_proj = l.projet_lie.id + 100000
-            if not id_proj in ajoutes:
-                dico["nodes"].append({"id":id_proj, "name": l.projet_lie.slug, "url":l.get_absolute_url(),  "group":l.categorie #titre.replace('"',"-").replace("'","-")
-                                     })
-            dico["links"][{"source": id_proj, "target":art.id }]
+            noeuds.ajouterNoeudsEtLiens_projet(art, l)
 
-    return JsonResponse(dico, safe=True)
+        noeuds.ajouterLienArticleCategorie(art)
+
+    return JsonResponse(noeuds.get_dico_d3(), safe=True)
 
 
 @login_required
@@ -1796,6 +1811,8 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
                                        estArchive=True).filter(asso=asso)
 
+    groupes = articles.values_list("categorie", flat=True).distinct()
+
     #dico = list(set(["article."+ v['categorie'] for v in articles.values('categorie').distinct()]))
     #dico += ["article." + art.categorie + "." + art.slug + ",100" for art in articles]
 
@@ -1804,10 +1821,22 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
              "group": art.categorie,
              "id": art.id,
              "name": art.slug.replace("-", " "),
-             "value": HitCount.objects.get_for_object(art).hits,
+             "value": 10, #HitCount.objects.get_for_object(art).hits,
              "url2": mark_safe(art.get_absolute_url()),
              "url1": mark_safe("<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>")}
             for art in articles]
+
+    asso = "public"
+    if "asso_abreviation" in request.session:
+        asso = request.session["asso_abreviation"]
+
+    dico += [{"type":"categorie",
+              "group": g,
+              "id": i + 1000000,
+              "name": g,
+              "value": 20,
+              "url" : reverse('blog:index_asso', kwargs={"asso":asso}) + "?categorie=" + g
+              } for i, g in enumerate(groupes)]
     #for art in articles: #parcourt des articles de l'asso non archives
    #     dico = "article." + art.categorie + "." + art.slug
 

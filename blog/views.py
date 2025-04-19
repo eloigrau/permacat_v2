@@ -1729,7 +1729,7 @@ class Noeuds():
 
     def __init__(self, asso_abreviation):
         self.asso = asso_abreviation
-        self.rayon = {"article":10, "categorie":20, "projet":15, "centre":25}
+        self.rayon = {"article":10, "categorie":20, "projet":30, "centre":1}
         self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
 
     def get_categorie_id(self, cat):

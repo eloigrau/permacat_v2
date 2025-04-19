@@ -158,6 +158,13 @@ urlpatterns = [
         name='voir_articles_liens_d3_bubble'),
     path(r'get_articles_asso_d3_bubble/<str:asso_abreviation>/',
          views.get_articles_asso_d3_bubble,
-        name='get_articles_asso_d3_bubble')
+        name='get_articles_asso_d3_bubble'),
+    path(r'voir_articles_liens_d3_tree/<str:asso_abreviation>/',
+         views.voir_articles_liens_d3_tree,
+        name='voir_articles_liens_d3_tree'),
+    path(r'get_articles_asso_d3_hierar_dossier/<str:asso_abreviation>/',
+         views.get_articles_asso_d3_hierar_dossier,
+        name='get_articles_asso_d3_hierar_dossier'),
+
 
 ]

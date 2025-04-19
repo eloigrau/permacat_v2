@@ -582,7 +582,7 @@ function get_tags_articles(url_tag) {
                 <h4>Visualiser les liens entre les articles : </h4>
                 {%if user_membreAsso and asso_courante %}
                 <p>
-                    <a href="{% url 'blog:voir_articles_liens' asso=asso_courante_abreviation %}">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree' asso_abreviation=asso_courante_abreviation %}">
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
@@ -590,13 +590,6 @@ function get_tags_articles(url_tag) {
                                     </button>
                     </a>
 
-                    <a href="{% url 'blog:voir_articles_liens_d3' asso_abreviation=asso_courante_abreviation %}">
-                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
-                                            data-placement="bottom"
-                                            title="{{nom_asso}}">
-                                        Voir liens
-                                    </button>
-                    </a>
 
                     <a href="{% url 'blog:voir_articles_liens_d3_network' asso_abreviation=asso_courante_abreviation %}">
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"

@@ -1788,33 +1788,60 @@ class Noeuds():
 def get_articles_asso_d3_network(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
-                                       estArchive=True).filter(asso=asso)
+    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+                                       estArchive=False, asso=asso)
 
     noeuds = Noeuds(asso_abreviation)
     for art in articles: #parcourt des articles de l'asso non archives
         for tag in art.tags.all(): #on parcourt les tags de l'article
-            art_tags = get_articlesParTag(asso, tag)# pour chaque tag on recupere les articles tagges pareil
+            art_tags = get_articlesParTag(asso, tag).filter(estArchive=False)# pour chaque tag on recupere les articles tagges pareil
             if len(art_tags) > 1: #si plus de 2 articles,
                 for a in art_tags: # on parcourt les articles tagges
                     noeuds.ajouterNoeudsEtLiens_articles(a, art, type_lien="tags")
 
-        for liens in (ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), article__estArchive=True) \
-                .filter(Q(article=art) | Q(article_lie=art))):
-
+        for liens in (ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()) \
+                .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):
             if liens.article_lie and liens.article:
                 noeuds.ajouterNoeudsEtLiens_articles(liens.article, liens.article_lie, type_lien="liens")
 
-        liens_projets = ArticleLienProjet.objects.exclude(
-            projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(), projet_lie__estArchive=True).filter(
-             projet_lie__asso__abreviation=asso, article=art)
-
-        for l in liens_projets:
-            noeuds.ajouterNoeudsEtLiens_projet(art, l)
+        for liens in ArticleLienProjet.objects.exclude(
+            projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+            projet_lie__estArchive=False, projet_lie__asso__abreviation=asso, article=art):
+            noeuds.ajouterNoeudsEtLiens_projet(art, liens.projet_lie)
 
         noeuds.ajouterLienArticleCategorie(art)
 
     return JsonResponse(noeuds.get_dico_d3(), safe=True)
+
+@login_required
+def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+                                       estArchive=False, asso=asso)
+
+    categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
+
+    dico = {"name":" ", "children":[]}
+    for cat, nom in categorie: #parcourt des articles de l'asso non archives
+        dico["children"].append({
+            "name":cat,
+            "nom":nom,
+            "url":reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "children": [{
+                    "name":a.slug,
+                    "nom":a.titre.replace('"',"-").replace("'","-"),
+                    "url":a.get_absolute_url(),
+                    "children":[{
+                        "name":atelier.slug,
+                        "nom":atelier.titre.replace('"',"-").replace("'","-"),
+                        "url":atelier.get_absolute_url(),
+                        }for atelier in articles.atelier_set.all()]
+                    }for a in articles.filter(categorie=cat)]
+            })
+
+
+    return JsonResponse(dico, safe=True)
 
 
 @login_required
@@ -1823,7 +1850,6 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
 
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
                                        estArchive=True).filter(asso=asso)
-
 
     #dico = list(set(["article."+ v['categorie'] for v in articles.values('categorie').distinct()]))
     #dico += ["article." + art.categorie + "." + art.slug + ",100" for art in articles]
@@ -1887,6 +1913,16 @@ def voir_articles_liens_d3_bubble(request, asso_abreviation):
 
     return render(request, 'blog/voir_articlesliens_d3_bubble.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
+
+@login_required
+def voir_articles_liens_d3_tree(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_tree.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 

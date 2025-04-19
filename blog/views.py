@@ -1761,16 +1761,17 @@ class Noeuds():
         self.ajouterLien(article.id, proj2.id, type_lien="projet")
 
     def ajouterLienArticleCategorie(self, art):
-        if not art.categorie in self.categories_id:
-            self.categories_id[art.categorie] = 2000000 + len(self.categories_id)
-        id = self.categories_id[art.categorie]
-        self.ajouterNoeud(id,
-                          art.categorie,
-                          art.categorie,
-                          reverse('blog:index_asso', kwargs={"asso":self.asso + "?categorie=" + art.categorie}),
-                          "categorie")
-        self.ajouterNoeudArticle(art)
-        self.ajouterLien(id, art.id, "categorie")
+        if art:
+            if not art.categorie in self.categories_id:
+                self.categories_id[art.categorie] = 2000000 + len(self.categories_id)
+            id = self.categories_id[art.categorie]
+            self.ajouterNoeud(id,
+                              art.categorie,
+                              art.categorie,
+                              reverse('blog:index_asso', kwargs={"asso":self.asso + "?categorie=" + art.categorie}),
+                              "categorie")
+            self.ajouterNoeudArticle(art)
+            self.ajouterLien(id, art.id, "categorie")
 
 @login_required
 def get_articles_asso_d3_network(request, asso_abreviation):

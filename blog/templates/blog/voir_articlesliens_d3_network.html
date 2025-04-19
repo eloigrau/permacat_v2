@@ -107,6 +107,9 @@ console.log(data)
     .join("circle")
       .attr("r", d => d.rayon)
       .attr("fill", d => color(d.group));
+    .join("text")
+      .attr("r", d => d.rayon)
+      .attr("fill", d => color(d.group));
 
   node.append("title")
       .text(d => d.name);

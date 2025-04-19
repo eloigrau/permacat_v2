@@ -1728,7 +1728,8 @@ class Noeuds():
 
     def __init__(self, asso_abreviation):
         self.asso = asso_abreviation
-        self.rayon = {"article":10, "categorie":20, "projet":15}
+        self.rayon = {"article":10, "categorie":20, "projet":15, "centre":25}
+        self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", asso=self.asso), "centre" )
 
     def get_dico_d3(self):
         return {"links": [{"source": k,"target":v["target"], "type":v["type"]} for k, v in self.dicoliens.items()],
@@ -1742,7 +1743,6 @@ class Noeuds():
 
     def ajouterNoeudArticle(self, art):
         self.ajouterNoeud(art.id, art.titre, art.categorie, art.get_absolute_url(), "article")
-
 
     def ajouterNoeudProjet(self, art):
         self.ajouterNoeud(art.id + 1000000, art.titre, art.categorie, art.get_absolute_url(), "projet")
@@ -1772,6 +1772,7 @@ class Noeuds():
                               "categorie")
             self.ajouterNoeudArticle(art)
             self.ajouterLien(id, art.id, "categorie")
+            self.ajouterLien(id, 999999, "centre")
 
 @login_required
 def get_articles_asso_d3_network(request, asso_abreviation):
@@ -1813,7 +1814,6 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
                                        estArchive=True).filter(asso=asso)
 
-    groupes = articles.values_list("categorie", flat=True).distinct()
 
     #dico = list(set(["article."+ v['categorie'] for v in articles.values('categorie').distinct()]))
     #dico += ["article." + art.categorie + "." + art.slug + ",100" for art in articles]
@@ -1831,6 +1831,8 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
     asso = "public"
     if "asso_abreviation" in request.session:
         asso = request.session["asso_abreviation"]
+
+    groupes = set(articles.values_list("categorie", flat=True).distinct())
 
     dico += [{"type":"categorie",
               "group": g,

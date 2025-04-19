@@ -1729,7 +1729,7 @@ class Noeuds():
     def __init__(self, asso_abreviation):
         self.asso = asso_abreviation
         self.rayon = {"article":10, "categorie":20, "projet":15, "centre":25}
-        self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", asso=self.asso), "centre" )
+        self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
 
     def get_dico_d3(self):
         return {"links": [{"source": k,"target":v["target"], "type":v["type"]} for k, v in self.dicoliens.items()],

@@ -13,12 +13,21 @@
 {% endblock %}
 {% block content %}
 
-<div class="row">
+<div class="row justify-content-center">
   <div class="col-md-12" id="graph">
       <div id="my_dataviz"></div>
 </div>
 </div>
 
+<hr>
+<h6 class="textcenter">Noeud cliqué : </h6>
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+      <div id="lien" class="textcenter"><a href=""></a></div>
+  </div>
+</div>
+<hr>
+<h6 class="textcenter">Accéder à un article par son titre :</h6>
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8" >
         <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
@@ -125,7 +134,14 @@ node.on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
     .on("mouseleave", hideTooltip );
 
-node.attr("xlink:href", function(d) {return d.url})
+node.on("click", function(event, d) {
+    console.log(d.name);
+    console.log(d.url);
+    d3.select("#lien")
+      .select("a")
+       .attr("href", d.url)
+      .html(d.name)
+    });
 
 
   // Add a drag behavior.

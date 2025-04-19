@@ -1,5 +1,8 @@
 from django import template
 import re
+
+from django.utils.safestring import mark_safe
+
 from blog.models import Choix
 from hitcount.models import Hit
 
@@ -42,3 +45,8 @@ def getCategorie_display(cat):
 # def dejavu(article, user):
 #     newvalue = Hit.objects.filter(hitcount_content_object=article, user=user)
 #     return newvalue.count
+
+
+@register.filter(is_safe=True)
+def lienVersUrl(lien):
+    return mark_safe("<a href='" + lien + "'>" + lien +"</a>")

@@ -49,7 +49,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
 
 // Specify the dimensions of the chart.
   const width = 928;
-  const height = width;
+  const height = 600;
   const margin = 1; // to avoid clipping the root circle stroke
   const name = d => d.name; // "Strings" of "flare.util.Strings"
   const group = d => d.group; // "util" of "flare.util.Strings"
@@ -100,8 +100,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
 
   // Compute the hierarchy from the (flat) data; expose the values
   // for each node; lastly apply the pack layout.
-  const root = pack(d3.hierarchy({children: data.sort(function(a, b) { return -(a.value - b.value); })})
-
+  const root = pack(d3.hierarchy({children: data})
       .sum(d => d.value));
 
   // Create the SVG container.
@@ -126,10 +125,10 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
   node.append("circle")
       .attr("fill-opacity", 0.7)
       .attr("fill", d => color(group(d.data)))
-      .attr("r", d => d.r)
-      .on("mouseover", showTooltip )
-    .on("mousemove", moveTooltip )
-    .on("mouseleave", hideTooltip );
+      .attr("r", d => d.r);
+      //.on("mouseover", showTooltip )
+   // .on("mousemove", moveTooltip )
+   // .on("mouseleave", hideTooltip );
 
   // Add a label.
   const text = node

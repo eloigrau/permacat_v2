@@ -1648,6 +1648,7 @@ def voir_articles_liens(request, asso):
     if not request.user.statutMembre_asso(asso):
         return HttpResponseForbidden()
 
+
     data_json = get_article_liens_ajax(request, asso)
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 
@@ -1860,19 +1861,31 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
 def voir_articles_liens_d3(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-    return render(request, 'blog/voir_articlesliens_d3.html',{"asso_abreviation":asso.abreviation})
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 @login_required
 def voir_articles_liens_d3_network(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-    return render(request, 'blog/voir_articlesliens_d3_network.html',{"asso_abreviation":asso.abreviation})
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 @login_required
 def voir_articles_liens_d3_bubble(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-    return render(request, 'blog/voir_articlesliens_d3_bubble.html',{"asso_abreviation":asso.abreviation})
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_bubble.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 

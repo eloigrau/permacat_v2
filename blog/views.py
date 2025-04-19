@@ -1847,7 +1847,7 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
     dico += [{"type":"categorie",
               "group": g,
               "id": i + 1000000,
-              "name": g,
+              "name": Choix.get_categorie_from_id(g),
               "value": 20,
               "url" : reverse('blog:index_asso', kwargs={"asso":asso}) + "?categorie=" + g
               } for i, g in enumerate(groupes)]

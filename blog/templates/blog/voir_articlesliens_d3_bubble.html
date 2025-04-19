@@ -100,8 +100,9 @@ d3.json("{% url 'blog:get_articles_asso_d3_bubble' asso_abreviation=asso_abrevia
 
   // Compute the hierarchy from the (flat) data; expose the values
   // for each node; lastly apply the pack layout.
-  const root = pack(d3.hierarchy({children: data})
-      .sum(d => d.value)).sort(function(a, b) { return -(a.value - b.value); });
+  const root = pack(d3.hierarchy({children: data.sort(function(a, b) { return -(a.value - b.value); })})
+
+      .sum(d => d.value));
 
   // Create the SVG container.
   const svg = d3.select("#my_dataviz").append("svg")

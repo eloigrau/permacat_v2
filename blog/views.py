@@ -1769,6 +1769,7 @@ class Noeuds():
                           art.categorie,
                           reverse('blog:index_asso', kwargs={"asso":self.asso + "?categorie=" + art.categorie}),
                           "categorie")
+        self.ajouterNoeudArticle(art)
         self.ajouterLien(id, art.id, "categorie")
 
 @login_required

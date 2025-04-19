@@ -58,43 +58,8 @@ const w = innerWidth * 0.7;
 const h = innerHeight * 0.7;
 // Specify the dimensions of the chart.
   const width = w < 900 ? 900 : w;
-  const height = h < 600 ? 600 : w;
-
-console.log(data)
-
-// -1- Create a tooltip div that is hidden by default:
-  const tooltip = d3.select("#my_dataviz")
-    .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "black")
-      .style("border-radius", "5px")
-      .style("padding", "10px")
-      .style("color", "white")
-
-  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
-  const showTooltip = function(event, d) {
-    tooltip
-      .transition()
-      .duration(200);
-    tooltip
-      .style("opacity", 1)
-      .html(d.name)
-      .style("left", (event.x)/2 + "px")
-      .style("top", (event.y)/2+30 + "px");
-  }
-  const moveTooltip = function(event, d) {
-    tooltip
-      .style("left", (event.x)/2 + "px")
-      .style("top", (event.y)/2+30 + "px");
-  }
-  const hideTooltip = function(event, d) {
-    tooltip
-      .transition()
-      .duration(200)
-      .style("opacity", 0);
-  }
-const cx = width * 0.5; // adjust as needed to fit
+    const height = width;
+  const cx = width * 0.5; // adjust as needed to fit
   const cy = height * 0.54; // adjust as needed to fit
   const radius = Math.min(width, height) / 2 - 80;
 

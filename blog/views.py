@@ -1822,7 +1822,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
 
     categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
 
-    dico = {"name":" ", "children":[]}
+    dico = {"name":asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
             "name":cat,
@@ -1836,7 +1836,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
                         "name":atelier.slug,
                         "nom":atelier.titre.replace('"',"-").replace("'","-"),
                         "url":atelier.get_absolute_url(),
-                        }for atelier in articles.atelier_set.all()]
+                        }for atelier in Atelier.objects.filter(article=a)]
                     }for a in articles.filter(categorie=cat)]
             })
 

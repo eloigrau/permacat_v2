@@ -50,12 +50,17 @@
 
       <script type="text/javascript">
 
-d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abreviation %}")
+d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier' asso_abreviation=asso_abreviation %}")
 .then(function(data) {// Specify the dimensions of the chart.
-  const width = 928;
-  const height = 600;
 
-//console.log(data)
+const { innerWidth, innerHeight } = window;
+const w = innerWidth * 0.7;
+const h = innerHeight * 0.7;
+// Specify the dimensions of the chart.
+  const width = w < 900 ? 900 : w;
+  const height = h < 600 ? 600 : w;
+
+console.log(data)
 
 // -1- Create a tooltip div that is hidden by default:
   const tooltip = d3.select("#my_dataviz")
@@ -89,101 +94,69 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
       .duration(200)
       .style("opacity", 0);
   }
+const cx = width * 0.5; // adjust as needed to fit
+  const cy = height * 0.54; // adjust as needed to fit
+  const radius = Math.min(width, height) / 2 - 80;
 
-  // Specify the color scale.
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+  // Create a radial cluster layout. The layout’s first dimension (x)
+  // is the angle, while the second (y) is the radius.
+  const tree = d3.cluster()
+      .size([2 * Math.PI, radius])
+      .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth);
 
-  // The force simulation mutates links and nodes, so create a copy
-  // so that re-evaluating this cell produces the same result.
-  const links = data.links.map(d => ({...d}));
-  const nodes = data.nodes.map(d => ({...d}));
+  // Sort the tree and apply the layout.
+  const root = tree(d3.hierarchy(data)
+      .sort((a, b) => d3.ascending(a.data.name, b.data.name)));
 
-  // Create a simulation with several forces.
-  const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id))
-      .force("charge", d3.forceManyBody())
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .on("tick", ticked);
-
-  // Create the SVG container.
+  // Creates the SVG container.
   const svg = d3.select("#my_dataviz").append("svg")
       .attr("width", width)
       .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "max-width: 100%; height: auto;");
+      .attr("viewBox", [-cx, -cy, width, height])
+      .attr("style", "width: 100%; height: auto; font: 10px sans-serif;");
 
-  // Add a line for each link, and a circle for each node.
-  const link = svg.append("g")
-      .attr("stroke", "#999")
-      .attr("stroke-opacity", 0.6)
-    .selectAll()
-    .data(links)
-    .join("line")
-      .attr("stroke-width", d => Math.sqrt(d.value));
-
-  const node = svg.append("g")
-      .attr("stroke", "#fff")
+  // Append links.
+  svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
       .attr("stroke-width", 1.5)
     .selectAll()
-    .data(nodes)
+    .data(root.links())
+    .join("path")
+      .attr("d", d3.linkRadial()
+          .angle(d => d.x)
+          .radius(d => d.y));
+
+  // Append nodes.
+  const node = svg.append("g")
+    .selectAll()
+    .data(root.descendants())
     .join("circle")
-      .attr("r", d => d.rayon)
-      .attr("fill", d => color(d.group))
+      .attr("transform", d => `rotate(${d.x * 180 / Math.PI - 90}) translate(${d.y},0)`)
+      .attr("fill", d => d.children ? "#555" : "#999")
+      .attr("r", 2.5)
       .attr("xlink:href", function(d) {return d.url});
 
 node.on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
     .on("mouseleave", hideTooltip );
 
-node.on("click", function(event, d) {
-    console.log(d.name);
-    console.log(d.url);
-    d3.select("#lien")
-      .select("a")
-       .attr("href", d.url)
-      .html(d.name)
-    });
-
-
-  // Add a drag behavior.
-  node.call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
-
-  // Set the position attributes of links and nodes each time the simulation ticks.
-  function ticked() {
-    link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
-
-    node
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
-  }
-
-  // Reheat the simulation when drag starts, and fix the subject position.
-  function dragstarted(event) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    event.subject.fx = event.subject.x;
-    event.subject.fy = event.subject.y;
-  }
-
-  // Update the subject (dragged node) position during drag.
-  function dragged(event) {
-    event.subject.fx = event.x;
-    event.subject.fy = event.y;
-  }
-
-  // Restore the target alpha so the simulation cools after dragging ends.
-  // Unfix the subject position now that it’s no longer being dragged.
-  function dragended(event) {
-    if (!event.active) simulation.alphaTarget(0);
-    event.subject.fx = null;
-    event.subject.fy = null;
-  }
+  // Append labels.
+  svg.append("g")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+    .selectAll()
+    .data(root.descendants())
+    .join("text")
+      .attr("transform", d => `rotate(${d.x * 180 / Math.PI - 90}) translate(${d.y},0) rotate(${d.x >= Math.PI ? 180 : 0})`)
+      .attr("dy", "0.31em")
+      .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
+      .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+      .attr("paint-order", "stroke")
+      .attr("stroke", "white")
+      .attr("fill", "currentColor")
+      .text(d => d.data.name);
 
   return svg.node();
 }).catch(function(error) {

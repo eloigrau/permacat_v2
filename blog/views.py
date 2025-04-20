@@ -1595,7 +1595,7 @@ def get_article_liens_ajax(request, asso):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#416D9C", "$type": "circle", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre[:30].replace('"',"-").replace("'","-"),
+                    "name": l.article.titre[:50].replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.article_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1620,7 +1620,7 @@ def get_article_liens_ajax(request, asso):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre[:30].replace('"',"-").replace("'","-"),
+                    "name": l.article.titre[:50].replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.projet_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1634,7 +1634,7 @@ def get_article_liens_ajax(request, asso):
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
             "id": p.slug,
-            "name": p.titre[:30].replace('"',"-").replace("'","-"),
+            "name": p.titre[:50].replace('"',"-").replace("'","-"),
             "adjacencies": [
             ],
         }
@@ -1825,16 +1825,16 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
     dico = {"name":asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
-            "name":cat,
-            "nom":nom,
+            "name":nom,
+            "nom":cat,
             "url":reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
             "children": [{
-                    "name":a.slug,
-                    "nom":a.titre[:30].replace('"',"-").replace("'","-"),
+                    "nom":a.slug,
+                    "name":a.titre[:50].replace('"',"-").replace("'","-"),
                     "url":a.get_absolute_url(),
                     "children":[{
-                        "name":atelier.slug,
-                        "nom":atelier.titre[:30].replace('"',"-").replace("'","-"),
+                        "nom":atelier.slug,
+                        "name":atelier.titre[:50].replace('"',"-").replace("'","-"),
                         "url":atelier.get_absolute_url(),
                         }for atelier in Atelier.objects.filter(article=a)]
                     }for a in articles.filter(categorie=cat)]

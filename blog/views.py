@@ -1923,6 +1923,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
 
     categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
 
+
     dico = {"name":"Par Dossier : " + asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({

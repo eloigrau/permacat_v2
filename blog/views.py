@@ -26,7 +26,7 @@ from bourseLibre.forms import AdresseForm, AdresseForm2
 from bourseLibre.constantes import Choix as Choix_global
 from django.db.models.functions import Greatest, Lower
 from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
-from ateliers.models import Atelier
+from ateliers.models import Atelier, CommentaireAtelier
 from photologue.models import Album
 from defraiement.models import Reunion
 from django.views.decorators.csrf import csrf_exempt
@@ -1722,68 +1722,139 @@ def voir_articles_liens(request, asso):
 #
 #     return JsonResponse(dico, safe=True)
 
+def formatTitre(titre):
+    return titre[:80].replace('"',"-").replace("'","-")
 
 class Noeuds():
     diconoeuds = {}
-    dicoliens = {}
+    listeLiens = []
     categories_id = {}
+    ateliers_id = {}
+    document_id = {}
+    projet_id = {}
 
-    def __init__(self, asso_abreviation):
+    def __init__(self, asso_abreviation, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
         self.asso = asso_abreviation
-        self.rayon = {"article":10, "categorie":20, "projet":30, "centre":1}
+        self.rayon = {"article":10, "categorie":20, "projet":30, "centre":1, "atelier":5, "document":5}
         self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
+        self.lienDossierArticles = lienDossierArticles
+        self.projetAuCentre = projetAuCentre
+        self.categorieAuCentre = categorieAuCentre
 
     def get_categorie_id(self, cat):
         if not cat in self.categories_id:
             self.categories_id[cat] = 2000000 + len(self.categories_id)
         return self.categories_id[cat]
 
+    def get_projet_id(self, cat):
+        if not cat in self.projet_id:
+            self.projet_id[cat] = 1000000 + len(self.projet_id)
+        return self.projet_id[cat]
+
+    def get_atelier_id(self, cat):
+        if not cat in self.ateliers_id:
+            self.ateliers_id[cat] = 3000000 + len(self.ateliers_id)
+        return self.ateliers_id[cat]
+
+    def get_document_id(self, cat):
+        if not cat in self.ateliers_id:
+            self.document_id[cat] = 4000000 + len(self.document_id)
+        return self.document_id[cat]
+
+
     def get_dico_d3(self):
-        return {"links": [{"source": k,"target":v["target"], "type":v["type"]} for k, v in self.dicoliens.items()],
-         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]}
+        return {
+        "links": self.listeLiens,
+         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
+        }
 
     def ajouterLien(self, source_id, target_id, type_lien):
-        self.dicoliens[source_id] = {"target":target_id,"type":type_lien}
+        #if not any()
+        self.listeLiens.append({"source":source_id, "target":target_id,"type":type_lien})
 
     def ajouterNoeud(self, noeud_id, nom, group, url, type_noeud):
         if not noeud_id in self.diconoeuds.keys():
-            self.diconoeuds[noeud_id]={"name": nom.replace('"',"-").replace("'","-"),
+            self.diconoeuds[noeud_id]={"name": formatTitre(nom),
                                 "url":url,
                                 "group":group,
                                "type_noeud":type_noeud}
+            return True
+        return False
 
     def ajouterNoeudArticle(self, art):
-        self.ajouterNoeud(art.id, art.titre, art.categorie, art.get_absolute_url(), "article")
-        id_cat =  self.get_categorie_id(art.categorie)
-        self.ajouterLien(art.id, id_cat, "dossier")
+        return self.ajouterNoeud(art.id, "Article : " +art.titre, art.categorie, art.get_absolute_url(), "article")
 
-    def ajouterNoeudProjet(self, art):
-        self.ajouterNoeud(art.id + 1000000, art.titre, art.categorie, art.get_absolute_url(), "projet")
+    def ajouterNoeudProjet(self, proj):
+        id = self.get_projet_id(proj.id)
+        cree = self.ajouterNoeud(id, "Projet : " + formatTitre(proj.titre), "Projet", proj.get_absolute_url(), "projet")
+        if cree and self.projetAuCentre:
+            self.ajouterLien(id, 999999,  type_lien="projet")
+        return id
 
+    def ajouterNoeudAtelier(self, a):
+        id = self.get_atelier_id(a.id)
+        cree = self.ajouterNoeud(noeud_id=id,
+                          nom="Atelier : " + formatTitre(a.titre),
+                          group="atelier",
+                          url=a.get_absolute_url(),
+                          type_noeud="atelier")
+        if cree:
+            self.ajouterNoeudArticle(a.article)
+        return id
 
+    def ajouterNoeudDocument(self, doc):
+        id = self.get_document_id(doc.id)
+        cree = self.ajouterNoeud(noeud_id=id,
+                          nom="Document : " + formatTitre(doc.titre),
+                          group="document",
+                          url=doc.get_absolute_url(),
+                          type_noeud="document")
+        if cree:
+            self.ajouterNoeudArticle(doc.article)
+        return id
+
+    def ajouterNoeudCategorie(self, art):
+        id = self.get_categorie_id(art.categorie)
+        cree = self.ajouterNoeud(id,
+                          "Dossier : " + art.get_categorie_display(),
+                          art.categorie,
+                          reverse('blog:index_asso', kwargs={"asso": self.asso + "?categorie=" + art.categorie}),
+                          "categorie")
+        if cree:
+            self.ajouterNoeudArticle(art)
+            if self.categorieAuCentre:
+                self.ajouterLien(id, 999999, "centre")
+
+        return id
     def ajouterNoeudsEtLiens_articles(self, art1, art2, type_lien):
         self.ajouterNoeudArticle(art1)
         self.ajouterNoeudArticle(art2)
-        self.ajouterLien(art1.id, art2.id, type_lien)
+        self.ajouterLien(art2.id, art1.id, type_lien)
 
     def ajouterNoeudsEtLiens_projet(self, article, proj2):
-        self.ajouterNoeudArticle(article)
-        self.ajouterNoeudProjet(proj2)
-        self.ajouterLien(article.id, proj2.id, type_lien="projet")
+        self.ajouterNoeud(article.id, "Article : " + article.titre, article.categorie, article.get_absolute_url(), "article")
+        id = self.ajouterNoeudProjet(proj2)
+        self.ajouterLien(id, article.id,  type_lien="projet")
 
+    def ajouterNoeudsEtLiens_projet_centre(self, article, proj2):
+        self.ajouterNoeudArticle(article)
+        id = self.ajouterNoeudProjet(proj2)
+        self.ajouterLien(id, article.id, type_lien="projet")
 
     def ajouterLienArticleCategorie(self, art):
         if art:
-            if not art.categorie in self.categories_id:
-                self.categories_id[art.categorie] = 2000000 + len(self.categories_id)
-            id = self.get_categorie_id(art.categorie)
-            self.ajouterNoeud(id,
-                              art.get_categorie_display(),
-                              art.categorie,
-                              reverse('blog:index_asso', kwargs={"asso":self.asso + "?categorie=" + art.categorie}),
-                              "categorie")
             self.ajouterNoeudArticle(art)
-            self.ajouterLien(id, 999999, "centre")
+            id = self.ajouterNoeudCategorie(art)
+            self.ajouterLien(art.id, id, "dossier")
+
+    def ajouterLienArticleDocumentsAteliers(self, art):
+        for a in Atelier.objects.filter(article=art):
+            id_at = self.ajouterNoeudAtelier(a)
+            self.ajouterLien(id_at, art.id,  "atelier")
+        for a in Document.objects.filter(article=art):
+            id_at = self.ajouterNoeudDocument(a)
+            self.ajouterLien(id_at, art.id, "document")
+
 
 @login_required
 def get_articles_asso_d3_network(request, asso_abreviation):
@@ -1807,10 +1878,39 @@ def get_articles_asso_d3_network(request, asso_abreviation):
 
         for liens in ArticleLienProjet.objects.exclude(
             projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-            projet_lie__estArchive=False, projet_lie__asso__abreviation=asso, article=art):
+            projet_lie__estArchive=False, projet_lie__asso=asso, article=art):
             noeuds.ajouterNoeudsEtLiens_projet(art, liens.projet_lie)
 
         noeuds.ajouterLienArticleCategorie(art)
+        noeuds.ajouterLienArticleDocumentsAteliers(art)
+
+    return JsonResponse(noeuds.get_dico_d3(), safe=True)
+
+@login_required
+def get_articles_asso_d3_network_dossier(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+                                       estArchive=False, asso=asso)
+    noeuds = Noeuds(asso_abreviation, )
+    for art in articles:
+        noeuds.ajouterLienArticleCategorie(art)
+        noeuds.ajouterLienArticleDocumentsAteliers(art)
+
+    return JsonResponse(noeuds.get_dico_d3(), safe=True)
+
+
+@login_required
+def get_articles_asso_d3_network_projet(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    noeuds = Noeuds(asso_abreviation, lienDossierArticles=False, categorieAuCentre=False)
+    for liens in ArticleLienProjet.objects.exclude(
+        projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso):
+        noeuds.ajouterNoeudsEtLiens_projet_centre(liens.article, liens.projet_lie)
+
+        noeuds.ajouterLienArticleDocumentsAteliers(liens.article)
 
     return JsonResponse(noeuds.get_dico_d3(), safe=True)
 
@@ -1823,23 +1923,72 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
 
     categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
 
-    dico = {"name":asso.nom, "children":[]}
+    dico = {"name":"Par Dossier : " + asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
             "name":nom,
-            "nom":cat,
+            "nb_comm": 0,
+            "couleur": Choix.couleurs_lien["categorie"],
             "url":reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
             "children": [{
-                    "nom":a.slug,
-                    "name":a.titre[:80].replace('"',"-").replace("'","-"),
-                    "url":a.get_absolute_url(),
+                    "nb_comm":Commentaire.objects.filter(article=art).count(),
+                    "name": formatTitre(art.titre),
+                    "url":art.get_absolute_url(),
+                    "couleur": Choix.couleurs_lien["article"] ,
+                    "children":[{
+                        "nb_comm":CommentaireAtelier.objects.filter(atelier__article=art).count()
+                        if isinstance(atelier, Atelier) else 0,
+                        "name":"Atelier : " + formatTitre(atelier.titre)
+                        if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre),
+                        "couleur": Choix.couleurs_lien["atelier"]
+                        if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                        "url":atelier.get_absolute_url(),
+                        }for atelier in itertools.chain(Atelier.objects.filter(article=art), Document.objects.filter(article=art),) ]
+                    }for art in articles.filter(categorie=cat)]
+            })
+
+
+    return JsonResponse(dico, safe=True)
+
+@login_required
+def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+                                       estArchive=False, asso=asso)
+
+    dico = {"name":"Par Projet : " + asso.nom, "children":[]}
+    liste_liens = ArticleLienProjet.objects.exclude(
+        projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso).order_by('projet_lie__titre')
+
+    projets = Projet.objects.exclude(
+        asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        estArchive=False, asso=asso)
+
+
+    for proj in projets:
+        dico["children"].append({
+            "name":formatTitre(proj.titre),
+            "url":proj.get_absolute_url(),
+            "nb_comm":CommentaireProjet.objects.filter(projet=proj).count(),
+            "couleur": Choix.couleurs_lien["projet"] ,
+            "children": [{
+                    "name":formatTitre(lien.article.titre),
+                    "url":lien.article.get_absolute_url(),
+                    "nb_comm":Commentaire.objects.filter(article=lien.article).count(),
+                    "couleur": Choix.couleurs_lien["article"] ,
                     "children":[{
                         "nom":atelier.slug,
-                        "name":"Atelier : " + atelier.titre[:80].replace('"',"-").replace("'","-")
-                        if isinstance(atelier, Atelier) else "Document : " + atelier.titre[:80].replace('"',"-").replace("'","-") ,
+                        "nb_comm":CommentaireAtelier.objects.filter(atelier__article=lien.article).count()
+                        if isinstance(atelier, Atelier) else 0,
+                        "name":"Atelier : " + formatTitre(atelier.titre)
+                        if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre) ,
                         "url":atelier.get_absolute_url(),
-                        }for atelier in itertools.chain(Atelier.objects.filter(article=a), Document.objects.filter(article=a),) ]
-                    }for a in articles.filter(categorie=cat)]
+                        "couleur": Choix.couleurs_lien["atelier"]
+                        if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                        }for atelier in itertools.chain(Atelier.objects.filter(article=lien.article), Document.objects.filter(article=lien.article),) ]
+                    }for lien in liste_liens.filter(projet_lie=proj).distinct()]
             })
 
 
@@ -1862,7 +2011,7 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
              "id": art.id,
              "name": art.slug.replace("-", " "),
              "value": 30, #HitCount.objects.get_for_object(art).hits,
-             "url2": mark_safe(art.get_absolute_url())}
+             "url": mark_safe(art.get_absolute_url())}
             for art in articles]
 
     asso = "public"
@@ -1904,6 +2053,27 @@ def voir_articles_liens_d3_network(request, asso_abreviation):
 
     return render(request, 'blog/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
+
+@login_required
+def voir_articles_liens_d3_network_dossier(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+
+@login_required
+def voir_articles_liens_d3_network_projet(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+
 @login_required
 def voir_articles_liens_d3_bubble(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
@@ -1938,13 +2108,24 @@ def voir_articles_liens_d3_tree2(request, asso_abreviation):
 
 
 @login_required
-def voir_articles_liens_d3_tree_indented(request, asso_abreviation):
+def voir_articles_liens_d3_tree_indented_dossier(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_tree_indented.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/voir_articlesliens_d3_tree_indented_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
+
+
+@login_required
+def voir_articles_liens_d3_tree_indented_projet(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_tree_indented_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 

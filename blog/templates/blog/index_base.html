@@ -589,18 +589,18 @@ function get_tags_articles(url_tag) {
                                         Voir liens Tree
                                     </button>
                     </a>
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree2' asso_abreviation=asso_courante_abreviation %}">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_abreviation=asso_courante_abreviation %}">
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
-                                        Voir liens Tree 2
+                                        Voir liens Tree Indented Dossier
                                     </button>
                     </a>
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented' asso_abreviation=asso_courante_abreviation %}">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_projet' asso_abreviation=asso_courante_abreviation %}">
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
-                                        Voir liens Tree Indented
+                                        Voir liens Tree Indented Projet
                                     </button>
                     </a>
 
@@ -610,6 +610,21 @@ function get_tags_articles(url_tag) {
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
                                         Voir liens Réseau
+                                    </button>
+                    </a>
+
+                    <a href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_abreviation=asso_courante_abreviation %}">
+                        <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                data-placement="bottom"
+                                title="{{nom_asso}}">
+                            Voir liens Réseau Dossier
+                        </button>
+                    </a>
+                    <a href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_abreviation=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens Réseau Projet
                                     </button>
                     </a>
                      <a href="{% url 'blog:voir_articles_liens_d3_bubble' asso_abreviation=asso_courante_abreviation %}">

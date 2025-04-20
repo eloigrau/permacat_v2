@@ -13,19 +13,12 @@
 {% endblock %}
 {% block content %}
 
-<div class="row justify-content-center">
+<div class="row justify-content-center overflow-auto">
   <div class="col-md-12 overflow-auto" id="graph">
       <div id="my_dataviz"></div>
 </div>
 </div>
 
-<hr>
-<h6 class="textcenter">Noeud cliqué : </h6>
-<div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
-      <div id="lien" class="textcenter"><a href=""></a></div>
-  </div>
-</div>
 <hr>
 <h6 class="textcenter">Accéder à un article par son titre :</h6>
 <div class="row justify-content-center">
@@ -58,69 +51,83 @@ const w = innerWidth * 0.7;
 const h = innerHeight * 0.7;
 // Specify the dimensions of the chart.
   const width = w < 900 ? 900 : w;
-    const height = width;
-  const cx = width * 0.5; // adjust as needed to fit
-  const cy = height * 0.54; // adjust as needed to fit
-  const radius = Math.min(width, height) / 2 - 80;
+  const nodeSize = 20;
+  const root = d3.hierarchy(data).eachBefore((i => d => d.index = i++)(0));
+  const nodes = root.descendants();
+  const height = (nodes.length + 1) * nodeSize;
 
-  // Create a radial cluster layout. The layout’s first dimension (x)
-  // is the angle, while the second (y) is the radius.
-  const tree = d3.cluster()
-      .size([2 * Math.PI, radius])
-      .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth);
+  const columns = [
+    {
+      label: "Commentaires",
+      value: d => d.nb_comm,
+      x: width
+    },
+    {
+      label: "Count",
+      value: d => d.children ? 0 : 1,
+      x: width+60
+    }
+  ];
 
-  // Sort the tree and apply the layout.
-  const root = tree(d3.hierarchy(data)
-      .sum(d => d.value))
-    .sort((a, b) => b.height - a.height || d3.ascending(a.id, b.id));
 
-  // Creates the SVG container.
   const svg = d3.select("#my_dataviz")
-      .style("overflow-x", "scroll")
+      .style("overflow", "auto")
       .style("-webkit-overflow-scrolling", "touch").append("svg")
       .attr("width", width)
       .attr("height", height)
-      .attr("viewBox", [-cx, -cy, width, height])
-      .attr("style", "width: 100%; height: auto; font: 10px sans-serif;");
+      .attr("viewBox", [-nodeSize / 2, -nodeSize * 3 / 2, width, height])
+      .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;");
 
-  // Append links.
-  svg.append("g")
+  const link = svg.append("g")
       .attr("fill", "none")
-      .attr("stroke", "#555")
-      .attr("stroke-opacity", 0.4)
-      .attr("stroke-width", 1.5)
+      .attr("stroke", "#999")
     .selectAll()
     .data(root.links())
     .join("path")
-      .attr("d", d3.linkRadial()
-          .angle(d => d.x)
-          .radius(d => d.y));
+      .attr("d", d => `
+        M${d.source.depth * nodeSize},${d.source.index * nodeSize}
+        V${d.target.index * nodeSize}
+        h${nodeSize}
+      `);
 
-  // Append nodes.
-  svg.append("g")
-    .selectAll()
-    .data(root.descendants())
-    .join("circle")
-      .attr("transform", d => `rotate(${d.x * 180 / Math.PI - 90}) translate(${d.y},0)`)
-      .attr("fill", d => d.children ? "#555" : "#999")
-      .attr("r", 2.5);
 
-  // Append labels.
-  svg.append("g")
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-width", 3)
+  const node = svg.append("g")
     .selectAll()
-    .data(root.descendants())
-    .join("text")
-      .attr("transform", d => `rotate(${d.x * 180 / Math.PI - 90}) translate(${d.y},0) rotate(${d.x >= Math.PI ? 180 : 0})`)
-      .attr("dy", "0.31em")
-      .attr("x", d => d.x < Math.PI === !d.children ? 6 : -6)
-      .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
-      .attr("paint-order", "stroke")
-      .attr("stroke", "white")
-      .attr("fill", "currentColor")
+    .data(nodes)
+    .join("g")
+      .attr("transform", d => `translate(0,${d.index * nodeSize})`);
+
+  node.append("circle")
+      .attr("cx", d => d.depth * nodeSize)
+      .attr("r", 4)
+      .attr("fill", d => d.data.couleur);
+
+  node.append("text")
+      .attr("dy", "0.32em")
+      .attr("x", d => d.depth * nodeSize + 6)
        .append("svg:a").attr("xlink:href", d => d.data.url)
       .text(d => d.data.name);
+
+  node.append("title")
+      .text(d => d.ancestors().reverse().map(d => d.data.name).join("/"));
+
+  for (const {label, value, x} of columns) {
+    svg.append("text")
+        .attr("dy", "0.32em")
+        .attr("y", -nodeSize)
+        .attr("x", x)
+        .attr("text-anchor", "end")
+        .attr("font-weight", "bold")
+        .text(label);
+
+    node.append("text")
+        .attr("dy", "0.32em")
+        .attr("x", x)
+        .attr("text-anchor", "end")
+        .attr("fill", d => d.children ? null : "#555")
+      .data(root.copy().sum(value).descendants())
+        .text(d => d.value);
+  }
 
   return svg.node();
 }).catch(function(error) {

@@ -86,9 +86,9 @@ const h = innerHeight * 0.7;
   // Compute the adjusted height of the tree.
   const height = x1 - x0 + dx * 2;
 
-  const svg = d3.select("#my_dataviz").append("svg")
+  const svg = d3.select("#my_dataviz")
       .style("overflow", "scroll")
-      .style("-webkit-overflow-scrolling", "touch")
+      .style("-webkit-overflow-scrolling", "touch").append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-dy / 3, x0 - dx, width, height])

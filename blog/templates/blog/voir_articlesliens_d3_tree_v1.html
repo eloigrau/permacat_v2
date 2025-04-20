@@ -109,9 +109,9 @@ const cx = width * 0.5; // adjust as needed to fit
       .sort((a, b) => d3.ascending(a.data.name, b.data.name)));
 
   // Creates the SVG container.
-  const svg = d3.select("#my_dataviz").append("svg")
+  const svg = d3.select("#my_dataviz")
       .style("overflow", "scroll")
-      .style("-webkit-overflow-scrolling", "touch")
+      .style("-webkit-overflow-scrolling", "touch").append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-cx, -cy, width, height])

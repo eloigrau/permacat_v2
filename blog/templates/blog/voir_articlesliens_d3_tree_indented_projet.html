@@ -20,13 +20,6 @@
 </div>
 
 <hr>
-<h6 class="textcenter">Noeud cliqué : </h6>
-<div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
-      <div id="lien" class="textcenter"><a href=""></a></div>
-  </div>
-</div>
-<hr>
 <h6 class="textcenter">Accéder à un article par son titre :</h6>
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8" >
@@ -50,7 +43,7 @@
 
       <script type="text/javascript">
 
-d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier' asso_abreviation=asso_abreviation %}")
+d3.json("{% url 'blog:get_articles_asso_d3_hierar_projet' asso_abreviation=asso_abreviation %}")
 .then(function(data) {// Specify the dimensions of the chart.
 
 const { innerWidth, innerHeight } = window;
@@ -58,31 +51,29 @@ const w = innerWidth * 0.7;
 const h = innerHeight * 0.7;
 // Specify the dimensions of the chart.
   const width = w < 900 ? 900 : w;
- const format = d3.format(",");
-  const nodeSize = 17;
+  const nodeSize = 20;
   const root = d3.hierarchy(data).eachBefore((i => d => d.index = i++)(0));
   const nodes = root.descendants();
   const height = (nodes.length + 1) * nodeSize;
 
   const columns = [
     {
-      label: "Size",
-      value: d => d.value,
-      format,
-      x: 280
+      label: "Commentaires",
+      value: d => d.nb_comm,
+      x: width
     },
     {
       label: "Count",
       value: d => d.children ? 0 : 1,
-      format: (value, d) => d.children ? format(value) : "-",
-      x: 340
+      x: width+60
     }
   ];
 
 
-  const svg = d3.select("#my_dataviz").append("svg")
+
+  const svg = d3.select("#my_dataviz")
       .style("overflow", "scroll")
-      .style("-webkit-overflow-scrolling", "touch")
+      .style("-webkit-overflow-scrolling", "touch").append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-nodeSize / 2, -nodeSize * 3 / 2, width, height])
@@ -108,8 +99,8 @@ const h = innerHeight * 0.7;
 
   node.append("circle")
       .attr("cx", d => d.depth * nodeSize)
-      .attr("r", 2.5)
-      .attr("fill", d => d.children ? null : "#999");
+      .attr("r", 4)
+      .attr("fill", d => d.data.couleur);
 
   node.append("text")
       .attr("dy", "0.32em")
@@ -120,23 +111,23 @@ const h = innerHeight * 0.7;
   node.append("title")
       .text(d => d.ancestors().reverse().map(d => d.data.name).join("/"));
 
-  for (const {label, value, format, x} of columns) {
-    svg.append("text")
-        .attr("dy", "0.32em")
-        .attr("y", -nodeSize)
-        .attr("x", x)
-        .attr("text-anchor", "end")
-        .attr("font-weight", "bold")
-        .text(label);
+  //for (const {label, value, x} of columns) {
+  //  svg.append("text")
+   //     .attr("dy", "0.32em")
+   //     .attr("y", -nodeSize)
+   //     .attr("x", x)
+   //     .attr("text-anchor", "end")
+    //    .attr("font-weight", "bold")
+   //     .text(label);
 
-    node.append("text")
-        .attr("dy", "0.32em")
-        .attr("x", x)
-        .attr("text-anchor", "end")
-        .attr("fill", d => d.children ? null : "#555")
-      .data(root.copy().sum(value).descendants())
-        .text(d => format(d.value, d));
-  }
+  //  node.append("text")
+  //      .attr("dy", "0.32em")
+  //      .attr("x", x)
+  //      .attr("text-anchor", "end")
+  //      .attr("fill", d => d.children ? null : "#555")
+  //    .data(root.copy().sum(value).descendants())
+   //     .text(d => d.value);
+  //}
 
   return svg.node();
 }).catch(function(error) {

@@ -107,6 +107,8 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
 
   // Create the SVG container.
   const svg = d3.select("#my_dataviz").append("svg")
+      .style("overflow", "scroll")
+      .style("-webkit-overflow-scrolling", "touch")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])

@@ -105,8 +105,15 @@ const h = innerHeight * 0.7;
   const root = pack(d3.hierarchy({children: data})
       .sum(d => d.value));
 
+  root.sort((a, b) => b.value - a.value || d3.ascending(a.name, b.name));
+
+    // .sort((a, b) => b.value - a.value);
+    //   .sort((a, b) => b.height - a.height || b.value - a.value);
+
   // Create the SVG container.
   const svg = d3.select("#my_dataviz").append("svg")
+      .style("overflow", "scroll")
+      .style("-webkit-overflow-scrolling", "touch")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-margin, -margin, width, height])
@@ -127,7 +134,7 @@ const h = innerHeight * 0.7;
   node.append("circle")
       .attr("fill-opacity", 0.7)
       .attr("fill", d => color(group(d.data)))
-      .attr("r", d => d.r*10)
+      .attr("r", d => d.r)
       .on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
     .on("mouseleave", hideTooltip );
@@ -136,7 +143,7 @@ const h = innerHeight * 0.7;
   const text = node
         .append("text")
         .attr("clip-path", d => `circle(${d.r})`)
-        .append("svg:a").attr("xlink:href", d => d.data.url2);
+        .append("svg:a").attr("xlink:href", d => d.data.url);
 
 
   // Add a tspan for each CamelCase-separated word.

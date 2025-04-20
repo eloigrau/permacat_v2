@@ -43,7 +43,7 @@ from vote.models_simple import Sondage_binaire
 from dal import autocomplete
 from taggit.models import Tag
 import json
-
+import itertools
 from django.utils.safestring import mark_safe
 from hitcount.models import HitCount
 #from django.core.paginator import Paginator
@@ -1595,7 +1595,7 @@ def get_article_liens_ajax(request, asso):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#416D9C", "$type": "circle", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre[:50].replace('"',"-").replace("'","-"),
+                    "name": l.article.titre[:80].replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.article_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1617,10 +1617,11 @@ def get_article_liens_ajax(request, asso):
                          # "data": {"$color": "#909291"}
                          })
             else:
+                titre = l.article.titre[:80].replace('"',"-").replace("'","-") if len(l.article.titre) > 75 else l.article.titre.replace('"',"-").replace("'","-")
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre[:50].replace('"',"-").replace("'","-"),
+                    "name": titre,
                     "adjacencies": [
                         {"nodeTo": l.projet_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1634,7 +1635,7 @@ def get_article_liens_ajax(request, asso):
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
             "id": p.slug,
-            "name": p.titre[:50].replace('"',"-").replace("'","-"),
+            "name": p.titre[:80].replace('"',"-").replace("'","-"),
             "adjacencies": [
             ],
         }
@@ -1830,13 +1831,14 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
             "url":reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
             "children": [{
                     "nom":a.slug,
-                    "name":a.titre[:50].replace('"',"-").replace("'","-"),
+                    "name":a.titre[:80].replace('"',"-").replace("'","-"),
                     "url":a.get_absolute_url(),
                     "children":[{
                         "nom":atelier.slug,
-                        "name":atelier.titre[:50].replace('"',"-").replace("'","-"),
+                        "name":"Atelier : " + atelier.titre[:80].replace('"',"-").replace("'","-")
+                        if isinstance(atelier, Atelier) else "Document : " + atelier.titre[:80].replace('"',"-").replace("'","-") ,
                         "url":atelier.get_absolute_url(),
-                        }for atelier in Atelier.objects.filter(article=a)]
+                        }for atelier in itertools.chain(Atelier.objects.filter(article=a), Document.objects.filter(article=a),) ]
                     }for a in articles.filter(categorie=cat)]
             })
 
@@ -1859,9 +1861,8 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
              "group": art.categorie,
              "id": art.id,
              "name": art.slug.replace("-", " "),
-             "value": 10, #HitCount.objects.get_for_object(art).hits,
-             "url2": mark_safe(art.get_absolute_url()),
-             "url1": mark_safe("<a href='"+art.get_absolute_url()  + "'>" + art.slug +"</a>")}
+             "value": 30, #HitCount.objects.get_for_object(art).hits,
+             "url2": mark_safe(art.get_absolute_url())}
             for art in articles]
 
     asso = "public"
@@ -1874,7 +1875,7 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
               "group": g,
               "id": i + 1000000,
               "name": Choix.get_categorie_from_id(g),
-              "value": 20,
+              "value": 10,
               "url" : reverse('blog:index_asso', kwargs={"asso":asso}) + "?categorie=" + g
               } for i, g in enumerate(groupes)]
     #for art in articles: #parcourt des articles de l'asso non archives
@@ -1935,5 +1936,15 @@ def voir_articles_liens_d3_tree2(request, asso_abreviation):
 
     return render(request, 'blog/voir_articlesliens_d3_tree_vok.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
+
+@login_required
+def voir_articles_liens_d3_tree_indented(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_tree_indented.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 

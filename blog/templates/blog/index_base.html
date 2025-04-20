@@ -490,10 +490,10 @@ function get_tags_articles(url_tag) {
        onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=asso_courante %}')" data-toggle="tab"
        id="navtab_archives"> Archivés</a>
 
-    {% if request.user.is_superuser %}
+    {% if user_membreAsso and asso_courante %}
     <a class="nav-item nav-link" href="#visu"
        onclick="" data-toggle="tab"
-       id="navtab_visu"> Visualisation</a>
+       id="navtab_visu"> Visualisation (expériemental)</a>
     {% endif %}
     {% endif%}
 </nav>
@@ -586,7 +586,21 @@ function get_tags_articles(url_tag) {
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
-                                        Voir liens
+                                        Voir liens Tree
+                                    </button>
+                    </a>
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree2' asso_abreviation=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens Tree 2
+                                    </button>
+                    </a>
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented' asso_abreviation=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens Tree Indented
                                     </button>
                     </a>
 
@@ -595,14 +609,14 @@ function get_tags_articles(url_tag) {
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
-                                        Voir liens
+                                        Voir liens Réseau
                                     </button>
                     </a>
                      <a href="{% url 'blog:voir_articles_liens_d3_bubble' asso_abreviation=asso_courante_abreviation %}">
                                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
                                             data-placement="bottom"
                                             title="{{nom_asso}}">
-                                        Voir liens
+                                        Voir liens Bubble
                                     </button>
                     </a>
                 </p>

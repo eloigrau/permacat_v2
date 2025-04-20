@@ -1925,4 +1925,15 @@ def voir_articles_liens_d3_tree(request, asso_abreviation):
     return render(request, 'blog/voir_articlesliens_d3_tree.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
+@login_required
+def voir_articles_liens_d3_tree2(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_tree_vok.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+
+
 

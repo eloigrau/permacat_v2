@@ -1820,10 +1820,9 @@ class Noeuds():
                           art.categorie,
                           reverse('blog:index_asso', kwargs={"asso": self.asso + "?categorie=" + art.categorie}),
                           "categorie")
-        if cree:
-            self.ajouterNoeudArticle(art)
-            if self.categorieAuCentre:
-                self.ajouterLien(id, 999999, "centre")
+        self.ajouterNoeudArticle(art)
+        if cree and self.categorieAuCentre:
+            self.ajouterLien(id, 999999, "centre")
 
         return id
     def ajouterNoeudsEtLiens_articles(self, art1, art2, type_lien):
@@ -1903,7 +1902,7 @@ def get_articles_asso_d3_network_dossier(request, asso_abreviation):
 def get_articles_asso_d3_network_projet(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-    noeuds = Noeuds(asso_abreviation, lienDossierArticles=False, categorieAuCentre=False)
+    noeuds = Noeuds(asso_abreviation, lienDossierArticles=False, categorieAuCentre=False, projetAuCentre=True)
     for liens in ArticleLienProjet.objects.exclude(
         projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
         projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso):

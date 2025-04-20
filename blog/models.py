@@ -43,10 +43,11 @@ class Choix:
 
     type_annonce_scic = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Avantproj','Avant Projet'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
-                        ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel")
+                        ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel"),('tram66',"TRAM 66")
 
-    type_annonce_conf66 = ('Annonce', 'Information'), ("Idees", "Idées"), ('administratif', 'Gestion de la conf66'), ('evenement', 'Actions/Evènement'), ("elevage", "Elevage"), ("ppam","PPAM"), ("maraichage", "Maraichage"), \
-                          ("arboriculture", "Arboriculture"), ("viticulture", "Viticulture"), ("safer", "SAFER"), ("cdpnaf", "CDPNAF"), ("Commission", "Commission"), ("eau", "Eau"), ("photovolt", "Photovoltaïque")
+    type_annonce_conf66 = ('Annonce', 'Information'), ("Idees", "Idées"), ('administratif', 'Gestion de la conf66'), ('evenement', 'Actions/Evènement'), \
+                          ("safer", "SAFER"), ("cdpnaf", "CDPNAF"), ("Commission", "Commission"), ("eau", "Eau"), ("photovolt", "Photovoltaïque")
+    # ("elevage", "Elevage"),  ("viticulture", "Viticulture"),("maraichage", "Maraichage"), ("ppam","PPAM"),("arboriculture", "Arboriculture")
     type_annonce_public = type_annonce_base + type_annonce_projets + (('professionel','Activité Pro'), ('sante','Santé et Bien-être'), )
     type_annonce_asso = {
         "public": type_annonce_public,
@@ -114,7 +115,7 @@ class Choix:
     }
 
 
-    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#18fbaf', 'projet':'#365BEC','categorie':"#f47a3f"}
+    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#ffcc99', 'projet':'#365BEC','categorie':"#f47a3f"}
 
 
     ordre_tri_articles = {

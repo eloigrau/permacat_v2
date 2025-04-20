@@ -65,7 +65,7 @@ const h = innerHeight * 0.7;
 
   // Create a radial cluster layout. The layout’s first dimension (x)
   // is the angle, while the second (y) is the radius.
-  const tree = d3.cluster()
+  const tree = d3.tree()
       .size([2 * Math.PI, radius])
       .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth);
 

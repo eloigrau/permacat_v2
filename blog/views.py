@@ -1843,7 +1843,6 @@ class Noeuds():
 
     def ajouterLienArticleCategorie(self, art):
         if art:
-            self.ajouterNoeudArticle(art)
             id = self.ajouterNoeudCategorie(art)
             self.ajouterLien(art.id, id, "dossier")
 
@@ -1865,11 +1864,11 @@ def get_articles_asso_d3_network(request, asso_abreviation):
 
     noeuds = Noeuds(asso_abreviation)
     for art in articles: #parcourt des articles de l'asso non archives
-        for tag in art.tags.all(): #on parcourt les tags de l'article
-            art_tags = get_articlesParTag(asso, tag).filter(estArchive=False)# pour chaque tag on recupere les articles tagges pareil
-            if len(art_tags) > 1: #si plus de 2 articles,
-                for a in art_tags: # on parcourt les articles tagges
-                    noeuds.ajouterNoeudsEtLiens_articles(a, art, type_lien="tags")
+        # for tag in art.tags.all(): #on parcourt les tags de l'article
+        #     art_tags = get_articlesParTag(asso, tag).filter(estArchive=False)# pour chaque tag on recupere les articles tagges pareil
+        #     if len(art_tags) > 1: #si plus de 2 articles,
+        #         for a in art_tags: # on parcourt les articles tagges
+        #             noeuds.ajouterNoeudsEtLiens_articles(a, art, type_lien="tags")
 
         for liens in (ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()) \
                 .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):
@@ -1930,7 +1929,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
             "name":nom,
             "nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
-            "url":reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
             "children": [{
                     "nb_comm":Commentaire.objects.filter(article=art).count(),
                     "name": formatTitre(art.titre),
@@ -1955,8 +1954,8 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
 def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-                                       estArchive=False, asso=asso)
+    #articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+    #                                   estArchive=False, asso=asso)
 
     dico = {"name":"Par Projet : " + asso.nom, "children":[]}
     liste_liens = ArticleLienProjet.objects.exclude(

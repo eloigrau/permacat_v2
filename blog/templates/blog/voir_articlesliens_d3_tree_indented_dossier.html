@@ -50,6 +50,7 @@ const { innerWidth, innerHeight } = window;
 const w = innerWidth * 0.7;
 const h = innerHeight * 0.7;
 // Specify the dimensions of the chart.
+const format = d3.format(",");
   const width = w < 900 ? 900 : w;
   const nodeSize = 20;
   const root = d3.hierarchy(data).eachBefore((i => d => d.index = i++)(0));
@@ -60,11 +61,13 @@ const h = innerHeight * 0.7;
     {
       label: "Commentaires",
       value: d => d.nb_comm,
+      format,
       x: width
     },
     {
       label: "Count",
       value: d => d.children ? 0 : 1,
+      format: (value, d) => d.children ? format(value) : "-",
       x: width+60
     }
   ];
@@ -126,7 +129,7 @@ const h = innerHeight * 0.7;
         .attr("text-anchor", "end")
         .attr("fill", d => d.children ? null : "#555")
       .data(root.copy().sum(value).descendants())
-        .text(d => d.value);
+        .text(d => format(d.value, d));
   }
 
   return svg.node();

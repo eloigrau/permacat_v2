@@ -20,6 +20,13 @@
 </div>
 
 <hr>
+<h6 class="textcenter">Noeud cliqué : </h6>
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+      <div id="lien" class="textcenter"><a href=""></a></div>
+  </div>
+</div>
+<hr>
 <h6 class="textcenter">Accéder à un article par son titre :</h6>
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8" >
@@ -122,16 +129,18 @@ const marginTop = 10;
           d.children = d.children ? null : d._children;
           update(event, d);
         });
+
     nodeEnter.append("circle")
-        .attr("r", 3.5)
-        .attr("stroke-width", 10)
-        .attr("fill", d => d.couleur);
+        .attr("r", 2.5)
+        .attr("fill", d => d.couleur)
+        .attr("stroke-width", 10);
 
     nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -6 : 6)
         .attr("text-anchor", d => d._children ? "end" : "start")
         .append("svg:a").attr("xlink:href", d => d.data.url)
+
        .text(d => d.data.name)
         .attr("stroke-linejoin", "round")
         .attr("stroke-width", 3)
@@ -186,6 +195,7 @@ const marginTop = 10;
   root.descendants().forEach((d, i) => {
     d.id = i;
     d._children = d.children;
+    if (d.depth && d.data.name.length !== 7) d.children = null;
   });
 
   update(null, root);

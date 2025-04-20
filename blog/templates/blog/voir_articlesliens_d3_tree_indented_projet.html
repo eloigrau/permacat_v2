@@ -60,11 +60,13 @@ const h = innerHeight * 0.7;
     {
       label: "Commentaires",
       value: d => d.nb_comm,
+      format,
       x: width
     },
     {
       label: "Count",
       value: d => d.children ? 0 : 1,
+      format: (value, d) => d.children ? format(value) : "-",
       x: width+60
     }
   ];
@@ -111,23 +113,23 @@ const h = innerHeight * 0.7;
   node.append("title")
       .text(d => d.ancestors().reverse().map(d => d.data.name).join("/"));
 
-  //for (const {label, value, x} of columns) {
-  //  svg.append("text")
-   //     .attr("dy", "0.32em")
-   //     .attr("y", -nodeSize)
-   //     .attr("x", x)
-   //     .attr("text-anchor", "end")
-    //    .attr("font-weight", "bold")
-   //     .text(label);
+  for (const {label, value, x} of columns) {
+    svg.append("text")
+        .attr("dy", "0.32em")
+        .attr("y", -nodeSize)
+        .attr("x", x)
+        .attr("text-anchor", "end")
+        .attr("font-weight", "bold")
+        .text(label);
 
-  //  node.append("text")
-  //      .attr("dy", "0.32em")
-  //      .attr("x", x)
-  //      .attr("text-anchor", "end")
-  //      .attr("fill", d => d.children ? null : "#555")
-  //    .data(root.copy().sum(value).descendants())
-   //     .text(d => d.value);
-  //}
+    node.append("text")
+        .attr("dy", "0.32em")
+        .attr("x", x)
+        .attr("text-anchor", "end")
+        .attr("fill", d => d.children ? null : "#555")
+      .data(root.copy().sum(value).descendants())
+        .text(d => format(d.value, d));
+  }
 
   return svg.node();
 }).catch(function(error) {

@@ -63,12 +63,12 @@ const format = d3.format(",");
       value: d => d.nb_comm,
       format,
       x: width
-    },
-    {
-      label: "Count",
-      value: d => d.children ? 0 : 1,
-      format: (value, d) => d.children ? format(value) : "-",
-      x: width+60
+    //},
+    //{
+    //  label: "Count",
+     // value: d => d.children ? 0 : 1,
+    //  format: (value, d) => d.children ? format(value) : "-",
+    //  x: width+60
     }
   ];
 

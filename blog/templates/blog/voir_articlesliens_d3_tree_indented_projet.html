@@ -55,20 +55,21 @@ const h = innerHeight * 0.7;
   const root = d3.hierarchy(data).eachBefore((i => d => d.index = i++)(0));
   const nodes = root.descendants();
   const height = (nodes.length + 1) * nodeSize;
-
+const format = d3.format(",");
   const columns = [
     {
       label: "Commentaires",
       value: d => d.nb_comm,
       format,
       x: width
-    },
-    {
-      label: "Count",
-      value: d => d.children ? 0 : 1,
-      format: (value, d) => d.children ? format(value) : "-",
-      x: width+60
-    }
+      }
+    //},
+   // {
+   //   label: "Count",
+    //  value: d => d.children ? 0 : 1,
+    //  format: (value, d) => d.children ? format(value) : "-",
+    //  x: width+60
+    //}
   ];
 
 

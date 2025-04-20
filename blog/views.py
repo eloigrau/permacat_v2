@@ -1595,7 +1595,7 @@ def get_article_liens_ajax(request, asso):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#416D9C", "$type": "circle", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre.replace('"',"-").replace("'","-"),
+                    "name": l.article.titre[:30].replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.article_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1620,7 +1620,7 @@ def get_article_liens_ajax(request, asso):
                 data_dict[l.article.slug] = {
                     "data": {"$color": "#00cc00", "$type": "square", "$dim": 7},
                     "id": l.article.slug,
-                    "name": l.article.titre.replace('"',"-").replace("'","-"),
+                    "name": l.article.titre[:30].replace('"',"-").replace("'","-"),
                     "adjacencies": [
                         {"nodeTo": l.projet_lie.slug,
                          # "data": {"$color": "#909291"}
@@ -1634,7 +1634,7 @@ def get_article_liens_ajax(request, asso):
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
             "id": p.slug,
-            "name": p.titre.replace('"',"-").replace("'","-"),
+            "name": p.titre[:30].replace('"',"-").replace("'","-"),
             "adjacencies": [
             ],
         }
@@ -1830,11 +1830,11 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
             "url":reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
             "children": [{
                     "name":a.slug,
-                    "nom":a.titre.replace('"',"-").replace("'","-"),
+                    "nom":a.titre[:30].replace('"',"-").replace("'","-"),
                     "url":a.get_absolute_url(),
                     "children":[{
                         "name":atelier.slug,
-                        "nom":atelier.titre.replace('"',"-").replace("'","-"),
+                        "nom":atelier.titre[:30].replace('"',"-").replace("'","-"),
                         "url":atelier.get_absolute_url(),
                         }for atelier in Atelier.objects.filter(article=a)]
                     }for a in articles.filter(categorie=cat)]

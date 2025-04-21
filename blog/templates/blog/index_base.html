@@ -603,6 +603,13 @@ function get_tags_articles(url_tag) {
                                         Voir liens Tree Indented Projet
                                     </button>
                     </a>
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_tags' asso_abreviation=asso_courante_abreviation %}">
+                                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title="{{nom_asso}}">
+                                        Voir liens Tree Indented Tags
+                                    </button>
+                    </a>
 
 
                     <a href="{% url 'blog:voir_articles_liens_d3_network' asso_abreviation=asso_courante_abreviation %}">
@@ -627,6 +634,7 @@ function get_tags_articles(url_tag) {
                                         Voir liens Réseau Projet
                                     </button>
                     </a>
+
 
                 </p>
                 {% endif %}

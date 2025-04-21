@@ -190,5 +190,11 @@ urlpatterns = [
          views_d3.get_articles_asso_d3_hierar_projet,
         name='get_articles_asso_d3_hierar_projet'),
 
+path(r'voir_articles_liens_d3_tree_indented_tags/<str:asso_abreviation>/',
+         views_d3.voir_articles_liens_d3_tree_indented_tags,
+        name='voir_articles_liens_d3_tree_indented_tags'),
+    path(r'get_articles_asso_d3_hierar_tags/<str:asso_abreviation>/',
+         views_d3.get_articles_asso_d3_hierar_tags,
+        name='get_articles_asso_d3_hierar_tags'),
 
 ]

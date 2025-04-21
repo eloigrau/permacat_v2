@@ -115,7 +115,7 @@ class Choix:
     }
 
 
-    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#ffcc99', 'projet':'#365BEC','categorie':"#f47a3f"}
+    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#ffcc99', 'projet':'#365BEC','categorie':"#f47a3f", 'tags':"#d98cd9"}
 
 
     ordre_tri_articles = {

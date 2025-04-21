@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.urls import  reverse
 from .forms import Article_rechercheForm
 from .models import Article, Commentaire, Projet, CommentaireProjet, Choix, ArticleLiens, ArticleLienProjet
+from .views import get_tags_asso, get_articlesParTag
 from django.contrib.auth.decorators import login_required
 from bourseLibre.views import testIsMembreAsso
 from ateliers.models import Atelier, CommentaireAtelier
@@ -12,6 +13,7 @@ from photologue.models import Document
 import json
 import itertools
 from django.utils.safestring import mark_safe
+from taggit.models import Tag
 
 @login_required
 def get_article_liens_ajax(request, asso):
@@ -89,7 +91,7 @@ def voir_articles_liens(request, asso):
     return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
 
 def formatTitre(titre):
-    return titre[:80].replace('"',"-").replace("'","-")
+    return titre[:100].replace('"',"-")#.replace("'","-")
 
 class Noeuds():
     diconoeuds = {}
@@ -148,7 +150,7 @@ class Noeuds():
         return False
 
     def ajouterNoeudArticle(self, art):
-        return self.ajouterNoeud(art.id, "Article : " +art.titre, art.categorie, art.get_absolute_url(), "article")
+        return self.ajouterNoeud(art.id, "Article : " + formatTitre(art.titre), art.categorie, art.get_absolute_url(), "article")
 
     def ajouterNoeudProjet(self, proj):
         id = self.get_projet_id(proj.id)
@@ -175,8 +177,7 @@ class Noeuds():
                           group="document",
                           url=doc.get_absolute_url(),
                           type_noeud="document")
-        if cree:
-            self.ajouterNoeudArticle(doc.article)
+        self.ajouterNoeudArticle(doc.article)
         return id
 
     def ajouterNoeudCategorie(self, art):
@@ -357,6 +358,39 @@ def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
 
 
 @login_required
+def get_articles_asso_d3_hierar_tags(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+    dico = {"name":"Par Tag : " + asso.nom, "children":[]}
+    set(list(Article.objects.filter(asso=asso, estArchive=False).order_by('tags__name').values_list('tags',
+                                                                                                    flat=True).distinct()))
+    tags_asso = get_tags_asso(request, asso)
+    for tag in Tag.objects.filter(id__in=tags_asso).order_by('name'):
+        dico["children"].append({
+            "name":tag.name,
+            "url":"",
+            "nb_comm":None,
+            "couleur": Choix.couleurs_lien["tags"] ,
+            "children": [{
+                    "name":formatTitre(article.titre),
+                    "url":article.get_absolute_url(),
+                    "nb_comm":Commentaire.objects.filter(article=article).count(),
+                    "couleur": Choix.couleurs_lien["article"] ,
+                    "children":[{
+                        "nom":atelier.slug,
+                        "nb_comm":CommentaireAtelier.objects.filter(atelier__article=article).count()
+                        if isinstance(atelier, Atelier) else 0,
+                        "name":"Atelier : " + formatTitre(atelier.titre)
+                        if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre) ,
+                        "url":atelier.get_absolute_url(),
+                        "couleur": Choix.couleurs_lien["atelier"]
+                        if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                        }for atelier in itertools.chain(Atelier.objects.filter(article=article), Document.objects.filter(article=article),) ]
+                    }for article in get_articlesParTag(asso, tag).filter(estArchive=False)]
+            })
+
+
+    return JsonResponse(dico, safe=True)
+@login_required
 def get_articles_asso_d3_bubble(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
 
@@ -489,4 +523,15 @@ def voir_articles_liens_d3_tree_indented_projet(request, asso_abreviation):
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
     return render(request, 'blog/voir_articlesliens_d3_tree_indented_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+
+
+@login_required
+def voir_articles_liens_d3_tree_indented_tags(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/voir_articlesliens_d3_tree_indented_tags.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 

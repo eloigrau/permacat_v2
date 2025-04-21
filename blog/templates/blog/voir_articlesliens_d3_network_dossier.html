@@ -115,6 +115,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_abreviation=ass
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto;");
 
+
   // Add a line for each link, and a circle for each node.
   const link = svg.append("g")
       .attr("stroke", "#999")
@@ -145,12 +146,18 @@ node.on("click", function(event, d) {
       .html(d.name)
     });
 
-
   // Add a drag behavior.
   node.call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended));
+
+function handleZoom(e) {
+    node.attr('transform', e.transform);
+    link.attr('transform', e.transform);
+}
+const zoom = d3.zoom().on('zoom', handleZoom);
+d3.select('svg').call(zoom);
 
   // Set the position attributes of links and nodes each time the simulation ticks.
   function ticked() {

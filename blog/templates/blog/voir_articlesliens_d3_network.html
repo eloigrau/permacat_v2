@@ -151,6 +151,14 @@ node.on("click", function(event, d) {
         .on("drag", dragged)
         .on("end", dragended));
 
+
+function handleZoom(e) {
+    node.attr('transform', e.transform);
+    link.attr('transform', e.transform);
+}
+const zoom = d3.zoom().on('zoom', handleZoom);
+d3.select('svg').call(zoom);
+
   // Set the position attributes of links and nodes each time the simulation ticks.
   function ticked() {
     link

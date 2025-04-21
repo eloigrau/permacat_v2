@@ -289,6 +289,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
     categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
 
 
+
     dico = {"name":"Par Dossier : " + asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
@@ -316,6 +317,35 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
 
     return JsonResponse(dico, safe=True)
 
+@login_required
+def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
+    asso = testIsMembreAsso(request, asso_abreviation)
+
+    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+                                       estArchive=False, asso=asso)
+
+    categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
+
+
+
+    dico = {"name":"Par Dossier : " + asso.nom, "children":[]}
+    for cat, nom in categorie: #parcourt des articles de l'asso non archives
+        dico["children"].append({
+            "name":nom,
+            "nb_comm": 0,
+            "couleur": Choix.couleurs_lien["categorie"],
+            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "children": [{
+                    "nb_comm":Commentaire.objects.filter(article=art).count(),
+                    "name": formatTitre(art.titre),
+                    "url":art.get_absolute_url(),
+                    "couleur": Choix.couleurs_lien["article"] ,
+                    "children": None
+                    }for art in articles.filter(categorie=cat)]
+            })
+
+
+    return JsonResponse(dico, safe=True)
 @login_required
 def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)

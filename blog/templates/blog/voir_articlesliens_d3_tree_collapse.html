@@ -8,7 +8,7 @@
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
-      <h5>Visualisation des articles du forum par Dossier</h5>
+      <h5>Visualisation des articles du forum </h5>
   </div>
 </div>
 {% endblock %}
@@ -20,11 +20,12 @@
 </div>
 </div>
 
+
 <script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
 
       <script type="text/javascript">
 
-d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier_simple' asso_abreviation=asso_abreviation %}")
+d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier' asso_abreviation=asso_abreviation %}")
 .then(function(data) {// Specify the dimensions of the chart.
 
 const { innerWidth, innerHeight } = window;
@@ -57,18 +58,15 @@ const marginTop = 10;
       .attr("viewBox", [-marginLeft, -marginTop, width, dx])
       .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif; user-select: none;");
 
-
-  const g = svg.append("g")
-  const gLink = g.append("g")
+  const gLink = svg.append("g")
       .attr("fill", "none")
       .attr("stroke", "#555")
       .attr("stroke-opacity", 0.4)
       .attr("stroke-width", 1.5);
 
-  const gNode = g.append("g")
+  const gNode = svg.append("g")
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
-
 
   function update(event, source) {
     const duration = event?.altKey ? 2500 : 250; // hold the alt key to slow down the transition
@@ -106,11 +104,10 @@ const marginTop = 10;
           d.children = d.children ? null : d._children;
           update(event, d);
         });
-
     nodeEnter.append("circle")
-        .attr("r", 3.5)
-        .attr("fill", d => d.couleur)
-        .attr("stroke-width", 10);
+        .attr("r", 2.5)
+        .attr("stroke-width", 10)
+        .attr("fill", d => d.couleur);
 
     nodeEnter.append("text")
         .attr("dy", "0.31em")
@@ -175,6 +172,32 @@ const marginTop = 10;
 
   update(null, root);
 
+  function dist2(a, b) {
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
+  }
+  g.on("mousemove", function() {
+    const m = d3.mouse(this);
+    const leaf = node.data()[
+      d3.scan(node.data().map(d => dist2([d.y, d.x], m)))
+    ];
+
+    let d = root
+      .links()
+      .filter(d => d.target === leaf)
+      .pop().target;
+    const path = [];
+
+    do {
+      path.push(d.data);
+    } while ((d = d.parent));
+
+    node.classed("highlight", d => path.indexOf(d.data) > -1);
+    node.classed("leaf", d => path.indexOf(d.data) === 0);
+    link.classed("highlight", d => path.indexOf(d.target.data) > -1);
+
+    svg.node().value = path;
+    svg.node().dispatchEvent(new CustomEvent("input"));
+  });
 
 }).catch(function(error) {
     console.warn(error)

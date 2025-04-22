@@ -297,11 +297,13 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
             "nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
             "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "type": "dossier",
             "children": [{
                     "nb_comm":Commentaire.objects.filter(article=art).count(),
                     "name": formatTitre(art.titre),
                     "url":art.get_absolute_url(),
                     "couleur": Choix.couleurs_lien["article"] ,
+                    "type": "article_epingle" if art.estEpingle else "article",
                     "children":[{
                         "nb_comm":CommentaireAtelier.objects.filter(atelier__article=art).count()
                         if isinstance(atelier, Atelier) else 0,
@@ -310,6 +312,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
                         "couleur": Choix.couleurs_lien["atelier"]
                         if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
                         "url":atelier.get_absolute_url(),
+                        "type": "atelier" if isinstance(atelier, Atelier) else "document",
                         }for atelier in itertools.chain(Atelier.objects.filter(article=art), Document.objects.filter(article=art),) ]
                     }for art in articles.filter(categorie=cat)]
             })
@@ -335,11 +338,13 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
             "nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
             "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "type": "dossier",
             "children": [{
                     "nb_comm":Commentaire.objects.filter(article=art).count(),
                     "name": formatTitre(art.titre),
                     "url":art.get_absolute_url(),
                     "couleur": Choix.couleurs_lien["article"] ,
+                    "type": "article_epingle" if art.estEpingle else "article",
                     "children": None
                     }for art in articles.filter(categorie=cat)]
             })
@@ -365,20 +370,23 @@ def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
             "url":proj.get_absolute_url(),
             "nb_comm":CommentaireProjet.objects.filter(projet=proj).count(),
             "couleur": Choix.couleurs_lien["projet"] ,
+            "type": "projet",
             "children": [{
                     "name":formatTitre(lien.article.titre),
                     "url":lien.article.get_absolute_url(),
                     "nb_comm":Commentaire.objects.filter(article=lien.article).count(),
                     "couleur": Choix.couleurs_lien["article"] ,
+                    "type": "article_epingle" if lien.article.estEpingle else "article",
                     "children":[{
                         "nom":atelier.slug,
                         "nb_comm":CommentaireAtelier.objects.filter(atelier__article=lien.article).count()
-                        if isinstance(atelier, Atelier) else 0,
+                            if isinstance(atelier, Atelier) else 0,
                         "name":"Atelier : " + formatTitre(atelier.titre)
-                        if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre) ,
+                            if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre) ,
                         "url":atelier.get_absolute_url(),
                         "couleur": Choix.couleurs_lien["atelier"]
-                        if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                            if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                        "type": "atelier" if isinstance(atelier, Atelier) else "document",
                         }for atelier in itertools.chain(Atelier.objects.filter(article=lien.article), Document.objects.filter(article=lien.article),) ]
                     }for lien in liste_liens.filter(projet_lie=proj).distinct()]
             })
@@ -400,20 +408,23 @@ def get_articles_asso_d3_hierar_tags(request, asso_abreviation):
             "url":"",
             "nb_comm":None,
             "couleur": Choix.couleurs_lien["tags"] ,
+            "type": "tags",
             "children": [{
                     "name":formatTitre(article.titre),
                     "url":article.get_absolute_url(),
                     "nb_comm":Commentaire.objects.filter(article=article).count(),
                     "couleur": Choix.couleurs_lien["article"] ,
+                    "type": "article_epingle" if article.estEpingle else "article",
                     "children":[{
                         "nom":atelier.slug,
                         "nb_comm":CommentaireAtelier.objects.filter(atelier__article=article).count()
-                        if isinstance(atelier, Atelier) else 0,
+                            if isinstance(atelier, Atelier) else 0,
                         "name":"Atelier : " + formatTitre(atelier.titre)
-                        if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre) ,
+                            if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre) ,
                         "url":atelier.get_absolute_url(),
                         "couleur": Choix.couleurs_lien["atelier"]
-                        if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                            if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
+                        "type": "atelier" if isinstance(atelier, Atelier) else "document",
                         }for atelier in itertools.chain(Atelier.objects.filter(article=article), Document.objects.filter(article=article),) ]
                     }for article in get_articlesParTag(asso, tag).filter(estArchive=False)]
             })

@@ -20,6 +20,9 @@
 </div>
 </div>
 
+<style>
+    .article_epingle{font-weight: bold;}
+</style>
 
 <script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
 
@@ -86,7 +89,7 @@ const format = d3.format(",");
   node.append("text")
       .attr("dy", "0.32em")
       .attr("x", d => d.depth * nodeSize + 6)
-      .attr("class", d => d.data.type);
+      .attr("class", d => d.data.type)
        .append("svg:a").attr("xlink:href", d => d.data.url)
       .text(d => d.data.name);
 

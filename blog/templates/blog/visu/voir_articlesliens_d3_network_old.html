@@ -1,33 +1,6 @@
-{% extends 'blog/base_blog2.html' %}
-{% load carto_filters %}
-{% load static %}
-{% block header%}
-{% endblock %}
-{% block title %} - Visualisation Forum{% endblock %}
-{% block subtitle %}
-<div class="anchor_blank" id="ref-titre"></div>
-<div class="row textcenter">
-  <div class="col-sm-12 textcenter">
-  </div>
-</div>
-{% endblock %}
-{% block content %}
+{% extends 'blog/visu/visu_template.html' %}
 
-<div class="row">
-  <div class="col-md-12" id="graph">
-      <div id="my_dataviz"></div>
-</div>
-</div>
-
-<div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
-  </div>
-</div>
-
-<script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
-
-      <script type="text/javascript">
-
+ {% block jscript %}
 d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abreviation %}")
 .then(function(data) {// Specify the dimensions of the chart.
   const width = 928;
@@ -153,7 +126,6 @@ const simulation = d3.forceSimulation(nodes)
     console.warn(error)
   });
 
-</script>
 {% endblock %}
 
     

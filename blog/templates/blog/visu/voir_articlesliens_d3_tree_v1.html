@@ -1,55 +1,6 @@
-{% extends 'blog/base_blog2.html' %}
-{% load carto_filters %}
-{% load static %}
-{% block header%}
-{% endblock %}
-{% block title %} - Visualisation Forum{% endblock %}
-{% block subtitle %}
-<div class="anchor_blank" id="ref-titre"></div>
-<div class="row textcenter">
-  <div class="col-sm-12 textcenter">
-  </div>
-</div>
-{% endblock %}
-{% block content %}
+{% extends 'blog/visu/visu_template.html' %}
 
-<div class="row justify-content-center">
-  <div class="col-md-12" id="graph">
-      <div id="my_dataviz"></div>
-</div>
-</div>
-
-<hr>
-<h6 class="textcenter">Noeud cliqué : </h6>
-<div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
-      <div id="lien" class="textcenter"><a href=""></a></div>
-  </div>
-</div>
-<hr>
-<h6 class="textcenter">Accéder à un article par son titre :</h6>
-<div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
-        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row justify-content-center">
-                    <div class="col-sm-10 textcenter" style="padding-right:0;">
-                        {% include 'form_template2.html' with form=form_article_recherche %}
-                    </div>
-
-                    <div class="col-sm-2 textcenter" style="padding-left:0;">
-                        <button class="btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
-                        data-placement="bottom" title="Lire">Lire</button>
-                    </div>
-                </div>
-            </form>
-  </div>
-</div>
-
-<script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
-
-      <script type="text/javascript">
-
+ {% block jscript %}
 d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier' asso_abreviation=asso_abreviation %}")
 .then(function(data) {// Specify the dimensions of the chart.
 
@@ -165,7 +116,6 @@ node.on("mouseover", showTooltip )
     console.warn(error)
   });
 
-</script>
 {% endblock %}
 
     

@@ -1,0 +1,106 @@
+{% extends 'blog/base_blog2.html' %}
+{% load static %}
+{% block title %} - Visualisation Forum{% endblock %}
+
+{% block submenu %}
+<div class="sticky-top">
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl  shadow-petit">
+        <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse"
+                data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse mx-auto" id="navbar2">
+            <ul class="navbar-nav mx-auto subnavbar align-items-center">
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree' asso_abreviation=asso_abreviation %}">
+                        Arbre
+                    </a>
+                </li>
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_abreviation=asso_abreviation %}">
+                        Par Dossier
+                    </a>
+                </li>
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_projet' asso_abreviation=asso_abreviation %}">
+                        Par Projet
+                    </a>
+                </li>
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_tags' asso_abreviation=asso_abreviation %}">
+                       Par Mot-clé
+                    </a>
+                </li>
+                {% if request.user.is_superuser2 %}
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_network' asso_abreviation=asso_abreviation %}">
+                        liens Réseau
+                    </a>
+                </li>
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_abreviation=asso_abreviation %}">
+                        liens Dossier
+                    </a>
+                </li>
+                <li class="nav-item nav-jardin">
+                    <a href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_abreviation=asso_abreviation %}">
+                        liens Projet
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</div>
+
+{% endblock %}
+{% block subtitle %}
+<div class="anchor_blank" id="ref-titre"></div>
+<div class="row textcenter">
+    <div class="col-sm-12 textcenter">
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center overflow-auto">
+    <div class="col-md-12 overflow-auto" id="graph">
+        <div id="my_dataviz"></div>
+    </div>
+</div>
+
+
+<hr>
+<h6 class="textcenter">Trouver un article :</h6>
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row justify-content-center">
+                    <div class="col-sm-10 textcenter" style="padding-right:0;">
+                        {% include 'form_template2.html' with form=form_article_recherche %}
+                    </div>
+
+                    <div class="col-sm-2 textcenter" style="padding-left:0;">
+                        <button class="btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
+                        data-placement="bottom" title="Lire">Lire</button>
+                    </div>
+                </div>
+            </form>
+  </div>
+</div>
+
+<style>
+    .article_epingle{font-weight: bold;}
+</style>
+
+<script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}" charset="utf-8"></script>
+
+<script type="text/javascript">
+    {% block jscript %}
+    {% endblock %}
+</script>
+
+{% endblock %}
+
+    

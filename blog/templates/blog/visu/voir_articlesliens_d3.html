@@ -1,46 +1,6 @@
-{% extends 'blog/base_blog2.html' %}
-{% load carto_filters %}
-{% load static %}
-{% block header%}
-{% endblock %}
-{% block title %} - Visualisation Forum{% endblock %}
-{% block subtitle %}
-<div class="anchor_blank" id="ref-titre"></div>
-<div class="row textcenter">
-  <div class="col-sm-12 textcenter">
-  </div>
-</div>
-{% endblock %}
-{% block content %}
+{% extends 'blog/visu/visu_template.html' %}
 
-<div class="row">
-  <div class="col-md-12" id="graph">
-      <div id="my_dataviz"></div>
-</div>
-</div>
-
-<div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
-        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row justify-content-center">
-                    <div class="col-sm-10 textcenter" style="padding-right:0;">
-                        {% include 'form_template2.html' with form=form_article_recherche %}
-                    </div>
-
-                    <div class="col-sm-2 textcenter" style="padding-left:0;">
-                        <button class="btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
-                        data-placement="bottom" title="Lire">Lire</button>
-                    </div>
-                </div>
-            </form>
-  </div>
-</div>
-
-<script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
-
-      <script type="text/javascript">
-
+ {% block jscript %}
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 40},
   width = 800 - margin.left - margin.right,
@@ -106,8 +66,8 @@ d3.json("{% url 'blog:get_articles_asso_d3_network' asso_abreviation=asso_abrevi
 }).catch(function(error) {
     console.warn(error)
   });
+{% endblock %}
 
-</script>
 {% endblock %}
 
     

@@ -1,4 +1,4 @@
-{% extends 'blog/voir_articlesliens_d3_tree_indented_template.html' %}
+{% extends 'blog/visu/voir_articlesliens_d3_tree_indented_template.html' %}
 
 {% block json_source %}
 d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier' asso_abreviation=asso_abreviation %}")

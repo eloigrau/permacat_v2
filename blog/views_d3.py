@@ -88,7 +88,7 @@ def voir_articles_liens(request, asso):
 
 
     data_json = get_article_liens_ajax(request, asso)
-    return render(request, 'blog/voir_articlesliens_jit.html',{"data_json":data_json})
+    return render(request, 'blog/visu/voir_articlesliens_jit.html',{"data_json":data_json, "asso_abreviation":asso})
 
 def formatTitre(titre):
     return titre[:100].replace('"',"-")#.replace("'","-")
@@ -477,7 +477,7 @@ def voir_articles_liens_d3(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 @login_required
 def voir_articles_liens_d3_network(request, asso_abreviation):
@@ -487,7 +487,7 @@ def voir_articles_liens_d3_network(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 @login_required
@@ -498,7 +498,7 @@ def voir_articles_liens_d3_network_dossier(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 @login_required
 def voir_articles_liens_d3_network_projet(request, asso_abreviation):
@@ -508,7 +508,7 @@ def voir_articles_liens_d3_network_projet(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 @login_required
 def voir_articles_liens_d3_bubble(request, asso_abreviation):
@@ -518,7 +518,7 @@ def voir_articles_liens_d3_bubble(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_bubble.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_bubble.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 @login_required
@@ -529,7 +529,7 @@ def voir_articles_liens_d3_tree(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_tree.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 @login_required
@@ -540,7 +540,7 @@ def voir_articles_liens_d3_tree2(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_tree_vok.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_vok.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 @login_required
@@ -551,7 +551,7 @@ def voir_articles_liens_d3_tree_indented_dossier(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_tree_indented_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 
@@ -563,7 +563,7 @@ def voir_articles_liens_d3_tree_indented_projet(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_tree_indented_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 
 
 @login_required
@@ -574,5 +574,5 @@ def voir_articles_liens_d3_tree_indented_tags(request, asso_abreviation):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/voir_articlesliens_d3_tree_indented_tags.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_tags.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
 

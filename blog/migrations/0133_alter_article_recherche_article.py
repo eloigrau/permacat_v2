@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='article_recherche',
             name='article',
-            field=models.ForeignKey(blank=True, help_text="<p style='color:teal'>Taper 3 lettres du titre de l'article recherché'</p>", null=True, on_delete=django.db.models.deletion.CASCADE, to='blog.article'),
+            field=models.ForeignKey(blank=True, help_text="<p style='color:teal'>Min. 3 lettres </p>", null=True, on_delete=django.db.models.deletion.CASCADE, to='blog.article'),
         ),
     ]

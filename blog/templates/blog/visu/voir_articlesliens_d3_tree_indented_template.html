@@ -1,41 +1,14 @@
-{% extends 'blog/base_blog2.html' %}
-{% load carto_filters %}
-{% load static %}
-{% block header%}
-{% endblock %}
-{% block title %} - Visualisation Forum{% endblock %}
-{% block subtitle %}
-<div class="anchor_blank" id="ref-titre"></div>
-<div class="row textcenter">
-  <div class="col-sm-12 textcenter">
-      <h5>Visualisation des articles du forum par Dossier</h5>
-  </div>
-</div>
-{% endblock %}
-{% block content %}
+{% extends 'blog/visu/visu_template.html' %}
 
-<div class="row justify-content-center overflow-auto">
-  <div class="col-md-12 overflow-auto" id="graph">
-      <div id="my_dataviz"></div>
-</div>
-</div>
-
-<style>
-    .article_epingle{font-weight: bold;}
-</style>
-
-<script type="text/javascript" src="{% static 'd3/d3.v7.min.js' %}"  charset="utf-8"></script>
-
-      <script type="text/javascript">
-
+ {% block jscript %}
 {% block json_source %}
 d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier' asso_abreviation=asso_abreviation %}")
 .then(function(data) {// Specify the dimensions of the chart.
 {% endblock  %}
 
 const { innerWidth, innerHeight } = window;
-const w = innerWidth * 0.7;
-const h = innerHeight * 0.7;
+const w = innerWidth * 0.9;
+const h = innerHeight * 0.9;
 // Specify the dimensions of the chart.
 const format = d3.format(",");
   const width = w < 900 ? 900 : w;
@@ -44,22 +17,13 @@ const format = d3.format(",");
   const nodes = root.descendants();
   const height = (nodes.length + 1) * nodeSize;
 
-  const columns = [
-    {
-      label: "Commentaires",
-      value: d => d.nb_comm,
-      format: (value, d) => d.value == 0 ? format(value) : "-",
-      x: width-60
-    }
-  ];
-
   const svg = d3.select("#my_dataviz")
       .style("overflow", "auto")
       .style("-webkit-overflow-scrolling", "auto").append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-nodeSize / 2, -nodeSize * 3 / 2, width, height])
-      .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif; overflow: visible;");
+      .attr("style", "max-width: 100%; font-size:11px; height: auto; overflow: auto;");
 
   const link = svg.append("g")
       .attr("fill", "none")
@@ -96,29 +60,10 @@ const format = d3.format(",");
   node.append("title")
       .text(d => d.ancestors().reverse().map(d => d.data.name).join("/"));
 
-  for (const {label, value, x} of columns) {
-    svg.append("text")
-        .attr("dy", "0.32em")
-        .attr("y", -nodeSize)
-        .attr("x", x)
-        .attr("text-anchor", "end")
-        .attr("font-weight", "bold")
-        .text(label);
-
-    node.append("text")
-        .attr("dy", "0.32em")
-        .attr("x", x)
-        .attr("text-anchor", "end")
-        .attr("fill", d => d.children ? null : "#555")
-      .data(root.copy().sum(value).descendants())
-        .text(d => format(d.value, d));
-  }
-
 }).catch(function(error) {
     console.warn(error)
   });
 
-</script>
 {% endblock %}
 
     

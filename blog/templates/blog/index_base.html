@@ -491,9 +491,9 @@ function get_tags_articles(url_tag) {
        id="navtab_archives"> Archivés</a>
 
     {% if user_membreAsso and asso_courante %}
-    <a class="nav-item nav-link" href="#visu"
+    <a class="nav-item nav-link" href=""{% url 'blog:voir_articles_liens_d3_tree' asso_abreviation=asso_courante %}"
        onclick="" data-toggle="tab"
-       id="navtab_visu"> Visualisation (expérimental)</a>
+       id="navtab_visu"> Visu Articles</a>
     {% endif %}
     {% endif%}
 </nav>

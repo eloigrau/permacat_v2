@@ -273,8 +273,8 @@ def ajouterLesMembresGroupe(request, asso_slug ):
 
         res, p = creerAdherent(telephone=adherent.adresse.telephone,
                              asso=asso,
-                             nom=adherent.first_name,
-                             prenom=adherent.last_name ,
+                             nom=adherent.last_name ,
+                             prenom=adherent.first_name,
                              email=adherent.email,
                              rue=adherent.adresse.rue,
                              commune=adherent.adresse.commune,

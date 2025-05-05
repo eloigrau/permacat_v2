@@ -706,7 +706,7 @@ class ProjetPhoning_ajouter(UserPassesTestMixin, CreateView):
         return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_form(self):
-        return ProjetPhoning_form(self.asso.abreviation, **self.get_form_kwargs())
+        return ProjetPhoning_form(self.request, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save()
@@ -726,7 +726,7 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
         return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_form(self):
-        return ProjetPhoning_form(self.asso.abreviation, **self.get_form_kwargs())
+        return ProjetPhoning_form(self.request, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save()

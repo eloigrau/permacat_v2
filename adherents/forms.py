@@ -3,6 +3,7 @@ from .models import Adhesion, Adherent, InscriptionMail, ListeDiffusion, Comm_ad
 from .constantes import list_ape
 from local_summernote.widgets import SummernoteWidget
 from .models import ProjetPhoning
+from bourseLibre.models import Asso
 
 
 class AdhesionForm(forms.ModelForm):

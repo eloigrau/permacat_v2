@@ -213,7 +213,7 @@ class Comm_adherent(models.Model):
 
 class ProjetPhoning(models.Model):
     asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name="Groupe associé",)
-    titre = models.CharField(verbose_name="Nom du projet", max_length=200, blank=True)
+    titre = models.CharField(verbose_name="Nom du projet", max_length=200, blank=False)
     date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
     description = models.TextField(null=True, blank=True)
 

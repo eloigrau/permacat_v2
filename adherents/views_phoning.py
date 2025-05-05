@@ -730,7 +730,7 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        return redirect("adherents:phoning_projet_complet")
+        return redirect("adherents:phoning_projet_complet", {"asso_slug":self.asso.abreviation})
 
     def get_success_url(self):
         return self.object.get_absolute_url()
@@ -744,7 +744,7 @@ class ProjetPhoning_supprimer(UserPassesTestMixin, DeleteView, ):
         return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_success_url(self):
-        return reverse('adherents:phoning_projet_courant')
+        return reverse('adherents:phoning_projet_courant', {"asso_slug":self.asso.abreviation})
 
 
 

@@ -17,7 +17,7 @@ from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentFor
     Contact_form, Contact_update_form, ContactContact_form)
 from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
                      ListeDiffusion, Comm_adherent, ProjetPhoning)
-from bourseLibre.models import Adresse, Profil, Asso
+from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso
 from bourseLibre.views import testIsMembreAsso
 from .filters import AdherentsCarteFilter, ContactCarteFilter
 #from .constantes import get_slug_salon
@@ -255,6 +255,17 @@ def creerAdherent(telephone, asso, nom=None, prenom=None, email=None, rue=None, 
                                         profil=profil,
                                         asso=asso
                                     )
+        if created:
+            for a in Adhesion_asso.objects.filter(user=profil):
+                Adhesion.objects.get_or_create(
+                    adherent=p,
+                    montant=a.montant,
+                    date_cotisation=a.date_cotisation,
+                    moyen=a.moyen,
+                    detail=a.detail,
+                    asso=asso
+                )
+
         return 1, p
     return 0, None
 

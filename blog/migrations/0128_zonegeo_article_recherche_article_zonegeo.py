@@ -5,7 +5,7 @@ import django.db.models.deletion
 
 def creer_zones_geo(apps, schema_editor):
     zones = apps.get_model('blog', 'ZoneGeo')
-    noms = ["La plaine du Roussillon", "Perpignan", "Les Albères et Côte Vermeille", "Le Conflent", "Le Vallespir", "Agly Fenouillèdes",  "Le Ribéral", "Les Aspres", "La Salanque", "Le Capcir", "La Cerdagne",  "Département", "Région", "Catalogne", "Occitanie", "France", "Europe", "Monde", "Univers", "Cosmos"]
+    noms = ["La plaine du Roussillon", "Perpignan", "Albères et Côte Vermeille Illibéris", "Conflent-Canigo", "Vallespir", "Agly Fenouillèdes",  "Ribéral", "Aspres", "Salanque", "Capcir", "Cerdagne",  "Département", "Région", "Catalogne", "Occitanie", "France", "Europe", "Monde", "Univers", "Cosmos..."]
     for n in noms:
         zone, created = zones.objects.get_or_create(titre=n)
 

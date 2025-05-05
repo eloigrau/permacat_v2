@@ -13,7 +13,7 @@ import re
 from django.core import mail
 from actstream import actions
 from bs4 import BeautifulSoup
-from .forms import Adhesion_permacatForm, Adhesion_assoForm, creerAction_articlenouveauForm, AssocierProfil_adherentConf
+from .forms import Adhesion_permacatForm, Adhesion_assoForm, creerAction_articlenouveauForm, AssocierProfil_adherentForm
 from actstream import action
 from actstream.models import followers
 from datetime import datetime, timedelta
@@ -675,12 +675,12 @@ def inscrireProfilAuGroupe(request, id_profil, asso_abreviation):
     return redirect(p.get_absolute_url())
 
 
-def associerProfil_adherent(request, profil_pk):
+def associerProfil_adherent(request, asso_slug, profil_pk, ):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
     profil = Profil.objects.get(pk=profil_pk)
-    form = AssocierProfil_adherentConf(request.POST or None)
+    form = AssocierProfil_adherentForm(asso_slug, request.POST or None)
     if form.is_valid():
         adherent = form.cleaned_data["adherent"]
         adherent.profil = profil

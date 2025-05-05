@@ -838,7 +838,7 @@ def register(request):
         #    profil_courant.is_active=False
         profil_courant.save()
         #Panier.objects.create(user=profil_courant)
-        return render(request, 'userenattente.html')
+        return render(request, 'userenattente.html', {'pseudo':profil_courant.username})
 
     return render(request, 'register.html', {"form_adresse": form_adresse,"form_profil": form_profil,})
 

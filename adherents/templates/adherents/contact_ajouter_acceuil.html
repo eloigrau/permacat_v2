@@ -52,6 +52,15 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
+        <a href="{% url 'adherents:phoning_ajouterMembresGroupe' asso_slug=asso_slug%}">
+            <button type="button" class="btn btn-success">
+                Ajouter LES membres du groupe {{asso_slug}}
+            </button>
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 textcenter">
         <a href="{% url 'adherents:phoning_csv_inversernomprenom' asso_slug=asso_slug%}">
             <button type="button" class="btn btn-success">
                 Inverser Nomprenoms CSV

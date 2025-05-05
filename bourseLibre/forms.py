@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from blog.models import Article
 from dal import autocomplete
 from local_captcha.fields import CaptchaField
+from adherents.models import Adherent
 
 #from .constantes import Choix
 #from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
@@ -651,10 +652,13 @@ class EvenementSalonForm(forms.ModelForm):
         return instance
 
 
-class AssocierProfil_adherentConf(forms.Form):
-    from adherents.models import Adherent
-    adherent = forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=True,
+class AssocierProfil_adherentForm(forms.Form):
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.none(), required=True,
                                       label="Adhérent", )
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(AssocierProfil_adherentForm, self).__init__(*args, **kwargs)
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
 
 
 class FavorisForm(forms.ModelForm):
@@ -667,6 +671,7 @@ class FavorisForm(forms.ModelForm):
         instance.profil = request.user
         instance.save()
         return instance
+
 
 
 class FavorisFormSansUrl(forms.ModelForm):

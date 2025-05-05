@@ -222,6 +222,74 @@ def adherent_ajouter(request, asso_slug):
 
     return render(request, 'adherents/adherent_ajouter.html', {"form": form, "asso_slug":asso_slug})
 
+
+def creerAdherent(telephone, asso, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, profil=None):
+    if not(telephone or nom or prenom or email or code_postal):
+        return 0, None
+
+    if not Adherent.objects.filter(adresse__code_postal=code_postal,
+                                 adresse__telephone=telephone,
+                                nom=nom,
+                                prenom=prenom,
+                                email=email,
+                                   asso=asso).exists():
+        if code_postal and telephone:
+            adresse, created = Adresse.objects.get_or_create(
+                                        telephone=telephone,
+                                        commune=commune,
+                                        code_postal=code_postal,
+                                        rue=rue,
+                                        )
+        else:
+            adresse = Adresse.objects.create(
+                                        telephone=telephone,
+                                            commune=commune,
+                                            code_postal=code_postal,
+                                            rue=rue,
+                                        )
+        p, created = Adherent.objects.get_or_create(
+                                        nom=nom,
+                                        prenom=prenom,
+                                        email=email,
+                                        adresse=adresse,
+                                        profil=profil,
+                                        asso=asso
+                                    )
+        return 1, p
+    return 0, None
+
+
+@login_required
+def ajouterLesMembresGroupe(request, asso_slug ):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    asso = testIsMembreAsso(request, asso_slug)
+    profils = asso.getProfils()
+    m = ""
+    j=0
+    for i, adherent in enumerate(profils):
+        #if j>5 or i> 200:
+         #   break
+
+        res, p = creerAdherent(telephone=adherent.adresse.telephone,
+                             asso=asso,
+                             nom=adherent.first_name,
+                             prenom=adherent.last_name ,
+                             email=adherent.email,
+                             rue=adherent.adresse.rue,
+                             commune=adherent.adresse.commune,
+                             code_postal=adherent.adresse.code_postal,
+                               profil=adherent
+                              )
+        if res:
+            m += "<p>ajout " + str(adherent) +"</p>"
+            j += 1
+        else:
+            m += "<p>refus " + str(adherent) +"</p>"
+
+
+    return redirect("adherent_liste", kwargs={"asso_slug":asso_slug})
+
 class ListeAdhesions(UserPassesTestMixin, ListView):
     model = Adhesion
     context_object_name = "adhesions"

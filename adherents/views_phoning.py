@@ -398,6 +398,35 @@ def ajouterAdherents(request, asso_slug ):
 
     return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m, "asso_slug": asso_slug})
 
+@login_required
+def ajouterMembresGroupe(request, asso_slug ):
+    asso = testIsMembreAsso(request, asso_slug)
+    projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
+    profils = asso.getProfils()
+    m = ""
+    j=0
+    for i, adherent in enumerate(profils):
+        #if j>5 or i> 200:
+         #   break
+        res, p = creerContact(projet=projet,
+                              telephone=adherent.adresse.telephone,
+                             nom=adherent.nom,
+                             prenom=adherent.prenom ,
+                             email=adherent.email,
+                             rue=adherent.adresse.rue,
+                             commune=adherent.adresse.commune,
+                             code_postal=adherent.adresse.code_postal,
+                             adherent=adherent,
+                              )
+        if res:
+            m += "<p>ajout " + str(adherent) +"</p>"
+            j += 1
+        else:
+            m += "<p>refus " + str(adherent) +"</p>"
+
+
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m, "asso_slug": asso_slug})
+
 
 @login_required
 def phoning_contact_ajouter_listetel(request, asso_slug):

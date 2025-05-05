@@ -36,6 +36,7 @@ urlpatterns = [
 
     path(r'<str:asso_slug>/adherents/', login_required(views.ListeAdherents.as_view()), name="adherent_liste"),
     path(r'<str:asso_slug>/adherent/ajouter/', views.adherent_ajouter, name="adherent_ajouter"),
+    path(r'<str:asso_slug>/adherent/ajouterLesMembresGroupe/', views.ajouterLesMembresGroupe, name="ajouterLesMembresGroupe"),
     path(r'<str:asso_slug>/adherent/detail/<int:pk>', login_required(views.AdherentDetailView.as_view()), name="adherent_detail"),
     path(r'<str:asso_slug>/adherent/monProfil', views.monProfil, name="monProfil"),
     path(r'<str:asso_slug>/adherent/modifier/<int:pk>', login_required(views.AdherentUpdateView.as_view()), name="adherent_modifier"),
@@ -88,6 +89,7 @@ urlpatterns = [
     path(r'<str:asso_slug>/phoning/ajouter/csv_editNonVotants', views_phoning.phoning_contact_ajouter_csv_editNonVotants, name="phoning_csv_editNonVotants"),
     path(r'<str:asso_slug>/phoning/ajouter/csv_viti', views_phoning.phoning_contact_ajouter_csv_viti, name="phoning_csv_viti"),
     path(r'<str:asso_slug>/phoning/ajouter/adherents', views_phoning.ajouterAdherents, name="phoning_ajouterAdherents"),
+    path(r'<str:asso_slug>/phoning/ajouter/membresGroupe', views_phoning.ajouterMembresGroupe, name="phoning_ajouterMembresGroupe"),
     path(r'<str:asso_slug>/phoning/supprimer/doublons', views_phoning.supprimer_doublons, name="phoning_supprimer_doublons"),
     path(r'<str:asso_slug>/phoning/supprimer/nettoyer_telephones', views_phoning.nettoyer_telephones, name="nettoyer_telephones"),
     path(r'<str:asso_slug>/phoning/supprimer/nettoyer_noms', views_phoning.nettoyer_noms, name="nettoyer_noms"),

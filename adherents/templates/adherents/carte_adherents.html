@@ -37,6 +37,11 @@
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;SU Admin
             </button>
         </a>
+        <a href="{% url 'adherents:ajouterLesMembresGroupe' asso_slug=asso_slug%}">
+            <button type="button" class="btn btn-sm btn-danger">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter les membres du groupe
+            </button>
+        </a>
         {%endif%}
     </div>
 </div>

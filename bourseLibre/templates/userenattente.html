@@ -4,9 +4,11 @@
 {% block content %}
 <h2 class="textcenter">Merci pour votre intérêt. Votre compte a été créé!
     </h2>
+              <h3 class="textcenter">Vous pouvez vous <a href="{% url 'login' %}?{{request.GET.urlencode}}">connecter</a> avec votre pseudo : "{{pseudo}}" et découvrir la plateforme</h3>
 <h4 class="textcenter">
 Vous pouvez consulter les annonces, le forum, en publier, et discuter avec les autres !
 </h4>
+<hr>
 <h5 class="textcenter">Quelques conseils pour utiliser le site :</h5>
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-10 col-lg-8">

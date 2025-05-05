@@ -286,3 +286,7 @@ def phonenumber(value):
 @register.filter(is_safe=True)
 def escapeETUrl(url):
     return url.replace('&', "%26")
+
+@register.filter(is_safe=True)
+def getNomGroupeFromSlug(slug):
+    return mark_safe(Asso.objects.get(abreviation=slug).get_logo_nomgroupe_html)

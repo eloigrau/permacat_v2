@@ -64,6 +64,14 @@
                 <td>{{adherent.prenom}}</td>
             </tr>
             <tr>
+                <td style="width:250px">Gaec :</td>
+                <td>{{adherent.nom_gaec}}</td>
+            </tr>
+            <tr>
+                <td style="width:250px">Statut :</td>
+                <td>{{adherent.get_statut_display}}</td>
+            </tr>
+            <tr>
                 <td style="width:250px">Email :</td>
                 <td>{{adherent.email}}</td>
             </tr>
@@ -73,6 +81,11 @@
                 <td>{{ adherent.adresse.telephone }}</td>
             </tr>
             {% endif %}
+
+            <tr>
+                <td style="width:250px">Production :</td>
+                <td>{{adherent.get_production_str}}</td>
+            </tr>
             </tbody>
         </table>
     </div>

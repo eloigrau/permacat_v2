@@ -12,14 +12,12 @@
 <div class="row titre_adherents">
     <div class="col textcenter">
         <h3>Les Listes de diffusion par Mail </h3>
-
-        <a class="btn btn-primary"   href="{% url 'adherents:mesListesMails' %}">Voir mes abonnements</a>
     </div>
 </div>
 {% if request.user.estmembre_bureau_conf %}
 <div class="row ">
     <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' %}">Ajouter une liste</a>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' asso_slug=asso_slug %}">Ajouter une liste</a>
     </div>
 </div>
 {% endif %}
@@ -36,12 +34,12 @@
 <div class="row ">
     <div class="col textcenter">
 
-    <a href="{% url 'adherents:get_csv_listeMails' %}" target="_blank" rel="noopener noreferrer nofollow">
+    <a href="{% url 'adherents:get_csv_listeMails' asso_slug=asso_slug %}" target="_blank" rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV pour Google
         </button>
     </a>
-		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' %}">Gérer la liste des inscriptions</a></li>
+		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' asso_slug=asso_slug %}">Gérer la liste des inscriptions</a></li>
     </div>
 </div>
 

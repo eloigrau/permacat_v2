@@ -34,13 +34,13 @@
                 {% with liste.0.get_liste_inscriptions as adherents %}
                 <td>
                     {% if liste.1 == "inscrit" %}
-                    <a href="{% url 'adherents:swap_inscription' listeMail_pk=liste.0.pk adherent_pk=liste.2 %}">
+                    <a href="{% url 'adherents:swap_inscription' listeMail_pk=liste.0.pk adherent_pk=liste.2 asso_slug=asso_slug %}">
                         <button type="button" class="btn btn-sm btn-primary">
                             <i class="fa fa-bell" title="Se désabonner"></i>Abonné
                         </button>
                     </a>
                     {% else %}
-                    <a href="{% url 'adherents:swap_inscription' listeMail_pk=liste.0.pk adherent_pk=liste.2 %}">
+                    <a href="{% url 'adherents:swap_inscription' asso_slug=asso_slug listeMail_pk=liste.0.pk adherent_pk=liste.2 %}">
                         <button type="button " class="btn btn-sm btn-secondary">
                              <i class="fa fa-bell-slash " title="S'abonner"></i>Non Abonné
                         </button>

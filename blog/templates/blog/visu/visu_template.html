@@ -12,38 +12,38 @@
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar align-items-center">
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_abreviation=asso_abreviation %}">
                         Arbre
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_abreviation=asso_abreviation %}">
                         Par Dossier
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_projet' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_projet' asso_abreviation=asso_abreviation %}">
                         Par Projet
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree_indented_tags' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_tags' asso_abreviation=asso_abreviation %}">
                        Par Mot-clé
                     </a>
                 </li>
                 {% if request.user.is_superuser2 %}
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_network' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network' asso_abreviation=asso_abreviation %}">
                         liens Réseau
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_abreviation=asso_abreviation %}">
                         liens Dossier
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_abreviation=asso_abreviation %}">
                         liens Projet
                     </a>
                 </li>

@@ -13,28 +13,28 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         <div class="btn-group btn-group-justified">
-         <a href="{% url 'adherents:accueil' %}">
+         <a href="{% url 'adherents:accueil' asso_slug=asso_slug %}">
         <button type="button" class="btn btn-success" >
                Liste des adherents
             </button>
          </a>
-         <a href="{% url 'adherents:adhesion_liste' %}">
+         <a href="{% url 'adherents:adhesion_liste' asso_slug=asso_slug %}">
             <button type="button" class="btn btn-success" >
                liste adhesions
             </button>
          </a>
         {% if request.user.is_superuser %}
-             <a href="{% url 'adherents:import_csv' %}">
+             <a href="{% url 'adherents:import_csv' asso_slug=asso_slug %}">
                 <button type="button" class="btn btn-success" >
                    import DB adherents
                 </button>
              </a>
-             <a href="{% url 'adherents:modif_APE' %}">
+             <a href="{% url 'adherents:modif_APE'  asso_slug=asso_slug %}">
                 <button type="button" class="btn btn-success" >
                    Modif APE
                 </button>
              </a>
-             <a href="{% url 'adherents:normaliser_adherents' %}">
+             <a href="{% url 'adherents:normaliser_adherents' asso_slug=asso_slug %}">
                 <button type="button" class="btn btn-success" >
                    normaliser_adherents
                 </button>

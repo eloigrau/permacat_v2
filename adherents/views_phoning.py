@@ -14,6 +14,7 @@ from .forms import (Contact_form, Contact_update_form, ContactContact_form,
 
 from .models import Adherent, Contact, ContactContact, ProjetPhoning
 from bourseLibre.models import Adresse, Profil, Asso
+from bourseLibre.views import testIsMembreAsso
 from .filters import ContactCarteFilter
 from actstream.models import Action
 from datetime import date, timedelta, datetime
@@ -30,9 +31,13 @@ from django.contrib.auth.decorators import login_required, permission_required
 from unidecode import unidecode
 
 
-class Contact_ajouter(CreateView):
+class Contact_ajouter(UserPassesTestMixin, CreateView, ):
     model = Contact
     template_name_suffix = '_ajouter'
+
+    def test_func(self):
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
 
     def get_form(self):
         return Contact_form(**self.get_form_kwargs())
@@ -57,15 +62,16 @@ class Contact_ajouter(CreateView):
         context = super().get_context_data(**kwargs)
         self.projet = ProjetPhoning.objects.get(pk=self.request.session['projet_courant_pk'])
         context['projetphoning'] = self.projet
+        context['asso_slug'] = self.asso.abreviation
         return context
 
-class Contact_modifier(UpdateView, UserPassesTestMixin):
+class Contact_modifier(UserPassesTestMixin, UpdateView, ):
     model = Contact
     template_name_suffix = '_modifier'
 
     def test_func(self):
-        return True
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_add_contact')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
 
     def get_form(self):
         return Contact_update_form(**self.get_form_kwargs())
@@ -104,14 +110,18 @@ class Contact_modifier(UpdateView, UserPassesTestMixin):
         return self.object.get_absolute_url()
 
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.abreviation
+        return context
+
 class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
     model = Contact
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return self.request.user.estmembre_bureau_conf
-        #return True
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_delete_contact')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
 
     def get_success_url(self):
         #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
@@ -119,26 +129,30 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
         return reverse('adherents:phoning_projet_courant')
 
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.abreviation
+        return context
+
 @login_required
-def contact_supprimer(request, contact_pk):
+def contact_supprimer(request, asso_slug, contact_pk):
     #if not request.user.has_perm(request.session["asso_courante"].abreviation + '_delete_contact'):
 
-    if request.user.estmembre_bureau_conf:
-        return HttpResponseForbidden()
+    asso = testIsMembreAsso(request, asso_slug)
     contact = get_object_or_404(Contact, pk=contact_pk)
     contact.adresse.delete()
     contact.delete()
     return redirect('adherents:phoning_projet_courant')
 
-class Contact_liste(ListView, UserPassesTestMixin):
+class Contact_liste(UserPassesTestMixin, ListView):
     model = Contact
     context_object_name = "contacts"
     template_name_simple = "adherents/carte_contacts_simple.html"
     template_name_complet = "adherents/carte_contacts.html"
 
     def test_func(self):
-        return self.request.user.estmembre_bureau_conf
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_liste_contact')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return self.asso #is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -170,19 +184,23 @@ class Contact_liste(ListView, UserPassesTestMixin):
         context["filter"] = self.filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
+        context['asso_slug'] = self.asso.abreviation
         return context
 
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
-        if self.request.path == reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':self.request.session['projet_courant_pk']}) or self.request.path == reverse('adherents:phoning_projet_courant') :
+        if (self.request.path == reverse('adherents:phoning_projet_simple', kwargs={'asso_slug': self.asso.abreviation, 'projet_pk':self.request.session['projet_courant_pk']}) or
+                self.request.path == reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.abreviation} )) :
             return [self.template_name_simple]  # Return a list that contains "a.html" template name
         return [self.template_name_complet]  # else return "b.html" template name
 
 @login_required
-def phoning_projet_courant(request):
+def phoning_projet_courant(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+
     if 'projet_courant_pk' in request.session:
         #return redirect('adherents:phoning_projet_simple', projet_pk=request.session['projet_courant_pk'])
-        reversed = reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':request.session['projet_courant_pk']})  # create a base url
+        reversed = reverse('adherents:phoning_projet_simple', kwargs={'asso_slug': asso_slug, 'projet_pk':request.session['projet_courant_pk']})  # create a base url
 
         if request.GET:  # append the remaining parameters
             reversed += '?' + parse.urlencode(request.GET)
@@ -191,16 +209,19 @@ def phoning_projet_courant(request):
         return redirect('adherents:phoning_projet_liste')
 
 @login_required
-def contactContact_supprimer(request, contact_contact_pk):
+def contactContact_supprimer(request, asso_slug, contact_contact_pk):
     #if not request.user.has_perm('delete_contact'):
     #    return render
+    asso = testIsMembreAsso(request, asso_slug)
+
     c = get_object_or_404(ContactContact, pk=contact_contact_pk)
     c.delete()
     return redirect('adherents:phoning_projet_courant')
 
 
 @login_required
-def contactContact_ajouter(request, contact_pk):
+def contactContact_ajouter(request, asso_slug, contact_pk):
+    asso = testIsMembreAsso(request, asso_slug)
     p = get_object_or_404(Contact, pk=contact_pk)
     form = ContactContact_form(request.POST or None)
     if form.is_valid():
@@ -215,17 +236,19 @@ def contactContact_ajouter(request, contact_pk):
             return redirect('adherents:phoning_projet_courant')
 
 
-    return render(request, 'adherents/contact_contact_ajouter.html', {"form": form, "contact":p})
+    return render(request, 'adherents/contact_contact_ajouter.html', {"form": form, "contact":p, "asso_slug": asso_slug})
 
 
 
 @login_required
-def contact_ajouter_accueil(request):
-    return render(request, 'adherents/contact_ajouter_acceuil.html', {})
+def contact_ajouter_accueil(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+    return render(request, 'adherents/contact_ajouter_acceuil.html', {"asso_slug": asso_slug})
 
 
 @login_required
-def nettoyer_telephones(request):
+def nettoyer_telephones(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
     m = ""
     for p in Contact.objects.all():
         if p.adresse:
@@ -266,10 +289,10 @@ def nettoyer_telephones(request):
                     m += "<p>DOUBLE tel : " + str(p) + "</p>"
 
 
-    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m, "asso_slug": asso_slug})
 
 @login_required
-def supprimer_doublons(request):
+def supprimer_doublons(request, asso_slug):
     params = dict(request.GET.items())
     if 'tel' in params:
         unique_fields = ['adresse__telephone', ]
@@ -291,7 +314,7 @@ def supprimer_doublons(request):
         )
 
 
-    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": str(duplicates)})
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": str(duplicates), "asso_slug": asso_slug})
 
 
 
@@ -347,7 +370,8 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
 
 
 @login_required
-def ajouterAdherents(request):
+def ajouterAdherents(request, asso_slug ):
+    testIsMembreAsso(request, asso_slug)
     projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     adherents = Adherent.objects.filter(asso=projet.asso)
     m = ""
@@ -372,11 +396,12 @@ def ajouterAdherents(request):
             m += "<p>refus " + str(adherent) +"</p>"
 
 
-    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m})
+    return render(request, 'adherents/contact_ajouter_listetel_res.html', {"message": m, "asso_slug": asso_slug})
 
 
 @login_required
-def phoning_contact_ajouter_listetel(request):
+def phoning_contact_ajouter_listetel(request, asso_slug):
+    testIsMembreAsso(request, asso_slug)
 
     projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     form = ListeTel_form(request.POST or None)
@@ -398,11 +423,13 @@ def phoning_contact_ajouter_listetel(request):
 
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": tels, "message": m})
 
-    return render(request, 'adherents/contact_ajouter_listetel.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_listetel.html', {"form": form, "asso_slug": asso_slug})
 
 
 
-def lireTableauContact(request, csv_reader):
+@login_required
+def lireTableauContact(request, asso_slug, csv_reader):
+    testIsMembreAsso(request, asso_slug)
     projet_courant = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     #if not request.user.has_perm('add_contact'):
    #     return HttpResponseForbidden()
@@ -442,7 +469,9 @@ def lireTableauContact(request, csv_reader):
 
 
 @login_required
-def phoning_contact_ajouter_csv(request,):
+def phoning_contact_ajouter_csv(request, asso_slug, ):
+
+    testIsMembreAsso(request, asso_slug)
     #if not request.user.has_perm('add_contact'):
     #    return HttpResponseForbidden()
     form = csvText_form(request.POST or None)
@@ -457,11 +486,13 @@ def phoning_contact_ajouter_csv(request,):
         m = lireTableauContact(request, csv_reader)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
-    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form, "asso_slug": asso_slug})
 
 
 @login_required
-def phoning_contact_ajouter_csv_viti(request,):
+def phoning_contact_ajouter_csv_viti(request, asso_slug):
+
+    testIsMembreAsso(request, asso_slug)
     #if not request.user.has_perm('add_contact'):
     #    return HttpResponseForbidden()
     form = csvText_form(request.POST or None)
@@ -495,10 +526,12 @@ def phoning_contact_ajouter_csv_viti(request,):
                 m += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
-    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form, "asso_slug": asso_slug})
 
 @login_required
-def phoning_contact_ajouter_csv_inversernomprenom(request,):
+def phoning_contact_ajouter_csv_inversernomprenom(request, asso_slug):
+
+    testIsMembreAsso(request, asso_slug)
     #if not request.user.has_perm('add_contact'):
     #    return HttpResponseForbidden()
     form = csvText_form(request.POST or None)
@@ -526,10 +559,12 @@ def phoning_contact_ajouter_csv_inversernomprenom(request,):
 
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
-    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form, "asso_slug": asso_slug})
 
 @login_required
-def phoning_contact_ajouter_csv_editNonVotants(request,):
+def phoning_contact_ajouter_csv_editNonVotants(request, asso_slug,):
+
+    testIsMembreAsso(request, asso_slug)
     #if not request.user.has_perm('add_contact'):
     #    return HttpResponseForbidden()
     form = csvText_form(request.POST or None)
@@ -569,12 +604,13 @@ def phoning_contact_ajouter_csv_editNonVotants(request,):
         msg += "nbModifs :" + str(j)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": msg})
 
-    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form, "asso_slug": asso_slug})
 
 
 
 @login_required
-def phoning_contact_ajouter_csv2(request):
+def phoning_contact_ajouter_csv2(request, asso_slug):
+    testIsMembreAsso(request, asso_slug)
     form = csvFile_form(request.POST or None, request.FILE or None)
     if form.is_valid():
         fichier = request.FILES['fichier_csv']
@@ -588,12 +624,14 @@ def phoning_contact_ajouter_csv2(request):
             m = lireTableauContact(request, csv_reader)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
-    return render(request, 'adherents/contact_ajouter_csv2.html', {"form": form})
+    return render(request, 'adherents/contact_ajouter_csv2.html', {"form": form, "asso_slug": asso_slug})
 
 
 
 @login_required
-def import_adherents_ggl(request):
+def import_adherents_ggl(request, asso_slug):
+
+    testIsMembreAsso(request, asso_slug)
     params = dict(request.GET.items())
     # fic = params["fic"]
     msg =""
@@ -602,8 +640,10 @@ def import_adherents_ggl(request):
 
 
 @login_required
-def get_csv_contacts(request):
+def get_csv_contacts(request, asso_slug):
     """A view that streams a large CSV file."""
+
+    testIsMembreAsso(request, asso_slug)
     profils = Contact.objects.filter(projet__pk=request.session["projet_courant_pk"]).order_by("nom","prenom","email")
     profils_filtres = ContactCarteFilter(request, request.GET, queryset=profils)
     #current_year = date.today().isocalendar()[0]
@@ -616,7 +656,8 @@ def get_csv_contacts(request):
 
 
 
-def ajax_projet(request):
+def ajax_projet(request, asso_slug):
+    testIsMembreAsso(request, asso_slug)
     try:
         asso_abreviation = request.GET.get('asso_abreviation')
         projets = ProjetPhoning.objects.filter(asso__abreviation=asso_abreviation)
@@ -627,16 +668,16 @@ def ajax_projet(request):
         return render(request, 'blog/ajax/projets_dropdown_list_options.html', {'categories':"",} )
 
 
-class ProjetPhoning_ajouter(CreateView, UserPassesTestMixin):
+class ProjetPhoning_ajouter(UserPassesTestMixin, CreateView):
     model = ProjetPhoning
     template_name_suffix = '_ajouter'
 
     def test_func(self):
-        return True
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_add_projetphoning')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_form(self):
-        return ProjetPhoning_form(**self.get_form_kwargs())
+        return ProjetPhoning_form(self.asso.abreviation, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save()
@@ -647,16 +688,16 @@ class ProjetPhoning_ajouter(CreateView, UserPassesTestMixin):
 
 
 
-class ProjetPhoning_modifier(UpdateView, UserPassesTestMixin):
+class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
     model = ProjetPhoning
     template_name_suffix = '_modifier'
 
     def test_func(self):
-        return True
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_update_projetphoning')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_form(self):
-        return ProjetPhoning_form(**self.get_form_kwargs())
+        return ProjetPhoning_form(self.asso.abreviation, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save()
@@ -665,28 +706,27 @@ class ProjetPhoning_modifier(UpdateView, UserPassesTestMixin):
     def get_success_url(self):
         return self.object.get_absolute_url()
 
-class ProjetPhoning_supprimer(DeleteView, UserPassesTestMixin):
+class ProjetPhoning_supprimer(UserPassesTestMixin, DeleteView, ):
     model = ProjetPhoning
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        return True
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_delete_projetphoning')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_success_url(self):
         return reverse('adherents:phoning_projet_courant')
 
 
 
-class ProjetPhoning_liste(ListView,UserPassesTestMixin):
+class ProjetPhoning_liste(UserPassesTestMixin, ListView):
     model = ProjetPhoning
     context_object_name = "projets"
     template_name = "adherents/projetphoning_list.html"
 
     def test_func(self):
-        return self.request.user.estmembre_bureau_conf
-        #return True
-        #return self.request.user.has_perm(self.object.asso.abreviation + '_liste_projetphoning')
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        return is_membre_bureau(self.request.user, self.asso.abreviation)
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -702,6 +742,7 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
         context = super().get_context_data(**kwargs)
         context['asso_list'] = [(x.abreviation, x.nom,) for x in Asso.objects.all().order_by("id") if
                                 self.request.user.est_autorise(x.abreviation)]
+        context["asso_slug"] = self.asso.abreviation
 
         #context["filter"] = filter
         return context
@@ -709,7 +750,8 @@ class ProjetPhoning_liste(ListView,UserPassesTestMixin):
 
 
 @login_required
-def nettoyer_noms(request):
+def nettoyer_noms(request, asso_slug):
+    testIsMembreAsso(request, asso_slug)
     m = ""
     for p in Contact.objects.filter(projet__asso__abreviation="conf66"):
         if p.nom:
@@ -725,7 +767,8 @@ def nettoyer_noms(request):
 
 
 @login_required
-def ajax_infocontact(request, pk):
+def ajax_infocontact(request, asso_slug, pk):
+    testIsMembreAsso(request, asso_slug)
 
     projet = get_object_or_404(ProjetPhoning, pk=pk)
     contacts = Contact.objects.filter(projet=projet)

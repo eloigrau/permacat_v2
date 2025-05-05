@@ -22,14 +22,14 @@ class Adherent(models.Model):
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name="Groupe", null=True,)
 
     class Meta:
-        unique_together = ('nom', 'prenom',)
+        unique_together = ('nom', 'prenom', 'asso')
 
     def __str__(self):
         #profil = " (" + str(self.profil)+")" if self.profil else ""
         return self.nom + " " + self.prenom
 
     def get_absolute_url(self):
-        return reverse('adherents:adherent_detail', kwargs={'pk': self.pk})
+        return reverse('adherents:adherent_detail', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
 
     def get_adresse_str(self):
         return self.adresse.get_adresse_str
@@ -120,11 +120,11 @@ class Adhesion(models.Model):
         return str(self.date_cotisation.strftime('%Y')) + ": " + str(self.montant) + " euros (" + str(self.moyen) +")"
 
     def get_absolute_url(self):
-        return reverse('adherents:adhesion_detail', kwargs={'pk': self.pk})
+        return reverse('adherents:adhesion_detail', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
     def get_update_url(self):
-        return reverse('adherents:adhesion_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:adhesion_modifier', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
     def get_delete_url(self):
-        return reverse('adherents:adhesion_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:adhesion_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
 
 
 
@@ -137,11 +137,11 @@ class ListeDiffusion(models.Model):
         return str(self.nom)
 
     def get_absolute_url(self):
-        return reverse('adherents:listeDiffusion_detail', kwargs={'pk': self.pk})
+        return reverse('adherents:listeDiffusion_detail', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
     def get_update_url(self):
-        return reverse('adherents:listeDiffusion_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:listeDiffusion_modifier', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
     def get_delete_url(self):
-        return reverse('adherents:listeDiffusion_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:listeDiffusion_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
 
 
     @property
@@ -161,16 +161,20 @@ class ListeDiffusion(models.Model):
 
 
 class InscriptionMail(models.Model):
-    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, verbose_name="Liste de diffusion", blank=True, null=True)
+    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, verbose_name="Liste de diffusion")
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent", blank=False, null=False)
     commentaire = models.CharField(max_length=50, blank=True)
 
-    def __unicode__(self):
-        return self.__str()
+
+    class Meta:
+        unique_together = ('liste_diffusion', 'adherent')
 
     def __str__(self):
-        return str(self.liste_diffusion.nom) + ": " + str(self.get_email)
+        if self.liste_diffusion:
+            return str(self.liste_diffusion.nom) + ": " + str(self.get_email)
+        else:
+            return "Liste NULL, adherent :" + str(self.adherent)
 
     @property
     def get_email(self):
@@ -178,11 +182,11 @@ class InscriptionMail(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('adherents:inscriptionMail_detail', kwargs={'pk': self.pk})
+        return reverse('adherents:inscriptionMail_detail', kwargs={'pk': self.pk, 'asso_slug':self.liste_diffusion.asso.abreviation})
     def get_update_url(self):
-        return reverse('adherents:inscriptionMail_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:inscriptionMail_modifier', kwargs={'pk': self.pk, 'asso_slug':self.liste_diffusion.asso.abreviation})
     def get_delete_url(self):
-        return reverse('adherents:inscriptionMail_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:inscriptionMail_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.liste_diffusion.asso.abreviation})
 
 
 
@@ -201,9 +205,9 @@ class Comm_adherent(models.Model):
     def get_absolute_url(self):
         return self.adherent.get_absolute_url()
     def get_update_url(self):
-        return reverse('adherents:comm_adherent_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:comm_adherent_modifier', kwargs={'pk': self.pk, 'asso_slug':self.adherent.asso.abreviation})
     def get_delete_url(self):
-        return reverse('adherents:comm_adherent_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:comm_adherent_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.adherent.asso.abreviation})
 
 
 
@@ -218,11 +222,11 @@ class ProjetPhoning(models.Model):
         return str(self.titre)
 
     def get_absolute_url(self):
-         return reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':self.pk})
+         return reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':self.pk, 'asso_slug':self.asso.abreviation})
     def get_update_url(self):
-        return reverse('adherents:phoning_projet_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_projet_modifier', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
     def get_delete_url(self):
-        return reverse('adherents:phoning_projet_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_projet_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.asso.abreviation})
 
     def toJSON(self):
         return json.dumps(
@@ -247,13 +251,13 @@ class Contact(models.Model):
     def get_absolute_url(self):
          return reverse('adherents:phoning_projet_courant')
     def get_update_url(self):
-        return reverse('adherents:phoning_contact_modifier', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_contact_modifier', kwargs={'pk': self.pk, 'asso_slug':self.projet.asso.abreviation})
     def get_delete_url(self):
-        return reverse('adherents:phoning_contact_supprimer', kwargs={'pk': self.pk})
+        return reverse('adherents:phoning_contact_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.projet.asso.abreviation})
     def get_delete_url2(self):
-        return reverse('adherents:phoning_contact_supprimer2', kwargs={'contact_pk': self.pk})
+        return reverse('adherents:phoning_contact_supprimer2', kwargs={'contact_pk': self.pk, 'asso_slug':self.projet.asso.abreviation})
     def get_ajoutContact_url(self):
-        return reverse('adherents:phoning_contact_contact_ajout', kwargs={'contact_pk': self.pk})
+        return reverse('adherents:phoning_contact_contact_ajout', kwargs={'contact_pk': self.pk, 'asso_slug':self.projet.asso.abreviation})
 
     def get_contacts(self):
         return self.contactcontact_set.all().order_by('-date_contact')

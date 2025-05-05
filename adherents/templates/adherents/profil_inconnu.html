@@ -1,10 +1,11 @@
 {% extends 'base_adherents.html' %}
+{% load app_filters %}
 
 
 {% block subtitle %}
 <div class="row">
     <div class="col textcenter">
-        <h3>Votre profil sur Perma.Cat n'est pas encore associé à un adhérent de la Conf66. Veuillez vous adresser à l'administrateur du groupe</h3>
+        <h3>Votre profil sur Perma.Cat n'est pas encore associé à un adhérent du groupe {{asso_slug | getNomGroupeFromSlug }}. Veuillez vous adresser à l'administrateur du groupe</h3>
     </div>
 </div>
 {% endblock %}

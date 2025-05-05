@@ -20,7 +20,10 @@
             <tr>
                 <th>Nom</th>
                 <th>Prénom</th>
+                <th>Gaec</th>
                 <th>Profil</th>
+                <th>Statut</th>
+                <th>Production</th>
                 <th>Email</th>
                 <th>Tel</th>
                 <th>Code postal</th>
@@ -35,7 +38,10 @@
         <tr>
             <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=asso_slug %}"> {{ adherent.nom }}</a></td>
             <td> {{ adherent.prenom }}</td>
+            <td> {{ adherent.nom_gaec }}</td>
             <td>{% if adherent.profil %} <a href="{% url 'profil' user_id=adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
+            <td>{{ adherent.get_statut_display }}</td>
+            <td>{{ adherent.get_production_str2}}</td>
             <td>{{ adherent.email }}</td>
 
             <td>{% if adherent.adresse.telephone %}<a href="tel:{{ adherent.adresse.telephone }}">{{ adherent.adresse.telephone }}<a>{% else %}-{% endif %}</td>

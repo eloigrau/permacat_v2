@@ -1,5 +1,6 @@
 {% extends 'blog/base_blog.html' %}
 {% load static %}
+{% load app_filters %}
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {%block banniere %}
 {% endblock  %}
@@ -14,23 +15,24 @@
         </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar align-items-center">
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:accueil' %}">
+                <li class="nav-item nav-jardin">{{asso_slug | getNomGroupeFromSlug }}</li>
+                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:accueil' asso_slug=asso_slug  %}">
                     Adhérents</a></li>
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:monProfil' %}"> Mon
+                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:monProfil' asso_slug=asso_slug  %}"> Mon
                     profil</a></li>
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:mesListesMails' %}">
+                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:mesListesMails' asso_slug=asso_slug  %}">
                     Mes Abonnements Mails</a></li>
                 <li class="nav-item nav-jardin"><a class="dropdown-item"
-                                                   href="{% url 'adherents:listeDiffusion_liste' %}"> Les Listes
+                                                   href="{% url 'adherents:listeDiffusion_liste' asso_slug=asso_slug %}"> Les Listes
                     Mails</a></li>
                 {% if request.user.estmembre_bureau_conf %}
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:adhesion_liste' %}">
+                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:adhesion_liste' asso_slug=asso_slug %}">
                     Gérer les Adhésions</a></li>
 
                 {% else %}
                 {% endif %}
                 {% if request.user.is_superuser %}
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:accueil_admin' %}">
+                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:accueil_admin'  asso_slug=asso_slug %}">
                     Admin</a></li>
                 {% endif %}
                 </li>

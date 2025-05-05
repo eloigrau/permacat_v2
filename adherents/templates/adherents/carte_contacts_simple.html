@@ -64,10 +64,12 @@
                                             {{ filter.form.istel.label_tag }}
                                             <label class="checkbox-inline">{% render_field filter.form.istel %}</label>
                                         </div>
+                                        {% if asso_slug == "conf66" %}
                                         <div>
                                             {{ filter.form.statut.label_tag }}
                                             <label class="checkbox-inline">{% render_field filter.form.statut %}</label>
                                         </div>
+                                        {% endif %}
                                         <div>
                                             {{ filter.form.dejacontacte.label_tag }}
                                             <label class="checkbox-inline">{% render_field filter.form.dejacontacte %}</label>
@@ -104,7 +106,7 @@
 
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
-    <a href="{% url 'adherents:get_csv_contacts' %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_contacts' asso_slug=asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV
@@ -170,7 +172,7 @@ function get_infos(url_tag) {
 
 function get_infocontact(url_tag) {
     $.ajax({
-        url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk %}",
+        url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk asso_slug=asso_slug %}",
         type: "GET",
         contentType: "application/x-www-form-urlencoded",
         async: false,

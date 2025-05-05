@@ -349,6 +349,12 @@
                                            href="{% url 'photologue:doc-list'%}?asso=scic#ref-titre"><i
                                             class='fa fa-file iconleft '></i> Documents</a></li>
                                     <li><a class="dropdown-item"
+                                           href="{% url 'adherents:phoning_projet_liste' asso_slug='scic'%}#ref-titre"><i
+                                            class='fa fa-file iconleft '></i> Phoning</a></li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'adherents:adherent_liste' asso_slug='scic'%}"><i
+                                            class='fa fa-file iconleft '></i> Adhérent-es</a></li>
+                                    <li><a class="dropdown-item"
                                            href="{% url 'blog:index_projets'%}?asso=scic#ref-titre"><i
                                             class='fa fa-file iconleft '></i> Projets</a></li>
                                             </ul>
@@ -446,8 +452,7 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_conf66 %}
                                     <li class="metanavbar"> Espace Adhérents :</li>
-
-                                            <li><a class="dropdown-item" href="{% url 'adherents:accueil' %}"><i
+                                            <li><a class="dropdown-item" href="{% url 'adherents:accueil' asso_slug='conf66' %}"><i
                                                     class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
                                             <li><a class="dropdown-item"
                                                    href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre">
@@ -459,11 +464,11 @@
                                                    href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
                                                     class='fa fa-file iconleft '></i> Documents</a></li>
 
-                                <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusion_liste' %}">
+                                <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusion_liste' asso_slug='conf66' %}">
                                     <i class='fa fa-envelope iconleft'></i> Listes de mails</a></li>
                                     {% if request.user.estmembre_bureau_conf %}
                                     <li class="metanavbar">Espace Admin :</li>
-                                <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' %}"> <i
+                                <li ><a class="dropdown-item"   href="{% url 'adherents:adhesion_liste' asso_slug='conf66' %}"> <i
                                                             class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
 
                                     <li><a class="dropdown-item"

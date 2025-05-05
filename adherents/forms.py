@@ -24,7 +24,7 @@ class AdhesionForm_adherent(forms.ModelForm):
 
     class Meta:
         model = Adhesion
-        fields = ['adherent', 'date_cotisation', 'montant', 'moyen', 'detail']
+        fields = [ 'adherent', 'date_cotisation', 'montant', 'moyen', 'detail']
         widgets = {
             'date_cotisation': forms.DateInput(
                 format=('%Y-%m-%d'),
@@ -34,8 +34,13 @@ class AdhesionForm_adherent(forms.ModelForm):
 
         }
 
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(AdhesionForm_adherent, self).__init__(*args, **kwargs)
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
 
-class AdherentForm(forms.ModelForm):
+
+
+class AdherentForm_conf66(forms.ModelForm):
     rue = forms.CharField(label="Rue", required=False)
     code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)
     commune = forms.CharField(label="Commune", initial="Perpignan", required=False)
@@ -44,9 +49,30 @@ class AdherentForm(forms.ModelForm):
                                        help_text="Selectionner la production correspondant à votre code APE dans la liste",
                                        choices=list_ape)
 
+
     class Meta:
         model = Adherent
-        fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape','rue', 'code_postal', 'commune', 'telephone', ]
+        fields = [ 'nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape','rue', 'code_postal', 'commune', 'telephone', ]
+
+
+        widgets = {
+            'date_cotisation': forms.DateInput(
+                format=('%Y-%m-%d'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+            }
+
+
+class AdherentForm(forms.ModelForm):
+    rue = forms.CharField(label="Rue", required=False)
+    code_postal = forms.CharField(label="Code postal*", initial="66000", required=False)
+    commune = forms.CharField(label="Commune", initial="Perpignan", required=False)
+    telephone = forms.CharField(label="Téléphone", required=False)
+
+    class Meta:
+        model = Adherent
+        fields = [ 'nom', 'prenom', 'email', 'rue', 'code_postal', 'commune', 'telephone', ]
 
 
         widgets = {
@@ -58,28 +84,30 @@ class AdherentForm(forms.ModelForm):
             }
 
 class AdherentChangeForm(forms.ModelForm):
-    production_ape = forms.ChoiceField(label="Production", help_text="Selectionner la production correspondant à votre code APE dans la liste", choices=list_ape)
+    class Meta:
+        model = Adherent
+        fields = ['nom', 'prenom', 'email', ]
+
+
+class AdherentChangeForm_conf66(forms.ModelForm):
 
     class Meta:
         model = Adherent
         fields = ['nom', 'prenom', 'statut', 'nom_gaec', 'email', 'production_ape', ]
 
-        widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            }
-
-
 
 class InscriptionMailForm(forms.ModelForm):
-    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Adhérent", )
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.none(), required=True, label="Adhérent", )
 
     class Meta:
         model = InscriptionMail
         fields = [ "adherent", 'commentaire',]
+
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(InscriptionMailForm, self).__init__(*args, **kwargs)
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
+
 
 class InscriptionMailAdherentALsteForm(forms.ModelForm):
 
@@ -165,3 +193,9 @@ class ProjetPhoning_form(forms.ModelForm):
         widgets = {
             'description': SummernoteWidget(),
         }
+
+
+    def __init__(self, request, *args, **kwargs):
+        super(ProjetPhoning_form, self).__init__(*args, **kwargs)
+        self.fields["asso"].choices = [('', '(Choisir un groupe)'), ] + [(x.id, x.nom) for x in Asso.objects.all().order_by("nom") if request.user.estMembre_str(x.abreviation)]
+

@@ -20,14 +20,14 @@
 {% if request.user.estmembre_bureau_conf %}
 <div class="row justify-content-center">
     <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk %}"> Ajouter un confédéré à la liste</a></li>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk asso_slug=asso_slug %}"> Ajouter un confédéré à la liste</a></li>
     </div>
 </div>
 {% endif %}
 
 <hr>
 <p class="textcenter">
-    <a onclick="get_infos('{% url 'adherents:get_infos_listeMail' listeMail_pk=listediffusion.pk type_info='email' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_listeMail' listeMail_pk=listediffusion.pk type_info='email' asso_slug=asso_slug %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Copier la liste des mails
         </button>

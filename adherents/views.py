@@ -299,7 +299,7 @@ def ajouterLesMembresGroupe(request, asso_slug ):
             m += "<p>refus " + str(adherent) +"</p>"
 
 
-    return redirect("adherents:adherent_liste", kwargs={"asso_slug":asso_slug})
+    return redirect("adherents:adherent_liste", {"asso_slug":asso_slug})
 
 class ListeAdhesions(UserPassesTestMixin, ListView):
     model = Adhesion

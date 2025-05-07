@@ -18,7 +18,7 @@ const marginTop = 10;
   // (dx is a height, and dy a width). This because the tree must be viewed with the root at the
   // “bottom”, in the data domain. The width of a column is based on the tree’s height.
   const root = d3.hierarchy(data);
-  const dx = 10;
+  const dx = 28;
   const dy = (width - marginRight - marginLeft) / (1 + root.height);
 
   // Define the tree layout and the shape for links.
@@ -47,7 +47,8 @@ const marginTop = 10;
       .attr("pointer-events", "all");
 
 
-var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.3em;');
+var typenode = d3.selectAll(".dossier").attr('style', 'font-size:1.2em;');
+var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.1em;');
 
   function update(event, source) {
     const duration = event?.altKey ? 2500 : 250; // hold the alt key to slow down the transition

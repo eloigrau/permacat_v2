@@ -286,7 +286,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
 
-    categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])))
+    categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=lambda x:str.lower(x[1]))
 
 
 
@@ -331,7 +331,7 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
 
-    categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])))
+    categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=lambda x:str.lower(x[1]))
 
 
 

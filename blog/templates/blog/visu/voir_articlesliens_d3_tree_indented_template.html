@@ -60,7 +60,8 @@ const format = d3.format(",");
   node.append("title")
       .text(d => d.ancestors().reverse().map(d => d.data.name).join("/"));
 
-var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.3em;');
+var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.1em;');
+var typenode = d3.selectAll(".dossier").attr('style', 'font-size:1.2em;');
 
 
 }).catch(function(error) {

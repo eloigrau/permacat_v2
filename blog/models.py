@@ -43,7 +43,7 @@ class Choix:
 
     type_annonce_scic = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Avantproj','Avant Projet'),  ('Cercle0',"Cercle d'Ancrage"),('Cercle1',"Cercle Education"),\
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
-                        ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel"),('tram66',"TRAM 66visu")
+                        ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel"),('tram66',"TRAM 66")
 
     type_annonce_conf66 = ('Annonce', 'Information'), ("Idees", "Idées"), ('administratif', 'Gestion de la conf66'), ('evenement', 'Actions/Evènement'), \
                           ("safer", "SAFER"), ("cdpnaf", "CDPNAF"), ("Commission", "Commission"), ("eau", "Eau"), ("photovolt", "Photovoltaïque")

@@ -5,8 +5,8 @@ d3.json("{% url 'blog:get_articles_asso_d3_hierar_dossier_simple' asso_abreviati
 .then(function(data) {// Specify the dimensions of the chart.
 
 const { innerWidth, innerHeight } = window;
-const w = innerWidth * 0.7;
-const h = innerHeight * 0.7;
+const w = innerWidth * 0.9;
+const h = innerHeight * 0.9;
 // Specify the dimensions of the chart.
   const width = w < 900 ? 900 : w;
 const marginTop = 10;

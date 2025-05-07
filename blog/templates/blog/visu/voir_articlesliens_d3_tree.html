@@ -32,7 +32,7 @@ const marginTop = 10;
       .attr("width", width)
       .attr("height", dx)
       .attr("viewBox", [-marginLeft, -marginTop, width, dx])
-      .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif; user-select: none;");
+      .attr("style", "max-width: 100%; height: auto; font-size:normal; user-select: none;");
 
 
   const g = svg.append("g")
@@ -46,6 +46,8 @@ const marginTop = 10;
       .attr("cursor", "pointer")
       .attr("pointer-events", "all");
 
+
+var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.3em;');
 
   function update(event, source) {
     const duration = event?.altKey ? 2500 : 250; // hold the alt key to slow down the transition
@@ -87,11 +89,13 @@ const marginTop = 10;
     nodeEnter.append("circle")
         .attr("r", 3.5)
         .attr("fill", d => d.couleur)
+        .attr("class", d => d.data.type + "_circ")
         .attr("stroke-width", 10);
 
     nodeEnter.append("text")
         .attr("dy", "0.31em")
         .attr("x", d => d._children ? -6 : 6)
+        .attr("class", d => d.data.type)
         .attr("text-anchor", d => d._children ? "end" : "start")
         .append("svg:a").attr("xlink:href", d => d.data.url)
        .text(d => d.data.name)

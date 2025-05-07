@@ -12,7 +12,7 @@ const h = innerHeight * 0.9;
 // Specify the dimensions of the chart.
 const format = d3.format(",");
   const width = w < 900 ? 900 : w;
-  const nodeSize = 20;
+  const nodeSize = 28;
   const root = d3.hierarchy(data).eachBefore((i => d => d.index = i++)(0));
   const nodes = root.descendants();
   const height = (nodes.length + 1) * nodeSize;
@@ -23,7 +23,7 @@ const format = d3.format(",");
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [-nodeSize / 2, -nodeSize * 3 / 2, width, height])
-      .attr("style", "max-width: 100%; font-size:11px; height: auto; overflow: auto;");
+      .attr("style", "max-width: 100%; font-size:normal; height: auto; overflow: auto;");
 
   const link = svg.append("g")
       .attr("fill", "none")
@@ -48,7 +48,7 @@ const format = d3.format(",");
       .attr("cx", d => d.depth * nodeSize)
       .attr("r", 3)
       .attr("fill", d => d.data.couleur)
-      .attr("class", d => d.data.type);
+      .attr("class", d => d.data.type + "_circ");
 
   node.append("text")
       .attr("dy", "0.32em")
@@ -59,6 +59,9 @@ const format = d3.format(",");
 
   node.append("title")
       .text(d => d.ancestors().reverse().map(d => d.data.name).join("/"));
+
+var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.3em;');
+
 
 }).catch(function(error) {
     console.warn(error)

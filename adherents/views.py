@@ -81,7 +81,7 @@ class ListeAdherents(UserPassesTestMixin, ListView):
         filter = AdherentsCarteFilter(self.request.GET, qs)
         context["filter"] = filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
-        context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_conf66_'))
+        context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_' +self.asso.abreviation+'_'))
         return context
 
 
@@ -151,10 +151,11 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
             form.changed_data) + ")"
-        action.send(self.request.user, verb='adherent_conf66_modifier', action_object=self.object,
+        action.send(self.request.user, verb='adherent_'+self.asso.abreviation+'_modifier', action_object=self.object,
                     url=self.object.get_absolute_url(), description=desc)
         titre = "[PCAT_adherents] Modification de l'adherent : " + str(self.object)
-        action.send(self.request.user, verb='emails', url=self.object.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+        if self.asso.email:
+            action.send(self.request.user, verb='emails', url=self.object.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=[self.asso.email, ])
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -1063,7 +1064,7 @@ def creerInscriptionMail(request, asso_slug):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
-    form = InscriptionMail_listeAdherent_Form(request.POST or None)
+    form = InscriptionMail_listeAdherent_Form(asso_slug, request.POST or None)
     if form.is_valid():
         inscription = form.save()
         action.send(inscription.adherent, verb="listeDiff_conf66_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),

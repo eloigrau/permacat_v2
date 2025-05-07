@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponseForbidden, JsonResponse
 from django.urls import  reverse
 from .forms import Article_rechercheForm
-from .models import Article, Commentaire, Projet, CommentaireProjet, Choix, ArticleLiens, ArticleLienProjet
+from .models import Article, Commentaire, Projet, DocumentPartage, CommentaireProjet, Choix, ArticleLiens, ArticleLienProjet
 from .views import get_tags_asso, get_articlesParTag
 from django.contrib.auth.decorators import login_required
 from bourseLibre.views import testIsMembreAsso
@@ -286,35 +286,39 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
 
-    categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
+    categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=str.lower)
 
 
 
-    dico = {"name":"Par Dossier : " + asso.nom, "children":[]}
+    dico = {"name":asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
             "name":nom,
-            "nb_comm": 0,
+            #"nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
             "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
             "type": "dossier",
             "children": [{
-                    "nb_comm":Commentaire.objects.filter(article=art).count(),
+                   # "nb_comm":Commentaire.objects.filter(article=art).count(),
                     "name": formatTitre(art.titre),
                     "url":art.get_absolute_url(),
                     "couleur": Choix.couleurs_lien["article"] ,
                     "type": "article_epingle" if art.estEpingle else "article",
                     "children":[{
-                        "nb_comm":CommentaireAtelier.objects.filter(atelier__article=art).count()
-                        if isinstance(atelier, Atelier) else 0,
-                        "name":"Atelier : " + formatTitre(atelier.titre)
-                        if isinstance(atelier, Atelier) else "Document : " + formatTitre(atelier.titre),
-                        "couleur": Choix.couleurs_lien["atelier"]
-                        if isinstance(atelier, Atelier) else Choix.couleurs_lien["document"],
-                        "url":atelier.get_absolute_url(),
-                        "type": "atelier" if isinstance(atelier, Atelier) else "document",
-                        }for atelier in itertools.chain(Atelier.objects.filter(article=art), Document.objects.filter(article=art),) ]
-                    }for art in articles.filter(categorie=cat)]
+                       # "nb_comm":CommentaireAtelier.objects.filter(atelier__article=art).count()
+                       # if isinstance(atelier, Atelier) else 0,
+                        "name":"Atelier : " + formatTitre(item.titre) if isinstance(item, Atelier) else
+                            "Pad : " + formatTitre(item.nom)  if isinstance(item, DocumentPartage) else
+                            "Document : " + formatTitre(item.titre),
+                        "couleur": Choix.couleurs_lien["atelier"] if isinstance(item, Atelier) else
+                            Choix.couleurs_lien["pad"]  if isinstance(item, DocumentPartage) else
+                            Choix.couleurs_lien["document"],
+                        "url":item.get_absolute_url(),
+                        "type": "atelier" if isinstance(item, Atelier) else
+                                "pad" if isinstance(item, DocumentPartage) else
+                                "document",
+                        }for item in itertools.chain(Atelier.objects.filter(article=art), Document.objects.filter(article=art), DocumentPartage.objects.filter(article=art),) ]
+                    }for art in articles.filter(categorie=cat).order_by("estEpingle", "titre")]
             })
 
 
@@ -327,11 +331,11 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
     articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
 
-    categorie = list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()]))
+    categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=str.lower)
 
 
 
-    dico = {"name":"Par Dossier : " + asso.nom, "children":[]}
+    dico = {"name":asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
             "name":nom,
@@ -346,7 +350,7 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
                     "couleur": Choix.couleurs_lien["article"] ,
                     "type": "article_epingle" if art.estEpingle else "article",
                     "children": None
-                    }for art in articles.filter(categorie=cat)]
+                    }for art in articles.filter(categorie=cat).order_by("estEpingle", "titre")]
             })
 
 
@@ -354,7 +358,7 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
 @login_required
 def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
-    dico = {"name":"Par Projet : " + asso.nom, "children":[]}
+    dico = {"name":"Projets " + asso.nom, "children":[]}
     liste_liens = ArticleLienProjet.objects.exclude(
         projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
         projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso).order_by('projet_lie__titre')
@@ -398,7 +402,7 @@ def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
 @login_required
 def get_articles_asso_d3_hierar_tags(request, asso_abreviation):
     asso = testIsMembreAsso(request, asso_abreviation)
-    dico = {"name":"Par Tag : " + asso.nom, "children":[]}
+    dico = {"name":"Mots-clé " + asso.nom, "children":[]}
     set(list(Article.objects.filter(asso=asso, estArchive=False).order_by('tags__name').values_list('tags',
                                                                                                     flat=True).distinct()))
     tags_asso = get_tags_asso(request, asso)

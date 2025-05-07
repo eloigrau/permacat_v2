@@ -715,6 +715,11 @@ class ProjetPhoning_ajouter(UserPassesTestMixin, CreateView):
 
         return redirect(self.object)
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.abreviation
+        return context
 
 
 class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
@@ -735,6 +740,13 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return self.object.get_absolute_url()
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.abreviation
+        return context
+
+
 class ProjetPhoning_supprimer(UserPassesTestMixin, DeleteView, ):
     model = ProjetPhoning
     template_name_suffix = '_supprimer'
@@ -747,6 +759,11 @@ class ProjetPhoning_supprimer(UserPassesTestMixin, DeleteView, ):
         return reverse('adherents:phoning_projet_courant', {"asso_slug":self.asso.abreviation})
 
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.abreviation
+        return context
 
 class ProjetPhoning_liste(UserPassesTestMixin, ListView):
     model = ProjetPhoning

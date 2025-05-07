@@ -115,7 +115,7 @@ class Choix:
     }
 
 
-    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#ffcc99', 'projet':'#365BEC','categorie':"#f47a3f", 'tags':"#d98cd9"}
+    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#ffcc99', 'projet':'#365BEC','categorie':"#f47a3f", 'tags':"#d98cd9", "pad":"#666699"}
 
 
     ordre_tri_articles = {
@@ -469,6 +469,9 @@ class DocumentPartage(models.Model):
         return "https://semestriel.framapad.org/p/" + self.slug
 
     def get_url(self):
+        return self.url
+
+    def get_absolute_url(self):
         return self.url
 
 class Evenement(models.Model):

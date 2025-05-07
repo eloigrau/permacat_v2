@@ -98,7 +98,7 @@ class AdherentChangeForm_conf66(forms.ModelForm):
 
 
 class InscriptionMailForm(forms.ModelForm):
-    adherent = forms.ModelChoiceField(queryset=Adherent.objects.none(), required=True, label="Adhérent", )
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all(), required=True, label="Adhérent", )
 
     class Meta:
         model = InscriptionMail
@@ -127,6 +127,11 @@ class InscriptionMail_listeAdherent_Form(forms.ModelForm):
         widgets = {
             'commentaire': SummernoteWidget(),
         }
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(InscriptionMail_listeAdherent_Form, self).__init__(*args, **kwargs)
+        self.fields["liste_diffusion"].choices = [('', '(Choisir une liste de diffusion)'), ] + [(x.id, x.nom) for x in ListeDiffusion.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
+
 
 
 class ListeDiffusionForm(forms.ModelForm):

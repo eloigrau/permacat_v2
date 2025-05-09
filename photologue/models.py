@@ -250,7 +250,7 @@ class Album(models.Model):
             return self.asso.is_adhesion_anneecourante(user)
 
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
     def latest(self, limit=LATEST_LIMIT, public=True):
         if not limit:
@@ -348,7 +348,7 @@ class Document(models.Model):
         #elif self.asso.abreviation == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
     @property
     def getHitNumber(self,):

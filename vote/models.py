@@ -207,7 +207,7 @@ class Suffrage(SuffrageBase):
         #    return self.asso.is_adhesion_anneecourante(user)
 
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
 
     @property

@@ -249,9 +249,7 @@ class Asso(models.Model):
     def is_membre(self, user):
         if self.abreviation == "public":
             return True
-        if not getattr(user, "adherent_" + self.abreviation):
-            return False
-        return True
+        return getattr(user, "adherent_" + self.abreviation, False)
 
 
     def is_adhesion_anneecourante(self, user):
@@ -826,7 +824,7 @@ class Produit(models.Model):  # , BaseProduct):
         #elif self.asso.abreviation == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
     @property
     def est_public(self):
@@ -1497,7 +1495,7 @@ class MessageGeneral(models.Model):
         #elif self.asso.abreviation == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
 class Suivis(models.Model):
     nom_suivi = models.TextField(null=False, blank=False)

@@ -156,7 +156,7 @@ class Reunion(models.Model):
         if self.asso.abreviation == "public":
             return True
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
     @property
     def getDistanceTotale(self):

@@ -419,11 +419,11 @@ class Article(models.Model):
         #elif self.asso.abreviation == "conf66":
         #    return user.isCotisationAJour(self.asso.abreviation)#
 
-        adhesion = getattr(user, "adherent_" + self.asso.abreviation)
+        adhesion = getattr(user, "adherent_" + self.asso.abreviationn, False)
         if adhesion :
             return adhesion
         for asso in self.get_partagesAsso:
-            if getattr(user, "adherent_" + asso.abreviation):
+            if getattr(user, "adherent_" + asso.abreviation, False):
                 return True
         return False
 
@@ -706,7 +706,7 @@ class Projet(models.Model):
         #elif self.asso.abreviation == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation)
+        return getattr(user, "adherent_" + self.asso.abreviation, False)
 
     @property
     def has_ficheprojet(self):
@@ -750,7 +750,7 @@ class FicheProjet(models.Model):
         #    return self.asso.is_adhesion_anneecourante(user)
 
 
-        return getattr(user, "adherent_" + self.projet.asso.abreviation)
+        return getattr(user, "adherent_" + self.projet.asso.abreviation, False)
 
     @property
     def titre(self):

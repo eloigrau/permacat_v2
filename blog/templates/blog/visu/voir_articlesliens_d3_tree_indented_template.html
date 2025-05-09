@@ -1,15 +1,13 @@
 {% extends 'blog/visu/visu_template.html' %}
 
-{% block subtitle %}
-<script>
 
-</script>
+{% block content2 %}
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
-        <button type="button" name="cb_2" id="docs" visibilite="false">Documents</button>
-        <button type="button" name="cb_3" id="ats" visibilite="false">Ateliers</button>
-        <button type="button" name="cb_4" id="pads" visibilite="false">Pads</button>
+        <button type="button" class="btn btn-light" name="cb_2" id="docs" visibilite="false">Documents</button>
+        <button type="button" class="btn btn-light"  name="cb_3" id="ats" visibilite="false">Ateliers</button>
+        <button type="button" class="btn btn-light"  name="cb_4" id="pads" visibilite="false">Pads</button>
     </div>
 </div>
 {% endblock %}

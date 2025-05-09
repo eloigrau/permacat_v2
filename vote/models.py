@@ -204,7 +204,7 @@ class Suffrage(SuffrageBase):
             return True
 
         elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+            return self.asso.is_adhesion_anneecourante(user)
 
 
         return getattr(user, "adherent_" + self.asso.abreviation)

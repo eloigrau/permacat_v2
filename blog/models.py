@@ -417,7 +417,7 @@ class Article(models.Model):
         if user == self.auteur or  self.asso.abreviation == "public" or self.partagesAsso.filter(abreviation="public"):
             return True
         elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+            return self.asso.is_adhesion_anneecourante(user)
 
         adhesion = getattr(user, "adherent_" + self.asso.abreviation)
         if adhesion :
@@ -704,7 +704,7 @@ class Projet(models.Model):
         if user == self.auteur or self.asso.abreviation == "public":
             return True
         elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+            return self.asso.is_adhesion_anneecourante(user)
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 
@@ -747,7 +747,7 @@ class FicheProjet(models.Model):
             return True
 
         elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+            return self.asso.is_adhesion_anneecourante(user)
 
 
         return getattr(user, "adherent_" + self.projet.asso.abreviation)

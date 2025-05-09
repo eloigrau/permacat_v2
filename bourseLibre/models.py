@@ -253,6 +253,10 @@ class Asso(models.Model):
             return False
         return True
 
+
+    def is_adhesion_anneecourante(self, user):
+        return user.adhesion_set.filter(date_cotisation__year=int(datetime.now().year)).exists()
+
     def getEmails_sympathisants(self):
         return [p.email for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
 
@@ -409,6 +413,10 @@ class Profil(AbstractUser):
     def isCotisationAJour_scic(self):
         return self.isCotisationAJour("scic")
 
+    @property
+    def isCotisationAJour_scic(self):
+        return self.isCotisationAJour("conf66")
+
     def statutMembre_asso(self, asso):
         if asso == "permacat" or "pc":
             return self.adherent_pc
@@ -551,9 +559,8 @@ class Profil(AbstractUser):
     def est_autorise(self, abreviation_asso):
         if abreviation_asso == "public":
             return True
-
-        elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+        elif abreviation_asso in ["conf66", "scic" ]:
+            return self.isCotisationAJour(abreviation_asso)
 
 
         return getattr(self, "adherent_" + abreviation_asso)
@@ -820,7 +827,7 @@ class Produit(models.Model):  # , BaseProduct):
             return True
 
         elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+            return self.asso.is_adhesion_anneecourante(user)
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 
@@ -1491,7 +1498,7 @@ class MessageGeneral(models.Model):
             return True
 
         elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante()
+            return self.asso.is_adhesion_anneecourante(user)
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 

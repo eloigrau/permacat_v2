@@ -228,6 +228,8 @@
             </button>
         </a>
         {% endif %}
+            {%if user.adherent_conf66 %}, cotisation à jour : {% if user.isCotisationAJour_conf66 %} oui {% else %}
+      non {% endif %}{% endif %}
         </td>
 	    </tr>
         {% endif %}

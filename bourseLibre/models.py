@@ -32,6 +32,7 @@ from django.templatetags.static import static
 import re
 from django.utils import timezone
 from django.core.exceptions import MultipleObjectsReturned
+from adherents.models import Adhesion
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
@@ -395,10 +396,7 @@ class Profil(AbstractUser):
             return 0
 
     def getAdhesions(self, abreviationAsso):
-        if abreviationAsso == "pc" :
-            return Adhesion_permacat.objects.filter(user=self)
-        else:
-            return Adhesion_asso.objects.filter(user=self, asso__abreviation=abreviationAsso)
+        return Adhesion.objects.filter(adherent__profil=self, asso__abreviation=abreviationAsso)
 
     def isCotisationAJour(self, asso_abreviation):
         time_threshold = datetime(datetime.now().year - 1, 11, 1)
@@ -412,10 +410,6 @@ class Profil(AbstractUser):
     @property
     def isCotisationAJour_scic(self):
         return self.isCotisationAJour("scic")
-
-    @property
-    def isCotisationAJour_scic(self):
-        return self.isCotisationAJour("conf66")
 
     def statutMembre_asso(self, asso):
         if asso == "permacat" or "pc":

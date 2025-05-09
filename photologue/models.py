@@ -342,13 +342,11 @@ class Document(models.Model):
 
 
     def est_autorise(self, user):
-        if not self.asso:
-            return True
-        if self.asso.abreviation == "public":
+        if not self.asso or self.asso.abreviation == "public":
             return True
 
-        elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante(user)
+        #elif self.asso.abreviation == "conf66":
+        #    return self.asso.is_adhesion_anneecourante(user)
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 

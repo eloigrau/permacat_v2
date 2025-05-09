@@ -556,8 +556,8 @@ class Profil(AbstractUser):
     def est_autorise(self, abreviation_asso):
         if abreviation_asso == "public":
             return True
-        elif abreviation_asso in ["conf66", "scic" ]:
-            return self.isCotisationAJour(abreviation_asso)
+        #elif abreviation_asso in ["conf66", "scic" ]:
+        #    return self.isCotisationAJour(abreviation_asso)
 
 
         return getattr(self, "adherent_" + abreviation_asso)
@@ -823,8 +823,8 @@ class Produit(models.Model):  # , BaseProduct):
         if self.asso.abreviation == "public":
             return True
 
-        elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante(user)
+        #elif self.asso.abreviation == "conf66":
+        #    return self.asso.is_adhesion_anneecourante(user)
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 
@@ -1494,8 +1494,8 @@ class MessageGeneral(models.Model):
         if self.asso.abreviation == "public":
             return True
 
-        elif self.asso.abreviation == "conf66":
-            return self.asso.is_adhesion_anneecourante(user)
+        #elif self.asso.abreviation == "conf66":
+        #    return self.asso.is_adhesion_anneecourante(user)
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 

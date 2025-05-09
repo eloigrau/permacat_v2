@@ -14,6 +14,7 @@ from django.templatetags.static import static
 from jardins.models import Jardin
 from django.core.validators import MinLengthValidator
 import uuid
+from adherents.models import Adhesion
 from bourseLibre.settings import DATE_INPUT_FORMAT
 from tinymce import models as tinymce_models
 
@@ -413,10 +414,11 @@ class Article(models.Model):
 
 
     def est_autorise(self, user):
-        if user == self.auteur:
+        if user == self.auteur or  self.asso.abreviation == "public" or self.partagesAsso.filter(abreviation="public"):
             return True
-        if self.asso.abreviation == "public" or self.partagesAsso.filter(abreviation="public"):
-            return True
+        elif self.asso.abreviation == "conf66":
+            return self.asso.is_adhesion_anneecourante()
+
         adhesion = getattr(user, "adherent_" + self.asso.abreviation)
         if adhesion :
             return adhesion
@@ -699,10 +701,10 @@ class Projet(models.Model):
             return Choix.couleurs_annonces["Autre"]
 
     def est_autorise(self, user):
-        if user == self.auteur:
+        if user == self.auteur or self.asso.abreviation == "public":
             return True
-        if self.asso.abreviation == "public":
-            return True
+        elif self.asso.abreviation == "conf66":
+            return self.asso.is_adhesion_anneecourante()
 
         return getattr(user, "adherent_" + self.asso.abreviation)
 
@@ -743,6 +745,10 @@ class FicheProjet(models.Model):
     def est_autorise(self, user):
         if self.projet.asso.abreviation == "public":
             return True
+
+        elif self.asso.abreviation == "conf66":
+            return self.asso.is_adhesion_anneecourante()
+
 
         return getattr(user, "adherent_" + self.projet.asso.abreviation)
 

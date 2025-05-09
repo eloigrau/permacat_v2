@@ -223,6 +223,9 @@ class SupprimerArticle(DeleteAccess, DeleteView):
 @login_required
 def lireArticle(request, slug):
     article = get_object_or_404(Article, slug=slug)
+    if not article.est_autorise(request.user):
+        return render(request, 'notMembre.html', {"asso": str(article.asso)})
+
     ateliers = Atelier.objects.filter(article=article).order_by('-start_time')
     documents = Document.objects.filter(article=article).order_by('-date_creation')
     lieux = AdresseArticle.objects.filter(article=article).order_by('titre')
@@ -240,8 +243,6 @@ def lireArticle(request, slug):
     documents_partages = DocumentPartage.objects.filter(article=article)
     reunions = Reunion.objects.filter(article=article)
 
-    if not article.est_autorise(request.user):
-        return render(request, 'notMembre.html', {"asso": str(article.asso)})
 
     discussions = article.discussion_set.all().order_by('id')
     commentaires = {discu:Commentaire.objects.filter(discussion=discu).order_by("date_creation") for discu in discussions}

@@ -246,6 +246,10 @@ class Album(models.Model):
         if self.asso.abreviation == "public":
             return True
 
+        elif self.asso.abreviation == "conf66":
+            return self.asso.is_adhesion_anneecourante()
+
+
         return getattr(user, "adherent_" + self.asso.abreviation)
 
     def latest(self, limit=LATEST_LIMIT, public=True):
@@ -342,6 +346,10 @@ class Document(models.Model):
             return True
         if self.asso.abreviation == "public":
             return True
+
+        elif self.asso.abreviation == "conf66":
+            return self.asso.is_adhesion_anneecourante()
+
         return getattr(user, "adherent_" + self.asso.abreviation)
 
     @property

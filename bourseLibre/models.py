@@ -402,7 +402,6 @@ class Profil(AbstractUser):
         time_threshold = datetime(datetime.now().year - 1, 11, 1)
         return self.getAdhesions(asso_abreviation).filter(date_cotisation__gt=time_threshold).count() > 0
 
-
     @property
     def isCotisationAJour_pc(self):
         return self.isCotisationAJour("pc")
@@ -413,7 +412,7 @@ class Profil(AbstractUser):
 
     @property
     def isCotisationAJour_conf66(self):
-        return self.isCotisationAJour("connf66")
+        return self.isCotisationAJour("conf66")
 
     def statutMembre_asso(self, asso):
         if asso == "permacat" or "pc":

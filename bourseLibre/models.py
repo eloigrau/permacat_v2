@@ -32,7 +32,6 @@ from django.templatetags.static import static
 import re
 from django.utils import timezone
 from django.core.exceptions import MultipleObjectsReturned
-from adherents.models import Adhesion
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
@@ -396,6 +395,7 @@ class Profil(AbstractUser):
             return 0
 
     def getAdhesions(self, abreviationAsso):
+        from adherents.models import Adhesion
         return Adhesion.objects.filter(adherent__profil=self, asso__abreviation=abreviationAsso)
 
     def isCotisationAJour(self, asso_abreviation):

@@ -41,6 +41,7 @@ const format = d3.format(",");
   var link = svg.append("g")
       .attr("fill", "none")
       .attr("stroke", "#999")
+      .attr("class", d => d.data.type)
     .selectAll()
     .data(root.links())
     .join("path")
@@ -51,7 +52,7 @@ const format = d3.format(",");
       `);
 
 function updateLinks(){
-link
+    link
     .attr("fill", "none")
       .attr("stroke", "#999")
     .selectAll()

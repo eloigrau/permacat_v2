@@ -419,7 +419,7 @@ class Article(models.Model):
         #elif self.asso.abreviation == "conf66":
         #    return user.isCotisationAJour(self.asso.abreviation)#
 
-        adhesion = getattr(user, "adherent_" + self.asso.abreviationn, False)
+        adhesion = getattr(user, "adherent_" + self.asso.abreviation, False)
         if adhesion :
             return adhesion
         for asso in self.get_partagesAsso:

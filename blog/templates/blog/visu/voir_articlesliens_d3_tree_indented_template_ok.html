@@ -1,7 +1,8 @@
+
 {% extends 'blog/visu/visu_template.html' %}
 
 
-{% comment %}
+{% block content2 %}
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
@@ -10,7 +11,7 @@
         <button type="button" class="btn btn-light"  name="cb_4" id="pads" visibilite="false">Pads</button>
     </div>
 </div>
-{% endcomment %}
+{% endblock %}
 {% block jscript %}
 
 {% block json_source %}
@@ -91,36 +92,36 @@ function updateLinks(){
 //var typenode = d3.selectAll(".article_epingle").attr('style', 'font-size:1.1em;');
 
 
-<!--d3.select("#docs").on("click", function (){-->
-<!--    if (d3.select("#docs").attr("visibilite") == "true"){-->
-<!--        d3.selectAll(".document").style("visibility", "visible");-->
-<!--        d3.select("#docs").attr("visibilite", false);-->
-<!--    }else{-->
-<!--        d3.selectAll(".document").style("visibility", "hidden");-->
-<!--        d3.select("#docs").attr("visibilite", true);-->
-<!--    }-->
-<!--updateLinks()-->
-<!--} );-->
-<!--d3.select("#pads").on("click", function () {-->
-<!--    if (d3.select("#pads").attr("visibilite") == "true"){-->
-<!--        d3.selectAll(".pad").style("visibility", "visible");-->
-<!--        d3.select("#pads").attr("visibilite", false);-->
-<!--    }else{-->
-<!--        d3.selectAll(".pad").style("visibility", "hidden");-->
-<!--        d3.select("#pads").attr("visibilite", true);-->
-<!--    }-->
-<!--updateLinks()-->
-<!--});-->
-<!--d3.select("#ats").on("click", function () {-->
-<!--    if (d3.select("#ats").attr("visibilite") == "true"){-->
-<!--        d3.selectAll(".atelier").style("visibility", "visible");-->
-<!--        d3.select("#ats").attr("visibilite", false);-->
-<!--    }else{-->
-<!--        d3.selectAll(".atelier").style("visibility", "hidden");-->
-<!--        d3.select("#ats").attr("visibilite", true);-->
-<!--    }-->
-<!--updateLinks()-->
-<!-- });-->
+d3.select("#docs").on("click", function (){
+    if (d3.select("#docs").attr("visibilite") == "true"){
+        d3.selectAll(".document").style("visibility", "visible");
+        d3.select("#docs").attr("visibilite", false);
+    }else{
+        d3.selectAll(".document").style("visibility", "hidden");
+        d3.select("#docs").attr("visibilite", true);
+    }
+updateLinks()
+} );
+d3.select("#pads").on("click", function () {
+    if (d3.select("#pads").attr("visibilite") == "true"){
+        d3.selectAll(".pad").style("visibility", "visible");
+        d3.select("#pads").attr("visibilite", false);
+    }else{
+        d3.selectAll(".pad").style("visibility", "hidden");
+        d3.select("#pads").attr("visibilite", true);
+    }
+updateLinks()
+});
+d3.select("#ats").on("click", function () {
+    if (d3.select("#ats").attr("visibilite") == "true"){
+        d3.selectAll(".atelier").style("visibility", "visible");
+        d3.select("#ats").attr("visibilite", false);
+    }else{
+        d3.selectAll(".atelier").style("visibility", "hidden");
+        d3.select("#ats").attr("visibilite", true);
+    }
+updateLinks()
+ });
 
 
 }).catch(function(error) {
@@ -132,6 +133,4 @@ function updateLinks(){
 
 
 
-
-
-
+    

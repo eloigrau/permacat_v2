@@ -1556,6 +1556,8 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
 class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
     def get_queryset(self):
+        if not self.q:
+            return Article.objects.none()
         calc = len(self.q) > 2
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:

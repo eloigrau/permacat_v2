@@ -541,7 +541,7 @@ def graino_ajouterGraine_pk(request, graino_pk, plante_pk):
 def ajouterPlante_maGrainotheque(request, plante_pk):
     graino = request.user.get_grainotheques
     if len(graino) == 0:
-        return render(request, 'jardins/jardin_pasDeGrainothèqueEnregistre.html', {})
+        return render(request, 'jardins/jardin_pasDeGrainothequeEnregistre.html', {})
     elif len(graino) == 1:
         return redirect('jardins:graino_ajouterGraine_pk', graino_pk=graino[0].pk, plante_pk=plante_pk)
     else:

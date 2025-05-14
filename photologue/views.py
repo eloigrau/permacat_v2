@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.views.generic.edit import FormMixin
 from .models import Photo, Album, Document
 from django.shortcuts import render, redirect
-from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, Document_rechercheForm, DocumentAssocierArticleForm
+from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, Document_rechercheForm, Document_asso_rechercheForm, DocumentAssocierArticleForm
 from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -110,8 +110,7 @@ class PhotoDetailView(DetailView):
 
 
 class DocListView(ListView, FormMixin):
-    paginate_by = 100
-
+    paginate_by = 2
 
     form_class = Document_rechercheForm
 
@@ -144,12 +143,13 @@ class DocListView(ListView, FormMixin):
         if 'asso' in self.request.GET:
             context['asso_abreviation'] = self.request.GET['asso']
             context['asso_courante'] = Asso.objects.get(abreviation= context['asso_abreviation']).nom
+            self.form = Document_rechercheForm(self.request.GET or None)
         else:
             context['asso_courante'] = None
             context['asso_abreviation'] = None
+            self.form = Document_asso_rechercheForm(self.request.GET or None)
 
-        self.form = Document_rechercheForm(self.request.GET or None)
-        context['form_document_recherche'] = self.form
+        context['form_document_recherche'] = self.get_form()
 
         return context
 
@@ -424,6 +424,8 @@ def suivre_albums(request, actor_only=True):
 
 class DocumentAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
+        if not self.q:
+            return Document.objects.none()
         calc = len(self.q) > 2
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:
@@ -439,6 +441,8 @@ class DocumentAutocomplete(autocomplete.Select2QuerySetView):
 
 class DocumentAutocomplete_asso(autocomplete.Select2QuerySetView):
     def get_queryset(self):
+        if not self.q:
+            return Document.objects.none()
         calc = len(self.q) > 2
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:

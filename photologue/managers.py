@@ -16,8 +16,13 @@ class SharedQueries:
 
 
 class AlbumQuerySet(SharedQueries, QuerySet):
-    pass
+    def is_public(self):
+        """Trivial filter - will probably become more complex as time goes by!"""
+        return self.filter(asso__nom="public")
+
 
 
 class PhotoQuerySet(SharedQueries, QuerySet):
-    pass
+    def is_public(self):
+        """Trivial filter - will probably become more complex as time goes by!"""
+        return self.filter()

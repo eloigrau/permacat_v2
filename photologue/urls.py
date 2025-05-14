@@ -4,6 +4,9 @@ from django.views.generic import RedirectView
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import AlbumSitemap, PhotoSitemap
+
 from . import views
 
 
@@ -64,3 +67,22 @@ urlpatterns = [
     re_path(r'^doc-ac-asso/$', views.DocumentAutocomplete_asso.as_view(), name='document-ac-asso', ),
 
 ]
+
+# sitemaps = {'photologue_galleries': AlbumSitemap,
+#             'photologue_photos': PhotoSitemap,
+#             }
+#
+# urlpatterns += [
+#     re_path(r'^sitemap.xml$', sitemap, {'sitemaps': sitemaps}),
+# ]
+#
+# from django.contrib.sitemaps import views
+#
+# urlpatterns += [
+#     path(
+#         "sitemap.xml",
+#         views.index,
+#         {"sitemaps": sitemaps},
+#         name="django.contrib.sitemaps.views.index",
+#     )
+#     ]

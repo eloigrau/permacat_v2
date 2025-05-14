@@ -110,7 +110,7 @@ class PhotoDetailView(DetailView):
 
 
 class DocListView(ListView, FormMixin):
-    paginate_by = 2
+    paginate_by = 50
 
     form_class = Document_rechercheForm
 

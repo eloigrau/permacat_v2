@@ -1288,7 +1288,7 @@ a article_carte:active {
 
 @media screen and (min-width: 1600px) {
     .grid-container {
-        grid-template-columns: 24% 24% 24% 24%;
+        grid-template-columns: 32% 32% 32% ;
     }
     .grid-container2 {
         grid-template-columns: 32% 32% 32% ;
@@ -2271,7 +2271,7 @@ caption {
 
 
 .card-big-shadow {
-    max-width: 350px;
+    max-width: 320px;
     min-width: 250px;
     min-height: 220px;
     position: relative;
@@ -2316,10 +2316,10 @@ caption {
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    bottom: -10%;
+    bottom: -5%;
     content: "";
     display: block;
-    left: -10%;
+    left: -5%;
     position: absolute;
     right: 0;
     top: 0;

@@ -28,7 +28,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 </div>
 {% endif %}
 {% if cookielaw.notset %}{% rejectable_cookielaw_banner %}{% endif %}
-{%endblock%}
+{% endblock %}
 {% block content %}
 <div class="row">
 	<div class="col-sm-12 my-auto">
@@ -208,9 +208,9 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
         {% endfor %}
     </div>
     <div class="row justify-content-center">
-	<a href="{% url 'blog:index' %}">
+	<a href="{% url 'blog:acceuil' %}">
         <button type="button" class="btn btn-success" >
-                <i class="fa fa-arrow-right"></i> Voir tous les articles du forum
+                <i class="fa fa-arrow-right"></i> Voir les derniers articles du forum
             </button>
 	</a>&ensp;
 	</div>

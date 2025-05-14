@@ -211,36 +211,13 @@ function get_derniers_commentaires(url_tag) {
         <div class="justify-content-center " id="navbarSalons">
             <ul class="nav navbar-nav justify-content-center">
             <li class="nav-item dropdown">
-                <button type="button" class="btn dropdown-toggle btn-primary btn-block btn-menu-forum" data-toggle="collapse" aria-haspopup="true" aria-expanded="false"
-                   data-target = "#idSalons"> Salons de discussion</button>
-                <div class="dropdown-menu-forum dropdown-menu textcenter btn-menu-forum"  aria-labelledby="menuAuteur"  id="idSalons">
-                     <a class=" dropdown-item " style="background-color:#cbdff0;"  href="{% url 'agora' asso='public' %}">
-                         Salon Public
-                        </a>
-                    <div class="dropdown-divider"></div>
-                {% if request.user.adherent_pc %}
-                <a class=" dropdown-item " href="{% url 'agora' asso='pc' %}">
-                         Salon Permacat
-                </a>
-                    {% endif %}
-                {% if request.user.adherent_rtg %}
-                <a class=" dropdown-item " href="{% url 'agora' asso='rtg' %}">
-                         Salon Ramène Ta Graine
-                </a>
-                    {% endif %}
-                {% if request.user.adherent_fer %}
-                <a class=" dropdown-item " href="{% url 'agora' asso='fer' %}">
-                         Salon Fermille
-                </a>
-                    {% endif %}
                <div class="dropdown-divider"></div>
                  <a class=" dropdown-item "href="{% url 'conversations' %}">
                        Conversations privées
                     </a>
-                    <div class="dropdown-divider"></div>
-                </div>
             </li>
 
+                {% comment %}
             <li class="nav-item dropdown">
                 <button type="button" class="btn dropdown-toggle btn-primary btn-block btn-menu-forum" data-toggle="collapse" aria-haspopup="true" aria-expanded="false"
                 data-target = "#idProjets"> Fiches Projet </button>
@@ -266,10 +243,11 @@ function get_derniers_commentaires(url_tag) {
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
-
+                {% endcomment %}
+                {% if ateliers_list %}
             <li class="nav-item dropdown">
                 <button type="button" class="btn dropdown-toggle btn-primary btn-block btn-menu-forum" data-toggle="collapse" aria-haspopup="true" aria-expanded="false"
-                data-target = "#idAteliers"> Prochains Ateliers Collectifs</button>
+                data-target = "#idAteliers"> Prochains Ateliers</button>
                 <div class="dropdown-menu dropdown-menu-forum textcenter btn-menu-forum" style="padding:0; background=#e6fbc0;" aria-labelledby="menuAuteur"  id="idAteliers">
                     <a class="dropdown-item" style="background-color:#cbdff0;" href="{% url 'ateliers:index_ateliers' %}"><i class='fa fa-folder-open iconleft' ></i>  Voir les ateliers </a>
                      <div class="dropdown-divider"></div>
@@ -279,6 +257,7 @@ function get_derniers_commentaires(url_tag) {
                     <div class="dropdown-divider"></div>
                 </div>
             </li>
+                {% endif %}
 
         </ul>
 

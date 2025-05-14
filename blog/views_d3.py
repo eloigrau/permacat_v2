@@ -431,7 +431,9 @@ def get_articles_asso_d3_hierar_tags(request, asso_abreviation):
                         "type": "atelier" if isinstance(item, Atelier) else
                                 "pad" if isinstance(item, DocumentPartage) else
                                 "document",
-                        }for item in itertools.chain(Atelier.objects.filter(article=article), Document.objects.filter(article=article), DocumentPartage.objects.filter(article=art),) ]
+                        }for item in itertools.chain(Atelier.objects.filter(article=article),
+                                                     Document.objects.filter(article=article),
+                                                     DocumentPartage.objects.filter(article=article),) ]
                     }for article in get_articlesParTag(asso, tag).filter(estArchive=False)]
             })
 

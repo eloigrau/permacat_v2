@@ -1059,5 +1059,5 @@ post_save.connect(add_default_site, sender=Photo)
 
 class Document_recherche(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True, help_text=mark_safe(
-                                   "<p style='color:teal'>Min 3 lettres</p>"
+                                   "<p style='color:teal'>Min 2 lettres</p>"
                                ))

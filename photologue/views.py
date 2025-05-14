@@ -424,9 +424,7 @@ def suivre_albums(request, actor_only=True):
 
 class DocumentAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.q:
-            return Document.objects.none()
-        calc = len(self.q) > 2
+        calc = len(self.q) > 1
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:
             return Document.objects.none()
@@ -441,9 +439,7 @@ class DocumentAutocomplete(autocomplete.Select2QuerySetView):
 
 class DocumentAutocomplete_asso(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.q:
-            return Document.objects.none()
-        calc = len(self.q) > 2
+        calc = len(self.q) > 1
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:
             return Document.objects.none()

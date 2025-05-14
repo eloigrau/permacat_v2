@@ -956,7 +956,7 @@ class ArticleLienProjet(models.Model):
 
 class Article_recherche(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True, help_text=mark_safe(
-                                   "<p style='color:teal'>Min 3 lettres</p>"
+                                   "<p style='color:teal'>Min 2 lettres</p>"
                                ))
 
 
@@ -964,7 +964,7 @@ class Article_recherche(models.Model):
 class Projet_recherche(models.Model):
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE,
                                help_text=mark_safe(
-                                   "<p style='color:teal'>Taper 3 lettres du titre du projet recherché'</p>"
+                                   "<p style='color:teal'>Taper 2 lettres du titre du projet recherché'</p>"
                                ))
 
 

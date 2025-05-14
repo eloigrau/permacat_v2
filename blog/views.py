@@ -1541,7 +1541,7 @@ class SupprimerArticleLienProjet(DeleteView):
 
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        calc = len(self.q) > 2
+        calc = len(self.q) > 1
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:
             return Article.objects.none()
@@ -1556,9 +1556,7 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
 
 class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.q:
-            return Article.objects.none()
-        calc = len(self.q) > 2
+        calc = len(self.q) > 1
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:
             return Article.objects.none()
@@ -1573,7 +1571,7 @@ class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
 
 class ProjetAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        calc = len(self.q) > 2
+        calc = len(self.q) > 1
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or calc:
             return Projet.objects.none()

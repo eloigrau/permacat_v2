@@ -3,9 +3,10 @@ from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArch
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
+from django.views.generic.edit import FormMixin
 from .models import Photo, Album, Document
 from django.shortcuts import render, redirect
-from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, DocumentAssocierArticleForm
+from .forms import PhotoForm, AlbumForm, PhotoChangeForm, AlbumChangeForm, DocumentForm, DocumentChangeForm, Document_rechercheForm, DocumentAssocierArticleForm
 from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -20,6 +21,8 @@ from actstream.models import following
 from bourseLibre.models import Suivis
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
+from dal import autocomplete
+from django.db.models import Q
 
 from django.utils.text import slugify
 import itertools
@@ -106,8 +109,22 @@ class PhotoDetailView(DetailView):
         return context
 
 
-class DocListView(ListView):
-    paginate_by = 50
+class DocListView(ListView, FormMixin):
+    paginate_by = 100
+
+
+    form_class = Document_rechercheForm
+
+    # no get_context_data override
+
+    def post(self, request, *args, **kwargs):
+        # first construct the form to avoid using it as instance
+        self.success_url = self.request.get_full_path()
+        form = self.get_form()
+        if form.is_valid():
+            if form.cleaned_data["document"]:
+                self.success_url = form.cleaned_data["document"].get_absolute_url()
+        return HttpResponseRedirect(self.success_url)
 
     def get_queryset(self):
         if "asso" in self.request.GET:
@@ -130,6 +147,9 @@ class DocListView(ListView):
         else:
             context['asso_courante'] = None
             context['asso_abreviation'] = None
+
+        self.form = Document_rechercheForm(self.request.GET or None)
+        context['form_document_recherche'] = self.form
 
         return context
 
@@ -399,3 +419,35 @@ def suivre_albums(request, actor_only=True):
     else:
         actions.follow(request.user, suivi, actor_only=actor_only, send_action=False)
     return redirect('photologue:album-list')
+
+
+
+class DocumentAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        calc = len(self.q) > 2
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated or not calc:
+            return Document.objects.none()
+
+        if calc:
+            #if "asso_abreviation" in self.request.session:
+            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+            #else:
+                qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))
+
+        return qs
+
+class DocumentAutocomplete_asso(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        calc = len(self.q) > 2
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated or not calc:
+            return Document.objects.none()
+
+        if calc:
+            if "asso_abreviation" in self.request.session:
+                qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(asso__abreviation=self.request.session["asso_abreviation"]) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
+            else:
+                qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+
+        return qs

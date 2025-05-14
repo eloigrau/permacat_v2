@@ -418,7 +418,8 @@ class ListeArticles_asso(ListView, FormMixin):
         self.success_url = self.request.get_full_path()
         form = self.get_form()
         if form.is_valid():
-            self.success_url = form.cleaned_data["article"].get_absolute_url()
+            if form.cleaned_data["article"]:
+                self.success_url = form.cleaned_data["article"].get_absolute_url()
         return HttpResponseRedirect(self.success_url)
 
     def get_queryset(self):
@@ -1549,7 +1550,7 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
             #if "asso_abreviation" in self.request.session:
             #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
             #else:
-                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(titre__icontains=self.q, estArchive=False)
+                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(Q(estArchive=False) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)) )
 
         return qs
 

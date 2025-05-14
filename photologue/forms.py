@@ -17,13 +17,14 @@ from django.core.files.base import ContentFile
 from django.forms import ClearableFileInput
 from django.template.defaultfilters import filesizeformat
 
-from .models import Album, Photo, Document
+from .models import Album, Photo, Document, Document_recherche
 from bourseLibre.models import Asso
 from blog.models import Article
 from local_summernote.widgets import SummernoteWidget
 from django.utils.text import slugify
 import itertools
 from bourseLibre.utils import slugify_pcat
+from dal import autocomplete
 
 logger = logging.getLogger('photologue.forms')
 
@@ -368,4 +369,32 @@ class DocumentFormAsso(forms.ModelForm):
             instance.save()
 
 
+        return instance
+
+
+
+class Document_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Document_recherche
+        fields = ("document", )
+        widgets = {
+            'document': autocomplete.ModelSelect2(url='photologue:document-ac')
+        }
+
+    def save(self):
+        instance = super(Document_rechercheForm, self).save()
+        return instance
+
+class Document_asso_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Document_recherche
+        fields = ("document", )
+        widgets = {
+            'document': autocomplete.ModelSelect2(url='photologue:document-ac-asso')
+        }
+
+    def save(self):
+        instance = super(Document_asso_rechercheForm, self).save()
         return instance

@@ -671,7 +671,7 @@ class Article_asso_rechercheForm(forms.ModelForm):
         }
 
     def save(self):
-        instance = super(Article_rechercheForm, self).save()
+        instance = super(Article_asso_rechercheForm, self).save()
         return instance
 
 class ArticleLienProjetForm(forms.ModelForm):

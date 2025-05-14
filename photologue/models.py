@@ -37,6 +37,7 @@ from actstream.models import followers
 from bourseLibre.settings import LOCALL
 from actstream import action
 from hitcount.models import HitCount
+from django.utils.safestring import mark_safe
 #from urlshortner.utils import shorten_url
 
 logger = logging.getLogger('photologue.models')
@@ -1053,3 +1054,10 @@ def add_default_site(instance, created, **kwargs):
 
 post_save.connect(add_default_site, sender=Album)
 post_save.connect(add_default_site, sender=Photo)
+
+
+
+class Document_recherche(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True, help_text=mark_safe(
+                                   "<p style='color:teal'>Min 3 lettres</p>"
+                               ))

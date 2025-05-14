@@ -60,4 +60,7 @@ urlpatterns = [
     re_path(r'^suivre_albums/$', views.suivre_albums, name='suivre_albums'),
     re_path(r'^suivre_documents/$', views.suivre_documents, name='suivre_documents'),
 
+    re_path(r'^doc-ac/$', views.DocumentAutocomplete.as_view(), name='document-ac', ),
+    re_path(r'^doc-ac-asso/$', views.DocumentAutocomplete_asso.as_view(), name='document-ac-asso', ),
+
 ]

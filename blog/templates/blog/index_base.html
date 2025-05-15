@@ -481,7 +481,7 @@ function get_tags_articles(url_tag) {
     {% endif%}
     {% if asso_courante %}
     <a class="nav-item nav-link" href="#art_motscles"
-       onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{asso_courante}}')" data-toggle="tab"
+       onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso='{{asso_courante}}')" data-toggle="tab"
        id="navtab_tags"> Par mot clé</a>
     <a class="nav-item nav-link" href="#art_partage"
        onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=asso_courante %}')" data-toggle="tab"

@@ -1,37 +1,39 @@
 # -*- coding: utf-8 -*-
 import decimal
+import itertools
 import math
 import os
-import itertools
+import re
 from datetime import date
-from django.utils.safestring import mark_safe
+from datetime import datetime
+
 import django_filters
 import requests
-from actstream import actions, action
-from actstream.models import following, followers
+import simplejson
+from actstream import action
+from actstream.models import followers
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import ASCIIUsernameValidator
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.mail import send_mail
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+from django.templatetags.static import static
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
-from django.core.mail import send_mail
-from .constantes import Choix, DEGTORAD
-from .settings.production import SERVER_EMAIL, LOCALL
-import simplejson
-from datetime import datetime
-from webpush import send_user_notification
 from taggit.managers import TaggableManager
-from django.templatetags.static import static
-import re
-from django.utils import timezone
-from django.core.exceptions import MultipleObjectsReturned
+
+from webpush import send_user_notification
+from .constantes import Choix, DEGTORAD
+from .settings.production import SERVER_EMAIL
 
 username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 

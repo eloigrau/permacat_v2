@@ -50,10 +50,21 @@
                         <span class="fa fa-edit" title="Article modifiable">    </span>
                         {% endif %}
                     </p>
-                    {%if article.estArchive or article.start_time %}
+
                     <p class="">
-                        {% if article.start_time %}
-                        <span class="badge badge-success">
+                        {% include 'listeTags_view_template.html' with tags=article.tags.names %}
+                        {%if article.estArchive %}
+                        <span class="badge badge-light">
+                       archivé
+                 </span>
+                        {% endif %}
+                    </p>
+                </a>
+            </td>
+            <td data-title="" class="text-center shrink">
+
+                {% if article.start_time %}
+                <span class="badge badge-success">
                   {% if article.end_time %}
                   du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }}
                   {%else%}
@@ -61,19 +72,6 @@
                   {% endif %}
                   </span>
                         {% endif %}
-
-                        {%if article.estArchive %}
-                        <span class="badge badge-light">
-                       archivé
-                 </span>
-                        {% endif %}
-                    </p>
-                    {% endif %}
-
-                    <p class="">
-                        {% include 'listeTags_view_template.html' with tags=article.tags.names %}
-                    </p>
-                </a>
             </td>
 
         </tr>

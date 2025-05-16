@@ -2885,3 +2885,7 @@ overflow-x: scroll;
 .my-popover-content{
     display:none
 }
+
+.badge-tags{
+font-weight:200;
+}

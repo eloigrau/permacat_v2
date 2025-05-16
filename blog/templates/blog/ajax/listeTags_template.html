@@ -19,7 +19,7 @@ function get_articles_fromtag(url_tag) {
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
     {% for url, tag in tags %}
-        <span class="btn badge badge-info" onclick="get_articles_fromtag('{{url}}')">{{ tag }}</span>
+        <span class="btn badge badge-info badge-tags" onclick="get_articles_fromtag('{{url}}')">{{ tag }}</span>
     {% endfor %}
     </div>
 </div>

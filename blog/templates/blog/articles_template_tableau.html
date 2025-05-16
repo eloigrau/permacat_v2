@@ -11,15 +11,47 @@
         <tbody>
         {% for article in article_list %}
         <tr>
+            <td data-title="" class="text-center shrink">
+                <a href="{% url 'blog:index_asso' asso=article.asso.slug %}#ref-titre">
+                            {{article.get_logo_nomgroupe_html|safe }}</a>
+                        {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span>
+                        {% endif %}
+            </td>
+            <td data-title="" class="text-center shrink">
+                        <a href="{% url 'blog:index_asso' asso=article.asso.slug %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe">
+                            <span class="badge badge-primary"
+                                  style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}
+                                <img src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
+                        </a>
+
+                    <p class="">
+                        <span class="badge badge-light">
+                        {% if request.user|is_following:article %}
+                            {% fa5_icon 'bell' %}
+                            {% else %}
+                            {% fa5_icon 'bell-slash' %}
+                        {% endif %}&nbsp;
+                        {%if article.date_modification %}
+                            {%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %}
+                                 Modifié le {{ article.date_modification|date:"DATE_FORMAT" }}
+                            {%else%}
+                                Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
+                            {%endif%}
+                        {%else%}
+                            Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
+                        {% endif %}
+                        </span>
+                    </p>
+            </td>
             <td data-title="" class="shrink">
                 <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
-                    <p class="titre_forum textcenter">{{article.titre}}
+                    <p class="titre_forum">{{article.titre}}
                         {%if article.estModifiable %}
                         <span class="fa fa-edit" title="Article modifiable">    </span>
                         {% endif %}
                     </p>
                     {%if article.estArchive or article.start_time %}
-                    <p class="textcenter">
+                    <p class="">
                         {% if article.start_time %}
                         <span class="badge badge-success">
                   {% if article.end_time %}
@@ -38,37 +70,10 @@
                     </p>
                     {% endif %}
 
-                    <p class="textcenter">
+                    <p class="">
                         {% include 'listeTags_view_template.html' with tags=article.tags.names %}
                     </p>
                 </a>
-                    <p class="textcenter">
-                        <a href="{% url 'blog:index_asso' asso=article.asso.slug %}#ref-titre">
-                            {{article.get_logo_nomgroupe_html|safe }}</a>
-                        {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span>
-                        {% endif %}
-                        <a href="{% url 'blog:index_asso' asso=article.asso.slug %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe">
-                            <span class="badge badge-primary"
-                                  style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}
-                                <img src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
-                        </a>
-                        <span class="badge badge-light">
-                        {% if request.user|is_following:article %}
-                            {% fa5_icon 'bell' %}
-                            {% else %}
-                            {% fa5_icon 'bell-slash' %}
-                        {% endif %}&nbsp;
-                        {%if article.date_modification %}
-                            {%if  article.date_creation|date:"DATE_FORMAT" != article.date_modification|date:"DATE_FORMAT" %}
-                                 Modifié le {{ article.date_modification|date:"DATE_FORMAT" }}
-                            {%else%}
-                                Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
-                            {%endif%}
-                        {%else%}
-                            Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
-                        {% endif %}
-                        </span>
-                    </p>
             </td>
 
         </tr>

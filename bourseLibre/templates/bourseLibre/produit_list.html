@@ -2,12 +2,13 @@
 {% load fontawesome_5 %}
 {% load activity_tags %}
 {% load blog_filters %}
+{% load app_filters %}
 
 {%block subtitle%}
 <div class="row justify-content-center">
     <div class="col-md-8 offset-md-2 ">
                 <h3>Petites Annonces</h3>
-        <h4>{% if asso_courante %}Annonces du groupe : {{asso_courante}}{% endif %}</h4>
+        <h4>{% if asso_courante %}Annonces du groupe : {{asso_courante.nom }}{% endif %}</h4>
         <h5> {% if typeOffre %} Type : {{typeOffre}} {% endif %} {% if categorie_parent %} {{categorie_parent}} {% endif %}{% if request.GET.monnaie %} Monnaie : {{request.GET.monnaie}} {% endif %}</h5>
            </div>
             <div class="col-md-2 ">
@@ -50,7 +51,7 @@
                 </div>
         </div>
 
-<div class="row justify-content-center sidebar_toggle">
+        <div class="row justify-content-center sidebar_toggle">
             <div class="col-md-4">
              <div class="row no-gutters justify-content-center">
                  <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_produits' %}" method="get" role = "search">
@@ -186,7 +187,7 @@
             <li class="nav-item dropdown active">
              <button type="button" class="btn btn-block {% if asso_courante %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat2">
-                {% if asso_courante %}{{asso_courante}}{%else%}Groupe{%endif%}
+                {% if asso_courante %}{{asso_courante.nom}}{%else%}Groupe{%endif%}
              </button>
                 <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat2">
                     {% for abrev, nom_asso  in asso_list %}
@@ -232,7 +233,7 @@
             <li class="sidebarli2">
              <button type="button" class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
-                {% if asso_courante %}{{asso_courante}}{%else%}Groupe{%endif%}
+                {% if asso_courante %}{{asso_courante.nom}}{%else%}Groupe{%endif%}
               </button>
                 <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat">
                     {% for abrev, nom_asso  in asso_list %}

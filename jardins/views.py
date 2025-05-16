@@ -895,7 +895,7 @@ def contacterInscritsJardin(request, slug):
 
 @login_required
 def carte_jardiniers(request):
-    asso = Asso.objects.get(abreviation="jp")
+    asso = Asso.objects.get(slug="jp")
     profils_total = asso.getProfils()
     nbProf = len(profils_total)
     profils = asso.getProfils_Annuaire()

@@ -136,7 +136,7 @@
         <a href="{% url 'adhesion_asso' asso='pc' %}"> non </a>{% endif %}{% endif %}
 
        {% if request.user.is_superuser %}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='pc' %}">
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='pc' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
@@ -149,7 +149,7 @@
 	    <tr>
 		<td style="width:250px">Adhérent Ramene Ta Graine *:</td>
 		<td>{{user.adherent_rtg|translateOuiNon}}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='rtg' %}">
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='rtg' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
@@ -169,7 +169,7 @@
       <a href="{% url 'adhesion_asso' asso='scic' %}"> non </a>{% endif %}{% endif %}
 
        {% if request.user.is_superuser %}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='scic' %}">
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='scic' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
@@ -189,7 +189,7 @@
             <td style="width:200px">Inscrit au collectif Viure *: </td>
             <td>{{user.adherent_viure|translateOuiNon }}
        {% if request.user.is_superuser %}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='viure' %}">
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='viure' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
@@ -217,7 +217,7 @@
 		<td>{{user.adherent_conf66|translateOuiNon}}
 
                    {% if request.user.is_superuser %}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_abreviation='conf66' %}">
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='conf66' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrire Au Groupe
             </button>

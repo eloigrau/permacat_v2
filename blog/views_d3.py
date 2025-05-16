@@ -18,8 +18,8 @@ from taggit.models import Tag
 @login_required
 def get_article_liens_ajax(request, asso):
     liens = ArticleLiens.objects.exclude(
-        article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-        article__estArchive=False, article__asso__abreviation=asso).order_by('article')
+        article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
+        article__estArchive=False, article__asso__slug=asso).order_by('article')
     data_dict = {}
     i = 0
     for l in liens:
@@ -41,8 +41,8 @@ def get_article_liens_ajax(request, asso):
                 }
 
     liens_projets = ArticleLienProjet.objects.exclude(
-        projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
-        projet_lie__estArchive=False, projet_lie__asso__abreviation=asso).order_by(
+        projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
+        projet_lie__estArchive=False, projet_lie__asso__slug=asso).order_by(
         'article')
 
     for l in liens_projets:
@@ -66,8 +66,8 @@ def get_article_liens_ajax(request, asso):
                     ],
                 }
 
-    projets = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
-                                     estArchive=True).filter(asso__abreviation=asso)
+    projets = Projet.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre(),
+                                     estArchive=True).filter(asso__slug=asso)
     for p in projets:
         data_dict[p.slug] = {
             "data": {"$color": "#909291", "$type": "square", "$dim": 10},
@@ -88,7 +88,7 @@ def voir_articles_liens(request, asso):
 
 
     data_json = get_article_liens_ajax(request, asso)
-    return render(request, 'blog/visu/voir_articlesliens_jit.html',{"data_json":data_json, "asso_abreviation":asso})
+    return render(request, 'blog/visu/voir_articlesliens_jit.html',{"data_json":data_json, "asso_slug":asso})
 
 def formatTitre(titre):
     return titre[:100].replace('"',"-")#.replace("'","-")
@@ -101,8 +101,8 @@ class Noeuds():
     document_id = {}
     projet_id = {}
 
-    def __init__(self, asso_abreviation, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
-        self.asso = asso_abreviation
+    def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
+        self.asso = asso_slug
         self.rayon = {"article":10, "categorie":20, "projet":30, "centre":1, "atelier":5, "document":5}
         self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
         self.lienDossierArticles = lienDossierArticles
@@ -222,13 +222,13 @@ class Noeuds():
 
 
 @login_required
-def get_articles_asso_d3_network(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_network(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()) \
+    articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
                                 .filter(estArchive=False, asso=asso)
 
-    noeuds = Noeuds(asso_abreviation)
+    noeuds = Noeuds(asso_slug)
     for art in articles: #parcourt des articles de l'asso non archives
         # for tag in art.tags.all(): #on parcourt les tags de l'article
         #     art_tags = get_articlesParTag(asso, tag).filter(estArchive=False)# pour chaque tag on recupere les articles tagges pareil
@@ -236,13 +236,13 @@ def get_articles_asso_d3_network(request, asso_abreviation):
         #         for a in art_tags: # on parcourt les articles tagges
         #             noeuds.ajouterNoeudsEtLiens_articles(a, art, type_lien="tags")
 
-        for liens in (ArticleLiens.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()) \
+        for liens in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
                 .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):
             if liens.article_lie and liens.article:
                 noeuds.ajouterNoeudsEtLiens_articles(liens.article, liens.article_lie, type_lien="liens")
 
         for liens in ArticleLienProjet.objects.exclude(
-            projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+            projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
             projet_lie__estArchive=False, projet_lie__asso=asso, article=art):
             noeuds.ajouterNoeudsEtLiens_projet(art, liens.projet_lie)
 
@@ -252,12 +252,12 @@ def get_articles_asso_d3_network(request, asso_abreviation):
     return JsonResponse(noeuds.get_dico_d3(), safe=True)
 
 @login_required
-def get_articles_asso_d3_network_dossier(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_network_dossier(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+    articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
-    noeuds = Noeuds(asso_abreviation, )
+    noeuds = Noeuds(asso_slug, )
     for art in articles:
         noeuds.ajouterLienArticleCategorie(art)
         noeuds.ajouterLienArticleDocumentsAteliers(art)
@@ -266,12 +266,12 @@ def get_articles_asso_d3_network_dossier(request, asso_abreviation):
 
 
 @login_required
-def get_articles_asso_d3_network_projet(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_network_projet(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
-    noeuds = Noeuds(asso_abreviation, lienDossierArticles=False, categorieAuCentre=False, projetAuCentre=True)
+    noeuds = Noeuds(asso_slug, lienDossierArticles=False, categorieAuCentre=False, projetAuCentre=True)
     for liens in ArticleLienProjet.objects.exclude(
-        projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
         projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso):
         noeuds.ajouterNoeudsEtLiens_projet_centre(liens.article, liens.projet_lie)
 
@@ -280,10 +280,10 @@ def get_articles_asso_d3_network_projet(request, asso_abreviation):
     return JsonResponse(noeuds.get_dico_d3(), safe=True)
 
 @login_required
-def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_hierar_dossier(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+    articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
 
     categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=lambda x:str.lower(x[1]))
@@ -296,7 +296,7 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
             "name":nom,
             #"nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
-            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.slug + "?categorie=" + cat}),
             "type": "dossier",
             "children": [{
                    # "nb_comm":Commentaire.objects.filter(article=art).count(),
@@ -325,10 +325,10 @@ def get_articles_asso_d3_hierar_dossier(request, asso_abreviation):
     return JsonResponse(dico, safe=True)
 
 @login_required
-def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_hierar_dossier_simple(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+    articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
                                        estArchive=False, asso=asso)
 
     categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=lambda x:str.lower(x[1]))
@@ -341,7 +341,7 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
             "name":nom,
             #"nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
-            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.abreviation + "?categorie=" + cat}),
+            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.slug + "?categorie=" + cat}),
             "type": "dossier",
             "children": [{
                    # "nb_comm":Commentaire.objects.filter(article=art).count(),
@@ -356,15 +356,15 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_abreviation):
 
     return JsonResponse(dico, safe=True)
 @login_required
-def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_hierar_projet(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
     dico = {"name":"Projets " + asso.nom, "children":[]}
     liste_liens = ArticleLienProjet.objects.exclude(
-        projet_lie__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
         projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso).order_by('projet_lie__titre')
 
     projets = Projet.objects.exclude(
-        asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(
+        asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
         estArchive=False, asso=asso)
 
 
@@ -401,8 +401,8 @@ def get_articles_asso_d3_hierar_projet(request, asso_abreviation):
 
 
 @login_required
-def get_articles_asso_d3_hierar_tags(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_hierar_tags(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
     dico = {"name":"Mots-clé " + asso.nom, "children":[]}
     set(list(Article.objects.filter(asso=asso, estArchive=False).order_by('tags__name').values_list('tags',
                                                                                                     flat=True).distinct()))
@@ -440,10 +440,10 @@ def get_articles_asso_d3_hierar_tags(request, asso_abreviation):
 
     return JsonResponse(dico, safe=True)
 @login_required
-def get_articles_asso_d3_bubble(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def get_articles_asso_d3_bubble(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
-    articles = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre(),
+    articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre(),
                                        estArchive=True).filter(asso=asso)
 
     #dico = list(set(["article."+ v['categorie'] for v in articles.values('categorie').distinct()]))
@@ -459,8 +459,8 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
             for art in articles]
 
     asso = "public"
-    if "asso_abreviation" in request.session:
-        asso = request.session["asso_abreviation"]
+    if "asso_slug" in request.session:
+        asso = request.session["asso_slug"]
 
     groupes = set(articles.values_list("categorie", flat=True).distinct())
 
@@ -478,109 +478,109 @@ def get_articles_asso_d3_bubble(request, asso_abreviation):
 
 
 @login_required
-def voir_articles_liens_d3(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 @login_required
-def voir_articles_liens_d3_network(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3_network(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
-
-
-@login_required
-def voir_articles_liens_d3_network_dossier(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
-
-    form_article_recherche = Article_rechercheForm(request.POST or None)
-    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
-        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
-
-    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
-
-@login_required
-def voir_articles_liens_d3_network_projet(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
-
-    form_article_recherche = Article_rechercheForm(request.POST or None)
-    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
-        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
-
-    return render(request, 'blog/visu/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
-
-@login_required
-def voir_articles_liens_d3_bubble(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
-
-    form_article_recherche = Article_rechercheForm(request.POST or None)
-    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
-        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
-
-    return render(request, 'blog/visu/voir_articlesliens_d3_bubble.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 
 @login_required
-def voir_articles_liens_d3_tree(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3_network_dossier(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_tree.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
+
+@login_required
+def voir_articles_liens_d3_network_projet(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
+
+@login_required
+def voir_articles_liens_d3_bubble(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/visu/voir_articlesliens_d3_bubble.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 
 @login_required
-def voir_articles_liens_d3_tree2(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3_tree(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_tree_vok.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 
 @login_required
-def voir_articles_liens_d3_tree_indented_dossier(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3_tree2(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_dossier.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_vok.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
+
+
+@login_required
+def voir_articles_liens_d3_tree_indented_dossier(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_dossier.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 
 
 @login_required
-def voir_articles_liens_d3_tree_indented_projet(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3_tree_indented_projet(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_projet.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_projet.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 
 @login_required
-def voir_articles_liens_d3_tree_indented_tags(request, asso_abreviation):
-    asso = testIsMembreAsso(request, asso_abreviation)
+def voir_articles_liens_d3_tree_indented_tags(request, asso_slug):
+    asso = testIsMembreAsso(request, asso_slug)
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_tags.html',{"form_article_recherche":form_article_recherche, "asso_abreviation":asso.abreviation})
+    return render(request, 'blog/visu/voir_articlesliens_d3_tree_indented_tags.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 

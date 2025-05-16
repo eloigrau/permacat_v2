@@ -27,14 +27,14 @@ def ajax_annonces(request):
     cle = request.GET.get('cle')
     if not cle == "thomas":
         return render(request, 'ajax/annonces_list.html', {})
-    qs = Produit.objects.filter(asso__abreviation="public").select_subclasses()
+    qs = Produit.objects.filter(asso__slug="public").select_subclasses()
     return render(request, 'ajax/annonces_list.html', {"qs":qs})
 
 def ajax_annonces(request):
     cle = request.GET.get('cle')
     if not cle == "thomas":
         return render(request, 'ajax/annonces_list.html', {})
-    qs = Produit.objects.filter(asso__abreviation="public").select_subclasses()
+    qs = Produit.objects.filter(asso__slug="public").select_subclasses()
     return render(request, 'ajax/annonces_list.html', {"qs":qs})
 
 @login_required

@@ -10,22 +10,22 @@
 <div class="sticky-top">
     <nav class="navbar navbar-light bs-dark navbar-expand-xl shadow-petit" >
         <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon">{{asso_courante}}</span>
+            <span class="navbar-toggler-icon">{{request.session.asso_slug | getNomGroupeFromSlug}}</span>
          </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
     <ul class="navbar-nav mx-auto subnavbar align-items-center">
-        <li class="nav-item nav-jardin">{{asso_slug | getNomGroupeFromSlug}}</li>
+        <li class="nav-item nav-jardin">{{asso_slug | getLogoGroupeFromSlug}}</li>
         {% if request.session.projet_phoning_nom %}
-		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' asso_slug=asso_slug %}">{{ request.session.projet_phoning_nom }}</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}">{{ request.session.projet_phoning_nom }}</a></li>
         {% if asso_slug == "conf66" %}
-		<li class="nav-item nav-notif"><a class="adropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=asso_slug  %}?{{ request.GET.urlencode }}&istel=true&isatp=true"> Liste Simple</a></li>
+		<li class="nav-item nav-notif"><a class="adropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}&istel=true&isatp=true"> Liste Simple</a></li>
 		{% else %}
-        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=asso_slug  %}?{{ request.GET.urlencode }}"> Liste Simple</a></li>
+        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste Simple</a></li>
 		{% endif %}
-        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' asso_slug=asso_slug  %}?{{ request.GET.urlencode }}"> Liste Complète</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' asso_slug=asso_slug  %}"> Outils</a></li>
+        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste Complète</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' asso_slug=request.session.asso_slug  %}"> Outils</a></li>
          {% else %}
-        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' asso_slug=asso_slug  %}">Choisir un projet</a></li>
+        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug  %}">Choisir un projet</a></li>
 		 {% endif %}
 
         {% if request.user.is_superuser %}

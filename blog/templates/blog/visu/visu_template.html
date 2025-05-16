@@ -12,40 +12,40 @@
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar align-items-center">
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">
                         Arbre
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_slug=request.session.asso_slug %}">
                         Docs Par Dossier
                     </a>
                 </li>
-                {% if asso_courante == 'scic' or asso_courante == "public" %}
+                {% if request.session.asso_slug == 'scic' or request.session.asso_slug == "public" %}
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_projet' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_projet' asso_slug=request.session.asso_slug %}">
                         Docs Par Projet
                     </a>
                 </li>
                 {% endif %}
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_tags' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_tags' asso_slug=request.session.asso_slug %}">
                        Par Mot-clé
                     </a>
                 </li>
                 {% if request.user.is_superuser %}
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network' asso_slug=request.session.asso_slug %}">
                         liens Réseau
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_slug=request.session.asso_slug %}">
                         liens Dossier
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_abreviation=asso_abreviation %}">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_slug=request.session.asso_slug %}">
                         liens Projet
                     </a>
                 </li>
@@ -87,7 +87,7 @@
 
                     <div class="col-sm-2 textcenter" style="padding-left:0;">
                         <button class="btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
-                        data-placement="bottom" title="Lire">=>Lire</button>
+                        data-placement="bottom" title="Lire">Go</button>
                     </div>
                 </div>
             </form>

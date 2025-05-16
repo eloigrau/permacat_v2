@@ -58,12 +58,15 @@ from hitcount.models import HitCount
 
 @login_required
 def accueil(request):
-    #assos = request.user.getListeAbreviationsAssosEtPublic()
+
+    if "base" not in request.GET and "asso_slug" in request.session:
+        return redirect("blog:index_asso", asso=request.session['asso_slug'])
+    #assos = request.user.getListeSlugsAssosEtPublic()
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
 
-    #derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__abreviation__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
-    #derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__abreviation__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]
-    #derniers_articles_modif = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(date_modification=F("date_creation")) & Q(asso__abreviation__in=assos)).order_by('date_modification') if x.est_autorise(request.user)]
+    #derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__slug__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
+    #derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__slug__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]
+    #derniers_articles_modif = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(date_modification=F("date_creation")) & Q(asso__slug__in=assos)).order_by('date_modification') if x.est_autorise(request.user)]
     #derniers = sorted(set([x for x in itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8], derniers_articles[:8], )]), key=lambda x:x.date_modification if x.date_modification else x.date_creation)[::-1]
 
     QObject = request.user.getQObjectsAssoArticles()
@@ -72,8 +75,8 @@ def accueil(request):
     derniers = articles.annotate(
         latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
     ).order_by('-latest')
-        #asso_list = [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.abreviation)] # ['public'] + [asso for asso in Choix_global.abreviationsAsso if self.request.user.est_autorise(asso)] + ['projets']
-    asso_list = Choix_global.abreviationsNomsAssoEtPublic
+        #asso_list = [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)] # ['public'] + [asso for asso in Choix_global.slugsAsso if self.request.user.est_autorise(asso)] + ['projets']
+    asso_list = Choix_global.slugsNomsAssoEtPublic
     suivis = get_suivis_forum(request)
 
     suivi, created = Suivis.objects.get_or_create(nom_suivi='visite_forum_accueil')
@@ -109,7 +112,7 @@ def ajouterArticle(request):
         action.send(request.user, 
                     action_object=article, 
                     url=article.get_absolute_url(),
-                    verb="article_nouveau_" + article.asso.abreviation, 
+                    verb="article_nouveau_" + article.asso.slug,
                     description="a ajouté un article : '%s'"%article.titre)
         return redirect(article.get_absolute_url())
 
@@ -129,7 +132,7 @@ class ModifierArticle(UpdateView):
         form.save_m2m()
 
         url = self.object.get_absolute_url()
-        suffix = "_" + self.object.asso.abreviation
+        suffix = "_" + self.object.asso.slug
         if not self.object.estArchive:
             desc = "a modifié l'article [%s]: '%s'" %(self.object.asso, self.object.titre)
             if 'description_modif' in form.changed_data:
@@ -146,8 +149,8 @@ class ModifierArticle(UpdateView):
 
     def get_form(self,*args, **kwargs):
         form = super(ModifierArticle, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for i, x in enumerate(Asso.objects.all().order_by('id')) if self.request.user.estMembre_str(x.abreviation)]
-        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in enumerate(Album.objects.all().order_by('title')) if self.request.user.estMembre_str(x.asso.abreviation)]
+        form.fields["asso"].choices = [(x.id, x.nom) for i, x in enumerate(Asso.objects.all().order_by('id')) if self.request.user.estMembre_str(x.slug)]
+        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in enumerate(Album.objects.all().order_by('title')) if self.request.user.estMembre_str(x.asso.slug)]
 
         return form
 
@@ -159,7 +162,7 @@ def archiverArticleAdmin(request, slug):
     article.estArchive = True
     article.save(sendMail=False)
     url = article.get_absolute_url()
-    suffix = "_" + article.asso.abreviation
+    suffix = "_" + article.asso.slug
     action.send(request.user, verb='article_modifier_archiver' + suffix, action_object=article, url=url,
                 description="a archivé l'article")
 
@@ -182,7 +185,7 @@ class ArticleAddAlbum(UpdateView):
         self.object.save(sendMail=False)
         if not self.object.estArchive:
             url = self.object.get_absolute_url()
-            suffix = "_" + self.object.asso.abreviation
+            suffix = "_" + self.object.asso.slug
             action.send(self.request.user, verb='article_modifier'+suffix, action_object=self.object, url=url,
                          description="a associé un album à l'article: '%s'" % self.object.titre)
         #envoi_emails_articleouprojet_modifie(self.object, "L'article " +  self.object.titre + "a été modifié", True)
@@ -190,7 +193,7 @@ class ArticleAddAlbum(UpdateView):
 
     def get_form(self,*args, **kwargs):
         form = super(ArticleAddAlbum, self).get_form(*args, **kwargs)
-        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in enumerate(Album.objects.all().order_by('title')) if self.request.user.estMembre_str(x.asso.abreviation)]
+        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in enumerate(Album.objects.all().order_by('title')) if self.request.user.estMembre_str(x.asso.slug)]
 
         return form
 
@@ -214,7 +217,7 @@ class SupprimerArticle(DeleteAccess, DeleteView):
         return Article.objects.get(slug=self.kwargs['slug'])
 
     def get_success_url(self, *args, **kwargs):
-        suffix = "_" + self.object.asso.abreviation
+        suffix = "_" + self.object.asso.slug
         action.send(self.request.user, verb='suppression_article'+suffix,
                      description="a supprimé l'article: '%s'" % self.object.titre)
         return super(SupprimerArticle, self).get_success_url(*args, **kwargs)
@@ -285,7 +288,7 @@ def lireArticle(request, slug):
                 article.dernierMessage += "..."
             form.save()
             article.save(sendMail=False, saveModif=False)
-            suffix = "_" + article.asso.abreviation
+            suffix = "_" + article.asso.slug
             if discu.slug == 'discussion-generale':
                 url = article.get_absolute_url()+"#comm_" + str(comment.id)
                 desc = "a réagi à l'article: '%s'"%article.titre
@@ -366,14 +369,13 @@ class ListeArticles(ListView):
         context['articles_partages'] = []#self.qs.filter(Q(estArchive=False, partagesAsso__isnull=False))#.distinct().order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
         context['articles_archives'] = self.qs.filter(Q(estArchive=True)).distinct()#.order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
 
-        context['asso_list'] = Choix_global.abreviationsNomsAssoEtPublic#[(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
-        context['dossiers_list'] = Choix.type_annonce_base#[(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+        context['asso_list'] = Choix_global.slugsNomsAssoEtPublic#[(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
+        context['dossiers_list'] = Choix.type_annonce_base#[(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
         context['typeFiltre'] = "aucun"
         context['suivis'] = get_suivis_forum(self.request)
         context['ordreTriPossibles'] = Choix.ordre_tri_articles
 
         context['user_membreAsso'] = True
-        context['asso_courante'] = ""
 
         if 'auteur' in self.request.GET:
             context['typeFiltre'] = "auteur"
@@ -424,14 +426,14 @@ class ListeArticles_asso(ListView, FormMixin):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        self.asso = Asso.objects.get(abreviation=self.kwargs['asso'])
-        self.request.session["asso_abreviation"] = self.kwargs['asso']
+        self.asso = Asso.objects.get(slug=self.kwargs['asso'])
+        self.request.session["asso_slug"] = self.kwargs['asso']
         #self.q_objects = self.request.user.getQObjectsAssoArticles()
-        #qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation) & self.q_objects).distinct()
-        if self.request.user.est_autorise(self.asso.abreviation):
-            qs = Article.objects.filter(Q(asso__abreviation=self.asso.abreviation, estArchive=False, )).distinct()
+        #qs = Article.objects.filter(Q(asso__slug=self.asso.slug) & self.q_objects).distinct()
+        if self.request.user.est_autorise(self.asso.slug):
+            qs = Article.objects.filter(Q(asso__slug=self.asso.slug, estArchive=False, )).distinct()
         else:
-            qs = Article.objects.filter(self.request.user.getQObjectsAssoArticles(), asso__abreviation=self.asso.abreviation, estArchive=False, ).distinct()
+            qs = Article.objects.filter(self.request.user.getQObjectsAssoArticles(), asso__slug=self.asso.slug, estArchive=False, ).distinct()
 
         self.categorie = None
         if "auteur" in params:
@@ -478,32 +480,30 @@ class ListeArticles_asso(ListView, FormMixin):
 
         #context['articles_partages'] = paginator.get_page(page_number)
         # qs = self.qs
-        # if self.asso.abreviation == "public":
-        #     qs = qs.exclude(Q(asso__abreviation="pc")|Q(asso__abreviation="rtg")|Q(asso__abreviation="fer")|Q(asso__abreviation="gt")|Q(asso__abreviation="scic")|Q(asso__abreviation="citealt")|Q(asso__abreviation="viure")|Q(asso__abreviation="bzz2022"))
-        # elif self.asso.abreviation == "projets":
+        # if self.asso.slug == "public":
+        #     qs = qs.exclude(Q(asso__slug="pc")|Q(asso__slug="rtg")|Q(asso__slug="fer")|Q(asso__slug="gt")|Q(asso__slug="scic")|Q(asso__slug="citealt")|Q(asso__slug="viure")|Q(asso__slug="bzz2022"))
+        # elif self.asso.slug == "projets":
         #     pass
         # else:
-        #     qs = qs.filter(asso__abreviation=self.asso.abreviation)
-        context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.get_type_annonce_asso(self.asso.abreviation)]
+        #     qs = qs.filter(asso__slug=self.asso.slug)
+        context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.get_type_annonce_asso(self.asso.slug)]
 
-        proj = Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False)
+        proj = Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(estArchive=False)
 
         context['projets_list'] = [(x.slug, x.titre, x.get_couleur) for x in proj]
         #
         # ateliers = Atelier.objects.filter(start_time__gte=now())
         # if not self.request.user.adherent_pc:
-        #     ateliers = ateliers.exclude(asso__abreviation="pc")
+        #     ateliers = ateliers.exclude(asso__slug="pc")
         # if not self.request.user.adherent_fer:
-        #     ateliers = ateliers.exclude(asso__abreviation="fer")
+        #     ateliers = ateliers.exclude(asso__slug="fer")
         # if not self.request.user.adherent_rtg:
-        #     ateliers = ateliers.exclude(asso__abreviation="rtg")
+        #     ateliers = ateliers.exclude(asso__slug="rtg")
         # context['ateliers_list'] = [(x.slug, x.titre, x.get_couleur) for x in ateliers]
 
-        context['asso_list'] = Choix_global.abreviationsNomsAssoEtPublic#[(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
-        context['asso_courante'] = self.asso
+        context['asso_list'] = Choix_global.slugsNomsAssoEtPublic#[(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
         context['dossier_courant'] = self.categorie
-        context['user_membreAsso'] = self.request.user.est_autorise(self.asso.abreviation)
-        context['asso_courante_abreviation'] = self.asso.abreviation
+        context['user_membreAsso'] = self.request.user.est_autorise(self.asso.slug)
         context['typeFiltre'] = "aucun"
         context['suivis'] = get_suivis_forum(self.request)
         self.form = Article_rechercheForm(self.request.GET or None)
@@ -544,7 +544,7 @@ def articlesPartages(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
         return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso': asso})
-    q_object = Q(partagesAsso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation='public')& ~Q(asso=asso) & Q(estArchive=False)
+    q_object = Q(partagesAsso__slug=asso.slug) | Q(partagesAsso__slug='public')& ~Q(asso=asso) & Q(estArchive=False)
     article_list = Article.objects.filter(q_object)
     return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
 
@@ -565,7 +565,7 @@ def articlesArchives(request, asso):
 
 
 def get_articlesParTag(asso, tag):
-    q_objects = Q(asso__abreviation=asso.abreviation) | Q(partagesAsso__abreviation=asso.abreviation)| Q(asso__abreviation='public')| Q(partagesAsso__abreviation='public')
+    q_objects = Q(asso__slug=asso.slug) | Q(partagesAsso__slug=asso.slug)| Q(asso__slug='public')| Q(partagesAsso__slug='public')
     article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
     return article_list
 
@@ -582,6 +582,12 @@ def get_articles_pardossier(request):
     q_objects = Q()
     if "asso" in request.GET:
         asso = testIsMembreAsso_bool(request, request.GET['asso'])
+        if not asso:
+            return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'categorie_courante':request.GET['categorie']})
+
+        q_objects = Q(asso=asso) & request.user.getQObjectsAssoArticles()
+    elif "asso_slug" in request.session:
+        asso = testIsMembreAsso_bool(request, request.session['asso_slug'])
         if not asso:
             return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'categorie_courante':request.GET['categorie']})
 
@@ -613,11 +619,11 @@ def get_tags_articles(request):
         else:
             inner_qs = []
     else:
-        inner_qs = set(list(Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
+        inner_qs = set(list(Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
 
     inner_qs.remove(None)
     if inner_qs:
-        tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.abreviation, 'tag':t}), t)
+        tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.slug, 'tag':t}), t)
                 for t in Tag.objects.filter(id__in=inner_qs).order_by('name')]
     return render(request, 'blog/ajax/listeTags_template.html', {'tags': tags})
 
@@ -641,7 +647,7 @@ def ajouterNouveauProjet(request):
             url = projet.get_absolute_url()
             suivre_projet(request, projet.slug)
 
-            suffix = "_" + projet.asso.abreviation
+            suffix = "_" + projet.asso.slug
             action.send(request.user, verb='projet_nouveau'+suffix, action_object=projet, url=url,
                     description="a ajouté un projet : '%s'" % projet.titre)
             return redirect(url)
@@ -665,7 +671,7 @@ class ModifierProjet(UpdateView):
         self.object.save()
         if not self.object.estArchive:
             url = self.object.get_absolute_url()
-            suffix = "_" + self.object.asso.abreviation
+            suffix = "_" + self.object.asso.slug
             action.send(self.request.user, verb='projet_modifier'+suffix, action_object=self.object, url=url,
                          description="a modifié le projet: '%s'" % self.object.titre)
         #envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
@@ -673,7 +679,7 @@ class ModifierProjet(UpdateView):
 
     def get_form(self,*args, **kwargs):
         form = super(ModifierProjet, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.abreviation)]
+        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.slug)]
         return form
 
 class SupprimerProjet(DeleteAccess, DeleteView):
@@ -694,7 +700,7 @@ def ajouterFicheProjet(request, slug):
         fiche_projet = form.save(projet)
         url = fiche_projet.get_absolute_url()
 
-        suffix = "_" + fiche_projet.projet.asso.abreviation
+        suffix = "_" + fiche_projet.projet.asso.slug
         action.send(request.user, verb='projet_nouveau'+suffix + "_ficheProjet", action_object=fiche_projet.projet, url=url,
                 description="a ajouté une 'fiche projet' : '%s'" % fiche_projet.projet.titre)
         return redirect(url)
@@ -716,7 +722,7 @@ class ModifierFicheProjet(UpdateView):
         self.object.save()
         if not self.object.projet.estArchive:
             url = self.object.get_absolute_url()
-            suffix = "_" + self.object.projet.asso.abreviation
+            suffix = "_" + self.object.projet.asso.slug
             action.send(self.request.user, verb='projet_modifier'+suffix+"ficheProjet", action_object=self.object, url=url,
                          description="a modifié la fiche du projet: '%s'" % self.object.projet.titre)
         #envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
@@ -757,7 +763,7 @@ def lireProjet(request, slug):
         projet.save(sendMail=False)
         comment.save()
         url = projet.get_absolute_url()+"#idConversation"
-        suffix = "_" + projet.asso.abreviation
+        suffix = "_" + projet.asso.slug
         action.send(request.user, verb='projet_message'+suffix, action_object=projet, url=url,
                     description="a réagit au projet: '%s'" % projet.titre)
         #envoi_emails_articleouprojet_modifie(projet, request.user.username + " a réagit au projet: " +  projet.titre, False)
@@ -778,9 +784,9 @@ class ListeProjets(ListView):
         qs = Projet.objects.all()
 
         if not self.request.user.is_authenticated:
-            qs = qs.filter(asso__abreviation="public")
+            qs = qs.filter(asso__slug="public")
         else:
-            qs = qs.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
+            qs = qs.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre())
 
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])
@@ -790,7 +796,7 @@ class ListeProjets(ListView):
             qs = qs.filter(statut=params['statut'])
 
         if "asso" in params:
-            qs = qs.filter(asso__abreviation=params['asso'])
+            qs = qs.filter(asso__slug=params['asso'])
 
         if "ordreTri" in params:
             if params['ordreTri'] == "-date_dernierMessage":
@@ -836,7 +842,7 @@ class ListeProjets(ListView):
                 context['statut_courant'] = ""
         if 'asso' in self.request.GET:
             context['typeFiltre'] = "asso"
-            context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"]).nom
+            self.request.session["asso_slug"] = self.request.GET["asso"]
         if 'archives' in self.request.GET:
             context['typeFiltre'] = "archives"
         # if 'ordreTri' in self.request.GET:
@@ -936,16 +942,16 @@ def articles_suivis(request, slug):
     return render(request, 'blog/articles_suivis.html', {'suiveurs': suiveurs, "article":article, })
 
 @login_required
-def articles_suiveurs(request, asso_abreviation='punlic'):
-    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_'+ str(asso_abreviation))
+def articles_suiveurs(request, asso_slug='punlic'):
+    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_'+ str(asso_slug))
     suiveurs = sorted(followers(suivi), key= lambda x: str.lower(x.username))
     return render(request, 'blog/articles_suivis.html', {'suiveurs': suiveurs, })
 
 
 @login_required
 @csrf_exempt
-def suivre_articles(request, asso_abreviation='public', actor_only=True):
-    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso_abreviation))
+def suivre_articles(request, asso_slug='public', actor_only=True):
+    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso_slug))
 
     if suivi in following(request.user):
         actions.unfollow(request.user, suivi, send_action=False)
@@ -1027,7 +1033,7 @@ def ajouterEvenementArticle(request, slug_article):
         action.send(request.user, 
                     action_object=article, 
                     url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation, 
+                    verb="article_modifier_" + article.asso.slug,
                     description="a ajouté une date à l'article '%s'"%article.titre)
         return redirect(ev.article)
 
@@ -1043,7 +1049,7 @@ def ajouterDocumentPartage(request, slug_article):
         action.send(request.user, 
                     action_object=article, 
                     url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation, 
+                    verb="article_modifier_" + article.asso.slug,
                     description="a ajouté un document partagé à l'article '%s'"%article.titre)
         return redirect(article)
 
@@ -1056,7 +1062,7 @@ def supprimerDocumentPartage(request, slug_docpartage):
     action.send(request.user,
                 action_object=article,
                 url=article.get_absolute_url(),
-                verb="article_modifier_" + article.asso.abreviation,
+                verb="article_modifier_" + article.asso.slug,
                 description="a supprimé le document partagé %s de l'article '%s'"%(doc.nom, article.titre))
     doc.delete()
     return redirect(article.get_absolute_url())
@@ -1084,7 +1090,7 @@ def ajouterReunionArticle(request, slug_article):
         action.send(request.user, 
                     action_object=article, 
                     url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation, 
+                    verb="article_modifier_" + article.asso.slug,
                     description="a ajouté une réunion à l'article '%s'"%article.titre)
         return redirect(article)
 
@@ -1123,7 +1129,7 @@ def ajouterSalonArticle(request, slug_article):
             action.send(request.user, 
                         action_object=article, 
                         url=article.get_absolute_url(),
-                        verb="article_modifier_" + article.asso.abreviation, 
+                        verb="article_modifier_" + article.asso.slug,
                         description="a ajouté un salon à l'article '%s'"%article.titre)
         return redirect(salon.article)
 
@@ -1140,7 +1146,7 @@ def associerSalonArticle(request, slug_article):
             action.send(request.user,
                     action_object=article, 
                     url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation, 
+                    verb="article_modifier_" + article.asso.slug,
                     description="a ajouté un salon à l'article '%s'"%article.titre)
         return redirect(article)
 
@@ -1170,7 +1176,7 @@ def ajouterAdresseArticle(request, id_article):
         action.send(request.user, 
                     action_object=article, 
                     url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation, 
+                    verb="article_modifier_" + article.asso.slug,
                     description="a ajouté un lieu à l'article '%s'"%article.titre)
         return redirect(article)
 
@@ -1227,7 +1233,7 @@ def ajouterTodoArticle(request, slug_article):
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.abreviation,
+                    verb="article_modifier_" + article.asso.slug,
                     description="a ajouté un todo à l'article '%s'"%article.titre)
         return redirect(article)
 
@@ -1287,12 +1293,13 @@ class ListeTodo_asso(ListView):
     def get_queryset(self):
         params = dict(self.request.GET.items())
         if 'asso' in self.kwargs:
-            self.asso = Asso.objects.get(abreviation=self.kwargs['asso'])
+            self.asso = Asso.objects.get(slug=self.kwargs['asso'])
+            self.request.session["asso_slug"] = self.kwargs['asso']
         else:
-            self.asso = Asso.objects.get(abreviation='public')
+            self.asso = Asso.objects.get(slug='public')
 
-        if self.request.user.est_autorise(self.asso.abreviation):
-            qs = TodoArticle.objects.filter(Q(article__asso__abreviation=self.asso.abreviation)).distinct().order_by('date_creation')
+        if self.request.user.est_autorise(self.asso.slug):
+            qs = TodoArticle.objects.filter(Q(article__asso__slug=self.asso.slug)).distinct().order_by('date_creation')
         else:
             qs = TodoArticle.objects.none()
 
@@ -1301,8 +1308,7 @@ class ListeTodo_asso(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_list'] = Choix_global.abreviationsNomsAssoEtPublic
-        context['asso_courante'] = self.asso
+        context['asso_list'] = Choix_global.slugsNomsAssoEtPublic
         return context
 
 
@@ -1385,7 +1391,7 @@ def filtrer_articles(request):
 def ajax_categories(request):
     try:
         asso_id = request.GET.get('asso')
-        nomAsso = Asso.objects.get(id=asso_id).abreviation
+        nomAsso = Asso.objects.get(id=asso_id).slug
         if "categorie_courante" in request.GET:
             cat = request.GET["categorie_courante"]
         else:
@@ -1400,15 +1406,15 @@ def ajax_categories(request):
 def ajaxListeArticles(request):
     try:
         asso_id = request.GET.get('asso')
-        nomAsso = Asso.objects.get(id=asso_id).abreviation
+        nomAsso = Asso.objects.get(id=asso_id).slug
         if getattr(request.user, "adherent_" + nomAsso):
-            qs = Article.objects.filter(estArchive=False, asso__abreviation=nomAsso)
+            qs = Article.objects.filter(estArchive=False, asso__slug=nomAsso)
         else:
             qs = Article.objects.none()
         return render(request, 'blog/ajax/listeArticles.html',
                       {'qs': qs})
     except:
-        qs = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(estArchive=False)
+        qs = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(estArchive=False)
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
 
 
@@ -1451,7 +1457,7 @@ def ajouterArticleLiens(request, slug_article):
             action.send(request.user,
                         action_object=article,
                         url=article.get_absolute_url(),
-                        verb="article_modifier_" + article.asso.abreviation,
+                        verb="article_modifier_" + article.asso.slug,
                         description="a lié l'article '%s' à '%s'" % (article.titre, lien.article_lie.titre))
         return redirect(article)
 
@@ -1503,7 +1509,7 @@ def ajouterArticleLienProjet(request, slug_article):
             action.send(request.user,
                         action_object=article,
                         url=article.get_absolute_url(),
-                        verb="article_modifier_" + article.asso.abreviation,
+                        verb="article_modifier_" + article.asso.slug,
                         description="a lié l'article '%s' au projet '%s'" % (article.titre, lien.projet_lie.titre))
         return redirect(article)
 
@@ -1547,10 +1553,10 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
             return Article.objects.none()
 
         if calc:
-            #if "asso_abreviation" in self.request.session:
-            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+            #if "asso_slug" in self.request.session:
+            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__slug=self.request.session["asso_slug"]).exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre")
             #else:
-                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(Q(estArchive=False) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)) )
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre").filter(Q(estArchive=False) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)) )
 
         return qs
 
@@ -1562,10 +1568,10 @@ class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
             return Article.objects.none()
 
         if calc:
-            if "asso_abreviation" in self.request.session:
-                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(asso__abreviation=self.request.session["asso_abreviation"]) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
+            if "asso_slug" in self.request.session:
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(asso__slug=self.request.session["asso_slug"]) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
             else:
-                qs = Article.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
 
         return qs
 
@@ -1576,4 +1582,4 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated or calc:
             return Projet.objects.none()
 
-        return Projet.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+        return Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")

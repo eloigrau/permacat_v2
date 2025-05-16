@@ -37,7 +37,7 @@ class Contact_ajouter(UserPassesTestMixin, CreateView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_form(self):
         return Contact_form(**self.get_form_kwargs())
@@ -62,7 +62,7 @@ class Contact_ajouter(UserPassesTestMixin, CreateView, ):
         context = super().get_context_data(**kwargs)
         self.projet = ProjetPhoning.objects.get(pk=self.request.session['projet_courant_pk'])
         context['projetphoning'] = self.projet
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 class Contact_modifier(UserPassesTestMixin, UpdateView, ):
@@ -71,7 +71,7 @@ class Contact_modifier(UserPassesTestMixin, UpdateView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_form(self):
         return Contact_update_form(**self.get_form_kwargs())
@@ -112,7 +112,7 @@ class Contact_modifier(UserPassesTestMixin, UpdateView, ):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
@@ -121,7 +121,7 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_success_url(self):
         #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
@@ -131,12 +131,12 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 @login_required
 def contact_supprimer(request, asso_slug, contact_pk):
-    #if not request.user.has_perm(request.session["asso_courante"].abreviation + '_delete_contact'):
+    #if not request.user.has_perm(request.session["request.session.asso_slug"].slug + '_delete_contact'):
 
     asso = testIsMembreAsso(request, asso_slug)
     contact = get_object_or_404(Contact, pk=contact_pk)
@@ -152,7 +152,7 @@ class Contact_liste(UserPassesTestMixin, ListView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.asso #is_membre_bureau(self.request.user, self.asso.abreviation)
+        return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -184,13 +184,13 @@ class Contact_liste(UserPassesTestMixin, ListView):
         context["filter"] = self.filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
         context['historique'] = Action.objects.filter(Q(verb__startswith='phoningConf_'))
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
-        if (self.request.path == reverse('adherents:phoning_projet_simple', kwargs={'asso_slug': self.asso.abreviation, 'projet_pk':self.request.session['projet_courant_pk']}) or
-                self.request.path == reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.abreviation} )) :
+        if (self.request.path == reverse('adherents:phoning_projet_simple', kwargs={'asso_slug': self.asso.slug, 'projet_pk':self.request.session['projet_courant_pk']}) or
+                self.request.path == reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug} )) :
             return [self.template_name_simple]  # Return a list that contains "a.html" template name
         return [self.template_name_complet]  # else return "b.html" template name
 
@@ -688,8 +688,8 @@ def get_csv_contacts(request, asso_slug):
 def ajax_projet(request, asso_slug):
     testIsMembreAsso(request, asso_slug)
     try:
-        asso_abreviation = request.GET.get('asso_abreviation')
-        projets = ProjetPhoning.objects.filter(asso__abreviation=asso_abreviation)
+        asso_slug = request.GET.get('asso_slug')
+        projets = ProjetPhoning.objects.filter(asso__slug=asso_slug)
 
         return render(request, 'adherents/ajax/projets_dropdown_list_options.html',
                       {'listeProjets':projets})
@@ -703,7 +703,7 @@ class ProjetPhoning_ajouter(UserPassesTestMixin, CreateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_form(self):
         return ProjetPhoning_form(self.request, **self.get_form_kwargs())
@@ -718,7 +718,7 @@ class ProjetPhoning_ajouter(UserPassesTestMixin, CreateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -728,14 +728,14 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_form(self):
         return ProjetPhoning_form(self.request, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save()
-        return redirect("adherents:phoning_projet_complet", {"asso_slug":self.asso.abreviation})
+        return redirect("adherents:phoning_projet_complet", {"asso_slug":self.asso.slug})
 
     def get_success_url(self):
         return self.object.get_absolute_url()
@@ -743,7 +743,7 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -753,16 +753,16 @@ class ProjetPhoning_supprimer(UserPassesTestMixin, DeleteView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_success_url(self):
-        return reverse('adherents:phoning_projet_courant', {"asso_slug":self.asso.abreviation})
+        return reverse('adherents:phoning_projet_courant', {"asso_slug":self.asso.slug})
 
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 class ProjetPhoning_liste(UserPassesTestMixin, ListView):
@@ -772,23 +772,23 @@ class ProjetPhoning_liste(UserPassesTestMixin, ListView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
         if 'asso' in params:
-            self.request.session["asso_abreviation"] = params['asso']
-            self.qs = ProjetPhoning.objects.filter(asso__abreviation=params['asso'])
+            self.request.session["asso_slug"] = params['asso']
+            self.qs = ProjetPhoning.objects.filter(asso__slug=params['asso'])
         else:
-            self.qs = ProjetPhoning.objects.filter(asso__abreviation__in=self.request.user.getListeAbreviationsAssos())
+            self.qs = ProjetPhoning.objects.filter(asso__slug__in=self.request.user.getListeSlugsAssos())
         return self.qs
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_list'] = [(x.abreviation, x.nom,) for x in Asso.objects.all().order_by("id") if
-                                self.request.user.est_autorise(x.abreviation)]
-        context["asso_slug"] = self.asso.abreviation
+        context['asso_list'] = [(x.slug, x.nom,) for x in Asso.objects.all().order_by("id") if
+                                self.request.user.est_autorise(x.slug)]
+        context["asso_slug"] = self.asso.slug
 
         #context["filter"] = filter
         return context
@@ -799,7 +799,7 @@ class ProjetPhoning_liste(UserPassesTestMixin, ListView):
 def nettoyer_noms(request, asso_slug):
     testIsMembreAsso(request, asso_slug)
     m = ""
-    for p in Contact.objects.filter(projet__asso__abreviation="conf66"):
+    for p in Contact.objects.filter(projet__asso__slug="conf66"):
         if p.nom:
             try:
                 p.nom = p.nom.replace("é","e").replace("è","e").replace("É","E").replace("È","E").upper()

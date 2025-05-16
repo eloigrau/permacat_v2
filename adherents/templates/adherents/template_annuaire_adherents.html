@@ -33,7 +33,7 @@
         <tbody>
         {% for adherent in adherents %}
         <tr>
-            <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=asso_slug %}"> {{ adherent.nom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=request.session.asso_slug %}"> {{ adherent.nom }}</a></td>
             <td> {{ adherent.prenom }}</td>
             <td>{% if adherent.profil %} <a href="{% url 'profil' user_id=adherent.profil.id %}">{{ adherent.profil.username }}</a>{% else %}-{% endif %}</td>
             <td>{{ adherent.email }}</td>
@@ -71,8 +71,8 @@
         <tbody>
         {% for adherent in adherents %}
         <tr>
-            <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=asso_slug %}"> {{ adherent.nom }} </a></td>
-            <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=asso_slug %}"> {{ adherent.prenom }}</a></td>
+            <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=request.session.asso_slug %}"> {{ adherent.nom }} </a></td>
+            <td><a href="{% url 'adherents:adherent_detail' pk=adherent.pk asso_slug=request.session.asso_slug %}"> {{ adherent.prenom }}</a></td>
             <td>{% for ad in adherent.get_adhesions  %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
       </tr>
         {% endfor %}

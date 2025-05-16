@@ -26,7 +26,7 @@
 {% if is_membre_bureau %}
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:adherent_ajouter' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:adherent_ajouter' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un adhérent
             </button>
@@ -118,17 +118,17 @@
             var lon = {{profil.get_longitude}};
 
             {% if profil.statut == '1' %}
-            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug %}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '2' or profil.statut == 'CotSol'%}
-            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '3' %}
-            var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '5' %}
-            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '4' %}
-            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% else %}
-            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug %}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% endif %}
             markers.addLayer(marker);
         {%endfor%}
@@ -213,19 +213,19 @@
 
 <p class="textcenter">
 {% if is_membre_bureau %}
-    <a href="{% url 'adherents:get_csv_adherents' asso_slug=asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_adherents' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV
         </button>
     </a>
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=asso_slug type_info='tel' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=request.session.asso_slug type_info='tel' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Téléphones
         </button>
     </a>
 {% endif %}
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=asso_slug type_info='email' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=request.session.asso_slug type_info='email' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Liste de mails
         </button>

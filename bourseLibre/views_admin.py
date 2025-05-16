@@ -465,18 +465,18 @@ def voirPbProfils(request):
     return render(request, 'admin/voirPbProfils.html', {'pb_profils': pb_profils, 'pb_adresses': pb_adresses})
 
 
-def ajouterAdhesion(request, abreviationAsso):
+def ajouterAdhesion(request, slugAsso):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
-    if abreviationAsso == 'pc':
+    if slugAsso == 'pc':
         form = Adhesion_permacatForm(request.POST or None)
-    elif abreviationAsso == 'scic':
-        form = Adhesion_assoForm(abreviationAsso, request.POST or None)
+    elif slugAsso == 'scic':
+        form = Adhesion_assoForm(slugAsso, request.POST or None)
 
     if form.is_valid():
         form.save()
-        return redirect(reverse('listeAdhesions', kwargs={"asso": abreviationAsso}))
+        return redirect(reverse('listeAdhesions', kwargs={"asso": slugAsso}))
 
 
     return render(request, 'asso/adhesion_ajouter.html', {"form": form, })
@@ -492,7 +492,7 @@ def creerAction_articlenouveau(request):
         form = creerAction_articlenouveauForm(request.POST)
         if form.is_valid():
             article = form.cleaned_data["article"]
-            suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(article.asso.abreviation))
+            suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(article.asso.slug))
 
             titre = "Nouvel article"
             message = "Un article a été posté dans le forum [" + str(
@@ -610,7 +610,7 @@ def transforBlogJpToForum(request):
     from .models import Asso
     if not request.user.is_superuser:
         return HttpResponseForbidden()
-    asso_jp = Asso.objects.get(abreviation="jp")
+    asso_jp = Asso.objects.get(slug="jp")
 
     for art in Article_jardin.objects.all():
         if not Article_blog.objects.filter(slug=art.slug).exists():
@@ -636,7 +636,7 @@ def movePermagoraInscritsToNewsletter(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
     users = Profil.objects.filter(adherent_scic=True)
-    asso = Asso.objects.get(abreviation="scic")
+    asso = Asso.objects.get(slug="scic")
 
     #for u in users:
     #    InscriptionNewsletterAsso.objects.get_or_create(asso=asso, nom_newsletter="sympathisants", profil=u, email=u.email, )
@@ -663,14 +663,14 @@ def reinitialiserAbonnementsPermAgora(request):
     return render(request, 'admin/admin_message.html', {"msg": m})
 
 
-def inscrireProfilAuGroupe(request, id_profil, asso_abreviation):
+def inscrireProfilAuGroupe(request, id_profil, asso_slug):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
 
     p = Profil.objects.get(id=id_profil)
-    setattr(p, "adherent_" + asso_abreviation, True)
+    setattr(p, "adherent_" + asso_slug, True)
     p.save()
-    suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + asso_abreviation)
+    suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + asso_slug)
     actions.follow(p, suivi, send_action=False)
     return redirect(p.get_absolute_url())
 
@@ -839,7 +839,7 @@ def create_permissions(request):
     from django.contrib.auth.models import Group, Permission
 
     for asso in Asso.objects.all():
-        creators = Group(name=asso.abreviation +'_phoning')
+        creators = Group(name=asso.slug +'_phoning')
         creators.save()
 
         creator_permissions = [
@@ -865,6 +865,6 @@ def create_permissions(request):
 
         creators.permissions.set(creator_permissions)
 
-        if asso.abreviation != "public":
+        if asso.slug != "public":
             for p in asso.profil_set.all():
                 creators.user_set.add(p)

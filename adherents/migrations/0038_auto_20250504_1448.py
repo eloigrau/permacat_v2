@@ -9,7 +9,7 @@ def ajouterAssoAdhesions(apps, schema_editor):
     adh_1 = apps.get_model('adherents', 'Adherent')
     adh_2 = apps.get_model('adherents', 'Adhesion')
     Assos = apps.get_model('bourseLibre', 'Asso')
-    asso_conf = Assos.objects.get(abreviation="public")
+    asso_conf = Assos.objects.get(slug="public")
     for adh in adh_1.objects.filter(asso__isnull=True):
         adh.asso = asso_conf
         adh.save()

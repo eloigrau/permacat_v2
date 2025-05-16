@@ -45,17 +45,18 @@ def agenda(request):
     # Instantiate our calendar class with today's year and date
     cal = Calendar(d.year, d.month)
 
-    asso_list = [(x.abreviation, x.nom) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.abreviation)]
+    asso_list = [(x.slug, x.nom) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)]
 
     if 'asso' in request.GET:
-        asso_abreviation = request.GET['asso']
-        asso_courante = Asso.objects.get(abreviation=asso_abreviation).nom
+        asso_slug = request.GET['asso']
+        asso_courante = Asso.objects.get(slug=asso_slug).nom
+        request.session["asso_slug"] = request.GET['asso']
     else:
+        asso_slug = None
         asso_courante = None
-        asso_abreviation = None
 
     # Call the formatmonth method, which returns our calendar as a table
-    html_cal = mark_safe(cal.formatmonth(request, withyear=True, asso_abreviation=asso_abreviation))
+    html_cal = mark_safe(cal.formatmonth(request, withyear=True, asso_slug=asso_slug))
 
 
     suivi, created = Suivis.objects.get_or_create(nom_suivi='visite_agenda')
@@ -65,5 +66,5 @@ def agenda(request):
                                                'prev_month':prev_month(d), 'next_month':next_month(d),
                                                'asso_list':asso_list,
                                                'asso_courante':asso_courante,
-                                               'asso_abreviation':asso_abreviation
+                                               'asso_slug':asso_slug
                                                })

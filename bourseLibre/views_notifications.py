@@ -25,7 +25,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
     jardins = Action.objects.none()
     conversations = Action.objects.none()
 
-    for nomAsso in Choix_global.abreviationsAsso:
+    for nomAsso in Choix_global.slugsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             articles = articles.exclude(Q(verb__icontains=nomAsso))
             projets = projets.exclude(Q(verb__icontains=nomAsso))
@@ -105,7 +105,7 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
             Q(verb__startswith='suppression' + request.user.username))).distinct().order_by(orderBy)
 
 
-    for nomAsso in Choix_global.abreviationsAsso:
+    for nomAsso in Choix_global.slugsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
             actions = actions.exclude(verb__icontains='_' + nomAsso)
 
@@ -149,8 +149,6 @@ def getFavoris(request):
 @login_required
 def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
     actions = []
-    asso_courante = ""
-    asso_courante_abreviation = ""
 
     if dateMinimum:
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
@@ -159,9 +157,8 @@ def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
         dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=utc)
 
     if "asso" in request.GET:
-        asso_courante_abreviation = request.GET["asso"]
-        asso_courante = Asso.objects.get(abreviation=asso_courante_abreviation).nom
-        actions = Action.objects.filter(Q(timestamp__gt=dateMin, verb__contains=asso_courante_abreviation) & ( \
+        request.session["asso_slug"] = request.GET["asso"]
+        actions = Action.objects.filter(Q(timestamp__gt=dateMin, verb__contains=request.session["asso_slug"]) & ( \
              Q(verb__startswith='article')|Q(verb__startswith='projet_')|
              Q(verb__startswith='atelier')|Q(verb__startswith='jardins_')|
                 Q(verb__startswith='documents_nouveau')|
@@ -170,9 +167,7 @@ def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
     #actions = [art for i, art in enumerate(actions) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
 
     context = {'actions':actions,
-                "asso_courante_abreviation":asso_courante_abreviation,
-               "asso_courante":asso_courante,
-                'asso_list':  request.user.getListeAbreviationsNomsAssoEtPublic()  # [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+                'asso_list':  request.user.getListeSlugsNomsAssoEtPublic()  # [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
     }
     return render(request, 'notifications/notificationsParGroupe.html', context)
 

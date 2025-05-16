@@ -1,6 +1,7 @@
 {% extends "photologue/root.html" %}
 {% load fontawesome_5 %}
 {% load activity_tags %}
+{% load app_filters %}
 {% load i18n %}
 
 {% block panel-heading %} {%endblock%}
@@ -73,13 +74,13 @@
     <nav class="navbar navbar-expand-lg justify-content-center">
         <div class="navbar-header">
              <button class="btn  btn-lg btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
-             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
+             <p>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug }} {% else %} Choisir un groupe {% endif %} </p> </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
                 {% for  asso_id, asso_nom in asso_list %}
                 <a  href="{% url 'photologue:album-list' %}?asso={{asso_id}}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug == asso_id %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>

@@ -4,7 +4,7 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_projet_courant' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-info">
                 Revenir à la liste
             </button>
@@ -14,7 +14,7 @@
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_contact_ajouter' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 Ajouter UN Contact à la liste (manuellement)
             </button>
@@ -24,7 +24,7 @@
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_contact_ajouter_listetel' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter_listetel' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 Ajouter DES contacts (liste de numéros de TEL)
             </button>
@@ -33,7 +33,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_contact_ajouter_csv' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter_csv' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 Ajouter DES contacts (fichier CSV en texte)
             </button>
@@ -43,7 +43,7 @@
         {% if request.user.is_superuser %}
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_ajouterAdherents' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:phoning_ajouterAdherents' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-success">
                 Ajouter LES adhérents
             </button>
@@ -52,7 +52,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_ajouterMembresGroupe' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:phoning_ajouterMembresGroupe' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-success">
                 Ajouter LES membres du groupe {{asso_slug}}
             </button>
@@ -61,7 +61,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_csv_inversernomprenom' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:phoning_csv_inversernomprenom' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-success">
                 Inverser Nomprenoms CSV
             </button>
@@ -70,7 +70,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:nettoyer_noms' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:nettoyer_noms' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 nettoyer noms
             </button>
@@ -79,7 +79,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_csv_editNonVotants' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_csv_editNonVotants' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 phoning_csv_editNonVotants
             </button>
@@ -88,7 +88,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_csv_viti' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_csv_viti' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 phoning_csv_viti
             </button>
@@ -98,7 +98,7 @@
 <hr>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_supprimer_doublons' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_supprimer_doublons' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-success">
                 Supprimer doublons (param 'tel')
             </button>
@@ -107,7 +107,7 @@
 </div>
 <div class="row">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:nettoyer_telephones' asso_slug=asso_slug  %}">
+        <a href="{% url 'adherents:nettoyer_telephones' asso_slug=request.session.asso_slug  %}">
             <button type="button" class="btn btn-success">
                 Nettoyer numeros
             </button>

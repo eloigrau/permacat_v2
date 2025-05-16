@@ -46,8 +46,8 @@ def is_membre_bureau(user, asso="conf66"):
 
 
 @login_required
-def set_projet_phoning(request, asso_abreviation, url_redirect):
-    projet = get_object_or_404(ProjetPhoning, abreviation=asso_abreviation)
+def set_projet_phoning(request, asso_slug, url_redirect):
+    projet = get_object_or_404(ProjetPhoning, slug=asso_slug)
     request.session['projet_courant'] = projet
     return redirect(url_redirect)
 
@@ -59,7 +59,7 @@ class ListeAdherents(UserPassesTestMixin, ListView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -76,19 +76,19 @@ class ListeAdherents(UserPassesTestMixin, ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         qs = self.get_queryset()
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         context['titre'] = "Adhérents " +self.asso.nom +" (%d)" % len(qs)
         filter = AdherentsCarteFilter(self.request.GET, qs)
         context["filter"] = filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
-        context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_' +self.asso.abreviation+'_'))
+        context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_' +self.asso.slug+'_'))
         return context
 
 
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
-        if self.asso.abreviation == "conf66":
-            return "adherents/carte_adherents_" + self.asso.abreviation + ".html"
+        if self.asso.slug == "conf66":
+            return "adherents/carte_adherents_" + self.asso.slug + ".html"
         else:
             return "adherents/carte_adherents.html"
 
@@ -98,14 +98,14 @@ class AdherentDetailView(UserPassesTestMixin, DetailView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['adhesions'] = Adhesion.objects.filter(adherent=self.object).order_by("-date_cotisation__year", "adherent__nom")
         context['inscriptionsMail'] = InscriptionMail.objects.filter(adherent=self.object)
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         if context['is_membre_bureau']:
             context['commentaires'] = Comm_adherent.objects.filter(adherent=self.object)
         return context
@@ -113,13 +113,13 @@ class AdherentDetailView(UserPassesTestMixin, DetailView, ):
 
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
-        if self.asso.abreviation == "conf66":
-            return "adherents/adherent_" + self.asso.abreviation + "_detail.html"
+        if self.asso.slug == "conf66":
+            return "adherents/adherent_" + self.asso.slug + "_detail.html"
         else:
             return "adherents/adherent_detail.html"
 
 def monProfil(request, asso_slug):
-    adherents = Adherent.objects.filter(profil=request.user, asso__abreviation=asso_slug)
+    adherents = Adherent.objects.filter(profil=request.user, asso__slug=asso_slug)
     if not adherents.exists():
         return render(request, 'adherents/profil_inconnu.html', {"asso_slug":asso_slug})
 
@@ -131,7 +131,7 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_success_url(self):
         desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
@@ -145,13 +145,13 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.object.profil
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
 
     def form_valid(self, form):
         desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
             form.changed_data) + ")"
-        action.send(self.request.user, verb='adherent_'+self.asso.abreviation+'_modifier', action_object=self.object,
+        action.send(self.request.user, verb='adherent_'+self.asso.slug+'_modifier', action_object=self.object,
                     url=self.object.get_absolute_url(), description=desc)
         titre = "[PCAT_adherents] Modification de l'adherent : " + str(self.object)
         if self.asso.email:
@@ -162,7 +162,7 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
         return self.object.get_absolute_url()
 
     def get_form_class(self):
-        if self.asso.abreviation == "conf66":
+        if self.asso.slug == "conf66":
             return AdherentChangeForm_conf66
         else:
             return AdherentChangeForm
@@ -176,7 +176,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
         self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
         self.adherent = self.adresse.adherent_set.first()
-        return is_membre_bureau(self.request.user, self.asso.abreviation) or self.request.user == self.adherent.profil
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.adherent.profil
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -310,7 +310,7 @@ class ListeAdhesions(UserPassesTestMixin, ListView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):
         return Adhesion.objects.filter(asso=self.asso).order_by("-date_cotisation")
@@ -319,7 +319,7 @@ class ListeAdhesions(UserPassesTestMixin, ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -328,12 +328,12 @@ class AdhesionDetailView(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
 class AdhesionDeleteView(UserPassesTestMixin, DeleteView):
     model = Adhesion
@@ -349,11 +349,11 @@ class AdhesionDeleteView(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 class AdhesionUpdateView(UserPassesTestMixin, UpdateView):
@@ -367,12 +367,12 @@ class AdhesionUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 def ajouterAdhesion(request, asso_slug, adherent_pk):
@@ -381,7 +381,7 @@ def ajouterAdhesion(request, asso_slug, adherent_pk):
         return HttpResponseForbidden()
 
     form = AdhesionForm(request.POST or None)
-    adherent = get_object_or_404(Adherent,  asso__abreviation=asso_slug, pk=adherent_pk)
+    adherent = get_object_or_404(Adherent,  asso__slug=asso_slug, pk=adherent_pk)
     if form.is_valid():
         adhesion = form.save(commit=False)
         adhesion.adherent = adherent
@@ -486,7 +486,7 @@ def get_csv_adherents(request, asso_slug):
     """A view that streams a large CSV file."""
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom")
+    profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom")
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
     current_year = date.today().isocalendar()[0]
 
@@ -506,7 +506,7 @@ def get_csv_adherents_pasajour(request, asso_slug):
     """A view that streams a large CSV file."""
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom").distinct()
+    profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
 
     csv_data = [ ("Email"),]
@@ -519,7 +519,7 @@ def get_csv_listeMails(request, asso_slug):
     """A view that streams a large CSV file."""
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom")
+    profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom")
 
     csv_data = [("Name","Given Name","Additional Name","Family Name","Yomi Name","Given Name Yomi","Additional Name Yomi",
                  "Family Name Yomi","Name Prefix","Name Suffix","Initials","Nickname","Short Name","Maiden Name","Birthday",
@@ -783,7 +783,7 @@ def import_adherents_ggl(request, asso_slug):
 def getMails(request, asso_slug):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug)
+    profils = Adherent.objects.filter(asso__slug=asso_slug)
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
     return render(request, 'adherents/template_mails.html', {'qs': profils_filtres.qs, "asso_slug":asso_slug})
 
@@ -793,7 +793,7 @@ def get_infos_adherent(request, asso_slug, type_info="email"):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug)
+    profils = Adherent.objects.filter(asso__slug=asso_slug)
     profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
     if type_info == "tel":
         template = 'adherents/template_tel.html'
@@ -817,7 +817,7 @@ def get_infos_listeMail(request, asso_slug, listeMail_pk, type_info="email"):
 
 @login_required
 def get_infos_adherents_pasajour(request, asso_slug):
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom").distinct()
+    profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
     mails = list(set([a.email for a in profils if not a.get_adhesion_an(current_year)]))
 
@@ -825,7 +825,7 @@ def get_infos_adherents_pasajour(request, asso_slug):
 
 @login_required
 def get_infos_adherents_ajour(request, asso_slug):
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom").distinct()
+    profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
     mails = list(set([a.email for a in profils if a.get_adhesion_an(current_year)]))
 
@@ -847,7 +847,7 @@ class ListeInscriptionsMails(UserPassesTestMixin, ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -857,12 +857,12 @@ class InscriptionMailDetailView(UserPassesTestMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_membre_bureau'] = is_membre_bureau(self.request.user)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
 class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
     model = InscriptionMail
@@ -878,11 +878,11 @@ class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
@@ -896,11 +896,11 @@ class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -914,11 +914,11 @@ class Comm_adherent_modifier(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -936,15 +936,15 @@ class Comm_adherent_supprimer(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 def get_mails(asso_slug, typeListe="bureau"):
-    profils = Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom").distinct()
+    profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
     if typeListe=="bureau":
         return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau_conf and a.email]))
@@ -965,7 +965,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.asso #is_membre_bureau(self.request.user, self.asso.abreviation)
+        return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):
         return ListeDiffusion.objects.filter(asso=self.asso).order_by("nom")
@@ -973,7 +973,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         context['actions'] = Action.objects.filter(verb__startswith="listeDiff_conf66").order_by('-timestamp')
         context['dico_ListesBase'] = {'Bureau': get_mails(typeListe="bureau"),
                                         'Adhérents à jour':get_mails(typeListe="ajour"),
@@ -984,7 +984,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -994,11 +994,11 @@ class ListeDiffusionDetailView(UserPassesTestMixin, DetailView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.asso #is_membre_bureau(self.request.user, self.asso.abreviation)
+        return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 
@@ -1016,11 +1016,11 @@ class ListeDiffusionDeleteView(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 class ListeDiffusionUpdateView(UserPassesTestMixin, UpdateView):
@@ -1033,12 +1033,12 @@ class ListeDiffusionUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.abreviation)
+        return is_membre_bureau(self.request.user, self.asso.slug)
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.abreviation
+        context['asso_slug'] = self.asso.slug
         return context
 
 @login_required

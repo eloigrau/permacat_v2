@@ -11,7 +11,7 @@ def copierListesDiffusion(apps, schema_migration):
     InscriptionMail_old = apps.get_model('adherents', 'InscriptionMail')
     InscriptionMail_new = apps.get_model('adherents', 'InscriptionMail_new')
     Assos = apps.get_model('bourseLibre', 'Asso')
-    asso_conf = Assos.objects.get(abreviation="conf66")
+    asso_conf = Assos.objects.get(slug="conf66")
     for l in Listes_old.objects.all():
         liste_new = Listes_new.objects.create(nom=l.nom, asso=asso_conf, date_creation=l.date_creation)
         for i in InscriptionMail_old.objects.filter(liste_diffusion=l):

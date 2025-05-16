@@ -20,7 +20,7 @@
 						<td>{{ graine.infos.date_recolte|date:'d/m/Y'}}</td>
 						 {%if request.user.is_superuser or request.user == grainotheque.auteur  or request.user == grainotheque.referent  %}
 						<td>
-							<a class="boutonediter" href="{{ graine.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+							<a class="btn btn-sm btn-warning" href="{{ graine.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
 							</td>
 						{% endif %}
 					</tr>

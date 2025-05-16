@@ -5,7 +5,7 @@ from bourseLibre.settings.production import SERVER_EMAIL
 
 def create_types(apps, schema_editor):
     assos = apps.get_model('bourseLibre', 'Asso')
-    #asso_jp , created = assos.objects.get_or_create(nom='Jardins Partagés', abreviation="jp", email=SERVER_EMAIL)
+    #asso_jp , created = assos.objects.get_or_create(nom='Jardins Partagés', slug="jp", email=SERVER_EMAIL)
 
 class Migration(migrations.Migration):
 

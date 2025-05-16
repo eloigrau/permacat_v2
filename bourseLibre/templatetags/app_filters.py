@@ -114,7 +114,7 @@ def filtrerSuivisAgora(nomSuivis):
     try:
         if "agora" in str(nomSuivis):
             nomAsso = str(nomSuivis).split("_",1)[1]
-            asso = Asso.objects.get(abreviation=nomAsso)
+            asso = Asso.objects.get(slug=nomAsso)
             return "Agora " + asso.nom
         else:
             nomSalon = str(nomSuivis).split("_",1)
@@ -127,7 +127,7 @@ def filtrerSuivisAgora(nomSuivis):
 def filtrerSuivisForum(nomSuivis):
     try:
         nomAsso = str(nomSuivis).split("_",1)[1]
-        asso = Asso.objects.get(abreviation=nomAsso)
+        asso = Asso.objects.get(slug=nomAsso)
         return "Articles " + asso.nom
     except:
         return str(nomSuivis)
@@ -288,5 +288,9 @@ def escapeETUrl(url):
     return url.replace('&', "%26")
 
 @register.filter(is_safe=True)
+def getLogoGroupeFromSlug(slug):
+    return mark_safe(Asso.objects.get(slug=slug).get_logo_nomgroupe_html)
+
+@register.filter(is_safe=True)
 def getNomGroupeFromSlug(slug):
-    return mark_safe(Asso.objects.get(abreviation=slug).get_logo_nomgroupe_html)
+    return mark_safe(Asso.objects.get(slug=slug).nom)

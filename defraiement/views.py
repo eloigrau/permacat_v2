@@ -23,12 +23,13 @@ from django.http import HttpResponse
 def lireReunion(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
     request.session['reunion_courante_url'] = reunion.get_absolute_url()
+    request.session['asso_slug'] = reunion.asso.slug
     if not reunion.est_autorise(request.user):
         return render(request, 'notMembre.html', {"asso": str(reunion.asso)})
 
     liste_participants = [(x, x.getDistance_route(reunion), x.get_url(reunion), x.get_gmaps_url(reunion), x.getDistance_objet(reunion)) for x in reunion.participants.all()]
 
-    context = {'reunion': reunion, 'liste_participants': liste_participants, "asso_courante":reunion.asso }
+    context = {'reunion': reunion, 'liste_participants': liste_participants}
 
     return render(request, 'defraiement/lireReunion.html', context,)
 
@@ -45,7 +46,7 @@ def lireParticipant(request, id):
     part = get_object_or_404(ParticipantReunion, id=id)
     reunions = part.reunion_set.all().order_by('start_time')
     reu = [(r, part.getDistance_route(r)) for r in reunions]
-    context = {"part":part, 'reunions': reu,  "asso_courante":part.asso}
+    context = {"part":part, 'reunions': reu}
 
     return render(request, 'defraiement/lireParticipant.html', context,)
 
@@ -118,8 +119,8 @@ def recapitulatif(request, asso_slug):
         reunions = reunions.filter(start_time__year=datetime.now().year)
 
     entete, lignes = getRecapitulatif_km(request, reunions, asso)
-    asso_list = [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id")
-                            if request.user.est_autorise(x.abreviation)]
+    asso_list = [(x.nom, x.slug) for x in Asso.objects.all().order_by("id")
+                            if request.user.est_autorise(x.slug)]
     type_list = get_typereunion(asso_slug)
     form = PrixMaxForm(request.POST or None)
     if form.is_valid():
@@ -127,9 +128,9 @@ def recapitulatif(request, asso_slug):
         tarifKilometrique = form.cleaned_data["tarifKilometrique"]
         entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique)
 
-        return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique})
+        return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique})
 
-    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "asso_courante":asso, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
+    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
 
 
 def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
@@ -168,14 +169,15 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
 @login_required
 def ajouterReunion(request, asso_slug):
     form = ReunionForm(asso_slug, request.POST or None)
-    asso = Asso.objects.get(abreviation=asso_slug)
+    request.session["asso_slug"] = asso_slug
+
     if form.is_valid():
         reu = form.save(request.user)
-        reu.asso = asso
+        reu.asso = Asso.objects.get(slug=asso_slug)
         reu.save()
         return redirect(reverse('defraiement:ajouterAdresseReunion', kwargs={"slug": reu.slug}))
 
-    return render(request, 'defraiement/ajouterReunion.html', { "form": form,"asso_courante":asso})
+    return render(request, 'defraiement/ajouterReunion.html', { "form": form})
 
 
 @login_required
@@ -191,7 +193,7 @@ def modifierParticipantReunion(request, id):
         part.save()
         return redirect(part.get_absolute_url())
 
-    return render(request, 'defraiement/modifierParticipantReunion.html', {'part':part, 'form':form,'form_adresse':form_adresse, "asso_courante":part.asso})
+    return render(request, 'defraiement/modifierParticipantReunion.html', {'part':part, 'form':form,'form_adresse':form_adresse})
 
 # @login_required
 class ModifierParticipant(UpdateView):
@@ -220,7 +222,7 @@ class ModifierReunion(UpdateView):
 
     def get_form(self,*args, **kwargs):
         form = super(ModifierReunion, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for i, x in enumerate(Asso.objects.all().order_by('nom')) if self.request.user.estMembre_str(x.abreviation)]
+        form.fields["asso"].choices = [(x.id, x.nom) for i, x in enumerate(Asso.objects.all().order_by('nom')) if self.request.user.estMembre_str(x.slug)]
         return form
 
 def ajouterAdresseReunion(request, slug):
@@ -237,7 +239,7 @@ def ajouterAdresseReunion(request, slug):
 
 def ajouterAdresseReunionChezParticipant(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
-    form = ParticipantReunionChoiceForm(reunion.asso.abreviation, request.POST or None)
+    form = ParticipantReunionChoiceForm(reunion.asso.slug, request.POST or None)
 
     if form.is_valid():
         reunion.adresse = form.cleaned_data["participant"].adresse
@@ -288,7 +290,7 @@ class SupprimerReunion(DeleteAccess, DeleteView):
         return Reunion.objects.get(slug=self.kwargs['slug'])
 
     def get_success_url(self):
-        return reverse('defraiement:reunions_asso', kwargs={'asso_slug':self.asso.abreviation})
+        return reverse('defraiement:reunions_asso', kwargs={'asso_slug':self.asso.slug})
 
 @login_required
 def ajouterParticipant(request, asso_slug):
@@ -304,7 +306,7 @@ def ajouterParticipant(request, asso_slug):
             return redirect('defraiement:participants', asso_slug=asso_slug)
 
 
-    return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2, "asso_courante":asso }) # 'form_adresse':form_adresse,
+    return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2 }) # 'form_adresse':form_adresse,
 
 
 @login_required
@@ -313,11 +315,11 @@ def ajouterParticipantConf66(request):
     if form.is_valid():
         adherent = form.cleaned_data["adherent"]
         part = ParticipantReunion.objects.create(
-            asso=Asso.objects.get(abreviation="conf66"),
+            asso=Asso.objects.get(slug="conf66"),
             nom=adherent.nom + " " + adherent.prenom,
             adresse=adherent.adresse)
-
-        return redirect(request.session.get('reunion_courante_url'))
+        url = request.session.get('reunion_courante_url', part.get_absolute_url())
+        return redirect(url)
 
     return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
 
@@ -327,7 +329,7 @@ def ajouterParticipantReunion(request, slug_reunion):
     reunion = get_object_or_404(Reunion, slug=slug_reunion)
     asso = reunion.asso
     form = ParticipantReunionForm(request.POST or None, )
-    form_choice = ParticipantReunionChoiceForm(asso.abreviation, request.POST or None)
+    form_choice = ParticipantReunionChoiceForm(asso.slug, request.POST or None)
     form_adresse2 = AdresseForm3(request.POST or None)
 
     if form_choice.is_valid() or (form.is_valid() and form_adresse2.is_valid()):#(form_adresse.is_valid() or form_adresse2.is_valid()):
@@ -343,14 +345,14 @@ def ajouterParticipantReunion(request, slug_reunion):
         reunion.save()
         return redirect(reunion)
 
-    return render(request, 'defraiement/ajouterParticipantReunion.html', {'reunion':reunion, 'form': form, 'form_choice':form_choice,  'form_adresse2':form_adresse2, 'asso_courante':asso }) ##'form_adresse':form_adresse,
+    return render(request, 'defraiement/ajouterParticipantReunion.html', {'reunion':reunion, 'form': form, 'form_choice':form_choice,  'form_adresse2':form_adresse2, }) ##'form_adresse':form_adresse,
 
 
 @login_required
 def ajouterParticipantsReunion(request, slug_reunion):
     reunion = get_object_or_404(Reunion, slug=slug_reunion)
     asso = reunion.asso
-    form_choice = ParticipantReunionMultipleChoiceForm(asso.abreviation, request.POST or None)
+    form_choice = ParticipantReunionMultipleChoiceForm(asso.slug, request.POST or None)
 
     if form_choice.is_valid():
         for p in form_choice.cleaned_data["participants"]:
@@ -466,7 +468,7 @@ class ListeReunions_asso(ListView):
 
     def get_queryset(self):
         self.params = dict(self.request.GET.items())
-        self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
+        self.asso = Asso.objects.get(slug=self.kwargs['asso_slug'])
         qs = Reunion.objects.filter(estArchive=False, asso=self.asso)
 
         if "annee" in self.params:
@@ -487,9 +489,9 @@ class ListeReunions_asso(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['asso_courante'] = self.asso
+        self.request.session["asso_slug"] = self.asso.slug
 
-        self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
+        self.asso = Asso.objects.get(slug=self.kwargs['asso_slug'])
         reu = Reunion.objects.filter(estArchive=False, asso=self.asso)
         cat = reu.values_list('categorie', flat=True).distinct()
         context['categorie_list'] = [x for x in Choix.type_reunion if x[0] in cat]
@@ -503,12 +505,13 @@ def carte_reunions(request, asso_slug, ):
     asso = testIsMembreAsso(request, asso_slug)
     qs = Reunion.objects.filter(estArchive=False, asso=asso)
     params = dict(request.GET.items())
+    request.session["asso_slug"] = asso_slug
     if "annee" in params:
         qs = qs.filter(start_time__year=params['annee'])
     else:
         qs = qs.filter(start_time__year=datetime.now().year)
 
-    return render(request, 'defraiement/carte_reunions.html', {'asso_courante':asso_slug,'reunions':qs, 'asso_courante':asso})
+    return render(request, 'defraiement/carte_reunions.html', {'reunions':qs, })
 
 
 class ListeParticipants(ListView):
@@ -518,7 +521,8 @@ class ListeParticipants(ListView):
     paginate_by = 30
 
     def get_queryset(self):
-        self.asso = Asso.objects.get(abreviation=self.kwargs['asso_slug'])
+        self.asso = Asso.objects.get(slug=self.kwargs['asso_slug'])
+        self.request.session["asso_slug"] = self.asso.slug
         qs = ParticipantReunion.objects.filter(asso=self.asso).order_by("nom")
         return qs
 

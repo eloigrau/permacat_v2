@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 def copierListesDiffusion(apps, schema_migration):
     Assos = apps.get_model('bourseLibre', 'Asso')
-    asso_conf = Assos.objects.get(abreviation="conf66")
+    asso_conf = Assos.objects.get(slug="conf66")
 
     Projets = apps.get_model('adherents', 'ProjetPhoning')
     projet_conf = Projets.objects.create(titre="EP CA 2024", asso=asso_conf)

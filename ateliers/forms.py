@@ -72,7 +72,7 @@ class AtelierForm(forms.ModelForm):
         listeChoix = [(u.id,u) for i, u in enumerate(Profil.objects.all().order_by('username'))]
         listeChoix.insert(0, (request.user.id, request.user.username))
         self.fields['referent'].choices = listeChoix
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
 
 class AtelierChangeForm(forms.ModelForm):
     referent = forms.ChoiceField(label='Référent(.e) atelier')

@@ -33,10 +33,10 @@ class AlbumListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        qs = Album.objects.on_site().exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
+        qs = Album.objects.on_site().exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre())
 
         if 'asso' in self.request.GET:
-            qs = qs.filter(asso__abreviation=self.request.GET["asso"])
+            qs = qs.filter(asso__slug=self.request.GET["asso"])
 
         return qs
 
@@ -44,11 +44,11 @@ class AlbumListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="albums")
-        context['asso_list'] = self.request.user.getListeAbreviationsNomsAssoEtPublic()  # [(x.nom, x.abreviation) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+        context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()  # [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
 
         if 'asso' in self.request.GET:
-            context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"]).nom
-            context['asso_courante_abreviation'] = self.request.GET["asso"]
+            self.request.session["asso_slug"] = self.request.GET["asso"]
+
         return context
 
 class AlbumDetailView(DetailView):
@@ -94,9 +94,9 @@ class PhotoListView(ListView):
     def get_queryset(self):
         qs = Photo.objects.on_site()
 
-        for nomAsso in Choix_global.abreviationsAsso:
+        for nomAsso in Choix_global.slugsAsso:
             if not getattr(self.request.user, "adherent_" + nomAsso):
-                qs = qs.exclude(albums__asso__abreviation=nomAsso)
+                qs = qs.exclude(albums__asso__slug=nomAsso)
 
         return  qs
 
@@ -127,10 +127,12 @@ class DocListView(ListView, FormMixin):
 
     def get_queryset(self):
         if "asso" in self.request.GET:
-            self.request.session["asso_abreviation"] = self.request.GET["asso"]
-            qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).filter(asso__abreviation=self.request.GET["asso"]).order_by("-date_creation")
+            self.request.session["asso_slug"] = self.request.GET["asso"]
+            qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.GET["asso"]).order_by("-date_creation")
+        elif "asso_slug" in self.request.session:
+            qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.session["asso_slug"]).order_by("-date_creation")
         else:
-            qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("-date_creation")
+            qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
 
         return qs
 
@@ -138,15 +140,12 @@ class DocListView(ListView, FormMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="documents")
-        context['asso_list'] = [(x.abreviation, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+        context['asso_list'] = [(x.slug, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
 
         if 'asso' in self.request.GET:
-            context['asso_abreviation'] = self.request.GET['asso']
-            context['asso_courante'] = Asso.objects.get(abreviation= context['asso_abreviation']).nom
+            self.request.session["asso_slug"] = self.request.GET['asso']
             self.form = Document_rechercheForm(self.request.GET or None)
         else:
-            context['asso_courante'] = None
-            context['asso_abreviation'] = None
             self.form = Document_asso_rechercheForm(self.request.GET or None)
 
         context['form_document_recherche'] = self.get_form()
@@ -222,7 +221,7 @@ def ajouterAlbum(request):
     form = AlbumForm(request, request.POST or None)
     if form.is_valid():
         album = form.save(request)
-        suffix = "_" + album.asso.abreviation
+        suffix = "_" + album.asso.slug
         action.send(request.user, verb='album_nouveau' + suffix, action_object=album, url=album.get_absolute_url(),
                     description="a ajouté l'album: '%s'" % album.title)
         return redirect(album.get_absolute_url())
@@ -246,7 +245,7 @@ class ModifierAlbum(UpdateView):
         self.object.save()
         #if not self.object.estArchive:
         #    url = self.object.get_absolute_url()
-        #    suffix = "_" + self.object.asso.abreviation
+        #    suffix = "_" + self.object.asso.slug
         #    action.send(self.request.user, verb='album_modifier'+suffix, action_object=self.object, url=url,
          #                description="a modifié l'album: '%s'" % self.object.titre)
         #envoi_emails_albumouprojet_modifie(self.object, "L'album " +  self.object.titre + "a été modifié", True)
@@ -254,7 +253,7 @@ class ModifierAlbum(UpdateView):
 
     def get_form(self,*args, **kwargs):
         form = super(ModifierAlbum, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.abreviation)]
+        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.slug)]
 
         return form
 
@@ -285,7 +284,7 @@ class ModifierPhoto(UpdateView):
         self.object.save()
         #if not self.object.estArchive:
         #    url = self.object.get_absolute_url()
-        #    suffix = "_" + self.object.asso.abreviation
+        #    suffix = "_" + self.object.asso.slug
         #    action.send(self.request.user, verb='photo_modifier'+suffix, action_object=self.object, url=url,
         #                 description="a modifié la photo: '%s'" % self.object.titre)
         #envoi_emails_albumouprojet_modifie(self.object, "L'album " +  self.object.titre + "a été modifié", True)
@@ -293,7 +292,7 @@ class ModifierPhoto(UpdateView):
 
     #def get_form(self,*args, **kwargs):
     #    form = super(ModifierPhoto, self).get_form(*args, **kwargs)
-    #    form.fields["asso"].choices = sorted([(x.id, x.nom) for x in Asso.objects.all() if self.request.user.estMembre_str(x.abreviation)], key=lambda x:x[0])
+    #    form.fields["asso"].choices = sorted([(x.id, x.nom) for x in Asso.objects.all() if self.request.user.estMembre_str(x.slug)], key=lambda x:x[0])
 
         return form
 
@@ -326,10 +325,10 @@ def ajouterDocument(request, article_slug=None):
     if form.is_valid():
         doc = form.save(request, article)
         if article :
-            action.send(request.user, verb="article_modifier_" + doc.asso.abreviation, action_object=article, url=article.get_absolute_url(),
+            action.send(request.user, verb="article_modifier_" + doc.asso.slug, action_object=article, url=article.get_absolute_url(),
                         description="a ajouté le document: '%s'" % doc.titre)
         else:
-            action.send(request.user, verb='document_nouveau' + "_" + doc.asso.abreviation, action_object=doc, url=doc.get_absolute_url(),
+            action.send(request.user, verb='document_nouveau' + "_" + doc.asso.slug, action_object=doc, url=doc.get_absolute_url(),
                             description="a ajouté le document: '%s'" % doc.titre)
 
         # Redirect to the document list after POST
@@ -343,8 +342,7 @@ def ajouterDocument(request, article_slug=None):
 @login_required
 def associerDocumentArticle(request, doc_slug):
     doc = Document.objects.get(slug=doc_slug)
-    asso_courante = request.session.get("asso_abreviation", None)
-    form = DocumentAssocierArticleForm(asso_courante, request.POST)
+    form = DocumentAssocierArticleForm(request.session.get("asso_slug", None), request.POST)
     if form.is_valid():
         doc.article = form.cleaned_data["article"]
         doc.save()
@@ -356,7 +354,7 @@ def associerDocumentArticle(request, doc_slug):
 @login_required
 def filtrer_documents(request):
     if request.GET:
-        doc_list = Document.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre())
+        doc_list = Document.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre())
     else:
         doc_list = Document.objects.none()
     f = DocumentFilter(request.GET, queryset=doc_list)
@@ -430,10 +428,10 @@ class DocumentAutocomplete(autocomplete.Select2QuerySetView):
             return Document.objects.none()
 
         if calc:
-            #if "asso_abreviation" in self.request.session:
-            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__abreviation=self.request.session["asso_abreviation"]).exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre")
+            #if "asso_slug" in self.request.session:
+            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__slug=self.request.session["asso_slug"]).exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre")
             #else:
-                qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre()).order_by("titre").filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))
+                qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre").filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))
 
         return qs
 
@@ -445,9 +443,9 @@ class DocumentAutocomplete_asso(autocomplete.Select2QuerySetView):
             return Document.objects.none()
 
         if calc:
-            if "asso_abreviation" in self.request.session:
-                qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(asso__abreviation=self.request.session["asso_abreviation"]) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
+            if "asso_slug" in self.request.session:
+                qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(asso__slug=self.request.session["asso_slug"]) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
             else:
-                qs = Document.objects.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+                qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
 
         return qs

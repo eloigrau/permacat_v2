@@ -73,9 +73,9 @@ def getEvenementsSemaine(request):
     eve_passe, eve_futur, evenements,  = [], [], []
 
     if not request.user.is_anonymous:
-        ev_art = Evenement.objects.exclude(article__asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        ev_art = Evenement.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
-        ev_2 = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        ev_2 = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
 
         evenements.append(ev_2)
@@ -83,10 +83,10 @@ def getEvenementsSemaine(request):
         #if request.user.adherent_jp:
         #    ev_3 = Article_jardin.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
-        ev_4 = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        ev_4 = Projet.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
 
-        ev_5 = Atelier.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+        ev_5 = Atelier.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
         utc = pytz.UTC
         y = []
@@ -180,7 +180,7 @@ def testIsMembreAsso(request, asso):
     if asso == "public":
         return Asso.objects.get(nom="Public")
 
-    assos = Asso.objects.filter(Q(nom=asso) | Q(abreviation=asso))
+    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
     if assos:
         assos = assos[0]
 
@@ -195,7 +195,7 @@ def testIsMembreAsso_bool(request, asso):
     if asso == "public":
         return Asso.objects.get(nom="Public")
 
-    assos = Asso.objects.filter(Q(nom=asso) | Q(abreviation=asso))
+    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
     if assos:
         assos = assos[0]
 
@@ -236,7 +236,7 @@ def produit_proposer(request, type_produit):
         for monnaie in type_form.cleaned_data["monnaies"]:
             produit.monnaies.add(monnaie)
         url = produit.get_absolute_url()
-        suffix = "_" + produit.asso.abreviation
+        suffix = "_" + produit.asso.slug
         offreOuDemande = "offre" if produit.estUneOffre else "demande"
         titre = 'ajout_offre'+suffix
         msg = "a ajouté une "+offreOuDemande+" au marché : '%s'" %(produit.nom_produit)
@@ -348,7 +348,7 @@ def listeContacts(request, asso):
     if not isinstance(asso, Asso):
         raise PermissionDenied
     listeMails = []
-    if request.user.is_superuser and asso.abreviation=="pc":
+    if request.user.is_superuser and asso.slug=="pc":
         listeMails.append( {"type":'user_newsletter', "profils":Profil.objects.filter(inscrit_newsletter=True), "titre":"su : Liste des inscrits à la newsletter : "})
         listeMails.append({"type":'anonym_newsletter', "profils":InscriptionNewsletter.objects.all(), "titre":"su : Liste des inscrits anonymes à la newsletter : "})
         listeMails.append({"type":'user_adherent', "profils":Profil.objects.filter(adherent_pc=True), "titre":"su : Liste des adhérents Permacat: "})
@@ -368,7 +368,7 @@ def listeAdhesions(request, asso):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
-    if asso.abreviation == "pc":
+    if asso.slug == "pc":
         qs = Adhesion_permacat.objects.filter().order_by("-date_cotisation")
     else:
         qs = Adhesion_asso.objects.filter(asso=asso).order_by("-date_cotisation")
@@ -486,7 +486,7 @@ def telechargements_asso(request, asso):
     if not isinstance(asso, Asso):
         raise PermissionDenied
     fichiers=[]
-    if asso.abreviation == "pc":
+    if asso.slug == "pc":
         fichiers = [{'titre' : 'Contrat credit mutuel', 'url': static('doc/contrat_credit_mutuel.pdf'),},
                     {'titre' : 'Procès verbal de constitution', 'url': static('doc/PV_constitution.pdf'),},
                     {'titre' : "Recepissé de création de l'asso", 'url': static('doc/recepisse_creation.pdf'),},
@@ -496,7 +496,7 @@ def telechargements_asso(request, asso):
                     {'titre' : 'CR AGO 2021', 'url': static('doc/CR/2021_AGO-Compte_rendu.pdf'),},
                     {'titre' : 'CR Réunion écovillage 16/04/2021', 'url': static('doc/CR/CR16AVRIL21_ecovillage.docx'),},
                     ]
-    elif asso.abreviation == "scic":
+    elif asso.slug == "scic":
         fichiers = [
                 {'titre' : 'Fiche Projet', 'url': static('permagora/docs_admin/Fiche_Projet.pdf'),},
                 {'titre' : 'Statuts-Ri-Charte', 'url': static('permagora/docs_admin/Statuts-Ri-Charte-PermAgora_final.pdf'),},
@@ -513,24 +513,24 @@ def adhesion_entree(request):
 
 
 def adhesion_asso(request, asso):
-    asso = get_object_or_404(Asso, Q(nom=asso) | Q(abreviation=asso))
+    asso = get_object_or_404(Asso, Q(nom=asso) | Q(slug=asso))
     if not asso:
         return render(request, 'asso/pc/adhesion.html', )
 
-    return render(request, 'asso/' + asso.abreviation +'/adhesion.html', )
+    return render(request, 'asso/' + asso.slug +'/adhesion.html', )
 
 
 def fairedon_asso(request, asso):
     if asso == 'developpeur':
         return render(request, 'asso/fairedondeveloppeur.html', )
 
-    asso = Asso.objects.get(Q(nom=asso) | Q(abreviation=asso))
+    asso = Asso.objects.get(Q(nom=asso) | Q(slug=asso))
 
-    return render(request, 'asso/'+ asso.abreviation +'/fairedon.html', )
+    return render(request, 'asso/'+ asso.slug +'/fairedon.html', )
 
 @login_required
 def carte(request, asso):
-    asso=testIsMembreAsso(request, asso)
+    asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
     profils = asso.getProfils()
@@ -549,7 +549,7 @@ def carte(request, asso):
         page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    if asso.abreviation != "public":
+    if asso.slug != "public":
         titre = "Carte/annuaire des membres du groupe %s"%(asso.nom,)
     else:
         titre = "Carte/annuaire des inscrits du site"
@@ -850,9 +850,9 @@ class ListeProduit(ListView):
     paginate_by = 32
 
     def get_qs(self):
-        qs = Produit.objects.select_subclasses().exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
+        qs = Produit.objects.select_subclasses().exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre())
         if not self.request.user.is_authenticated:
-            qs = qs.filter(asso__abreviation="public")
+            qs = qs.filter(asso__slug="public")
 
         params = dict(self.request.GET.items())
 
@@ -889,7 +889,7 @@ class ListeProduit(ListView):
             qs = qs.filter(estUneOffre=params['offre'])
 
         if "asso" in params:
-            qs = qs.filter(asso__abreviation=params['asso'])
+            qs = qs.filter(asso__slug=params['asso'])
 
         res = qs.order_by('-date_creation', 'categorie', 'user')
         if "ordre" in params:
@@ -916,7 +916,7 @@ class ListeProduit(ListView):
         context['distancePossibles'] = Choix.distances
         #context['producteur_list'] = Profil.objects.all().order_by("username")
         context['typeFiltre'] = "aucun"
-        context['asso_list'] = [(x.abreviation, x.nom, ) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.abreviation)]
+        context['asso_list'] = [(x.slug, x.nom, ) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
 
         # context['form'] = self.form
         if 'producteur' in self.request.GET:
@@ -931,7 +931,14 @@ class ListeProduit(ListView):
             context['typeFiltre'] = "categorie"
         context['typeOffre'] = ''
         if "asso" in self.request.GET:
-            context['asso_courante'] = Asso.objects.get(abreviation=self.request.GET["asso"])
+            self.request.session["asso_slug"] = self.request.GET["asso"]
+            context['asso_courante'] = Asso.objects.get(slug=self.request.GET["asso"])
+        else:
+            context['asso_courante'] = ""
+
+        #elif "asso_slug" in self.request.session:
+        #    self.request.session["asso_slug"] = self.request.session["asso_slug"]
+        #    context['asso_courante'] = Asso.objects.get(slug=self.request.session["asso_slug"] )
 
         context['suivi'], created = Suivis.objects.get_or_create(nom_suivi="produits")
 
@@ -939,6 +946,7 @@ class ListeProduit(ListView):
         hit_count = HitCount.objects.get_for_object(suivi)
         hit_count_response = HitCountMixin.hit_count(self.request, hit_count)
         return context
+
 
 class ListeProduit_offres(ListeProduit):
     def get_queryset(self):
@@ -1006,9 +1014,9 @@ def chercher(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     if recherche:
         from blog.models import Commentaire, CommentaireProjet
-        produits_list = Produit.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(description__icontains=recherche) | Q(nom_produit__lower__contains=recherche), ).select_subclasses().distinct()
-        articles_list = Article.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(request.user.getQObjectsAssoArticles(), Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)).distinct()
-        projets_list = Projet.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
+        produits_list = Produit.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(description__icontains=recherche) | Q(nom_produit__lower__contains=recherche), ).select_subclasses().distinct()
+        articles_list = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(request.user.getQObjectsAssoArticles(), Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche)).distinct()
+        projets_list = Projet.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(titre__lower__contains=recherche) | Q(contenu__icontains=recherche), ).distinct()
         profils_list = Profil.objects.filter(Q(username__lower__contains=recherche)  | Q(description__icontains=recherche)| Q(competences__icontains=recherche), ).distinct()
         commentaires_list = Commentaire.objects.filter(Q(commentaire__icontains=recherche) ).distinct()
         commentairesProjet_list = CommentaireProjet.objects.filter(Q(commentaire__icontains=recherche)).distinct()
@@ -1048,7 +1056,7 @@ def chercher_annonces(request):
 def chercher_produits(request):
     recherche = str(request.GET.get('id_recherche')).lower()
     if recherche:
-        produits_list = Produit.objects.exclude(asso__abreviation__in=request.user.getListeAbreviationsAssos_nonmembre()).filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
+        produits_list = Produit.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(nom_produit__lower__icontains=recherche) | Q(description__contains=recherche)).distinct().select_subclasses()
     else:
         produits_list = Produit.objects.none()
 
@@ -1301,8 +1309,8 @@ def agora(request, asso):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
-    suivis, created = Suivis.objects.get_or_create(nom_suivi="agora_" + str(asso.abreviation))
-    messages = MessageGeneral.objects.filter(asso__abreviation=asso.abreviation).order_by("date_creation")
+    suivis, created = Suivis.objects.get_or_create(nom_suivi="agora_" + str(asso.slug))
+    messages = MessageGeneral.objects.filter(asso__slug=asso.slug).order_by("date_creation")
     form = MessageGeneralForm(request.POST or None) 
     if form.is_valid(): 
         message = form.save(commit=False) 
@@ -1310,8 +1318,8 @@ def agora(request, asso):
         message.asso = asso
         message.save()
         group, created = Group.objects.get_or_create(name='tous')
-        url = reverse('agora', kwargs={'asso':asso.abreviation})
-        action.send(request.user, verb='envoi_salon_'+str(asso.abreviation), action_object=message, target=group, url=url, description="a envoyé un message dans le salon '%s'"%str(asso.nom))
+        url = reverse('agora', kwargs={'asso':asso.slug})
+        action.send(request.user, verb='envoi_salon_'+str(asso.slug), action_object=message, target=group, url=url, description="a envoyé un message dans le salon '%s'"%str(asso.nom))
 
         return redirect(request.path)
     return render(request, 'agora.html', {'form': form, 'messages_echanges': messages, 'asso':asso, 'suivis':suivis})
@@ -1615,7 +1623,7 @@ class ModifierMessageAgora(UpdateView):
             if self.kwargs['type_msg'] == 'conversation' or self.kwargs['type_msg'] == 'salon':
                 return redirect(self.redirect_url)
             else:
-                return reverse('agora', kwargs={'asso':self.asso.abreviation})
+                return reverse('agora', kwargs={'asso':self.asso.slug})
 
     def form_invalid(self, form):
         if (form.data['message'] == '' or form.data['message'] == '<br>' or form.data['message'] == '<p><br></p>'):

@@ -41,7 +41,7 @@ def ajouterSuffrage(request, article_slug):
 
         if suffrage:
             url = suffrage.get_absolute_url()
-            suffix = "_" + suffrage.asso.abreviation
+            suffix = "_" + suffrage.asso.slug
             action.send(request.user, verb='suffrage_ajout'+suffix, action_object=suffrage, url=url,
                         description="a ajouté un suffrage : '%s'" % suffrage.titre)
 
@@ -128,7 +128,7 @@ class ModifierSuffrage(UpdateView):
 
     def get_form(self,*args, **kwargs):
         form = super(ModifierSuffrage, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.abreviation)]
+        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.slug)]
         return form
 
 
@@ -193,7 +193,7 @@ def lireSuffrage(request, slug):
             suffrage.save()
             comment.save()
             url = suffrage.get_absolute_url() + "#idConversation"
-            suffix = "_" + suffrage.asso.abreviation
+            suffix = "_" + suffrage.asso.slug
             #action.send(request.user, verb='suffrage_message' + suffix, action_object=suffrage, url=url,
              #           description="a réagi au suffrage: '%s'" % suffrage.question)
 
@@ -305,7 +305,7 @@ class ListeSuffrages(ListView):
         if not self.request.user.is_authenticated:
             qs = qs.none()
         else:
-            qs = qs.exclude(asso__abreviation__in=self.request.user.getListeAbreviationsAssos_nonmembre())
+            qs = qs.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre())
 
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])

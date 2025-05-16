@@ -37,7 +37,7 @@ class AdhesionForm_adherent(forms.ModelForm):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(AdhesionForm_adherent, self).__init__(*args, **kwargs)
-        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
 
 
 
@@ -107,7 +107,7 @@ class InscriptionMailForm(forms.ModelForm):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(InscriptionMailForm, self).__init__(*args, **kwargs)
-        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
 
 
 class InscriptionMailAdherentALsteForm(forms.ModelForm):
@@ -130,7 +130,7 @@ class InscriptionMail_listeAdherent_Form(forms.ModelForm):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(InscriptionMail_listeAdherent_Form, self).__init__(*args, **kwargs)
-        self.fields["liste_diffusion"].choices = [('', '(Choisir une liste de diffusion)'), ] + [(x.id, x.nom) for x in ListeDiffusion.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
+        self.fields["liste_diffusion"].choices = [('', '(Choisir une liste de diffusion)'), ] + [(x.id, x.nom) for x in ListeDiffusion.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
 
 
 
@@ -203,5 +203,5 @@ class ProjetPhoning_form(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(ProjetPhoning_form, self).__init__(*args, **kwargs)
-        self.fields["asso"].choices = [('', '(Choisir un groupe)'), ] + [(x.id, x.nom) for x in Asso.objects.all().order_by("nom") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [('', '(Choisir un groupe)'), ] + [(x.id, x.nom) for x in Asso.objects.all().order_by("nom") if request.user.estMembre_str(x.slug)]
 

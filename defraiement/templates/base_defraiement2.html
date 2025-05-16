@@ -16,11 +16,11 @@
                 <span class="navbar-toggler-icon"></span></button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar">
-                {% if asso_courante %}
-		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}">Liste des réunions</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:carte_reunions' asso_slug=asso_courante.abreviation %}">Carte des réunions</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:participants' asso_slug=asso_courante.abreviation %}">Liste des participant-es</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:recapitulatif'  asso_slug=asso_courante.abreviation%}">Récapitulatif</a></li>
+                {% if request.session.asso_slug %}
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}">Liste des réunions</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:carte_reunions' asso_slug=request.session.asso_slug %}">Carte des réunions</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:participants' asso_slug=request.session.asso_slug %}">Liste des participant-es</a></li>
+		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:recapitulatif'  asso_slug=request.session.slug%}">Récapitulatif</a></li>
 
                 {% else %}
                 {% endif %}

@@ -14,7 +14,7 @@
     <div class="col-sm-12 textcenter">
         {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
         <div class="btn-group">
-            <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_modifier' pk=adherent.pk  asso_slug=asso_slug %}{% endif %}">
+            <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_modifier' pk=adherent.pk  asso_slug=request.session.asso_slug %}{% endif %}">
                 <button type="button" class="btn btn-sm btn-warning">
                     &nbsp;Modifier
                 </button>
@@ -22,7 +22,7 @@
         </div>
         {% endif %}
         {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
-        <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_supprimer' pk=adherent.pk asso_slug=asso_slug %}{% endif %}">
+        <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_supprimer' pk=adherent.pk asso_slug=request.session.asso_slug %}{% endif %}">
             <button type="button" class="btn btn-sm btn-danger">
                 &nbsp;Supprimer
             </button>
@@ -41,7 +41,7 @@
 {% if request.user == adherent.profil %}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-10 textcenter">
-        <a class="btn btn-success" href="{% url 'adherents:mesListesMails' asso_slug=asso_slug %}">Voir mes abonnements aux listes de diffusion</a>
+        <a class="btn btn-success" href="{% url 'adherents:mesListesMails' asso_slug=request.session.asso_slug %}">Voir mes abonnements aux listes de diffusion</a>
     </div>
 </div>
 {% endif %}
@@ -94,7 +94,7 @@
 <div class="row">
     <div class="col-md-6">
         {%if request.user.is_superuser or request.user.estmembre_bureau_conf  %}
-        <a href="{% url 'adherents:adherents_modifier_adresse' pk=adherent.adresse.pk asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:adherents_modifier_adresse' pk=adherent.adresse.pk asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
             </button>
@@ -168,7 +168,7 @@
 {% if is_membre_bureau %}
 <div class="row">
     <div class="col-md-12 textcenter">
-        <a href="{% url 'adherents:adhesion_creer' adherent_pk=adherent.pk asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:adhesion_creer' adherent_pk=adherent.pk asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="fa fa-plus"></span>&nbsp;Ajouter une cotisation
             </button>
@@ -183,7 +183,7 @@
 {% if is_membre_bureau %}
 <div class="row">
     <div class="col-md-12 textcenter">
-        <a href="{% url 'adherents:inscriptionMail_adherent' adherent_pk=adherent.pk asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:inscriptionMail_adherent' adherent_pk=adherent.pk asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="fa fa-plus"></span>&nbsp;Ajouter l'adhérent à une liste
             </button>
@@ -197,7 +197,7 @@
 
 <div class="row">
     <div class="col-md-12 textcenter">
-<a href="{% url 'adherents:ajouter_comm_adh' adherent_pk=adherent.pk asso_slug=asso_slug%}">
+<a href="{% url 'adherents:ajouter_comm_adh' adherent_pk=adherent.pk asso_slug=request.session.asso_slug%}">
     <button type="button" class="btn btn-sm btn-danger">
         <span class="fa fa-plus"></span>&nbsp;Ajouter un commentaire
     </button>

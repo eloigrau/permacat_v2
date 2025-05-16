@@ -1,4 +1,4 @@
-{% extends 'base_defraiement.html' %}
+{% extends 'base_defraiement2.html' %}
 
 {% block subtitle %}
 <div class="row justify-content-center">
@@ -23,7 +23,7 @@
 </form>
     <h4>Ou bien créez un nouveau participant (vous pourrez ensuite l'ajouter à la réunion)</h4>
 
-        <a href="{% url 'defraiement:ajouterParticipant' asso_slug=asso_courante.abreviation %}">
+        <a href="{% url 'defraiement:ajouterParticipant' asso_slug=request.session.asso_slug %}">
         <button type="button" class="btn btn-success" >
                 <i class="fa fa-plus"></i> Ajouter un participant
             </button>

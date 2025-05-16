@@ -17,7 +17,7 @@
 
 <div class="row">
     <div class="col textcenter">
-        <a href="{% url 'adherents:adhesion_creer_adherent' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:adhesion_creer_adherent' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter une adhésion
             </button>

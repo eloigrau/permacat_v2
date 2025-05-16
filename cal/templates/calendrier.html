@@ -16,11 +16,29 @@
     </div>
 {% endblock  %}
 {% block subtitle %}
-<div class="row justify-content-center">
-            <div class="col-sm-12">
-                <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center">
+        <div class="navbar-header">
+             <button class="btn  btn-lg btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
+        </div>
+        <div class="navbar-collapse collapse " id="navbar_asso">
+            <ul class="navbar-nav subnavbar2 align-items-center">
+                <a  href="{% url 'cal:agenda' %}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug%} btn-success{% else %}btn-primary{% endif %}">
+                          <h6>Tout</h6>
+                    </li>
+                </a>
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansAsso}}&asso={{asso_ab}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+                <a type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
                  {% fa5_icon 'question-circle' %}
-                </button>
+                </a>
                 <!-- Modal -->
                 <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog textaide" role="document">
@@ -35,34 +53,12 @@
                       </div>
                       <div class="modal-body textleft">
             <p>L'agenda permet de visualiser les différents événements annoncés sur le site (dans les articles, le jardin, les ateliers, etc) sur un calendrier</p>
+                          <p>Cliquer sur un évènement pour accéder à la page correspondante.</p>
             <p>Pour ajouter un événement, vous pouvez soit créer un article et lui associer une ou plusieurs dates, soit créer un atelier et y indiquer la date, etc...</p>
                       </div>
                     </div>
                   </div>
                 </div>
-        </div>
-    </div>
-<hr>
-<div class="row justify-content-center" >
-    <nav class="navbar navbar-expand-lg justify-content-center">
-        <div class="navbar-header">
-             <button class="btn  btn-lg btn-groupe navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
-             <p>{% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </p> </button>
-        </div>
-        <div class="navbar-collapse collapse " id="navbar_asso">
-            <ul class="navbar-nav subnavbar2 align-items-center">
-                <a  href="{% url 'cal:agenda' %}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation%} btn-success{% else %}btn-primary{% endif %}">
-                          <h6>Tout</h6>
-                    </li>
-                </a>
-                {% for  asso_ab, asso_nom in asso_list %}
-                <a  href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansAsso}}&asso={{asso_ab}}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_abreviation == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
-                          <h6>{{asso_nom}}</h6>
-                    </li>
-                </a>
-                {% endfor %}
             </ul>
         </div>
     </nav>

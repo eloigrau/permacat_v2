@@ -7,7 +7,7 @@ def ajouterAsso(apps, schema_editor):
     # We can't import the Person model directly as it may be a newer
     # version than this migration expects. We use the historical version.
     assos = apps.get_model('bourseLibre', 'Asso')
-    asso_scic, created = assos.objects.get_or_create(nom='PermAgora', abreviation="scic", email="permacat66@gmail.com")
+    asso_scic, created = assos.objects.get_or_create(nom='PermAgora', slug="scic", email="permacat66@gmail.com")
 
 class Migration(migrations.Migration):
 

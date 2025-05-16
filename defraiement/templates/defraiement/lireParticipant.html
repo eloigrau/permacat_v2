@@ -1,4 +1,4 @@
-{% extends 'base_defraiement.html' %}
+{% extends 'base_defraiement2.html' %}
 {% load fontawesome_5 %}
 {% load hitcount_tags %}
 
@@ -12,7 +12,7 @@
                  &nbsp;Modifier
                </button></a>
             </div>
-				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerParticipant' asso_abrev=asso_courante.abreviation id=part.id  %}{% endif %}">
+				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerParticipant' asso_abrev=request.session.asso_slug id=part.id  %}{% endif %}">
                <button type="button" class="btn btn-sm btn-danger">
                  &nbsp;Supprimer
                </button></a>

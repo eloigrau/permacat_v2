@@ -50,7 +50,7 @@ class ProduitCreationForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(ProduitCreationForm, self).__init__(*args, **kwargs)
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if
-                                       request.user.estMembre_str(x.abreviation)]
+                                       request.user.estMembre_str(x.slug)]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -552,10 +552,10 @@ class Adhesion_assoForm(forms.ModelForm):
                        }),
         }
 
-    def __init__(self, asso_abreviation, *args, **kwargs):
+    def __init__(self, asso_slug, *args, **kwargs):
         super(Adhesion_assoForm, self).__init__(*args, **kwargs)
         self.fields['user'].choices = [(u.id, u) for i, u in enumerate(Profil.objects.all().order_by('username')) if
-                                       u.estMembre_str(asso_abreviation)]
+                                       u.estMembre_str(asso_slug)]
 
 
 class nouvelleDateForm(forms.Form):
@@ -658,7 +658,7 @@ class AssocierProfil_adherentForm(forms.Form):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(AssocierProfil_adherentForm, self).__init__(*args, **kwargs)
-        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__abreviation=asso_slug).order_by("nom", "prenom") ]
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
 
 
 class FavorisForm(forms.ModelForm):

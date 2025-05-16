@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{% static 'jardins/garelick/css/style_jardins.css' %}">
 {% endblock %}
  {% block panel-heading %}{%endblock%}
-{% block div-container-global %} style="padding-top:0;{% endblock%}
+{% block div-container-global %} style="padding-top:0;"{% endblock%}
 {% block surtitle %}
 Jardinothèque Catalane
 {% endblock %}
@@ -37,8 +37,9 @@ Jardinothèque Catalane
 		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:carte_jardins' %}"> La Carte</a></li>
 		<li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:plantes' %}"> Les Plantes</a></li>
         {% if request.user.adherent_jp %}
-            <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:carte_jardiniers' %}"> Les Jardinier-es</a></li>
-            <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Le Forum</a></li>
+            <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'jardins:carte_jardiniers' %}"> Les Jardinier-es </a></li>
+            <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Forum </a></li>
+            <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'marche' %}?asso=jp#ref-titre"> Annonces </a></li>
         {% endif %}
 		<li class="nav-item "><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}"  height="44" alt="Retour sur perma.cat"/></a>
         </li>

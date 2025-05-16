@@ -26,7 +26,7 @@
 {% if is_membre_bureau %}
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:adherent_ajouter' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:adherent_ajouter' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un adhérent
             </button>
@@ -37,7 +37,7 @@
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;SU Admin
             </button>
         </a>
-        <a href="{% url 'adherents:ajouterLesMembresGroupe' asso_slug=asso_slug%}">
+        <a href="{% url 'adherents:ajouterLesMembresGroupe' asso_slug=request.session.asso_slug%}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter les membres du groupe
             </button>
@@ -122,7 +122,7 @@
             var lat = {{profil.get_latitude}};
             var lon = {{profil.get_longitude}};
 
-            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             markers.addLayer(marker);
         {%endfor%}
         map.addLayer(markers);
@@ -197,19 +197,19 @@
 
 <p class="textcenter">
 {% if is_membre_bureau %}
-    <a href="{% url 'adherents:get_csv_adherents' asso_slug=asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_adherents' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV
         </button>
     </a>
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=asso_slug type_info='tel' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=request.session.asso_slug type_info='tel' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Téléphones
         </button>
     </a>
 {% endif %}
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=asso_slug type_info='email' %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' asso_slug=request.session.asso_slug type_info='email' %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Liste de mails
         </button>
@@ -217,7 +217,7 @@
 </p>
 <div id="listeMails"></div>
 <hr>
-{%if asso_slug == "conf66" %}
+{%if request.session.asso_slug == "conf66" %}
 {% include "adherents/template_annuaire_adherents_conf66.html" with profils=filter.qs %}
 {% else %}
 {% include "adherents/template_annuaire_adherents.html" with profils=filter.qs %}

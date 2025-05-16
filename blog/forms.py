@@ -130,13 +130,13 @@ class ArticleForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
-        self.fields["asso"].choices = [('', '(Choisir un groupe)'), ] + [(x.id, x.nom) for x in Asso.objects.all().order_by("nom") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [('', '(Choisir un groupe)'), ] + [(x.id, x.nom) for x in Asso.objects.all().order_by("nom") if request.user.estMembre_str(x.slug)]
         self.fields["categorie"].choices = [('', "(Choisir d'abord un groupe ci-dessus)"), ] #+ list(Choix.get_type_annonce_asso(""))
 
         if 'asso' in self.data:
             try:
                 asso_id = int(self.data.get('asso'))
-                nomAsso = Asso.objects.get(id=asso_id).abreviation
+                nomAsso = Asso.objects.get(id=asso_id).slug
                 self.fields["categorie"].choices = Choix.get_type_annonce_asso(nomAsso)
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
@@ -177,7 +177,7 @@ class ArticleChangeForm(forms.ModelForm):
         for asso in Asso.objects.all():
             if asso in self.cleaned_data["partagesAsso"]:
                 instance.partagesAsso.add(asso)
-            elif instance.partagesAsso.filter(abreviation=asso.abreviation).exists():
+            elif instance.partagesAsso.filter(slug=asso.slug).exists():
                 instance.partagesAsso.remove(asso)
         # for theme in Theme.objects.all():
         #     if theme in self.cleaned_data["themes"]:
@@ -290,7 +290,7 @@ class ProjetForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(ProjetForm, self).__init__(*args, **kwargs)
         self.fields['contenu'].strip = False
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
 
     def save(self, userProfile, sendMail=True):
         instance = super(ProjetForm, self).save(commit=False)
@@ -355,7 +355,7 @@ class ProjetForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(ProjetForm, self).__init__(*args, **kwargs)
         self.fields['contenu'].strip = False
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
 
     def save(self, userProfile, sendMail=True):
         instance = super(ProjetForm, self).save(commit=False)

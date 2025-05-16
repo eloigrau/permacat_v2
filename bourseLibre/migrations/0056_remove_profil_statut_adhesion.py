@@ -19,11 +19,11 @@ def create_types(apps, schema_editor):
         suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_public")
         actions.follow(prof, suivi, actor_only=True, send_action=False)
 
-        for nom_suivi in ["articles_" + abreviation for abreviation, nom in Choix_global.abreviationsNomsAsso if getattr(prof, "adherent_" + abreviation) == True] :
+        for nom_suivi in ["articles_" + slug for slug, nom in Choix_global.slugsNomsAsso if getattr(prof, "adherent_" + slug) == True] :
             suivi, created = Suivis.objects.get_or_create(nom_suivi=nom_suivi)
             actions.follow(prof, suivi, actor_only=True, send_action=False)
 
-        for nom_suivi in ["agora_" + abreviation for abreviation, nom in Choix_global.abreviationsNomsAsso if getattr(prof, "adherent_" + abreviation) == True] :
+        for nom_suivi in ["agora_" + slug for slug, nom in Choix_global.slugsNomsAsso if getattr(prof, "adherent_" + slug) == True] :
             suivi, created = Suivis.objects.get_or_create(nom_suivi=nom_suivi)
             actions.follow(prof, suivi, actor_only=True, send_action=False)
 

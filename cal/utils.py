@@ -132,7 +132,7 @@ class Calendar(LocaleTextCalendar):
 
     # formats a month as a table
     # filter events by year and month
-    def formatmonth(self, request, withyear=True, asso_abreviation=None):
+    def formatmonth(self, request, withyear=True, asso_slug=None):
        # events = chain(Article.objects.filter(start_time__year=self.year, start_time__month=self.month), Projet.objects.filter(start_time__year=self.year, start_time__month=self.month))
 
         events_arti = Article.objects.filter(start_time__year=self.year, start_time__month=self.month)
@@ -144,11 +144,11 @@ class Calendar(LocaleTextCalendar):
         #events_autre_jardin = Evenement_jardin.objects.filter(start_time__year=self.year, start_time__month=self.month)
         #events_autre_jardin = Evenement_jardin.objects.none()
         events_vote = None#Suffrage.objects.filter(start_time__year=self.year, start_time__month=self.month)
-        if asso_abreviation:
-            events_arti = events_arti.filter(Q(asso__abreviation=asso_abreviation) | Q(partagesAsso__abreviation=asso_abreviation)| Q(partagesAsso__abreviation='public'))
-            events_atel = events_atel.filter(asso__abreviation=asso_abreviation)
-            events_proj = events_proj.filter(asso__abreviation=asso_abreviation)
-            events_autre = events_autre.filter(Q(article__asso__abreviation=asso_abreviation) | Q(article__partagesAsso__abreviation=asso_abreviation)| Q(article__partagesAsso__abreviation='public'))
+        if asso_slug:
+            events_arti = events_arti.filter(Q(asso__slug=asso_slug) | Q(partagesAsso__slug=asso_slug)| Q(partagesAsso__slug='public'))
+            events_atel = events_atel.filter(asso__slug=asso_slug)
+            events_proj = events_proj.filter(asso__slug=asso_slug)
+            events_autre = events_autre.filter(Q(article__asso__slug=asso_slug) | Q(article__partagesAsso__slug=asso_slug)| Q(article__partagesAsso__slug='public'))
 
         cal = '<table  class=" table-condensed" id="calendar">\n'
         #cal += self.formatmonthname(self.year, self.month, withyear=withyear)+'\n'

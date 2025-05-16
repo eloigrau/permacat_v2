@@ -60,11 +60,11 @@ def sereabonner(request,):
 #         if suivi in following(request.user):
 #             actions.unfollow(request.user, suivi, send_action=False)
 #
-#     for abreviation in Choix.abreviationsAsso + ['public']:
-#         if request.user.est_autorise(abreviation):
-#             suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
+#     for slug in Choix.slugsAsso + ['public']:
+#         if request.user.est_autorise(slug):
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + slug)
 #             actions.unfollow(request.user, suivi, send_action=False)
-#             suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
+#             suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + slug)
 #             actions.unfollow(request.user, suivi, send_action=False)
 #
 #     for salon in request.user.get_salons():
@@ -144,7 +144,7 @@ def desinscription_newsletter(request):
 
 @login_required
 def inscription_permagora(request):
-    asso=Asso.objects.get(abreviation='scic')
+    asso=Asso.objects.get(slug='scic')
     if request.user.adherent_scic:
         request.user.adherent_scic = False
         request.user.save()
@@ -164,7 +164,7 @@ def inscription_permagora(request):
 
 @login_required
 def inscription_citealt(request):
-    asso=Asso.objects.get(abreviation='citealt')
+    asso=Asso.objects.get(slug='citealt')
     if request.user.adherent_citealt:
         request.user.adherent_citealt = False
         request.user.save()
@@ -183,7 +183,7 @@ def inscription_citealt(request):
 
 @login_required
 def inscription_viure(request):
-    asso=Asso.objects.get(abreviation='viure')
+    asso=Asso.objects.get(slug='viure')
     if request.user.adherent_viure:
         request.user.adherent_viure = False
         request.user.save()
@@ -203,7 +203,7 @@ def inscription_viure(request):
 
 @login_required
 def inscription_bzz2022(request):
-    asso = Asso.objects.get(abreviation='bzz2022')
+    asso = Asso.objects.get(slug='bzz2022')
     if request.user.adherent_bzz2022:
         request.user.adherent_bzz2022 = False
         request.user.save()
@@ -223,7 +223,7 @@ def inscription_bzz2022(request):
 
 @login_required
 def inscription_jp(request):
-    asso=Asso.objects.get(abreviation='jp')
+    asso=Asso.objects.get(slug='jp')
     if request.user.adherent_jp:
         request.user.adherent_jp = False
         request.user.save()
@@ -314,13 +314,13 @@ def suivre_agora(request, asso, actor_only=True):
     if not isinstance(asso, Asso):
         raise PermissionDenied
 
-    suivi, created = Suivis.objects.get_or_create(nom_suivi='agora_' + str(asso.abreviation))
+    suivi, created = Suivis.objects.get_or_create(nom_suivi='agora_' + str(asso.slug))
 
     if suivi in following(request.user):
         actions.unfollow(request.user, suivi)
     else:
         actions.follow(request.user, suivi, actor_only=actor_only)
-    return redirect('agora', asso=asso.abreviation)
+    return redirect('agora', asso=asso.slug)
 
 @login_required
 @csrf_exempt

@@ -23,5 +23,5 @@ from django.core.signals import request_finished
 
 def get_suivis_forum(request):
     return [("Public", 'public', Suivis.objects.get_or_create(nom_suivi="articles_public")[0]), ] + [
-        (nom_asso, abreviation, Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)[0]) for
-        abreviation, nom_asso in Choix.abreviationsNomsAsso if request.user.est_autorise(abreviation)]
+        (nom_asso, slug, Suivis.objects.get_or_create(nom_suivi="articles_" + slug)[0]) for
+        slug, nom_asso in Choix.slugsNomsAsso if request.user.est_autorise(slug)]

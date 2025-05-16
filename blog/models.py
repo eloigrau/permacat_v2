@@ -177,15 +177,15 @@ class Choix:
         except:
             return ""
 
-    def get_logo_nomgroupe(abreviation):
-        return 'img/logos/'+ Choix.logo_asso[abreviation]
-        #return 'img/logos/nom_'+abreviation+'.png'
+    def get_logo_nomgroupe(slug):
+        return 'img/logos/'+ Choix.logo_asso[slug]
+        #return 'img/logos/nom_'+slug+'.png'
 
-    def get_logo_nomgroupe_html(abreviation, taille=18):
+    def get_logo_nomgroupe_html(slug, taille=18):
         try:
-            return "<img src='/static/" + Choix.get_logo_nomgroupe(abreviation) + "' height ='"+str(taille)+"px' alt='"+ str(abreviation)+"'/>"
+            return "<img src='/static/" + Choix.get_logo_nomgroupe(slug) + "' height ='"+str(taille)+"px' alt='"+ str(slug)+"'/>"
         except Exception as e:
-            return abreviation
+            return slug
 
     def get_type_annonce_asso(asso):
         try:
@@ -301,11 +301,11 @@ class Article(models.Model):
                 self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
             message_notif = "Un article a été posté dans le forum [" + str(
                 self.asso.nom) + "] : "+ self.titre
-            suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.abreviation))
+            suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
             emails = [suiv.email for suiv in suiveurs]
             for asso in self.partagesAsso.all():
-                suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.abreviation))
+                suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso.slug))
                 suiveurs = [suiv for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
                 emails += [suiv.email for suiv in suiveurs]
         else:
@@ -359,10 +359,10 @@ class Article(models.Model):
     @property
     def get_partagesAsso(self):
         try:
-            x = self.partagesAsso.filter(abreviation='public')
+            x = self.partagesAsso.filter(slug='public')
             if x:
                 return x
-            return self.partagesAsso.exclude(abreviation=self.asso.abreviation)
+            return self.partagesAsso.exclude(slug=self.asso.slug)
         except Exception as e:
             action.send(sender=self, verb='bug', description=str(e) + " ;" + str(self))
             return Asso.objects.none()
@@ -373,7 +373,7 @@ class Article(models.Model):
 
     @property
     def get_partagesAssoLogo(self):
-        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.abreviation, taille=17) for p in self.get_partagesAsso])))
+        return html.format_html("{}", html.mark_safe(" ".join([Choix.get_logo_nomgroupe_html(p.slug, taille=17) for p in self.get_partagesAsso])))
 
     @property
     def get_logo_categorie(self):
@@ -382,7 +382,7 @@ class Article(models.Model):
 
     @property
     def get_categorie_display2(self):
-        if self.asso.abreviation == 'jp':
+        if self.asso.slug == 'jp':
             try:
                 return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
             except:
@@ -392,7 +392,7 @@ class Article(models.Model):
 
     @property
     def get_logo_nomgroupe(self):
-        return Choix.get_logo_nomgroupe(self.asso.abreviation)
+        return Choix.get_logo_nomgroupe(self.asso.slug)
 
     @property
     def get_logo_nomgroupe_html(self):
@@ -400,7 +400,7 @@ class Article(models.Model):
 
     def get_logo_nomgroupe_html_taille(self, taille=18):
         try:
-            return Choix.get_logo_nomgroupe_html(self.asso.abreviation, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+            return Choix.get_logo_nomgroupe_html(self.asso.slug, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
         except Exception as e:
             action.send(self, verb='bug', description=str(e) + " ; " + self.titre)
             return None
@@ -410,20 +410,20 @@ class Article(models.Model):
         return self.get_logo_nomgroupes_partages_html_taille(14)
 
     def get_logo_nomgroupes_partages_html_taille(self, taille=14):
-        return [Choix.get_logo_nomgroupe_html(asso.abreviation, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        return [Choix.get_logo_nomgroupe_html(asso.slug, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
 
     def est_autorise(self, user):
-        if user == self.auteur or  self.asso.abreviation == "public" or self.partagesAsso.filter(abreviation="public"):
+        if user == self.auteur or  self.asso.slug == "public" or self.partagesAsso.filter(slug="public"):
             return True
-        #elif self.asso.abreviation == "conf66":
-        #    return user.isCotisationAJour(self.asso.abreviation)#
+        #elif self.asso.slug == "conf66":
+        #    return user.isCotisationAJour(self.asso.slug)#
 
-        adhesion = getattr(user, "adherent_" + self.asso.abreviation, False)
+        adhesion = getattr(user, "adherent_" + self.asso.slug, False)
         if adhesion :
             return adhesion
         for asso in self.get_partagesAsso:
-            if getattr(user, "adherent_" + asso.abreviation, False):
+            if getattr(user, "adherent_" + asso.slug, False):
                 return True
         return False
 
@@ -577,7 +577,7 @@ class Commentaire(models.Model):
         suiveurs = []
         if not self.id:
             self.date_creation = timezone.now()
-            suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.article.asso.abreviation))
+            suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.article.asso.slug))
             titre = "Article commenté"
             message = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] '<a href='https://www.perma.cat" + str(self.get_absolute_url_discussion())+ "'>" + str(self.article.titre) + "</a>'"
             message_notif = str(self.auteur_comm.username) + " a commenté l'article [" + str(self.article.asso.nom) + "] : '" + str(self.article.titre) + "'"
@@ -701,12 +701,12 @@ class Projet(models.Model):
             return Choix.couleurs_annonces["Autre"]
 
     def est_autorise(self, user):
-        if user == self.auteur or self.asso.abreviation == "public":
+        if user == self.auteur or self.asso.slug == "public":
             return True
-        #elif self.asso.abreviation == "conf66":
+        #elif self.asso.slug == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.asso.slug, False)
 
     @property
     def has_ficheprojet(self):
@@ -743,14 +743,14 @@ class FicheProjet(models.Model):
 
 
     def est_autorise(self, user):
-        if self.projet.asso.abreviation == "public":
+        if self.projet.asso.slug == "public":
             return True
 
-        #elif self.asso.abreviation == "conf66":
+        #elif self.asso.slug == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
 
-        return getattr(user, "adherent_" + self.projet.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.projet.asso.slug, False)
 
     @property
     def titre(self):
@@ -955,17 +955,12 @@ class ArticleLienProjet(models.Model):
 
 
 class Article_recherche(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True, help_text=mark_safe(
-                                   "<p style='color:teal'>Min 2 lettres</p>"
-                               ))
-
-
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True,)
 
 class Projet_recherche(models.Model):
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE,
-                               help_text=mark_safe(
-                                   "<p style='color:teal'>Taper 2 lettres du titre du projet recherché'</p>"
-                               ))
+                               #help_text=mark_safe("<p style='color:teal'>Taper 2 lettres du titre du projet recherché'</p>")
+                               )
 
 
 #
@@ -1078,10 +1073,10 @@ class Projet_recherche(models.Model):
 #     def est_autorise(self, user):
 #         if user == self.auteur:
 #             return True
-#         if self.asso.abreviation == "public":
+#         if self.asso.slug == "public":
 #             return True
 #
-#         return getattr(user, "adherent_" + self.asso.abreviation)
+#         return getattr(user, "adherent_" + self.asso.slug)
 #
 #     def est_complet(self):
 #         if not self.nbMaxInscriptions:

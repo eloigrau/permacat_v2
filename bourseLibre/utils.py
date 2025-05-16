@@ -11,11 +11,11 @@ def reabonnerProfil_base(profil):
         if not suivi in following(profil):
             actions.follow(profil, suivi, send_action=False)
 
-    for abreviation in Choix.abreviationsAsso + ['public']:
-        if profil.est_autorise(abreviation):
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
+    for slug in Choix.slugsAsso + ['public']:
+        if profil.est_autorise(slug):
+            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + slug)
             actions.follow(profil, suivi, send_action=False)
-            #suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
+            #suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + slug)
             #actions.follow(request.user, suivi, send_action=False)
 
 def desabonnerProfil_base(profil):
@@ -25,11 +25,11 @@ def desabonnerProfil_base(profil):
         if suivi in following(profil):
             actions.unfollow(profil, suivi, send_action=False)
 
-    for abreviation in Choix.abreviationsAsso + ['public']:
-        if profil.est_autorise(abreviation):
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + abreviation)
+    for slug in Choix.slugsAsso + ['public']:
+        if profil.est_autorise(slug):
+            suivi, created = Suivis.objects.get_or_create(nom_suivi="articles_" + slug)
             actions.unfollow(profil, suivi, send_action=False)
-            suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + abreviation)
+            suivi, created = Suivis.objects.get_or_create(nom_suivi="agora_" + slug)
             actions.unfollow(profil, suivi, send_action=False)
 
 

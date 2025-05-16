@@ -47,15 +47,15 @@ class Choix():
      #               (2, _("Je suis déjà membre de l'association Permacat")))
 
 
-    abreviationsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66"]
-    abreviationsAssoEtPublic = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66", "public"]
-    abreviationsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"), ("conf66", "Confédération Paysanne 66")]
-    abreviationsNomsAssoEtPublic = [('public', "Public"), ] + abreviationsNomsAsso
+    slugsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66"]
+    slugsAssoEtPublic = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66", "public"]
+    slugsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"), ("conf66", "Confédération Paysanne 66")]
+    slugsNomsAssoEtPublic = [('public', "Public"), ] + slugsNomsAsso
 
     suivisPossibles = ["articles_public"] + ['projets', 'produits', 'conversations', 'documents', 'albums', 'ateliers', 'suffrages', 'salon_accueil']
-    suivisPossibles_groupes = [('public', "articles_public"),] + [(abreviation,"articles_"+abreviation) for abreviation in abreviationsAsso]
+    suivisPossibles_groupes = [('public', "articles_public"),] + [(slug,"articles_"+slug) for slug in slugsAsso]
 
-    nomSuivis = {"articles_"+abreviation:'Article "' + nom_asso + '" du forum' for abreviation, nom_asso in abreviationsNomsAsso}
+    nomSuivis = {"articles_"+slug:'Article "' + nom_asso + '" du forum' for slug, nom_asso in slugsNomsAsso}
 
     nomSuivis.update({ 'articles_public':'Articles "Public" du forum',
                        'articles': 'Article du forum',

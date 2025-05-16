@@ -526,7 +526,7 @@ def ajouterProposition(request):
     if form.is_valid():
         prop = form.save(request.user)
         #url = article.get_absolute_url() + "#ref-titre"
-        #suffix = "_" + article.asso.abreviation
+        #suffix = "_" + article.asso.slug
         #action.send(request.user, verb='article_nouveau'+suffix, action_object=article, url=url,
         #           description="a ajouté un article : '%s'" % article.titre)
         action.send(request.user, verb='permagora_ajoutProposition', action_object=prop, url=prop.get_absolute_url(),
@@ -546,7 +546,7 @@ class ModifierProposition(UpdateView):
         # self.object.date_modification = now()
         # self.object.save(sendMail=form.changed_data!=['estArchive'])
         # url = self.object.get_absolute_url()
-        # suffix = "_" + self.object.asso.abreviation
+        # suffix = "_" + self.object.asso.slug
         # if not self.object.estArchive:
         #     if self.object.date_modification - self.object.date_creation > timedelta(minutes=10):
         #         action.send(self.request.user, verb='article_modifier'+suffix, action_object=self.object, url=url,

@@ -1,5 +1,6 @@
 {% extends 'blog/base_blog_index.html' %}
 {% load blog_filters %}
+{% load app_filters %}
 {% load fontawesome_5 %}
 {% load activity_tags %}
 {% load static %}
@@ -28,12 +29,12 @@ function get_derniers_commentaires(url_tag) {
 <div class="row justify-content-center">
 
     <div class="col-sm-12 col-md-12 col-lg-4">
+                {% comment %}
      <div class="row no-gutters justify-content-center">
          <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_articles' %}" method="get" role = "search">
             {% csrf_token %}
              <div class="btn-group btn-block">
                 <div class="col" style="padding-right:0;">
-                  {% comment %}  <input class="form-control " name="id_recherche" placeholder="Recherche rapide..." type="text">{% endcomment %}
            <span class="input-group-append">
                <input class="form-control fmr-sm-2" name="id_recherche" type="text" placeholder="Recherche rapide...">
     <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">{% fa5_icon 'search' title='chercher' %}</button>
@@ -42,6 +43,7 @@ function get_derniers_commentaires(url_tag) {
              </div>
          </form>
      </div>
+                {% endcomment %}
      <div class="justify-content-center">
 
         <a href="{% url 'blog:filtrer_articles' %}">
@@ -52,14 +54,6 @@ function get_derniers_commentaires(url_tag) {
      </div>
 </div>
 <div class="col-sm-12 col-md-12 col-lg-4">
-    <p>
-<a href="{% url 'blog:ajouterNouvelArticle' %}">
-    <button type="button" class="btn  btn-success" >
-        <i class="fa fa-plus"></i>&nbsp; Ajouter un article
-    </button>
-</a>&ensp;
-    </p>
-    <p>
         <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row justify-content-center">
@@ -69,11 +63,10 @@ function get_derniers_commentaires(url_tag) {
 
                 <div class="col-sm-2 textleft" style="padding-left:0;">
                     <button class="btn btn-success my-2 my-sm-0" type="submit" data-toggle="tooltip"
-                    data-placement="bottom" title="Lire">=>Lire</button>
+                    data-placement="bottom" title="Lire">Go</button>
                 </div>
             </div>
         </form>
-    </p>
 </div>
 <div class="col-sm-12 col-md-12 col-lg-4">
 
@@ -96,8 +89,8 @@ function get_derniers_commentaires(url_tag) {
             </button>
           </div>
           <div class="modal-body textleft">
-            {% for nom_asso, abreviation, suivi in suivis %}
-                <p> <a href="{% url 'blog:suivre_articles' asso_abreviation=abreviation %}">
+            {% for nom_asso, slug, suivi in suivis %}
+                <p> <a href="{% url 'blog:suivre_articles' asso_slug=slug %}">
                     {% if request.user|is_following:suivi %}
                     <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné : Cliquez pour arreter de recevoir un mail à chaque nouvel article '{{nom_asso}}'">
                     {% fa5_icon 'bell' title='abonnement' %}Articles '{{nom_asso}}'
@@ -131,7 +124,7 @@ function get_derniers_commentaires(url_tag) {
           </div>
           <div class="modal-body textleft">
               <p>Le forum est un blog collaboratif. C'est un lieu virtuel d'échange d'idées, d'annonce d'un evenement, de partage de connaissainces, d'expression personnelle et de discussion. </p>
-              <p>Chacun est libre d'ajouter un article au forum ou de réagir en commentaire d'un article posté. </p>
+              <p>Chacun est libre de publier un article au forum ou de réagir en commentaire d'un article posté. </p>
               <p>Vous pouvez choisir de voir la liste des articles d'un "dossier" en particuler (agenda, ecovillage, documentation, etc) en cliquant sur "Tous les dossiers..."</p>
               <p>Pour vous tenir au courant des nouveaux articles postés dans le forum, vous pouvez vous "abonner" en ciquant sur la cloche. Vous recevrez alors des informations par mail sur les nouveaux articles.</p>
           </div>
@@ -147,13 +140,13 @@ function get_derniers_commentaires(url_tag) {
     <nav class="navbar navbar-expand-lg justify-content-center">
         <div class="navbar-header">
              <button class="btn btn-groupe btn-lg navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
-             {% if asso_courante %} Groupe : {{asso_courante}} {% else %} Choisir un groupe {% endif %} </button>
+             {% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug }} {% else %} Choisir un groupe {% endif %} </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
                 {% for  asso_id, asso_nom in asso_list %}
                 <a  href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_courante_abreviation == asso_id %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit btn-info">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>
@@ -192,13 +185,6 @@ function get_derniers_commentaires(url_tag) {
 
 
 
-    <div class="row justify-content-center">
-	<a href="{% url 'blog:index_asso' asso='public' %}">
-        <button type="button" class="btn btn-success" >
-                <i class="fa fa-arrow-right"></i> Voir tous les articles Publics du forum
-        </button>
-	</a>&ensp;
-	</div>
 {% comment %}
 <hr>
 <div class="row justify-content-center">
@@ -211,7 +197,7 @@ function get_derniers_commentaires(url_tag) {
             <ul class="nav navbar-nav justify-content-center">
             <li class="nav-item dropdown">
                <div class="dropdown-divider"></div>
-                 <a class=" dropdown-item "href="{% url 'conversations' %}">
+                 <a class="dropdown-item" href="{% url 'conversations' %}">
                        Conversations privées
                     </a>
             </li>

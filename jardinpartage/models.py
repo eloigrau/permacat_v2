@@ -55,7 +55,7 @@ class Choix():
         except:
             return ""
 
-    def get_logo_nomgroupe(abreviation):
+    def get_logo_nomgroupe(slug):
         return 'img/logos/nom_jpt.png'
 
     def getNomJardinFromNombre(nombre_str):

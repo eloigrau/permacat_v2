@@ -244,14 +244,14 @@ class Album(models.Model):
     def est_autorise(self, user):
         if not self.asso:
             return True
-        if self.asso.abreviation == "public":
+        if self.asso.slug == "public":
             return True
 
-        elif self.asso.abreviation == "conf66":
+        elif self.asso.slug == "conf66":
             return self.asso.is_adhesion_anneecourante(user)
 
 
-        return getattr(user, "adherent_" + self.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.asso.slug, False)
 
     def latest(self, limit=LATEST_LIMIT, public=True):
         if not limit:
@@ -280,7 +280,7 @@ class Album(models.Model):
 
     @property
     def is_public(self):
-        return self.asso.abreviation == "public"
+        return self.asso.slug == "public"
 
     def public(self):
          """Return a queryset of all the public photos in this album."""
@@ -343,13 +343,13 @@ class Document(models.Model):
 
 
     def est_autorise(self, user):
-        if not self.asso or self.asso.abreviation == "public":
+        if not self.asso or self.asso.slug == "public":
             return True
 
-        #elif self.asso.abreviation == "conf66":
+        #elif self.asso.slug == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.asso.slug, False)
 
     @property
     def getHitNumber(self,):
@@ -1058,6 +1058,6 @@ post_save.connect(add_default_site, sender=Photo)
 
 
 class Document_recherche(models.Model):
-    document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True, help_text=mark_safe(
-                                   "<p style='color:teal'>Min 2 lettres</p>"
-                               ))
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True,
+                                 #help_text=mark_safe("<p style='color:teal'>Min 2 lettres</p>")
+                               )

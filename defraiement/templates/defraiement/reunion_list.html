@@ -2,6 +2,7 @@
 {% load static %}
 {% load fontawesome_5 %}
 {% load blog_filters %}
+{% load app_filters %}
 
 {% load activity_tags %}
 {%block header %}
@@ -12,7 +13,7 @@
 {%block subtitle%}
 
 <h3 class="textcenter">
-    {% if asso_courante %} {{asso_courante.nom}} - {% endif %} Défraiement
+    {% if request.session.asso_slug %} {{request.session.asso_slug | getNomGroupeFromSlug}} - {% endif %} Défraiement
 </h3>
 <h4 class="textcenter">
     Liste des événements (réunions, trocs...)
@@ -20,14 +21,9 @@
 <div class="row align-items-center reunion_titre_page_index">
     <div class="col-md-4 offset-md-4 textcenter justify-content-center">
 
-        <a href="{% url 'defraiement:ajouterReunion' asso_slug=asso_courante.abreviation %}">
+        <a href="{% url 'defraiement:ajouterReunion' asso_slug=request.session.asso_slug %}">
         <button type="button" class="btn btn-success" >
                 <i class="fa fa-plus"></i> Ajouter une réunion / un déplacement
-            </button>
-        </a>
-        <a href="{% url 'defraiement:carte_reunions' asso_slug=asso_courante.abreviation %}">
-        <button type="button" class="btn btn-success" >
-                <i class="fa fa-compass"></i> Voir sur une carte
             </button>
         </a>
     </div>
@@ -71,7 +67,7 @@
  <a href="?{{ request.GET.urlencode }}&annee=2025#ref-annee">
     <button type="button" class="btn {% if request.GET.annee == '2025' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2025</button></a>
     {% comment %}
- <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation%}?" method="get" role = "search">
+ <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug%}?" method="get" role = "search">
      <span class="input-group-append">
         <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">ok</button>
@@ -84,7 +80,7 @@
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
             <li class="nav-item  subnavbar2 align-items-center">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=asso_courante.abreviation %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
+                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                       <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>Tout</h6>
                       </button>
@@ -175,8 +171,8 @@
 
 <p class="textcenter">
 
-{% if asso_courante %}
-<a href="{% url 'defraiement:recapitulatif'  asso_slug=asso_courante.abreviation%}">
+{% if request.session.asso_slug %}
+<a href="{% url 'defraiement:recapitulatif'  asso_slug=request.session.asso_slug%}">
 <button type="button" class="btn btn-primary" >
         <i class="fa fa-arrow-right"></i> Récapitulatif
     </button>

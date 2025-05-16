@@ -15,7 +15,7 @@
         {% ifchanged comm.article.slug %}
         <tr>
             <td data-title="Groupe" class="center shrink" style="vertical-align: middle;">
-                <a href="{% url 'blog:index_asso' asso=comm.article.asso.abreviation %}#ref-titre">
+                <a href="{% url 'blog:index_asso' asso=comm.article.asso.slug %}#ref-titre">
                     {{ comm.article.get_logo_nomgroupe_html|safe }}</a>
             </td>
             <td data-title="Article" class="center shrink">

@@ -90,7 +90,7 @@ Filtrer / rechercher...
       <div class="modal-header">
           <div class="row justify-content-center">
            <h5 > Filtrer/rechercher les profils</h5>
-              {% if asso.abreviation != "public" %}
+              {% if asso.slug != "public" %}
               <p>Parmi les membres du groupe {{ asso.nom }}</p>
               {% else %}
               <p>Parmi tous les inscrits sur le site</p>
@@ -110,31 +110,31 @@ Filtrer / rechercher...
         </div>
           <br>
           <div class="form-group col-sm-12">
-              {% if asso.abreviation != "pc" and request.user.adherent_pc%}
+              {% if asso.slug != "pc" and request.user.adherent_pc%}
               <div>
           {{ filter.form.adherent_pc.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_pc %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "rtg" and request.user.adherent_rtg %}
+              {% if asso.slug != "rtg" and request.user.adherent_rtg %}
               <div>
           {{ filter.form.adherent_rtg.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_rtg %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "citealt" and request.user.adherent_citealt %}
+              {% if asso.slug != "citealt" and request.user.adherent_citealt %}
               <div>
           {{ filter.form.adherent_citealt.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_citealt %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "viure" and request.user.adherent_viure %}
+              {% if asso.slug != "viure" and request.user.adherent_viure %}
               <div>
           {{ filter.form.adherent_viure.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_viure %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "scic"  and request.user.adherent_scic %}
+              {% if asso.slug != "scic"  and request.user.adherent_scic %}
               <div>
           {{ filter.form.adherent_scic.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_scic %}</label>

@@ -42,7 +42,7 @@
 {% if is_membre_bureau %}
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_contact_ajouter' asso_slug=asso_slug %}">
+        <a href="{% url 'adherents:phoning_contact_ajouter' asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un contact
             </button>
@@ -133,19 +133,19 @@
 {% comment %}
 <p class="textcenter">
 {% if is_membre_bureau %}
-    <a href="{% url 'adherents:get_csv_adherents' asso_slug=asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_adherents' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV
         </button>
     </a>
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='tel' asso_slug=asso_slug %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='tel' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Téléphones
         </button>
     </a>
 {% endif %}
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='email' asso_slug=asso_slug %}?{{ request.GET.urlencode }}')">
+    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='email' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}')">
         <button type="button" class="btn btn-sm btn-primary">
             Liste de mails
         </button>
@@ -265,7 +265,7 @@
 
 <div class="row justify-content-center textcenter">
 <div class="col-sm-12 col-md-10 col-lg-8">
-    <a href="{% url 'adherents:get_csv_contacts' asso_slug=asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
+    <a href="{% url 'adherents:get_csv_contacts' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
             &nbsp;Exporter en CSV
@@ -331,7 +331,7 @@ function get_infos(url_tag) {
 
 function get_infocontact(url_tag) {
     $.ajax({
-        url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk asso_slug=asso_slug %}",
+        url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk asso_slug=request.session.asso_slug %}",
         type: "GET",
         contentType: "application/x-www-form-urlencoded",
         async: false,

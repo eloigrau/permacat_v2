@@ -28,14 +28,14 @@
 <p class="textcenter textepetit">(* les personnes qui ont accepté d'apparaitre dans l'annuaire sont indiquées par une feuille ; les marqueurs gris concernent les colibris qui se sont inscrit sur "<a href="{% url 'carto:carte' %}" >presdecheznous.fr</a>" )</p>
 
 
-{% include "asso/presentation_asso_template.html" with adherent=request.user|adherent_asso:asso assos=asso.abreviation%}
+{% include "asso/presentation_asso_template.html" with adherent=request.user|adherent_asso:asso assos=asso.slug%}
 {% endcomment %}
 
 {% endblock %}
 {% block content %}
 
 {% if request.user.adherent_citealt %}
-{% if asso.abreviation == 'citealt' or  asso.abreviation == 'public' %}
+{% if asso.slug == 'citealt' or  asso.slug == 'public' %}
 <hr>
 
 <div class="row">
@@ -132,7 +132,7 @@ Filtrer / rechercher...
       <div class="modal-header">
           <div class="row justify-content-center">
            <h5 > Filtrer/rechercher les profils</h5>
-              {% if asso.abreviation != "public" %}
+              {% if asso.slug != "public" %}
               <p>Parmi les membres du groupe {{ asso.nom }}</p>
               {% else %}
               <p>Parmi tous les inscrits sur le site</p>
@@ -152,43 +152,43 @@ Filtrer / rechercher...
         </div>
           <br>
           <div class="form-group col-sm-12">
-              {% if asso.abreviation != "pc" and request.user.adherent_pc%}
+              {% if asso.slug != "pc" and request.user.adherent_pc%}
               <div>
           {{ filter.form.adherent_pc.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_pc %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "rtg" and request.user.adherent_rtg %}
+              {% if asso.slug != "rtg" and request.user.adherent_rtg %}
               <div>
           {{ filter.form.adherent_rtg.label_tag }}
             <label class="checkbox-inline">{% render_field filter.form.adherent_rtg %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "citealt" and request.user.adherent_citealt %}
+              {% if asso.slug != "citealt" and request.user.adherent_citealt %}
               <div>
                   {{ filter.form.adherent_citealt.label_tag }}
                     <label class="checkbox-inline">{% render_field filter.form.adherent_citealt %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "viure" and request.user.adherent_viure %}
+              {% if asso.slug != "viure" and request.user.adherent_viure %}
               <div>
                   {{ filter.form.adherent_viure.label_tag }}
                     <label class="checkbox-inline">{% render_field filter.form.adherent_viure %}</label>
               </div>
               {% endif %}
-         {% if asso.abreviation != "scic"  and request.user.adherent_scic %}
+         {% if asso.slug != "scic"  and request.user.adherent_scic %}
               <div>
                 {{ filter.form.adherent_scic.label_tag }}
                 <label class="checkbox-inline">{% render_field filter.form.adherent_scic %}</label>
               </div>
           {% endif %}
-          {% if asso.abreviation != "jp" and request.user.adherent_jp %}
+          {% if asso.slug != "jp" and request.user.adherent_jp %}
               <div>
                 {{ filter.form.adherent_jp.label_tag }}
                 <label class="checkbox-inline">{% render_field filter.form.adherent_jp %}</label>
               </div>
               {% endif %}
-              {% if asso.abreviation != "conf66" and request.user.adherent_conf66 %}
+              {% if asso.slug != "conf66" and request.user.adherent_conf66 %}
               <div>
                   {{ filter.form.adherent_conf66.label_tag }}
                     <label class="checkbox-inline">{% render_field filter.form.adherent_conf66 %}</label>

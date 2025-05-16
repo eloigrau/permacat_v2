@@ -28,7 +28,7 @@
         <tbody>
         {% for contact in contacts %}
         <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}" >
-            <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' pk=contact.adherent.pk asso_slug=asso_slug %}">
+            <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' pk=contact.adherent.pk asso_slug=request.session.asso_slug %}">
                     {{ contact.nom }}  {{ contact.prenom }} -
                     {% if contact.adherent.statut == "1" %} (ATP)
                     {% elif contact.adherent.statut == "3"%} (CC)
@@ -86,7 +86,7 @@
         {% for contact in contacts %}
         <tr>
             <td>{{ adherent.nom }}</td>
-            <td><a href="{% url 'adherents:contact_detail' pk=contact.pk asso_slug=asso_slug %}"> {{ contact.prenom }}</a></td>
+            <td><a href="{% url 'adherents:contact_detail' pk=contact.pk asso_slug=request.session.asso_slug %}"> {{ contact.prenom }}</a></td>
             <td>{% for ad in contact.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
       </tr>
         {% endfor %}

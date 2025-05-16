@@ -9,7 +9,7 @@
 
 <div class="row-sm-12 row-lg-6 mx-auto textcenter justify-content-center">
 {%if request.user == adherent or request.user.is_superuser or request.user.estmembre_bureau_conf  %}
-<a href="{% url 'adherents:adherents_modifier_adresse' pk=adherent.adresse.pk asso_slug=asso_slug %}">
+<a href="{% url 'adherents:adherents_modifier_adresse' pk=adherent.adresse.pk asso_slug=request.session.asso_slug %}">
     <button type="button" class="btn btn-sm btn-warning">
         <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier l'adresse / telephone
     </button>

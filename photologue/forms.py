@@ -218,8 +218,8 @@ class AlbumForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(AlbumForm, self).__init__(*args, **kwargs)
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all() if request.user.estMembre_str(x.abreviation)]
-        self.fields["article"].choices = [('', '(non)')] + [(x.id, x.titre) for i, x in enumerate(Article.objects.filter(estArchive=False).order_by('titre')) if request.user.estMembre_str(x.asso.abreviation)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all() if request.user.estMembre_str(x.slug)]
+        self.fields["article"].choices = [('', '(non)')] + [(x.id, x.titre) for i, x in enumerate(Article.objects.filter(estArchive=False).order_by('titre')) if request.user.estMembre_str(x.asso.slug)]
 
 
 class AlbumChangeForm(forms.ModelForm):
@@ -250,7 +250,7 @@ class PhotoForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(PhotoForm, self).__init__(*args, **kwargs)
-     #   self.fields["asso"].choices = sorted([(x.id, x.nom) for x in Asso.objects.all() if request.user.estMembre_str(x.abreviation)], key=lambda x:x[0])
+     #   self.fields["asso"].choices = sorted([(x.id, x.nom) for x in Asso.objects.all() if request.user.estMembre_str(x.slug)], key=lambda x:x[0])
 
     def save(self, request, commit=True):
         instance = super(PhotoForm, self).save(commit=False)
@@ -274,7 +274,7 @@ class DocumentAssocierArticleForm(forms.Form):
     def __init__(self, asso_courante=None, *args, **kwargs):
         super(DocumentAssocierArticleForm, self).__init__(*args, **kwargs)
         if asso_courante:
-            self.fields['article'].queryset = Article.objects.filter(estArchive=False, asso__abreviation=asso_courante).order_by('titre')
+            self.fields['article'].queryset = Article.objects.filter(estArchive=False, asso__slug=asso_courante).order_by('titre')
         else:
             self.fields['article'].queryset = Article.objects.filter(estArchive=False, ).order_by('titre')
 
@@ -297,7 +297,7 @@ class DocumentForm(forms.ModelForm):
         super(DocumentForm, self).__init__(*args, **kwargs)
         if article:
             self.fields["asso"].initial = [article.asso.id,]
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
 
 
     def save(self, request, article, commit=True):
@@ -333,7 +333,7 @@ class DocumentChangeForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(DocumentChangeForm, self).__init__(*args, **kwargs)
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.abreviation)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
 
 
 class DocumentFormAsso(forms.ModelForm):

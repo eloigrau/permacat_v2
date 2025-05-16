@@ -232,7 +232,7 @@ class Adresse(models.Model):
 
 class Asso(models.Model):
     nom = models.CharField(max_length=100)
-    abreviation = models.CharField(max_length=10)
+    slug = models.CharField(max_length=10)
     email = models.EmailField(null=True)
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
 
@@ -249,9 +249,9 @@ class Asso(models.Model):
         return super(Asso, self).save(*args, **kwargs)
 
     def is_membre(self, user):
-        if self.abreviation == "public":
+        if self.slug == "public":
             return True
-        return getattr(user, "adherent_" + self.abreviation, False)
+        return getattr(user, "adherent_" + self.slug, False)
 
 
     def is_adhesion_anneecourante(self, user):
@@ -264,30 +264,30 @@ class Asso(models.Model):
         return [p for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
 
     def getProfils_cotisationAJour(self):
-        return [p for p in self.getProfils() if p.isCotisationAJour(self.abreviation)]
+        return [p for p in self.getProfils() if p.isCotisationAJour(self.slug)]
 
     def getProfils(self):
-        if self.abreviation == "public":
+        if self.slug == "public":
             return Profil.objects.all().order_by("username")
-        elif self.abreviation == "pc":
+        elif self.slug == "pc":
             return Profil.objects.filter(adherent_pc=True).order_by("username")
-        elif self.abreviation == "rtg":
+        elif self.slug == "rtg":
             return Profil.objects.filter(adherent_rtg=True).order_by("username")
-        elif self.abreviation == "fer":
+        elif self.slug == "fer":
             return Profil.objects.filter(adherent_fer=True).order_by("username")
-        #elif self.abreviation == "gt":
+        #elif self.slug == "gt":
         #    return Profil.objects.filter(adherent_gt=True).order_by("username")
-        elif self.abreviation == "scic":
+        elif self.slug == "scic":
             return Profil.objects.filter(adherent_scic=True).order_by("username")
-        elif self.abreviation == "citealt":
+        elif self.slug == "citealt":
             return Profil.objects.filter(adherent_citealt=True).order_by("username")
-        elif self.abreviation == "bzz2022":
+        elif self.slug == "bzz2022":
             return Profil.objects.filter(adherent_bzz2022=True).order_by("username")
-        elif self.abreviation == "viure":
+        elif self.slug == "viure":
             return Profil.objects.filter(adherent_viure=True).order_by("username")
-        elif self.abreviation == "jp":
+        elif self.slug == "jp":
             return Profil.objects.filter(adherent_jp=True).order_by("username")
-        elif self.abreviation == "conf66":
+        elif self.slug == "conf66":
             return Profil.objects.filter(adherent_conf66=True).order_by("username")
         return  Profil.objects.none()
 
@@ -296,13 +296,13 @@ class Asso(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse_lazy('presentation_asso', asso=self.abreviation)
+        return reverse_lazy('presentation_asso', asso=self.slug)
 
 
     @property
     def get_logo_nomgroupe(self):
         from blog.models import Choix as Choix_asso
-        return Choix_asso.get_logo_nomgroupe(self.abreviation)
+        return Choix_asso.get_logo_nomgroupe(self.slug)
 
     @property
     def get_logo_nomgroupe_html(self):
@@ -394,13 +394,13 @@ class Profil(AbstractUser):
         else:
             return 0
 
-    def getAdhesions(self, abreviationAsso):
+    def getAdhesions(self, slugAsso):
         from adherents.models import Adhesion
-        return Adhesion.objects.filter(adherent__profil=self, asso__abreviation=abreviationAsso)
+        return Adhesion.objects.filter(adherent__profil=self, asso__slug=slugAsso)
 
-    def isCotisationAJour(self, asso_abreviation):
+    def isCotisationAJour(self, asso_slug):
         time_threshold = datetime(datetime.now().year - 1, 11, 1)
-        return self.getAdhesions(asso_abreviation).filter(date_cotisation__gt=time_threshold).count() > 0
+        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).count() > 0
 
     @property
     def isCotisationAJour_pc(self):
@@ -507,9 +507,9 @@ class Profil(AbstractUser):
         else:
             return False
 
-    def estmembre_bureau(self, asso_abreviation):
+    def estmembre_bureau(self, asso_slug):
         if not self.is_anonymous:
-            if asso_abreviation == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
+            if asso_slug == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
                 salon = Salon.objects.get(slug="conf66_bureau_2023")
                 return salon.est_autorise(self)
 
@@ -521,46 +521,46 @@ class Profil(AbstractUser):
 
     def getQObjectsAssoArticles(self):
         q_objects = Q()
-        for asso in self.getListeAbreviationsAssosEtPublic():
-            q_objects |= Q(asso__abreviation=asso) | Q(partagesAsso__abreviation=asso)
+        for asso in self.getListeSlugsAssosEtPublic():
+            q_objects |= Q(asso__slug=asso) | Q(partagesAsso__slug=asso)
         return q_objects
 
     def getQObjectsAssoCommentaires(self):
         q_objects = Q()
-        for asso in self.getListeAbreviationsAssosEtPublic():
-            q_objects |= Q(article__asso__abreviation=asso) | Q(article__partagesAsso__abreviation=asso)
+        for asso in self.getListeSlugsAssosEtPublic():
+            q_objects |= Q(article__asso__slug=asso) | Q(article__partagesAsso__slug=asso)
         return q_objects
 
     def getQObjectsAssoAteliers(self):
         q_objects = Q()
-        for asso in self.getListeAbreviationsAssosEtPublic():
-            q_objects |= Q(asso__abreviation=asso)
+        for asso in self.getListeSlugsAssosEtPublic():
+            q_objects |= Q(asso__slug=asso)
         return q_objects
 
 
-    def getListeAbreviationsAssos(self):
-        return [a for a in Choix.abreviationsAsso if self.est_autorise(a)]
+    def getListeSlugsAssos(self):
+        return [a for a in Choix.slugsAsso if self.est_autorise(a)]
 
-    def getListeAbreviationsAssos_nonmembre(self):
-        return [a for a in Choix.abreviationsAsso if not self.est_autorise(a)]
+    def getListeSlugsAssos_nonmembre(self):
+        return [a for a in Choix.slugsAsso if not self.est_autorise(a)]
 
-    def getListeAbreviationsAssosEtPublic(self):
-        return ["public", ] + self.getListeAbreviationsAssos()
+    def getListeSlugsAssosEtPublic(self):
+        return ["public", ] + self.getListeSlugsAssos()
 
-    def getListeAbreviationsNomAssos(self):
-        return [a for a in Choix.abreviationsNomsAsso if self.est_autorise(a[0])]
+    def getListeSlugsNomAssos(self):
+        return [a for a in Choix.slugsNomsAsso if self.est_autorise(a[0])]
 
-    def getListeAbreviationsNomsAssoEtPublic(self):
-        return [a for a in Choix.abreviationsNomsAssoEtPublic if self.est_autorise(a[0])]
+    def getListeSlugsNomsAssoEtPublic(self):
+        return [a for a in Choix.slugsNomsAssoEtPublic if self.est_autorise(a[0])]
 
-    def est_autorise(self, abreviation_asso):
-        if abreviation_asso == "public":
+    def est_autorise(self, slug_asso):
+        if slug_asso == "public":
             return True
-        #elif abreviation_asso in ["conf66", "scic" ]:
-        #    return self.isCotisationAJour(abreviation_asso)
+        #elif slug_asso in ["conf66", "scic" ]:
+        #    return self.isCotisationAJour(slug_asso)
 
 
-        return getattr(self, "adherent_" + abreviation_asso)
+        return getattr(self, "adherent_" + slug_asso)
 
     @property
     def inscrit_newsletter_str(self):
@@ -820,13 +820,13 @@ class Produit(models.Model):  # , BaseProduct):
         return "[A propos de l'annonce de '" + self.nom_produit + "']: "
 
     def est_autorise(self, user):
-        if self.asso.abreviation == "public":
+        if self.asso.slug == "public":
             return True
 
-        #elif self.asso.abreviation == "conf66":
+        #elif self.asso.slug == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.asso.slug, False)
 
     @property
     def est_public(self):
@@ -1474,13 +1474,13 @@ class MessageGeneral(models.Model):
 
     @property
     def get_edit_url(self):
-        return reverse('modifierMessage',  kwargs={'id':self.id, 'type_msg':'agora', 'asso':self.asso.abreviation})
+        return reverse('modifierMessage',  kwargs={'id':self.id, 'type_msg':'agora', 'asso':self.asso.slug})
 
     def get_absolute_url(self):
-        return reverse('agora', kwargs={'asso':self.asso.abreviation})
+        return reverse('agora', kwargs={'asso':self.asso.slug})
 
     def save(self,):
-        suivis, created = Suivis.objects.get_or_create(nom_suivi='agora_' + str(self.asso.abreviation))
+        suivis, created = Suivis.objects.get_or_create(nom_suivi='agora_' + str(self.asso.slug))
         emails = [suiv.email for suiv in followers(suivis) if self.auteur != suiv and self.est_autorise(suiv)]
         titre = "Nouveau commentaire dans le salon de discussion " + str(self.asso.nom)
         message = "Nouveau commentaire dans <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" +"le salon de discussion " + str(self.asso.nom) +  "</a>'"
@@ -1491,13 +1491,13 @@ class MessageGeneral(models.Model):
         return super(MessageGeneral, self).save()
 
     def est_autorise(self, user):
-        if self.asso.abreviation == "public":
+        if self.asso.slug == "public":
             return True
 
-        #elif self.asso.abreviation == "conf66":
+        #elif self.asso.slug == "conf66":
         #    return self.asso.is_adhesion_anneecourante(user)
 
-        return getattr(user, "adherent_" + self.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.asso.slug, False)
 
 class Suivis(models.Model):
     nom_suivi = models.TextField(null=False, blank=False)

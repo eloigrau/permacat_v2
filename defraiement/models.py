@@ -153,10 +153,10 @@ class Reunion(models.Model):
 
 
     def est_autorise(self, user):
-        if self.asso.abreviation == "public":
+        if self.asso.slug == "public":
             return True
 
-        return getattr(user, "adherent_" + self.asso.abreviation, False)
+        return getattr(user, "adherent_" + self.asso.slug, False)
 
     @property
     def getDistanceTotale(self):
@@ -174,7 +174,7 @@ class Reunion(models.Model):
 
     @property
     def get_logo_nomgroupe(self):
-        return Choix_global.get_logo_nomgroupe(self.asso.abreviation)
+        return Choix_global.get_logo_nomgroupe(self.asso.slug)
 
     @property
     def get_logo_nomgroupe_html(self):

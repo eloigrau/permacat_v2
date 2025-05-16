@@ -50,15 +50,17 @@
         </nav>
     </div>
     {% endcomment %}
-    <nav class="navbar navbar-light bs-dark navbar-expand-xl fixed-top  shadow-petit" id="navbar"
-         {% comment %}style="margin-top:48px;" {% endcomment %}>
+    <nav class="navbar navbar-light bs-dark navbar-expand-xl fixed-top  shadow-petit" id="navbar">
         <div class="container-fluid">
             <button class="navbar-toggler navbar-btn" type="button" data-toggle="collapse" data-target="#navbarsActuel"
                     aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'bienvenue' %}"><img src="{% static 'favicon.ico' %}" width="30"
-                                                                      height="30" alt="acceuil"/></a>
+            {% if not request.session.asso_slug %}
+            <a class="navbar-brand" href="{% url 'bienvenue' %}">
+                <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="acceuil"/>
+            </a>
+            {% endif %}
             <div class="navbar-collapse collapse justify-content-between  align-items-center w-100" id="navbarsActuel">
 
                 {% if user.is_authenticated %}
@@ -67,7 +69,12 @@
                     <li class="nav-item dropdown nav5">
                         <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'presentation_groupes' %}"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% if request.session.asso_slug %}
+                {{ request.session.asso_slug | getLogoGroupeFromSlug }}
+            {% else %}
                             Groupes
+            {% endif %}
+
                         </a>
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
 
@@ -986,6 +993,12 @@
                                 <a class="dropdown-item dropdown-toggle" href="#">Viure</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='viure' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Confédération Paysanne 66</a>
+                                <ul class="dropdown-menu  nav5-dropdown-submenu">
+                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='conf66' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
                                 </ul>
                             </li>
                         </ul>

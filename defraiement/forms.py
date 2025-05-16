@@ -71,7 +71,7 @@ class ParticipantReunionMultipleChoiceForm(forms.Form):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(ParticipantReunionMultipleChoiceForm, self).__init__(*args, **kwargs)
-        self.fields['participants'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__abreviation=asso_slug).order_by('nom')]
+        self.fields['participants'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
 
 class ParticipantReunionChoiceForm(forms.Form):
     participant = forms.ModelChoiceField(queryset=ParticipantReunion.objects.all().order_by('nom'), required=True,
@@ -79,7 +79,7 @@ class ParticipantReunionChoiceForm(forms.Form):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(ParticipantReunionChoiceForm, self).__init__(*args, **kwargs)
-        self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__abreviation=asso_slug).order_by('nom')]
+        self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
 
 class PrixMaxForm(forms.Form):
     prixMax = forms.CharField(required=True, label="Defraiement maximum (euros)",initial="2000" )

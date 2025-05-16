@@ -1,6 +1,7 @@
 {% extends 'base_projets.html' %}
     {% load static %}
 {% load blog_filters %}
+{% load app_filters %}
 {% load activity_tags %}
 {% load fontawesome_5 %}
 
@@ -90,11 +91,11 @@
                 <li class="nav-item dropdown">
              <button type="button" class="btn  btn-block {% if request.GET.asso %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
-                 {% if request.GET.asso %}{{asso_courante}}{%else%}Groupe{%endif%}
+                 {% if request.GET.asso %}{{request.session.asso_slug | getNomGroupeFromSlug}}{%else%}Groupe{%endif%}
                 </button>
             <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat">
                 {% for asso in asso_list %}
-                  <a class="dropdown-item" href="?asso={{asso.abreviation}}">{{asso.nom}}</a>
+                  <a class="dropdown-item" href="?asso={{asso.slug}}">{{asso.nom}}</a>
                 {% endfor %}
             </div>
         </li>

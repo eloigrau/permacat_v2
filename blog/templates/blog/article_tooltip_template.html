@@ -1,0 +1,20 @@
+{% load activity_tags %}
+{% load fontawesome_5 %}
+<div class="my-popover-content_{{article.id}}">
+{% if request.user|is_following:article %}
+    <i class="fa fa-bell" ></i>
+    {% else %}
+    <i class="fa fa-bell-slash" ></i>
+{% endif %}
+
+&nbsp;
+{%if article.date_modification %}
+    {%if  article.date_creation|date:'DATE_FORMAT' != article.date_modification|date:'DATE_FORMAT' %} &nbsp;
+         Modifié le {{ article.date_modification|date:'DATE_FORMAT' }}
+    {%else%}&nbsp;
+        Publié le {{ article.date_creation|date:'DATE_FORMAT' }}
+    {%endif%}
+{%else%}&nbsp;
+    Publié le {{ article.date_creation|date:'DATE_FORMAT' }}
+{% endif %}
+</div>

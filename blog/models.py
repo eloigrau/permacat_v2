@@ -396,9 +396,9 @@ class Article(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self):
-        return self.get_logo_nomgroupe_html_taille(18)
+        return self.get_logo_nomgroupe_html_taille(20)
 
-    def get_logo_nomgroupe_html_taille(self, taille=18):
+    def get_logo_nomgroupe_html_taille(self, taille=20):
         try:
             return Choix.get_logo_nomgroupe_html(self.asso.slug, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
         except Exception as e:

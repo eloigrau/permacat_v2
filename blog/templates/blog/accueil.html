@@ -139,8 +139,8 @@ function get_derniers_commentaires(url_tag) {
 <div class="row justify-content-center" >
     <nav class="navbar navbar-expand-lg justify-content-center">
         <div class="navbar-header">
-             <button class="btn btn-groupe btn-lg navbar-toggler dropdown-toggle btn-warning" style="background-color:#ffc241;" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
-             {% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug }} {% else %} Choisir un groupe {% endif %} </button>
+             <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+              Choisir un groupe </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">

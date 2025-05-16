@@ -1,0 +1,151 @@
+{% load activity_tags %}
+{% load fontawesome_5 %}
+{% load static %}
+
+{%block header %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
+{% endblock  %}
+<div class="table-responsive-vertical shadow-z-1 infinite-item ">
+  <!-- Table starts here -->
+  <table id="table" class="table_forum table-hover table-bordered table-mc-amber ">
+    {% comment %}
+      <thead>
+        <tr>
+          <th>Groupe</th>
+          <th>Titre</th>
+          <th>Dossier</th>
+          <th class="row_banniere_ordi">Infos</th>
+        </tr>
+      </thead>
+    {% endcomment %}
+      <tbody>
+        {% for article in article_list %}
+        <tr>
+          <td data-title="Groupe" class="center shrink" style="vertical-align: middle;">
+              <a href="{% url 'blog:index_asso' asso=article.asso.slug %}#ref-titre" >{{ article.get_logo_nomgroupe_html|safe }}</a>
+              {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span> {% endif %}
+          </td>
+            <td data-title="Article" class="center shrink">
+                <a href="{% url 'blog:index_asso' asso=article.asso.slug %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe" >
+                <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
+                </a>
+            </td>
+          <td data-title="Commentaire" class="shrink" >
+            <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
+                <p class="titre_forum">{{article.titre}}
+            {%if article.estModifiable %}
+                <span class="fa fa-edit"  title="Article modifiable">    </span>
+            {% endif %}
+                </p>
+            {%if article.estArchive or article.start_time %}
+              <p>
+                {% if article.start_time %}
+                  <span class="badge badge-success">
+                  {% if article.end_time %}
+                  du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }}
+                  {%else%}
+                  le {{ article.start_time|date:"DATE_FORMAT" }}
+                  {% endif %}
+                  </span>
+                {% endif %}
+
+                {%if article.estArchive %}
+                  <span class="badge badge-light" >
+                       archivé
+                 </span>
+                {% endif %}
+              </p>
+            {% endif %}
+                </a>
+
+                <p class="textleft">
+                    {% include 'listeTags_view_template.html' with tags=article.tags.names %}
+                </p>
+                <p class="textleft">
+                    {% include 'blog/article_tooltip_template.html' %}
+                </p>
+          </td>
+            <td  data-title="Infos" class="shrink">
+
+<a type="button" class="btn btn-light"  data-toggle="popover" data-placement="left" data-content="">
+        <i class="fa fa-info"></i>
+</a>
+{% include 'blog/article_tooltip_template.html' %}
+{%comment%}
+<button id="popover_info" type="button" class="btn btn-light"  data-toggle="tooltip" data-placement="left" title="{% include 'blog/article_tooltip_template.html' %}">
+                <i class="fa fa-info"></i>
+</button>
+{%endcomment%}
+            </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+
+popoverOptions = {
+        content: function () {
+            // Get the content from the hidden sibling.
+            return $(this).siblings('.my-popover-content').html();
+        },
+        trigger: 'hover',
+        animation: false,
+        placement: 'auto left'
+    };
+    $('.popover_info').popover(popoverOptions);
+});
+
+$('body').on('click', function (e) {
+        $('[data-toggle="popover"]').each(function () {
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            $(this).popover('hide');
+        }
+        });
+    });
+
+</script>
+
+
+{%comment%}
+$('[data-toggle="popover"]').popover({
+  html: true,
+  trigger: 'hover',
+  content: '<div id="popover"></div>',
+  placement: 'bottom',
+}).on('shown.bs.popover', function() {
+  $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+    url : "{% url 'data' %}",
+    success: function(data){
+    popover
+          new Chart($('#myChart'), {
+            // The type of chart we want to create
+            type: 'line',            // The data for our dataset
+            data: {
+              labels: ["January", "February", "March", "April",
+                        "May", "June", "July"],
+              datasets: [{
+                label: "Label",
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: data.number,
+              }]
+            },            // Configuration options go here
+            options: {}
+          });
+    }
+  });
+});
+{%endcomment%}

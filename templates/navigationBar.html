@@ -405,10 +405,23 @@
                                     <li><a class="dropdown-item"
                                            href="{% url 'photologue:doc-list'%}?asso=citealt#ref-titre"><i
                                             class='fa fa-file iconleft '></i> Documents</a></li>
+                                </ul>
+                            </li>
+                            {% endif %}
+
+                            {% if request.user.adherent_ssa %}
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">SSA 66</a>
+                                <ul class="dropdown-menu  nav5-dropdown-submenu">
+                                    <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='ssa' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'carte'  asso='ssa' %}"><i
+                                            class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
+                                    <li class="divider" role="separator"></li>
                                     <li><a class="dropdown-item"
-                                           href="https://semestriel.framapad.org/p/citealtruiste_doctravail"
-                                           target="_blank" rel="noopener noreferrer nofollow"><i
-                                            class='fa fa-file iconleft'></i> Document partagé </a></li>
+                                           href="{% url 'blog:index_asso' asso='ssa'%}#ref-titre">{% fa5_icon 'comments' class='iconleft' %}> Forum</a></li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'photologue:doc-list'%}?asso=ssa#ref-titre"><i
+                                            class='fa fa-file iconleft '></i> Documents</a></li>
                                 </ul>
                             </li>
                             {% endif %}

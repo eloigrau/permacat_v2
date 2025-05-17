@@ -201,6 +201,27 @@ def inscription_viure(request):
                     description="s'est inscrit.e dans le groupe Viure")
     return redirect('presentation_asso', asso='viure')
 
+
+@login_required
+def inscription_asso(request, asso_slug):
+    asso=Asso.objects.get(slug=asso_slug)
+    if getattr(request.user, "adherent_"+asso_slug):
+        setattr(request.user, "adherent_"+asso_slug, False)
+        request.user.save()
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_'+asso_slug)
+        actions.unfollow(request.user, suivi, send_action=False)
+        url = reverse('presentation_asso', kwargs={'asso': asso_slug})
+        action.send(request.user, verb='inscription_'+asso_slug, target=asso, url=request.user.get_absolute_url(),
+                    description="s'est retiré.e du groupe " + asso.nom)
+    else:
+        setattr(request.user, "adherent_"+asso_slug, True)
+        request.user.save()
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles'+asso_slug)
+        actions.follow(request.user, suivi, send_action=False)
+        action.send(request.user, verb='inscription_'+asso_slug, target=asso, url=request.user.get_absolute_url(),
+                    description="s'est inscrit.e dans le groupe " + asso.nom)
+    return redirect('presentation_asso', asso='viure')
+
 @login_required
 def inscription_bzz2022(request):
     asso = Asso.objects.get(slug='bzz2022')

@@ -289,7 +289,9 @@ class Asso(models.Model):
             return Profil.objects.filter(adherent_jp=True).order_by("username")
         elif self.slug == "conf66":
             return Profil.objects.filter(adherent_conf66=True).order_by("username")
-        return  Profil.objects.none()
+        elif self.slug == "ssa":
+            return Profil.objects.filter(adherent_ssa=True).order_by("username")
+        return Profil.objects.none()
 
     def getProfils_Annuaire(self):
         return self.getProfils().filter(accepter_annuaire=True)
@@ -339,14 +341,15 @@ class Profil(AbstractUser):
     adherent_bzz2022 = models.BooleanField(verbose_name="Je fais partie du collectif 'Bzzz'", default=False)
     adherent_conf66 = models.BooleanField(verbose_name="Je suis adhérent à la confédération Paysanne 66", default=False)
     adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
+    adherent_ssa = models.BooleanField(verbose_name="Je suis intéressé.e par la SSA", default=False)
 
     accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
 
-    date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications",default=now)
+    date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications", default=now)
     afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
 
-    newsletter_envoyee = models.BooleanField(verbose_name="Newletterenvoyee", default=False)
+    #newsletter_envoyee = models.BooleanField(verbose_name="Newletterenvoyee", default=False)
 
     def __str__(self):
         return self.username
@@ -415,24 +418,30 @@ class Profil(AbstractUser):
         return self.isCotisationAJour("conf66")
 
     def statutMembre_asso(self, asso):
-        if asso == "permacat" or "pc":
-            return self.adherent_pc
-        elif asso == "rtg":
-            return self.adherent_rtg
-        elif asso == "fer":
-            return self.adherent_fer
-        elif asso == "jp":
-            return self.adherent_jp
-        elif asso == "scic":
-            return self.adherent_scic
-        elif asso == "citealt":
-            return self.adherent_citealt
-        elif asso == "viure":
-            return self.adherent_viure
-        elif asso == "bzz2022":
-            return self.adherent_bzz2022
-        elif asso == "conf66":
-            return self.adherent_conf66
+        if asso =='public':
+            return True
+        return getattr(self, "adherent_" + asso, False)
+        #
+        # if asso == "permacat" or "pc":
+        #     return self.adherent_pc
+        # elif asso == "rtg":
+        #     return self.adherent_rtg
+        # elif asso == "fer":
+        #     return self.adherent_fer
+        # elif asso == "jp":
+        #     return self.adherent_jp
+        # elif asso == "scic":
+        #     return self.adherent_scic
+        # elif asso == "citealt":
+        #     return self.adherent_citealt
+        # elif asso == "viure":
+        #     return self.adherent_viure
+        # elif asso == "bzz2022":
+        #     return self.adherent_bzz2022
+        # elif asso == "conf66":
+        #     return self.adherent_conf66
+        # elif asso == "ssa":
+        #     return self.adherent_ssa
 
     @property
     def statutMembre_str_asso(self, asso):
@@ -481,6 +490,11 @@ class Profil(AbstractUser):
                 return "adhérent de la Confédération Paysanne 66"
             else:
                 return "Non adhérent de la Confédération Paysanne 66"
+        elif asso == "ssa":
+            if self.adherent_conf66:
+                return "participant au collectif SSA"
+            else:
+                return "Non participant au collectif SSA"
 
 
     def estMembre_str(self, nom_asso):
@@ -504,6 +518,8 @@ class Profil(AbstractUser):
             return True
         elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
             return True
+        elif self.adherent_ssa and (nom_asso == "ssa" or nom_asso == "Sécurité Sociale Alimentaire 66") :
+            return True
         else:
             return False
 
@@ -511,6 +527,9 @@ class Profil(AbstractUser):
         if not self.is_anonymous:
             if asso_slug == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
                 salon = Salon.objects.get(slug="conf66_bureau_2023")
+                return salon.est_autorise(self)
+            elif asso_slug == "scic" and self.adherent_scic and Salon.objects.filter(slug="salon-du-cercle-coeur-de-permagora").exists():
+                salon = Salon.objects.get(slug="salon-du-cercle-coeur-de-permagora")
                 return salon.est_autorise(self)
 
         return False

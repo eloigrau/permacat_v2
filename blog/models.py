@@ -27,6 +27,9 @@ class Choix:
                      ('Divers','Divers')
     type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('coordination', "Coordination"), ('reunion', "Réunions"), \
                          ('manifestations', 'Manifestations'), ('projets', 'Projets écocides')
+    type_annonce_ssa = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('documentation', "Documentation"), ('organisation', "Organisation du groupe"), ('Chantier','Atelier/Chantier participatif'),\
+                        ('groupeW','Groupe de travail'),
+
 
     type_annonce_citealt_orga = ('orga1', "Cercle Organisation"), ('orga2', "Cercle Informatique"), ('orga3', "Cercle Communication"), ('orga4', "Cercle Animation"),  ('orga5', "Cercle Médiation")
     type_annonce_citealt_themes = ('theme1', "Cercle Education"), ('theme2', "Cercle Ecolieux"), ('theme3', "Cercle Santé"), ('theme4', "Cercle Echanges"),  ('theme5', "Cercle Agriculture"),  ('theme6', "Cercle Célébration")
@@ -60,10 +63,11 @@ class Choix:
         "citealt": type_annonce_base + type_annonce_citealt,
         "bzz2022": type_annonce_bzz2022,
         "jp": type_annonce_jp,
-        "conf66":type_annonce_conf66
+        "conf66":type_annonce_conf66,
+        "ssa":type_annonce_ssa
     }
 
-    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66
+    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66 + type_annonce_ssa
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",
@@ -85,6 +89,7 @@ class Choix:
         'Jardin':"#fffdcc",
         'Altermarché':"#daffb3",
         'Documentation':'#ddd0a8',
+        'groupeW':'#AFE4C1',
     'orga1':'#00c40c98',
     'orga2':'#00c40c96',
     'orga3':'#00c40c94',
@@ -139,7 +144,8 @@ class Choix:
         "citealt": "nom_citealt.webp",
         "bzz2022": "nom_bzz2022.webp",
         "jp": "nom_jp.webp",
-        "conf66":"nom_conf66.png"
+        "conf66":"nom_conf66.png",
+        "ssa":"nom_ssa.png"
     }
 
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')

@@ -7,6 +7,8 @@ class ProfilCarteFilter(django_filters.FilterSet):
                                                label="Membre de PermaCat")
     adherent_scic = django_filters.BooleanFilter(field_name='adherent_scic', method='get_adherent_asso',
                                                   label="Membre de PermAgora")
+    #adherent_ssa = django_filters.BooleanFilter(field_name='adherent_ssa', method='get_adherent_asso',
+     #                                             label="Membre du collectif SSA")
     adherent_rtg = django_filters.BooleanFilter(field_name='adherent_rtg', method='get_adherent_asso',
                                                   label="Membre de Ramène Ta Graine")
     adherent_citealt = django_filters.BooleanFilter(field_name='adherent_citealt', method='get_adherent_asso',

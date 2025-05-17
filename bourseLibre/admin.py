@@ -19,12 +19,12 @@ class CustomUserAdmin(UserAdmin):
     add_form = ProfilCreationForm
     form = ProducteurChangeForm_admin
     model = Profil
-    list_display = ['id','username',  'last_login', 'email', 'date_notifications', 'newsletter_envoyee']
+    list_display = ['id','username',  'last_login', 'email', 'date_notifications']
 
     readonly_fields = ('date_registration','last_login','adresse')
 
     fieldsets = (
-        (None, {'fields': ('username','description','competences','pseudo_june', 'adherent_pc', 'adherent_rtg','adherent_fer', 'adherent_scic', 'adherent_citealt','adherent_viure','adherent_jp', 'adherent_conf66', 'adherent_bzz2022','adresse', 'inscrit_newsletter', 'date_notifications','accepter_annuaire', )}),
+        (None, {'fields': ('username','description','competences','pseudo_june', 'adherent_pc', 'adherent_rtg','adherent_fer', 'adherent_scic', 'adherent_ssa', 'adherent_citealt','adherent_viure','adherent_jp', 'adherent_conf66', 'adherent_bzz2022','adresse', 'inscrit_newsletter', 'date_notifications','accepter_annuaire', )}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),

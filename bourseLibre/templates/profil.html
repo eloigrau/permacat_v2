@@ -149,17 +149,36 @@
 	    <tr>
 		<td style="width:250px">Adhérent Ramene Ta Graine *:</td>
 		<td>{{user.adherent_rtg|translateOuiNon}}
+
+       {% if request.user.is_superuser %}
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='rtg' %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
             </button>
-        </a></td>
+        </a>
+        {% endif %}
+        </td>
 	    </tr>
     {% endif %}
     {%if request.user.adherent_fer or request.user == user %}
 	    <tr>
 		<td style="width:250px">Adhérent Fermille *:</td>
 		<td>{{user.adherent_fer|translateOuiNon}}</td>
+	    </tr>
+    {% endif %}
+    {%if request.user.adherent_ssa or request.user == user %}
+	    <tr>
+		<td style="width:250px">Adhérent SSA66 *:</td>
+		<td>{{user.adherent_ssa|translateOuiNon}}
+
+       {% if request.user.is_superuser %}
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='ssa' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a>
+        {% endif %}
+            </td>
 	    </tr>
     {% endif %}
     {%if request.user.adherent_scic or request.user == user %}

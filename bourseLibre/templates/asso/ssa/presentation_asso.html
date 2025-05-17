@@ -1,0 +1,38 @@
+{% extends 'base_asso.html' %}
+{% load static %}
+{% block title %} - Accueil{% endblock %}
+{% block subtitle %}
+
+<h2 class = "textcenter rowbienvenue">SSA 66</h2>
+
+{% include "asso/presentation_asso_template.html" with adherent=request.user.adherent_ssa assos='ssa' %}
+
+<h4 class = "textcenter rowbienvenue">Qui sommes nous ?</h4>
+{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col">
+		Le collectif a été créé suite à la projection du film "Manger pour vivre" et à la suite de la conférence gesticulée
+		de Mathieu Dalmais pour tenter d'expérimenter une forme à inventer de Sécurité Sociale de l'Alimentation.
+	</div>
+</div>
+		{% if request.user.is_anonymous %}
+			<p class="textcenter">
+				 <a class="btn btn-warning" href="{% url 'login'%}" disabled> Il faut être connecté pour pouvoir s'inscrire dans ce groupe</a>
+			</p>
+		{% else %}
+
+			{% if request.user.adherent_ssa %}
+			<p class="textcenter">
+				 <a class="btn btn-warning" href="{% url 'inscription_asso' asso_slug='ssa' %}"> Tu es inscrit-e -> Tu peux te désinscrire du groupe en cliquant ici</a>
+			</p>
+			{% else %}
+			<p class="textcenter">
+				 <a class="btn btn-primary" href="{% url 'inscription_asso' asso_slug='ssa' %}">Vous ne faites pas partie du groupe -> Inscrivez-vous en cliquant ici</a>
+			</p>
+			{% endif %}
+		{% endif %}
+
+	</div>
+</div>
+{% endblock %}

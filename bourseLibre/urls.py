@@ -81,6 +81,7 @@ urlpatterns = [
     path(r'citealtruiste/inscription/', views_inscriptions.inscription_citealt, name='inscription_citealt'),
     path(r'projetBzzz/inscription/', views_inscriptions.inscription_bzz2022, name='inscription_bzz2022'),
     path(r'viure/inscription/', views_inscriptions.inscription_viure, name='inscription_viure'),
+    path(r'asso/inscription/<str:asso_slug>', views_inscriptions.inscription_asso, name='inscription_asso'),
     path(r'jardins/inscription/', views_inscriptions.inscription_jp, name='inscription_jp'),
     re_path(r'^site/presentation/$', views_base.presentation_site, name='presentation_site'),
     re_path(r'^site/pourquoi/$', views_base.presentation_site_pkoi, name='presentation_site_pkoi'),

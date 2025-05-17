@@ -697,6 +697,7 @@ def reabonner_tous_profils(request):
     msg = "DEBUG : pas de reabonnement - modifier le code iciii"
     err = ""
     nb = 0
+    # attention par securité j'ai enlevé newsletter_envoyee du profil
     for p in Profil.objects.filter(newsletter_envoyee=False).order_by('username'):
         if p.is_active:
             try:

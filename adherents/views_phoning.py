@@ -401,6 +401,7 @@ def ajouterAdherents(request, asso_slug ):
 @login_required
 def ajouterMembresGroupe(request, asso_slug ):
     asso = testIsMembreAsso(request, asso_slug)
+    request.session['asso_slug'] = asso_slug
     projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     profils = asso.getProfils()
     m = ""
@@ -474,11 +475,15 @@ def lireTableauContact(request, asso_slug, csv_reader):
             if not line["telephone"] :
                 msg += "<p> pas de tel " + str(line) + "</p>"
             #    continue
-            adres, created = Adresse.objects.get_or_create(rue=line["rue"] if 'rue' in cles  else "",
-                                                           code_postal=line["code_postal"] if 'code_postal' in cles else "",
-                                                           commune=line["commune"]  if 'commune' in cles  else "",
-                                                           telephone=line["telephone"])
-            adres.save()
+            if line["rue"] or line["code_postal"] or line["commune"] or line["telephone"]:
+                adres, created = Adresse.objects.get_or_create(rue=line["rue"] if 'rue' in cles else "",
+                                                               code_postal=line["code_postal"] if 'code_postal' in cles else "",
+                                                               commune=line["commune"]  if 'commune' in cles else "",
+                                                               telephone=line["telephone"])
+                adres.save()
+            else:
+                adres, created = Adresse.objects.get_or_create(rue="adresse inconnue")
+
             contact, created = Contact.objects.get_or_create(
                 nom=line["nom"] if 'nom' in cles else "",
                 prenom=line["prenom"] if 'prenom' in cles else "",

@@ -478,7 +478,7 @@ def lireTableauContact(request, asso_slug, csv_reader):
             #if not line["telephone"] :
             #    msg += "<p> pas de tel " + str(line) + "</p>"
             #    continue
-            if line["rue"] or line["code_postal"] or line["commune"] or line["telephone"]:
+            if ("rue" in line and line["rue"]) or ("code_postal" in line and line["code_postal"]) or ("commune" in line and line["commune"]) or ("telephone" in line and line["telephone"]):
                 adres, created = Adresse.objects.get_or_create(rue=line["rue"] if 'rue' in cles else "",
                                                                code_postal=line["code_postal"] if 'code_postal' in cles else "",
                                                                commune=line["commune"] if 'commune' in cles else "",

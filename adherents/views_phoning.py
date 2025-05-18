@@ -469,10 +469,10 @@ def lireTableauContact(request, asso_slug, csv_reader):
         #    continue
         try:
             cles = line.keys()
-            if line["telephone"] and Adresse.objects.filter(telephone__iexact=line["telephone"]):
+            if "telephone" in line and line["telephone"] and Adresse.objects.filter(telephone__iexact=line["telephone"]):
                 msg += "<p> DEJA tel " + str(line) + "#" + line["telephone"] +"#</p>"
                 continue
-            if line["email"] and Adresse.objects.filter(telephone__iexact=line["email"]):
+            if "email" in line and line["email"] and Adresse.objects.filter(telephone__iexact=line["email"]):
                 msg += "<p> DEJA mail " + str(line) + "#" + line["email"] +"#</p>"
                 continue
             #if not line["telephone"] :

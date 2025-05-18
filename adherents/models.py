@@ -255,7 +255,7 @@ class Contact(models.Model):
         return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"
 
     def get_absolute_url(self):
-         return reverse('adherents:phoning_projet_courant')
+         return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug':self.projet.asso.slug})
     def get_update_url(self):
         return reverse('adherents:phoning_contact_modifier', kwargs={'pk': self.pk, 'asso_slug':self.projet.asso.slug})
     def get_delete_url(self):

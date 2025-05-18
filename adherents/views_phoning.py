@@ -508,11 +508,11 @@ def phoning_contact_ajouter_csv(request, asso_slug, ):
         texte_csv = form.cleaned_data['texte_csv']
         msg = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
-        if not "telephone" in csv_reader.fieldnames:
-            m = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+        if not "telephone" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
+            m = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone' ni 'email' (sans espace)"
             return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
-        m = lireTableauContact(request, csv_reader)
+        m = lireTableauContact(request, asso_slug, csv_reader)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
     return render(request, 'adherents/contact_ajouter_csv1.html', {"form": form, "asso_slug": asso_slug})
@@ -529,8 +529,8 @@ def phoning_contact_ajouter_csv_viti(request, asso_slug):
         texte_csv = form.cleaned_data['texte_csv']
         m = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
-        if not "telephone" in csv_reader.fieldnames:
-            m += "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+        if not "telephone" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
+            m += "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone' ni 'email' (sans espace)"
             return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
         for i, line in enumerate(csv_reader):
@@ -568,8 +568,8 @@ def phoning_contact_ajouter_csv_inversernomprenom(request, asso_slug):
         texte_csv = form.cleaned_data['texte_csv']
         m = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
-        if not "telephone" in csv_reader.fieldnames:
-            m = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone'"
+        if not "telephone" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
+            m = "Erreur : Le fichier '" + str(texte_csv) + "'" +" n'a pas de colonne 'telephone' ni 'email' (sans espace)"
             return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
         for i, line in enumerate(csv_reader):
@@ -646,11 +646,11 @@ def phoning_contact_ajouter_csv2(request, asso_slug):
         msg = "import adherents_fic : " + fichier
         with open(fichier, 'r', newline='\n') as data:
             csv_reader = csv.DictReader(data, delimiter=',')
-            if not "telephone" in csv_reader.fieldnames:
-                m = "Erreur : Le fichier '" + str(fichier) + "'" +" n'a pas de colonne 'telephone'"
+            if not "telephone" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
+                m = "Erreur : Le fichier '" + str(fichier) + "'" +" n'a pas de colonne 'telephone' ni 'email' (sans espace)"
                 return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
 
-            m = lireTableauContact(request, csv_reader)
+            m = lireTableauContact(request, asso_slug, csv_reader)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
     return render(request, 'adherents/contact_ajouter_csv2.html', {"form": form, "asso_slug": asso_slug})

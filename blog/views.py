@@ -624,7 +624,7 @@ def get_tags_articles(request):
     inner_qs.remove(None)
     if inner_qs:
         tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.slug, 'tag':t}), t)
-                for t in Tag.objects.filter(id__in=inner_qs).order_by('name')]
+                for t in Tag.objects.filter(id__in=inner_qs).order_by('name') if t]
     return render(request, 'blog/ajax/listeTags_template.html', {'tags': tags})
 
 

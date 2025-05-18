@@ -470,16 +470,19 @@ def lireTableauContact(request, asso_slug, csv_reader):
         try:
             cles = line.keys()
             if line["telephone"] and Adresse.objects.filter(telephone__iexact=line["telephone"]):
-                msg += "<p> DEJA " + str(line) + "#" + line["telephone"] +"#</p>"
+                msg += "<p> DEJA tel " + str(line) + "#" + line["telephone"] +"#</p>"
                 continue
-            if not line["telephone"] :
-                msg += "<p> pas de tel " + str(line) + "</p>"
+            if line["email"] and Adresse.objects.filter(telephone__iexact=line["email"]):
+                msg += "<p> DEJA mail " + str(line) + "#" + line["email"] +"#</p>"
+                continue
+            #if not line["telephone"] :
+            #    msg += "<p> pas de tel " + str(line) + "</p>"
             #    continue
             if line["rue"] or line["code_postal"] or line["commune"] or line["telephone"]:
                 adres, created = Adresse.objects.get_or_create(rue=line["rue"] if 'rue' in cles else "",
                                                                code_postal=line["code_postal"] if 'code_postal' in cles else "",
-                                                               commune=line["commune"]  if 'commune' in cles else "",
-                                                               telephone=line["telephone"])
+                                                               commune=line["commune"] if 'commune' in cles else "",
+                                                               telephone=line["telephone"] if 'telephone' in cles else "")
                 adres.save()
             else:
                 adres, created = Adresse.objects.get_or_create(rue="adresse inconnue")

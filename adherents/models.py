@@ -256,6 +256,10 @@ class Contact(models.Model):
 
     def get_absolute_url(self):
          return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug':self.projet.asso.slug})
+    def get_absolute_url2(self):
+        if self.adherent:
+            return self.adherent.get_absolute_url()
+        return self.get_absolute_url()
     def get_update_url(self):
         return reverse('adherents:phoning_contact_modifier', kwargs={'pk': self.pk, 'asso_slug':self.projet.asso.slug})
     def get_delete_url(self):

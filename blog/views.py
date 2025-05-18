@@ -623,8 +623,12 @@ def get_tags_articles(request):
 
     inner_qs.remove(None)
     if inner_qs:
-        tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.slug, 'tag':t}), t)
-                for t in Tag.objects.filter(id__in=inner_qs).order_by('name') if t]
+        try:
+            tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.slug, 'tag':t}), t)
+                    for t in Tag.objects.filter(id__in=inner_qs).order_by('name') if t]
+        except Exception as e:
+            action.send(sender=request.user, verb='bug', description=str(e) + " ;" + str(Tag.objects.filter(id__in=inner_qs).order_by('name')))
+            tags = None
     return render(request, 'blog/ajax/listeTags_template.html', {'tags': tags})
 
 

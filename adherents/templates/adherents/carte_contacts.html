@@ -38,26 +38,6 @@
     </div>
 </div>
 
-{% comment %}
-{% if is_membre_bureau %}
-<div class="row textcenter">
-    <div class="col-sm-12 textcenter">
-        <a href="{% url 'adherents:phoning_contact_ajouter' asso_slug=request.session.asso_slug %}">
-            <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un contact
-            </button>
-        </a>
-        {%if request.user.is_superuser %}
-        <a href="https://www.perma.cat/gestion/adherents/adherent/">
-            <button type="button" class="btn btn-sm btn-danger">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;SU Admin
-            </button>
-        </a>
-        {%endif%}
-    </div>
-</div>
-{%endif%}
-{% endcomment %}
 {% endblock %}
 
 {% block content %}
@@ -128,31 +108,12 @@
         </div>
     </div>
 </div>
-<div id="listeMails"></div>
 <hr>
-{% comment %}
-<p class="textcenter">
-{% if is_membre_bureau %}
-    <a href="{% url 'adherents:get_csv_adherents' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
-       rel="noopener noreferrer nofollow">
-        <button type="button" class="btn btn-sm btn-primary">
-            &nbsp;Exporter en CSV
-        </button>
-    </a>
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='tel' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}')">
-        <button type="button" class="btn btn-sm btn-primary">
-            Téléphones
-        </button>
-    </a>
-{% endif %}
-    <a onclick="get_infos('{% url 'adherents:get_infos_adherent' type_info='email' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}')">
-        <button type="button" class="btn btn-sm btn-primary">
-            Liste de mails
-        </button>
-    </a>
-</p>
-{% endcomment %}
+{% if request.session.asso_slug == "conf66" %}
 {% include "adherents/template_annuaire_contacts.html" with profils=filter.qs %}
+{% else %}
+{% include "adherents/template_annuaire_contact.html" with profils=filter.qs %}
+{% endif %}
 
 <hr>
 
@@ -261,8 +222,8 @@
 
 <hr>
 
-{% if is_membre_bureau %}
 
+<div id="listeMails" class="textcenter"></div>
 <div class="row justify-content-center textcenter">
 <div class="col-sm-12 col-md-10 col-lg-8">
     <a href="{% url 'adherents:get_csv_contacts' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
@@ -271,10 +232,19 @@
             &nbsp;Exporter en CSV
         </button>
     </a>
-</div>
-</div>
 
-{% endif %}
+    <a onclick="get_infos('{% url 'adherents:get_infos_contacts' projet_pk=request.session.projet_courant_pk type_info='tel' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+            Téléphones
+        </button>
+    </a>
+    <a onclick="get_infos('{% url 'adherents:get_infos_contacts' projet_pk=request.session.projet_courant_pk type_info='email' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+            Liste de mails
+        </button>
+    </a>
+</div>
+</div>
 
 {% comment %}
 <div class="row justify-content-center">

@@ -96,15 +96,17 @@
         </div>
     </div>
 </div>
-<div id="listeMails"></div>
 <hr>
+{% if request.session.asso_slug == "conf66" %}
+{% include "adherents/template_annuaire_contacts_simple_conf66.html" with profils=filter.qs %}
+{% else %}
 {% include "adherents/template_annuaire_contacts_simple.html" with profils=filter.qs %}
+{% endif %}
 
 <hr>
 
-{% if is_membre_bureau %}
-
-<div class="row justify-content-center">
+<div id="listeMails" class="textcenter"></div>
+<div class="row justify-content-center textcenter">
 <div class="col-sm-12 col-md-10 col-lg-8">
     <a href="{% url 'adherents:get_csv_contacts' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
@@ -112,11 +114,19 @@
             &nbsp;Exporter en CSV
         </button>
     </a>
+
+    <a onclick="get_infos('{% url 'adherents:get_infos_contacts' projet_pk=request.session.projet_courant_pk type_info='tel' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+            Téléphones
+        </button>
+    </a>
+    <a onclick="get_infos('{% url 'adherents:get_infos_contacts' projet_pk=request.session.projet_courant_pk type_info='email' %}?{{ request.GET.urlencode }}')">
+        <button type="button" class="btn btn-sm btn-primary">
+            Liste de mails
+        </button>
+    </a>
 </div>
 </div>
-
-{% endif %}
-
 {% comment %}
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">

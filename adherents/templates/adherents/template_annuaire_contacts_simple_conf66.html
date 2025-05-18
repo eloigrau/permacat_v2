@@ -12,6 +12,7 @@
     {% endcomment %}
 </nav>
 {% endif %}
+
 <div class="tab-content">
   <div class="tab-pane fade show active" id="adresse">
    <div class="row">
@@ -20,49 +21,44 @@
     <table class="table table-condensed tableprofils table-striped sortable table-phoning">
         <thead class="thead-inverse">
             <tr>
-                <th>Nom Prénom</th>
-                <th>email</th>
-                <th>Telephone______</th>
+                <th>Nom Prénom Tel Edit</th>
                 <th>Contacts</th>
-                <th>Code postal</th>
-                <th>Commune</th>
-                <th>Commentaire</th>
-                <th>Edit</th>
             </tr>
         </thead>
         <tbody>
         {% for contact in contacts %}
-        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}">
+        <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}" >
             <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' pk=contact.adherent.pk asso_slug=request.session.asso_slug %}">
-                    {{ contact.nom }}  {{ contact.prenom }} </a>
+                    {{ contact.nom }}  {{ contact.prenom }} -
+                    {% if contact.adherent.statut == "1" %} (ATP)
+                    {% elif contact.adherent.statut == "3"%} (CC)
+                    {% elif contact.adherent.statut == "5"%} (ATS)
+                    {% elif contact.adherent.statut == "2"%} (CotSol)
+                    {% elif contact.adherent.statut == "4"%} (Retraité-e)
+                    {% elif contact.adherent.statut == "6"%} (PorteurProjet)
+                    {% else %} (#)
+                    {% endif %}
+                    </a> -
                 {% else %}
-                    {{ contact.nom }}  {{ contact.prenom }}
+                    {{ contact.nom }}  {{ contact.prenom }} -
                 {% endif %}
-            </td>
-            <td>
-            {% if contact.email %}
-                    {{ contact.email }}
-                {% endif %}
-
-            </td>
-            <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
+                {% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
                <i class="fa fa-phone"></i> </a>
-
-                {% else %}-{% endif %}
-            </td>
-             <td style="width:25%;"><ol>
-                 {{ contact.get_contacts_html|safe }}
-             <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
-                 </ol>
-             </td>
-           <td>{%if contact.adresse.code_postal %}{{ contact.adresse.code_postal }}{% else %}-{% endif %}</td>
-            <td>{%if contact.adresse.commune %}{{ contact.adresse.commune }} {% else %}-{% endif %}</td>
-            <td>{% if contact.commentaire %}{{ contact.commentaire }}{% else %}-{% endif %}</td>
-            <td>
-                 <a class="btn btn-sm btn-warning textleft" href="{{contact.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+                {% else %} - {% endif %}
+                {% if contact.commentaire %}[{{ contact.commentaire }}]{% endif %}
+                   - <a class="btn btn-sm btn-warning textleft" href="{{contact.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                  <a class="btn btn-sm btn-danger textleft" href="{{contact.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
             </td>
-
+             <td>
+                 {%if contact.get_contacts_html %}
+                     <ol>
+                     {{ contact.get_contacts_html|safe }}
+                        <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
+                     </ol>
+                 {% else %}
+                 <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
+                 {% endif %}
+             </td>
         </tr>
         {% endfor %}
         </tbody>
@@ -89,7 +85,7 @@
         <tbody>
         {% for contact in contacts %}
         <tr>
-            <td><a href="{% url 'adherents:contact_detail' pk=contact.pk asso_slug=request.session.asso_slug %}"> {{ adherent.nom }}</a></td>
+            <td>{{ adherent.nom }}</td>
             <td><a href="{% url 'adherents:contact_detail' pk=contact.pk asso_slug=request.session.asso_slug %}"> {{ contact.prenom }}</a></td>
             <td>{% for ad in contact.get_adhesions %} {{ad}} {%if not forloop.last%}; {%endif%}{% endfor%}</td>
       </tr>

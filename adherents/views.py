@@ -806,6 +806,24 @@ def get_infos_adherent(request, asso_slug, type_info="email"):
 
 
 @login_required
+def get_infos_contacts(request, projet_pk, type_info="email"):
+    projet = get_object_or_404(ProjetPhoning, pk=projet_pk)
+    if not is_membre_bureau(request.user, projet.asso.slug):
+        return HttpResponseForbidden()
+
+    profils = Contact.objects.filter(projet=projet)
+    profils_filtres = ContactCarteFilter(request, queryset=profils)
+    if type_info == "tel":
+        template = 'adherents/template_tel.html'
+    elif type_info == "email":
+        template = 'adherents/template_mails.html'
+    else:
+        template = 'adherents/template_inconnu.html'
+
+    return render(request, template, {'qs': profils_filtres.qs})
+
+
+@login_required
 def get_infos_listeMail(request, asso_slug, listeMail_pk, type_info="email"):
     liste = get_object_or_404(ListeDiffusion, pk=listeMail_pk)
     if type_info == "email":

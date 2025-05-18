@@ -28,19 +28,12 @@
         <tbody>
         {% for contact in contacts %}
         <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}" >
-            <td> {% if contact.adherent %} <a href="{% url 'adherents:adherent_detail' pk=contact.adherent.pk asso_slug=request.session.asso_slug %}">
-                    {{ contact.nom }}  {{ contact.prenom }} -
-                    {% if contact.adherent.statut == "1" %} (ATP)
-                    {% elif contact.adherent.statut == "3"%} (CC)
-                    {% elif contact.adherent.statut == "5"%} (ATS)
-                    {% elif contact.adherent.statut == "2"%} (CotSol)
-                    {% elif contact.adherent.statut == "4"%} (Retraité-e)
-                    {% elif contact.adherent.statut == "6"%} (PorteurProjet)
-                    {% else %} (#)
-                    {% endif %}
-                    </a> -
+            <td> {% if contact.adherent %}
+                <a href="{% url 'adherents:adherent_detail' pk=contact.adherent.pk asso_slug=request.session.asso_slug %}">
+                    {{ contact.nom }}  {{ contact.prenom }}  - {{ contact.email }} -
+                </a>
                 {% else %}
-                    {{ contact.nom }}  {{ contact.prenom }} -
+                    {{ contact.nom }}  {{ contact.prenom }} - {{ contact.email }} -
                 {% endif %}
                 {% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
                <i class="fa fa-phone"></i> </a>

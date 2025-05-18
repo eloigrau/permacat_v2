@@ -21,7 +21,7 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Nom Prénom</th>
-                <th>email</th>
+                <th>ATP</th>
                 <th>Telephone______</th>
                 <th>Contacts</th>
                 <th>Code postal</th>
@@ -40,9 +40,18 @@
                 {% endif %}
             </td>
             <td>
-            {% if contact.email %}
-                    {{ contact.email }}
+            {% if contact.adherent %}
+                {% if contact.adherent.statut == "1" %} (ATP)
+                {% elif contact.adherent.statut == "3"%} (CC)
+                {% elif contact.adherent.statut == "5"%} (ATS)
+                {% elif contact.adherent.statut == "2"%} (CotSol)
+                {% elif contact.adherent.statut == "4"%} (Retraité-e)
+                {% elif contact.adherent.statut == "6"%} (PorteurProjet)
+                {% else %} (#)
                 {% endif %}
+            {% else %}
+                -
+            {% endif %}
 
             </td>
             <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}

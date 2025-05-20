@@ -17,8 +17,12 @@ class ContactContact_Admin(admin.ModelAdmin):
     list_display = ('profil', 'date_contact',  'contact', 'statut', 'commentaire')
     search_fields = ('profil', 'statut', 'contact', )
 
+@admin.register(Contact)
+class Contact_Admin(admin.ModelAdmin):
+    list_display = ('profil',  "nom", "prenom", "email", "projet")
+    search_fields = ('profil', 'nom', 'prenom', 'email', 'projet', )
+
 
 admin.site.register(InscriptionMail)
 admin.site.register(ListeDiffusion)
-admin.site.register(Contact)
 admin.site.register(ProjetPhoning)

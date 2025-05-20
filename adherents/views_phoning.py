@@ -54,7 +54,7 @@ class Contact_ajouter(UserPassesTestMixin, CreateView, ):
         #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
         #             description="a ajouté le Jardin: '%s'" % self.object.titre)
 
-        return redirect("adherents:phoning_projet_courant")
+        return redirect("adherents:phoning_projet_courant", kwargs={'asso_slug': self.asso.slug})
 
 
     def get_context_data(self, **kwargs):
@@ -96,7 +96,7 @@ class Contact_modifier(UserPassesTestMixin, UpdateView, ):
         #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
         #             description="a ajouté le Jardin: '%s'" % self.object.titre)
 
-        return redirect("adherents:phoning_projet_courant")
+        return redirect("adherents:phoning_projet_courant", kwargs={"asso_slug":self.asso.slug})
     # def form_valid(self, form):
     #     desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
     #         form.changed_data) + ")"
@@ -126,7 +126,7 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
     def get_success_url(self):
         #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
         #action.send(self.request.user, verb='adherent_conf66_supprimer', url=reverse('adherents:accueil'), description=desc)
-        return reverse('adherents:phoning_projet_courant')
+        return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug})
 
 
     def get_context_data(self, **kwargs):
@@ -142,7 +142,7 @@ def contact_supprimer(request, asso_slug, contact_pk):
     contact = get_object_or_404(Contact, pk=contact_pk)
     contact.adresse.delete()
     contact.delete()
-    return redirect('adherents:phoning_projet_courant')
+    return redirect('adherents:phoning_projet_courant', kwargs={'asso_slug': asso.slug})
 
 class Contact_liste(UserPassesTestMixin, ListView):
     model = Contact
@@ -216,7 +216,7 @@ def contactContact_supprimer(request, asso_slug, contact_contact_pk):
 
     c = get_object_or_404(ContactContact, pk=contact_contact_pk)
     c.delete()
-    return redirect('adherents:phoning_projet_courant')
+    return redirect('adherents:phoning_projet_courant', kwargs={'asso_slug': asso_slug})
 
 
 @login_required
@@ -233,7 +233,7 @@ def contactContact_ajouter(request, asso_slug, contact_pk):
         if 'next' in request.GET:
             return HttpResponseRedirect(request.GET['next'].replace("%26",'&').replace("'",''))
         else:
-            return redirect('adherents:phoning_projet_courant')
+            return redirect('adherents:phoning_projet_courant', kwargs={'asso_slug': asso.slug})
 
 
     return render(request, 'adherents/contact_contact_ajouter.html', {"form": form, "contact":p, "asso_slug": asso_slug})
@@ -651,14 +651,13 @@ def phoning_contact_ajouter_csv2(request, asso_slug):
     form = csvFile_form(request.POST or None, request.FILE or None)
     if form.is_valid():
         fichier = request.FILES['fichier_csv']
-        msg = "import adherents_fic : " + fichier
         with open(fichier, 'r', newline='\n') as data:
             csv_reader = csv.DictReader(data, delimiter=',')
             if not "telephone" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
                 m = "Erreur : Le fichier '" + str(fichier) + "'" +" n'a pas de colonne 'telephone' ni 'email' (sans espace)"
                 return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader.fieldnames), "message": m})
-
-            m = lireTableauContact(request, asso_slug, csv_reader)
+            m = str(csv_reader.fieldnames)
+            m += lireTableauContact(request, asso_slug, csv_reader)
         return render(request, 'adherents/contact_ajouter_listetel_res.html', {"liste_tel": str(csv_reader), "message": m})
 
     return render(request, 'adherents/contact_ajouter_csv2.html', {"form": form, "asso_slug": asso_slug})

@@ -163,7 +163,7 @@ class Contact_liste(UserPassesTestMixin, ListView):
             self.request.session["asso_slug"] = self.projet.asso.slug
         else:
             if 'projet_courant_pk' in self.request.session:
-                self.projet = get_object_or_404(ProjetPhoning, pk= self.request.session["projet_courant_pk"])
+                self.projet = get_object_or_404(ProjetPhoning, pk=self.request.session["projet_courant_pk"])
             else:
                 return redirect('phoning_projet_liste', )
 

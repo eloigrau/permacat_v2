@@ -329,7 +329,7 @@ class ProfilCreationForm(UserCreationForm):
     adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'Ramène Ta Graine'")
     adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'PermAgora'")
     adherent_jp = forms.BooleanField(required=False, label="Je suis intéressé.e par les jardins partagés")
-    #adherent_fer = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Fermille'")
+    adherent_ssa = forms.BooleanField(required=False, label="Je fais partie du collectif SSA du 66 (test)")
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
     accepter_annuaire = forms.BooleanField(required=False, initial=True,
@@ -350,7 +350,7 @@ class ProfilCreationForm(UserCreationForm):
         model = Profil
         fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name', 'site_web', 'description',
                   'competences', 'adherent_jp', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure',
-                  'adherent_bzz2022', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
+                  'adherent_bzz2022', 'adherent_ssa', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
         exclude = ['slug', ]
 
     def clean(self):

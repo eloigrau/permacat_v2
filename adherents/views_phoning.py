@@ -160,6 +160,7 @@ class Contact_liste(UserPassesTestMixin, ListView):
             self.projet = get_object_or_404(ProjetPhoning, pk=self.kwargs.get('projet_pk'))
             self.request.session["projet_courant_pk"] = self.projet.pk
             self.request.session["projet_phoning_nom"] = self.projet.titre
+            self.request.session["asso_slug"] = self.projet.asso
         else:
             if 'projet_courant_pk' in self.request.session:
                 self.projet = get_object_or_404(ProjetPhoning, pk= self.request.session["projet_courant_pk"])

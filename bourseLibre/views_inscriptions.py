@@ -220,7 +220,7 @@ def inscription_asso(request, asso_slug):
         actions.follow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_'+asso_slug, target=asso, url=request.user.get_absolute_url(),
                     description="s'est inscrit.e dans le groupe " + asso.nom)
-    return redirect('presentation_asso', asso='viure')
+    return redirect('presentation_asso', asso=asso_slug)
 
 @login_required
 def inscription_bzz2022(request):

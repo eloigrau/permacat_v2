@@ -142,7 +142,7 @@ def contact_supprimer(request, asso_slug, contact_pk):
     contact = get_object_or_404(Contact, pk=contact_pk)
     contact.adresse.delete()
     contact.delete()
-    return redirect('adherents:phoning_projet_courant', kwargs={'asso_slug': asso.slug})
+    return redirect('adherents:phoning_projet_courant', asso_slug=asso_slug)
 
 class Contact_liste(UserPassesTestMixin, ListView):
     model = Contact
@@ -191,7 +191,7 @@ class Contact_liste(UserPassesTestMixin, ListView):
     def get_template_names(self, *args, **kwargs):
         # Check if the request path is the path for a-url in example app
         if (self.request.path == reverse('adherents:phoning_projet_simple', kwargs={'asso_slug': self.asso.slug, 'projet_pk':self.request.session['projet_courant_pk']}) or
-                self.request.path == reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug} )) :
+                self.request.path == reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug})) :
             return [self.template_name_simple]  # Return a list that contains "a.html" template name
         return [self.template_name_complet]  # else return "b.html" template name
 
@@ -217,7 +217,7 @@ def contactContact_supprimer(request, asso_slug, contact_contact_pk):
 
     c = get_object_or_404(ContactContact, pk=contact_contact_pk)
     c.delete()
-    return redirect('adherents:phoning_projet_courant', kwargs={'asso_slug': asso_slug})
+    return redirect('adherents:phoning_projet_courant', asso_slug=asso_slug)
 
 
 @login_required
@@ -234,7 +234,7 @@ def contactContact_ajouter(request, asso_slug, contact_pk):
         if 'next' in request.GET:
             return HttpResponseRedirect(request.GET['next'].replace("%26",'&').replace("'",''))
         else:
-            return redirect('adherents:phoning_projet_courant', kwargs={'asso_slug': asso.slug})
+            return redirect('adherents:phoning_projet_courant', asso_slug=asso.slug)
 
 
     return render(request, 'adherents/contact_contact_ajouter.html', {"form": form, "contact":p, "asso_slug": asso_slug})

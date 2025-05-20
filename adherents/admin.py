@@ -19,8 +19,8 @@ class ContactContact_Admin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class Contact_Admin(admin.ModelAdmin):
-    list_display = ('profil',  "nom", "prenom", "email", "projet")
-    search_fields = ('profil', 'nom', 'prenom', 'email', 'projet', )
+    list_display = ("projet", "nom", "prenom", "email", )
+    search_fields = ('projet', 'nom', 'prenom', 'email', )
 
 
 admin.site.register(InscriptionMail)

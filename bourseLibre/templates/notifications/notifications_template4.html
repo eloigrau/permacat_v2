@@ -1,7 +1,7 @@
 
 {% load app_filters %}
 
-<li class="list-group-item"  style="{% if request.user.date_notifications > action.timestamp %}background-color:#ffffe6{%endif%}">
+<li class="list-group-item"  style="{% if request.user.date_notifications > action.timestamp %}notif-dejavue{%endif%}">
     <a href="{%if action.data.url %}{{ action.data.url }}{%endif%} ">{{action.actor}}
         {%if action.description %}{{action.description|truncatechars:180|filtrerNotifSalon}}{% endif %} {%if action.verb == 'started following' %} suit la {{action.target}}{% endif %} &nbsp; <small>(il y a {{action.timesince|raccourcirTempsStr}})</small>
         </a></li>

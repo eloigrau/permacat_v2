@@ -2515,9 +2515,6 @@ padding-bottom:10px;
     .row_banniere_ordi{
         display:flex;
     }
-    .row_visible_ordi{
-        display:inherit;
-    }
     .row_banniere_smartphone{
         display:none;
     }

@@ -87,6 +87,12 @@
                                     class='fa fa-compass'></i> Carte / Annuaire </a></li>
                             {% endcomment %}
 
+            {% if request.session.asso_slug %}
+
+                            <li><a class="dropdown-item" href="{% url 'bienvenue' %}">
+                                <img src="{% static 'favicon.ico' %}" width="20" height="20" alt="acceuil"/>Accueil </a></li>
+            {% endif %}
+
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
                                 <ul class="dropdown-menu nav5-dropdown-submenu">

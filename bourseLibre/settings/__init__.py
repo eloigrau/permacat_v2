@@ -132,7 +132,7 @@ INSTALLED_APPS = [
     'permagora',
     'jardins',
     'adherents',
-    'phonebook',
+    #'phonebook',
     #'tinymce',
     'dal',
     'dal_select2',
@@ -510,6 +510,7 @@ GRAPH_MODELS = {
 NBMAX_ARTICLES = 5
 #PHOTOLOGUE_PATH = MEDIA_ROOT + "photologue/"
 
+SELECT2_CSS = ['assets/css/select2.css']
 
 AVATAR_GRAVATAR_DEFAULT = "identicon"
 AVATAR_AUTO_GENERATE_SIZES = (40,)

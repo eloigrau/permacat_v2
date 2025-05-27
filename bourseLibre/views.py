@@ -1681,7 +1681,7 @@ class Favoris_update(UpdateView):
     def get_success_url(self):
         return reverse('mesFavoris')
 
-
+@login_required
 def favoris_ajouter(request):
     form = FavorisForm(request.POST or None)
     if form.is_valid():
@@ -1690,3 +1690,10 @@ def favoris_ajouter(request):
 
     return render(request, 'favoris/favoris_ajouter.html', {"form": form})
 
+
+@login_required
+def switchThemeSombre(request):
+    request.user.css_dark = not request.user.css_dark
+    request.user.save()
+
+    return redirect(request.GET.get("next", "bienvenue"))

@@ -2,8 +2,6 @@
 {% load cookielaw_tags %}
 {% load static %}
 {% block header %}
-
-<link rel="stylesheet" href="{% static 'jardins/garelick/css/bootstrap.min.css' %}">
 <!-- style css -->
 <link rel="stylesheet" href="{% static 'jardins/garelick/css/style_jardins.css' %}">
 <!-- Responsive-->
@@ -31,7 +29,7 @@
 {% if not request.user.is_anonymous %}
     {% if request.user.adherent_jp %}
     <p class="textcenter">
-        <a class="btn btn-primary" href="{% url 'inscription_jp' %}" style="color:white;"> Tu es inscrit-e -> Tu peux te désinscrire du groupe en cliquant ici</a>
+        <a class="btn btn-primary" href="{% url 'inscription_jp' %}" style="color:white;"> Tu es inscrit-e -> se désinscrire</a>
     </p>
 {% if request.user.get_jardins %}
     <p class="textcenter">

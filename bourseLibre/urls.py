@@ -46,7 +46,7 @@ urlpatterns = [
     path(r'carto/', include('carto.urls')),
     path(r'jardins/', include('jardins.urls')),
     path(r'adherents/', include(('adherents.urls', 'adherents'))),
-    path(r'phonebook/', include('phonebook.urls')),
+#    path(r'phonebook/', include('phonebook.urls')),
     re_path('^', include('django.contrib.auth.urls')),
     re_path('avatar/', include('avatar.urls')),
     #path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
@@ -101,6 +101,8 @@ urlpatterns = [
     # re_path(r'^jardins/', include('jardinpartage.urls', namespace='bourseLibre.jardinpartage')),
     # re_path(r'^agora/', include('agoratransition.urls', namespace='bourseLibre.agoratransition')),
     re_path(r'^vote/', include('vote.urls', namespace='bourseLibre.vote')),
+    re_path(r'^switchThemeSombre/', views.switchThemeSombre, name='switchThemeSombre'),
+
     re_path(r'^kit/', include('fiches.urls', namespace='bourseLibre.fiches')),
     re_path(r'^ateliers/', include('ateliers.urls', namespace='bourseLibre.ateliers')),
     re_path(r'^chercher/$', login_required(views.chercher), name='chercher'),

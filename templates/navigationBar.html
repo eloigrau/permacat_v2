@@ -8,7 +8,7 @@
     {% comment %}
     <div class="container-fluid sticky-top">
 
-        <nav class="navbar navbar-light bs-dark navbar-expand-xl fixed-top  shadow-petit" id="navbar2">
+        <nav class="navbar navbar-dark bg-primary navbar-expand-xl fixed-top shadow-petit" id="navbar2" data-bs-theme="dark">
             <div class="container-fluid">
                 <button class="navbar-toggler navbar-btn" type="button" data-toggle="collapse"
                         data-target="#navbarsActuel" aria-controls="navbarSupportedContent" aria-expanded="true"
@@ -50,7 +50,7 @@
         </nav>
     </div>
     {% endcomment %}
-    <nav class="navbar navbar-light bs-dark navbar-expand-xl fixed-top  shadow-petit" id="navbar">
+    <nav class="navbar {%if request.user.css_dark %}navbar-dark bg-primary {% else %} navbar-light bg-light {% endif %} navbar-expand-xl fixed-top shadow-petit" id="navbar"  data-bs-theme="dark">
         <div class="container-fluid">
             <button class="navbar-toggler navbar-btn" type="button" data-toggle="collapse" data-target="#navbarsActuel"
                     aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
@@ -752,7 +752,45 @@
                             <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'mesActions' %}"> Publications </a></li>
                             <li class="divider" role="separator"></li>
+                            <li><a class="dropdown-item" href="{% url 'switchThemeSombre' %}?next={{request.get_full_path}}"> Thème {%if request.user.css_dark %} Clair{% else %} Sombre {% endif %}</a></li>
+                            <li class="divider" role="separator"></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
+                            {% comment %}
+                            <li>
+                                <a class="nav-link nav-link2  dropdown-toggle navbar-menu " href=""
+                                   id="navbarAbout3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span id="icon-dark" class="mode-icon">
+                                        <i class="bi-moon-stars-fill"></i>
+                                    </span>
+                                    <span id="icon-light" class="mode-icon">
+                                          <i class="bi-sun-fill"></i>
+                                    </span>
+                                    <span id="icon-auto" class="mode-icon">
+                                          <i class="bi-circle-half"></i>
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu  nav6-dropdown dropdown-menu-right" aria-labelledby="navbarAbout3"
+                                    id="dropdooownSite">
+                                    <li class="nav-item  mode-option light"><a id="id_light_mode" class="dropdown-item " href="">
+                                            <i class="bi-sun-fill"></i>
+                                            Light
+                                        </a>
+                                    </li>
+                                    <li class="nav-item  mode-option dark">
+                                        <a id="id_dark_mode" class="nav-item dropdown-item " href="">
+                                            <i class="bi-moon-stars-fill"></i>
+                                            Dark
+                                        </a>
+                                    </li>
+                                    <li class="nav-item  mode-option auto">
+                                        <a id="id_system_mode" class="dropdown-item " href="">
+                                            <i class="bi-circle-half"></i>
+                                            System
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endcomment %}
                         </ul>
                     </li>
                     <li class="nav-item dropdown nav6 nav-icone">
@@ -907,6 +945,7 @@
                         <a class="nav-link nav-link2  hover-icon" href="{% url 'faq' %}"> <i class='fa fa-question-circle'></i>
                     </a>
                     </li>
+
                 </ul>
                 {% else %}
 

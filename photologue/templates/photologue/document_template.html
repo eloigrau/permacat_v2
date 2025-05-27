@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-sm-12">
         {% if object_list %}
-        <table class="table table-condensed table-striped sortable textcenter">
+        <table class="table table-condensed table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable textcenter">
             <thead>
             <tr>
                 <th>Groupe</th>
@@ -27,7 +27,7 @@
                     <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
                         <td  class="textleft" style="min-width:40%;">
-                           <h5> <a href="{{doc.doc.url}}" class="btn " style="width:100%;">
+                           <h5> <a href="{{doc.doc.url}}" class="btn btn-success" style="width:100%;">
                                 {{ doc.titre }} {% fa5_icon 'download' class='iconright' %}
                             </a>
                            </h5>

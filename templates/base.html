@@ -11,11 +11,19 @@
     <title>{% block surtitle %} Perma.Cat {% block title %} {% endblock %}{% endblock %} </title>
     <meta name="viewport" content="width=device-width, initial-scale=0.75, user-scalable=yes">
   <meta charset="UTF-8">
-  <meta name="description" content="Réseau d'échange et d'entraide">
+  <meta name="description" content="Réseau d'échanges et d'entraide">
   <meta name="author" content="Eloi">
   <meta name="application-name" content="Perma.Cat">
+
+    {% if request.user.css_dark %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap_dark.min.css' %}" type='text/css'/>
+    <link href="{% static 'css/style_dark.css' %}" type="text/css" rel="stylesheet" />
+    {% else %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type='text/css'/>
+    <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" />
+    {% endif %}
     {%comment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" type='text/css'/>
 
     <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet"  type='text/css'>
     <script src="{% static 'js/jquery.min.js' %} "  type="text/javascript"></script>
@@ -47,7 +55,6 @@
     <link rel="shortcut icon" href="{%  static 'favicon.ico' %}">
 
     <link href="{% static 'css/fontfamily.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'css/style_list.css'%}" type="text/css" rel="stylesheet" />
     <link href="{% static 'tam-emoji/css/emoji.css' %}" rel="stylesheet" type='text/css'>
 
@@ -77,7 +84,7 @@
         <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
             <div class="panel-heading">
                 {% block panel-heading %}
-                <div class="panel-title soustitre contenu banniere" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
+                <div class="panel-title soustitre contenu" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
                     <div class="row justify-content-sm-center">
                     <div class="col-sm-12 col-md-12 col-lg-12  textcenter">
                         <div class="row ">
@@ -104,7 +111,7 @@
                 {% block submenu%}{% endblock %}
                     {% block banniere2 %}
                     {% endblock%}
-                <div class="panel-body banniere panelsoustitre  ">
+                <div class="panel-body panelsoustitre  ">
                     <div class="row justify-content-sm-center">
                         <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
                                 {% block subtitle %}{% endblock %}

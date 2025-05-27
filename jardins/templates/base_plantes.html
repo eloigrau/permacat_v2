@@ -21,7 +21,7 @@ Jardinothèque Catalane
 {% endblock %}
 {% block submenu %}
 <div class="sticky-top">
-    <nav class="navbar navbar-light bs-dark navbar-expand-xl  shadow-petit">
+    <nav class="navbar {%if request.user.css_dark %} navbar-dark bg-primary {% else %}  navbar-light bs-dark {% endif %} navbar-expand-xl  shadow-petit">
         <button class="navbar-toggler navbar-toggler-right navbar-btn" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
          </button>

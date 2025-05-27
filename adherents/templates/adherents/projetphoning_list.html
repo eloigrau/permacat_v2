@@ -34,7 +34,7 @@
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
-                <a  href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}#ref-titre">
+                <a  href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}?tous=true#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug%} btn-success{% else %}btn-primary{% endif %}">
                           <h6>Tout</h6>
                     </li>

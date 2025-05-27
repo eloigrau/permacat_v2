@@ -92,7 +92,7 @@
             </span>
 		</p>
         <p class="infos  textepetit">rédigé le {{ atelier.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil' atelier.auteur.id %}">{{atelier.auteur.username}}</a>, dernière modification le {{ atelier.date_modification|date:"DATE_FORMAT" }}
-            <span class="badge badge-Light">
+            <span class="badge badge-light">
             {% get_hit_count for atelier as nbvues %}
             {{ nbvues }} vue{{nbvues|pluralize:"s"}}
             </span>
@@ -241,7 +241,7 @@
 					{% if atelier.tarif_par_personne %}
 				<tr>
 					<td class="nomProprieteAtelier">
-						Tarif par personne:
+						Tarif par personne :
 					</td>
 					<td class="proprieteAtelier">
 						{{ atelier.tarif_par_personne}}

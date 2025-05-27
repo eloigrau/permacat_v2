@@ -30,7 +30,7 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
     <div class="textcenter justify-content-center">
-        <table class="table sortable table-condensed tablejardin table-striped sortable"  style="width:100%;">
+        <table class="table sortable table-condensed tablejardin table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable"  style="width:100%;">
            <thead>
            <th> Nom vernaculaire
            </th>

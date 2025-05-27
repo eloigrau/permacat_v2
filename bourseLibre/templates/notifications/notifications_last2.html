@@ -1,11 +1,6 @@
 {% extends 'base_notifications.html' %}
 {% load activity_tags %}
 {% load fontawesome_5 %}
-{% load webpush_notifications %}
-
-{% block header%}
-{% webpush_header %}
-{%endblock%}
 
 {% block subtitle %}
 
@@ -100,16 +95,6 @@
       {% endfor %}
 {% endif %}
 
-{%if  dico.listinscriptions %}
-    <div class="card carte-notif-news notif3 d-md-flex textcenter">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item"  style="background-color:#cce6ff">Inscriptions</li>
-      {% for action in dico.listinscriptions %}
-                {% include "notifications/notifications_template4.html" with action=action %}
-      {% endfor %}
-        </ul>
-    </div>
-{% endif %}
 
 {%if  dico.listmentions %}
     <div class="card carte-notif-news notif3 d-md-flex textcenter">
@@ -124,6 +109,18 @@
         </ul>
 
     </div>
+
+
+{%if  dico.listinscriptions %}
+    <div class="card carte-notif-news notif3 d-md-flex textcenter">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"  style="background-color:#cce6ff">Inscriptions</li>
+      {% for action in dico.listinscriptions %}
+                {% include "notifications/notifications_template4.html" with action=action %}
+      {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 
 </div>
 </div>

@@ -3,7 +3,12 @@
 {% load static %}
 
 {%block header %}
+
+{% if request.user.css_dark %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style_forum_dark.css' %}"/>
+{% else %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
+{% endif %}
 {% endblock  %}
 <div class="table-responsive-vertical shadow-z-1 infinite-item ">
     <!-- Table starts here -->
@@ -21,8 +26,7 @@
 
                     <p class="">
                         <a href="{% url 'blog:index_asso' asso=article.asso.slug %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe">
-                            <span class="badge badge-primary"
-                                  style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}
+                            <span class="badge badge-primary">{% if article.get_logo_categorie %}
                                 <img src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
                         </a>
                     </p>
@@ -64,9 +68,9 @@
                     </p>
                 </a>
             </td>
+            {% if article.start_time %}
             <td data-title="" class="text-center shrink">
 
-                {% if article.start_time %}
                 <span class="badge badge-success">
                   {% if article.end_time %}
                   du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }}
@@ -74,8 +78,10 @@
                   le {{ article.start_time|date:"DATE_FORMAT" }}
                   {% endif %}
                   </span>
-                        {% endif %}
             </td>
+            {% else %}
+            <td data-title="" class="text-center shrink row_visible_ordi"></td>
+            {% endif %}
 
         </tr>
         {% endfor %}

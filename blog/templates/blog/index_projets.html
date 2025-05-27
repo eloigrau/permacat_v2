@@ -53,7 +53,7 @@
         </a>
    </li>
             <li class="nav-item dropdown">
-                 <button type="button" class="btn btn-block {% if request.GET.auteur %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                 <button type="button" class="btn btn-info btn-block {% if request.GET.auteur %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                    data-target = "#idAuteur">
                     {% if request.GET.auteur %} Auteur: {{request.GET.auteur}} {%else%}Auteur{%endif%}
                  </button>
@@ -65,7 +65,7 @@
             </li>
 
             <li class="nav-item dropdown">
-             <button type="button" class="btn  btn-block {% if request.GET.categorie %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+             <button type="button" class="btn btn-info btn-block {% if request.GET.categorie %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idCategorie">
                 {% if request.GET.categorie %} {{categorie_courante}} {%else%}Catégorie{%endif%}
                  </button>
@@ -77,7 +77,7 @@
             </li>
 
             <li class="nav-item dropdown">
-             <button type="button" class="btn  btn-block {% if request.GET.statut %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+             <button type="button" class="btn btn-info btn-block {% if request.GET.statut %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idStatut">
                 {% if request.GET.statut %} {{statut_courant}} {%else%}Statut{%endif%}
                  </button>
@@ -89,7 +89,7 @@
             </li>
         {% if request.user.adherent_pc %}
                 <li class="nav-item dropdown">
-             <button type="button" class="btn  btn-block {% if request.GET.asso %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+             <button type="button" class="btn btn-info btn-block {% if request.GET.asso %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                data-target = "#idPermacat">
                  {% if request.GET.asso %}{{request.session.asso_slug | getNomGroupeFromSlug}}{%else%}Groupe{%endif%}
                 </button>

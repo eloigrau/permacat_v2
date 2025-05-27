@@ -120,7 +120,6 @@
   }
   .table-responsive-vertical > .table_forum > tbody > tr > td {
     background-color: #ffffff;
-    display: block;
     vertical-align: middle;
     text-align: right;
     line-height:1.2;
@@ -554,9 +553,15 @@
 }
 
 .titre_forum{
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: 400;
     color:#1a1a1a;
     font-family: Montserrat,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 
+
+@media screen and (max-width: 768px) {
+    .titre_forum{
+    text-align:center;
+    }
+}

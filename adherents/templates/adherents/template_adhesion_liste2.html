@@ -1,7 +1,7 @@
 
 <div class="row">
     <div class="col textcenter">
-        <table class="table table-condensed tableprofils table-striped sortable">
+        <table class="table table-condensed tableprofils table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable">
             <thead><tr>
                 <th>Année</th>
                 <th>Montant</th>

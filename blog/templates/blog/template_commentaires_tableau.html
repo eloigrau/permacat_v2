@@ -5,7 +5,11 @@
 {% load avatar_tags %}
 
 {%block header %}
+{% if request.user.css_dark %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style_forum_dark.css' %}"/>
+{% else %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
+{% endif %}
 {% endblock  %}
 <div class="table-responsive-vertical shadow-z-1 ">
     <!-- Table starts here -->

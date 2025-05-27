@@ -2,8 +2,11 @@
 {% load fontawesome_5 %}
 {% load static %}
 
-{%block header %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
+{%block header %}{% if request.user.css_dark %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style_forum_dark.css' %}"/>
+{% else %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
+{% endif %}
 {% endblock  %}
 <div class="table-responsive-vertical shadow-z-1 infinite-item ">
   <!-- Table starts here -->
@@ -27,7 +30,7 @@
           </td>
             <td data-title="Article" class="center shrink">
                 <a href="{% url 'blog:index_asso' asso=article.asso.slug %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe" >
-                <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
+                <span class="badge badge-primary" >{% if article.get_logo_categorie %}  <img  src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
                 </a>
             </td>
           <td data-title="Commentaire" class="shrink" >

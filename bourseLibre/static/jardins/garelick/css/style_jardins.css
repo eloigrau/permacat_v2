@@ -1,21 +1,4 @@
 
-
-/*--------------------------------------------------------------------- File Name: responsive.css ---------------------------------------------------------------------*/
-
-
-/*--------------------------------------------------------------------- File Name: style.css ---------------------------------------------------------------------*/
-
-
-/*--------------------------------------------------------------------- import Fonts ---------------------------------------------------------------------*/
-
-@import url('https://fonts.googleapis.com/css?family=Poppins:400');
-@import url('https://fonts.googleapis.com/css?family=Lato:400,700&display=swap');
-
-/*****---------------------------------------- 1) font-family: 'Rajdhani', sans-serif;
- 2) font-family: 'Poppins', sans-serif;
- ----------------------------------------*****/
-
-
 /*--------------------------------------------------------------------- import Files ---------------------------------------------------------------------*/
 
 @import url(animate.min.css);
@@ -37,12 +20,12 @@ html {
 }
 
 body {
- font-family: 'Lato', sans-serif;
- background-color: #006f16;
- color: #222122;
-font-size: 17px;
-line-height: 30px;
-font-weight: 500;
+ /*font-family: 'Lato', sans-serif;*/
+ /*background-color: #006f16;*/
+ /*color: #222122;*/
+/*font-size: 17px;*/
+/*line-height: 30px;*/
+/*font-weight: 500;*/
 padding-bottom: 50px;
 }
 
@@ -55,7 +38,7 @@ padding-bottom: 50px;
 }
 
 a {
-     color: #1f1f1f;
+    /* color: #1f1f1f;*/
      text-decoration: none !important;
      outline: none !important;
      -webkit-transition: all .3s ease-in-out;
@@ -145,7 +128,7 @@ p {
 }
 
 a {
-     color: #222222;
+    /* color: #222222;*/
      text-decoration: none;
      outline: none !important;
 }
@@ -217,11 +200,11 @@ button {
 }
 
 .light_silver {
-     background: #f9f9f9;
+  /*   background: #f9f9f9;*/
 }
 
 .theme_bg {
-     background: #38c8a8;
+   /*  background: #38c8a8;*/
 }
 
 .full {
@@ -289,7 +272,7 @@ button {
 /** banner section **/
 
 .banner_main {
-     background: #fff;
+    /* background: #fff;*/
 }
 
 .logo {
@@ -302,14 +285,14 @@ button {
 }
 
 .banner_main .titlepage h2 {
-     color: #1e2426;
+    /* color: #1e2426;*/
      margin-bottom: 20px;
      font-size: 36px;
      line-height: 50px;
 }
 
 .banner_main .titlepage p {
-     color: #222122;
+   /*  color: #222122;*/
      font-size: 17px;
      line-height: 30px;
      font-weight: 500;
@@ -344,7 +327,7 @@ button {
     align-items: center;
     font-size: 50px;
     font-weight: bold;
-    color: #1e2426;
+    /*color: #1e2426;*/
 
 }
 

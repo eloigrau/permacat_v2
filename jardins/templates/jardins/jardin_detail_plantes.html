@@ -13,7 +13,7 @@
 	<div class="col-sm-12 textcenter">
 		<h4>Liste des plantes à échanger du jardin ({{plantes|length}})</h4>
 			{% if plantes %}
-			<table  class="table table-condensed tablejardin table-striped sortable">
+			<table  class="table table-condensed tablejardin table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable">
 				<thead><tr><th style="width:0%;"> Nom</th><th style="width:20%;"> Espèce</th><th style="width:50%;">Informations</th>
 					{%if request.user.is_superuser or request.user == jardin.auteur  or request.user == jardin.referent %}<th>Edit</th>{% endif %}
 				</tr></thead>

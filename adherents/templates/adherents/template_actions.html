@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col textcenter">
         <h3>Historique</h3>
-        <table class="table table-condensed tableprofils table-striped sortable">
+        <table class="table table-condensed tableprofils table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable">
             <thead><tr>
                 <th>Date</th>
                 <th>Adhérent</th>

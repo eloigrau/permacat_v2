@@ -3,231 +3,302 @@
 {% load fontawesome_5 %}
 <h4><b>Bienvenue dans la FAQ !</b></h4>
 <h5>(Foire Aux Questions, ou Frequently Asked Questions)</h5>
-	<p class="textcenter">N'hésitez pas à poser vos questions dans <a href="../forum/article/faq-du-site#idComenter">l'article consacré</a></p>
+<p class="textcenter">N'hésitez pas à poser vos questions dans <a href="{% url 'blog:lireArticle' slug='faq-du-site' %}#idDiscussion">l'article
+    consacré</a></p>
 
-	<p class="textcenter">Vous pouvez consulter les tutoriels d'utilisation du site dans <a href="../forum/article/tentative-de-tutoriel-dutilisation-de-la-plateforme#ref-titre">l'article consacré</a></p>
+<p class="textcenter">Vous pouvez consulter les tutoriels d'utilisation du site dans <a
+        href="{% url 'blog:lireArticle' slug='tentative-de-tutoriel-dutilisation-de-la-plateforme' %}#ref-titre">l'article consacré</a></p>
 
 {% endblock %}
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-10 col-lg-8">
-<div class="accordion" id="accordionFaq">
-  <div class="card">
-    <div class="card-header" >
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed  btn-faq" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseThree">
-         Présentation générale...
-        </button>
-      </h5>
+        <div class="accordion" id="accordionFaq">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Présentation générale...
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        <p align="left">Ce site est un un outil proposé gratuitement par l'association Permacat qui nous
+                            permet de communiquer, nous organiser, partager des informations. Le site est open source et
+                            évolutif. Il peut être rejoint par d'autres collectifs, ou dupliqué pour un autre collectif.<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading2">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2"
+                            aria-expanded="true" aria-controls="collapse2">
+                        Comment ça marche ? (Video tuto)
+                    </button>
+                </h2>
+                <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        <p>Partie 1 : <a
+                                href="https://www.youtube.com/embed/DJDOP3MKJhY?autoplay=0&amp;fs=1&amp;iv_load_policy=3&amp;showinfo=0&amp;rel=0&amp;cc_load_policy=0&amp;start=0&amp;end=0">voir
+                            sur youtube</a></p>
+                        <p>Partie 2 : <a
+                                href="https://www.youtube.com/embed/ouv8kTAN0MY?autoplay=0&amp;fs=1&amp;iv_load_policy=3&amp;showinfo=0&amp;rel=0&amp;cc_load_policy=0&amp;start=0&amp;end=0">voir
+                            sur youtube</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading3">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3"
+                            aria-expanded="true" aria-controls="collapse3">
+                        Comment est organisé le site ? Utilisation du menu principal (en haut)
+                    </button>
+                </h2>
+                <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        <p align="left">Le menu en haut de la page permet de naviguer dans les différentes sections du
+                            site :<br></p>
+
+                        <ul>
+                            <li><u>Groupes</u> :
+                                <p>ce menu permet d'accéder directement aux section du site pour chaque groupe (statuts,
+                                    charte,
+                                    présentation, annuaire, adhésion, documents administratifs, etc). Plus
+                                    particulièrement,
+                                    pour l'association Permacat :<br></p>
+                            </li>
+                            >
+                            <li><u>Espaces</u> :
+                        </ul>
+                        <p>- "Carte / annuaire" : voir les iscrits sur une carte ou une liste (on peut y faire une
+                            recherche par nom, mot-clé, etc))</p>
+                        <p>- "Jardinothèque" : section du site consacrée à la jardinothèque (réseau des jardins du
+                            66) </p>
+                        <p>- "Petites Annonces" : pour consulter / déposer une petite annonce <br></p>
+                        <p>- "Salon" : pour discuter en petit groupe <br></p>
+                        <p>- "Ateliers" : pour organiser des ateliers collectifs / formations / chantiers
+                            participatifs<br></p>
+                        <p>- "Documents" : pour pouvoir partager des fichiers et des documents directement sur le
+                            site </p>
+                        <p>- "Albums" : pour pouvoir partager des photos </p>
+                        <p>- "todo" : pour consulter tous les Todo (ou "Yapluka") associés aux articles</p>
+                        </li>
+                        <li><u>Le forum </u>: c'est la section centrale du site : il est composé par les articles. Un
+                            article peut porter
+                            sur n'importe quel
+                            sujet et de toute nature: texte, liens, photos, information, question,
+                            propositions, annoncer&nbsp; un évènement, etc.). Les articles peuvent être commentés.
+                            Chaque article a donc son propre fil de discussion.Vous pouvez associer un evenement, un
+                            lieu, un salon de discussion, un document ou un album photo à chaque article modifiable
+                            ou que vous avez créé<br></p>
+                        </li>
+
+                        <li><u>L'agenda :</u>
+                            <p>il s'agit d'un calendrier pour noter ou visualiser les différents événements associés aux
+                                articles, projets ou ateliers. Il est
+                                possible d'associer une ou plusieurs dates à un article du forum ou un atelier</p>
+                        </li>
+                        <li><u>Les notifications : </u>
+                            <p>Cette partie permet de voir l'activité sur le site. Les différentes actions (ajout d'un
+                                article, nouveau commentaire, etc.) sont visibles chronologiquement, ou pour chaque
+                                partie
+                                séparément. Un système de "check" permet de n'afficher que les nouvelles notifications
+                                depuis votre dernière visite<br></p>
+                        </li>
+                        <li><u>Le site :</u>
+
+                            <p> dans ce menu, vous trouverez les informations relatives au site,
+                                Condition Générales d'Utilisation, annuaires des inscrits, etc.</p>
+                        </li>
+                        <li><u>Mon Profil :</u>
+                            <p>Ici vous pouvez modifier les informations relatives à votre compte (nom, description,
+                                adresse, etc.)<br></p>
+                            <p><br></p>
+                        </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading4">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4"
+                            aria-expanded="true" aria-controls="collapse4">
+                        Bref aperçu des différents pictogrammes utilisés sur le site
+                    </button>
+                </h2>
+                <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        <ul>
+                            <li> {% fa5_icon 'question-circle' %} : cliquer dessus pour avoir une explication</li>
+                            <li>
+                                <i class="fa fa-bars"></i> : cliquer dessus pour ouvrir le menu
+                            </li>
+                            <li> {% fa5_icon 'bell' title='abonnement' %}: vous êtes abonné.e à cette page, cliquer
+                                dessus pour vous désabonner
+                            </li>
+                            <li> {% fa5_icon 'bell-slash' %}: vous n'êtes pas abonné.e à cette page, cliquer dessus
+                                pour vous abonner
+                            </li>
+                            <li> {% fa5_icon 'list' %} : cliquer dessus pour voir les personnes qui sont abonnées à
+                                cette page
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading5">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5"
+                            aria-expanded="true" aria-controls="collapse5">
+                        Comment fonctionnent les alertes mails?
+                    </button>
+                </h2>
+                <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        <p>Un système de "suivi" du site permet de vousenvoyer un mail pour certaines activités sur
+                            le site que vous choisissez : les "cloches" sur les différentes pages permettent
+                            d'activer/de désactiver les alertes.&nbsp; On peut suivre&nbsp; :</p>
+                        <ol>
+                            <li>au forum : pour recevoir un mail à chaque nouvel article (on peut s'abonner à chaque
+                                groupe dont on fait partie indépendamment)
+                            </li>
+                            <li>aux petites annonces : pour recevoir&nbsp; un mail lorsque quelqu'un propose ou demande
+                                quelque chose sur le "marché"
+                            </li>
+                            <li>aux "message privés" : pour recevoir un mail quand quelqu'un vous contacte à travers
+                                la messagerie du site
+                            </li>
+                            <li>au projets : pour recevoir un mail à chaque nouveau projet</li>
+                            <li>aux suffrages : pour recevoir un mail à chaque nouvelle proposition de vote</li>
+                            <li>à un article en particulier : pour recevoir un mail à
+                                chaque fois que quelqu'un commente ou modifie un article en particulier
+                            </li>
+                            <li>à un projet en particulier : pour recevoir un mail à
+                                chaque fois que quelqu'un commente ou modifie un projet en particulier
+                            </li>
+                        </ol>
+                        <p>Par défaut, lorsque vous vous inscrivez, vous êtes automatiquement "abonné" aux alertes
+                            mails du forum, des projets, de l'altermarché et de vos conversations privées</p>
+                        <p>Les mails sont envoyés tous les lundis et jeudis à 6h30</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading6">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6"
+                            aria-expanded="true" aria-controls="collapse6">
+                        Comment ne plus recevoir de mails ?
+                    </button>
+                </h2>
+                <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        <p>Si vous ne souhaitez plus recevoir d'emails de suivi, il vous suffit de cliquer sur les
+                            cloches que vous trouverez dans les sections pour lesquelles vous ne voulez plus
+                            recevoir d'emails. Par exemple, si vous souhaitez ne plus recevoir d'email au sujet des
+                            nouveaux articles, vous cliquez sur la cloche qui se trouve dans "forum > articles"</p>
+                        <p>Les cloches barrées signifient que vous n'êtes pas abonné</p>
+                        <p>Vous pouvez gérer tous vos abonnements sur <a href="{% url 'mesSuivis' %}">la page dédiée
+                            (menu Profil -> abonnements)</a></p>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading7">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7"
+                            aria-expanded="true" aria-controls="collapse7">
+                        Qu'est-ce qu'un "Altermarché" ?
+                    </button>
+                </h2>
+                <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="heading7"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        C'est un marché en monnaie alternatives (June, SEL, Soudaqui, troc, etc. - hors euro). Un
+                        moment convivial de rencontres et d'achange. Sur le site, il correspond à la section
+                        "Petites Annonces", pour passer des petites annonces.
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading8">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8"
+                            aria-expanded="true" aria-controls="collapse8">
+                        Qu'est-ce qu'un "Article" ?
+                    </button>
+                </h2>
+                <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="heading8"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        C'est une page web du forum ce site que vous pouvez créer, pour y mettre toute sorte
+                        d'information
+                        (annoncer une rencontre, discuter autour d'un thème, proposer une recette, etc.). Les
+                        articles peuvent etre publics (ie visibles par tous les inscrits au site) ou bien réservés
+                        au collectif (visible uniquement par les membres du collectif inscrits au site).
+                        <p>Les articles peuvent etre "modifiables par n'importe qui" ce qui permet la possibilité de
+                            rédiger à plusieurs un article ou de le mettre à jour, etc. Mais attention, il n'y a pas
+                            de sauvegarde des anciennes versions des articles.</p>
+                        <p>On peut ajouter à un article toute sorte d'infos comlpémentaires : dates, ficheirs, salons de
+                            discussion, vote, documents, etc.</p>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading9">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9"
+                            aria-expanded="true" aria-controls="collapse9">
+                        Qu'est-ce qu'un "Projet" ?
+                    </button>
+                </h2>
+                <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="heading9"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        C'est une "action" (à court ou à long terme) proposée par un adhérent à un groupe du site (qui
+                        peut etre le groupe "Public" c'est à dire tous les inscrits), qui peut être
+                        soutenue par le groupe. Pour cela, il faut suivre la procédure voulue par el groupe (par exemple
+                        remplir la "fiche projet", procéder au(x) vote(s), etc.)
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading10">
+                    <button class=" accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse10"
+                            aria-expanded="true" aria-controls="collapse10">
+                        Comment devenir membre d'un groupe ?
+                    </button>
+                </h2>
+                <div id="collapse10" class="accordion-collapse collapse" aria-labelledby="heading10"
+                     data-bs-parent="#accordionFaq">
+                    <div class="accordion-body">
+                        Pour les associations, il faut devenir adhérent. Pour certains collectifs il faut juste
+                        cliquer sur le bouton "s'incrire"" sur leur page de présentation. Pour d'autres il faut en
+                        faire la demande par mail.
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
-    <div id="collapse1" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
-      <div class="card-body">
-        <p align="left">Ce site est un un outil proposé gratuitement par l'association Permacat qui nous permet de communiquer, nous organiser, partager des informations. Le site est open source et évolutif. Il peut être rejoint par d'autres collectifs, ou dupliqué pour un autre collectif.<br></p>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" >
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed  btn-faq" type="button" data-toggle="collapse" data-target="#collapse11" aria-expanded="false" aria-controls="collapseThree">
-         Comment ça marche ? (Video tuto)
-        </button>
-      </h5>
-    </div>
-    <div id="collapse11" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
-      <div class="card-body">
-<p>Partie 1 :</p>
-  <iframe scrolling="no" marginheight="0" marginwidth="0" type="text/html" src="https://www.youtube.com/embed/DJDOP3MKJhY?autoplay=0&amp;fs=1&amp;iv_load_policy=3&amp;showinfo=0&amp;rel=0&amp;cc_load_policy=0&amp;start=0&amp;end=0" width="788.54" height="443" frameborder="0"></iframe>
-
-          <p>Partie 2 :</p>
-<iframe scrolling="no" marginheight="0" marginwidth="0" type="text/html" src="https://www.youtube.com/embed/ouv8kTAN0MY?autoplay=0&amp;fs=1&amp;iv_load_policy=3&amp;showinfo=0&amp;rel=0&amp;cc_load_policy=0&amp;start=0&amp;end=0" width="788.54" height="443" frameborder="0"></iframe>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-lightbtn-faq" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-         Comment est organisé le site ? Utilisation du menu principal (en haut)
-        </button>
-      </h5>
-    </div>
-
-    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionFaq">
-      <div class="card-body">
-
-        <p align="left">Le menu en haut de la page permet de naviguer dans les différentes sections du site :<br></p>
-
-
-          <ul> <li><u>Groupes</u> : </li></ul>
-        <p>cette section regroupe les informations relatives à chaque collectif qui utilise le site (statuts, charte, présentation, annuaire, adhésion, documents administratifs, etc). Plus particulièrement, pour l'association Permacat :<br></p>
-        <p>- Une partie "Fiches" pour créer des fiches techniques à plusieurs (fiches de permaculture, à la base). </p>
-           <ul> <li><u>Activités</u> : </li></ul>
-          <p>- Une partie "Projets" pour pouvoir s'organiser autour de projets en particulier. </p>
-          <p>- Une partie "Jardins Partagés" pour suivre et/ou participer aux différents jardins partagés. </p>
-         <p>- Une partie "Ateliers" pour organiser des ateliers collectifs (avec possibilité d'inscription à l'avance)<br></p>
-       <p>- Il y a une partie "Suffrages" pour pouvoir faire des votes ou des sondages simples sur le site (pour des votes plus complexes, voir le site balotilo.org). </p>
-         <p>- Et une partie "Documents" pour pouvoir partager des photos et des documents directement sur le site. </p>
-                    <ul><li><u>Le forum </u>: c'est la section "facebook"/blog collaboratif :</li></ul><p> vous pouvez discuter ou bien en privé (entre 2 personnes) ou dans un "Salon" à plusieurs (privé ou public) ou dans une conversation privée. Vous pouvez aussi lire
- et ajouter des "articles" (un article peut porter sur n'importe quel
-sujet et de toute nature: texte, liens, photos, information, question,
-propositions, annoncer&nbsp; un évènement, etc.). Les articles peuvent être commentés. Chaque article a donc son propre fil de discussion.Vous pouvez associer un evenement, un lieu, un salon de discussion, un document ou un album photo à chaque article modifiable ou que vous avez créé<br></p>
-          <ul> <li><u>L'altermarché :</u> c'est la section "leboncoin" du site </li></ul>
-          <p>là où vous pouvez voir les offres et demandes
- en cours, avec la possibilité d'ajouter ou de modifier une offre qui
-vous appartient. Les échanges ne sont pas possibles en euros par contre, seulement en monnaies alternatives.<br></p>
-        <ul> <li><u>L'agenda :</u></li></ul>
-        <p>il s'agit d'un calendrier pour noter ou visualiser les différents événements : il est possible d'associer une ou plusieurs dates à un article du forum ou un atelier</p><ul>
-          <li><u>Les notifications :</u></li></ul><p>Cette partie permet de voir l'activité sur le site. Les différentes actions (ajout d'un article, nouveau commentaire, etc.) sont visibles chronologiquement, ou pour chaque partie séparément. Un système de "check" permet de n'afficher que les nouvelles notifications depuis votre dernière visite<br></p>
-        <ul><li><u>Le site :</u>
-      </li></ul><p> dans ce menu, vous trouverez les informations relatives au site,
-Condition Générales d'Utilisation, annuaires des inscrits, etc.</p><ul><li><u>Mon Profil :</u></li></ul><p>Ici vous pouvez modifier les informations relatives à votre compte (nom, description, adresse, etc.)<br></p><p><br></p>
-
-      </div>
-    </div>
-  </div>
-
-
-
-  <div class="card">
-    <div class="card-header" id="heading2">
-      <h5 class="mb-0">
-        <button class="btn btn-lightbtn-faq" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapseOne">
-         A quoi correspondent les différents pictogrammes utilisés sur le site ?
-        </button>
-      </h5>
-    </div>
-
-    <div id="collapse2" class="collapse" aria-labelledby="headingOne" data-parent="#accordionFaq">
-      <div class="card-body">
-
-        <p align="left">
-
-        </p>
-        <ul>
-        <li> {% fa5_icon 'question-circle' %} : cliquer dessus pour avoir une explication </li>
-        <li>
-    <i class="fa fa-bars"></i> : cliquer dessus pour ouvrir le menu</li>
-        <li> {% fa5_icon 'bell' title='abonnement' %}: vous êtes abonné.e à cette page, cliquer dessus pour vous désabonner</li>
-        <li> {% fa5_icon 'bell-slash' %}: vous n'êtes pas abonné.e à cette page, cliquer dessus pour vous abonner </li>
-        <li> {% fa5_icon 'list' %} : cliquer dessus pour voir les personnes qui sont abonnées à cette page</li>
-        </ul>
-
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" id="heading8">
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapsealerte" aria-expanded="false" aria-controls="collapseThree">
-         Comment fonctionnent les alertes mails?
-        </button>
-      </h5>
-    </div>
-    <div id="collapsealerte" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
-      <div class="card-body">
-       <p>Un système de "suivi" du site permet de vousenvoyer un mail pour certaines activités sur le site que vous choisissez : les "cloches" sur les différentes pages permettent d'activer/de désactiver les alertes.&nbsp; On peut suivre&nbsp; :</p>
-        <ol>
-          <li>au forum : pour recevoir un mail à chaque nouvel article</li>
-          <li>à l'altermarché : pour recevoir&nbsp; un mail lorsque quelqu'un propose ou demande quelque chose sur le "marché"</li>
-        <li>aux "message privés" : pour recevoir un mail quand quelqu'un vous contacte à travers la messagerie du site</li>
-          <li>au projets : pour recevoir un mail à chaque nouveau projet</li>
-          <li>aux suffrages : pour recevoir un mail à chaque nouvelle proposition de vote</li>
-        <li>à un article en particulier : pour recevoir un mail à
-        chaque fois que quelqu'un commente ou modifie un article en particulier</li>
-        <li>à un projet en particulier : pour recevoir un mail à
-        chaque fois que quelqu'un commente ou modifie un projet en particulier</li></ol>
-        <p>Par défaut, lorsque vous vous inscrivez, vous êtes automatiquement "abonné" aux alertes mails du forum, des projets, de l'altermarché et de vos conversations privées</p>
-        <p>Les mails sont envoyés tous les jours à 6h30</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" id="headingMails">
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapsemail" aria-expanded="false" aria-controls="collapseThree">
-         Comment ne plus recevoir de mails ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapsemail" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
-      <div class="card-body">
-        <p>Si vous ne souhaitez plus recevoir d'emails de suivi, il vous suffit de cliquer sur les cloches que vous trouverez dans les sections pour lesquelles vous ne voulez plus recevoir d'emails. Par exemple, si vous souhaitez ne plus recevoir d'email au sujet des nouveaux articles, vous cliquez sur la cloche qui se trouve dans "forum > articles"</p>
-        <p>Les cloches barrées signifient que vous n'êtes pas abonné</p>
-        <p>Vous pouvez gérer tous vos abonnements sur <a href ="{% url 'mesSuivis' %}">la page dédiée (menu Profil -> abonnements)</a></p>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" id="heading4">
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapseThree">
-         Qu'est-ce qu'un "Altermarché" ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapse4" class="collapse" aria-labelledby="headingThree" data-parent="#accordionFaq">
-      <div class="card-body">
-       C'est un marché en monnaie alternatives (June, SEL, Soudaqui, troc, etc. - hors euro). Un moment convivial de rencontres et d'achange. Sur le site, il correspond à la section "Annonces", pour passer des petites annonces.
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card">
-    <div class="card-header" id="heading5">
-      <h5 class="mb-0">
-        <button class="btn btn-light collapsed " type="button" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapseThree">
-         Qu'est-ce qu'un "Article" ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordionFaq">
-      <div class="card-body">
-       C'est une page web de ce site que vous pouvez créer, pour y mettre toute sorte d'information (annoncer une rencontre, discuter autour d'un thème, proposer une recette, etc.). Les articles peuvent etre publics (ie visibles par tous les inscrits au site) ou bien  réservés au collectif (visible uniquement par les membres du collectif inscrits au site).
-        <p>Les articles peuvent etre "modifiables par  n'importe qui" ce qui permet la possibilité de rédiger à plusieurs un article ou de le mettre à jour, etc. Mais attention, il n'y a pas de sauvegarde des anciennes versions des articles.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-header" id="heading6">
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapseThree">
-         Qu'est-ce qu'un "Projet" ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapse6" class="collapse" aria-labelledby="heading6" data-parent="#accordionFaq">
-      <div class="card-body">
-       C'est une "action" (à court ou à long terme) proposée par un adhérent au site, qui peut être soutenue par l'association. Pour cela, il faut suivre la procédure indiquée dans le règlement intérieur, remplir la "fiche projet", procéder au(x) vote(s), etc.
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card">
-    <div class="card-header" >
-      <h5 class="mb-0">
-        <button class="btn btn-lightcollapsed btn-faq" type="button" data-toggle="collapse" data-target="#collapse8" aria-expanded="false" aria-controls="collapseThree">
-         Comment devenir membre du collectif ?
-        </button>
-      </h5>
-    </div>
-    <div id="collapse8" class="collapse" aria-labelledby="heading5" data-parent="#accordionFaq">
-      <div class="card-body">
-          Pour les associations, il faut devenir adhérent. Pour certains collectifs il faut juste cliquer sur le bouton "s'incrire"" sur leur page de présentation. Pour d'autres il faut en faire la demande par mail. </div>
-    </div>
-  </div>
-
-</div>
-</div>
 </div>
 {% endblock %}

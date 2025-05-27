@@ -59,7 +59,7 @@
         <h3>{{ projet.titre }}
 
             {% if projet.estArchive%}
-            <span class="badge badge-Light">
+            <span class="badge badge-light">
                 archivé
             </span>
             {%endif%}
@@ -137,7 +137,7 @@
              {% if articles_lies %}
 				<tr>
 					<td class="nomProprieteProduit">
-						Articles :
+						Articles liés :
 					</td>
 					<td class="proprieteProduit">
 
@@ -198,7 +198,7 @@
 				</tr>
 				<tr>
 					<td class="nomProprieteProduit">
-                         rédigé par
+                         rédigé par :
 					</td>
 					<td class="proprieteProduit">
 						<a href="{% url 'profil' projet.auteur.id %}"> {{ projet.auteur.username }}</a>

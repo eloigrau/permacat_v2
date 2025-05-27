@@ -64,7 +64,7 @@
 {% if not request.user.is_authenticated %}
 <div class="row textcenter">
   <div class="col-sm-12 textcenter">
-      <p>Vous n'êtes pas <a href="{% url 'login' %}?next={{request.GET.urlencode}}">connecté</a>,
+      <p>Vous n'êtes pas <a href="{% url 'login' %}?next={{request.get_full_path}}">connecté</a>,
           vous ne voyez que ceux qui ont accepté d'apparaitre publiquement ici
           (d'autres sont dans le réseau aussi ;).</p>
   </div>

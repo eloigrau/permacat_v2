@@ -15,7 +15,7 @@
             <a href="{% url 'jardinpartage:index'  %}?categorie={{article.categorie}}"  style="background-color:{{article.get_couleur}}" class="smallcaps_h2"><span class="badge badge-success" style="background-color:{{article.get_couleur}}" >Jardins partagés/{{ article.get_categorie_display }}</span></a>
 
             {% if article.estArchive%}
-            <span class="badge badge-Light">
+            <span class="badge badge-light">
                 archivé
             </span>
             {%endif%}
@@ -25,15 +25,15 @@
             </span>
             {%endif%}
             <a href="{% url 'profil' article.auteur.id %}">
-                <span class="badge badge-Light">
+                <span class="badge badge-light">
                rédigé par {{ article.auteur.username }}
                 </span>
             </a>
 
-            <span class="badge badge-Light">
+            <span class="badge badge-light">
                 le {{ article.date_creation|date:"DATE_FORMAT" }}
             </span>
-            <span class="badge badge-Light">
+            <span class="badge badge-light">
             {% get_hit_count for article as nbvues %}
             {{ nbvues }} vue{{nbvues|pluralize:"s"}}
             </span>
@@ -56,7 +56,7 @@
             </button>
         </a>
         {% endif %}
-        <span class="badge badge-Light">
+        <span class="badge badge-light">
                 <button class="btn btn-light btn-sm " onclick="copyToClipboard('https://www.perma.cat{{article.get_absolute_url}}')" title="Copier l'adresse de l'article"><i class="fa fa-link" aria-hidden="true"></i></button>
         </span>
     </div>
@@ -98,7 +98,7 @@
      </div>
      <div class="boxitem_droite">
             {% if article.estArchive%}
-            <span class="badge badge-Light">
+            <span class="badge badge-light">
                 archivé
             </span>
             {%endif%}

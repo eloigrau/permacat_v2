@@ -1412,6 +1412,8 @@ td.proprieteProduit{
 }
 td.nomProprieteProduit{
     background-color:Gray;
+    text-align:right;
+    vertical-align: middle;
 }
 td.proprieteJardin{
     background-color:#ffffef;
@@ -1874,11 +1876,32 @@ margin-bottom:10px;
 
 .nomProprieteAtelier{
     background-color:Gray;
+    color:white;
+    text-align: right;
 }
 .proprieteAtelier{
     background-color:LightGray;
+    color:black;
 }
+li.dropdown-submenu > a:link,
+li.dropdown-submenu > a:hover,
+li.dropdown-submenu > a:focus,
+li.dropdown-submenu > a:active,
+li.dropdown-submenu > a:visited{color:black}
 
+li.dropdown-menu > a:link,
+li.dropdown-menu > a:hover,
+li.dropdown-menu > a:focus,
+li.dropdown-menu > a:active,
+li.dropdown-menu > a:visited{color:black}
+
+ul.show > li > a:link,
+ul.show > li > a:hover,
+ul.show > li > a:focus,
+ul.show > li > a:active,
+ul.show > li > a:visited{color:black}
+
+/*html body div#contenucharge.contenucharge div#top.container-fluid div.row.rowprincipal.justify-content-center div.colprincipal div.navbarcontainer nav#navbar.navbar.navbar-light.bg-light.navbar-expand-xl.fixed-top.shadow-petit div.container-fluid div#navbarsActuel.navbar-collapse.collapse.justify-content-between.align-items-center.w-100 ul.nav.navbar-nav.mr-auto.navbar-left.d-flex.justify-content-between li.nav-item.dropdown.nav5.show ul.dropdown-menu.dropdown-menu1.nav5-dropdown.show li.dropdown-submenu ul.dropdown-menu.nav5-dropdown-submenu.show li a.dropdown-item*/
 .boutonAtelier{
 background:    rgba(255, 255, 255, 0.6);
 /*background:    linear-gradient(#fff2cc, #ffd966);*/
@@ -2496,6 +2519,9 @@ padding-bottom:10px;
     .row_banniere_ordi{
         display:none;
     }
+    .row_visible_ordi{
+        display:none;
+    }
     .row_banniere_smartphone{
         display:flex;
     }
@@ -2506,6 +2532,9 @@ padding-bottom:10px;
 @media(min-width: 961px) {
     .row_banniere_ordi{
         display:flex;
+    }
+    .row_visible_ordi{
+        display:inherit;
     }
     .row_banniere_smartphone{
         display:none;
@@ -2577,7 +2606,7 @@ padding-bottom:10px;
     color: #fff;
     background-color: #6D85C7;
 }
-.pagination-alpĥa {
+.pagination-alpha {
     padding: 7px 10px;
     border-radius: 2px;
     background-color: #99ff99;
@@ -2888,4 +2917,9 @@ overflow-x: scroll;
 
 .badge-tags{
     font-weight:200;
+}
+
+
+.table-middle > tbody > tr > td{
+    vertical-align:middle;
 }

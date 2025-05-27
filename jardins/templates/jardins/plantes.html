@@ -29,43 +29,42 @@
     <a class="nav-item nav-link active" href="#rapide" data-toggle="tab">Recherche Rapide </a>
     <a class="nav-item nav-link " href="#alpha" data-toggle="tab"> Recherche Alphabétique</a>
     <a class="nav-item nav-link" href="#appro" data-toggle="tab"> Recherche Approfondie</a>
-
     <a class="nav-item nav-link" href="#jardins" data-toggle="tab"> Dans nos Jardins</a>
 </nav>
 
 <div class="tab-content">
-  <div class="tab-pane fade show active" id="alpha">
+  <div class="tab-pane fade show " id="alpha">
       <div class="row justify-content-center">
         <div class="col-sm-12 textcenter">
             <p>Rechercher une plante par la première lettre de son nom commun (cliquez sur la lettre ci dessous)</p>
         </div>
-    </div>
-    {%include 'pagination_alphabet.html' %}
-
-    <div class="row justify-content-center">
-        <div class="col-sm-12 textcenter justify-content-center">
-            {% if plantes_list %}
-            <table class="table sortable table-condensed tablejardin table-striped sortable" style="width:100%;">
-                <thead>
-                    <tr>
-                        <td class="textcenter"><i>Nom(s) vernaculaire(s)</i></td>
-                        <td class="textcenter"><i>Nom scientifique</i></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for plante in plantes_list %}
-                        <tr>
-                            <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
-                            <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                </table>
-            {% endif %}
         </div>
+        {%include 'pagination_alphabet.html' %}
+
+        <div class="row justify-content-center">
+            <div class="col-sm-12 textcenter justify-content-center">
+                {% if plantes_list %}
+                <table class="table sortable table-condensed tablejardin table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <td class="textcenter"><i>Nom(s) vernaculaire(s)</i></td>
+                            <td class="textcenter"><i>Nom scientifique</i></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plante in plantes_list %}
+                            <tr>
+                                <td class="" ><a class="" href="{{ plante.get_absolute_url }}">{{plante.NOM_VERN}}</a></td>
+                                <td class="" ><a href="{{ plante.get_absolute_url }}">{{plante.LB_NOM}}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                {% endif %}
+            </div>
     </div>
   </div>
-  <div class="tab-pane fade" id="rapide">
+  <div class="tab-pane fade show active" id="rapide">
     <div class="row justify-content-center">
         <div class="col-sm-12 textcenter">
             <p>Tapez un mot ou une syllabe du nom de la plante :</p>
@@ -116,7 +115,7 @@
               {% if not request.user.is_authenticated %}
             <p>Vous devez être <a href="{% url 'login' %}?next={{ request.path }}">connecté</a> à la plateforme pour accéder à ce contenu</p>
               {% else %}
-                <table class="table sortable table-condensed tablejardin table-striped sortable" style="width:100%;">
+                <table class="table sortable table-condensed tablejardin table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable" style="width:100%;">
                 <thead>
                     <tr>
                         <td class="textcenter"><i>Nom(s) vernaculaire(s)</i></td>

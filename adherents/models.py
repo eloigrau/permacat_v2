@@ -245,17 +245,22 @@ class Contact(models.Model):
     nom = models.CharField(verbose_name="Nom", max_length=120, blank=True, null=True, )
     prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True, null=True, )
     email = models.CharField(verbose_name="Email", max_length=150, blank=True, null=True, )
-    adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE)
+    adresse = models.ForeignKey(Adresse, on_delete=models.SET_NULL, null=True)
     commentaire = models.TextField(null=True, blank=True)
     adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name="Adhérent Conf'",  blank=True, null=True)
     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
     projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name="Projet associé",  blank=True, null=True,)
 
     def __str__(self):
-        return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"
+        if self.adresse:
+            return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"
+        else:
+            return str(self.nom) + " " + str(self.prenom) + " " + str(self.email)
+
 
     def get_absolute_url(self):
          return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug':self.projet.asso.slug})
+
     def get_absolute_url2(self):
         if self.adherent:
             return self.adherent.get_absolute_url()

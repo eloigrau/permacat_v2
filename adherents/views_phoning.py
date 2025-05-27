@@ -352,12 +352,15 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
                                         rue=rue,
                                         )
         else:
-            adresse = Adresse.objects.create(
-                                        telephone=telephone,
-                                            commune=commune,
-                                            code_postal=code_postal,
-                                            rue=rue,
-                                        )
+            if telephone or commune or code_postal or rue:
+                adresse = Adresse.objects.create(
+                                            telephone=telephone,
+                                                commune=commune,
+                                                code_postal=code_postal,
+                                                rue=rue,
+                                            )
+            else:
+                adresse = None
         p, created = Contact.objects.get_or_create(
                                 nom=nom,
                                 prenom=prenom,
@@ -376,7 +379,7 @@ def ajouterAdherents(request, asso_slug ):
     projet = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     adherents = Adherent.objects.filter(asso=projet.asso)
     m = ""
-    j=0
+    j = 0
     for i, adherent in enumerate(adherents):
         #if j>5 or i> 200:
          #   break
@@ -787,6 +790,10 @@ class ProjetPhoning_liste(UserPassesTestMixin, ListView):
         if 'asso' in params:
             self.request.session["asso_slug"] = params['asso']
             self.qs = ProjetPhoning.objects.filter(asso__slug=params['asso'])
+        elif 'tous' in params:
+            self.qs = ProjetPhoning.objects.filter(asso__slug__in=self.request.user.getListeSlugsAssos())
+        elif "asso_slug" in self.request.session:
+            self.qs = ProjetPhoning.objects.filter(asso__slug=self.request.session["asso_slug"])
         else:
             self.qs = ProjetPhoning.objects.filter(asso__slug__in=self.request.user.getListeSlugsAssos())
         return self.qs

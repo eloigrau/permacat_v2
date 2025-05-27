@@ -283,16 +283,16 @@ def ajouterLesMembresGroupe(request, asso_slug ):
         #if j>5 or i> 200:
          #   break
 
-        res, p = creerAdherent(telephone=adherent.adresse.telephone,
+        res, p = creerAdherent(telephone=adherent.adresse.telephone if adherent.adresse.telephone else None,
                              asso=asso,
-                             nom=adherent.last_name ,
+                             nom=adherent.last_name,
                              prenom=adherent.first_name,
                              email=adherent.email,
                              rue=adherent.adresse.rue,
                              commune=adherent.adresse.commune,
                              code_postal=adherent.adresse.code_postal,
-                               profil=adherent
-                              )
+                             profil=adherent
+                             )
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
             j += 1

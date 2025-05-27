@@ -6,6 +6,7 @@
 <div class="anchor_blank" id="idConversation"></div>
 <div class=" commentaires"  id="idConversation_2">
 
+    {% if commentaires %}
 <div class="conversation">
               <div class="conversation-container">
     {% for comment in commentaires %}
@@ -23,6 +24,7 @@
 {% endfor %}
     </div>
     </div>
+    {% endif %}
 
     {% comment %}
 {% for comment in commentaires %}

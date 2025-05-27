@@ -10,7 +10,7 @@
              <div class="row no-gutters justify-content-center">
                  <form class="form-inline justify-content-center  navbar-form " action="{% url 'chercher_articles' %}" method="get" role = "search">
                     {% csrf_token %}
-                    <div class="col" style="padding-right:0;">
+                    <div class="col" style="padding-right:0;margin:0;">
                             <input class="form-control border-secondary border-right-0 rounded-0" name="id_recherche" placeholder="{{recherche}}" type="text">
                                 </div>
                     <div class="col-auto" style="padding-left:0;">

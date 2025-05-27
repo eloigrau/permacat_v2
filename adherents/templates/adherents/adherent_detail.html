@@ -47,7 +47,7 @@
 {% endif %}
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-10">
-        <table class="table table-condensed tablepanier table-striped">
+        <table class="table table-condensed tablepanier table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %}">
             <tbody>
             {% if adherent.profil %}
             <tr>
@@ -94,7 +94,7 @@
             </button>
         </a>
         {%endif%}
-        <table class="table table-condensed tablepanier table-striped">
+        <table class="table table-condensed tablepanier table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %}">
             <tbody>
             {%if adherent.adresse.rue %}
             <tr>

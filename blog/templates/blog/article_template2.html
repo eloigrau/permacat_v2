@@ -12,7 +12,7 @@
              <div>
                 <span class="" data-toggle="tooltip" data-placement="bottom" title="Article {%if article.estPublic%}visible par tous les inscrits{%else%}visible par les membres de {{ article.asso }} seulement{%endif%}">
                 {{ article.get_logo_nomgroupe_html|safe }} </span>&nbsp;
-              <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{{ article.get_categorie_display2 }}</span>&nbsp;
+              <span class="badge" style="background-color:{{article.get_couleur}}; color : #666666;">{{ article.get_categorie_display2 }}</span>&nbsp;
             </div>
         </div>
         <h5 class="title_card titre-article-accueil">

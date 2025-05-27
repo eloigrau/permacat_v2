@@ -137,9 +137,9 @@
             </p>
             <div class="row titre_fiche titre-article-forum">
                 <div class="col textcenter">
-                    <h2>
+                    <h3>
                         {% if article.estArchive%}
-                        <span class="badge badge-Light" title="Article archivé">archivé </span>
+                        <span class="badge badge-light" title="Article archivé">archivé </span>
                         {%endif%}
                         {% if article.estEpingle%}
                         <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
@@ -148,7 +148,7 @@
                         <span class="fa fa-edit" title="Article modifiable">    </span>
                         {%endif%}
                         {{ article.titre }}
-                    </h2>
+                    </h3>
                 </div>
             </div>
             {%if article.start_time%}
@@ -219,7 +219,7 @@
                 <div class="col contenu fiche">
                     {{ article.contenu |safe}}
                         <hr>
-                    <p class="textright textepetit" style="font-style: italic;text-align:right;position: absolute; bottom:0; right:10px;">
+                    <p class="textright textepetit" style="font-style: italic;text-align:right;">
                         rédigé par <a href="{% url 'profil' article.auteur.id %}">{{ article.auteur.username }} </a> le {{article.date_creation|date:"DATE_FORMAT"}}
                     </p>
                 </div>

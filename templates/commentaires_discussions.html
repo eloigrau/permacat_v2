@@ -11,11 +11,13 @@
       <a class="nav-item nav-link" href="#ajoutDiscussion" data-toggle="tab">Ajouter une discussion</a>
    </nav>
 <div class="anchor_blank" id="contenucommentaires_ancre"></div>
+{% if commentaires.items %}
 <div class="commentaires" id="contenucommentaires">
 <div class="tab-content">
 {% for discu, comments in commentaires.items %}
   <div class="tab-pane fade  {% if forloop.first %} active show{% endif %}" id="{{discu.slug}}">
-            <div class="conversation">
+
+      <div class="conversation">
               <div class="conversation-container">
     {% for comment in comments %}
 	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
@@ -33,26 +35,6 @@
 {% endfor %}
     </div>
     </div>
-            {%comment %}
-      <div class="anchor_blank" id="comm_{{comment.id}}"></div>
-    <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}" >
-        <div class="col-sm-3 col-md-3 col-lg-2">
-            <p class="infos  textepetit ">
-                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a><br>{% endifchanged %}{{ comment.date_creation|date:"d/m/Y, G:i" }}
-
-                {% if request.user == comment.auteur_comm or request.user.is_superuser %}
-                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
-                {% endif %}
-            </p>
-
-            </div>
-        <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} ">
-                <p>{{ comment.commentaire|safe|usermention}}</p>
-        </div>
-        </div>
-    </div>
-            {%endcomment %}
-
   </div>
 {% endfor %}
 
@@ -75,6 +57,8 @@
   </div>
 </div>
 </div>
+{%endif%}
+
 
 {%if not request.user.is_anonymous %}
 <div class="anchor_blank" id="idComenter"></div>

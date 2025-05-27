@@ -88,15 +88,16 @@ class Adresse(models.Model):
     def getStrAll(self):
         return  "(%d) %s %s %s %s" %(self.id, self.rue, self.commune, self.code_postal, self.telephone)
 
+    @property
     def estLieAUnObjet(self):
         if hasattr(self, 'profil'):
-            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
-                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
-                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0 or self.profil is not None
+            return (len(self.adherent_set.all()) + len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
+                    len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) + len(self.grainotheque_set.all())) > 0 or self.profil is not None
         else:
-            return (len(self.adherent_set.all()) +len(self.adressearticle_set.all()) +len(self.reunion_set.all()) + \
-                    len(self.paysan_set.all()) +len(self.participantreunion_set.all()) +  \
-                    len(self.jardin_set.all()) +len(self.grainotheque_set.all())) > 0
+            return (len(self.adherent_set.all()) + len(self.adressearticle_set.all()) + len(self.reunion_set.all()) + \
+                    len(self.participantreunion_set.all()) +  \
+                    len(self.jardin_set.all()) + len(self.grainotheque_set.all())) > 0
 
     @property
     def getGoogleUrl(self):
@@ -348,6 +349,8 @@ class Profil(AbstractUser):
 
     date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications", default=now)
     afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
+
+    css_dark = models.BooleanField(verbose_name="Thème Sombre", default=False)
 
     #newsletter_envoyee = models.BooleanField(verbose_name="Newletterenvoyee", default=False)
 
@@ -853,7 +856,7 @@ class Produit(models.Model):  # , BaseProduct):
 
     @mark_safe
     def get_categorie_icon_html(self):
-        return ''
+        return '<i class="fa fa-handshake"></i>'
 
 class Produit_aliment(Produit):  # , BaseProduct):
     type_produit = 'aliment'
@@ -878,7 +881,7 @@ class Produit_aliment(Produit):  # , BaseProduct):
 
     @mark_safe
     def get_categorie_icon_html(self):
-        return '<i class="fa fa-spoon"></i>'
+        return '<i class="fa fa-utensils"></i>'
 
 class Produit_vegetal(Produit):  # , BaseProduct):
     type_produit = 'vegetal'
@@ -927,7 +930,7 @@ class Produit_service(Produit):  # , BaseProduct):
 
     @mark_safe
     def get_categorie_icon_html(self):
-        return '<i class="fa fa-moon"></i>'
+        return '<i class="fa fa-sun"></i>'
 
 class Produit_objet(Produit):  # , BaseProduct):
     type_produit = 'objet'
@@ -968,7 +971,7 @@ class Produit_offresEtDemandes(Produit):  # , BaseProduct):
 
     @mark_safe
     def get_categorie_icon_html(self):
-        return '<i class="fa fa-hand-peace"></i>'
+        return '<i class="fa fa-handshake"></i>'
 
     @property
     def get_souscategorie(self):

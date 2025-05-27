@@ -75,7 +75,7 @@ class AdresseArticle_Admin(admin.ModelAdmin):
 
 @admin.register(Adresse)
 class Adresse_Admin(admin.ModelAdmin):
-    list_display  = ('id', 'rue', 'code_postal', 'commune')
+    list_display  = ('id', 'rue', 'code_postal', 'commune', 'estLieAUnObjet')
     search_fields = ('rue', 'code_postal', 'commune')
 
 

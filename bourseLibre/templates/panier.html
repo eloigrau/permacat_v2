@@ -6,7 +6,7 @@ Voici les offres que vous avez selectionnées:
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-    <table class="table table-condensed tablepanier table-striped">
+    <table class="table table-condensed tablepanier table-striped table-middle">
         <tbody>
     {% for item in items %}
         {% ifchanged item.produit.user.id  %}

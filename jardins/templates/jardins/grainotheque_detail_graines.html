@@ -6,7 +6,7 @@
 		<div class="col-sm-12 textcenter">
 			<h4>Liste des graines ({{graines|length}}):</h4>
 			{% if graines %}
-			<table  class="table table-condensed tablejardin table-striped sortable">
+			<table  class="table table-condensed tablejardin table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable">
 				<thead><tr><th style="width:20%;"> Espèce</th><th style="width:50%;">Description</th><th>Stock</th><th>Date de récolte</th>
 					{%if request.user.is_superuser or request.user == grainotheque.auteur  %}<th>Edit</th>{% endif %}
 				</tr></thead>

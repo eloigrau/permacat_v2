@@ -67,7 +67,7 @@
             </button>
         </a>
       {%endif%}
-      <table class="table table-condensed tablepanier table-striped">
+      <table class="table table-condensed tablepanier table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %}">
           <tbody>
 
         <tr>
@@ -116,7 +116,7 @@
             </button>
         </a>
       {%endif%}
-    <table class="table table-condensed tablepanier table-striped">
+    <table class="table table-condensed tablepanier table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %}">
     <tbody>
       {%if user.accepter_annuaire  or request.user == user %}
 

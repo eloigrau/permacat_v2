@@ -983,7 +983,7 @@ border: 1px inset rgba(28,110,164,0.65);
 
 .table{
   border-spacing: 0;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-radius: 10px;
   border: 0.8px solid black;
 }

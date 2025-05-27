@@ -1049,7 +1049,7 @@ border: 1px inset rgba(28,110,164,0.65);
     min-width: 85%;
 }
 
-.offre a:link, a:visited, a:hover{
+.offre > a:link, .offre > a:visited, .offre > a:hover{
     color: black;
 }
 
@@ -1412,15 +1412,19 @@ td.nomProprieteProduit{
     background-color:Gray;
     text-align:right;
     vertical-align: middle;
+    color:black;
 }
 td.proprieteJardin{
     background-color:#ffffef;
+    color:black;
 }
 td.nomProprieteJardin{
     background-color:#e6ffcc;
+    color:black;
 }
 td.nomProprieteSalon{
     background-color:#ded8ff;
+    color:black;
 }
 
 .textepetit{

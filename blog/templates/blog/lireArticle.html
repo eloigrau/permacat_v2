@@ -250,7 +250,7 @@
                             </div>
 
                         </div>
-    <table class="table table-condensed  table-dark sortable">
+    <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
         <thead><th>Date</th><th>Document</th><th>Groupe</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
@@ -380,7 +380,7 @@
                                 </h4>
                             </div>
                         </div>
-                         <table class="table table-condensed  table-dark sortable textcenter">
+                         <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable textcenter">
         <thead><th>Créé le</th><th>Titre</th><th>Description</th><th>Fait ?</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
@@ -518,7 +518,7 @@
                     <p><a class="btn btn-sm btn-primary textleft"
                           href="{% url 'blog:voirCarteLieux_article' id_article=article.id %}"><i class="fa fa-compass"></i>
                         Voir la carte</a></p>
-                    <table class="table table-condensed  table-dark sortable">
+                    <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
                         <thead>
                         <th>Lieu</th>
                         <th>Infos</th>
@@ -725,7 +725,7 @@
                             </div>
                             <div class="row justify-content-center">
                             {% if articles_liens %}
-                            <table class="table table-condensed  table-dark sortable">
+                            <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
 <thead><th>Date</th><th>Type de lien</th><th>Article</th>
 {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
              <th>Modifier/Supprimer</th>
@@ -774,7 +774,7 @@
                             </div>
                     {% if projets_liens %}
 
-                            <table class="table table-condensed  table-dark sortable">
+                            <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
         <thead><th>Date</th><th>Type de lien</th><th>Projet</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
@@ -850,7 +850,7 @@ function get_resultatSondage(url_tag, div_name) {
 </script>
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-    <table class="table table-condensed table-dark">
+    <table class="table table-condensed {% if request.user.css_dark %} table-dark{% endif %}">
         <thead>
         <th>Question</th>
         <th>Voter</th>

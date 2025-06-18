@@ -425,7 +425,7 @@ def voirDerniersArticlesVus(request):
     dates = [date_ajd,  date_ajd - timedelta(days=date_ajd.weekday()),  date_ajd - timedelta(days=date_ajd.day - 1)]
     hit_count_nb = [hit_count.filter(created__gte=date).count() for date in dates]
 
-    hit_count_nb.append(Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=7)).count())
+    hit_count_nb.append(Profil.objects.filter(last_login__gte=date_ajd - timedelta(days=140)).count())
     liste = {}
     for i, x in enumerate(hit_count):
         if len(liste) < 15 and x.hitcount.content_object and not str(x.hitcount.content_object).startswith("visite_") :

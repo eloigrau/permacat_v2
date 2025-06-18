@@ -21,7 +21,6 @@
 		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:carte_reunions' asso_slug=request.session.asso_slug %}">Carte des réunions</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:participants' asso_slug=request.session.asso_slug %}">Liste des participant-es</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'defraiement:recapitulatif'  asso_slug=request.session.asso_slug%}">Récapitulatif</a></li>
-
                 {% else %}
                 {% endif %}
             </ul>

@@ -40,6 +40,9 @@
                             {% endcomment %}
 
                             <li class="dropdown-submenu">
+                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='public' %}">Public</a>
+                            </li>
+                            <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
                                 <ul class="dropdown-menu nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}"> {% fa5_icon 'info' class='iconleft' %}Présentation</a></li>
@@ -772,6 +775,10 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
                             <li class="dropdown-submenu">
+                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='public' %}">Public</a>
+                            </li>
+
+                            <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
                                 <ul class="dropdown-menu nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}">{% fa5_icon 'info' class='iconleft' %}
@@ -827,7 +834,6 @@
                                 </ul>
                             </li>
                             {% endcomment %}
-
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermAgora</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">

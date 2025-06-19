@@ -11,7 +11,7 @@
 <div class="row">
 	<div class="col">
 		<p class="textcenter">Le groupe "Public" rassemble tous les inscrits au site ! Une joyeuse bande issue de différents horizons... tournés vers un avenir commun !</p>
-		<p>Les espaces du groupe "Public" (<a href="{% url 'blog:index_asso' %}?asso='public'">forum<a>, <a href="{% url 'carte' %}?asso='public'">annuaire et carte</a>, <a href="{% url 'marche' %}?asso='public'">petites annonces</a>, etc) sont accessibles à tous-tes : c'est notre "place publique" où chacun-e peut s'exprimer librement et à égalité avec les autres, dans le respect mutuel.</p>
+		<p>Les espaces du groupe "Public" (<a href="{% url 'blog:index_asso' asso='public' %}?">forum</a>, <a href="{% url 'carte' asso='public' %}">annuaire et carte</a>, <a href="{% url 'marche' %}?asso=public">petites annonces</a>, etc) sont accessibles à tous-tes : c'est notre "place publique" où chacun-e peut s'exprimer librement et à égalité avec les autres, dans le respect mutuel.</p>
 	</div>
 </div>
 {% endblock %}

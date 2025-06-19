@@ -205,6 +205,10 @@ class CommentaireAtelier(models.Model):
     def get_absolute_url_discussion(self):
         return self.atelier.get_absolute_url() + "#idConversation"
 
+    @property
+    def pascetteannee(self):
+        return self.date_creation.year != timezone.now().year
+
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
         retour = super(CommentaireAtelier, self).save(*args, **kwargs)

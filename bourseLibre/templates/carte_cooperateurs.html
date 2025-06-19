@@ -51,75 +51,6 @@
 {% endif %}
 
 <hr>
-
-<div class="row cartePleinePage" id="carte">
-  <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;height: 100%;}</style>
-      <script type="text/javascript">
-
-        function map_init_basic (map, options) {
-          var leafIcon = L.icon({
-            iconUrl: '{% static 'img/leafgreen.png' %}',
-            shadowUrl: '{% static 'img/leafshadow.png' %}',
-
-            iconSize:     [38, 95], // size of the icon
-            shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-        });
-
-          var greyIcon = L.icon({
-          iconUrl: '{% static 'img/marker-icon-grey.png' %}',
-               shadowUrl: '{% static 'img/marker-shadow.png' %}',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-        });
-          var greenIcon = L.icon({
-              iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
-              shadowUrl: '{% static 'img/marker-shadow.png' %}',
-              iconSize: [25, 41],
-              iconAnchor: [12, 41],
-              popupAnchor: [1, -34],
-              shadowSize: [41, 41]
-        });
-        var markers = L.markerClusterGroup({ maxClusterRadius: 25 });
-
-        {% for ev in data %}
-            try{
-                var lat = {{ev.geo.latitude|to_numeric}};
-                var lon = {{ev.geo.longitude|to_numeric}};
-                {% with site=ev.website|safe %}
-                var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{%url 'carto:carte' %}#lieu_{{forloop.counter}}" > <b>{{ev.name}}</b></a>');
-                markers.addLayer(marker);
-                {% endwith %}
-            }
-            catch(err){ ;
-            }
-        {%endfor%}
-        {% for profil in filter.qs %}
-            {% if profil.accepter_annuaire %}
-            var lat = {{profil.get_latitude}};
-            var lon = {{profil.get_longitude}};
-            var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'profil' profil.id %}"> {{profil.username}} {% if profil.first_name%}({{profil.first_name}}{% if profil.last_name%} {{profil.last_name}}{% endif%}){% else%} {% if profil.last_name%}({{profil.last_name}}){% endif%} {% endif%} </a>');
-              markers.addLayer(marker);
-            {%endif%}
-        {%endfor%}
-        map.addLayer(markers);
-        {% if filter.qs|length == 1 %}
-        map.panTo(new L.LatLng(lat, lon));
-        {%else%}
-        map.panTo(new L.LatLng(42.62914, 2.49939));
-        {%endif%}
-    }
-</script>
-{% leaflet_map "yourmap" callback="window.map_init_basic" %}
-</div>
-</div>
-
-<hr>
 <div class="row" id="annuaire">
     <div class="col-sm-12 textcenter">
 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
@@ -212,6 +143,77 @@ Filtrer / rechercher...
 </div>
 </div>
 </div>
+<hr>
+
+<div class="row cartePleinePage" id="carte">
+  <div class="col-md-12" >
+    <style>.leaflet-container {width:  100%;height: 100%;}</style>
+      <script type="text/javascript">
+
+        function map_init_basic (map, options) {
+          var leafIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
+
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+          var greyIcon = L.icon({
+          iconUrl: '{% static 'img/marker-icon-grey.png' %}',
+               shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var greenIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-2x-green.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+        var markers = L.markerClusterGroup({ maxClusterRadius: 25 });
+
+        {% for ev in data %}
+            try{
+                var lat = {{ev.geo.latitude|to_numeric}};
+                var lon = {{ev.geo.longitude|to_numeric}};
+                {% with site=ev.website|safe %}
+                var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{%url 'carto:carte' %}#lieu_{{forloop.counter}}" > <b>{{ev.name}}</b></a>');
+                markers.addLayer(marker);
+                {% endwith %}
+            }
+            catch(err){ ;
+            }
+        {%endfor%}
+        {% for profil in filter.qs %}
+            {% if profil.accepter_annuaire %}
+            var lat = {{profil.get_latitude}};
+            var lon = {{profil.get_longitude}};
+            var marker = L.marker([lat, lon], {icon: leafIcon}).bindPopup('<a href="{% url 'profil' profil.id %}"> {{profil.username}} {% if profil.first_name%}({{profil.first_name}}{% if profil.last_name%} {{profil.last_name}}{% endif%}){% else%} {% if profil.last_name%}({{profil.last_name}}){% endif%} {% endif%} </a>');
+              markers.addLayer(marker);
+            {%endif%}
+        {%endfor%}
+        map.addLayer(markers);
+        {% if filter.qs|length == 1 %}
+        map.panTo(new L.LatLng(lat, lon));
+        {%else%}
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+        {%endif%}
+    }
+</script>
+{% leaflet_map "yourmap" callback="window.map_init_basic" %}
+</div>
+</div>
+
+<hr>
+
 
 {% include "template_annuaire.html" with profils=page_obj %}
 

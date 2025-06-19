@@ -23,6 +23,8 @@
 <meta property="og:image" content="{% static 'android-chrome-256x256.png' %}" />
 {%endblock%}
 
+{% block title %}- Forum - {{article.titre|couperTexte:50}}{% endblock %}
+
 {% block subtitle %}
 
 <div class="container-fluid">
@@ -250,8 +252,9 @@
                             </div>
 
                         </div>
-    <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
-        <thead><th>Date</th><th>Document</th><th>Groupe</th>
+<table class="table table-condensed table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable textcenter">
+
+        <thead><th>Date</th><th>Document</th><th>Lien</th><th>Groupe</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
         {% endif %}
@@ -266,6 +269,13 @@
                             <td><a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i>
                                 {{ document.titre }} </a>
                             </td>
+
+                                <td>
+                                    <button type="button" class="btn btn-light  btn-sm"
+                                            onclick="copyToClipboard('https://www.perma.cat{{document.doc.url}}')">
+                                        {% fa5_icon 'copy' title='Copier le lien' %}
+                                    </button>
+                                </td>
                             <td> {{ document.asso.get_logo_nomgroupe_html|safe }}</td>
                             {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
 
@@ -302,22 +312,44 @@
                                 </h4>
                             </div>
                         </div>
-                        {% for document in documents_partages %}
-                        <p>
-                            <a href="{{document.get_url}}" target="_blank">
-                                <i class="fa fa-download" aria-hidden="true"></i> {{ document.nom }}
-                            </a>
-                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
 
-                            <a class="btn btn-sm btn-warning textleft"
-                               href="{% url 'blog:modifierDocumentPartage' slug_docpartage=document.slug%}"> <i
-                                    class="fa fa-edit"></i> </a>
-                            <a class="btn btn-sm btn-danger textleft"
-                               href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=document.slug%}"> <i
-                                    class="fa fa-times"></i> </a>
-                            {% endif %}
-                        </p>
-                        {% endfor%}
+<table class="table table-condensed table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable textcenter">
+
+                            <thead>
+                            <th>Créé le</th>
+                            <th>Nom</th>
+                            <th>Lien</th>
+                            <th>Edit</th>
+                            </thead>
+                            <tbody>
+                            {% for doc in documents_partages %}
+                            <tr>
+                                <td>
+                                    {{ doc.date_creation|date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    <a href="{{ doc.get_absolute_url }}" class="btn btn-info" style="width:100%;">{{ doc.nom }}</a>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-light btn-sm"
+                                            onclick="copyToClipboard('{{doc.get_absolute_url}}')">
+                                        {% fa5_icon 'copy' title='Copier le lien' %}
+                                    </button>
+                                </td>
+                                <td>
+                                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                                    <a class="btn btn-sm btn-warning textleft"
+                                       href="{% url 'blog:modifierDocumentPartage' slug_docpartage=doc.slug%}"> <i
+                                            class="fa fa-edit"></i> </a>
+                                    <a class="btn btn-sm btn-danger textleft"
+                                       href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=doc.slug%}"> <i
+                                            class="fa fa-times"></i> </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor%}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

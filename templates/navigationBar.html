@@ -5,62 +5,15 @@
 {% block navBar %}
 
 <div class="navbarcontainer">
-    {% comment %}
-    <div class="container-fluid sticky-top">
-
-        <nav class="navbar navbar-dark bg-primary navbar-expand-xl fixed-top shadow-petit" id="navbar2" data-bs-theme="dark">
-            <div class="container-fluid">
-                <button class="navbar-toggler navbar-btn" type="button" data-toggle="collapse"
-                        data-target="#navbarsActuel" aria-controls="navbarSupportedContent" aria-expanded="true"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse justify-content-between align-items-center w-100"
-                     id="navbarsActuel1">
-
-                    <ul class="nav navbar-nav mr-auto navbar-left navbargroupe d-flex justify-content-between">
-
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'blog:index_asso' asso='public' %}"> Public</a>
-                        </li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='pc'  %}"> PermaCat</a>
-                        </li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='scic'  %}">
-                            PermAgora</a></li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='rtg'  %}"> RTG</a></li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='jp'  %}"> Jardins
-                            Partagés</a></li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='viure'  %}"> Viure</a>
-                        </li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='conf66'  %}"> Conf
-                            66</a></li>
-                        <li class="nav-item navgroupe"><a class="nav-link"
-                                                          href="{% url 'presentation_asso' asso='bzz2022'  %}"> Projet
-                            Bzzz</a></li>
-
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </div>
-    {% endcomment %}
     <nav class="navbar {%if request.user.css_dark %}navbar-dark bg-primary {% else %} navbar-light bg-light {% endif %} navbar-expand-xl fixed-top shadow-petit" id="navbar"  data-bs-theme="dark">
         <div class="container-fluid">
             <button class="navbar-toggler navbar-btn" type="button" data-toggle="collapse" data-target="#navbarsActuel"
                     aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            {% if not request.session.asso_slug %}
             <a class="navbar-brand" href="{% url 'bienvenue' %}">
                 <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="acceuil"/>
             </a>
-            {% endif %}
             <div class="navbar-collapse collapse justify-content-between  align-items-center w-100" id="navbarsActuel">
 
                 {% if user.is_authenticated %}
@@ -69,12 +22,11 @@
                     <li class="nav-item dropdown nav5">
                         <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'presentation_groupes' %}"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {% if request.session.asso_slug %}
-                {{ request.session.asso_slug | getLogoGroupeFromSlug }}
-            {% else %}
+                        {% if request.session.asso_slug %}
+                            {{ request.session.asso_slug | getLogoGroupeFromSlug }}
+                        {% else %}
                             Groupes
-            {% endif %}
-
+                        {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
 
@@ -87,21 +39,15 @@
                                     class='fa fa-compass'></i> Carte / Annuaire </a></li>
                             {% endcomment %}
 
-            {% if request.session.asso_slug %}
-
-                            <li><a class="dropdown-item" href="{% url 'bienvenue' %}">
-                                <img src="{% static 'favicon.ico' %}" width="20" height="20" alt="acceuil"/> Accueil </a></li>
-            {% endif %}
-
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
                                 <ul class="dropdown-menu nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}"> {% fa5_icon 'info' class='iconleft' %}Présentation</a></li>
                                     {% if request.user.adherent_pc %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='pc' %}"><i
                                             class='fa fa-compass'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="https://semestriel.framapad.org/p/permacat_doctravail" target="_blank"
                                            rel="noopener noreferrer nofollow"><i class='fa fa-file iconleft'></i>
@@ -123,7 +69,7 @@
 
 
                                     {%comment%}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li class="dropdown-submenu">
                                         <a class="dropdown-item dropdown-toggle" href="#"><i
                                                 class='fa fa-folder-open iconleft'></i> Projets</a>
@@ -198,17 +144,17 @@
                                     {% endcomment%}
 
                                     {% if request.user.adherent_pc %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'admin_asso' asso='pc' %}"><i
                                             class='fa fa-database'></i> Administration </a></li>
                                     {% endif %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'charte' %}"> <i
                                             class="fa fa-info-circle iconleft"></i> Charte </a></li>
                                     <li><a class="dropdown-item" href="{% url 'statuts' %}"> <i
                                             class="fa fa-info-circle iconleft"></i> Statuts et règlement intérieur </a>
                                     </li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'adhesion_asso' asso='pc' %}"><i
                                             class='fa fa-euro-sign iconleft '></i> Cotisation en ligne </a></li>
 
@@ -226,10 +172,10 @@
                                         Festigraines.fr </a></li>
                                     {% endcomment %}
                                     {% if request.user.adherent_rtg %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='rtg' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='rtg'%}#ref-titre">{% fa5_icon 'comments' class='iconleft' %}
                                             Forum</a></li>
                                     <li><a class="dropdown-item"
@@ -239,7 +185,7 @@
                                            href="{% url 'defraiement:reunions_asso' asso_slug='rtg' %}">
                                         {% fa5_icon 'comments' class='iconleft' %}Defraiement </a></li>
                                     {% endif %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="https://1drv.ms/b/s!AgO84waSGnDoiDlHJeeJPxRRNJM_?e=ucgIvC"
                                            target="_blank" rel="noopener noreferrer nofollow"><i
@@ -255,10 +201,10 @@
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='fer' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
                                     {% if request.user.adherent_fer %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='fer' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='fer'%}#ref-titre">
                                         {% fa5_icon 'comments' class='iconleft' %}Articles </a></li>
 
@@ -272,10 +218,10 @@
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'   asso='gt' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
                                     {% if request.user.adherent_gt %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='gt' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'blog:index_asso' asso='gt'%}#ref-titre">
                                         {% fa5_icon 'comments' class='iconleft' %}Articles </a></li>
@@ -306,7 +252,7 @@
                                     <li><a class="dropdown-item"
                                            href="https://www.perma.cat/forum/article/mise-en-place-de-lorganisation-de-permagora#ref-titre">
                                         {% fa5_icon 'sitemap' class='iconleft' colored='green' %}Organisation</a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li class="dropdown-submenu">
                                         <a class="dropdown-item dropdown-toggle" href="#">Documents de travail</a>
                                         <ul class="dropdown-menu nav8-dropdown-subsubmenu">
@@ -376,12 +322,13 @@
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
 
                                     {% endif %}
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i
                                             class='fa fa-compass iconleft'></i> Plateforme de l'Agora </a></li>
                                     <li><a class="dropdown-item" href="{% url 'agora:acceuil' %}"><i
                                             class='fa fa-compass iconleft'></i> Journée Agora de la Transition </a></li>
 
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="https://www.perma.cat/static/permagora/docs_admin/Statuts-Ri-Charte-PermAgora_final.bb187a297c61.pdf"
                                            target="_blank" rel="noopener noreferrer nofollow"><i
@@ -400,12 +347,12 @@
                                     <li><a class="dropdown-item"
                                            href="https://docs.google.com/spreadsheets/d/19tiVQYasscCukeNaS_fxfOwcztk4ZjE5AWR1vWlMZEw/edit#gid=1682331242"
                                            target="_blank" rel="noopener noreferrer nofollow">{% fa5_icon 'info' class='iconleft' %} Ressourcerie 66 </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='citealt' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
                                     <li><a class="dropdown-item" href="{% url 'organisation_citealt' %}"><i
                                             class='fa fa-sitemap iconleft'></i> Organisation </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'blog:index_asso' asso='citealt'%}#ref-titre">{% fa5_icon 'comments' class='iconleft' %}> Forum</a></li>
                                     <li><a class="dropdown-item"
@@ -422,7 +369,7 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='ssa' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='ssa' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'blog:index_asso' asso='ssa'%}#ref-titre">{% fa5_icon 'comments' class='iconleft' %} Forum</a></li>
                                     <li><a class="dropdown-item"
@@ -436,10 +383,10 @@
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='viure' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_viure %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='viure' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'blog:index_asso' asso='viure'%}#ref-titre"><
                                         {% fa5_icon 'comments' class='iconleft' %}Forum</a></li>
@@ -459,10 +406,10 @@
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='bzz2022' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_viure %}
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='bzz2022' %}"><i
                                             class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'blog:index_asso' asso='bzz2022'%}#ref-titre">
                                         {% fa5_icon 'comments' class='iconleft' %}Forum</a></li>
@@ -516,173 +463,25 @@
 
                             <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"> <i
                                     class='fa fa-compass iconleft'></i>Carte / Annuaire </a></li>
-                            <li><a class="dropdown-item" href="{% url 'jardins:accueil' %}"> <i
-                                    class='fa fa-compass iconleft'></i>Jardinothèque </a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><a class="dropdown-item" href="{% url 'salon_accueil' %}">
+                                <i class='fa fa-users iconleft'></i> Salons</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> <i
+                                    class='fa fa-file iconleft'></i> Fichiers </a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:docptg_list' %}"> <i
+                                    class='fa fa-link iconleft'></i> Documents partagés </a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'marche' %}"> <i
                                     class='fa fa-shopping-basket iconleft'></i>Petites Annonces</a></li>
-                            <li><a class="dropdown-item" href="{% url 'salon_accueil' %}">
-                                <i class='fa fa-users iconleft'></i>
-                                Salons</a></li>
                             <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"> <i
                                     class='fa fa-wrench iconleft'></i>Ateliers</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_projets' %}"> <i
                                     class='fa fa-folder-open iconleft'></i>Projets</a></li>
-                            <li class="divider" role="separator"></li>
-                            <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> <i
-                                    class='fa fa-file iconleft'></i> Fichiers </a></li>
-                            <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i
-                                    class='fa fa-image iconleft'></i> Albums photo</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'blog:todoarticle_list' %}"> <i
                                     class='fa fa-tasks iconleft'></i> Todo </a></li>
-
-                            {% comment %}
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#"><i class='fa fa-wrench iconleft'></i>Ateliers
-                                </a>
-                                <ul class="dropdown-menu nav8-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"><i
-                                            class='fa fa-folder-open iconleft'></i> Voir les ateliers </a></li>
-                                    {% for atelier in liste_ateliers %}
-                                    <li><a class=" dropdown-item "
-                                           href="{%url 'ateliers:lireAtelier' slug=atelier.slug %}"><span>
-                                        {{atelier.titre}} {% if atelier.start_time %}({{ atelier.start_time|date:"d/m" }}){% endif %}
-                                    </span></a>
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#"><i class='fa fa-folder iconleft'></i>Projets</a>
-                                <ul class="dropdown-menu nav8-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'blog:index_projets' %}"><i
-                                            class='fa fa-folder-open iconleft'></i> Voir tous les projets </a></li>
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Projets acceptés</a>
-                                        <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                            {% for projet in liste_projets %}
-{% if projet.slug == "un-jardin-partage-en-permaculture-accessible-a-tous" or projet.slug == "jardin-de-permacat-a-perpignan" or projet.slug == "jardins-partages-a-perpignan-au-champ-de-mars" %}
-                                            <li class="dropdown-submenu">
-                                                <a class="dropdown-item dropdown-toggle" href="#">{{projet.titre|couperTexte:40}}</a>
-                                                <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:lireProjet' slug=projet.slug %}"><i
-                                                            class='fa fa-folder-open'></i> Fiche Projet</a></li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'jardinpartage:index_jardin' jardin='1' %}"><i
-                                                            class='fa fa-pagelines'></i> Blog du Jardi Per Tots</a></li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:index' %}?categorie=Jardin"><i
-                                                            class='fa fa-comments'></i> Articles des jardins partagés
-                                                        sur le forum</a></li>
-                                                </ul>
-                                            </li>
-                                            {% elif projet.slug == "projet-bzzzz-2022" %}
-                                            <li class="dropdown-submenu">
-                                                <a class="dropdown-item dropdown-toggle" href="#">{{projet.titre|couperTexte:40}}</a>
-                                                <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:lireProjet' slug=projet.slug %}"><i
-                                                            class='fa fa-folder-open'></i> Fiche Projet</a></li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:index' %}?categorie=bzzz"><i
-                                                            class='fa fa-comments'></i> Articles </a></li>
-                                                </ul>
-                                            </li>
-                                            {% elif projet.slug == "jardin-partage-de-palau" %}
-                                            <li class="dropdown-submenu">
-                                                <a class="dropdown-item dropdown-toggle" href="#">{{projet.titre|couperTexte:40}}</a>
-                                                <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:lireProjet' slug=projet.slug %}"><i
-                                                            class='fa fa-folder-open'></i> Fiche Projet</a></li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'jardinpartage:index_jardin' jardin='2' %}"><i
-                                                            class='fa fa-pagelines'></i> Blog du jardin de Palau</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:index' %}?categorie=Jardin"><i
-                                                            class='fa fa-comments'></i> Articles des jardins partagés
-                                                        sur le forum</a></li>
-                                                </ul>
-                                            </li>
-                                            {% elif projet.slug == "jardins-du-lycee-jean-lurcat" %}
-
-                                            <li class="dropdown-submenu">
-                                                <a class="dropdown-item dropdown-toggle" href="#">{{projet.titre|couperTexte:40}}</a>
-                                                <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:lireProjet' slug=projet.slug %}"><i
-                                                            class='fa fa-folder-open'></i> Fiche Projet</a></li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'jardinpartage:index_jardin' jardin='3' %}"><i
-                                                            class='fa fa-pagelines'></i> Blog du jardin de Lurçat</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:index' %}?categorie=Jardin"><i
-                                                            class='fa fa-comments'></i> Articles des Jardins Partagés
-                                                        sur le forum</a></li>
-                                                </ul>
-                                            </li>
-
-                                            {% elif projet.slug == "projet-eco-lieu" %}
-                                            <li class="dropdown-submenu">
-                                                <a class="dropdown-item dropdown-toggle" href="#">{{projet.titre|couperTexte:40}}</a>
-                                                <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:lireProjet' slug=projet.slug %}"><i
-                                                            class='fa fa-folder-open'></i> Fiche Projet</a></li>
-                                                    <li><a class="dropdown-item"
-                                                           href="{% url 'blog:index' %}?categorie=Ecovillage"><i
-                                                            class='fa fa-comments'></i> Forum</a></li>
-                                                </ul>
-                                            </li>
-                                            {%else %}
-                                            <li><a class=" dropdown-item nav8-dropdown-subsubmenu"
-                                                   href="{% url 'blog:lireProjet' slug=projet.slug %}"><span>{{projet.titre|truncatechars:45}}</span></a>
-                                            </li>
-
-                                            {%endif %}
-
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Projets Proposés </a>
-                                        <ul class="dropdown-menu nav8-dropdown-subsubmenu">
-                                            {% for projet in liste_projets_prop %}
-                                            <li><a class=" dropdown-item " style="background:{{projet.get_couleur}};"
-                                                   href="{% url 'blog:lireProjet' slug=projet.slug %}"><span>{{projet.titre|truncatechars:45}}</span></a>
-                                            </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            {% endcomment %}
-                            {% comment %}
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#"><i class='fa fa-wrench iconleft'></i>Jardins
-                                    Partagés</a>
-                                <ul class="dropdown-menu nav8-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'jardinpartage:index' %}"><i
-                                            class='fa fa-folder-open iconleft'></i> Blog des jardins Partagés </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=1 %}"><i
-                                            class='fa fa-pagelines'></i> Jardi Per tots</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=2 %}"><i
-                                            class='fa fa-pagelines'></i> Jardin de Palau </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=3 %}"><i
-                                            class='fa fa-pagelines'></i> Jardin de Lurçat </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=4 %}"><i
-                                            class='fa fa-pagelines'></i> Gardiens de la Terre </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'jardinpartage:index_jardin' jardin=5 %}"><i
-                                            class='fa fa-pagelines'></i> Fermille </a></li>
-                                </ul>
-                            </li>
-                            {% endcomment %}
-
-
+                            <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i
+                                    class='fa fa-image iconleft'></i> Albums photo</a></li>
                         </ul>
                     </li>
 
@@ -690,13 +489,6 @@
                         {% fa5_icon 'comments' class='iconleft' colored='blue' %}Forum</a></li>
                     <li class="nav-item nav3"><a class="nav-link" href="{% url 'cal:agenda' %}"> <i
                             class='fa fa-calendar iconleft'></i>Agenda</a></li>
-                    {% comment %}
-                    <li class="nav-item nav2"><a class="nav-link" href="{% url 'blog:acceuil' %}"> Forum</a></li>
-                    <li class="nav-item nav1"><a class="nav-link" href="{% url 'marche' %}"> Annonces</a></li>
-                    <li class="nav-item nav3 4to3"><a class="nav-link" href="{% url 'cal:agenda' %}"> Agenda</a></li>
-                    {% endcomment %}
-
-
                 </ul>
 
                 <ul class="nav navbar-nav ">
@@ -707,7 +499,7 @@
                         <ul class="dropdown-menu dropdown-menu-left nav9-dropdown"
                             aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="{% url 'blog:ajouterNouvelArticle' %}"> <i
-                                    class='fa fa-sticky-note iconleft'></i> Un Article sur le forum</a></li>
+                                    class='fa fa-sticky-note iconleft'></i> Une info sur le forum (Article)</a></li>
                             <li><a class="dropdown-item" href="{% url 'produit_proposer_entree' %}"> <i
                                     class='fa fa-shopping-basket iconleft'></i> Une Petite Annonce</a></li>
                             <li><a class="dropdown-item" href="{% url 'ateliers:ajouterAtelier' %}"> <i
@@ -715,8 +507,6 @@
                             <li><a class="dropdown-item"
                                    href="{% url 'photologue:ajouterDocument' article_slug='None' %}"> <i
                                     class='fa fa-file iconleft'></i> Un Document / Fichier</a></li>
-                            <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i
-                                    class='fa fa-image iconleft'></i> Une Photo / Image </a></li>
                         </ul>
                     </li>
                     <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2  hover-icon"
@@ -737,11 +527,11 @@
                             <li>
                                <a class="dropdown-item" data-toggle="modal" data-target="#ajouter_favori">Ajouter la page actuelle</a></li>
 
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             {% for fav in favoris_list %}
                             <li><a class="dropdown-item" href="{{fav.url}}"> <i class='fa fa-link iconleft'></i> {{fav.nom}}</a></li>
                             {% endfor %}
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'mesFavoris' %}">Gérer mes favoris</a></li>
                         </ul>
                     </li>
@@ -753,13 +543,13 @@
                         <ul class="dropdown-menu  nav6-dropdown dropdown-menu-right"
                             aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="{% url 'profil_courant' %}">Mon profil</a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'mesSuivis' %}"> Abonnements </a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'mesActions' %}"> Publications </a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'switchThemeSombre' %}?next={{request.get_full_path}}"> Thème {%if request.user.css_dark %} Clair{% else %} Sombre {% endif %}</a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
                             {% comment %}
                             <li>
@@ -811,7 +601,7 @@
                             <li><a class="dropdown-item" href="{% url 'presentation_site_conseils' %}"> Conseils
                                 d'utilisation </a></li>
                             <li><a class="dropdown-item" href="{% url 'faq' %}"> FAQ </a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'liens' %}"> Liens </a></li>
                             <li class="dropdown-submenu-right ">
                                 <a class="dropdown-item dropdown-toggle" href="#">Outils externes</a>
@@ -853,10 +643,10 @@
                                         QR Code</a></li>
                                 </ul>
                             </li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'contact_admins' %}"> Contacter admins </a></li>
                             <li><a class="dropdown-item" href="{% url 'cgu' %}"> CGU </a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             {% if request.user.is_superuser %}
                             {% load admin_urls %}
 
@@ -925,7 +715,7 @@
                                         nettoyerHistoriqueAdmin</a></li>
                                 </ul>
                             </li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             {%endif%}
 
                             <li><a class="dropdown-item" href="{% url 'adhesion_entree' %}"> Faire un don</a></li>
@@ -967,10 +757,10 @@
                                     class='fa fa-info-circle iconleft '></i> Pourquoi utiliser le site ? </a></li>
                             <li><a class="dropdown-item" href="{% url 'contact_admins' %}"><i
                                     class='fa fa-envelope iconleft '></i> Nous contacter</a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'cgu' %}"><i
                                     class='fa fa-info-circle iconleft '></i> CGU </a></li>
-                            <li class="divider" role="separator"></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'adhesion_entree' %}"><i
                                     class='fa fa-euro-sign iconleft '></i> Faire un don</a></li>
                         </ul>
@@ -987,11 +777,11 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}">{% fa5_icon 'info' class='iconleft' %}
                                         Présentation</a></li>
 
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'charte' %}">{% fa5_icon 'info-circle' %} Charte </a></li>
                                     <li><a class="dropdown-item" href="{% url 'statuts' %}">{% fa5_icon 'info-circle' %}Statuts et règlement intérieur </a>
                                     </li>
-                                    <li class="divider" role="separator"></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'adhesion_asso' asso='pc' %}"><i
                                             class='fa fa-euro-sign iconleft '></i> Cotisation en ligne </a></li>
 

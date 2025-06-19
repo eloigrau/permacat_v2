@@ -68,8 +68,9 @@
                     </p>
                 </a>
             </td>
-            {% if article.start_time %}
             <td data-title="" class="text-center shrink">
+            {% if article.start_time %}
+                    <p class="">
                 <span class="badge badge-success">
                   {% if article.end_time %}
                   du {{ article.start_time|date:"DATE_FORMAT" }} au {{ article.end_time|date:"DATE_FORMAT" }}
@@ -77,10 +78,15 @@
                   le {{ article.start_time|date:"DATE_FORMAT" }}
                   {% endif %}
                   </span>
-            </td>
-            {% else %}
-            <td data-title="" class="text-center shrink row_visible_ordi"> </td>
+                    </p>
             {% endif %}
+                    <p class="">
+                        <span class="badge badge-light"  style="border:none; font-weight:200;">
+                {{article.getInfosHtml}}
+                        </span>
+            </p>
+
+            </td>
 
         </tr>
         {% endfor %}

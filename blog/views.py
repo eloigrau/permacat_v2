@@ -1296,25 +1296,60 @@ class ListeTodo_asso(ListView):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        if 'asso' in self.kwargs:
-            self.asso = Asso.objects.get(slug=self.kwargs['asso'])
-            self.request.session["asso_slug"] = self.kwargs['asso']
+        if "reset_asso" in params:
+            del self.request.session["asso_slug"]
+        self.qs = TodoArticle.objects.exclude(
+            article__asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
+        if "asso" in self.kwargs:
+            self.asso = Asso.objects.get(slug=self.kwargs["asso"])
+            self.request.session["asso_slug"] = self.kwargs["asso"]
+            self.qs = self.qs.filter(article__asso__slug=self.kwargs["asso"])
+        elif "asso_slug" in self.request.session:
+            self.qs = self.qs.filter(article__asso__slug=self.request.session["asso_slug"])
+            self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
         else:
             self.asso = Asso.objects.get(slug='public')
 
-        if self.request.user.est_autorise(self.asso.slug):
-            qs = TodoArticle.objects.filter(Q(article__asso__slug=self.asso.slug)).distinct().order_by('date_creation')
-        else:
-            qs = TodoArticle.objects.none()
-
-        self.qs = qs
-        return qs
+        return self.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_list'] = Choix_global.slugsNomsAssoEtPublic
         return context
 
+
+
+
+class ListeDocPtg_asso(ListView):
+    model = DocumentPartage
+    context_object_name = "docptg_list"
+    template_name = "blog/docptg_list.html"
+    paginate_by = 50
+
+    def get_queryset(self):
+        params = dict(self.request.GET.items())
+        if "reset_asso" in params:
+            del self.request.session["asso_slug"]
+        qs = DocumentPartage.objects.exclude(
+            article__asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
+        if "asso" in self.kwargs:
+            self.asso = Asso.objects.get(slug=self.kwargs["asso"])
+            self.request.session["asso_slug"] = self.kwargs["asso"]
+            qs = qs.filter(article__asso__slug=self.kwargs["asso"])
+        elif "asso_slug" in self.request.session:
+            qs = qs.filter(article__asso__slug=self.request.session["asso_slug"])
+            self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
+        else:
+            self.asso = Asso.objects.get(slug='public')
+
+        self.qs = qs
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()
+        context['asso_courante'] = self.asso
+        return context
 
 
 
@@ -1392,6 +1427,7 @@ def filtrer_articles(request):
     return render(request, 'blog/article_filter.html', {'filter': f})
 
 
+@login_required
 def ajax_categories(request):
     try:
         asso_id = request.GET.get('asso')
@@ -1405,6 +1441,23 @@ def ajax_categories(request):
                       {'categories': Choix.get_type_annonce_asso(nomAsso), 'categorie_courante':cat})
     except:
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'categories': Choix.get_type_annonce_asso("defaut")})
+
+@login_required
+def ajax_infosArticle(request, slug_article):
+    try:
+        article = get_object_or_404(Article, slug=slug_article)
+        nb_dates= Evenement.objects.filter(article=article).count() + 1 if article.start_time else 0
+        nb_fichiers = Document.objects.filter(article=article).count()
+        nb_docptg = DocumentPartage.objects.filter(article=article).count()
+        nb_comm =  Commentaire.objects.filter(article=article).count()
+
+
+        return render(request, 'blog/ajax/infos_article.html',  {'nb_dates': nb_dates,
+                                                                 'nb_fichiers': nb_fichiers,
+                                                                 'nb_docptg': nb_docptg,
+                                                                 'nb_comm': nb_comm,})
+    except:
+        return render(request, 'blog/ajax/infos_article.html',)
 
 
 def ajaxListeArticles(request):

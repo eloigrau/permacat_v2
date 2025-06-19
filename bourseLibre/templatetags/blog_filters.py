@@ -1,10 +1,12 @@
 from django import template
 import re
+from datetime import datetime
 
 from django.utils.safestring import mark_safe
 
 from blog.models import Choix
 from hitcount.models import Hit
+now = datetime.now()
 
 register = template.Library()
 
@@ -50,3 +52,10 @@ def getCategorie_display(cat):
 @register.filter(is_safe=True)
 def lienVersUrl(lien):
     return mark_safe("<a href='" + lien + "'>" + lien +"</a>")
+
+
+@register.filter(is_safe=True)
+def date_annee(date):
+    if date.year == now.year:
+        return format(date, 'F j')
+    return format(date, 'l d F Y')

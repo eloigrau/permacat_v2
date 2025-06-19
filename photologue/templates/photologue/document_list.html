@@ -105,9 +105,9 @@
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
-                <a  href="{% url 'photologue:doc-list' %}#ref-titre">
+                <a  href="{% url 'photologue:doc-list' %}?reset_asso=true#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug%} btn-success{% else %}btn-primary{% endif %}">
-                          <h6>Tout</h6>
+                          <h6>Tous</h6>
                     </li>
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
@@ -125,14 +125,4 @@
 
 {% include 'photologue/document_template.html' with object_list=object_list %}
 
-<script>
-
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-      console.log('Async: copié dans le presse-papier');
-    }, function(err) {
-      console.error('Async: Impossible de copier dans le presse-papier ', err);
-    });
-}
-</script>
 {% endblock %}

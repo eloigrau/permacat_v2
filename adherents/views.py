@@ -983,6 +983,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.request.session["asso_slug"] = self.asso.slug
         return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):

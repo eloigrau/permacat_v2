@@ -1366,7 +1366,7 @@ class ListeSalons(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context["salons_prives"] = [s.salon for s in InscritSalon.objects.filter(profil=self.request.user, salon__estPublic=False).order_by("salon__titre")]
+        context["salons_prives"] = [s.salon for s in InscritSalon.objects.filter(profil=self.request.user, salon__estPublic=False).order_by("salon__titre").distinct()]
         suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
         context["invit"] = InvitationDansSalon.objects.filter(profil_invite=self.request.user).order_by("salon__titre")
 

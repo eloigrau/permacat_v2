@@ -299,7 +299,7 @@ function get_infos(url_tag) {
 }
 
 
-function get_infocontact(url_tag) {
+function get_infocontact() {
     $.ajax({
         url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk asso_slug=request.session.asso_slug %}",
         type: "GET",

@@ -43,23 +43,26 @@
     </div>
 </div>
 
+
 <hr>
 <div class="anchor_blank" id="ref-navbargroupe"></div>
-<div class="row justify-content-center">
-    <nav class="navbar navbar-expand-lg justify-content-center">
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center" >
         <div class="navbar-header">
-            <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe"
-                    type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <h6>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug}} {% else %} Choisir un groupe {% endif %} </h6>
-            </button>
+             <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug}} {% else %} Choisir un groupe {% endif %} </p> </button>
         </div>
         <div class="navbar-collapse collapse " id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
-                {% for asso_id, asso_nom in asso_list %}
-                <a href="{% url 'blog:todoarticle_list' asso=asso_id%}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug.slug == asso_id %} btn-warning{% else %}btn-info{% endif %}">
-                        <h6>{{asso_nom}}</h6>
+                <a  href="{% url 'blog:todoarticle_list' %}?reset_asso=true#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug%} btn-success{% else %}btn-primary{% endif %}">
+                          <h6>Tous</h6>
+                    </li>
+                </a>
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'blog:todoarticle_list' asso=asso_ab %}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
                     </li>
                 </a>
                 {% endfor %}
@@ -70,16 +73,18 @@
 <hr>
 {%endblock%}
 {% block content %}
-<table class="table table-condensed sortable textcenter">
-        <thead><th>Créé le</th><th>Titre</th><th style="width:50%">Description</th><th>Article</th><th>Fait ?</th>
+<div class="row">
+<div class="col-sm-12">
+<table class="table table-condensed table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable textcenter">
+
+        <thead><th>Groupe</th><th>Titre</th><th style="width:50%">Description</th><th>Article</th><th>Créé le</th><th>Fait ?</th>
                      <th>Modifier/Supprimer</th>
 
         </thead>
         <tbody>
                         {% for todo in todoarticle_list %}
-                        <tr><td>
-                            {{ todo.date_creation|date:"d/m/Y" }}
-                        </td>
+                        <tr>
+                        <td> {{ doc.article.get_logo_nomgroupe_html|safe }}</td>
                             <td>
                                 {{ todo.titre }}
                             </td>
@@ -91,6 +96,9 @@
                             <td>
                               <a href="{{ todo.article.get_absolute_url }}">  {{ todo.article.titre|couperTexte:35 }} </a>
                             </td>
+                            <td>
+                            {{ todo.date_creation|date:"d/m/Y" }}
+                        </td>
                             <td>
                                 <form method="post" action="{% url 'blog:todoArticle_toggle' slug_article=todo.article.slug slug_todo=todo.slug %}" role="form">
                 {% csrf_token %}
@@ -113,6 +121,7 @@
                         {% endfor%}
         </tbody>
     </table>
-
+</div>
+</div>
 
 {% endblock %}

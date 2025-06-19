@@ -1,5 +1,6 @@
 from django.db import models
 from bourseLibre.models import Profil, Suivis, Asso, Adresse, username_re, Salon
+from photologue.models import Document
 from django.urls import reverse
 from django.utils import timezone, html
 from actstream import action
@@ -418,6 +419,26 @@ class Article(models.Model):
     def get_logo_nomgroupes_partages_html_taille(self, taille=14):
         return [Choix.get_logo_nomgroupe_html(asso.slug, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
+    @property
+    def getInfosHtml(self):
+        nb_dates= Evenement.objects.filter(article=self).count() + 1 if self.start_time else 0
+        nb_fichiers = Document.objects.filter(article=self).count()
+        nb_docptg = DocumentPartage.objects.filter(article=self).count()
+        nb_comm = Commentaire.objects.filter(article=self).count()
+        nb_salon = Salon.objects.filter(article=self).count()
+        html = ""
+        if nb_dates:
+            html += '&nbsp;<i class="fa fa-calendar">'+ str(nb_dates) +'</i>'
+        if nb_fichiers:
+            html += '&nbsp;<i class="fa fa-file">'+ str(nb_fichiers) +'</i>'
+        if nb_docptg:
+            html += '&nbsp;<i class="fa fa-link">'+ str(nb_docptg) +'</i>'
+        if nb_comm:
+            html += '&nbsp;<i class="fa fa-comment">'+ str(nb_comm) +'</i>'
+        if nb_salon:
+            html += '&nbsp;<i class="fa fa-users">'+ str(nb_salon) +'</i>'
+
+        return mark_safe(html)
 
     def est_autorise(self, user):
         if user == self.auteur or  self.asso.slug == "public" or self.partagesAsso.filter(slug="public"):
@@ -466,6 +487,7 @@ class DocumentPartage(models.Model):
     nom = models.CharField(verbose_name="Nom du document (ou lien http)", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
     slug = models.SlugField(max_length=100)
+    date_creation = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "(" + str(self.nom) + ") "+ str(self.url)
@@ -576,6 +598,10 @@ class Commentaire(models.Model):
     @property
     def get_edit_url(self):
         return reverse('blog:modifierCommentaireArticle',  kwargs={'id':self.id})
+
+    @property
+    def pascetteannee(self):
+        return self.date_creation.year != timezone.now().year
 
     def save(self, sendMail=False, *args, **kwargs):
         ''' On save, update timestamps '''

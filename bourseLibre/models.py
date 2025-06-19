@@ -1344,6 +1344,10 @@ class InscritSalon(models.Model):
     def __str__(self):
         return str(self.salon) + "' - " + self.profil.username
 
+
+    class Meta:
+        unique_together = ('salon', 'profil')
+
 class InvitationDansSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     profil_invitant = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="invitant")

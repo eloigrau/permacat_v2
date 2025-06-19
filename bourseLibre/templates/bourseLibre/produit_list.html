@@ -190,6 +190,7 @@
                 {% if asso_courante %}{{asso_courante.nom}}{%else%}Groupe{%endif%}
              </button>
                 <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat2">
+                      <a class="dropdown-item" href="{% url 'marche' %}?base">Tous</a>
                     {% for abrev, nom_asso  in asso_list %}
                       <a class="dropdown-item" href="?asso={{abrev}}">{{nom_asso}}</a>
                     {%endfor%}
@@ -236,6 +237,7 @@
                 {% if asso_courante %}{{asso_courante.nom}}{%else%}Groupe{%endif%}
               </button>
                 <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat">
+                      <a class="dropdown-item" href="{% url 'marche' %}?base">Tous</a>
                     {% for abrev, nom_asso  in asso_list %}
                       <a class="dropdown-item" href="?asso={{abrev}}">{{nom_asso}}</a>
                     {%endfor%}

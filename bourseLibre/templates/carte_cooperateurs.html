@@ -34,8 +34,8 @@
 {% endblock %}
 {% block content %}
 
-{% if request.user.adherent_citealt %}
 {% if asso.slug == 'citealt' or  asso.slug == 'public' %}
+{% if request.user.adherent_citealt %}
 <hr>
 
 <div class="row">
@@ -50,6 +50,21 @@
 {% endif %}
 {% endif %}
 
+{% if asso.slug == 'conf66' or  asso.slug == 'scic' %}
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        <p>Ceci est la carte/annuaire des inscrits au site, si vous souhaitez voir la carte / annuaire des adhérents du groupe, <a href="{% url 'adherents:accueil' asso_slug=asso.slug %}">c'est par ici</a></p>
+    </div>
+</div>
+{% else %}
+{% if request.session.asso_slug == 'conf66'  or request.session.asso_slug == 'scic' %}
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        <p>Ceci est la carte / annuaire des inscrits au site, si vous souhaitez voir la carte / annuaire des adhérents du groupe, <a href="{% url 'adherents:accueil' asso_slug=request.session.asso_slug %}">c'est par ici</a></p>
+    </div>
+</div>
+{% endif %}
+{% endif %}
 <hr>
 <div class="row" id="annuaire">
     <div class="col-sm-12 textcenter">

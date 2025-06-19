@@ -127,7 +127,7 @@ class DocListView(ListView, FormMixin):
 
     def get_queryset(self):
 
-        if "reset_asso" in self.request.GET:
+        if "reset_asso" in self.request.GET and "asso_slug" in self.request.session:
             del self.request.session["asso_slug"]
         if "asso" in self.request.GET:
             self.request.session["asso_slug"] = self.request.GET["asso"]

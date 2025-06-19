@@ -4,9 +4,9 @@
 <div class="row">
 	<div class="col-sm-12">
 		<div class="btn-group">
-			 <a class="btn btn-success" href="{% url 'presentation_asso'  asso=assos %}"> Présentation </a>
-			 <a class="btn btn-success" href="{% url 'carte'  asso=assos %}"> Carte / Annuaire des inscrits </a>
-			 <a class="btn btn-success" href="{% url 'blog:index_asso' asso=assos%}"> Articles du Forum </a>
+			 <a class="btn btn-success" href="{% url 'carte'  asso=assos %}"> Carte / Annuaire </a>
+			 <a class="btn btn-success" href="{% url 'blog:index_asso' asso=assos%}"> Forum </a>
+			 <a class="btn btn-success" href="{% url 'marche' %}?asso={{assos}}"> Petites annonces </a>
 		</div>
 	</div>
 </div>

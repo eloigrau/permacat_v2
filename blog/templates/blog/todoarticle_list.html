@@ -33,9 +33,9 @@
                 </button>
               </div>
               <div class="modal-body textleft">
-                  <p>Les Todo sont des (petites) actions à faire. Cela peut permettre de ne pas oublier une tâche qu'on a dit qu'on ferait. OU bien encore d'avoir un suivi des actions dans le temps. </p>
-                  <p>On peut rajouter un Todo sur la page d'un article du Forum (dans le menu accessible par le bouton "+" sous le titre de l'article)</p>
-                  <p>Cliquer sur le bouton "Non" pour les marquer comme "Fait" (et inversement, cliquer sur "Non" pourles marquer comme "non fait")</p>
+                  <p>Les Todo sont des (petites) actions à faire. Cela peut permettre de ne pas oublier une tâche qu'on a dit qu'on ferait. Ou bien encore d'avoir un suivi des actions dans le temps. </p>
+                  <p>On peut rajouter un Todo sur la page d'un Article du Forum (dans le menu accessible par le bouton "+" sous le titre de l'article)</p>
+                  <p>Cliquer sur le bouton "Non" pour les marquer comme "Fait" (et inversement, cliquer sur le "Oui" pour les marquer comme "non fait")</p>
               </div>
             </div>
           </div>
@@ -76,7 +76,6 @@
 <div class="row">
 <div class="col-sm-12">
 <table class="table table-condensed table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable textcenter">
-
         <thead><th>Groupe</th><th>Titre</th><th style="width:50%">Description</th><th>Article</th><th>Créé le</th><th>Fait ?</th>
                      <th>Modifier/Supprimer</th>
 
@@ -84,7 +83,7 @@
         <tbody>
                         {% for todo in todoarticle_list %}
                         <tr>
-                        <td> {{ doc.article.get_logo_nomgroupe_html|safe }}</td>
+                        <td> {{ todo.article.get_logo_nomgroupe_html|safe }}</td>
                             <td>
                                 {{ todo.titre }}
                             </td>

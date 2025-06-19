@@ -1296,7 +1296,7 @@ class ListeTodo_asso(ListView):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        if "reset_asso" in params:
+        if "reset_asso" in params and "asso_slug" in self.request.session:
             del self.request.session["asso_slug"]
         self.qs = TodoArticle.objects.exclude(
             article__asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
@@ -1328,7 +1328,7 @@ class ListeDocPtg_asso(ListView):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        if "reset_asso" in params:
+        if "reset_asso" in params and "asso_slug" in self.request.session:
             del self.request.session["asso_slug"]
         qs = DocumentPartage.objects.exclude(
             article__asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")

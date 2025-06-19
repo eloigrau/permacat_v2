@@ -18,7 +18,7 @@
                 Afficher les archives
         </button></div>
     {% endif %}
-    {% endifchanged %}
+    {% else %}
 	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
@@ -31,6 +31,7 @@
                    </span>
                 <p>{{ comment.commentaire|safe|usermention}}</p>
         </div>
+    {% endifchanged %}
 {% endfor %}
     </div>
     </div>

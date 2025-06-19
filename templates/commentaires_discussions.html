@@ -29,7 +29,7 @@
                 Afficher les archives
         </button></div>
     {% endif %}
-    {% endifchanged %}
+    {% else %}
 	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>{% endifchanged %}
@@ -41,6 +41,7 @@
                    </span>
                 <p>{{ comment.commentaire|safe|usermention}}</p>
         </div>
+    {% endifchanged %}
 {% endfor %}
     </div>
     </div>

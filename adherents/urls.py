@@ -72,6 +72,8 @@ urlpatterns = [
 
     path(r'<str:asso_slug>/listesDiffusion/ajouter/<int:listeDiffusion_pk>/', views.ajouterAdherentAListeDiffusion,
          name="listeDiffusion_ajouterAdherent"),
+    path(r'<str:asso_slug>/listesDiffusion/ajouterMail/<int:listeDiffusion_pk>/', views.ajouterMailAListeDiffusion,
+         name="listeDiffusion_ajouterMail"),
     path(r'<str:asso_slug>/inscriptions/ajouter/<int:adherent_pk>',
          views.ajouterInscription_AdherentListeDiffusion, name="ajouterInscription_AdherentListeDiffusion"),
 

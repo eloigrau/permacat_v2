@@ -12,7 +12,8 @@ from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.db.models import Q
 from bourseLibre.settings import PROJECT_ROOT, os
 from bourseLibre.settings.production import LOCALL
-from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentForm_conf66, AdherentChangeForm_conf66, InscriptionMailForm, ListeDiffusionForm,
+from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentForm_conf66, AdherentChangeForm_conf66,
+                InscriptionMail_complet_Form, InscriptionMail_Mail_Form, InscriptionMailForm, ListeDiffusionForm,
     InscriptionMail_listeAdherent_Form, InscriptionMailAdherentALsteForm, AdhesionForm_adherent, Comm_adh_form,
     Contact_form, Contact_update_form, ContactContact_form)
 from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
@@ -135,7 +136,7 @@ class AdherentDeleteView(UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
-        action.send(self.request.user, verb='adherent_conf66_supprimer', url=reverse('adherents:accueil'), description=desc)
+        action.send(self.request.user, verb="adherent_"+self.asso.slug+"_supprimer", url=reverse('adherents:accueil'), description=desc)
         return reverse('adherents:accueil')
 
 class AdherentUpdateView(UserPassesTestMixin, UpdateView):
@@ -187,9 +188,9 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         desc =" a modifié l'adresse de l'adhérent : " + str(self.adherent) + " (" + str(form.changed_data)+ ")"
-        action.send(self.request.user, verb='adherent_conf66_modifAdresse', action_object=self.object, url=self.adherent.get_absolute_url(), description=desc)
+        action.send(self.request.user, verb="adherent_"+self.asso.slug+"_modifAdresse", action_object=self.object, url=self.adherent.get_absolute_url(), description=desc)
         titre = "[PCAT_adherents] Modification de l'adresse de l'adherent" + str(self.adherent)
-        action.send(self.request.user, verb='emails', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=['confederationpaysanne66@gmail.com', ])
+        action.send(self.request.user, verb='emails', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=[self.asso.email, ])
         return super().form_valid(form)
 
 
@@ -906,11 +907,12 @@ class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
 class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
     model = InscriptionMail
     template_name_suffix = '_modifier'
-    fields = ["liste_diffusion", "adherent", "commentaire"]
+
+    def get_form(self):
+        return InscriptionMail_complet_Form(asso_slug=self.asso.slug, **self.get_form_kwargs())
 
     def get_success_url(self):
-        return self.object.adherent.get_absolute_url()
-
+        return self.object.liste_diffusion.get_absolute_url()
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
@@ -993,7 +995,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
-        context['actions'] = Action.objects.filter(verb__startswith="listeDiff_conf66").order_by('-timestamp')
+        context['actions'] = Action.objects.filter(verb__startswith="listeDiff_"+self.asso.slug).order_by('-timestamp')
         context['dico_ListesBase'] = {'Bureau': get_mails(typeListe="bureau"),
                                         'Adhérents à jour':get_mails(typeListe="ajour"),
                                         "Adhérents de l'année dernière pas à jour de cotisation":get_mails(typeListe="anneeprecedente_pasajour"),
@@ -1071,7 +1073,7 @@ def creerInscriptionMail_adherent(request, asso_slug, adherent_pk):
         inscription = form.save(commit=False)
         inscription.adherent = adherent
         inscription.save()
-        action.send(inscription.adherent, verb="listeDiff_conf66_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),
+        action.send(inscription.adherent, verb="listeDiff_"+asso.slug+"_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),
                      description=" ajouté dans la liste: '%s'" %(inscription.liste_diffusion.nom))
         return redirect(reverse('adherents:inscriptionMail_liste', kwargs={"asso_slug":asso_slug} ))
 
@@ -1086,7 +1088,7 @@ def creerInscriptionMail(request, asso_slug):
     form = InscriptionMail_listeAdherent_Form(asso_slug, request.POST or None)
     if form.is_valid():
         inscription = form.save()
-        action.send(inscription.adherent, verb="listeDiff_conf66_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),
+        action.send(inscription.adherent, verb="listeDiff_"+asso_slug+"_plus", action_object=inscription.liste_diffusion, url=inscription.liste_diffusion.get_absolute_url(),
                      description=" ajouté dans la liste: '%s'" %(inscription.liste_diffusion.nom))
         return redirect(reverse('adherents:inscriptionMail_liste', kwargs = {"asso_slug":asso_slug}))
 
@@ -1103,7 +1105,7 @@ def creerListeDiffusion(request, asso_slug):
         liste = form.save(commit = False)
         liste.asso = asso
         liste.save()
-        action.send(request.user, verb="listeDiff_conf66_nouvelle", action_object=liste, url=liste.get_absolute_url(),
+        action.send(request.user, verb="listeDiff_"+asso_slug+"_nouvelle", action_object=liste, url=liste.get_absolute_url(),
                      description="a créé une nouvelle liste : '%s'" %(liste.nom))
         return redirect(liste)
 
@@ -1184,7 +1186,7 @@ def ajouterAdherentAListeDiffusion(request, asso_slug, listeDiffusion_pk):
         adhesion = form.save(commit=False)
         adhesion.liste_diffusion = listeDiffusion
         adhesion = form.save()
-        action.send(adhesion.adherent, verb="listeDiff_conf66_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
+        action.send(adhesion.adherent, verb="listeDiff_"+asso_slug+"_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
                      description=request.user.username + " a ajouté %s dans la liste : '%s'" %(adhesion.adherent, listeDiffusion.nom))
 
         return redirect(listeDiffusion)
@@ -1192,3 +1194,22 @@ def ajouterAdherentAListeDiffusion(request, asso_slug, listeDiffusion_pk):
     return render(request, 'adherents/listediffusion_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion, "asso_slug":asso_slug})
 
 
+
+@login_required
+def ajouterMailAListeDiffusion(request, asso_slug, listeDiffusion_pk):
+    if not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
+
+    form = InscriptionMail_Mail_Form(request.POST or None)
+    listeDiffusion = get_object_or_404(ListeDiffusion, pk=listeDiffusion_pk)
+
+    if form.is_valid():
+        adhesion = form.save(commit=False)
+        adhesion.liste_diffusion = listeDiffusion
+        adhesion = form.save()
+        action.send(adhesion, verb="listeDiff_"+asso_slug+"_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
+                     description=request.user.username + " a ajouté %s dans la liste : '%s'" %(adhesion.get_email, listeDiffusion.nom))
+
+        return redirect(listeDiffusion)
+
+    return render(request, 'adherents/listediffusion_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion, "asso_slug":asso_slug})

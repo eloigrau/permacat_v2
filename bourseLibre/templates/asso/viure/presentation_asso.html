@@ -11,7 +11,7 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-	<div class="col">
+	<div class="col textcenter">
 		<p>La coordination Viure a pour vocation de réunir les acteurs engagés du territoire  pour la préservation des terres agricoles et des espaces naturels des Pyrénées Orientales.</p>
 <p class="textcenter"><a href="https://www.viure.fr" target="_blank">Site officiel : Viure.fr</a></p>
 
@@ -35,8 +35,12 @@
 
 	</div>
 </div>
+
+		{% if request.user.adherent_viure %}
 <hr>
-<h4>Carte des luttes dans les PO :</h4>
+<h4 class="textcenter">Carte des luttes dans les PO :</h4>
 <iframe width="100%" height="300px" frameborder="0" allowfullscreen allow="geolocation" src="//umap.openstreetmap.fr/fr/map/carte-des-luttes-dans-les-po_1035312?scaleControl=false&miniMap=false&scrollWheelZoom=false&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true"></iframe>
 <p><a href="//umap.openstreetmap.fr/fr/map/carte-des-luttes-dans-les-po_1035312?scaleControl=false&miniMap=false&scrollWheelZoom=true&zoomControl=true&editMode=disabled&moreControl=true&searchControl=null&tilelayersControl=null&embedControl=null&datalayersControl=true&onLoadPanel=none&captionBar=false&captionMenus=true">Voir en plein écran</a></p>
+
+		{% endif %}
 {% endblock %}

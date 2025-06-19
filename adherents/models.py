@@ -138,6 +138,8 @@ class ListeDiffusion(models.Model):
     nom = models.CharField(max_length=30, blank=False, unique=True)
     date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now=True)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name="Groupe associé", null=True,)
+    #from blog.models import Article
+    #article = models.ForeignKey(Article, on_delete=models.SET_NULL, verbose_name="Article associé", null=True,)
 
     def __str__(self):
         return str(self.nom)
@@ -156,12 +158,12 @@ class ListeDiffusion(models.Model):
 
     @property
     def get_liste_mails(self):
-        return [i.adherent.email for i in self.inscriptionmail_set.all() if "@" in i.adherent.email]
+        return [i.get_email() for i in self.inscriptionmail_set.all() if "@" in i.get_email()]
 
     @property
     def get_liste_adherents(self, avecMail=True):
         if avecMail:
-            return [i.adherent for i in self.inscriptionmail_set.all() if "@" in i.adherent.email]
+            return [i.adherent for i in self.inscriptionmail_set.all() if "@" in i.get_email()]
         else:
             return [i.adherent for i in self.inscriptionmail_set.all()]
 
@@ -169,9 +171,9 @@ class ListeDiffusion(models.Model):
 class InscriptionMail(models.Model):
     liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, verbose_name="Liste de diffusion")
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
-    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent", blank=False, null=False)
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent", blank=True, null=True)
+    email_pasadherent = models.EmailField(verbose_name="Email", blank=True)
     commentaire = models.CharField(max_length=50, blank=True)
-
 
     class Meta:
         unique_together = ('liste_diffusion', 'adherent')
@@ -180,11 +182,15 @@ class InscriptionMail(models.Model):
         if self.liste_diffusion:
             return str(self.liste_diffusion.nom) + ": " + str(self.get_email)
         else:
-            return "Liste NULL, adherent :" + str(self.adherent)
+            if self.adherent:
+                return "Liste inconnue, adherent :" + str(self.adherent)
+            return "Liste inconnue, adherent inconnu, email : " + self.email_pasadherent
 
     @property
     def get_email(self):
-        return self.adherent.get_email
+        if self.adherent:
+            return self.adherent.get_email
+        return self.email_pasadherent
 
 
     def get_absolute_url(self):

@@ -102,12 +102,30 @@ class InscriptionMailForm(forms.ModelForm):
 
     class Meta:
         model = InscriptionMail
-        fields = [ "adherent", 'commentaire',]
+        fields = ["adherent", 'commentaire',]
 
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(InscriptionMailForm, self).__init__(*args, **kwargs)
         self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
+
+class InscriptionMail_complet_Form(forms.ModelForm):
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all(), required=True, label="Adhérent", )
+    email_pasadherent = forms.EmailField(required=False, help_text="Email (renseigner uniquement si ce n'est pas un adhérent)")
+
+    class Meta:
+        model = InscriptionMail
+        fields = ["adherent", 'commentaire',"email_pasadherent"]
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(InscriptionMail_complet_Form, self).__init__(*args, **kwargs)
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
+
+class InscriptionMail_Mail_Form(forms.ModelForm):
+
+    class Meta:
+        model = InscriptionMail
+        fields = [ "email_pasadherent", 'commentaire',]
 
 
 class InscriptionMailAdherentALsteForm(forms.ModelForm):

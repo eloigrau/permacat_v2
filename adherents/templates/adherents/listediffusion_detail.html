@@ -20,7 +20,8 @@
 {% if request.user.estmembre_bureau_conf %}
 <div class="row justify-content-center">
     <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter un confédéré à la liste</a></li>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter un adhérent à la liste</a></li>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterMail' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter un mail à la liste</a></li>
     </div>
 </div>
 {% endif %}
@@ -54,10 +55,12 @@
                     {% for m in listediffusion.get_liste_inscriptions %}
                     <tr>
                         <td>
-                            <a href="{{m.adherent.get_absolute_url}}">{{m.adherent}}</a>
+                            {% if m.adherent %}
+                                <a href="{{m.adherent.get_absolute_url}}">{{m.adherent}}</a>
+                            {% endif %}
                         </td>
                         <td>
-                             {{m.adherent.get_email}}
+                             {{m.get_email}}
                         </td>
                         <td>
                              {{m.commentaire}}
@@ -69,7 +72,6 @@
                         {% if request.user.estmembre_bureau_conf %}
                             <a class="btn btn-sm btn-warning textleft" href="{{m.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                             <a class="btn btn-sm btn-danger textleft" href="{{m.get_delete_url}}" ><i class="fa fa-times"></i> </a>
-
                         {% endif %}
                     </td>
                     </tr>

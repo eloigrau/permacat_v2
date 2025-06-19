@@ -269,7 +269,7 @@ class Asso(models.Model):
 
     def getProfils(self):
         if self.slug == "public":
-            return Profil.objects.all().order_by("username")
+            return Profil.objects.filter(is_active=True).order_by("username")
         elif self.slug == "pc":
             return Profil.objects.filter(adherent_pc=True).order_by("username")
         elif self.slug == "rtg":

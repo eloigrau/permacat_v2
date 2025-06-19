@@ -533,6 +533,7 @@ def carte(request, asso):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
+    request.session["asso_slug"] = asso.slug
     profils = asso.getProfils()
     nbProf = len(profils)
     nb_par_page = 100

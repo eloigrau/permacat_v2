@@ -1401,6 +1401,10 @@ class Message_salon(models.Model):
     def get_absolute_url_site(self):
         return self.salon.get_absolute_url_site + "#comm_" + str(self.id)
 
+    @property
+    def pascetteannee(self):
+        return self.date_creation.year != timezone.now().year
+
     def save(self, *args, **kwargs):
         super(Message_salon, self).save(*args, **kwargs)
         self.salon.date_dernierMessage = now()
@@ -1479,6 +1483,9 @@ class Message(models.Model):
     def get_absolute_url_site(self):
         return "https://www.perma.cat" + self.conversation.get_absolute_url() + "#comm_" + str(self.id)
 
+    @property
+    def pascetteannee(self):
+        return self.date_creation.year != timezone.now().year
 
     def save(self, *args, **kwargs):
         super(Message, self).save(*args, **kwargs)
@@ -1504,6 +1511,10 @@ class MessageGeneral(models.Model):
 
     def get_absolute_url(self):
         return reverse('agora', kwargs={'asso':self.asso.slug})
+
+    @property
+    def pascetteannee(self):
+        return self.date_creation.year != timezone.now().year
 
     def save(self,):
         suivis, created = Suivis.objects.get_or_create(nom_suivi='agora_' + str(self.asso.slug))

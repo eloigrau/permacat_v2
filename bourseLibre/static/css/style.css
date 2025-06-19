@@ -2924,3 +2924,10 @@ overflow-x: scroll;
 }
 
 .notif-dejavue{background-color:background-color:#ffffe6}
+
+.invisible{
+    display:none;
+}
+.visible{
+    display:block;
+}

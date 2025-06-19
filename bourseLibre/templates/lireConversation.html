@@ -6,91 +6,113 @@
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
 <div class="row">
-<div class="col-sm-12 textcenter">
-    <a href="{% url 'conversations' %}" class="btn btn-info"> <i class="fa fa-arrow-left"></i> Conversations </a>
-</div>
+    <div class="col-sm-12 textcenter">
+        <a href="{% url 'conversations' %}" class="btn btn-info"> <i class="fa fa-arrow-left"></i> Conversations </a>
+    </div>
 </div>
 {% endblock %}
 {% block content %}
-    <div class="anchor_blank" id="idConversation"></div>
+<div class="anchor_blank" id="idConversation"></div>
 
 {% include 'pagination_new.html' %}
+
 <div class="conversation">
     <div class="conversation-container">
-    {% for comment in page_obj %}
-	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
-        <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
+        {% for comment in page_obj %}
+        {% ifchanged comment.pascetteannee %}
+        {% if not forloop.first %}
+        <div class="row justify-content-center textcenter">
+            <button id="btn-detail-comments" type="button" class="btn btn-sm btn-light visible"
+                    onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
+                    title="Cliquez pour afficher les archives">
+                Afficher les archives
+            </button>
+        </div>
+        {% endif %}
+        {% endifchanged %}
+        <div class="row anchor_blank" id="comm_{{comment.id}}"></div>
+        <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
-                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
-                <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
-
+            {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
+            <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}{% else %}{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}{% endif %}
                 {% if request.user == comment.auteur or request.user.is_superuser %}
                 <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
                 {% endif %}
                    </span>
-                <p>{{ comment.message|safe}}</p>
+            <p>{{ comment.message|safe}}</p>
         </div>
-{% endfor %}
+        {% endfor %}
     </div>
-    </div>
+</div>
 
 {% comment %}
 
 {% for mess in page_obj %}
 
-    {% ifchanged %}
-    <div class="row msg-date">
-        <div class="col-sm-12">
-            <p class="infos textcenter">{{ mess.date_creation|date:"DATE_FORMAT" }}</p>
-        </div>
+{% ifchanged %}
+<div class="row msg-date">
+    <div class="col-sm-12">
+        <p class="infos textcenter">{{ mess.date_creation|date:"DATE_FORMAT" }}</p>
     </div>
-    {% endifchanged %}
-    <div class="row {% if mess.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
-        <div class="col-sm-2 col-md-3 col-lg-1">
-            <p class="infos  textepetit">
-                {{ mess.date_creation|date:"G:i" }} {% ifchanged %}, <a href="{% url 'profil' mess.auteur.id %}"> {{mess.auteur}}</a>{% endifchanged %}
+</div>
+{% endifchanged %}
+<div class="row {% if mess.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
+    <div class="col-sm-2 col-md-3 col-lg-1">
+        <p class="infos  textepetit">
+            {{ mess.date_creation|date:"G:i" }} {% ifchanged %}, <a href="{% url 'profil' mess.auteur.id %}">
+            {{mess.auteur}}</a>{% endifchanged %}
             {% if request.user == mess.auteur %}
-                <a class="boutonediter" href="{{ mess.get_edit_url  }}" role="button"><i class="fa fa-edit"></i></a>
+            <a class="boutonediter" href="{{ mess.get_edit_url  }}" role="button"><i class="fa fa-edit"></i></a>
             {% endif %}
-            </p>
-        </div>
-        <div class=" col-sm-10 col-md-9 col-lg-10 message ">
-                <p>{{ mess.message|safe }}</p>
-        </div>
+        </p>
     </div>
+    <div class=" col-sm-10 col-md-9 col-lg-10 message ">
+        <p>{{ mess.message|safe }}</p>
+    </div>
+</div>
 
 {% endfor %}
 
 {% endcomment %}
 {% include 'pagination_new.html' %}
 
-</div>
-<script>
-</script>
-
 <hr>
 <div class="row">
     <div class="col-sm-8">
         {% if not page_obj %}
-            <h5>Commencer la discussion :</h5>
+        <h5>Commencer la discussion :</h5>
         {% else %}
-            <h5>Répondre :</h5>
+        <h5>Répondre :</h5>
         {% endif %}
     </div>
     <div class="col-sm-4 textright">
-        <a href="{% url 'partagerPosition' slug_conversation=conversation.slug %}#ref-titre" class="btn btn-info"> <i class="fa fa-map-marker"></i> Partager une position </a>
+        <a href="{% url 'partagerPosition' slug_conversation=conversation.slug %}#ref-titre" class="btn btn-info"> <i
+                class="fa fa-map-marker"></i> Partager une position </a>
     </div>
 </div>
 <div>
-<input type="hidden" name="Nouveau Message" value="{{ message }}">
-<div>
-<form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="Nouveau Message" value="{{ message_defaut }}">
-    {% include 'form_template3.html'  with boutonAnnuler=False %}
-</form>
+    <input type="hidden" name="Nouveau Message" value="{{ message }}">
+    <div>
+        <form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="Nouveau Message" value="{{ message_defaut }}">
+            {% include 'form_template3.html' with boutonAnnuler=False %}
+        </form>
+    </div>
 </div>
 
+    {% endblock %}
 
 
+{% block scriptblock %}
+<script>
+function toggle_visibility_class(id_class) {
+       var e = $(".pascetteannee");
+       if(e.length){
+              e.toggleClass("invisible visible");
+       }
+       $('#btn-detail-comments').toggleClass("invisible visible");
+}
+
+</script>
 {% endblock %}

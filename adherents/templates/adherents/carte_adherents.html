@@ -228,7 +228,7 @@
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
     <div class="textcenter">
-        <button id="btn-archives"  type="button" class="btn btn-lg" onclick="toggle_visibility('historique');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+        <button id="btn-archives"  type="button" class="btn btn-info" onclick="toggle_visibility('historique');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
             Afficher l'historique
         </button>
     </div>
@@ -263,8 +263,6 @@
           btn.textContent = "Cacher l'historique";
       }
    }
-</script>
-<script>
 function get_infos(url_tag) {
     $.ajax({
         url: url_tag,

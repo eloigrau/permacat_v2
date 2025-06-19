@@ -162,7 +162,7 @@ urlpatterns = [
     # re_path(r'^list$', views.product_list),
     # re_path(r'^list2/$', FilterView.as_view(model=Produit, filterset_class=ProductFilter,)),
     re_path(r'^marche/$', login_required(views.ListeProduit.as_view()),  name="marche"),
-    re_path(r'^marche/lister$', login_required(views.ListeProduit.as_view()),  name="marche"),
+    re_path(r'^marche/lister/$', login_required(views.ListeProduit.as_view()),  name="marche"),
     re_path(r'^marche/supprimerProduits_expires_confirmation/$', views.supprimerProduits_expires_confirmation,  name="supprimerProduits_expires_confirmation"),
     re_path(r'^marche/supprimerProduits_expires/$', views.supprimerProduits_expires,  name="supprimerProduits_expires"),
     re_path(r'^marche/lister_offres/', login_required(views.ListeProduit_offres.as_view()),

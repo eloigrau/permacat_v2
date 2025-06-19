@@ -83,7 +83,7 @@
         <h5>Résultat : la proposition "<em>{{res.0.0}}</em>" l'emporte au jugement majoritaire (mention "{{res.0.1.1}}", note : {{res.0.4}}%)</h5>
     {% endif %}
 
-    <button id="btn-detail-qm-{{forloop.counter}}"  type="button" class="btn btn-lg" onclick="toggle_visibility('detail-qm-{{forloop.counter}}');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+    <button id="btn-detail-qm-{{forloop.counter}}"  type="button" class="btn btn-info" onclick="toggle_visibility('detail-qm-{{forloop.counter}}');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
        <i class="fa fa-eye"></i>
     </button>
         </h5>
@@ -127,7 +127,7 @@
 {% if votes %}
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
-    <button id="btn-detail-comments" type="button" class="btn btn-lg" onclick="toggle_visibility('detail-comments');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+    <button id="btn-detail-comments" type="button" class="btn btn-info" onclick="toggle_visibility('detail-comments');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
        Voir les votes
     </button>
     <div id="detail-comments"  style='display:none;'>

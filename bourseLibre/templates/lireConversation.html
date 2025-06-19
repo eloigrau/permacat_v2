@@ -29,8 +29,8 @@
             </button>
         </div>
         {% endif %}
-        {% else %}
-        <div class="row anchor_blank" id="comm_{{comment.id}}"></div>
+        {% endifchanged %}
+        <div class="row anchor_blank {% ifchanged comment.pascetteannee %} invisible {% endifchanged %}" id="comm_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
             {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
@@ -41,7 +41,6 @@
                    </span>
             <p>{{ comment.message|safe}}</p>
         </div>
-        {% endifchanged %}
         {% endfor %}
     </div>
 </div>

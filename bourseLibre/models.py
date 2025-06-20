@@ -1488,7 +1488,6 @@ class Message(models.Model):
         #return self.date_creation.day + 10*self.date_creation.month != timezone.now().day + 10*timezone.now().month
         return self.date_creation.year != timezone.now().year
 
-
     def save(self, *args, **kwargs):
         super(Message, self).save(*args, **kwargs)
         self.conversation.date_dernierMessage = now()

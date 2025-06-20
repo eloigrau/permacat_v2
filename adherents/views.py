@@ -821,6 +821,14 @@ def get_infos_contacts(request, projet_pk, type_info="email"):
     else:
         template = 'adherents/template_inconnu.html'
 
+    taille = 90
+    qs = profils_filtres.qs
+    if type_info == "email" and len(qs) > taille:
+        data = []
+        for i in range(0, len(qs), taille):
+            data.append(qs[i:i + taille])
+        qs = data
+        return render(request, 'adherents/template_mails_groupes.html', {'qs':qs})
     return render(request, template, {'qs': profils_filtres.qs})
 
 

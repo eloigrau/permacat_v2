@@ -696,7 +696,7 @@ def get_csv_contacts(request, asso_slug):
     #current_year = date.today().isocalendar()[0]
 
     csv_data = [("nom","prenom","telephone","email","adresse_postale","code_postal","commune","adherent_nom","commentaire",),]
-    csv_data += [(a.nom, a.prenom, a.adresse.telephone, a.email,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.get_profil_username(), a.commentaire)
+    csv_data += [(a.nom, a.prenom, a.adresse.telephone if a.adresse else "", a.email,a.adresse.rue if a.adresse else "",a.adresse.code_postal if a.adresse else "",a.adresse.commune if a.adresse else "", a.get_profil_username(), a.commentaire)
                  for a in profils_filtres.qs.distinct() ]
 
     return write_csv_data(request, csv_data)

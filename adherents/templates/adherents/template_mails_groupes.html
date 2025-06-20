@@ -1,0 +1,1 @@
+ <p>{%for q in qs %}<p>{%for m in q %}{%if m.email %}{{m.email}} {% if not forloop.last %}, {% endif%}{% endif%}{%endfor%}</p>{%endfor%}</p>

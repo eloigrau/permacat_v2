@@ -1,3 +1,1 @@
-<p>{%for m in qs %}
-    {%if m.adresse.telephone %}{{m.adresse.telephone}} {% if not forloop.last %}, {% endif%}{% endif%}
-    {%endfor%}</p>
+<p>{%for m in qs %}{%if m.adresse.telephone %}{{m.adresse.telephone}} {% if not forloop.last %}, {% endif%}{% endif%}{%endfor%}</p>

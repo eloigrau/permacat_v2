@@ -342,7 +342,7 @@
                                        href="{% url 'blog:modifierDocumentPartage' slug_docpartage=doc.slug%}"> <i
                                             class="fa fa-edit"></i> </a>
                                     <a class="btn btn-sm btn-danger textleft"
-                                       href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=doc.slug%}"> <i
+                                       href="{% url 'blog:supprimerDocumentPartage' slug_docpartage=doc.slug%}"  onclick="return confirm('Voulez vous vraiment Supprimer ce document partagé ?')"> <i
                                             class="fa fa-times"></i> </a>
                                     {% endif %}
                                 </td>
@@ -781,7 +781,7 @@
                     {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                     <td>
             <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-            <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+            <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"  onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')" ><i class="fa fa-times"></i> </a>
                     </td>
                     {% endif %}
                 </tr>
@@ -825,7 +825,7 @@
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <td>
                     <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}" ><i class="fa fa-times"></i> </a>
+                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"  onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')"><i class="fa fa-times"></i> </a>
                             </td>
                             {% endif %}
                         </tr>

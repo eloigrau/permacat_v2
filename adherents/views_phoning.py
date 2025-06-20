@@ -101,6 +101,8 @@ class Contact_modifier(UserPassesTestMixin, UpdateView, ):
         #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
         #             description="a ajouté le Jardin: '%s'" % self.object.titre)
 
+        if "next" in self.request.GET:
+            return redirect(self.request.GET["next"])
         return redirect("adherents:phoning_projet_courant", asso_slug=self.asso.slug)
     # def form_valid(self, form):
     #     desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(

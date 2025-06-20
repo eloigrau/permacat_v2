@@ -4,96 +4,107 @@
 
 {% if commentaires %}
 <div class="anchor_blank" id="idConversation"></div>
-    <nav class="nav nav-tabs justify-content-center"  id="idConversation_2">
-{% for discu in commentaires.keys %}
-      <a class="nav-item nav-link {% if forloop.first %} active{% endif %}" href="#{{discu.slug}}" data-toggle="tab" id="navtab_{{discu.slug}}">{{discu.titre}}</a>
-{% endfor %}
-      <a class="nav-item nav-link" href="#ajoutDiscussion" data-toggle="tab">Ajouter une discussion</a>
-   </nav>
+<nav class="nav nav-tabs justify-content-center" id="idConversation_2">
+    {% for discu in commentaires.keys %}
+    <a class="nav-item nav-link {% if forloop.first %} active{% endif %}" href="#{{discu.slug}}" data-toggle="tab"
+       id="navtab_{{discu.slug}}">{{discu.titre}}</a>
+    {% endfor %}
+    <a class="nav-item nav-link" href="#ajoutDiscussion" data-toggle="tab">Ajouter une discussion</a>
+</nav>
 <div class="anchor_blank" id="contenucommentaires_ancre"></div>
 {% if commentaires.items %}
 <div class="commentaires" id="contenucommentaires">
-<div class="tab-content">
-{% for discu, comments in commentaires.items %}
-  <div class="tab-pane fade  {% if forloop.first %} active show{% endif %}" id="{{discu.slug}}">
+    <div class="tab-content">
+        {% for discu, comments in commentaires.items %}
+        <div class="tab-pane fade  {% if forloop.first %} active show{% endif %}" id="{{discu.slug}}">
 
-      <div class="conversation">
-              <div class="conversation-container">
-    {% for comment in comments %}
-    {% ifchanged comment.pascetteannee %}
-      {% if not forloop.first %}
-                  <div class="row justify-content-center textcenter">
-        <button type="button" class="btn btn-sm btn-light visible"
-                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
-                title="Cliquez pour afficher les archives">
-                Afficher les archives
-        </button></div>
-    {% endif %}
-    {% endifchanged %}
-	<div class="row anchor_blank {% if comment.pascetteannee %} pascetteannee invisible {% endif %}" id="comm_{{comment.id}}"></div>
-        <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
-                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>{% endifchanged %}
-                <span class="metadata">{{ comment.pascetteannee }} {% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}{% else %}{% ifchanged comment.date_creation|date:"l d F" %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}{% endif %}
+            <div class="conversation">
+                <div class="conversation-container">
+                    {% for comment in comments %}
+                    {% ifchanged comment.pascetteannee %}
+                    {% if not forloop.first %}
+                    <div class="row justify-content-center textcenter">
+                        <button type="button" class="btn btn-sm btn-light btn-detail-comments visible"
+                                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
+                                title="Cliquez pour afficher les archives">
+                            Afficher les archives
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% endifchanged %}
+                    <div class="row anchor_blank {% if comment.pascetteannee %} pascetteannee invisible {% endif %}"
+                         id="comm_{{comment.id}}"></div>
+                    <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
+                        {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}">
+                        {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>
+                        {% endifchanged %}
+                        <span class="metadata">{{ comment.pascetteannee }}
+                            {% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}
+                            {% else %}{% ifchanged comment.date_creation|date:"l d F" %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}
+                            {{ comment.date_creation|date:"G:i" }}
+                            {% endif %}
 
                 {% if request.user == comment.auteur_comm or request.user.is_superuser %}
-                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i
+                        class="fa fa-edit"></i></a>
                 {% endif %}
                    </span>
-                <p>{{ comment.commentaire|safe|usermention}}</p>
+                        <p>{{ comment.commentaire|safe|usermention}}</p>
+                    </div>
+                    {% if forloop.last and comment.pascetteannee %}
+                    <div class="row justify-content-center textcenter">
+                        <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
+                                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
+                                title="Cliquez pour afficher les archives">
+                            Afficher les archives
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-{% endfor %}
-      {% if comments.0.pascetteannee %}
-                  <div class="row justify-content-center textcenter">
-        <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
-                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
-                title="Cliquez pour afficher les archives">
-                Afficher les archives
-        </button></div>
-    {% endif %}
+        {% endfor %}
+
+
+        <div class="tab-pane fade" id="ajoutDiscussion">
+            <p>
+            <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="col-sm-12 textcenter">
+                    <div class="btn-group">
+                        {% include 'form_template2.html' with form=form_discussion %}
+                        <div class="input-group-btn textcenter">
+                            <button id="btn-valider-discu" type="submit" class="btn btn-primary">OK</button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+            </p>
+        </div>
     </div>
-    </div>
-  </div>
-{% endfor %}
-
-
-  <div class="tab-pane fade" id="ajoutDiscussion">
-      <p>
-      <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="col-sm-12 textcenter">
-        <div class="btn-group">
-    {% include 'form_template2.html' with form=form_discussion %}
-      <div class="input-group-btn textcenter">
-      <button id="btn-valider-discu" type="submit" class="btn btn-primary">OK</button>
-      </div>
-
-          </div>
-          </div>
-      </form>
-      </p>
-  </div>
-</div>
 </div>
 {%endif%}
 
 
 {%if not request.user.is_anonymous %}
 <div class="anchor_blank" id="idComenter"></div>
-    <div id="commentaires">
-{% if commentaires %}
-<h5>Répondre :</h5>
-{%else%}
-<h5>Commencer la discussion :</h5>
-{%endif%}
-<form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% include 'form_template3.html' %}
-    <input type="hidden" name="message_discu" value="discussion-generale">
-</form>
- {% else %}
-<p><small>Vous devez vous <a href="/auth/login/">authentifier</a> pour laisser un message.</small></p>
- {% endif %}
-        </div>
+<div id="commentaires">
+    {% if commentaires %}
+    <h5>Répondre :</h5>
+    {%else%}
+    <h5>Commencer la discussion :</h5>
+    {%endif%}
+    <form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'form_template3.html' %}
+        <input type="hidden" name="message_discu" value="discussion-generale">
+    </form>
+    {% else %}
+    <p><small>Vous devez vous <a href="/auth/login/">authentifier</a> pour laisser un message.</small></p>
+    {% endif %}
+</div>
 </div>
 
 {% endif %}
@@ -136,6 +147,7 @@ function toggle_visibility_class(id_class) {
        if(e.length){
               e.toggleClass("invisible visible");
        }
-       $('.btn-detail-comments').toggleClass("invisible visible");
+       $('.btn-detail-comments').removeClass('visible').addClass('invisible');
 }
+
 </script>

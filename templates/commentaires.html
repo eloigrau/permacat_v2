@@ -5,7 +5,7 @@
 <div class="anchor_blank" id="idConversation"></div>
 <div class=" commentaires"  id="idConversation_2">
 
-    {% if commentaires %}
+{% if commentaires %}
 <div class="conversation">
               <div class="conversation-container">
     {% for comment in commentaires %}
@@ -31,8 +31,7 @@
                    </span>
                 <p>{{ comment.commentaire|safe|usermention}}</p>
         </div>
-{% endfor %}
-      {% if commentaires.0.pascetteannee %}
+      {% if forloop.last and comment.pascetteannee %}
                   <div class="row justify-content-center textcenter">
         <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
                 onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
@@ -40,38 +39,14 @@
                 Afficher les archives
         </button></div>
     {% endif %}
-    </div>
-    </div>
-    {% endif %}
-
-    {% comment %}
-{% for comment in commentaires %}
-
-
-    <div class="row {% if comment.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
-
-        <div class="col-sm-3 col-md-3 col-lg-2">
-            <p class="infos  textepetit ">
-                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {{comment.auteur_comm}}</a><br>{% endifchanged %}{{ comment.date_creation|date:"d/m/Y, G:i" }}
-
-                {% if request.user == comment.auteur_comm or request.user.is_superuser %}
-                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
-                {% endif %}
-</p>
-
-            </div>
-        <div class=" col-sm-9 col-md-9 col-lg-10 message
-                {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} ">
-                <p>{{ comment.commentaire|safe}}</p>
-        </div>
-    </div>
 {% endfor %}
-    {% endcomment %}
+    </div>
+</div>
+{% endif %}
+
 </div>
 {% if commentaires %}
-
 <hr>
-
 {% endif %}
 {%if not request.user.is_anonymous %}
 {% if commentaires %}
@@ -108,6 +83,6 @@ function toggle_visibility_class(id_class) {
        if(e.length){
               e.toggleClass("invisible visible");
        }
-       $('.btn-detail-comments').toggleClass("invisible visible");
+       $('.btn-detail-comments').removeClass('visible').addClass('invisible');
 }
 </script>

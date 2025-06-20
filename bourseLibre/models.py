@@ -1485,6 +1485,7 @@ class Message(models.Model):
 
     @property
     def pascetteannee(self):
+        #return self.date_creation.day + 10*self.date_creation.month != timezone.now().day + 10*timezone.now().month
         return self.date_creation.year != timezone.now().year
 
     def save(self, *args, **kwargs):

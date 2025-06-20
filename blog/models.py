@@ -566,6 +566,16 @@ class Discussion(models.Model):
         self.slug = slugify(self.titre)
         super(Discussion, self).save(*args, **kwargs)
 
+    @property
+    def queArchives(self):
+        """On teste si tous les messages sont anciens (pascetteannee).
+        Si le dernier message (premier par ordre decroissant sur la date) est de cette année,
+        alors 'queArchives' est False (il existe au moins un message qui n'est pas une archive)"""
+        comms = self.commentaire_set.order_by('-date_creation')
+        if comms:
+            return comms[0].pascetteannee
+        return False
+
 class Commentaire(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
     commentaire = models.TextField()
@@ -601,6 +611,7 @@ class Commentaire(models.Model):
 
     @property
     def pascetteannee(self):
+        #return self.date_creation.day + 10*self.date_creation.month != timezone.now().day + 10*timezone.now().month
         return self.date_creation.year != timezone.now().year
 
     def save(self, sendMail=False, *args, **kwargs):

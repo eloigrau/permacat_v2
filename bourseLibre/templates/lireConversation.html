@@ -22,7 +22,7 @@
         {% ifchanged comment.pascetteannee %}
         {% if not forloop.first %}
         <div class="row justify-content-center textcenter">
-            <button id="btn-detail-comments" type="button" class="btn btn-sm btn-light visible"
+            <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
                     onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
                     title="Cliquez pour afficher les archives">
                 Afficher les archives
@@ -30,7 +30,7 @@
         </div>
         {% endif %}
         {% endifchanged %}
-        <div class="row anchor_blank {% ifchanged comment.pascetteannee %} invisible {% endifchanged %}" id="comm_{{comment.id}}"></div>
+        <div class="row anchor_blank {% if comment.pascetteannee %} pascetteannee invisible {% endif %}" id="comm_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
             {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
@@ -42,6 +42,14 @@
             <p>{{ comment.message|safe}}</p>
         </div>
         {% endfor %}
+      {% if page_obj.0.pascetteannee %}
+                  <div class="row justify-content-center textcenter">
+        <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
+                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
+                title="Cliquez pour afficher les archives">
+                Afficher les archives
+        </button></div>
+    {% endif %}
     </div>
 </div>
 
@@ -106,12 +114,12 @@
 
 {% block scriptblock %}
 <script>
-function toggle_visibility_class(id_class) {
+function toggle_visibility_class() {
        var e = $(".pascetteannee");
        if(e.length){
               e.toggleClass("invisible visible");
        }
-       $('#btn-detail-comments').toggleClass("invisible visible");
+       $('.btn-detail-comments').toggleClass("invisible visible");
 }
 
 </script>

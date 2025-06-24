@@ -348,6 +348,7 @@ class Profil(AbstractUser):
     accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
 
     date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications", default=now)
+    date_messages = models.DateTimeField(verbose_name="Date de validation des messages privés", default=now)
     afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
 
     css_dark = models.BooleanField(verbose_name="Thème Sombre", default=False)

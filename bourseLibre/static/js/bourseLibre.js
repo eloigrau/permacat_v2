@@ -1,47 +1,26 @@
 
 $(document).ready(function() {
-//
-//  $('[data-toggle="offcanvas"]').click(function() {
-//    $('#wrapper').toggleClass('toggled');
-//  });
-//
-//  // Toggle the class
-//  $('body').on('click', '.dropdown', function() {
-//    $(this).toggleClass('show');
-//  });
-
-	// DOMContentLoaded  end
-
    $('.quantite-right-plus').click(function(e){
-        // Stop acting like a button
         e.preventDefault();
-        // Get the field name
         var quantite = parseFloat($('#quantite').val());
-        
-        // If is not undefined
-            $('#quantite').val(quantite + 1);  // Increment
-        
+            $('#quantite').val(quantite + 1);
     });
 
      $('.quantite-left-minus').click(function(e){
-        // Stop acting like a button
         e.preventDefault();
-        // Get the field name
         var quantite = parseFloat($('#quantite').val());
-
             if(quantite>1){
              $('#quantite').val(quantite - 1);
             }
     });
 
-
    $('.bouton_recherche').click(function(e){
-        // Stop acting like a button
-        // e.preventDefault();
         var recherche = $('#recherche').val();
         location.href="/search/?"+recherche;
-
     });
+
+fetchNotifications();
+setInterval(fetchNotifications, 60000);
 });
 
 document.onreadystatechange = function() {
@@ -258,3 +237,21 @@ $( function()
         tooltip.bind( 'click', remove_tooltip );
     });
 });
+
+
+function fetchNotifications() {
+    fetch('/ajax/nbmessages/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.nb_messages > 0) {
+                document.getElementById('nbmessage-badge')
+                    .innerText = data.nb_messages;
+                document.getElementById('nbmessage-badge')
+                    .style.display = 'inline-block';
+            } else {
+                document.getElementById('nbmessage-badge')
+                    .style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Erreur lors de la récupération des notifications:', error));
+}

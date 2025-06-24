@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import JsonResponse
 from actstream.models import Action, any_stream, Follow
 from bourseLibre.constantes import Choix as Choix_global
-from bourseLibre.models import Profil, Asso
+from bourseLibre.models import Profil, Asso, Conversation, Message
 from django.utils.timezone import now
 from itertools import chain
 from .forms import nouvelleDateForm
 from datetime import datetime, timedelta
 from pytz import UTC as utc
 from hitcount.models import HitCount, Hit
+import pytz
 
 @login_required
 def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
@@ -87,7 +89,7 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
 def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
     if dateMinimum:
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
-            days=30) else datetime.now().date() - timedelta(days=15)
+            days=30) else datetime.now().date() - timedelta(days=20)
     else:
         dateMin = (datetime.now() - timedelta(days=7)).replace(tzinfo=utc)
 
@@ -152,9 +154,9 @@ def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
 
     if dateMinimum:
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
-            days=30) else datetime.now().date() - timedelta(days=30)
+            days=20) else (datetime.now() - timedelta(days=20)).replace(tzinfo=utc)
     else:
-        dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=utc)
+        dateMin = (datetime.now() - timedelta(days=20)).replace(tzinfo=utc)
 
     if "asso" in request.GET:
         request.session["asso_slug"] = request.GET["asso"]
@@ -446,3 +448,20 @@ def voirDerniersArticlesVus(request):
 
     return render(request, 'notifications/notifications_visites.html', {'hit_count': liste, 'hit_count_perso': hit_count_perso, 'hit_count_nb':hit_count_nb})
 
+
+@login_required
+def nbDerniersMessages(request):
+    date_messages = request.user.date_messages.astimezone(pytz.timezone("Europe/Paris"))
+    date_limite = (datetime.now() - timedelta(days=30)).astimezone(pytz.timezone("Europe/Paris"))
+    dateMin = date_messages if date_messages > date_limite else date_limite
+
+    messages = Message.objects.exclude(auteur=request.user).filter(Q(date_creation__gt=dateMin) & (Q(conversation__profil1=request.user) | Q(conversation__profil2=request.user)))
+        #Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__gt=dateMin) & (Q(profil2__id=request.user.id) | Q(profil1__id=request.user.id)))
+    dico = {"nb_messages": len(messages),
+            #"dateMin": dateMin,"date_messages":date_messages,"maintenant":datetime.now().replace(tzinfo=utc),
+            #"messages": [m.message for m in messages],
+            #"dates": [m.date_creation for m in messages]
+            #"listeConv":[(m.conversation.get_destinataire(request), m.conversation.get_absolute_url()) for m in messages]
+            }
+
+    return JsonResponse(dico, safe=True)

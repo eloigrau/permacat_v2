@@ -49,9 +49,9 @@
         </thead>
         <tbody>
         {% for conversation in conversations %}
-    <tr>
-        <td><a href="{{conversation.get_absolute_url}}">{% if conversation.profil1 == request.user %}{{ conversation.auteur_2}}{%else%}{{ conversation.auteur_1}}{%endif%}    </a></td>
-        <td><a href="{{conversation.get_absolute_url}}">{%if conversation.dernierMessage%} {{ conversation.dernierMessage|truncatechars:100}}{%endif%}    </a></td>
+    <tr >
+        <td ><a href="{{conversation.get_absolute_url}}">{% if conversation.profil1 == request.user %}{{ conversation.auteur_2}}{%else%}{{ conversation.auteur_1}}{%endif%}    </a></td>
+        <td><a href="{{conversation.get_absolute_url}}">{%if conversation.dernierMessage%} {% if date_dernieresnotifs < conversation.date_dernierMessage %} <badge class="badge badge-warning">Nouveau message</badge> {% endif %}{{ conversation.dernierMessage|truncatechars:100}}{%endif%}    </a></td>
         <td><a href="{{conversation.get_absolute_url}}">{{conversation.date_dernierMessage|date:"l d F Y, G:i"}}    </a></td>
 
     </tr>

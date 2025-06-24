@@ -275,6 +275,7 @@ urlpatterns = [
     path('admin/listeContactsMails/', views_admin.listeContactsMails,  name="listeContactsMails"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
+    path('ajax/nbmessages/', views_notifications.nbDerniersMessages, name='nbDerniersMessages'),
     path('ajax/ajax_salonsParTag/<str:tag>', views_ajax.salonsParTag, name='ajax_salonsParTag'),
     path('HA/api/', apiHA_pcat.initAPI, name='apiha_pcat'),
 

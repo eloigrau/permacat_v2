@@ -1177,7 +1177,9 @@ class ListeConversations(ListView):
         context['conversations'] = Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__gt=dateMin) & (Q(profil2__id=self.request.user.id) | Q(profil1__id=self.request.user.id))).order_by('-date_dernierMessage')
         context['conversations_archive'] = Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__lte=dateMin) & (Q(profil2__id=self.request.user.id) | Q(profil1__id=self.request.user.id))).order_by('-date_dernierMessage')
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="conversations")
-
+        context['date_dernieresnotifs'] = self.request.user.date_messages
+        self.request.user.date_messages = now()
+        self.request.user.save()
         return context
 
 def chercherConversation(request):

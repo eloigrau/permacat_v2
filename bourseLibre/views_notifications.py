@@ -14,9 +14,11 @@ from hitcount.models import HitCount, Hit
 import pytz
 
 @login_required
-def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
+def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
     tampon = nbNotif * 5
-    dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=utc)
+    dateMin2 = (datetime.now() - timedelta(days=31)).replace(tzinfo=utc)
+    if dateMin is None or dateMin < dateMin2:
+        dateMin = dateMin2
     articles = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='article_')).order_by(orderBy)
     projets = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='projet_')).order_by(orderBy)
     offres = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='ajout_offre')).order_by(orderBy)
@@ -37,13 +39,13 @@ def getNotifications(request, nbNotif=15, orderBy="-timestamp"):
             suppressions = suppressions.exclude(Q(verb__icontains=nomAsso))
         else:
             if nomAsso == 'jp':
-                jardins = Action.objects.filter(Q(verb__startswith='jardins_'))
+                jardins = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='jardins_'))
 
     salons = Action.objects.filter(Q(timestamp__gt=dateMin) & (Q(verb='envoi_salon_Public') |
                                                                Q(verb__startswith='creation_salon_public') |
                                                                Q(verb='envoi_salon_public'))).order_by(orderBy)
     salons = salons | Action.objects.filter(Q(timestamp__gt=dateMin) &
-            (Q(verb__startswith="envoi_salon_public")| Q(verb__startswith="envoi_salon", description__contains=request.user.username) |
+            (Q(verb__startswith="envoi_salon", description__contains=request.user.username) |
             Q(verb__startswith="invitation_salon", description__contains=request.user.username)))
     #conversations = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith="envoi_salon_prive") &
      #                                     Q(description__contains=request.user.username))
@@ -177,30 +179,29 @@ def raccourcirTempsStr(date):
 
 @login_required
 def notifications_news_regroup(request):
-    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions = getNotifications(request, nbNotif=500)
-
-    dicoTexte = {}
-    dicoTexte['dicoarticles'] = {}
-
     if "fromdate" in request.GET:
         dateMin = datetime.strptime(request.GET["fromdate"], '%d-%m-%Y').replace(tzinfo=utc)
         type_notif = "fromdate"
     else:
-        date7jours = (datetime.now() - timedelta(days=15)).replace(tzinfo=utc)
-        dateMin = request.user.date_notifications if request.user.date_notifications > date7jours else date7jours
+        date31jours = (datetime.now() - timedelta(days=31)).replace(tzinfo=utc)
+        dateMin = request.user.date_notifications if request.user.date_notifications > date31jours else date31jours
         type_notif = "dateNotif"
 
+    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions = getNotifications(request, dateMin=dateMin, nbNotif=500)
+
+    dicoTexte = {}
+    dicoTexte['dicoarticles'] = {}
+
     for action in articles:
-        if dateMin < action.timestamp:
-            try:
-                #clef = "["+action.action_object.asso.nom+"] " + action.action_object.titre
-                clef = action.action_object.get_logo_nomgroupe_html_taille(17) + " " + action.action_object.titre
-            except:
-                clef = action.action_object.titre
-            if not clef in dicoTexte['dicoarticles']:
-                dicoTexte['dicoarticles'][clef] = [action, ]
-            else:
-                dicoTexte['dicoarticles'][clef].append(action)
+        try:
+            #clef = "["+action.action_object.asso.nom+"] " + action.action_object.titre
+            clef = action.action_object.get_logo_nomgroupe_html_taille(17) + " " + action.action_object.titre
+        except:
+            clef = action.action_object.titre
+        if not clef in dicoTexte['dicoarticles']:
+            dicoTexte['dicoarticles'][clef] = [action, ]
+        else:
+            dicoTexte['dicoarticles'][clef].append(action)
 
     htmlArticles = ""
     for titre_article, actions in dicoTexte['dicoarticles'].items():
@@ -247,12 +248,11 @@ def notifications_news_regroup(request):
 
     dicoTexte['dicoprojets'] = {}
     for action in projets:
-        if dateMin < action.timestamp:
-            clef = action.action_object.titre
-            if not clef in dicoTexte['dicoprojets']:
-                dicoTexte['dicoprojets'][clef] = [action, ]
-            else:
-                dicoTexte['dicoprojets'][clef].append(action)
+        clef = action.action_object.titre
+        if not clef in dicoTexte['dicoprojets']:
+            dicoTexte['dicoprojets'][clef] = [action, ]
+        else:
+            dicoTexte['dicoprojets'][clef].append(action)
 
     htmlProjets = ""
     for titre_projet, actions in dicoTexte['dicoprojets'].items():
@@ -280,14 +280,12 @@ def notifications_news_regroup(request):
 
     dicoTexte['listinscriptions'] = []
     for action in inscriptions:
-        if dateMin < action.timestamp:
-            dicoTexte['listinscriptions'].append(action)
+        dicoTexte['listinscriptions'].append(action)
 
 
     dicoTexte['listautres'] = []
     for action in list(chain(suffrages, conversations, salons, offres, ateliers, fiches, albums, documents, mentions, jardins, suppressions)):
-        if dateMin < action.timestamp:
-            dicoTexte['listautres'].append(action)
+        dicoTexte['listautres'].append(action)
 
     maintenant = now()
     request.user.date_notifications = maintenant

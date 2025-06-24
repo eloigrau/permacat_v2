@@ -507,14 +507,11 @@
                                     class='fa fa-file iconleft'></i> Un Fichier / Document</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2  hover-icon"
-                                                       href="{% url 'notifications_news' %}">
-                        <i class="fa fa-bell" title="Notifications"></i>
-                        {% if request.user.afficherNbNotifications %}({{ notification_count }}) {% endif %}</a>
+                    <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2 hover-icon"
+                       href="{% url 'notifications_news' %}"><i class="fa fa-bell" title="Notifications"></i>&nbsp;<span id="nbnotifs-badge"></span></a>
                     </li>
-                    <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2  hover-icon"
-                                                       href="{% url 'conversations' %}">
-                        <i class="fa fa-envelope" title="messages privés"></i> &nbsp;<span id="nbmessage-badge"></span></a>
+                    <li class="nav-item nav4 5to4 "><a class="nav-link nav-link2 hover-icon"
+                        href="{% url 'conversations' %}"><i class="fa fa-envelope" title="messages privés"></i>&nbsp;<span id="nbmessage-badge"></span></a>
                     </li>
                     <li class="nav-item dropdown nav6 nav-icone">
                         <a href="{% url 'mesFavoris' %}" data-toggle="dropdown" class="nav-link nav-link2  dropdown-toggle navbar-menu "

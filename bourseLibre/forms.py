@@ -393,7 +393,7 @@ class ProducteurChangeForm(UserChangeForm):
     class Meta:
         model = Profil
         fields = ['username', 'first_name', 'last_name', 'email', 'site_web', 'description', 'competences',
-                  'pseudo_june', 'accepter_annuaire', 'inscrit_newsletter', 'afficherNbNotifications', 'css_dark']
+                  'pseudo_june', 'accepter_annuaire', 'inscrit_newsletter', 'css_dark']
 
 
 class ProducteurChangeForm_admin(UserChangeForm):

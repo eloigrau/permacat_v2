@@ -233,6 +233,13 @@ function fetchNotifications() {
             } else {
                 e.style.display = 'none';
             }
+            var e = document.getElementById('nbnotifs-badge');
+            if (data.nb_notifs > 0) {
+                e.innerText = "(" + data.nb_notifs + ")";
+                e.style.display = 'inline-block';
+            } else {
+                e.style.display = 'none';
+            }
         })
         .catch(error => console.error('Erreur lors de la récupération des notifications:', error));
 }

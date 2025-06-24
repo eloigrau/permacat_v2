@@ -10,7 +10,7 @@ def navbar(request):
         context_data = dict()
         if request.user.is_authenticated:
             context_data['favoris_list'] = request.user.getFavoris
-            context_data['notification_count'] = getNbNewNotifications(request)
+            #context_data['notification_count'] = getNbNewNotifications(request)
 
         #if request.user.is_authenticated:
             #qs_projets = Projet.objects.filter(estArchive=False, statut='accep').order_by('categorie','titre')

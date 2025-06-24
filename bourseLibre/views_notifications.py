@@ -106,11 +106,10 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
             Q(verb__startswith='mention_' + request.user.username) |
             Q(verb__startswith='suppression' + request.user.username))).distinct().order_by(orderBy)
 
-
-    for nomAsso in Choix_global.slugsAsso:
-        if not getattr(request.user, "adherent_" + nomAsso):
-            actions = actions.exclude(verb__icontains='_' + nomAsso)
-
+    query_exclude = Q()
+    for nomAsso in request.user.getListeSlugsAssos_nonmembre():
+        query_exclude = query_exclude & Q(verb__icontains="_" + nomAsso)
+    actions.exclude(query_exclude)
     actions = [art for i, art in enumerate(actions[:200]) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
 
     return actions
@@ -135,14 +134,7 @@ def getNbNewNotifications_test2(request):
 
 @login_required
 def getNbNewNotifications(request):
-    if not request.user.is_authenticated:
-        return 0
-    if request.user.afficherNbNotifications:
-        actions = getNotificationsParDate(request, dateMinimum=request.user.date_notifications)
-    else:
-        actions = []
-
-    return len(actions)
+    return len(getNotificationsParDate(request, dateMinimum=request.user.date_notifications))
 
 @login_required
 def getFavoris(request):
@@ -298,6 +290,8 @@ def notifications_news_regroup(request):
             dicoTexte['listautres'].append(action)
 
     maintenant = now()
+    request.user.date_notifications = maintenant
+    request.user.save()
     #print("prooooj" + str(htmlProjets))
     return render(request, 'notifications/notifications_last2.html', {'type_notif':type_notif,'dico':dicoTexte, "htmlArticles":htmlArticles, "htmlProjets":htmlProjets, "dateMin":dateMin, "maintenant":maintenant})
 
@@ -456,8 +450,9 @@ def nbDerniersMessages(request):
     dateMin = date_messages if date_messages > date_limite else date_limite
 
     messages = Message.objects.exclude(auteur=request.user).filter(Q(date_creation__gt=dateMin) & (Q(conversation__profil1=request.user) | Q(conversation__profil2=request.user)))
+    notifs = getNbNewNotifications(request)
         #Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__gt=dateMin) & (Q(profil2__id=request.user.id) | Q(profil1__id=request.user.id)))
-    dico = {"nb_messages": len(messages),
+    dico = {"nb_messages": len(messages), "nb_notifs": notifs,
             #"dateMin": dateMin,"date_messages":date_messages,"maintenant":datetime.now().replace(tzinfo=utc),
             #"messages": [m.message for m in messages],
             #"dates": [m.date_creation for m in messages]

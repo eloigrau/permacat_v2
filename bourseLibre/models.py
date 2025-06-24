@@ -349,7 +349,7 @@ class Profil(AbstractUser):
 
     date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications", default=now)
     date_messages = models.DateTimeField(verbose_name="Date de validation des messages privés", default=now)
-    afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
+    #afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
 
     css_dark = models.BooleanField(verbose_name="Thème Sombre", default=False)
 
@@ -369,6 +369,7 @@ class Profil(AbstractUser):
              self.adresse = Adresse.objects.create()
 
         return super(Profil, self).save(*args, **kwargs)
+
     @property
     def get_username_annuaire(self):
        if self.accepter_annuaire:

@@ -35,9 +35,7 @@ document.onreadystatechange = function() {
 /*
 
 document.addEventListener("DOMContentLoaded", function(){
-
 		navbar = $('#navbar')
-
 		// add padding-top to bady (if necessary)
 		//navbar_height = document.querySelector('.navbar').offsetHeight;
 		//document.body.style.paddingTop = navbar_height + 'px';
@@ -57,10 +55,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		        last_scroll_top = scroll_top;
 			});
 			// window.addEventListener
-
 		}
-		// if
-
 	});
 */
 (function(){
@@ -91,18 +86,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		});
 	}
 })
-//$(function() {
-//   $('button').click(function() {
-//        var quantite = parseInt($('#quantite').val());
-//        location.href="/panier/ajouter"
-//   });
-//});
-//$(function() {
-//   $('buttonAjouterAuPanier').click(function() {
-//        var quantite = parseFloat($('#quantite').val());
-//        location.href="/panier/ajouter"
-//   });
-//});
 
 
 function copyToClipboard(text) {
@@ -243,14 +226,12 @@ function fetchNotifications() {
     fetch('/ajax/nbmessages/')
         .then(response => response.json())
         .then(data => {
+            var e = document.getElementById('nbmessage-badge');
             if (data.nb_messages > 0) {
-                document.getElementById('nbmessage-badge')
-                    .innerText = data.nb_messages;
-                document.getElementById('nbmessage-badge')
-                    .style.display = 'inline-block';
+                e.innerText = "(" + data.nb_messages + ")";
+                e.style.display = 'inline-block';
             } else {
-                document.getElementById('nbmessage-badge')
-                    .style.display = 'none';
+                e.style.display = 'none';
             }
         })
         .catch(error => console.error('Erreur lors de la récupération des notifications:', error));

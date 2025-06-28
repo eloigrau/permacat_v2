@@ -329,7 +329,7 @@ class ProfilCreationForm(UserCreationForm):
     adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'Ramène Ta Graine'")
     adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent.e de l'asso 'PermAgora'")
     adherent_jp = forms.BooleanField(required=False, label="Je suis intéressé.e par les jardins partagés")
-    adherent_ssa = forms.BooleanField(required=False, label="Je fais partie du collectif SSA du 66 (test)")
+    adherent_ssa = forms.BooleanField(required=False, label="Je fais partie du collectif SLA (pour une SSA) du 66")
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
     accepter_annuaire = forms.BooleanField(required=False, initial=True,

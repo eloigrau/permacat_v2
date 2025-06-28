@@ -626,7 +626,7 @@ def envoyerMailBienvenue(user):
     titre = "[Permacat] Inscription sur le site"
     pseudo = user.username
     messagetxt = "Bienvenue sur www.Perma.Cat ! Pour vous connecter, votre identifiant est : (vous pouvez le changer sur votre page de profil), merci de votre inscription. \
-    Voici quelques conseils : pour suivre ce qu'il se passe sur le site, utilisez les notifications (et n'oubliez pas d'appuyer sur 'marquer comme lu' après les avoir lu). l'agenda est un bon moyen de savoir ce qu'il se passe dans la vraie vie, visuellement.\
+    Voici quelques conseils : pour suivre ce qu'il se passe sur le site, utilisez les notifications. L'agenda est un bon moyen de savoir ce qu'il se passe dans la vraie vie, visuellement.\
     utilisez plutot l'altermarché pour les petites annonces, le forum pour annoncer les événements ou présenter des idées, et les ateliers pour... proposer des ateliers\
     vous pouvez configurer les infos que vous recevez par mail sur la page abonnements de votre profil\
     prenez le temps d'explorer les différentes sections du site pour vous familiariser et comprendre comment le site fonctionne et ce que vous pouvez en faire\
@@ -640,7 +640,7 @@ def envoyerMailBienvenue(user):
 <div dir='auto'>&nbsp;</div>\
 <div dir='auto'>Quelques conseils :\
 <ul>\
-<li dir='auto'>pour suivre ce qu'il se passe sur le site, utilisez les <a href='https://www.perma.cat/notifications/activite/'>notifications</a> (et n'oubliez pas d'appuyer sur 'marquer comme lu' apres les avoir lu).</li>\
+<li dir='auto'>pour suivre ce qu'il se passe sur le site, utilisez les <a href='https://www.perma.cat/notifications/activite/'>notifications</a>.</li>\
 <li dir='auto'>l'<a href='https://www.perma.cat/agenda/'>agenda</a> est un bon moyen de savoir ce qu'il se passe dans la vraie vie, visuellement.</li>\
 <li dir='auto'><a href='https://www.perma.cat/cooperateurs/carte/public'>la carte / annuaire</a> est un bon moyen de faire connaissance avec de belles personnes, près de chez vous</li>\
 <li dir='auto'>utilisez plutôt l'<a href='https://www.perma.cat/marche/lister/'>altermarch&eacute;</a> pour les petites annonces, le <a href='https://www.perma.cat/forum/accueil/'>forum</a> pour annoncer les &eacute;v&eacute;nements ou pr&eacute;senter des id&eacute;es, et les <a href='https://www.perma.cat/ateliers/liste/'>ateliers</a> pour... proposer des ateliers</li>\

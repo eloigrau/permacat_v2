@@ -35,15 +35,16 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 
-def is_membre_bureau(user, asso="conf66"):
+def is_membre_bureau(user, asso_slug="conf66"):
     if user.is_anonymous:
         return False
-    elif asso=="conf66":
-        if not user.adherent_conf66:
-            return False
-        return user.estmembre_bureau_conf
+    elif getattr(user, "adherent_" + asso_slug):
+        if asso_slug=="conf66":
+            return user.estmembre_bureau_conf
+        else:
+            return True
     else:
-        return True
+        return False
 
 
 @login_required
@@ -883,7 +884,7 @@ class InscriptionMailDetailView(UserPassesTestMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user, self.asso.slug)
         context['asso_slug'] = self.asso.slug
         return context
 

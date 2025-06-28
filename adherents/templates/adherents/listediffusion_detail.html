@@ -17,7 +17,7 @@
 </div>
 
 
-{% if request.user.estmembre_bureau_conf %}
+{% if request.user.estmembre_bureau %}
 <div class="row justify-content-center">
     <div class="col textcenter">
         <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter un adhérent à la liste</a></li>
@@ -69,7 +69,7 @@
                              {{m.date_inscription|date:"d/m/Y"}}
                         </td>
                     <td>
-                        {% if request.user.estmembre_bureau_conf %}
+                        {% if request.user.estmembre_bureau %}
                             <a class="btn btn-sm btn-warning textleft" href="{{m.get_update_url}}" ><i class="fa fa-edit"></i> </a>
                             <a class="btn btn-sm btn-danger textleft" href="{{m.get_delete_url}}" ><i class="fa fa-times"></i> </a>
                         {% endif %}

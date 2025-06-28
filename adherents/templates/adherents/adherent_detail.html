@@ -12,7 +12,7 @@
 
 <div class="row rowcentre" id="titre">
     <div class="col-sm-12 textcenter">
-        {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
+        {%if request.user.is_superuser or request.user.estmembre_bureau %}
         <div class="btn-group">
             <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_modifier' pk=adherent.pk  asso_slug=request.session.asso_slug %}{% endif %}">
                 <button type="button" class="btn btn-sm btn-warning">
@@ -21,7 +21,7 @@
             </a>
         </div>
         {% endif %}
-        {%if request.user.is_superuser or request.user.estmembre_bureau_conf %}
+        {%if request.user.is_superuser or request.user.estmembre_bureau %}
         <a href="{%if request.user.is_authenticated %}{% url 'adherents:adherent_supprimer' pk=adherent.pk asso_slug=request.session.asso_slug %}{% endif %}">
             <button type="button" class="btn btn-sm btn-danger">
                 &nbsp;Supprimer
@@ -80,7 +80,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        {%if request.user.is_superuser or request.user.estmembre_bureau_conf  %}
+        {%if request.user.is_superuser or request.user.estmembre_bureau  %}
         <a href="{% url 'adherents:adherents_modifier_adresse' pk=adherent.adresse.pk asso_slug=request.session.asso_slug %}">
             <button type="button" class="btn btn-sm btn-warning">
                 <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier

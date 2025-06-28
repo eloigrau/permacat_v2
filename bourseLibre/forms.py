@@ -653,7 +653,7 @@ class EvenementSalonForm(forms.ModelForm):
 
 
 class AssocierProfil_adherentForm(forms.Form):
-    adherent = forms.ModelChoiceField(queryset=Adherent.objects.none(), required=True,
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all(), required=True,
                                       label="Adhérent", )
 
     def __init__(self, asso_slug, *args, **kwargs):

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-from .models import Adresse, Produit, Panier, MessageAdmin, Item, Adhesion_asso, Adhesion_permacat, Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso, InvitationDansSalon, InscritSalon, Monnaie
-from blog.models import Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement, EvenementAcceuil, AdresseArticle
+from .models import (Adresse, Produit, Panier, MessageAdmin, Item, Adhesion_asso, Adhesion_permacat,
+                     Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso,
+                     InvitationDansSalon, InscritSalon, Monnaie, Lien_AssoSalon)
+from blog.models import (Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement,
+                         EvenementAcceuil, AdresseArticle
+                         )
 #from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
 from ateliers.models import Atelier, CommentaireAtelier, InscriptionAtelier
@@ -83,6 +87,13 @@ class Adresse_Admin(admin.ModelAdmin):
 class Salon_Admin(admin.ModelAdmin):
     list_display  = ('titre', 'auteur', 'date_creation')
     search_fields = ('titre', 'description', 'auteur__username')
+    #form = SalonForm
+
+
+@admin.register(Lien_AssoSalon)
+class LiensSalon_Admin(admin.ModelAdmin):
+    list_display  = ('asso', 'salon', 'slug_type')
+    search_fields = ('salon',)
     #form = SalonForm
 
 #admin.site.register(Art_jardin, Article_jardinAdmin)

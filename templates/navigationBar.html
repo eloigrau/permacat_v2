@@ -761,89 +761,29 @@
                     <li class="nav-item dropdown nav5 3to5">
                         <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'presentation_groupes' %}"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% fa5_icon 'link' %} Les Groupes
+                            {% fa5_icon 'link' %} Les Collectifs
                         </a>
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item" href="{% url 'presentation_asso' asso='public' %}">Public</a>
                             </li>
-
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
-                                <ul class="dropdown-menu nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}">{% fa5_icon 'info' class='iconleft' %}
-                                        Présentation</a></li>
-
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'charte' %}">{% fa5_icon 'info-circle' %} Charte </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'statuts' %}">{% fa5_icon 'info-circle' %}Statuts et règlement intérieur </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'adhesion_asso' asso='pc' %}"><i
-                                            class='fa fa-euro-sign iconleft '></i> Cotisation en ligne </a></li>
-
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Ramène Ta Graine</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
-
-                                    <li><a class="dropdown-item" href="{% url 'adhesion_asso' asso='rtg' %}">
-                                        {% fa5_icon 'euro-sign' %} Cotisation en ligne </a></li>
-                                </ul>
-                            </li>
-
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Jardins et Grainothèques</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'jardins:accueil' %}"><i
-                                            class='fa fa-folder-open iconleft'></i> La Jardinothèque </a></li>
-                                </ul>
-                            </li>
-                            {% comment %}
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Fermille</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='fer' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
-                                </ul>
+                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}">Ramène Ta Graine</a>
                             </li>
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Gardiens de la Terre</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='gt' %}">
-                                        {% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
-
-                                </ul>
+                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}">PermaCat</a>
                             </li>
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Cité Altruiste</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='citealt' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
-                                </ul>
-                            </li>
-                            {% endcomment %}
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">PermAgora</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='scic' %}">{% fa5_icon 'info' class='iconleft' %}
-                                         Présentation</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'permagora:bienvenue' %}">{% fa5_icon 'compass' %} Plateforme de l'Agora </a></li>
-
-                                </ul>
+                                <a class="dropdown-item" href="{% url 'jardins:accueil' %}">Jardins et Grainothèques</a>
                             </li>
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Viure</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='viure' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
-                                </ul>
+                                <a class="dropdown-item " href="{% url 'presentation_asso' asso='scic' %}">PermAgora</a>
                             </li>
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">Confédération Paysanne 66</a>
-                                <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='conf66' %}">{% fa5_icon 'info' class='iconleft' %} Présentation</a></li>
-                                </ul>
+                                <a class="dropdown-item " href="{% url 'presentation_asso' asso='viure' %}">Viure</a>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='conf66' %}">Confédération Paysanne 66</a>
                             </li>
                         </ul>
                     </li>
@@ -909,26 +849,12 @@ $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
   var $subMenu = $(this).next('.dropdown-menu');
   $subMenu.toggleClass('show');
 
-
   $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
     $('.dropdown-submenu .show').removeClass('show');
   });
 
   return false;
 });
-
-{% comment %}
-var prevScrollpos = window.pageYOffset;
-window.onscroll = function() {
-  var currentScrollPos = window.pageYOffset;
-  if (prevScrollpos > currentScrollPos) {
-    document.getElementById("navbar").style.top = "0";
-  } else {
-    document.getElementById("navbar").style.top = "-70px";
-  }
-  prevScrollpos = currentScrollPos;
-}
-{% endcomment %}
 
 
 </script>

@@ -226,7 +226,14 @@
     {%if request.user.adherent_jp or request.user == user  or request.user.is_superuser%}
         <tr>
             <td style="width:200px">Inscrit aux jardins partagés : </td>
-            <td>{{user.adherent_jp|translateOuiNon }}</td>
+            <td>{{user.adherent_jp|translateOuiNon }}
+       {% if request.user.is_superuser %}
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='jp' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a>
+        {% endif %}</td>
         </tr>
     {% endif %}
 

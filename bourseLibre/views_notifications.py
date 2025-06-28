@@ -441,8 +441,10 @@ def voirDerniersArticlesVus(request):
     return render(request, 'notifications/notifications_visites.html', {'hit_count': liste, 'hit_count_perso': hit_count_perso, 'hit_count_nb':hit_count_nb})
 
 
-@login_required
 def nbDerniersMessages(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"nb_messages": 0, "nb_notifs": 0}, safe=True)
+
     date_messages = request.user.date_messages.astimezone(pytz.timezone("Europe/Paris"))
     date_limite = (datetime.now() - timedelta(days=30)).astimezone(pytz.timezone("Europe/Paris"))
     dateMin = date_messages if date_messages > date_limite else date_limite

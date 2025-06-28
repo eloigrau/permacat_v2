@@ -35,7 +35,8 @@ from webpush import send_user_notification
 from .constantes import Choix, DEGTORAD
 from .settings.production import SERVER_EMAIL
 
-username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
+username_re = re.compile(r"(?:(?<=^)|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
+#username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 
 def get_categorie_from_subcat(subcat):
     for type_produit, dico in Choix.choix.items():
@@ -236,6 +237,7 @@ class Asso(models.Model):
     slug = models.CharField(max_length=10)
     email = models.EmailField(null=True)
     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    is_bureau = models.BooleanField(verbose_name="Le collectif a un bureau dont seuls les membres accéder à certaines infos (=> créer salon avec lien AssoSalon)", default=False)
 
     def __unicode__(self):
         return self.__str()
@@ -529,13 +531,20 @@ class Profil(AbstractUser):
             return False
 
     def estmembre_bureau(self, asso_slug):
-        if not self.is_anonymous:
-            if asso_slug == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
-                salon = Salon.objects.get(slug="conf66_bureau_2023")
-                return salon.est_autorise(self)
-            elif asso_slug == "scic" and self.adherent_scic and Salon.objects.filter(slug="salon-du-cercle-coeur-de-permagora").exists():
-                salon = Salon.objects.get(slug="salon-du-cercle-coeur-de-permagora")
-                return salon.est_autorise(self)
+        if self.is_authenticated:
+            try:
+                if Asso.objects.get(slug=asso_slug).is_bureau:
+                    lien_bureau = Lien_AssoSalon.objects.filter(asso__slug=asso_slug, slug_type="bureau")
+                    if lien_bureau.exists():
+                        return lien_bureau[0].salon.est_autorise(self)
+                else:
+                    return True
+            except:
+                return False
+            #if asso_slug == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
+            #    return Salon.objects.get(slug="conf66_bureau_2023").est_autorise(self)
+            #elif asso_slug == "scic" and self.adherent_scic and Salon.objects.filter(slug="salon-du-cercle-coeur-de-permagora").exists():
+            #    return Salon.objects.get(slug="salon-du-cercle-coeur-de-permagora").est_autorise(self)
 
         return False
 
@@ -1629,3 +1638,19 @@ class Favoris(models.Model):
         return reverse('favoris_update', kwargs={'pk': self.pk})
     def get_delete_url(self):
         return reverse('favoris_delete', kwargs={'pk': self.pk})
+
+
+
+
+class Lien_AssoSalon(models.Model):
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True, related_name="lien_asso_salon")
+    salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, related_name="lien_salon_asso")
+    date = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
+    slug_type = models.SlugField(max_length=100)
+
+    def __str__(self):
+        return "(" + str(self.asso) + ") " +str(self.salon) + ": " + str(self.slug_type)
+
+
+    class Meta:
+        unique_together = ('asso', 'slug_type',)

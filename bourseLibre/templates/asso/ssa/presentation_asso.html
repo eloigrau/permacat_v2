@@ -5,8 +5,19 @@
 
 <h2 class = "textcenter rowbienvenue">SLA 66 - pour une SSA</h2>
 
-{% include "asso/presentation_asso_template.html" with adherent=request.user.adherent_ssa assos='ssa' %}
 
+{%if request.user.is_authenticated %}
+{%if adherent %}
+<div class="row">
+	<div class="col-sm-12">
+		<div class="btn-group">
+			 <a class="btn btn-success" href="{% url 'carte'  asso=assos %}"> Carte / Annuaire </a>
+			 <a class="btn btn-success" href="{% url 'blog:index_asso' asso=assos%}"> Forum </a>
+		</div>
+	</div>
+</div>
+{% endif%}
+{% endif%}
 <h4 class = "textcenter rowbienvenue">Qui sommes nous ?</h4>
 {% endblock %}
 {% block content %}

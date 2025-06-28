@@ -677,8 +677,8 @@ def phoning_contact_ajouter_csv2(request, asso_slug):
 
 @login_required
 def import_adherents_ggl(request, asso_slug):
-
-    testIsMembreAsso(request, asso_slug)
+    if not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
     params = dict(request.GET.items())
     # fic = params["fic"]
     msg =""
@@ -689,8 +689,8 @@ def import_adherents_ggl(request, asso_slug):
 @login_required
 def get_csv_contacts(request, asso_slug):
     """A view that streams a large CSV file."""
-
-    testIsMembreAsso(request, asso_slug)
+    if not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
     profils = Contact.objects.filter(projet__pk=request.session["projet_courant_pk"]).order_by("nom","prenom","email")
     profils_filtres = ContactCarteFilter(request, request.GET, queryset=profils)
     #current_year = date.today().isocalendar()[0]

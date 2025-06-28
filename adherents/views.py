@@ -108,7 +108,7 @@ class AdherentDetailView(UserPassesTestMixin, DetailView, ):
         context = super().get_context_data(**kwargs)
         context['adhesions'] = Adhesion.objects.filter(adherent=self.object).order_by("-date_cotisation__year", "adherent__nom")
         context['inscriptionsMail'] = InscriptionMail.objects.filter(adherent=self.object)
-        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        context['is_membre_bureau'] = self.request.user.estmembre_bureau(self.asso.slug)
         context['asso_slug'] = self.asso.slug
         if context['is_membre_bureau']:
             context['commentaires'] = Comm_adherent.objects.filter(adherent=self.object)
@@ -149,7 +149,7 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
 
 
     def form_valid(self, form):
@@ -1011,6 +1011,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
                                         'Adhérents à jour':get_mails(typeListe="ajour"),
                                         "Adhérents de l'année dernière pas à jour de cotisation":get_mails(typeListe="anneeprecedente_pasajour"),
                                         'Adhérents (depuis 2021) pas à jour de cotisation':get_mails(typeListe="pasajour")}
+        context['is_membre_bureau'] = self.request.user.estmembre_bureau(self.asso.slug)
 
         return context
 
@@ -1031,6 +1032,7 @@ class ListeDiffusionDetailView(UserPassesTestMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
+        context['is_membre_bureau'] = self.request.user.estmembre_bureau(self.asso.slug)
         return context
 
 

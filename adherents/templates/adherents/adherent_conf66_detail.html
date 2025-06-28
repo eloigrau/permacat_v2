@@ -86,6 +86,10 @@
                 <td style="width:250px">Production :</td>
                 <td>{{adherent.get_production_str}}</td>
             </tr>
+            <tr>
+                <td style="width:250px">Cotisation à jour :</td>
+                <td>{% if user.isCotisationAJour_conf66 %} oui {% else %} non {% endif %}</td>
+            </tr>
             </tbody>
         </table>
     </div>

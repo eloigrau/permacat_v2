@@ -36,6 +36,7 @@ def handler500(request, template_name="500.html"):   #erreur du serveur
 def handler403(request, template_name="403.html"):   #non autorisé
     response = render(request, "permagora/403.html")
     response.status_code = 403
+    action.send(request.user, verb='interdit', url=request.get_full_path, titre="Demande Url interdite", message=str(request))
     return response
 
 def handler400(request, template_name="400.html"):   #requete invalide

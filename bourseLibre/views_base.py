@@ -13,6 +13,7 @@ from .models import Profil
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from actstream.models import actor_stream
+from actstream import action
 
 
 def handler404(request, *args, **kwargs):  #page not found
@@ -28,6 +29,7 @@ def handler500(request, *args, **kwargs):   #erreur du serveur
 def handler403(request, *args, **kwargs):   #non autorisé
     response = render(request, "403.html")
     response.status_code = 403
+    action.send(request.user, verb='interdit', description=str(request))
     return response
 
 def handler400(request, *args, **kwargs):   #requete invalide

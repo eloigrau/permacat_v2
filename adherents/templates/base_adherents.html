@@ -31,10 +31,10 @@
 
                 {% else %}
                 {% endif %}
-                {% if request.user.is_superuser %}
-                <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:accueil_admin'  asso_slug=request.session.asso_slug %}">
-                    Admin</a></li>
-                {% endif %}
+                    {% if request.user.is_superuser %}
+                    <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:accueil_admin'  asso_slug=request.session.asso_slug %}">
+                        Admin</a></li>
+                    {% endif %}
                 </li>
             </ul>
         </div>

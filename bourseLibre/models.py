@@ -531,6 +531,8 @@ class Profil(AbstractUser):
             return False
 
     def estmembre_bureau(self, asso_slug):
+        if not asso_slug:
+            return False
         if self.is_authenticated:
             try:
                 if Asso.objects.get(slug=asso_slug).is_bureau:

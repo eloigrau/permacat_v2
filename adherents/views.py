@@ -61,7 +61,8 @@ class ListeAdherents(UserPassesTestMixin, ListView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
+        self.request.session["asso_slug"] = self.asso.slug
+        return self.asso.is_membre(self.request.user) or self.request.user.is_superuser
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -100,7 +101,8 @@ class AdherentDetailView(UserPassesTestMixin, DetailView, ):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
+        self.request.session["asso_slug"] = self.asso.slug
+        return self.asso.is_membre(self.request.user) or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

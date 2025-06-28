@@ -827,6 +827,7 @@ def change_password(request):
 @sensitive_variables('user', 'password1', 'password2')
 def register(request):
     if request.user.is_authenticated:
+        return redirect('bienvenue')
         return render(request, "erreur.html", {"msg":"Vous êtes déjà inscrit.e et authentifié.e !"})
     
     form_adresse = AdresseForm5(request.POST or None)

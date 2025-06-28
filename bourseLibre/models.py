@@ -408,10 +408,6 @@ class Profil(AbstractUser):
         from adherents.models import Adhesion
         return Adhesion.objects.filter(adherent__profil=self, asso__slug=slugAsso)
 
-    def isCotisationAJour(self, asso_slug):
-        time_threshold = datetime(datetime.now().year - 1, 11, 1)
-        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).count() > 0
-
     @property
     def isCotisationAJour_pc(self):
         return self.isCotisationAJour("pc")
@@ -428,27 +424,12 @@ class Profil(AbstractUser):
         if asso =='public':
             return True
         return getattr(self, "adherent_" + asso, False)
-        #
-        # if asso == "permacat" or "pc":
-        #     return self.adherent_pc
-        # elif asso == "rtg":
-        #     return self.adherent_rtg
-        # elif asso == "fer":
-        #     return self.adherent_fer
-        # elif asso == "jp":
-        #     return self.adherent_jp
-        # elif asso == "scic":
-        #     return self.adherent_scic
-        # elif asso == "citealt":
-        #     return self.adherent_citealt
-        # elif asso == "viure":
-        #     return self.adherent_viure
-        # elif asso == "bzz2022":
-        #     return self.adherent_bzz2022
-        # elif asso == "conf66":
-        #     return self.adherent_conf66
-        # elif asso == "ssa":
-        #     return self.adherent_ssa
+
+    def isCotisationAJour(self, asso_slug):
+        if not self.statutMembre_asso(asso_slug):
+            return False
+        time_threshold = datetime(datetime.now().year - 1, 1, 1)
+        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).count() > 0
 
     @property
     def statutMembre_str_asso(self, asso):

@@ -443,8 +443,8 @@ class Article(models.Model):
     def est_autorise(self, user):
         if user == self.auteur or  self.asso.slug == "public" or self.partagesAsso.filter(slug="public"):
             return True
-        #elif self.asso.slug == "conf66":
-        #    return user.isCotisationAJour(self.asso.slug)#
+        elif self.asso.slug == "conf66":
+            return user.isCotisationAJour(self.asso.slug)#
 
         adhesion = getattr(user, "adherent_" + self.asso.slug, False)
         if adhesion :

@@ -62,7 +62,7 @@ class ListeAdherents(UserPassesTestMixin, ListView):
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
         self.request.session["asso_slug"] = self.asso.slug
-        return self.asso.is_membre(self.request.user) or self.request.user.is_superuser
+        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -102,7 +102,7 @@ class AdherentDetailView(UserPassesTestMixin, DetailView, ):
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
         self.request.session["asso_slug"] = self.asso.slug
-        return self.asso.is_membre(self.request.user) or self.request.user.is_superuser
+        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -198,7 +198,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
 
 
 
-login_required
+@login_required
 def adherent_ajouter(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
 
@@ -227,7 +227,7 @@ def adherent_ajouter(request, asso_slug):
 
     return render(request, 'adherents/adherent_ajouter.html', {"form": form, "asso_slug":asso_slug})
 
-
+@login_required
 def creerAdherent(telephone, asso, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, profil=None):
     if not(telephone or nom or prenom or email or code_postal):
         return 0, None
@@ -997,7 +997,7 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
         self.request.session["asso_slug"] = self.asso.slug
-        return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
+        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_queryset(self):
         return ListeDiffusion.objects.filter(asso=self.asso).order_by("nom")
@@ -1026,7 +1026,7 @@ class ListeDiffusionDetailView(UserPassesTestMixin, DetailView):
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
+        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

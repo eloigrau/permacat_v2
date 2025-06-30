@@ -13,7 +13,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import ProfilCreationForm, ProducteurChangeForm_admin, SalonForm
+from .forms import ProfilCreationForm, ProducteurChangeForm_admin, SalonForm, SalonForm_admin, Lien_AssoSalon_adminForm
 from .models import Profil, Salon
 from django.utils.translation import gettext_lazy as _
 
@@ -87,14 +87,14 @@ class Adresse_Admin(admin.ModelAdmin):
 class Salon_Admin(admin.ModelAdmin):
     list_display  = ('titre', 'date_creation')
     search_fields = ('titre', 'description')
-    #form = SalonForm
+    form = SalonForm_admin
 
 
 @admin.register(Lien_AssoSalon)
 class LiensSalon_Admin(admin.ModelAdmin):
     list_display  = ('asso', 'salon', 'slug_type')
     search_fields = ('salon',)
-    #form = SalonForm
+    form = Lien_AssoSalon_adminForm
 
 #admin.site.register(Art_jardin, Article_jardinAdmin)
 admin.site.register(MessageAdmin)

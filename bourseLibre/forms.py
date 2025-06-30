@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Produit_vegetal, Adresse, \
     Asso, Profil, Message, MessageGeneral, Message_salon, InscriptionNewsletter, Adhesion_permacat, \
-    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon, Favoris
+    Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon, Favoris, \
+    Lien_AssoSalon
 from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
@@ -584,6 +585,33 @@ class SalonForm(forms.ModelForm):
         inscrit.save()
         return instance
 
+
+class Lien_AssoSalon_adminForm(forms.ModelForm):
+    class Meta:
+        model = Lien_AssoSalon
+        fields = ['asso', 'salon',]
+
+class SalonForm_admin(forms.ModelForm):
+    class Meta:
+        model = Salon
+        fields = ['titre', 'estPublic', 'description', 'tags', 'slug']
+
+
+class SalonForm(forms.ModelForm):
+    class Meta:
+        model = Salon
+        fields = ['titre', 'estPublic', 'description', 'tags', 'slug']
+        widgets = {
+            'description': SummernoteWidget(),
+        }
+
+    def save(self, request):
+        instance = super(SalonForm, self).save(commit=False)
+        instance.auteur = request.user.username
+        instance.save()
+        inscrit = InscritSalon(salon=instance, profil=request.user)
+        inscrit.save()
+        return instance
 
 class ModifierSalonForm(forms.ModelForm):
     class Meta:

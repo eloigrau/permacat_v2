@@ -3,7 +3,7 @@ from .models import Adherent, Adhesion, Contact, ContactContact
 from bourseLibre.models import Salon, InscritSalon
 import django_filters
 from django.db.models import Q, Count
-from .constantes import CHOIX_STATUTS, get_slug_salon,dict_ape
+from .constantes import CHOIX_STATUTS, get_salon_particulier, dict_ape
 from datetime import date
 from bourseLibre.settings import LOCALL
 
@@ -60,7 +60,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         return queryset.filter(adhesion__in=cotisations).distinct()
 
     def get_bureau_filter(self, queryset, field_name, value):
-        membres = [p.pk for p in Salon.objects.get(slug=get_slug_salon()).getInscritsEtInvites()]
+        membres = [p.pk for p in get_salon_particulier(self.request.session["asso_slug"]).getInscritsEtInvites()]
         return queryset.filter(pk__in=membres)
 
     def get_production_ape_filter(self, queryset, field_name, value):

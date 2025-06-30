@@ -85,8 +85,8 @@ class Adresse_Admin(admin.ModelAdmin):
 
 @admin.register(Salon)
 class Salon_Admin(admin.ModelAdmin):
-    list_display  = ('titre', 'auteur', 'date_creation')
-    search_fields = ('titre', 'description', 'auteur__username')
+    list_display  = ('titre', 'date_creation')
+    search_fields = ('titre', 'description')
     #form = SalonForm
 
 

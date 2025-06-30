@@ -38,13 +38,7 @@ from actstream import actions, action
 def is_membre_bureau(user, asso_slug="conf66"):
     if user.is_anonymous:
         return False
-    elif getattr(user, "adherent_" + asso_slug):
-        if asso_slug=="conf66":
-            return user.estmembre_bureau_conf
-        else:
-            return True
-    else:
-        return False
+    return user.estmembre_bureau(asso_slug)
 
 
 @login_required
@@ -83,7 +77,7 @@ class ListeAdherents(UserPassesTestMixin, ListView):
         context['titre'] = "Adhérents " +self.asso.nom +" (%d)" % len(qs)
         filter = AdherentsCarteFilter(self.request.GET, qs)
         context["filter"] = filter
-        context['is_membre_bureau'] = is_membre_bureau(self.request.user)
+        context['is_membre_bureau'] = is_membre_bureau(self.request.user, self.asso.slug)
         context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_' +self.asso.slug+'_'))
         return context
 

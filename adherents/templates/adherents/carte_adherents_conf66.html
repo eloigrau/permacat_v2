@@ -23,7 +23,7 @@
     </div>
 </div>
 
-{% if is_membre_bureau_conf %}
+{% if is_membre_bureau %}
 <div class="row textcenter">
     <div class="col-sm-12 textcenter">
         <a href="{% url 'adherents:adherent_ajouter' asso_slug=request.session.asso_slug%}">
@@ -212,7 +212,7 @@
 </div>
 
 <p class="textcenter">
-{% if is_membre_bureau_conf %}
+{% if is_membre_bureau %}
     <a href="{% url 'adherents:get_csv_adherents' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
        rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
@@ -236,7 +236,7 @@
 {% include "adherents/template_annuaire_adherents.html" with profils=filter.qs %}
 
 
-{% if is_membre_bureau_conf %}
+{% if is_membre_bureau %}
 <div class="row justify-content-center">
 <div class="col-sm-12 col-md-10 col-lg-8">
     <div class="textcenter">

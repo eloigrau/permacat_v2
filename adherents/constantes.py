@@ -1,4 +1,5 @@
 from colour import Color
+from bourseLibre.models import Lien_AssoSalon
 
 dict_ape = {
     "-": "Non renseigné",
@@ -41,12 +42,11 @@ CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidair
 
 CHOIX_MOYEN = ("VIR", "Virement"), ("CHQ", "Chèque"), ("ESP", "Espèce"), ("HA", "HelloAsso"), ("Autre", "Autre"),
 
-def get_slug_salon(nom="bureau"):
+def get_salon_particulier(asso_slug, slug_type="bureau"):
     #Pour retrouver le slug du bureau qui donne accès à... des fonctionnalités
-    if nom=="bureau":
-        return "conf66_bureau_2023"
+    lien_bureau = Lien_AssoSalon.objects.filter(asso__slug=asso_slug, slug_type=slug_type)
+    return lien_bureau.salon
 
-    return "test"
 
 
 CHOIX_CONTACTS = ("", "--------"), ("0", "Réponse OK"), ("1", "Pas de réponse"), ("2", "A répondu mais à rappeler"), ("3", "A répondu mais HOSTILE"), ("4", "Mauvais numéro"), ("6", "autre: "), ("5", "Je l'appellerai")

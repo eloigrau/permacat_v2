@@ -113,9 +113,14 @@ class InscriptionNewsletterAsso_Admin(admin.ModelAdmin):
     search_fields = ('email', 'nom_newsletter', 'profil__username')
     #form = SalonForm
 
+@admin.register(Discussion)
+class Discussion_Admin(admin.ModelAdmin):
+    list_display  = ('article', 'titre', 'slug')
+    search_fields = ('titre','article__titre')
+    #form = SalonForm
+
 admin.site.register(Conversation)
 admin.site.register(Commentaire)
-admin.site.register(Discussion)
 #admin.site.register(Comm_jardin)
 admin.site.register(CommentaireProjet)
 

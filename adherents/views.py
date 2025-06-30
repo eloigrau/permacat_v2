@@ -65,7 +65,7 @@ class ListeAdherents(UserPassesTestMixin, ListView):
             qs = Adherent.objects.filter(asso=self.asso, nom__istartswith=self.request.GET["lettre"]).order_by("nom")
         else:
             qs = Adherent.objects.filter(asso=self.asso).order_by("nom")
-        profils_filtres = AdherentsCarteFilter(self.request.GET, queryset=qs)
+        profils_filtres = AdherentsCarteFilter(self.asso.slug, self.request.GET, queryset=qs)
         self.qs = profils_filtres.qs.distinct()
         return self.qs
 
@@ -75,7 +75,7 @@ class ListeAdherents(UserPassesTestMixin, ListView):
         qs = self.get_queryset()
         context['asso_slug'] = self.asso.slug
         context['titre'] = "Adhérents " +self.asso.nom +" (%d)" % len(qs)
-        filter = AdherentsCarteFilter(self.request.GET, qs)
+        filter = AdherentsCarteFilter(self.asso.slug, self.request.GET, qs)
         context["filter"] = filter
         context['is_membre_bureau'] = is_membre_bureau(self.request.user, self.asso.slug)
         context['historique'] = Action.objects.filter(Q(verb__startswith='adherent_' +self.asso.slug+'_'))
@@ -485,7 +485,7 @@ def get_csv_adherents(request, asso_slug):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom")
-    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
+    profils_filtres = AdherentsCarteFilter(asso_slug, request.GET, queryset=profils)
     current_year = date.today().isocalendar()[0]
 
     csv_data = [
@@ -782,7 +782,7 @@ def getMails(request, asso_slug):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug)
-    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
+    profils_filtres = AdherentsCarteFilter(asso_slug, request.GET, queryset=profils)
     return render(request, 'adherents/template_mails.html', {'qs': profils_filtres.qs, "asso_slug":asso_slug})
 
 
@@ -792,7 +792,7 @@ def get_infos_adherent(request, asso_slug, type_info="email"):
         return HttpResponseForbidden()
 
     profils = Adherent.objects.filter(asso__slug=asso_slug)
-    profils_filtres = AdherentsCarteFilter(request.GET, queryset=profils)
+    profils_filtres = AdherentsCarteFilter(asso_slug, request.GET, queryset=profils)
     if type_info == "tel":
         template = 'adherents/template_tel.html'
     elif type_info == "email":

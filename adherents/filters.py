@@ -33,14 +33,14 @@ def get_choix_Production():
 
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ", required=False)
-
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
-
     production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production")
-
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
+    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année")
 
-    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter',label="Année")
+    def __init__(self, asso_slug, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.asso_slug = asso_slug
 
     def get_descrip_filter(self, queryset, field_name, value):
         return queryset.filter(Q(email__icontains=value)|
@@ -60,7 +60,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         return queryset.filter(adhesion__in=cotisations).distinct()
 
     def get_bureau_filter(self, queryset, field_name, value):
-        membres = [p.pk for p in get_salon_particulier(self.request.session["asso_slug"]).getInscritsEtInvites()]
+        membres = [p.pk for p in get_salon_particulier(self.asso_slug).getInscritsEtInvites()]
         return queryset.filter(pk__in=membres)
 
     def get_production_ape_filter(self, queryset, field_name, value):

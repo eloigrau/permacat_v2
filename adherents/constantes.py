@@ -1,5 +1,6 @@
 from colour import Color
 from bourseLibre.models import Lien_AssoSalon
+from django.contrib import messages
 
 dict_ape = {
     "-": "Non renseigné",
@@ -44,8 +45,11 @@ CHOIX_MOYEN = ("VIR", "Virement"), ("CHQ", "Chèque"), ("ESP", "Espèce"), ("HA"
 
 def get_salon_particulier(asso_slug, slug_type="bureau"):
     #Pour retrouver le slug du bureau qui donne accès à... des fonctionnalités
-    lien_bureau = Lien_AssoSalon.objects.filter(asso__slug=asso_slug, slug_type=slug_type)
-    return lien_bureau.salon
+    try:
+        lien_bureau = Lien_AssoSalon.objects.get(asso__slug=asso_slug, slug_type=slug_type)
+        return lien_bureau.salon
+    except:
+        return None
 
 
 

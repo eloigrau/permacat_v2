@@ -51,7 +51,6 @@ class AdherentsCarteFilter(django_filters.FilterSet):
                                Q(prenom__icontains=value)|
                                Q(statut__icontains=value))
 
-
     def get_statut_filter(self, queryset, field_name, value):
         return queryset.filter(statut=value[0])
 

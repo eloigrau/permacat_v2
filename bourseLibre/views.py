@@ -1729,8 +1729,10 @@ def getTestLanguage(request):
 def switchLanguage(request):
 
     if translation.get_language() == "fr":
+        translation.activate("ca")
         request.user.language = "ca"
     else:
+        translation.activate("fr")
         request.user.language = "fr"
 
     return redirect(request.GET.get("next", "bienvenue"))

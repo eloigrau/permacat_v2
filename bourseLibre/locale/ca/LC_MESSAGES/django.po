@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-02 23:41+0200\n"
+"POT-Creation-Date: 2025-07-02 23:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -679,7 +679,7 @@ msgstr "Kit PermaEcole"
 msgid "Administration"
 msgstr "Administracio"
 
-#: templates/navigationBar.html:73 bourseLibre/templates/bienvenue.html:39
+#: templates/navigationBar.html:73
 msgid "Charte"
 msgstr "Carta"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-02 23:28+0200\n"
+"POT-Creation-Date: 2025-07-02 23:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -648,7 +648,7 @@ msgid "Groupes"
 msgstr "Grups"
 
 #: templates/navigationBar.html:45 templates/navigationBar.html:248
-#: templates/navigationBar.html:264
+#: templates/navigationBar.html:264 templates/navigationBar.html:336
 msgid "Carte / Annuaire"
 msgstr "Mapa / Directori"
 
@@ -667,7 +667,7 @@ msgstr "Fòrum"
 msgid "Documents"
 msgstr "Documents"
 
-#: templates/navigationBar.html:59
+#: templates/navigationBar.html:59 templates/navigationBar.html:350
 msgid "Projets"
 msgstr "Projectes"
 
@@ -698,6 +698,34 @@ msgstr "Jardinoteca"
 #: templates/navigationBar.html:330
 msgid "Espaces"
 msgstr "Espais"
+
+#: templates/navigationBar.html:338
+msgid "Salons"
+msgstr ""
+
+#: templates/navigationBar.html:341
+msgid "Fichiers"
+msgstr ""
+
+#: templates/navigationBar.html:343
+#, fuzzy
+#| msgid "Document partagé"
+msgid "Documents partagés"
+msgstr "Documents compartits"
+
+#: templates/navigationBar.html:346
+msgid "Altermarché"
+msgstr ""
+
+#: templates/navigationBar.html:348
+#, fuzzy
+#| msgid "Un Atelier"
+msgid "Ateliers"
+msgstr "Un taller"
+
+#: templates/navigationBar.html:353
+msgid "Yapluka / Todo"
+msgstr ""
 
 #: templates/navigationBar.html:362
 msgid "Agenda"

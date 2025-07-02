@@ -9,6 +9,7 @@ from actstream import action
 from webpush import send_user_notification
 from django.templatetags.static import static
 from bourseLibre.settings import DATE_INPUT_FORMAT
+from django.utils.translation import gettext_lazy as _
 
 class Choix():
     type_atelier = ('0','Permaculture'), ('1',"Bricolage"), ('2','Cuisine'), ('3','Bien-être'), ('4',"Musique"), ('6', 'Politique'), ('8', 'Culture'), ('7', 'Activité Pro'), ('9', 'Informatique'), ('5', 'Autre...'),
@@ -43,32 +44,32 @@ class Choix():
 class Atelier(models.Model):
     categorie = models.CharField(max_length=30,
         choices=(Choix.type_atelier),
-        default='0', verbose_name="categorie")
+        default='0', verbose_name=_("categorie"))
     statut = models.CharField(max_length=30,
         choices=(Choix.statut_atelier),
-        default='proposition', verbose_name="Statut de l'atelier")
-    titre = models.CharField(verbose_name="Titre de l'atelier",max_length=120)
+        default='proposition', verbose_name=_("Statut de l'atelier"))
+    titre = models.CharField(verbose_name=_("Titre de l'atelier"),max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
     description = models.TextField(null=True, blank=True)
-    materiel = models.TextField(null=True, blank=True, verbose_name="Matériel/outils nécessaires")
-    referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name="Référent(e.s)")
+    materiel = models.TextField(null=True, blank=True, verbose_name=_("Matériel/outils nécessaires"))
+    referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name=_("Référent(e.s)"))
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-    start_time = models.DateField(verbose_name="Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
-    heure_atelier = models.TimeField(verbose_name="Heure de début", help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
-    heure_atelier_fin = models.TimeField(verbose_name="Heure de fin ", help_text="Horaire de fin (hh:mm)",
+    start_time = models.DateField(verbose_name=_("Date prévue (affichage dans l'agenda)"), help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
+    heure_atelier = models.TimeField(verbose_name=_("Heure de début"), help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
+    heure_atelier_fin = models.TimeField(verbose_name=_("Heure de fin"), help_text="Horaire de fin (hh:mm)",
                                     default="17:00", blank=True, null=True)
 
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
 
-    #date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=False, blank=True, null=True)
+    #date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message", auto_now=False, blank=True, null=True)
     #dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True, help_text="Heure prévue (hh:mm)")
-    tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name="Tarif de l'atelier par personne", )
+    tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name=_("Tarif de l'atelier par personne"), )
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 
-    estArchive = models.BooleanField(default=False, verbose_name="Archiver l'atelier")
-    nbMaxInscriptions = models.IntegerField(verbose_name="Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'atelier"))
+    nbMaxInscriptions = models.IntegerField(verbose_name=_("Nombre maximum d'inscriptions"), help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
 
     class Meta:
         ordering = ('-date_creation', )
@@ -239,7 +240,7 @@ class CommentaireAtelier(models.Model):
 class InscriptionAtelier(models.Model):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE)
     atelier = models.ForeignKey(Atelier, on_delete=models.CASCADE)
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
 
     def __unicode__(self):
         return self.__str()

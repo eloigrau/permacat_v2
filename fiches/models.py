@@ -3,6 +3,7 @@ from bourseLibre.models import Profil, Suivis
 from django.urls import reverse
 from django.utils import timezone
 from taggit.managers import TaggableManager
+from django.utils.translation import gettext_lazy as _
 import uuid
 
 class Choix():
@@ -40,10 +41,10 @@ class Choix():
 class Fiche(models.Model):
     categorie = models.CharField(max_length=30,         
         choices=(Choix.type_fiche),
-        default='0', verbose_name="categorie")
+        default='0', verbose_name=_("categorie"))
     statut = models.CharField(max_length=30,
         choices=(Choix.statut_fiche),
-        default='proposition', verbose_name="statut de la fiche")
+        default='proposition', verbose_name=_("statut de la fiche"))
     numero = models.PositiveIntegerField(blank=False, default=1)
     titre = models.CharField(max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
@@ -52,13 +53,13 @@ class Fiche(models.Model):
     en_savoir_plus = models.TextField(null=True, blank=True,)
 
 
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
 
-    date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=False, blank=True, null=True)
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message"), auto_now=False, blank=True, null=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
 
-    tags = TaggableManager(verbose_name=("Mots-clés"), help_text=("Une liste de mots clés, séparés par des virgules."), blank=True,)
+    tags = TaggableManager(verbose_name=_("Mots-clés"), help_text=_("Une liste de mots clés, séparés par des virgules."), blank=True,)
 
     class Meta:
         ordering = ('-date_creation', )
@@ -87,25 +88,25 @@ class Fiche(models.Model):
 class Atelier(models.Model):
     categorie = models.CharField(max_length=30,
                                  choices=(Choix.type_atelier),
-                                 default='0', verbose_name="categorie")
+                                 default='0', verbose_name=_("categorie"))
     titre = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
     contenu = models.TextField(null=True)
     age = models.CharField(max_length=30,
                                  choices=(Choix.type_age),
-                                 default='0', verbose_name="age")
+                                 default='0', verbose_name=_("age"))
     difficulte = models.CharField(max_length=30,
                                  choices=(Choix.type_difficulte),
-                                 default='0', verbose_name="difficulté")
+                                 default='0', verbose_name=_("difficulté"))
     budget = models.CharField(max_length=30,
                                  choices=(Choix.type_budget),
-                                 default='0', verbose_name="budget")
+                                 default='0', verbose_name=_("budget"))
     temps = models.CharField(max_length=30,
                                  choices=(Choix.type_temps),
-                                 default='0', verbose_name="temps")
+                                 default='0', verbose_name=_("temps"))
     fiche = models.ForeignKey(Fiche, on_delete=models.CASCADE,)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
 
     class Meta:
         ordering = ('-date_creation',)

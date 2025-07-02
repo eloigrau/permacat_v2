@@ -13,7 +13,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import ProfilCreationForm, ProducteurChangeForm_admin, SalonForm, SalonForm_admin, Lien_AssoSalon_adminForm
+from .forms import ProfilCreationForm, ProfilChangeForm_admin, SalonForm, SalonForm_admin, Lien_AssoSalon_adminForm
 from .models import Profil, Salon
 from django.utils.translation import gettext_lazy as _
 
@@ -21,7 +21,7 @@ from django.utils.translation import gettext_lazy as _
 @admin.register(Profil)
 class CustomUserAdmin(UserAdmin):
     add_form = ProfilCreationForm
-    form = ProducteurChangeForm_admin
+    form = ProfilChangeForm_admin
     model = Profil
     list_display = ['id','username',  'last_login', 'email', 'date_notifications']
 

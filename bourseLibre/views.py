@@ -8,7 +8,7 @@ from django.shortcuts import HttpResponseRedirect, render, redirect, get_object_
 from django.core.exceptions import PermissionDenied
 from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, Produit_objet_CreationForm, \
     Produit_service_CreationForm, ContactForm, AdresseForm4, AdresseForm5, ProfilCreationForm, MessageForm, MessageGeneralForm, \
-    ProducteurChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
+    ProfilChangeForm, Produit_aliment_modifier_form, Produit_service_modifier_form, \
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
     SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm, FavorisForm
@@ -37,6 +37,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import Group, User
+from django.utils import translation
 from django.core.paginator import Paginator
 
 from django.views.decorators.debug import sensitive_variables
@@ -138,6 +139,8 @@ def bienvenue(request):
     evenements_passes, evenements_semaine = getEvenementsSemaine(request)
     derniers, articles, votes = [], [], []
     invit_salons = 0
+
+    print(str(getTestLanguage(request)))
 
     if request.user.is_authenticated:
         nbNotif = getNbNewNotifications(request)
@@ -717,7 +720,7 @@ def produitContacterProducteur(request, produit_id):
 @login_required
 class profil_modifier_user(UpdateView):
     model = Profil
-    form_class = ProducteurChangeForm
+    form_class = ProfilChangeForm
     template_name_suffix = '_modifier'
     fields = ['username', 'first_name', 'last_name', 'email', 'site_web', 'description', 'competences', 'pseudo_june', 'accepter_annuaire', 'inscrit_newsletter']
 
@@ -793,7 +796,7 @@ def profil_modifier_adresse_user(request, user_pk):
 
 class profil_modifier(UpdateView):
     model = Profil
-    form_class = ProducteurChangeForm
+    form_class = ProfilChangeForm
     template_name_suffix = '_modifier'
     #fields = ['username','email','first_name','last_name', 'site_web','description', 'competences', 'inscrit_newsletter']
 
@@ -1699,5 +1702,35 @@ def favoris_ajouter(request):
 def switchThemeSombre(request):
     request.user.css_dark = not request.user.css_dark
     request.user.save()
+
+    return redirect(request.GET.get("next", "bienvenue"))
+
+def getTestLanguage(request):
+    from bourseLibre import settings
+    return {
+        'get_language()':translation.get_language(),
+            'chemin':len(settings.LOCALE_PATHS) > 0,
+            'trad Publier':translation.gettext("Publier") ,
+            'trad Publicar':translation.gettext("Publicar"),
+            'cat ok': 'ca' in translation.trans_real.get_languages(),
+            'fr ok': 'fr' in translation.trans_real.get_languages(),
+            #curl 'http://localhost:8000' -H 'Accept-Language: ja'translation.get_language(),
+            'info fr': translation.get_language_info('fr'),
+            'info cat':translation.get_language_info('ca'),
+            'check fr':translation.check_for_language('fr'),
+            'check ca':translation.check_for_language('ca'),
+            'to_locale':translation.to_locale('ca'),
+            'to_language':translation.to_language('ca'),
+            "gettext('Catalan')":translation.gettext('Catalan'),
+            "gettext('Publier')":translation.gettext('Publier')
+            }
+
+@login_required
+def switchLanguage(request):
+
+    if translation.get_language() == "fr":
+        request.user.language = "ca"
+    else:
+        request.user.language = "fr"
 
     return redirect(request.GET.get("next", "bienvenue"))

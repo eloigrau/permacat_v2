@@ -14,6 +14,7 @@ from webpush import send_user_notification
 from django.templatetags.static import static
 from jardins.models import Jardin
 from django.core.validators import MinLengthValidator
+from django.utils.translation import gettext_lazy as _
 import uuid
 from adherents.models import Adhesion
 from bourseLibre.settings import DATE_INPUT_FORMAT
@@ -262,27 +263,27 @@ class ZoneGeo(models.Model):
 class Article(models.Model):
     categorie = models.CharField(max_length=30,         
         choices= Choix.type_annonce,
-        default='', verbose_name="Dossier")
+        default='', verbose_name=_("Dossier"))
     titre = models.CharField(max_length=250,)
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=100)
     contenu = models.TextField(null=True)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", auto_now=False, null=True, )
-    estPublic = models.BooleanField(default=False, verbose_name='Public ou réservé aux membres permacat')
-    estModifiable = models.BooleanField(default=False, verbose_name="Modifiable par les autres")
-    estEpingle = models.BooleanField(default=False, verbose_name="Article épinglé")
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), auto_now=False, null=True, )
+    estPublic = models.BooleanField(default=False, verbose_name=_('Public ou réservé aux membres permacat'))
+    estModifiable = models.BooleanField(default=False, verbose_name=_("Modifiable par les autres"))
+    estEpingle = models.BooleanField(default=False, verbose_name=_("Article épinglé"))
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=False, null=True, blank=True)
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message"), auto_now=False, null=True, blank=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
-    estArchive = models.BooleanField(default=False, verbose_name="Archiver l'article")
-    start_time = models.DateField(verbose_name="Date de l'événement (pour apparaitre sur l'agenda, sinon vous pourrez ajouter des évènements depuis l'article) ", null=True, blank=True, help_text="jj/mm/année")
-    end_time = models.DateField(verbose_name="Date de fin (optionnel, pour affichage dans l'agenda)",  null=True,blank=True, help_text="jj/mm/année")
-    tags = TaggableManager(verbose_name="Mots clés",  help_text="Liste de mots-clés séparés par une virgule", blank=True)
-    album = models.ForeignKey(Album, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Album photo associé",  )
-    partagesAsso = models.ManyToManyField(Asso, related_name="asso_partages", verbose_name="Partagé avec :", blank=True)
-    themes = models.ManyToManyField(Theme, related_name="themes", verbose_name="Thèmes :", blank=True)
-    zonegeo = models.ForeignKey(ZoneGeo, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Zone géographique",  )
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'article"))
+    start_time = models.DateField(verbose_name=_("Date de l'événement (pour apparaitre sur l'agenda, sinon vous pourrez toujours ajouter des évènements depuis l'article) "), null=True, blank=True, help_text="jj/mm/année")
+    end_time = models.DateField(verbose_name=_("Date de fin (optionnel, pour affichage dans l'agenda"),  null=True,blank=True, help_text="jj/mm/année")
+    tags = TaggableManager(verbose_name=_("Mots clés"),  help_text="Liste de mots-clés séparés par une virgule", blank=True)
+    album = models.ForeignKey(Album, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Album photo associé"),  )
+    partagesAsso = models.ManyToManyField(Asso, related_name="asso_partages", verbose_name=_("Partagé avec :"), blank=True)
+    themes = models.ManyToManyField(Theme, related_name="themes", verbose_name=_("Thèmes :"), blank=True)
+    zonegeo = models.ForeignKey(ZoneGeo, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Zone géographique"),  )
 
 
     class Meta:
@@ -466,16 +467,16 @@ class Article(models.Model):
             return derniere_date
 
 # class ModificationArticle(models.Model):
-#     description = models.CharField(verbose_name="Explication de la modification", max_length=500, null=True, blank=True)
-#     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
-#     date_creation = models.DateTimeField(verbose_name="Date de la modif", default=timezone.now)
+#     description = models.CharField(verbose_name=_("Explication de la modification"), max_length=500, null=True, blank=True)
+#     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))
+#     date_creation = models.DateTimeField(verbose_name=_("Date de la modif"), default=timezone.now)
 #
 #     def __str__(self):
 #         return "(" + str(self.date_creation) + " : " +  self.article + ") "+ str(self.description)
 
 class AssociationSalonArticle(models.Model):
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
-    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, verbose_name="Salon lié" )
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, verbose_name=_("Salon lié" ))
 
     class Meta:
         unique_together = ('article', 'salon',)
@@ -484,8 +485,8 @@ class AssociationSalonArticle(models.Model):
         return str(self.salon) + " - "+ str(self.article)
 
 class DocumentPartage(models.Model):
-    nom = models.CharField(verbose_name="Nom du document (ou lien http)", help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="article lié" )
+    nom = models.CharField(verbose_name=_("Nom du document (ou lien http)"), help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))
     slug = models.SlugField(max_length=100)
     date_creation = models.DateTimeField(auto_now_add=True)
 
@@ -505,11 +506,11 @@ class DocumentPartage(models.Model):
         return self.url
 
 class Evenement(models.Model):
-    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",
+    titre_even = models.CharField(verbose_name=_("Titre de l'événement (si laissé vide, ce sera le titre de l'article)"),
                              max_length=100, null=True, blank=True, default="")
     article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="L'evenement doit etre associé à un article" )
-    start_time = models.DateField(verbose_name="Date", null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
-    end_time = models.DateField(verbose_name="Date de fin (optionnel pour un evenement sur plusieurs jours)",  null=True,blank=True, help_text="jj/mm/année")
+    start_time = models.DateField(verbose_name=_("Date"), null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
+    end_time = models.DateField(verbose_name=_("Date de fin (optionnel pour un evenement sur plusieurs jours)"),  null=True,blank=True, help_text="jj/mm/année")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -550,7 +551,7 @@ class Evenement(models.Model):
 
 class Discussion(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    titre = models.CharField(blank=False, max_length=32, verbose_name="Titre de la discussion")
+    titre = models.CharField(blank=False, max_length=32, verbose_name=_("Titre de la discussion"))
     slug = models.SlugField(max_length=32, default=uuid.uuid4)
 
     class Meta:
@@ -670,33 +671,33 @@ class Commentaire(models.Model):
 class Projet(models.Model):
     categorie = models.CharField(max_length=10,
         choices=(Choix.type_projet),
-        default='Part', verbose_name="categorie")
+        default='Part', verbose_name=_("categorie"))
     statut = models.CharField(max_length=5,
         choices=(Choix.statut_projet ),
-        default='prop', verbose_name="statut")
+        default='prop', verbose_name=_("statut"))
     titre = models.CharField(max_length=250)
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=100)
     contenu = models.TextField(null=True)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
-    estPublic = models.BooleanField(default=False, verbose_name='Public (cochez) ou Interne (décochez) [réservé aux membres permacat]')
-    coresponsable = models.CharField(max_length=150, verbose_name="Référent du projet", default='', null=True, blank=True)
-    lien_vote = models.URLField(verbose_name='Lien vers le vote (balotilo.org)', null=True, blank=True, )
-    lien_document = models.URLField(verbose_name='Lien vers un document explicatif (en ligne)', default='', null=True, blank=True)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
+    estPublic = models.BooleanField(default=False, verbose_name=_('Public (cochez) ou Interne (décochez) [réservé aux membres permacat]'))
+    coresponsable = models.CharField(max_length=150, verbose_name=_("Référent du projet"), default='', null=True, blank=True)
+    lien_vote = models.URLField(verbose_name=_('Lien vers le vote (balotilo.org)'), null=True, blank=True, )
+    lien_document = models.URLField(verbose_name=_('Lien vers un document explicatif (en ligne)'), default='', null=True, blank=True)
     fichier_projet = models.FileField(upload_to='projets/%Y/%m/', blank=True, default=None, null=True)
     date_fichier = models.DateTimeField(auto_now=True, blank=True)
 
-    date_dernierMessage = models.DateTimeField(verbose_name="Date de Modification", auto_now=False, blank=True, null=True)
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date de Modification"), auto_now=False, blank=True, null=True)
     dernierMessage = models.CharField(max_length=100, default="", blank=True, null=True)
 
-    start_time = models.DateField(verbose_name="Date de début (optionnel, pour apparaitre dans l'agenda)",  null=True,blank=True, help_text="jj/mm/année")
-    end_time = models.DateField(verbose_name="Date de fin (optionnel, pour apparaitre dans l'agenda)",  null=True,blank=True, help_text="jj/mm/année")
+    start_time = models.DateField(verbose_name=_("Date de début (optionnel, pour apparaitre dans l'agenda)"),  null=True,blank=True, help_text="jj/mm/année")
+    end_time = models.DateField(verbose_name=_("Date de fin (optionnel, pour apparaitre dans l'agenda)"),  null=True,blank=True, help_text="jj/mm/année")
 
-    estArchive = models.BooleanField(default=False, verbose_name="Archiver le projet")
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver le projet"))
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
-    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True)
+    tags = TaggableManager(verbose_name=_("Mots clés"), help_text=_("Liste de mots-clés séparés par une virgule"), blank=True)
 
     class Meta:
         ordering = ('-date_creation', )
@@ -761,19 +762,19 @@ class Projet(models.Model):
 
 class FicheProjet(models.Model):
     projet = models.OneToOneField(Projet, on_delete=models.CASCADE, primary_key=True,)
-    date_creation = models.DateTimeField(verbose_name="Date de création", auto_now_add=True)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", auto_now=True)
-    raison = models.TextField(null=True, blank=True, verbose_name="Raison d'Etre du projet")
-    pourquoi_contexte = models.TextField(null=True, blank=True, verbose_name="Pourquoi ? Le contexte")
-    pourquoi_motivation = models.TextField(null=True, blank=True, verbose_name="Pourquoi ? Les motivations")
-    pourquoi_objectifs = models.TextField(null=True, blank=True, verbose_name="Pourquoi ? Les objectifs")
-    pour_qui = models.TextField(null=True, blank=True, verbose_name="Pour qui ? Le public")
-    par_qui = models.TextField(null=True, blank=True, verbose_name="Par qui ? Les acteurs")
-    avec_qui = models.TextField(null=True, blank=True, verbose_name="Par qui ? Les partenaires")
-    ou = models.TextField(null=True, blank=True, verbose_name="Où ?")
-    quand = models.TextField(null=True, blank=True, verbose_name="Début ? La périodicité")
-    comment = models.TextField(null=True, blank=True, verbose_name="Comment ? La méthodologie")
-    combien = models.TextField(null=True, blank=True, verbose_name="Combien ? Le budget prévisionnel")
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), auto_now_add=True)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), auto_now=True)
+    raison = models.TextField(null=True, blank=True, verbose_name=_("Raison d'Etre du projet"))
+    pourquoi_contexte = models.TextField(null=True, blank=True, verbose_name=_("Pourquoi ? Le contexte"))
+    pourquoi_motivation = models.TextField(null=True, blank=True, verbose_name=_("Pourquoi ? Les motivations"))
+    pourquoi_objectifs = models.TextField(null=True, blank=True, verbose_name=_("Pourquoi ? Les objectifs"))
+    pour_qui = models.TextField(null=True, blank=True, verbose_name=_("Pour qui ? Le public"))
+    par_qui = models.TextField(null=True, blank=True, verbose_name=_("Par qui ? Les acteurs"))
+    avec_qui = models.TextField(null=True, blank=True, verbose_name=_("Par qui ? Les partenaires"))
+    ou = models.TextField(null=True, blank=True, verbose_name=_("Où ?"))
+    quand = models.TextField(null=True, blank=True, verbose_name=_("Début ? La périodicité"))
+    comment = models.TextField(null=True, blank=True, verbose_name=_("Comment ? La méthodologie"))
+    combien = models.TextField(null=True, blank=True, verbose_name=_("Combien ? Le budget prévisionnel"))
 
     class Meta:
         ordering = ('-date_creation', )
@@ -868,11 +869,11 @@ class CommentaireProjet(models.Model):
 
 
 class EvenementAcceuil(models.Model):
-    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",
+    titre_even = models.CharField(verbose_name=_("Titre de l'événement (si laissé vide, ce sera le titre de l'article)"),
                              max_length=100, null=True, blank=True, default="")
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 help_text="L'evenement doit etre associé à un article existant (sinon créez un article avec une date)")
-    date = models.DateTimeField(verbose_name="Date", null=False, blank=False, help_text="jj/mm/année",
+    date = models.DateTimeField(verbose_name=_("Date"), null=False, blank=False, help_text="jj/mm/année",
                                       default=timezone.now)
 
     def __str__(self):
@@ -892,15 +893,15 @@ class EvenementAcceuil(models.Model):
 
 
 class AdresseArticle(models.Model):
-    titre = models.CharField(verbose_name="Nom du lieu",
+    titre = models.CharField(verbose_name=_("Nom du lieu"),
                              max_length=100, null=True, blank=True, default="")
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     article = models.ForeignKey(Article, on_delete=models.CASCADE,
                                 help_text="L'evenement doit etre associé à un article existant (sinon créez un article avec une date)")
-    infos = models.TextField(verbose_name="Infos complémentaires", null=True, blank=True)
+    infos = models.TextField(verbose_name=_("Infos complémentaires"), null=True, blank=True)
     type_marqueur = models.CharField(max_length=5,
         choices= Choix.type_marqueur,
-        default='0', verbose_name="type_marqueur")
+        default='0', verbose_name=_("type_marqueur"))
 
     def __str__(self):
         try:
@@ -1010,30 +1011,30 @@ class Projet_recherche(models.Model):
 # class Atelier_new(models.Model):
 #     categorie = models.CharField(max_length=30,
 #         choices=(Choix.type_atelier),
-#         default='0', verbose_name="categorie")
+#         default='0', verbose_name=_("categorie")
 #     statut = models.CharField(max_length=30,
 #         choices=(Choix.statut_atelier),
-#         default='proposition', verbose_name="Statut de l'atelier")
-#     titre = models.CharField(verbose_name="Titre de l'atelier",max_length=120)
+#         default='proposition', verbose_name=_("Statut de l'atelier")
+#     titre = models.CharField(verbose_name=_("Titre de l'atelier",max_length=120)
 #     slug = models.SlugField(max_length=100, default=uuid.uuid4)
 #     description = models.TextField(null=True, blank=True)
-#     materiel = models.TextField(null=True, blank=True, verbose_name="Matériel/outils nécessaires")
-#     referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name="Référent(e.s)")
+#     materiel = models.TextField(null=True, blank=True, verbose_name=_("Matériel/outils nécessaires")
+#     referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name=_("Référent(e.s)")
 #     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
 # #    projet = models.OneToOneField(Projet)
-#     start_time = models.DateField(verbose_name="Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
-#     heure_atelier = models.TimeField(verbose_name="Heure de début", help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
-#     heure_atelier_fin = models.TimeField(verbose_name="Heure de fin ", help_text="Horaire de fin (hh:mm)",
+#     start_time = models.DateField(verbose_name=_("Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
+#     heure_atelier = models.TimeField(verbose_name=_("Heure de début", help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
+#     heure_atelier_fin = models.TimeField(verbose_name=_("Heure de fin ", help_text="Horaire de fin (hh:mm)",
 #                                     default="17:00", blank=True, null=True)
 #
-#     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-#     date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
-#     tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name="Tarif de l'atelier par personne", )
+#     date_creation = models.DateTimeField(verbose_name=_("Date de parution", default=timezone.now)
+#     date_modification = models.DateTimeField(verbose_name=_("Date de modification", default=timezone.now)
+#     tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name=_("Tarif de l'atelier par personne", )
 #     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 #     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 #
-#     estArchive = models.BooleanField(default=False, verbose_name="Archiver l'atelier")
-#     nbMaxInscriptions = models.IntegerField( verbose_name="Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
+#     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'atelier")
+#     nbMaxInscriptions = models.IntegerField( verbose_name=_("Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
 #
 #     class Meta:
 #         ordering = ('-date_creation',)
@@ -1141,7 +1142,7 @@ class Projet_recherche(models.Model):
 # class InscriptionAtelier_new(models.Model):
 #     user = models.ForeignKey(Profil, on_delete=models.CASCADE)
 #     atelier = models.ForeignKey(Atelier_new, on_delete=models.CASCADE)
-#     date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+#     date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription", editable=False, auto_now_add=True)
 #
 #     def __unicode__(self):
 #         return self.__str()

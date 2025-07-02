@@ -11,6 +11,7 @@ from bourseLibre.constantes import DEGTORAD
 import requests
 from blog.models import Choix as Choix_global
 import itertools
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 class Choix:
@@ -35,10 +36,10 @@ def get_typereunion(asso):
 
 
 class ParticipantReunion(models.Model):
-    nom = models.CharField(verbose_name="Nom du participant", max_length=120)
+    nom = models.CharField(verbose_name=_("Nom du participant"), max_length=120)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    #vehicule = models.BooleanField(default=True, verbose_name="Est venu.e avec son véhicule")
+    #vehicule = models.BooleanField(default=True, verbose_name=_("Est venu.e avec son véhicule"))
 
     def __str__(self):
         return self.nom
@@ -126,19 +127,19 @@ class ParticipantReunion(models.Model):
 class Reunion(models.Model):
     categorie = models.CharField(max_length=30,
                                  choices=(Choix.type_reunion),
-                                 default='0', verbose_name="Dossier")
-    titre = models.CharField(verbose_name="Titre de la rencontre", max_length=120)
+                                 default='0', verbose_name=_("Dossier"))
+    titre = models.CharField(verbose_name=_("Titre de la rencontre"), max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
-    description = models.TextField(null=True, blank=True, verbose_name="Description / compte rendu")
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description / compte rendu"))
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-    start_time = models.DateField(verbose_name="Date de la rencontre", help_text="(jj/mm/an)",
+    start_time = models.DateField(verbose_name=_("Date de la rencontre"), help_text="(jj/mm/an)",
                                   default=timezone.now, blank=True, null=True)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, null=True, blank=True,)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    article = models.ForeignKey(Article,  verbose_name="article lié", on_delete=models.CASCADE, null=True, blank=True)
-    estArchive = models.BooleanField(default=False, verbose_name="Archiver la réunion")
+    article = models.ForeignKey(Article,  verbose_name=_("article lié"), on_delete=models.CASCADE, null=True, blank=True)
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver la réunion"))
     participants = models.ManyToManyField(ParticipantReunion,
                                 help_text="Le participant doit etre associé à une reunion existante (sinon créez d'abord la reunion)")
 
@@ -186,11 +187,11 @@ class Reunion(models.Model):
 class Distance_ParticipantReunion(models.Model):
     reunion = models.ForeignKey(Reunion, on_delete=models.CASCADE, null=True, blank=True, )
     participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
-    distance = models.FloatField(blank=True, null=True, verbose_name="Distance aller (en km)", help_text="Mettre juste le nombre de kilomètres (sans ajouter 'km')")
-    contexte_distance = models.TextField(blank=True, null=True, verbose_name="Description du contexte")
+    distance = models.FloatField(blank=True, null=True, verbose_name=_("Distance aller (en km)"), help_text="Mettre juste le nombre de kilomètres (sans ajouter 'km')")
+    contexte_distance = models.TextField(blank=True, null=True, verbose_name=_("Description du contexte"))
     type_trajet = models.CharField(max_length=30,
                                  choices=(Choix.type_trajet),
-                                 default='0', verbose_name="Type de trajet")
+                                 default='0', verbose_name=_("Type de trajet"))
 
     class Meta:
         unique_together = (('reunion', 'participant',), )
@@ -243,38 +244,38 @@ class Distance_ParticipantReunion(models.Model):
 # class Atelier(models.Model):
 #     categorie = models.CharField(max_length=30,
 #                                  choices=(Choix.type_atelier),
-#                                  default='0', verbose_name="categorie")
+#                                  default='0', verbose_name=_("categorie")
 #     statut = models.CharField(max_length=30,
 #                               choices=(Choix.statut_atelier),
-#                               default='proposition', verbose_name="Statut de l'atelier")
-#     titre = models.CharField(verbose_name="Titre de l'atelier", max_length=120)
+#                               default='proposition', verbose_name=_("Statut de l'atelier")
+#     titre = models.CharField(verbose_name=_("Titre de l'atelier", max_length=120)
 #     slug = models.SlugField(max_length=100, default=uuid.uuid4)
 #     description = models.TextField(null=True, blank=True)
-#     materiel = models.TextField(null=True, blank=True, verbose_name="Matériel/outils nécessaires")
-#     referent = models.CharField(max_length=120, null=True, blank=True, verbose_name="Référent(e.s)")
+#     materiel = models.TextField(null=True, blank=True, verbose_name=_("Matériel/outils nécessaires")
+#     referent = models.CharField(max_length=120, null=True, blank=True, verbose_name=_("Référent(e.s)")
 #     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
 #     #    projet = models.OneToOneField(Projet)
-#     start_time = models.DateField(verbose_name="Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)",
+#     start_time = models.DateField(verbose_name=_("Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)",
 #                                   default=timezone.now, blank=True, null=True)
-#     heure_atelier = models.TimeField(verbose_name="Heure prévue", help_text="Horaire de départ (hh:mm)",
+#     heure_atelier = models.TimeField(verbose_name=_("Heure prévue", help_text="Horaire de départ (hh:mm)",
 #                                      default="17:00", blank=True, null=True)
 #
-#     date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-#     date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
+#     date_creation = models.DateTimeField(verbose_name=_("Date de parution", default=timezone.now)
+#     date_modification = models.DateTimeField(verbose_name=_("Date de modification", default=timezone.now)
 #
-#     date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=False, blank=True,
+#     date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message", auto_now=False, blank=True,
 #                                                null=True)
 #     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True,
 #                                       help_text="Heure prévue (hh:mm)")
-#     duree_prevue = models.TimeField(verbose_name="Durée prévue", help_text="Durée de l'atelier estimée",
+#     duree_prevue = models.TimeField(verbose_name=_("Durée prévue", help_text="Durée de l'atelier estimée",
 #                                     default="02:00", blank=True, null=True)
 #     tarif_par_personne = models.CharField(max_length=100, default='gratuit',
 #                                           help_text="Tarif de l'atelier par personne",
-#                                           verbose_name="Tarif de l'atelier par personne", )
+#                                           verbose_name=_("Tarif de l'atelier par personne", )
 #     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 #     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 #
-#     estArchive = models.BooleanField(default=False, verbose_name="Archiver l'atelier")
+#     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'atelier")
 #
 #     class Meta:
 #         ordering = ('-date_creation',)

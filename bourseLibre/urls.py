@@ -26,15 +26,15 @@ from django.urls import reverse_lazy
 from django.contrib import admin
 from .settings import MEDIA_ROOT, MEDIA_URL, LOCALL
 from django.conf.urls.static import static
+from django.conf.urls.i18n import path
 from django.views.static import serve
 
 admin.sites.site_header ="Admin"
 admin.sites.site_title ="Admin Permacat"
 
 urlpatterns = [
-    path('qr_code/', include('qr_code.urls', namespace="qr_code")),
+    path('i18n/', include('django.conf.urls.i18n')),  # Language switching
     re_path(r'^summernote/', include('local_summernote.urls')),
-    re_path(r'^photolog/', include('photologue.urls', namespace='photologue')),
     # path('tinymce/', include('tinymce.urls')),
     # re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
     # path('newsletter/', include('newsletter.urls')),
@@ -45,7 +45,9 @@ urlpatterns = [
     path(r'defraiement/', include('defraiement.urls', 'defraiement')),
     path(r'carto/', include('carto.urls')),
     path(r'jardins/', include('jardins.urls')),
-    path(r'adherents/', include(('adherents.urls', 'adherents'))),
+    path(r'adherents/', include('adherents.urls', namespace='adherents')),
+    path(r'photolog/', include('photologue.urls', namespace='photologue')),
+    path('qr_code/', include('qr_code.urls', namespace="qr_code")),
 #    path(r'phonebook/', include('phonebook.urls')),
     re_path('^', include('django.contrib.auth.urls')),
     re_path('avatar/', include('avatar.urls')),
@@ -102,6 +104,7 @@ urlpatterns = [
     # re_path(r'^agora/', include('agoratransition.urls', namespace='bourseLibre.agoratransition')),
     re_path(r'^vote/', include('vote.urls', namespace='bourseLibre.vote')),
     re_path(r'^switchThemeSombre/', views.switchThemeSombre, name='switchThemeSombre'),
+    re_path(r'^switchLanguage/', views.switchLanguage, name='switchLanguage'),
 
     re_path(r'^kit/', include('fiches.urls', namespace='bourseLibre.fiches')),
     re_path(r'^ateliers/', include('ateliers.urls', namespace='bourseLibre.ateliers')),

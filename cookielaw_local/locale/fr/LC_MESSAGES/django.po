@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-05 18:08+0200\n"
+"POT-Creation-Date: 2025-07-01 12:51+0200\n"
 "PO-Revision-Date: 2016-12-07 22:15+0200\n"
 "Last-Translator: Lilian Besson <naereen at crans dOt org>\n"
 "Language-Team: NETSACH <contact@netsach.fr>\n"
@@ -18,20 +18,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/cookielaw/banner.html:5
+#: cookielaw_local/templates/cookielaw/banner.html:5
+#: cookielaw_local/templates/cookielaw/rejectable.html:5
 msgid "COOKIE_INFO_HEADER"
 msgstr "Consentement d'utilisation des cookies"
 
-#: templates/cookielaw/banner.html:7
+#: cookielaw_local/templates/cookielaw/banner.html:7
+#: cookielaw_local/templates/cookielaw/rejectable.html:7
 msgid "COOKIE_INFO_OK"
 msgstr "J'accepte"
 
-#: templates/cookielaw/banner.html:8
+#: cookielaw_local/templates/cookielaw/banner.html:8
+#: cookielaw_local/templates/cookielaw/rejectable.html:9
 msgid "COOKIE_INFO_PARA"
 msgstr ""
 "Notre site sauvegarde des traceurs textes (cookies) sur votre appareil afin "
-"de vous garantir de meilleurs contenus et à des fins de collectes statistiques. "
-"Vous pouvez désactiver l'usage des cookies en changeant les paramètres de votre "
-"navigateur. En poursuivant votre navigation sur notre site sans changer vos "
-"paramètres de navigateur, vous nous accordez la permission de conserver des "
-"informations sur votre appareil."
+"de vous garantir de meilleurs contenus et à des fins de collectes "
+"statistiques. Vous pouvez désactiver l'usage des cookies en changeant les "
+"paramètres de votre navigateur. En poursuivant votre navigation sur notre "
+"site sans changer vos paramètres de navigateur, vous nous accordez la "
+"permission de conserver des informations sur votre appareil."
+
+#: cookielaw_local/templates/cookielaw/rejectable.html:8
+#, fuzzy
+#| msgid "COOKIE_INFO_HEADER"
+msgid "COOKIE_INFO_REJECT"
+msgstr "Consentement d'utilisation des cookies"

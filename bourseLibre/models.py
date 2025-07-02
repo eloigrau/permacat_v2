@@ -34,6 +34,7 @@ from taggit.managers import TaggableManager
 from webpush import send_user_notification
 from .constantes import Choix, DEGTORAD
 from .settings.production import SERVER_EMAIL
+from .settings import LANGUAGES, LANGUAGE_CODE
 
 username_re = re.compile(r"(?:(?<=^)|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 #username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
@@ -236,8 +237,8 @@ class Asso(models.Model):
     nom = models.CharField(max_length=100)
     slug = models.CharField(max_length=10)
     email = models.EmailField(null=True)
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
-    is_bureau = models.BooleanField(verbose_name="Le collectif a un bureau dont seuls les membres accéder à certaines infos (=> créer salon avec lien AssoSalon)", default=False)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
+    is_bureau = models.BooleanField(verbose_name=_("Le collectif a un bureau dont seuls les membres accéder à certaines infos (=> créer salon avec lien AssoSalon)"), default=False)
 
     def __unicode__(self):
         return self.__str()
@@ -330,32 +331,34 @@ class Profil(AbstractUser):
     description = models.TextField(null=True, blank=True)
     competences = models.TextField(null=True, blank=True)
     adresse = models.OneToOneField(Adresse, on_delete=models.SET_NULL, null=True)
-    date_registration = models.DateTimeField(verbose_name="Date de création", editable=False)
+    date_registration = models.DateTimeField(verbose_name=_("Date de création"), editable=False)
     pseudo_june = models.CharField(_('pseudo Monnaie Libre'), blank=True, default=None, null=True, max_length=50)
-    inscrit_newsletter = models.BooleanField(verbose_name="J'accepte de recevoir des emails de Perma.cat", default=True)
+    inscrit_newsletter = models.BooleanField(verbose_name=_("J'accepte de recevoir des emails de Perma.cat"), default=True)
     #statut_adhesion = models.IntegerField(choices=Choix.statut_adhesion, default="0")
-    adherent_pc = models.BooleanField(verbose_name="Je suis adhérent de Permacat", default=False)
-    adherent_rtg = models.BooleanField(verbose_name="Je suis adhérent de Ramene Ta Graine", default=False)
-    adherent_fer = models.BooleanField(verbose_name="Je suis adhérent de Fermille", default=False)
-    #adherent_gt = models.BooleanField(verbose_name="Je suis adhérent de Gardiens de la Terre", default=False)
-    adherent_scic = models.BooleanField(verbose_name="Je suis intéressé par le collectif 'PermAgora'", default=False)
-    adherent_citealt = models.BooleanField(verbose_name="Je fais partie de 'la Cité Altruiste'", default=False)
-    adherent_viure = models.BooleanField(verbose_name="Je fais partie du collectif 'Viure'", default=False)
-    adherent_bzz2022 = models.BooleanField(verbose_name="Je fais partie du collectif 'Bzzz'", default=False)
-    adherent_conf66 = models.BooleanField(verbose_name="Je suis adhérent à la confédération Paysanne 66", default=False)
-    adherent_jp = models.BooleanField(verbose_name="Je suis intéressé.e par les jardins partagés", default=False)
-    adherent_ssa = models.BooleanField(verbose_name="Je suis intéressé.e par la SSA", default=False)
+    adherent_pc = models.BooleanField(verbose_name=_("Je suis adhérent de Permacat"), default=False)
+    adherent_rtg = models.BooleanField(verbose_name=_("Je suis adhérent de Ramene Ta Graine"), default=False)
+    adherent_fer = models.BooleanField(verbose_name=_("Je suis adhérent de Fermille"), default=False)
+    #adherent_gt = models.BooleanField(verbose_name=_("Je suis adhérent de Gardiens de la Terre", default=False)
+    adherent_scic = models.BooleanField(verbose_name=_("Je suis intéressé par le collectif 'PermAgora'"), default=False)
+    adherent_citealt = models.BooleanField(verbose_name=_("Je fais partie de 'la Cité Altruiste'"), default=False)
+    adherent_viure = models.BooleanField(verbose_name=_("Je fais partie du collectif 'Viure'"), default=False)
+    adherent_bzz2022 = models.BooleanField(verbose_name=_("Je fais partie du collectif 'Bzzz'"), default=False)
+    adherent_conf66 = models.BooleanField(verbose_name=_("Je suis adhérent à la confédération Paysanne 66"), default=False)
+    adherent_jp = models.BooleanField(verbose_name=_("Je suis intéressé.e par les jardins partagés"), default=False)
+    adherent_ssa = models.BooleanField(verbose_name=_("Je suis intéressé.e par la SSA"), default=False)
 
-    accepter_conditions = models.BooleanField(verbose_name="J'ai lu et j'accepte les conditions d'utilisation du site", default=True, null=False)
-    accepter_annuaire = models.BooleanField(verbose_name="J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous", default=True)
+    accepter_conditions = models.BooleanField(verbose_name=_("J'ai lu et j'accepte les conditions d'utilisation du site"), default=True, null=False)
+    accepter_annuaire = models.BooleanField(verbose_name=_("J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous"), default=True)
 
-    date_notifications = models.DateTimeField(verbose_name="Date de validation des notifications", default=now)
-    date_messages = models.DateTimeField(verbose_name="Date de validation des messages privés", default=now)
-    #afficherNbNotifications = models.BooleanField(verbose_name="Affichage du nombre de notifications dans le menu", default=False)
+    date_notifications = models.DateTimeField(verbose_name=_("Date de validation des notifications"), default=now)
+    date_messages = models.DateTimeField(verbose_name=_("Date de validation des messages privés"), default=now)
+    #afficherNbNotifications = models.BooleanField(verbose_name=_("Affichage du nombre de notifications dans le menu", default=False)
 
-    css_dark = models.BooleanField(verbose_name="Thème Sombre", default=False)
-
-    #newsletter_envoyee = models.BooleanField(verbose_name="Newletterenvoyee", default=False)
+    css_dark = models.BooleanField(verbose_name=_("Thème Sombre"), default=False)
+    language = models.CharField(max_length=10,
+                                choices=LANGUAGES,
+                                default=LANGUAGE_CODE)
+    #newsletter_envoyee = models.BooleanField(verbose_name=_("Newletterenvoyee", default=False)
 
     def __str__(self):
         return self.username
@@ -667,13 +670,13 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 class Adhesion_permacat(models.Model):
-    user = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name="Utilisateur Permacat")
-    date_cotisation = models.DateField(verbose_name="Date de la cotisation", editable=True, auto_now_add=False)
-    montant = models.CharField(max_length=50, blank=False, verbose_name="Montant de l'adhesion")
+    user = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name=_("Utilisateur Permacat"))
+    date_cotisation = models.DateField(verbose_name=_("Date de la cotisation"), editable=True, auto_now_add=False)
+    montant = models.CharField(max_length=50, blank=False, verbose_name=_("Montant de l'adhesion"))
     moyen = models.CharField(
         max_length=3,
         choices=Choix.type_paiement_adhesion,
-        default='0', verbose_name="Moyen de maiement"
+        default='0', verbose_name=_("Moyen de maiement")
     )
     detail = models.TextField( null=True, blank=True)
 
@@ -681,13 +684,13 @@ class Adhesion_permacat(models.Model):
         return self.user.username + " le "+ str(self.date_cotisation) + " " + str(self.montant) + " " + str(self.moyen)
 
 class Adhesion_asso(models.Model):
-    user = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name="Utilisateur ")
-    date_cotisation = models.DateField(verbose_name="Date de la cotisation", editable=True, auto_now_add=False)
-    montant = models.CharField(max_length=50, blank=False, verbose_name="Montant de l'adhesion")
+    user = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name=_("Utilisateur "))
+    date_cotisation = models.DateField(verbose_name=_("Date de la cotisation"), editable=True, auto_now_add=False)
+    montant = models.CharField(max_length=50, blank=False, verbose_name=_("Montant de l'adhesion"))
     moyen = models.CharField(
         max_length=3,
         choices=Choix.type_paiement_adhesion,
-        default='0', verbose_name="Moyen de maiement"
+        default='0', verbose_name=_("Moyen de maiement")
     )
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     detail = models.TextField( null=True, blank=True)
@@ -705,7 +708,7 @@ class Monnaie(models.Model):
     nom = models.CharField(
         max_length=50,
         choices=Choix.monnaies,
-        default='don', verbose_name="Monnaie"
+        default='don', verbose_name=_("Monnaie")
     )
     slug = models.SlugField(max_length=100)
     estQuantifiable = models.BooleanField()
@@ -716,21 +719,21 @@ class Monnaie(models.Model):
 
 class Produit(models.Model):  # , BaseProduct):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE,)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", editable=False)
-    date_debut = models.DateField(verbose_name="Débute le (jj/mm/an)", null=True, blank=True)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), editable=False)
+    date_debut = models.DateField(verbose_name=_("Débute le (jj/mm/an)"), null=True, blank=True)
     #proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
-    date_expiration = models.DateField(verbose_name="Expire le (jj/mm/an)", blank=True, null=True, )#default=proposed_renewal_date, )
-    nom_produit = models.CharField(max_length=250, verbose_name="Titre de l'annonce")
+    date_expiration = models.DateField(verbose_name=_("Expire le (jj/mm/an)"), blank=True, null=True, )#default=proposed_renewal_date, )
+    nom_produit = models.CharField(max_length=250, verbose_name=_("Titre de l'annonce"))
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(max_length=100)
 
-    stock_initial = models.FloatField(default=1, verbose_name="Quantité disponible", max_length=250, validators=[MinValueValidator(1), ])
+    stock_initial = models.FloatField(default=1, verbose_name=_("Quantité disponible"), max_length=250, validators=[MinValueValidator(1), ])
     stock_courant = models.FloatField(default=1, max_length=250, validators=[MinValueValidator(0), ])
-    prix = models.CharField(max_length=150, verbose_name="Tarif", blank=True)
+    prix = models.CharField(max_length=150, verbose_name=_("Tarif"), blank=True)
     unite_prix = models.CharField(
         max_length=8,
         choices=Choix.monnaies,
-        default='don', verbose_name="monnaie"
+        default='don', verbose_name=_("monnaie")
     )
 
     CHOIX_CATEGORIE = (('aliment', 'aliment'),('vegetal', 'végétal'), ('service', 'service'), ('objet', 'objet'), ('liste', 'liste des offres et demandes'))
@@ -745,7 +748,7 @@ class Produit(models.Model):  # , BaseProduct):
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     objects = InheritanceManager()
 
-    monnaies = models.ManyToManyField(Monnaie, related_name="produit_monnaie", verbose_name="Monnaies : ", blank=True)
+    monnaies = models.ManyToManyField(Monnaie, related_name="produit_monnaie", verbose_name=_("Monnaies : "), blank=True)
 
     @property
     def slug(self):
@@ -1022,7 +1025,7 @@ class Panier(models.Model):
     etat = models.CharField(
         max_length=8,
         choices=(('a', 'en cours'),('ok', 'validé'), ('t', 'terminé'), ('c', 'annulé')),
-        default='a', verbose_name="état"
+        default='a', verbose_name=_("état")
     )
 
     def save(self, *args, **kwargs):
@@ -1206,8 +1209,8 @@ class Conversation(models.Model):
     profil1 = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='profil1')
     profil2 = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='profil2')
     slug = models.CharField(max_length=100)
-    date_creation = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Date de parution")
-    date_dernierMessage = models.DateTimeField(verbose_name="Date de Modification", auto_now=False, blank=True, null=True)
+    date_creation = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name=_("Date de parution"))
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date de Modification"), auto_now=False, blank=True, null=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
 
     class Meta:
@@ -1266,17 +1269,17 @@ class Salon(models.Model):
     auteur = models.CharField(max_length=100)
     slug = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
-    date_creation = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name="Date de parution")
-    date_dernierMessage = models.DateTimeField(verbose_name="Date de Modification", auto_now=False, blank=True, null=True)
+    date_creation = models.DateTimeField(auto_now_add=True, auto_now=False, verbose_name=_("Date de parution"))
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date de Modification"), auto_now=False, blank=True, null=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
     membres = models.ManyToManyField(Profil, through='InscritSalon')
-    estPublic = models.BooleanField(verbose_name="Salon public ou privé (public si coché)", default=False)
+    estPublic = models.BooleanField(verbose_name=_("Salon public ou privé (public si coché)"), default=False)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Le salon doit être associé à un article existant (sinon créez un article avec une date)", blank=True, null=True)
     jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
-                                help_text="Le salon peut être associé à un jardin", blank=True, null=True)
+                                help_text=_("Le salon peut être associé à un jardin"), blank=True, null=True)
 
-    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True, related_name="tag_salon")
+    tags = TaggableManager(verbose_name=_("Mots clés"), help_text="Liste de mots-clés séparés par une virgule", blank=True, related_name="tag_salon")
 
 
     class Meta:
@@ -1333,7 +1336,7 @@ class Salon(models.Model):
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE)
-    date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), editable=False, auto_now_add=True)
 
     def __str__(self):
         return str(self.salon) + "' - " + self.profil.username
@@ -1346,7 +1349,7 @@ class InvitationDansSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)
     profil_invitant = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="invitant")
     profil_invite = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="invite")
-    date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), editable=False, auto_now_add=True)
 
     def __str__(self):
         return str(self.salon) + "' - invitant : " + self.profil_invitant.username + " - invité : " + self.profil_invite.username
@@ -1428,11 +1431,11 @@ class Message_salon(models.Model):
 
 
 class EvenementSalon(models.Model):
-    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre du salon de discussion)",
+    titre_even = models.CharField(verbose_name=_("Titre de l'événement (si laissé vide, ce sera le titre du salon de discussion)"),
                              max_length=100, null=True, blank=True, default="")
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE, help_text="L'evenement doit etre associé à un salon" )
-    start_time = models.DateField(verbose_name="Date", null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
-    end_time = models.DateField(verbose_name="Date de fin (optionnel pour un evenement sur plusieurs jours)",  null=True,blank=True, help_text="jj/mm/année")
+    start_time = models.DateField(verbose_name=_("Date"), null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
+    end_time = models.DateField(verbose_name=_("Date de fin (optionnel pour un evenement sur plusieurs jours)"),  null=True,blank=True, help_text="jj/mm/année")
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -1545,7 +1548,7 @@ class Suivis(models.Model):
 
 class InscriptionNewsletter(models.Model):
     email = models.EmailField()
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
 
     def __unicode__(self):
         return self.__str()
@@ -1563,9 +1566,9 @@ class InscriptionNewsletter(models.Model):
 class InscriptionNewsletterGenerique(models.Model):
     nom_newsletter = models.CharField(max_length=30, blank=False)
     email = models.EmailField()
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="profil_newsletter",
-                                 verbose_name="Profil du membre (si inscrit)", blank=True, null=True)
+                                 verbose_name=_("Profil du membre (si inscrit)"), blank=True, null=True)
 
     def __unicode__(self):
         return self.__str()
@@ -1585,11 +1588,11 @@ class ListeDiffusion(models.Model):
 
 class InscriptionListeDiffusion(models.Model):
     liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, related_name="liste_diffusion",
-                                 verbose_name="Liste de diffusion", blank=True, null=True)
+                                 verbose_name=_("Liste de diffusion"), blank=True, null=True)
     email = models.EmailField()
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
     profil = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="profil_listediff",
-                                 verbose_name="Profil du membre (si inscrit)", blank=True, null=True)
+                                 verbose_name=_("Profil du membre (si inscrit)"), blank=True, null=True)
     commentaire = models.CharField(max_length=50, blank=True)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
@@ -1602,7 +1605,7 @@ class InscriptionListeDiffusion(models.Model):
 
 class MessageAdmin(models.Model):
     email = models.EmailField(blank=True)
-    date = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
     message = models.TextField(blank=True)
     sujet = models.CharField(max_length=50, blank=True)
 
@@ -1612,7 +1615,7 @@ class MessageAdmin(models.Model):
 class Favoris(models.Model):
     nom = models.CharField(max_length = 50)
     url = models.CharField(max_length = 300)
-    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name="Profil", blank=False, null=False)
+    profil = models.ForeignKey(Profil, on_delete=models.CASCADE, verbose_name=_("Profil"), blank=False, null=False)
 
     def __str__(self):
         return self.nom + ": " + str(self.url)
@@ -1628,7 +1631,7 @@ class Favoris(models.Model):
 class Lien_AssoSalon(models.Model):
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True, related_name="lien_asso_salon")
     salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, related_name="lien_salon_asso")
-    date = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now_add=True)
+    date = models.DateTimeField(verbose_name=_("Date de création"), editable=False, auto_now_add=True)
     slug_type = models.SlugField(max_length=100)
 
     def __str__(self):

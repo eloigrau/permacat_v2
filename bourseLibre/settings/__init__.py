@@ -201,13 +201,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'bourseLibre.middleware.UserLanguageMiddleware',
+     #'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'django.middleware.locale.LocaleMiddleware',
      'bourseLibre.middleware.CheckRequest',
     #'django.template.context_processors.request',
      #'cookielaw_local.context_processors.cookielaw',
@@ -237,7 +238,7 @@ TEMPLATES = [
                 "sekizai.context_processors.sekizai",
                 "bourseLibre.processors.navbar",
             ],
-            'string_if_invalid': 'Invalid: "%s"',
+            'string_if_invalid': 'Invalid:"%s"',
             'libraries': {'is_numeric': 'bourseLibre.templatetags.app_filters', }
         },
     },
@@ -270,12 +271,10 @@ AUTH_USER_MODEL = 'bourseLibre.Profil'
 
 SITE_ID = 1
 
-LANGUAGE_CODE = 'fr-fr'
+USE_I18N = True
+USE_L10N = True
 
 TIME_ZONE = 'Europe/Paris'
-
-USE_I18N = True
-
 USE_TZ = True
 
 DATE_FORMAT = "l d F Y"
@@ -360,11 +359,12 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale/'),
 )
 
-gettext = lambda x: x
+#gettext = lambda x: x
 LANGUAGES = (
-   ('fr', gettext('French')),
-   ('ca', gettext('Catalan')),
+   ('fr', 'French'),
+   ('ca', 'Catalan'),
 )
+LANGUAGE_CODE = 'fr'
 
 SUMMERNOTE_CONFIG = {
     # Using SummernoteWidget - iframe mode, default

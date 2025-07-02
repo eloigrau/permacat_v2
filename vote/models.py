@@ -10,6 +10,7 @@ from actstream import action
 from functools import cmp_to_key
 from django.core.validators import MinLengthValidator
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 class Choix():
     type_vote_bm =(('', '-----------'), (0, "Question binaire"))
@@ -114,19 +115,19 @@ def sort_candidats(a, b):
 
 class SuffrageBase(models.Model):
     type_vote = models.CharField(max_length=30,
-        choices=(Choix.type_vote), default='', verbose_name="Type de vote")
-    titre = models.CharField(max_length=100, verbose_name="Titre du sondage")
+        choices=(Choix.type_vote), default='', verbose_name=_("Type de vote"))
+    titre = models.CharField(max_length=100, verbose_name=_("Titre du sondage"))
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='auteur_suffrage')
     slug = models.SlugField(max_length=100)
-    description = models.TextField(null=True, verbose_name="Description du contexte")
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=False, blank=True, null=True)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
-    estArchive = models.BooleanField(default=False, verbose_name="Archiver la proposition")
-    estAnonyme = models.BooleanField(default=False, verbose_name="Vote anonyme")
+    description = models.TextField(null=True, verbose_name=_("Description du contexte"))
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message"), auto_now=False, blank=True, null=True)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver la proposition"))
+    estAnonyme = models.BooleanField(default=False, verbose_name=_("Vote anonyme"))
 
-    start_time = models.DateField(verbose_name="Date de début du vote", null=True,blank=False, help_text="jj/mm/année")
-    end_time = models.DateField(verbose_name="Date de fin du vote",  null=True,blank=False, help_text="jj/mm/année")
+    start_time = models.DateField(verbose_name=_("Date de début du vote"), null=True,blank=False, help_text="jj/mm/année")
+    end_time = models.DateField(verbose_name=_("Date de fin du vote"),  null=True,blank=False, help_text="jj/mm/année")
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Article associé",
@@ -325,7 +326,7 @@ class Resultat_binaire():
 
 
 class Question_binaire(Question_base):
-    question = models.CharField(max_length=150, verbose_name="Question (oui/non) soumise au vote ?", validators=[MinLengthValidator(1)])
+    question = models.CharField(max_length=150, verbose_name=_("Question (oui/non) soumise au vote ?"), validators=[MinLengthValidator(1)])
 
     def __str__(self):
         return str(self.question)
@@ -339,9 +340,9 @@ class Question_binaire(Question_base):
         return reverse("vote:supprimerQuestionB", kwargs={"id_question": self.id, 'slug': self.suffrage.slug})
 
 class Question_majoritaire(Question_base):
-    question = models.CharField(max_length=150, verbose_name="Question (jugement majoritaire) soumise au vote :", validators=[MinLengthValidator(1)])
+    question = models.CharField(max_length=150, verbose_name=_("Question (jugement majoritaire) soumise au vote :"), validators=[MinLengthValidator(1)])
     type_choix = models.CharField(max_length=30,
-        choices=(Choix.type_echelledevote), default='0', verbose_name="Type de choix de vote")
+        choices=(Choix.type_echelledevote), default='0', verbose_name=_("Type de choix de vote"))
 
     def __str__(self):
         return str(self.question)
@@ -371,7 +372,7 @@ class Question_majoritaire(Question_base):
 class Proposition_m(models.Model):
     """An Election as Proposition_m as choices."""
     question_m = models.ForeignKey(Question_majoritaire, on_delete=models.CASCADE)
-    proposition = models.CharField(max_length=500, verbose_name="Proposition", null=False, blank=False, )
+    proposition = models.CharField(max_length=500, verbose_name=_("Proposition"), null=False, blank=False, )
 
 
     def __str__(self):
@@ -447,9 +448,9 @@ class Proposition_m(models.Model):
 class Vote(models.Model):
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='auteur_vote')
     suffrage = models.ForeignKey(Suffrage, on_delete=models.CASCADE, related_name='suffrage')
-    date_creation = models.DateTimeField(verbose_name="Date de parution", auto_now_add=True)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", auto_now=True)
-    commentaire = models.TextField(verbose_name="Commentaire", null=True, blank=False)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), auto_now_add=True)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), auto_now=True)
+    commentaire = models.TextField(verbose_name=_("Commentaire"), null=True, blank=False)
 
     class Meta:
         unique_together = ('auteur', 'suffrage')
@@ -486,7 +487,7 @@ class ReponseQuestion_b(models.Model):
     vote = models.ForeignKey(Vote, on_delete=models.CASCADE, related_name='rep_question_b')
     question = models.ForeignKey(Question_binaire, on_delete=models.CASCADE,)
     choix = models.IntegerField(choices=(Choix.vote_ouinon),
-        default=2, verbose_name="Choix du vote :")
+        default=2, verbose_name=_("Choix du vote :"))
 
     def __str__(self):
         return getStrFromChoix_ouinon(self.choix)
@@ -499,7 +500,7 @@ class ReponseQuestion_m(models.Model):
     proposition = models.ForeignKey(Proposition_m, on_delete=models.CASCADE, default=None, null=True)
     choix = models.IntegerField(
         choices=Choix.vote_majoritaire['0'],
-        default=2, verbose_name="Choix du vote :")
+        default=2, verbose_name=_("Choix du vote :"))
 
     def __str__(self):
         return str(self.proposition) + ": " + getStrFromChoix_majoritaire(self.proposition.question_m.type_choix, self.choix)

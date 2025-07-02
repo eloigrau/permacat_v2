@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-simple-captcha 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 11:44+0300\n"
+"POT-Creation-Date: 2025-07-01 12:51+0200\n"
 "PO-Revision-Date: 2010-09-16 12:16+0200\n"
 "Last-Translator: Patrick Samson <maxcom@laposte.net>\n"
 "Language-Team: fr <maxcom@laposte.net>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
-#: fields.py:49
-msgid "Play CAPTCHA as audio file"
-msgstr "Jouer en tant que fichier audio"
-
-#: fields.py:66 fields.py:89 tests/__init__.py:62
+#: local_captcha/fields.py:189 local_captcha/fields.py:223
 msgid "Invalid CAPTCHA"
 msgstr "Réponse invalide"
 
-#: tests/__init__.py:88
-msgid "This field is required."
-msgstr "Ce champ est obligatoire."
+#: local_captcha/templates/captcha/image.html:3
+#: local_captcha/templates/captcha/widgets/captcha.html:4
+msgid "Play CAPTCHA as audio file"
+msgstr "Jouer en tant que fichier audio"
+
+#~ msgid "This field is required."
+#~ msgstr "Ce champ est obligatoire."

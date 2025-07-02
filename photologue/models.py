@@ -179,8 +179,8 @@ class Album(models.Model):
 
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-    estModifiable = models.BooleanField(default=False, verbose_name="Modifiable par les autres")
-    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True)
+    estModifiable = models.BooleanField(default=False, verbose_name=_("Modifiable par les autres"))
+    tags = TaggableManager(verbose_name=_("Mots clés"), help_text="Liste de mots-clés séparés par une virgule", blank=True)
 
     photos = SortedManyToManyField('photologue.Photo',
                                    related_name='albums',
@@ -304,7 +304,7 @@ class Document(models.Model):
     date_creation = models.DateTimeField(_("date d'ajout"), auto_now_add =True)
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True)
+    tags = TaggableManager(verbose_name=_("Mots clés"), help_text="Liste de mots-clés séparés par une virgule", blank=True)
 
     article = models.ForeignKey('blog.Article', on_delete=models.CASCADE, null=True, blank=True)
 
@@ -648,7 +648,7 @@ class Photo(ImageModel):
 
 
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-    tags = TaggableManager(verbose_name="Mots clés", help_text="Liste de mots-clés séparés par une virgule", blank=True)
+    tags = TaggableManager(verbose_name=_("Mots clés"), help_text="Liste de mots-clés séparés par une virgule", blank=True)
     objects = PhotoQuerySet.as_manager()
 
     class Meta:

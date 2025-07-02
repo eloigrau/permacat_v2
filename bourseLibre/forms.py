@@ -369,7 +369,7 @@ class ProfilCreationForm(UserCreationForm):
         return instance
 
 
-class ProducteurChangeForm(UserChangeForm):
+class ProfilChangeForm(UserChangeForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's password hash display field.
     """
@@ -387,17 +387,17 @@ class ProducteurChangeForm(UserChangeForm):
     password = None
 
     def __init__(self, *args, **kargs):
-        super(ProducteurChangeForm, self).__init__(*args, **kargs)
+        super(ProfilChangeForm, self).__init__(*args, **kargs)
         self.fields['description'].strip = False
         self.fields['competences'].strip = False
 
     class Meta:
         model = Profil
         fields = ['username', 'first_name', 'last_name', 'email', 'site_web', 'description', 'competences',
-                  'pseudo_june', 'accepter_annuaire', 'inscrit_newsletter', 'css_dark']
+                  'pseudo_june', 'accepter_annuaire', 'inscrit_newsletter', 'css_dark', 'language']
 
 
-class ProducteurChangeForm_admin(UserChangeForm):
+class ProfilChangeForm_admin(UserChangeForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's
     password hash display field.
@@ -424,7 +424,7 @@ class ProducteurChangeForm_admin(UserChangeForm):
                   'adherent_bzz2022', 'pseudo_june', 'accepter_annuaire', 'adherent_jp', 'adherent_ssa']
 
     def __init__(self, *args, **kwargs):
-        super(ProducteurChangeForm_admin, self).__init__(*args, **kwargs)
+        super(ProfilChangeForm_admin, self).__init__(*args, **kwargs)
         self.fields['description'].strip = False
         self.fields['competences'].strip = False
 
@@ -596,22 +596,6 @@ class SalonForm_admin(forms.ModelForm):
         model = Salon
         fields = ['titre', 'estPublic', 'description', 'tags', 'slug']
 
-
-class SalonForm(forms.ModelForm):
-    class Meta:
-        model = Salon
-        fields = ['titre', 'estPublic', 'description', 'tags', 'slug']
-        widgets = {
-            'description': SummernoteWidget(),
-        }
-
-    def save(self, request):
-        instance = super(SalonForm, self).save(commit=False)
-        instance.auteur = request.user.username
-        instance.save()
-        inscrit = InscritSalon(salon=instance, profil=request.user)
-        inscrit.save()
-        return instance
 
 class ModifierSalonForm(forms.ModelForm):
     class Meta:

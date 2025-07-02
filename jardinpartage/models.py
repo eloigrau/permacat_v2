@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 #from django.core.mail import send_mass_mail, mail_admins
 from actstream import action
-from jardins.models import Jardin
+from django.utils.translation import gettext_lazy as _
 
 from actstream.models import followers
 #from bourseLibre.settings import SERVER_EMAIL, LOCALL
@@ -67,25 +67,25 @@ class Choix():
 class Article(models.Model):
     categorie = models.CharField(max_length=30,         
         choices=(Choix.type_annonce),
-        default='Discu', verbose_name="categorie")
+        default='Discu', verbose_name=_("categorie"))
     jardin = models.CharField(max_length=30,
         choices=(Choix.jardins_ptg),
-        default='0', verbose_name="Jardin")
+        default='0', verbose_name=_("Jardin"))
     titre = models.CharField(max_length=100,)
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='auteur_article_jardin')
     slug = models.SlugField(max_length=100)
     contenu = models.TextField(null=True)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    date_modification = models.DateTimeField(verbose_name="Date de modification", default=timezone.now)
-    estPublic = models.BooleanField(default=False, verbose_name='Public ou réservé aux membres permacat')
-    estModifiable = models.BooleanField(default=False, verbose_name="Modifiable par les autres")
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
+    estPublic = models.BooleanField(default=False, verbose_name=_('Public ou réservé aux membres permacat'))
+    estModifiable = models.BooleanField(default=False, verbose_name=_("Modifiable par les autres"))
 
-    date_dernierMessage = models.DateTimeField(verbose_name="Date du dernier message", auto_now=True)
+    date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message"), auto_now=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
-    estArchive = models.BooleanField(default=False, verbose_name="Archiver l'article")
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'article"))
 
-    start_time = models.DateField(verbose_name="Date de l'évenement (pour affichage dans l'agenda) - date de début si l'événement a lieu sur plusieurs jours ", null=True,blank=True, help_text="jj/mm/année")
-    end_time = models.DateField(verbose_name="Date de fin (optionnel, pour affichage dans l'agenda)",  null=True,blank=True, help_text="jj/mm/année")
+    start_time = models.DateField(verbose_name=_("Date de l'évenement (pour affichage dans l'agenda) - date de début si l'événement a lieu sur plusieurs jours "), null=True,blank=True, help_text="jj/mm/année")
+    end_time = models.DateField(verbose_name=_("Date de fin (optionnel, pour affichage dans l'agenda)"),  null=True,blank=True, help_text="jj/mm/année")
 
     class Meta:
         ordering = ('-date_creation', )
@@ -154,11 +154,11 @@ class Article(models.Model):
         return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
 class Evenement(models.Model):
-    titre_even = models.CharField(verbose_name="Titre de l'événement (si laissé vide, ce sera le titre de l'article)",
+    titre_even = models.CharField(verbose_name=_("Titre de l'événement (si laissé vide, ce sera le titre de l'article)"),
                              max_length=100, null=True, blank=True, default="")
     article = models.ForeignKey(Article, on_delete=models.CASCADE, help_text="L'evenement doit etre associé à un article" )
-    start_time = models.DateField(verbose_name="Date", null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
-    end_time = models.DateField(verbose_name="Date de fin (optionnel pour un evenement sur plusieurs jours)",  null=True,blank=True, help_text="jj/mm/année")
+    start_time = models.DateField(verbose_name=_("Date"), null=False,blank=False, help_text="jj/mm/année" , default=timezone.now)
+    end_time = models.DateField(verbose_name=_("Date de fin (optionnel pour un evenement sur plusieurs jours)"),  null=True,blank=True, help_text="jj/mm/année")
 
     class Meta:
         unique_together = ('article', 'start_time',)

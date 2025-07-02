@@ -2,6 +2,7 @@
 from django.db import models
 from bourseLibre.models import Profil, Adresse, Asso, LONGITUDE_DEFAUT
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from permagora.models import LATITUDE_DEFAUT
 from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS, NB_COLORS_RANGE, RANGE_COLORS_PHONING
@@ -11,15 +12,15 @@ import json
 
 class Adherent(models.Model):
     profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
-    nom = models.CharField(verbose_name="Nom", max_length=120)
-    nom_gaec = models.CharField(verbose_name="Gaec", max_length=120, blank=True)
-    prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True)
-    production_ape = models.CharField(verbose_name="Production (APE) ", max_length=120, blank=True)
-    statut = models.CharField(verbose_name="Statut d'agriculteur", max_length=5,
+    nom = models.CharField(verbose_name=_("Nom"), max_length=120)
+    nom_gaec = models.CharField(verbose_name=_("Gaec"), max_length=120, blank=True)
+    prenom = models.CharField(verbose_name=_("Prénom"), max_length=120, blank=True)
+    production_ape = models.CharField(verbose_name=_("Production (APE)"), max_length=120, blank=True)
+    statut = models.CharField(verbose_name=_("Statut d'agriculteur"), max_length=5,
                               choices=CHOIX_STATUTS, default='0',)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
-    email = models.EmailField(verbose_name="Email", blank=True)
-    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name="Groupe", null=True,)
+    email = models.EmailField(verbose_name=_("Email"), blank=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name=_("Groupe"), null=True,)
 
     class Meta:
         unique_together = ('nom', 'prenom', 'asso')
@@ -114,11 +115,10 @@ class Adherent(models.Model):
 
 
 class Adhesion(models.Model):
-    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent ")
-    date_cotisation = models.DateField(verbose_name="Date de la cotisation", editable=True, auto_now_add=False)
-    montant = models.CharField(max_length=50, blank=False, verbose_name="Montant de l'adhesion")
-    moyen = models.CharField(max_length=50, blank=False, verbose_name="Moyen de paiement",
-                             choices=CHOIX_MOYEN, )
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name=_("Adhérent"))
+    date_cotisation = models.DateField(verbose_name=_("Date de la cotisation"), editable=True, auto_now_add=False)
+    montant = models.CharField(max_length=50, blank=False, verbose_name=_("Montant de l'adhesion"))
+    moyen = models.CharField(max_length=50, blank=False, verbose_name=_("Moyen de paiement"), choices=CHOIX_MOYEN, )
     detail = models.TextField(null=True, blank=True)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
@@ -136,10 +136,10 @@ class Adhesion(models.Model):
 
 class ListeDiffusion(models.Model):
     nom = models.CharField(max_length=30, blank=False, unique=True)
-    date_creation = models.DateTimeField(verbose_name="Date de création", editable=False, auto_now=True)
-    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name="Groupe associé", null=True,)
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), editable=False, auto_now=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name=_("Groupe associé"), null=True,)
     #from blog.models import Article
-    #article = models.ForeignKey(Article, on_delete=models.SET_NULL, verbose_name="Article associé", null=True,)
+    #article = models.ForeignKey(Article, on_delete=models.SET_NULL, verbose_name=_("Article associé", null=True,)
 
     def __str__(self):
         return str(self.nom)
@@ -169,10 +169,10 @@ class ListeDiffusion(models.Model):
 
 
 class InscriptionMail(models.Model):
-    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, verbose_name="Liste de diffusion")
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
-    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent", blank=True, null=True)
-    email_pasadherent = models.EmailField(verbose_name="Email", blank=True)
+    liste_diffusion = models.ForeignKey(ListeDiffusion, on_delete=models.CASCADE, verbose_name=_("Liste de diffusion"))
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name=_("Adhérent"), blank=True, null=True)
+    email_pasadherent = models.EmailField(verbose_name=_("Email"), blank=True)
     commentaire = models.CharField(max_length=50, blank=True)
 
     class Meta:
@@ -204,9 +204,9 @@ class InscriptionMail(models.Model):
 
 
 class Comm_adherent(models.Model):
-    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="Adhérent")
-    #auteur = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name="auteur")
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
+    adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name=_("Adhérent"))
+    #auteur = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name=_("auteur")
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
     commentaire = models.TextField(null=True, blank=True)
     #detail = models.TextField(null=True, blank=True)
     #asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
@@ -224,9 +224,9 @@ class Comm_adherent(models.Model):
 
 
 class ProjetPhoning(models.Model):
-    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name="Groupe associé",)
-    titre = models.CharField(verbose_name="Nom du projet", max_length=200, blank=False)
-    date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name=_("Groupe associé"))
+    titre = models.CharField(verbose_name=_("Nom du projet"), max_length=200, blank=False)
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), default=timezone.now)
     description = models.TextField(null=True, blank=True)
 
 
@@ -248,14 +248,14 @@ class ProjetPhoning(models.Model):
             indent=4)
 
 class Contact(models.Model):
-    nom = models.CharField(verbose_name="Nom", max_length=120, blank=True, null=True, )
-    prenom = models.CharField(verbose_name="Prénom", max_length=120, blank=True, null=True, )
-    email = models.CharField(verbose_name="Email", max_length=150, blank=True, null=True, )
+    nom = models.CharField(verbose_name=_("Nom"), max_length=120, blank=True, null=True, )
+    prenom = models.CharField(verbose_name=_("Prénom"), max_length=120, blank=True, null=True, )
+    email = models.CharField(verbose_name=_("Email"), max_length=150, blank=True, null=True, )
     adresse = models.ForeignKey(Adresse, on_delete=models.SET_NULL, null=True)
     commentaire = models.TextField(null=True, blank=True)
-    adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name="Adhérent Conf'",  blank=True, null=True)
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
-    projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name="Projet associé",  blank=True, null=True,)
+    adherent = models.ForeignKey(Adherent, on_delete=models.SET_NULL, verbose_name=_("Adhérent Conf'"),  blank=True, null=True)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
+    projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name=_("Projet associé"),  blank=True, null=True,)
 
     def __str__(self):
         if self.adresse:
@@ -322,12 +322,12 @@ class Contact(models.Model):
         return LONGITUDE_DEFAUT
 
 class ContactContact(models.Model):
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name="Contact",)
-    commentaire = models.CharField(verbose_name="commentaire", max_length=200, blank=True)
-    date_contact = models.DateTimeField(verbose_name="Date", default=timezone.now)
-    statut = models.CharField(verbose_name="Statut", max_length=2,
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name=_("Contact"))
+    commentaire = models.CharField(verbose_name=_("commentaire"), max_length=200, blank=True)
+    date_contact = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
+    statut = models.CharField(verbose_name=_("Statut"), max_length=2,
                               choices=CHOIX_CONTACTS, default='',)
-    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, verbose_name="Auteur", blank=True,
+    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, verbose_name=_("Auteur"), blank=True,
                                  null=True)
 
     def __str__(self):

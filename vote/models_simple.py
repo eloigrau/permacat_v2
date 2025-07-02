@@ -9,7 +9,7 @@ from bourseLibre.models import Suivis
 from actstream import action
 from functools import cmp_to_key
 from django.core.validators import MinLengthValidator
-from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 class Choix():
     type_vote_bm =(('', '-----------'), (0, "Question binaire")),
@@ -82,11 +82,11 @@ def sort_candidats(a, b):
 
 class Sondage_binaire(models.Model):
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='auteur_suffrage_simple')
-    date_creation = models.DateTimeField(verbose_name="Date de parution", default=timezone.now)
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Article associé",
                                 blank=True, null=True)
-    question = models.CharField(max_length=150, verbose_name="Question (oui/non) soumise au vote ?", validators=[MinLengthValidator(1)])
+    question = models.CharField(max_length=150, verbose_name=_("Question (oui/non) soumise au vote ?"), validators=[MinLengthValidator(1)])
 
     def __str__(self):
         return str(self.question)
@@ -158,8 +158,8 @@ class VoteSimple_binaire(models.Model):
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='auteur_vote_simple')
     question = models.ForeignKey(Sondage_binaire, on_delete=models.CASCADE)
     choix = models.IntegerField(choices=(Choix.vote_ouinon),
-                                default=2, verbose_name="Choix du vote :")
-    date_creation = models.DateTimeField(verbose_name="Date de parution", auto_now_add=True)
+                                default=2, verbose_name=_("Choix du vote :"))
+    date_creation = models.DateTimeField(verbose_name=_("Date de parution"), auto_now_add=True)
 
     class Meta:
         unique_together = ('auteur', 'question')
@@ -195,9 +195,9 @@ class VoteSimple_binaire(models.Model):
 #             raise ValidationError('Empty error message')
 #
 # class Question_majoritaire_simple(Question_base):
-#     question = models.CharField(max_length=150, verbose_name="Question (jugement majoritaire) soumise au vote :", validators=[MinLengthValidator(1)])
+#     question = models.CharField(max_length=150, verbose_name=_("Question (jugement majoritaire) soumise au vote :", validators=[MinLengthValidator(1)])
 #     type_choix = models.CharField(max_length=30,
-#         choices=(Choix.type_echelledevote), default='0', verbose_name="Type de choix de vote")
+#         choices=(Choix.type_echelledevote), default='0', verbose_name=_("Type de choix de vote")
 #
 #     def __str__(self):
 #         return str(self.question)
@@ -227,7 +227,7 @@ class VoteSimple_binaire(models.Model):
 # class Proposition_m_simple(models.Model):
 #     """An Election as Proposition_m as choices."""
 #     question_m = models.ForeignKey(Question_majoritaire_simple, on_delete=models.CASCADE)
-#     proposition = models.CharField(max_length=500, verbose_name="Proposition", null=False, blank=False, )
+#     proposition = models.CharField(max_length=500, verbose_name=_("Proposition", null=False, blank=False, )
 #
 #     def __str__(self):
 #         """Print the candidate."""
@@ -303,7 +303,7 @@ class VoteSimple_binaire(models.Model):
 #     proposition = models.ForeignKey(Proposition_m_simple, on_delete=models.CASCADE, default=None, null=True)
 #     choix = models.IntegerField(
 #         choices=Choix.vote_majoritaire['0'],
-#         default=2, verbose_name="Choix du vote :")
+#         default=2, verbose_name=_("Choix du vote :")
 #
 #     def __str__(self):
 #         return str(self.proposition) + ": " + getStrFromChoix_majoritaire(self.proposition.question_m_simple.type_choix, self.choix)

@@ -2,9 +2,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 import datetime
-from taggit.managers import TaggableManager
+from django.utils.translation import gettext_lazy as _
+#from taggit.managers import TaggableManager
 from bourseLibre.models import Profil, Adresse
-import uuid
+#import uuid
 from django.db.models import Q
 import pytz
 
@@ -228,25 +229,25 @@ class Plante_recherche(models.Model):
 
 class Jardin(models.Model):
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_jardin")
-    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_jardin",verbose_name="Référent (si ce n'est pas vous)",  blank=True, null=True)
+    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_jardin",verbose_name=_("Référent (si ce n'est pas vous)"),  blank=True, null=True)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
     categorie = models.CharField(max_length=3,
         choices=Choix.type_jardin,
-        default='0', verbose_name="Type de jardin*")
+        default='0', verbose_name=_("Type de jardin*"))
     visibilite_annuaire = models.CharField(max_length=3,
         choices=Choix.visibilite_jardin_annuaire,
-        default='0', verbose_name="Visibilité du jardin sur l'annuaire*")
-    titre = models.CharField(max_length=250, verbose_name="Nom du jardin*")
-    date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
+        default='0', verbose_name=_("Visibilité du jardin sur l'annuaire*"))
+    titre = models.CharField(max_length=250, verbose_name=_("Nom du jardin*"))
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), default=timezone.now)
     slug = models.SlugField(max_length=100)
     description = models.TextField(null=True, blank=True, help_text="Décrivez le jardin en quelques mots")
     fonctionnement = models.TextField(null=True, blank=True, help_text="Un descriptif du fonctionnement du jardin (horaires, participation, gestion de l'eau, ...)")
-    permapotes_id = models.CharField(max_length=250, verbose_name="Identifiants sur permapotes.com", null=True, blank=True)
+    permapotes_id = models.CharField(max_length=250, verbose_name=_("Identifiants sur permapotes.com"), null=True, blank=True)
     horaires = models.TextField(null=True, help_text="Horaires d'ouverture (s'il y a lieu)")
-    parcellesIndividuelles = models.BooleanField(default=False, verbose_name="Parcelles Individuelles")
-    parcellesCollectives = models.BooleanField(default=False, verbose_name="Parcelles Collectives")
-    email_contact = models.EmailField( verbose_name="Email de contact*")
-    telephone = models.CharField(max_length=15, blank=True, verbose_name="Numéro de telephone de contact")
+    parcellesIndividuelles = models.BooleanField(default=False, verbose_name=_("Parcelles Individuelles"))
+    parcellesCollectives = models.BooleanField(default=False, verbose_name=_("Parcelles Collectives"))
+    email_contact = models.EmailField( verbose_name=_("Email de contact*"))
+    telephone = models.CharField(max_length=15, blank=True, verbose_name=_("Numéro de telephone de contact"))
 
     def get_absolute_url(self):
         return reverse('jardins:jardin_lire', kwargs={'slug':self.slug})
@@ -268,17 +269,17 @@ class Jardin(models.Model):
 class Grainotheque(models.Model):
     categorie = models.CharField(max_length=3,
         choices=Choix.type_grainotheque,
-        default='0', verbose_name="Type de grainotheque*")
+        default='0', verbose_name=_("Type de grainotheque*"))
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="auteur_grainotheque")
-    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", verbose_name="Référent (si ce n'est pas vous)", blank=True, null=True)
-    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, verbose_name="Jardin associé",blank=True, null=True)
+    referent = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="referent_grainotheque", verbose_name=_("Référent (si ce n'est pas vous)"), blank=True, null=True)
+    jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, verbose_name=_("Jardin associé"),blank=True, null=True)
     adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE, blank=True, null=True)
-    date_creation = models.DateTimeField(verbose_name="Date de création", default=timezone.now)
-    email_contact = models.EmailField( verbose_name="Email de contact*")
+    date_creation = models.DateTimeField(verbose_name=_("Date de création"), default=timezone.now)
+    email_contact = models.EmailField( verbose_name=_("Email de contact*"))
 
     visibilite_annuaire = models.CharField(max_length=30,
         choices= Choix.visibilite_jardin_annuaire,
-        default='0', verbose_name="Visibilité de la grainothèque sur l'annuaire*")
+        default='0', verbose_name=_("Visibilité de la grainothèque sur l'annuaire*"))
     titre = models.CharField(max_length=250,)
     slug = models.SlugField(max_length=100)
 
@@ -299,9 +300,9 @@ class Grainotheque(models.Model):
         return str(self.get_visibilite_annuaire_display())
 
 class InfoGraine(models.Model):
-    date_recolte = models.DateTimeField(verbose_name="Date de récolte", default=timezone.now)
-    duree_germinative = models.FloatField(verbose_name="Durée de conservation (années)", blank=True, default="5")
-    stock_quantite = models.CharField(max_length=120, blank=True, verbose_name="Quantité de graines (nombre ou grammes)",)
+    date_recolte = models.DateTimeField(verbose_name=_("Date de récolte"), default=timezone.now)
+    duree_germinative = models.FloatField(verbose_name=_("Durée de conservation (années)"), blank=True, default="5")
+    stock_quantite = models.CharField(max_length=120, blank=True, verbose_name=_("Quantité de graines (nombre ou grammes)"),)
     description = models.TextField(null=True, blank=True, help_text="Description (infos supplémentaires)")
 
     def __str__(self):
@@ -319,7 +320,7 @@ class InfoGraine(models.Model):
 
 
 class Graine(models.Model):
-    nom = models.CharField(max_length=120, blank=True, verbose_name="Nom de la graine", help_text="Vous pouvez indiquer un nom particulier")
+    nom = models.CharField(max_length=120, blank=True, verbose_name=_("Nom de la graine"), help_text="Vous pouvez indiquer un nom particulier")
     grainotheque = models.ForeignKey(Grainotheque, on_delete=models.CASCADE,)
     plante = models.ForeignKey(Plante, on_delete=models.CASCADE, null=True)
     infos = models.ForeignKey(InfoGraine, on_delete=models.CASCADE)
@@ -346,14 +347,14 @@ class InfoPlante(models.Model):
     description = models.TextField(null=True, blank=True, help_text="Description (infos supplémentaires)")
     type_plante = models.CharField(max_length=3,
         choices=Choix.type_plante,
-        default='0', verbose_name="Type de plante")
+        default='0', verbose_name=_("Type de plante"))
     strate = models.CharField(max_length=3,
         choices=Choix.type_strate,
-        default='0', verbose_name="Strate")
+        default='0', verbose_name=_("Strate"))
     comestibilite = models.CharField(max_length=3,
         choices=Choix.type_comestibilite,
-        default='0', verbose_name="Comestibilité")
-    mellifere = models.BooleanField(default=False, verbose_name="Plante mellifère")
+        default='0', verbose_name=_("Comestibilité"))
+    mellifere = models.BooleanField(default=False, verbose_name=_("Plante mellifère"))
 
     def __str__(self):
         description = ""
@@ -415,7 +416,7 @@ class PlanteDeJardin(models.Model):
 class InscriptionJardin(models.Model):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="jardin_suiveur")
     jardin = models.ForeignKey(Jardin, on_delete=models.CASCADE, related_name="jardin_suivi")
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
 
     def __unicode__(self):
         return self.__str__()
@@ -427,7 +428,7 @@ class InscriptionJardin(models.Model):
 class InscriptionGrainotheque(models.Model):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="grainotheque_suiveur")
     grainotek = models.ForeignKey(Grainotheque, on_delete=models.CASCADE, related_name="grainotheque_suivi" )
-    date_inscription = models.DateTimeField(verbose_name="Date d'inscription", editable=False, auto_now_add=True)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
 
     def __str__(self):
         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(

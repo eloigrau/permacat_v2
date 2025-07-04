@@ -4,6 +4,7 @@
         <table class="table table-condensed tableprofils table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable">
             <thead><tr>
                 <th>Année</th>
+                <th>Date</th>
                 <th>Montant</th>
                 <th>Moyen</th>
                 <th>Details</th>
@@ -13,6 +14,7 @@
 {% for adhesion in adhesions %}
             <tr>
                 <td>{{adhesion.date_cotisation|date:"Y"}}</td>
+                <td>{{adhesion.date_cotisation|date:"d/m"}}</td>
                 <td>{{adhesion.montant}}</td>
                 <td>{{adhesion.get_moyen_display}}</td>
                 <td>{% if adhesion.detail %}{{adhesion.detail}}{% endif %}</td>

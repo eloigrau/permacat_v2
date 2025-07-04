@@ -248,7 +248,7 @@ class Album(models.Model):
             return True
 
         elif self.asso.slug == "conf66":
-            return self.asso.is_adhesion_anneecouranteMoins1(user)
+            return self.asso.is_adhesion_anneecourante(user, delai_mois_precedents=6)
 
 
         return getattr(user, "adherent_" + self.asso.slug, False)

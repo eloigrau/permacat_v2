@@ -79,13 +79,13 @@ class Adherent(models.Model):
         return Adhesion()
 
     def get_adhesion_anneecourante(self):
+        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
+        return self.adhesion_set.filter(date_cotisation__gt=time_threshold).exists()
         return self.get_adhesion_an(datetime.now().year)
 
-    def is_adhesion_anneecourante(self):
-        return self.adhesion_set.filter(date_cotisation__year=int(datetime.now().year)).exists()
-
-    def is_adhesion_anneecouranteMoins1(self):
-        return self.adhesion_set.filter(date_cotisation__year__in=[int(datetime.now().year) - 1, int(datetime.now().year)]).exists()
+    def is_adhesion_anneecourante(self, mois_precedents=6):
+        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
+        return self.adhesion_set.filter(date_cotisation__gt=time_threshold).exists()
 
     @property
     def get_production_str(self):

@@ -204,8 +204,8 @@ class Suffrage(SuffrageBase):
         if self.asso.slug == "public":
             return True
 
-        #elif self.asso.slug == "conf66":
-        #    return self.asso.is_adhesion_anneecourante(user)
+        elif self.asso.slug == "conf66":
+            return self.asso.is_adhesion_anneecourante(user)
 
 
         return getattr(user, "adherent_" + self.asso.slug, False)

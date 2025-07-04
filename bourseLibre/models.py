@@ -258,11 +258,9 @@ class Asso(models.Model):
         return getattr(user, "adherent_" + self.slug, False)
 
 
-    def is_adhesion_anneecourante(self, user):
-        return user.adhesion_set.filter(date_cotisation__year=int(datetime.now().year)).exists()
-
-    def is_adhesion_anneecouranteMoins1(self, user):
-        return user.adhesion_set.filter(date_cotisation__year__in=[int(datetime.now().year), int(datetime.now().year) -1]).exists()
+    def is_adhesion_anneecourante(self, user, mois_precedents=6):
+        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
+        return user.adhesion_set.filter(date_cotisation__gt=time_threshold).exists()
 
     def getEmails_sympathisants(self):
         return [p.email for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
@@ -431,10 +429,10 @@ class Profil(AbstractUser):
             return True
         return getattr(self, "adherent_" + asso, False)
 
-    def isCotisationAJour(self, asso_slug):
+    def isCotisationAJour(self, asso_slug, mois_precedents=6):
         if not self.statutMembre_asso(asso_slug):
             return False
-        time_threshold = datetime(datetime.now().year - 1, 1, 1)
+        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
         return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).count() > 0
 
     @property

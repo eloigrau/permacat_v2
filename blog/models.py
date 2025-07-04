@@ -747,8 +747,8 @@ class Projet(models.Model):
     def est_autorise(self, user):
         if user == self.auteur or self.asso.slug == "public":
             return True
-        #elif self.asso.slug == "conf66":
-        #    return self.asso.is_adhesion_anneecourante(user)
+        elif self.asso.slug == "conf66":
+            return user.isCotisationAJour(self.asso.slug)
 
         return getattr(user, "adherent_" + self.asso.slug, False)
 
@@ -790,8 +790,8 @@ class FicheProjet(models.Model):
         if self.projet.asso.slug == "public":
             return True
 
-        #elif self.asso.slug == "conf66":
-        #    return self.asso.is_adhesion_anneecourante(user)
+        elif self.asso.slug == "conf66":
+            return user.isCotisationAJour(self.asso.slug)
 
 
         return getattr(user, "adherent_" + self.projet.asso.slug, False)

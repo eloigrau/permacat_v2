@@ -261,6 +261,9 @@ class Asso(models.Model):
     def is_adhesion_anneecourante(self, user):
         return user.adhesion_set.filter(date_cotisation__year=int(datetime.now().year)).exists()
 
+    def is_adhesion_anneecouranteMoins1(self, user):
+        return user.adhesion_set.filter(date_cotisation__year__in=[int(datetime.now().year), int(datetime.now().year) -1]).exists()
+
     def getEmails_sympathisants(self):
         return [p.email for p in InscriptionNewsletterAsso.objects.filter(asso=self)]
 

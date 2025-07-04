@@ -84,6 +84,9 @@ class Adherent(models.Model):
     def is_adhesion_anneecourante(self):
         return self.adhesion_set.filter(date_cotisation__year=int(datetime.now().year)).exists()
 
+    def is_adhesion_anneecouranteMoins1(self):
+        return self.adhesion_set.filter(date_cotisation__year__in=[int(datetime.now().year) - 1, int(datetime.now().year)]).exists()
+
     @property
     def get_production_str(self):
         try:

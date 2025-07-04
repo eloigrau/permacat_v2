@@ -276,6 +276,7 @@ urlpatterns = [
     path('admin/recalculerAdresses/', views_admin.recalculerAdresses,  name="recalculerAdresses"),
     path('admin/recalculerAdressesConf/', views_admin.recalculerAdressesConf,  name="recalculerAdressesConf"),
     path('admin/listeContactsMails/', views_admin.listeContactsMails,  name="listeContactsMails"),
+    path('admin/traduirePO/', views_admin.traduirePO,  name="traduirePO"),
 
     path('ajax/annonces/', views_ajax.ajax_annonces, name='ajax_categories'),
     path('ajax/nbmessages/', views_notifications.nbDerniersMessages, name='nbDerniersMessages'),

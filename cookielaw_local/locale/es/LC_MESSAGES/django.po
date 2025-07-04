@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-03 09:19+0200\n"
+"POT-Creation-Date: 2025-07-03 13:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,18 +16,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/cookielaw/banner.html:5
+#: cookielaw_local/templates/cookielaw/banner.html:5
+#: cookielaw_local/templates/cookielaw/rejectable.html:5
 msgid "COOKIE_INFO_HEADER"
 msgstr "Aviso de cookies"
 
-#: templates/cookielaw/banner.html:7
+#: cookielaw_local/templates/cookielaw/banner.html:7
+#: cookielaw_local/templates/cookielaw/rejectable.html:7
 msgid "COOKIE_INFO_OK"
 msgstr "Estoy de acuerdo"
 
-#: templates/cookielaw/banner.html:8
+#: cookielaw_local/templates/cookielaw/banner.html:8
+#: cookielaw_local/templates/cookielaw/rejectable.html:9
 msgid "COOKIE_INFO_PARA"
 msgstr ""
-"Este sitio web guarda pequeños fragmentos de información (cookies) en su dispositivo con la finalidad de ofrecer un "
-"mejor contenido y para finalidades estadísticas. Usted puede desactivar el uso de cookies modificando la "
-"configuración de su navegador. Navegar por nuestro sitio web sin cambiar la configuración del navegador hace que "
-"usted nos esté autorizando a guardar esta información en su dispositivo."
+"Este sitio web guarda pequeños fragmentos de información (cookies) en su "
+"dispositivo con la finalidad de ofrecer un mejor contenido y para "
+"finalidades estadísticas. Usted puede desactivar el uso de cookies "
+"modificando la configuración de su navegador. Navegar por nuestro sitio web "
+"sin cambiar la configuración del navegador hace que usted nos esté "
+"autorizando a guardar esta información en su dispositivo."
+
+#: cookielaw_local/templates/cookielaw/rejectable.html:8
+#, fuzzy
+#| msgid "COOKIE_INFO_HEADER"
+msgid "COOKIE_INFO_REJECT"
+msgstr "Aviso de cookies"

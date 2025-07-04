@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-07 11:32+0200\n"
+"POT-Creation-Date: 2025-07-03 13:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: templates/cookielaw/banner.html:5 templates/cookielaw/rejectable.html:5
+#: cookielaw_local/templates/cookielaw/banner.html:5
+#: cookielaw_local/templates/cookielaw/rejectable.html:5
 msgid "COOKIE_INFO_HEADER"
 msgstr "Cookies disclaimer"
 
-#: templates/cookielaw/banner.html:7 templates/cookielaw/rejectable.html:7
+#: cookielaw_local/templates/cookielaw/banner.html:7
+#: cookielaw_local/templates/cookielaw/rejectable.html:7
 msgid "COOKIE_INFO_OK"
 msgstr "I agree"
 
-#: templates/cookielaw/banner.html:8 templates/cookielaw/rejectable.html:9
+#: cookielaw_local/templates/cookielaw/banner.html:8
+#: cookielaw_local/templates/cookielaw/rejectable.html:9
 msgid "COOKIE_INFO_PARA"
 msgstr ""
 "Our site saves small pieces of text information (cookies) on your device in "
@@ -34,6 +37,6 @@ msgstr ""
 "browsing our website without changing the browser settings you grant us "
 "permission to store that information on your device."
 
-#: templates/cookielaw/rejectable.html:8
+#: cookielaw_local/templates/cookielaw/rejectable.html:8
 msgid "COOKIE_INFO_REJECT"
 msgstr "I disagree"

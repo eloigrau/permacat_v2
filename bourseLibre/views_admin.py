@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from actstream.models import Action, Follow
-
+from django.contrib.auth.decorators import login_required
 from permagora.models import LATITUDE_DEFAUT
 from .models import Profil, Adhesion_asso, Suivis, Adresse, InscriptionNewsletter, InscriptionNewsletterAsso, Asso
 from ateliers.models import Atelier
@@ -328,7 +328,7 @@ def send_mass_html_mail(datatuple, fail_silently=False, auth_user=None,
         return
     return connection.send_messages(messages)
 
-
+@login_required
 def envoyerEmailsRequete(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -339,7 +339,7 @@ def envoyerEmailsRequete(request):
     supprimerActionsStartedFollowing()
     return redirect('voirEmails', )
 
-
+@login_required
 def envoyerEmailsTest(request):
     listeMails = []
     for i in range(2):
@@ -365,7 +365,7 @@ def envoyerEmailstest():
     listeMails.append(('testCron', "message en txt", "<b>le message html</b>", SERVER_EMAIL, ["eloi.grau@gmail.com", ]))
     send_mass_html_mail(listeMails, fail_silently=False)
 
-
+@login_required
 def decalerEvenements(request, num):
     return HttpResponseForbidden()
     #
@@ -417,7 +417,7 @@ def decalerEvenements(request, num):
 
     return redirect('bienvenue')
 
-
+@login_required
 def voirPbProfils(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -464,7 +464,7 @@ def voirPbProfils(request):
 
     return render(request, 'admin/voirPbProfils.html', {'pb_profils': pb_profils, 'pb_adresses': pb_adresses})
 
-
+@login_required
 def ajouterAdhesion(request, slugAsso):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -484,7 +484,7 @@ def ajouterAdhesion(request, slugAsso):
     #return render(request, 'erreur.html', {
     #    'msg': "Désolé, il n'est pas encore possible d'adhérer a une autre asso par ce biais, réservé permacat"})
 
-
+@login_required
 def creerAction_articlenouveau(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -507,7 +507,7 @@ def creerAction_articlenouveau(request):
 
     return render(request, 'admin/creerAction_articlenouveau.html', {"form": form, })
 
-
+@login_required
 def getVieuxComptes(request, avertissement=False):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -532,6 +532,7 @@ def getVieuxComptes(request, avertissement=False):
     }
     return profil_jamais, profil_old, mail_jamais, mail_old
 
+@login_required
 def supprimervieuxcomptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -540,6 +541,7 @@ def supprimervieuxcomptes(request):
     return render(request, 'admin/voirProfil_anciens.html',
                   {"mail2": mail_old, "mail": mail, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
+@login_required
 def envoyerMailVieuxComptes(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -555,7 +557,7 @@ def envoyerMailVieuxComptes(request):
     return render(request, 'admin/voirProfil_anciens.html',
                   {"listeMails": listeMails, 'profil_jamais': profil_jamais, 'profil_old': profil_old})
 
-
+@login_required
 def getMailsNewsletter(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -565,7 +567,7 @@ def getMailsNewsletter(request):
     # return set([x.email for x in profils_1] + [x.email for x in profils_2])
     return set([x.email for x in profils_2])
 
-
+@login_required
 def envoiNewsletter2023(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -578,7 +580,7 @@ def envoiNewsletter2023(request):
     return render(request, 'admin/voirMailsNewletter.html',
                   {"titre": titre, "contenu_txt": contenu_txt, "contenu_html": contenu_html, "emails": emails})
 
-
+@login_required
 def supprimerHitsAnciens(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -593,7 +595,7 @@ def supprimerHitsAnciens(request):
 
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
 
-
+@login_required
 def supprimerActionsAnciens(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -603,7 +605,7 @@ def supprimerActionsAnciens(request):
         hit.delete()
     return render(request, 'admin/supprimerHitsAnciens.html', {"hit_counts": hit_counts, })
 
-
+@login_required
 def transforBlogJpToForum(request):
     from blog.models import Article as Article_blog
     from jardinpartage.models import Article as Article_jardin, Choix as Choix_jpt
@@ -631,7 +633,7 @@ def transforBlogJpToForum(request):
 
     return redirect("blog:index_asso", asso='jp')
 
-
+@login_required
 def movePermagoraInscritsToNewsletter(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -646,7 +648,7 @@ def movePermagoraInscritsToNewsletter(request):
 
     return redirect('listeContacts', "scic")
 
-
+@login_required
 def reinitialiserAbonnementsPermAgora(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -662,7 +664,7 @@ def reinitialiserAbonnementsPermAgora(request):
         s.delete()
     return render(request, 'admin/admin_message.html', {"msg": m})
 
-
+@login_required
 def inscrireProfilAuGroupe(request, id_profil, asso_slug):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -674,7 +676,7 @@ def inscrireProfilAuGroupe(request, id_profil, asso_slug):
     actions.follow(p, suivi, send_action=False)
     return redirect(p.get_absolute_url())
 
-
+@login_required
 def associerProfil_adherent(request, asso_slug, profil_pk, ):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -689,7 +691,7 @@ def associerProfil_adherent(request, asso_slug, profil_pk, ):
 
     return render(request, 'adherents/associer_profil_adherent.html', {'form': form, "profil": profil})
 
-
+@login_required
 def reabonner_tous_profils(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -712,7 +714,7 @@ def reabonner_tous_profils(request):
 
     return render(request, 'message_admin.html', {'message':msg +" <p>œNB : " + str(nb) + "</p>", "erreur":err})
 
-
+@login_required
 def envoyer_emails_reabonnement(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -735,14 +737,14 @@ def envoyer_emails_reabonnement(request):
 
     if LOCALL:
         return render(request, 'message_admin.html', {'message':"<p>envoi test : </p>" + html_message})
-
+    envoi_ok = "pas envoyé car mis en commentaire send_mass_html_mail dans views_admin ligne 740"
     #envoi_ok = send_mass_html_mail(datatuple, fail_silently=False)
 
     return render(request, 'message_admin.html', {'message':"<p>envoi maisl : " + str(envoi_ok) + "</p>", "msg":"<p>envoyé à : </p>" + str(recipient)})
 
 
 
-
+@login_required
 def recalculerAdresses(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -776,7 +778,7 @@ def recalculerAdresses(request):
     message ="Nb ajustés : " +str(count) +"/" +str(add.count()) + " - "+ m
     return render(request, 'message_admin.html', {'message': message,})
 
-
+@login_required
 def recalculerAdressesConf(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -799,7 +801,7 @@ def recalculerAdressesConf(request):
     return render(request, 'message_admin.html', {'message': message,})
 
 
-
+@login_required
 def nettoyerAdresses(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -821,7 +823,7 @@ def nettoyerAdresses(request):
 
     return render(request, 'message_admin.html', {'message': m,})
 
-
+@login_required
 def listeContactsMails(request):
     if not request.user.is_superuser:
         return HttpResponseForbidden()
@@ -835,7 +837,7 @@ def listeContactsMails(request):
 
     return render(request, 'asso/listeContacts.html', {"listeMails": listeMails})
 
-
+@login_required
 def create_permissions(request):
     from django.contrib.auth.models import Group, Permission
 
@@ -869,3 +871,34 @@ def create_permissions(request):
         if asso.slug != "public":
             for p in asso.profil_set.all():
                 creators.user_set.add(p)
+
+def get_chemin_po():
+    if LOCALL:
+        return "/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/ca/LC_MESSAGES/"
+
+@login_required
+def traduirePO(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden()
+    from translate_po_local import main
+
+    m = ""
+    type_trad = "en"
+    if type_trad == "ca":
+        m = main.traduireFichiersDossier(lang_src="fr", lang_dest="ca",
+                                     dossier_src="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/fr/LC_MESSAGES/",
+                                    dossier_dest="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/ca/LC_MESSAGES/")
+    if type_trad == "fr":
+        m = main.traduireFichiersDossier(lang_src="en", lang_dest="fr",
+                                     dossier_src="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/fr/LC_MESSAGES/",
+                                    dossier_dest="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/fr/LC_MESSAGES2/")
+    if type_trad == "es":
+        m = main.traduireFichiersDossier(lang_src="fr", lang_dest="es",
+                                     dossier_src="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/fr/LC_MESSAGES/",
+                                    dossier_dest="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/es/LC_MESSAGES2/")
+    if type_trad == "en":
+        m = main.traduireFichiersDossier(lang_src="fr", lang_dest="en",
+                                     dossier_src="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/fr/LC_MESSAGES/",
+                                    dossier_dest="/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/locale/en/LC_MESSAGES2/")
+
+    return render(request, 'admin/admin_message.html', {"msg": str(m)})

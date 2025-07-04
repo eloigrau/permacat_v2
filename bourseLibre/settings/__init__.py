@@ -363,6 +363,8 @@ LOCALE_PATHS = (
 LANGUAGES = (
    ('fr', 'French'),
    ('ca', 'Catalan'),
+   #('es', 'Espanyol'),
+   #('en', 'English'),
 )
 LANGUAGE_CODE = 'fr'
 

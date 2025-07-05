@@ -1328,7 +1328,6 @@ class Salon(models.Model):
     def est_membre(self, user):
         return user in self.membres.all()
 
-
     def getInscrits(self):
         return [u.profil for u in InscritSalon.objects.filter(salon=self)]
 

@@ -203,7 +203,6 @@ class Suffrage(SuffrageBase):
     def est_autorise(self, user):
         return self.asso.est_autorise(user)
 
-
     @property
     def questionsB(self):
         return self.question_binaire_set.all()

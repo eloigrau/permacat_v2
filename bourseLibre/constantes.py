@@ -48,6 +48,7 @@ class Choix():
 
 
     slugsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66", "ssa"]
+    slugsAsso_accesParCotisation = ["conf66", ]
     slugsAssoEtPublic = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "conf66", "public"]
     slugsNomsAsso = [("pc", 'PermaCat'), ("rtg", 'Ramène Ta Graine'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"), ("conf66", "Confédération Paysanne 66"), ("ssa", "SSA 66")]
     slugsNomsAssoEtPublic = [('public', "Public"), ] + slugsNomsAsso

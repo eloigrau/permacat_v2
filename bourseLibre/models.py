@@ -583,7 +583,7 @@ class Profil(AbstractUser):
     def est_autorise(self, slug_asso):
         if slug_asso == "public":
             return True
-        elif slug_asso in ["conf66", "scic"]:
+        elif slug_asso in Choix.slugsAsso_accesParCotisation:
             return self.isCotisationAJour(slug_asso)
 
         return getattr(self, "adherent_" + slug_asso)
@@ -845,12 +845,9 @@ class Produit(models.Model):  # , BaseProduct):
         return "[A propos de l'annonce de '" + self.nom_produit + "']: "
 
     def est_autorise(self, user):
-        if user == self.user or self.asso.slug == "public":
+        if user == self.user :
             return True
-        elif self.asso.slug == "conf66":
-            return user.isCotisationAJour(self.asso.slug)
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
 
     @property
@@ -1532,12 +1529,9 @@ class MessageGeneral(models.Model):
         return super(MessageGeneral, self).save()
 
     def est_autorise(self, user):
-        if user == self.auteur or self.asso.slug == "public":
+        if user == self.auteur :
             return True
-        elif self.asso.slug == "conf66":
-            return user.isCotisationAJour(self.asso.slug)
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
 
 class Suivis(models.Model):

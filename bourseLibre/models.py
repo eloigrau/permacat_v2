@@ -1321,6 +1321,7 @@ class Salon(models.Model):
 
         super(Salon, self).save(*args, **kwargs)
 
+
     @property
     def estPublic(self):
         return self.type_salon == Type_Salon.PUBLIC

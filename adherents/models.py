@@ -78,7 +78,7 @@ class Adherent(models.Model):
             return ad[0]
         return Adhesion()
 
-    def get_adhesion_anneecourante(self):
+    def get_adhesion_anneecourante(self, mois_precedents=6):
         time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
         return self.adhesion_set.filter(date_cotisation__gt=time_threshold).exists()
         return self.get_adhesion_an(datetime.now().year)

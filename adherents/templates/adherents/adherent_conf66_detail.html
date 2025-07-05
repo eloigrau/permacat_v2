@@ -176,7 +176,7 @@
 {% if is_membre_bureau %}
 <div class="row">
     <div class="col-md-12 textcenter">
-        <a href="{% url 'adherents:adhesion_creer' adherent_pk=adherent.pk asso_slug=request.session.asso_slug %}">
+        <a href="{% url 'adherents:adhesion_creer' adherent_pk=adherent.pk asso_slug='conf66' %}">
             <button type="button" class="btn btn-sm btn-danger">
                 <span class="fa fa-plus"></span>&nbsp;Ajouter une cotisation
             </button>

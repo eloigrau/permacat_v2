@@ -112,6 +112,9 @@ function get_salons_fromtag(badge, url_tag) {
     <a class="nav-item nav-link active" href="#recents" data-toggle="tab">Récents </a>
     <a class="nav-item nav-link" href="#publics" data-toggle="tab"> Publics</a>
     <a class="nav-item nav-link" href="#prives" data-toggle="tab"> Privés</a>
+    {% if salons_groupes %}
+    <a class="nav-item nav-link" href="#asso" data-toggle="tab"> De Groupe</a>
+    {% endif %}
     {% if tags %}
     <a class="nav-item nav-link" href="#motscles" data-toggle="tab"> Par mot-clés</a>
     {% endif %}
@@ -126,6 +129,9 @@ function get_salons_fromtag(badge, url_tag) {
     </div>
   <div class="tab-pane fade" id="prives">
        {% include 'salon/salons_list_template.html' with salons=salons_prives%}
+  </div>
+  <div class="tab-pane fade" id="asso">
+       {% include 'salon/salons_list_template.html' with salons=salons_groupes%}
   </div>
   <div class="tab-pane fade" id="motscles">
       <p class="textcenter">Selectionner un mot clé : </p>

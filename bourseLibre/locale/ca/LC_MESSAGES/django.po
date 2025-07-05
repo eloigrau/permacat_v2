@@ -379,7 +379,7 @@ msgstr ""
 #: jardinpartage/models.py:88
 msgid "Date de fin (optionnel, pour affichage dans l'agenda)"
 msgstr ""
-"Data de finalització (opcional, per a la visualització a l’ordre del dia)"
+"Data de finalització (opcional, per a la visualització a l’agenda)"
 #: jardins/models.py:232 jardins/models.py:274
 msgid "Référent (si ce n'est pas vous)"
 msgstr "Referent (si no tu)"
@@ -557,15 +557,15 @@ msgid "Salons"
 msgstr "Salons"
 #: templates/navigationBar.html:341
 msgid "Fichiers"
-msgstr "Fitxers"
+msgstr "Fitxers/Documents"
 #: templates/navigationBar.html:343
 #, fuzzy
 #| msgid "Document partagé"
 msgid "Documents partagés"
 msgstr "Documents compartits"
 #: templates/navigationBar.html:346
-msgid "Altermarché"
-msgstr "Alternamac"
+msgid "Altermarché/Annonces"
+msgstr "Altermercat"
 #: templates/navigationBar.html:348
 #, fuzzy
 #| msgid "Un Atelier"
@@ -573,10 +573,10 @@ msgid "Ateliers"
 msgstr "Tallers"
 #: templates/navigationBar.html:353
 msgid "Yapluka / Todo"
-msgstr "Yapluka / tot"
+msgstr "A fer"
 #: templates/navigationBar.html:362
 msgid "Agenda"
-msgstr "Diari"
+msgstr "Agenda"
 #: templates/navigationBar.html:369 bourseLibre/views.py:1713
 #: bourseLibre/views.py:1725
 msgid "Publier"

@@ -207,8 +207,8 @@ class AssociationSalonArticleForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(AssociationSalonArticleForm, self).__init__(*args, **kwargs)
-        salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by( "salon__titre")
-        salons = [x for x in Salon.objects.filter(estPublic=True).order_by("titre")] + [s.salon for s in salons_inscrit]
+        salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__type_salon=1).order_by( "salon__titre")
+        salons = [x for x in Salon.objects.filter(type_salon=0).order_by("titre")] + [s.salon for s in salons_inscrit]
         self.fields["salon"].choices = [(x.id, x.titre) for x in salons]
 
 class ArticleAddAlbum(forms.ModelForm):
@@ -497,7 +497,7 @@ class SalonArticleForm(forms.ModelForm):
 
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic' ]
+        fields = ['titre', 'type_salon' ]
 
     def save(self, request, article):
         instance = super(SalonArticleForm, self).save(commit=False)

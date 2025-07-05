@@ -270,7 +270,7 @@ class Article(models.Model):
     contenu = models.TextField(null=True)
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
     date_modification = models.DateTimeField(verbose_name=_("Date de modification"), auto_now=False, null=True, )
-    estPublic = models.BooleanField(default=False, verbose_name=_('Public ou réservé aux membres permacat'))
+    #estPublic = models.BooleanField(default=False, verbose_name=_('Public ou réservé aux membres permacat'))
     estModifiable = models.BooleanField(default=False, verbose_name=_("Modifiable par les autres"))
     estEpingle = models.BooleanField(default=False, verbose_name=_("Article épinglé"))
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
@@ -527,7 +527,7 @@ class Evenement(models.Model):
 
     @property
     def estPublic(self):
-        return self.article.asso.id == 1
+        return self.article.asso.slug == 'public'
 
     def est_autorise(self, user):
         return self.article.est_autorise(user)
@@ -676,7 +676,7 @@ class Projet(models.Model):
     contenu = models.TextField(null=True)
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
     date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
-    estPublic = models.BooleanField(default=False, verbose_name=_('Public (cochez) ou Interne (décochez) [réservé aux membres permacat]'))
+    #estPublic = models.BooleanField(default=False, verbose_name=_('Public (cochez) ou Interne (décochez) [réservé aux membres permacat]'))
     coresponsable = models.CharField(max_length=150, verbose_name=_("Référent du projet"), default='', null=True, blank=True)
     lien_vote = models.URLField(verbose_name=_('Lien vers le vote (balotilo.org)'), null=True, blank=True, )
     lien_document = models.URLField(verbose_name=_('Lien vers un document explicatif (en ligne)'), default='', null=True, blank=True)

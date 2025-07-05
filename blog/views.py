@@ -6,15 +6,21 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormMixin
 
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
-    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, ArticleLienProjet
-from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, ArticleChangeForm, ProjetForm, \
-    ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, AdresseArticleForm,\
-    DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, ReunionArticleForm,\
-    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, DocumentPartageArticleModifierForm, \
-    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_asso_rechercheForm, Article_rechercheForm, Projet_rechercheForm, \
+    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, \
+    ArticleLienProjet
+from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, \
+    ArticleChangeForm, ProjetForm, \
+    ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, \
+    AdresseArticleForm, \
+    DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, \
+    ReunionArticleForm, \
+    AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, \
+    DocumentPartageArticleModifierForm, \
+    AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_asso_rechercheForm, \
+    Article_rechercheForm, Projet_rechercheForm, \
     ArticleLienProjetChangeForm, ArticleLiensChangeForm
 from .filters import ArticleFilter
-from.utils import get_suivis_forum
+from .utils import get_suivis_forum
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from actstream import actions, action
@@ -46,9 +52,11 @@ import json
 import itertools
 from django.utils.safestring import mark_safe
 from hitcount.models import HitCount
-#from django.core.paginator import Paginator
-#from django.core.exceptions import PermissionDenied
-#import itertools
+
+
+# from django.core.paginator import Paginator
+# from django.core.exceptions import PermissionDenied
+# import itertools
 
 # @login_required
 # def forum(request):
@@ -58,41 +66,45 @@ from hitcount.models import HitCount
 
 @login_required
 def accueil(request):
-
     if "base" not in request.GET and "asso_slug" in request.session:
         return redirect("blog:index_asso", asso=request.session['asso_slug'])
-    #assos = request.user.getListeSlugsAssosEtPublic()
+    # assos = request.user.getListeSlugsAssosEtPublic()
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
 
-    #derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__slug__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
-    #derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__slug__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]
-    #derniers_articles_modif = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(date_modification=F("date_creation")) & Q(asso__slug__in=assos)).order_by('date_modification') if x.est_autorise(request.user)]
-    #derniers = sorted(set([x for x in itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8], derniers_articles[:8], )]), key=lambda x:x.date_modification if x.date_modification else x.date_creation)[::-1]
+    # derniers_articles = [x for x in Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & Q(asso__slug__in=assos)).order_by('-date_creation') if x.est_autorise(request.user)]
+    # derniers_articles_comm = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False, dernierMessage__isnull=False) & Q(asso__slug__in=assos)).order_by('date_dernierMessage') if x.est_autorise(request.user)]
+    # derniers_articles_modif = [x for x in Article.objects.filter(Q(date_modification__gt=dateMin) &Q(estArchive=False) & Q(date_modification__isnull=False) & ~Q(date_modification=F("date_creation")) & Q(asso__slug__in=assos)).order_by('date_modification') if x.est_autorise(request.user)]
+    # derniers = sorted(set([x for x in itertools.chain(derniers_articles_comm[::-1][:8], derniers_articles_modif[::-1][:8], derniers_articles[:8], )]), key=lambda x:x.date_modification if x.date_modification else x.date_creation)[::-1]
 
     QObject = request.user.getQObjectsAssoArticles()
-    articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation').distinct()
+    articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by(
+        '-date_creation').distinct()
 
     derniers = articles.annotate(
         latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
     ).order_by('-latest')
-        #asso_list = [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)] # ['public'] + [asso for asso in Choix_global.slugsAsso if self.request.user.est_autorise(asso)] + ['projets']
+    # asso_list = [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)] # ['public'] + [asso for asso in Choix_global.slugsAsso if self.request.user.est_autorise(asso)] + ['projets']
     asso_list = Choix_global.slugsNomsAssoEtPublic
     suivis = get_suivis_forum(request)
 
     suivi, created = Suivis.objects.get_or_create(nom_suivi='visite_forum_accueil')
     hit_count = HitCount.objects.get_for_object(suivi)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
-    #'categorie_list':categorie_list,'categorie_list_pc':categorie_list_pc,'categorie_list_rtg':categorie_list_rtg,'categorie_list_fer':categorie_list_fer,'categorie_list_gt':categorie_list_gt,'categorie_list_citealt':categorie_list_citealt,'categorie_list_viure':categorie_list_viure,'projets_list':projets_list,'ateliers_list':ateliers_list, 'categorie_list_projets':categorie_list_projets,
+    # 'categorie_list':categorie_list,'categorie_list_pc':categorie_list_pc,'categorie_list_rtg':categorie_list_rtg,'categorie_list_fer':categorie_list_fer,'categorie_list_gt':categorie_list_gt,'categorie_list_citealt':categorie_list_citealt,'categorie_list_viure':categorie_list_viure,'projets_list':projets_list,'ateliers_list':ateliers_list, 'categorie_list_projets':categorie_list_projets,
 
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/accueil.html', {'asso_list':asso_list,'derniers_articles':derniers, 'suivis':suivis, 'form_article_recherche':form_article_recherche})
+    return render(request, 'blog/accueil.html',
+                  {'asso_list': asso_list, 'derniers_articles': derniers, 'suivis': suivis,
+                   'form_article_recherche': form_article_recherche})
+
 
 def envoyerActionArticle(request, article, verb, description):
     action.send(request.user, verb=verb, action_object=article, url=article.get_absolute_url(),
                 description=description)
+
 
 @login_required
 def ajouterArticle(request):
@@ -100,7 +112,8 @@ def ajouterArticle(request):
     time_threshold = datetime.now() - timedelta(hours=24)
     articles = Article.objects.filter(auteur=request.user, date_creation__gt=time_threshold)
     if not request.user.is_superuser and len(articles) > NBMAX_ARTICLES:
-        return render(request, 'erreur2.html', {"msg": "Vous avez déjà posté %s articles depuis 24h, veuillez patienter un peu avant de poster un nouvel article, merci !"% NBMAX_ARTICLES})
+        return render(request, 'erreur2.html', {
+            "msg": "Vous avez déjà posté %s articles depuis 24h, veuillez patienter un peu avant de poster un nouvel article, merci !" % NBMAX_ARTICLES})
 
     if form.is_valid():
         article = form.save(request.user, sendMail=False)
@@ -109,14 +122,14 @@ def ajouterArticle(request):
         article.save(sendMail=True, forcerCreationMails=True)
         form.save_m2m()
         suivre_article(request, article.slug)
-        action.send(request.user, 
-                    action_object=article, 
+        action.send(request.user,
+                    action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_nouveau_" + article.asso.slug,
-                    description="a ajouté un article : '%s'"%article.titre)
+                    description="a ajouté un article : '%s'" % article.titre)
         return redirect(article.get_absolute_url())
 
-    return render(request, 'blog/ajouterArticle.html', { "form": form, })
+    return render(request, 'blog/ajouterArticle.html', {"form": form, })
 
 
 # @login_required
@@ -134,25 +147,30 @@ class ModifierArticle(UpdateView):
         url = self.object.get_absolute_url()
         suffix = "_" + self.object.asso.slug
         if not self.object.estArchive:
-            desc = "a modifié l'article [%s]: '%s'" %(self.object.asso, self.object.titre)
+            desc = "a modifié l'article [%s]: '%s'" % (self.object.asso, self.object.titre)
             if 'description_modif' in form.changed_data:
                 desc += " > " + form.cleaned_data['description_modif'] + " "
             if self.object.date_modification - self.object.date_creation > timedelta(minutes=10):
-                action.send(self.request.user, verb='article_modifier'+suffix, action_object=self.object, url=url,
-                             description=desc)
+                action.send(self.request.user, verb='article_modifier' + suffix, action_object=self.object, url=url,
+                            description=desc)
         elif form.changed_data == ['estArchive']:
-            action.send(self.request.user, verb='article_modifier'+suffix + "-archive", action_object=self.object, url=url,
-                         description="a archivé l'article [%s]: '%s'" %(self.object.asso, self.object.titre))
+            action.send(self.request.user, verb='article_modifier' + suffix + "-archive", action_object=self.object,
+                        url=url,
+                        description="a archivé l'article [%s]: '%s'" % (self.object.asso, self.object.titre))
 
-        #envoi_emails_articleouprojet_modifie(self.object, "L'article " +  self.object.titre + "a été modifié", True)
+        # envoi_emails_articleouprojet_modifie(self.object, "L'article " +  self.object.titre + "a été modifié", True)
         return HttpResponseRedirect(self.get_success_url())
 
-    def get_form(self,*args, **kwargs):
+    def get_form(self, *args, **kwargs):
         form = super(ModifierArticle, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for i, x in enumerate(Asso.objects.all().order_by('id')) if self.request.user.estMembre_str(x.slug)]
-        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in enumerate(Album.objects.all().order_by('title')) if self.request.user.estMembre_str(x.asso.slug)]
+        form.fields["asso"].choices = [(x.id, x.nom) for i, x in enumerate(Asso.objects.all().order_by('id')) if
+                                       self.request.user.estMembre_str(x.slug)]
+        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in
+                                                              enumerate(Album.objects.all().order_by('title')) if
+                                                              self.request.user.estMembre_str(x.asso.slug)]
 
         return form
+
 
 def archiverArticleAdmin(request, slug):
     if not request.user.is_superuser:
@@ -174,7 +192,8 @@ class ArticleAddAlbum(UpdateView):
     model = Article
     form_class = ArticleAddAlbum
     template_name_suffix = '_ajouteralbum'
-#    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
         return Article.objects.get(slug=self.kwargs['slug'])
@@ -186,16 +205,19 @@ class ArticleAddAlbum(UpdateView):
         if not self.object.estArchive:
             url = self.object.get_absolute_url()
             suffix = "_" + self.object.asso.slug
-            action.send(self.request.user, verb='article_modifier'+suffix, action_object=self.object, url=url,
-                         description="a associé un album à l'article: '%s'" % self.object.titre)
-        #envoi_emails_articleouprojet_modifie(self.object, "L'article " +  self.object.titre + "a été modifié", True)
+            action.send(self.request.user, verb='article_modifier' + suffix, action_object=self.object, url=url,
+                        description="a associé un album à l'article: '%s'" % self.object.titre)
+        # envoi_emails_articleouprojet_modifie(self.object, "L'article " +  self.object.titre + "a été modifié", True)
         return HttpResponseRedirect(self.get_success_url())
 
-    def get_form(self,*args, **kwargs):
+    def get_form(self, *args, **kwargs):
         form = super(ArticleAddAlbum, self).get_form(*args, **kwargs)
-        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in enumerate(Album.objects.all().order_by('title')) if self.request.user.estMembre_str(x.asso.slug)]
+        form.fields["album"].choices = [("", "---------")] + [(x.id, x.title) for i, x in
+                                                              enumerate(Album.objects.all().order_by('title')) if
+                                                              self.request.user.estMembre_str(x.asso.slug)]
 
         return form
+
 
 @login_required
 def articleSupprimerAlbum(request, slug):
@@ -211,15 +233,16 @@ class SupprimerArticle(DeleteAccess, DeleteView):
     model = Article
     success_url = reverse_lazy('blog:index')
     template_name_suffix = '_supprimer'
-#    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
         return Article.objects.get(slug=self.kwargs['slug'])
 
     def get_success_url(self, *args, **kwargs):
         suffix = "_" + self.object.asso.slug
-        action.send(self.request.user, verb='suppression_article'+suffix,
-                     description="a supprimé l'article: '%s'" % self.object.titre)
+        action.send(self.request.user, verb='suppression_article' + suffix,
+                    description="a supprimé l'article: '%s'" % self.object.titre)
         return super(SupprimerArticle, self).get_success_url(*args, **kwargs)
 
 
@@ -234,11 +257,13 @@ def lireArticle(request, slug):
     lieux = AdresseArticle.objects.filter(article=article).order_by('titre')
     salons = Salon.objects.filter(article=article).order_by('titre')
     salons_article = AssociationSalonArticle.objects.filter(article=article).order_by('salon__titre')
-    salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if s.salon.est_autorise(request.user)]
+    salons = [s for s in salons if s.est_autorise(request.user)] + [s.salon for s in salons_article if
+                                                                    s.salon.est_autorise(request.user)]
     suffrages = Suffrage.objects.filter(article=article).order_by('titre')
     suffrages = [s for s in suffrages if s.est_autorise(request.user)]
     todos = TodoArticle.objects.filter(article=article).order_by('titre')
-    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).exclude(slug=slug).order_by('-date_creation')[:15]
+    articles_dossier = Article.objects.filter(asso=article.asso, categorie=article.categorie, estArchive=False).exclude(
+        slug=slug).order_by('-date_creation')[:15]
     articles_liens = ArticleLiens.objects.filter(Q(article=article) | Q(article_lie=article)).order_by('-date_creation')
     projets_liens = ArticleLienProjet.objects.filter(article=article).order_by('-date_creation')
 
@@ -246,9 +271,9 @@ def lireArticle(request, slug):
     documents_partages = DocumentPartage.objects.filter(article=article)
     reunions = Reunion.objects.filter(article=article)
 
-
     discussions = article.discussion_set.all().order_by('id')
-    commentaires = {discu:Commentaire.objects.filter(discussion=discu).order_by("date_creation") for discu in discussions}
+    commentaires = {discu: Commentaire.objects.filter(discussion=discu).order_by("date_creation") for discu in
+                    discussions}
     dates = Evenement.objects.filter(article=article).order_by("-start_time")
 
     actions = action_object_stream(article)
@@ -257,7 +282,8 @@ def lireArticle(request, slug):
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
     form_discussion = DiscussionForm(request.POST or None, prefix="newdiscussionform")
     form = CommentaireArticleForm(request.POST or None)
-    if form_discussion.is_valid() and not Discussion.objects.filter(slug=slugify(form_discussion.cleaned_data['titre']), article=article):
+    if form_discussion.is_valid() and not Discussion.objects.filter(slug=slugify(form_discussion.cleaned_data['titre']),
+                                                                    article=article):
         if form_discussion.valider_unique(article):
             discu = form_discussion.save(commit=False)
             discu.article = article
@@ -266,55 +292,70 @@ def lireArticle(request, slug):
             commentaires = {discu: Commentaire.objects.filter(discussion=discu).order_by("date_creation") for discu in
                             discussions}
 
-            context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-                       'articles_dossier':articles_dossier,'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "sondages":sondages,
-                       "documents_partages":documents_partages, "reunions":reunions,"todos":todos, "ancre": discu.slug, "projets_liens":projets_liens, "articles_liens":articles_liens}
+            context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion,
+                       'commentaires': commentaires,
+                       'articles_dossier': articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers,
+                       'lieux': lieux, 'documents': documents, "salons": salons, "sondages": sondages,
+                       "documents_partages": documents_partages, "reunions": reunions, "todos": todos,
+                       "ancre": discu.slug, "projets_liens": projets_liens, "articles_liens": articles_liens}
 
     elif form.is_valid() and 'message_discu' in request.POST:
-        discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#",""))
+        discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#", ""))
         comment = form.save(commit=False)
         form_discussion = DiscussionForm(request.POST or None, prefix="newdiscussionform")
 
         utc = pytz.UTC
         date_limite = utc.localize(datetime.today() - timedelta(hours=1))
-        if comment and not Commentaire.objects.filter(commentaire=comment.commentaire, article=article, date_creation__gt=date_limite):
+        if comment and not Commentaire.objects.filter(commentaire=comment.commentaire, article=article,
+                                                      date_creation__gt=date_limite):
             comment.article = article
             comment.discussion = discu
             comment.auteur_comm = request.user
             article.sendMail = False
             article.date_dernierMessage = now()
-            article.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(strip_tags(comment.commentaire).replace('&nspb',' ')))[:96]
-            if len(("(" + str(comment.auteur_comm) + ") " + str(strip_tags(comment.commentaire).replace('&nspb',' ')))) > 96:
+            article.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(
+                strip_tags(comment.commentaire).replace('&nspb', ' ')))[:96]
+            if len(("(" + str(comment.auteur_comm) + ") " + str(
+                    strip_tags(comment.commentaire).replace('&nspb', ' ')))) > 96:
                 article.dernierMessage += "..."
             form.save()
             article.save(sendMail=False, saveModif=False)
             suffix = "_" + article.asso.slug
             if discu.slug == 'discussion-generale':
-                url = article.get_absolute_url()+"#comm_" + str(comment.id)
-                desc = "a réagi à l'article: '%s'"%article.titre
-                action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
-                        description=desc, discussion=discu.titre)
+                url = article.get_absolute_url() + "#comm_" + str(comment.id)
+                desc = "a réagi à l'article: '%s'" % article.titre
+                action.send(request.user, verb='article_message' + suffix, action_object=article, url=url,
+                            description=desc, discussion=discu.titre)
             else:
-                url = article.get_absolute_url()+"?ancre=" + discu.slug +"#comm_" + str(comment.id)
+                url = article.get_absolute_url() + "?ancre=" + discu.slug + "#comm_" + str(comment.id)
                 desc = "a réagi à l'article: (%s) '%s'" % (discu.titre, article.titre)
-                action.send(request.user, verb='article_message'+suffix, action_object=article, url=url,
+                action.send(request.user, verb='article_message' + suffix, action_object=article, url=url,
                             description=desc, discussion=discu.titre)
 
-            #envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
-        context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion, 'commentaires': commentaires,
-               'articles_dossier':articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers, 'lieux': lieux, 'documents':documents, "salons":salons, "ancre":discu.slug,
-                   "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages, "todos":todos, "reunions":reunions, "projets_liens":projets_liens,"articles_liens":articles_liens }
+            # envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
+        context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion,
+                   'commentaires': commentaires,
+                   'articles_dossier': articles_dossier, 'dates': dates, 'actions': actions, 'ateliers': ateliers,
+                   'lieux': lieux, 'documents': documents, "salons": salons, "ancre": discu.slug,
+                   "suffrages": suffrages, "sondages": sondages, "documents_partages": documents_partages,
+                   "todos": todos, "reunions": reunions, "projets_liens": projets_liens,
+                   "articles_liens": articles_liens}
 
     else:
-        context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires':commentaires, 'dates':dates, 'actions':actions, 'ateliers':ateliers,
-                   'articles_dossier':articles_dossier, 'lieux':lieux, 'documents':documents, "salons":salons,"todos":todos, "suffrages":suffrages, "sondages":sondages, "documents_partages":documents_partages,
-                   "reunions":reunions, "projets_liens":projets_liens,"articles_liens":articles_liens,  }
-    return render(request, 'blog/lireArticle.html', context,)
+        context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires': commentaires,
+                   'dates': dates, 'actions': actions, 'ateliers': ateliers,
+                   'articles_dossier': articles_dossier, 'lieux': lieux, 'documents': documents, "salons": salons,
+                   "todos": todos, "suffrages": suffrages, "sondages": sondages,
+                   "documents_partages": documents_partages,
+                   "reunions": reunions, "projets_liens": projets_liens, "articles_liens": articles_liens, }
+    return render(request, 'blog/lireArticle.html', context, )
+
 
 @login_required
 def lireArticle_id(request, id):
     article = get_object_or_404(Article, id=id)
     return lireArticle(request, slug=article.slug)
+
 
 @login_required
 def lireArticle_recherche(request):
@@ -350,13 +391,13 @@ class ListeArticles(ListView):
             elif self.params['ordreTri'] == "-start_time":
                 qs = qs.filter(start_time__isnull=False).order_by(self.params['ordreTri'])
             elif self.params['ordreTri'] == "titre":
-                qs = qs.extra(select={'lower_name':'lower(titre)'}).order_by('lower_name')
+                qs = qs.extra(select={'lower_name': 'lower(titre)'}).order_by('lower_name')
             else:
                 qs = qs.order_by(self.params['ordreTri'])
         else:
             qs = qs.annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
-                ).order_by('-latest')
+            ).order_by('-latest')
 
         self.qs = qs
         return qs.filter(estArchive=False, estEpingle=False)
@@ -365,12 +406,17 @@ class ListeArticles(ListView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        context['articles_epingles'] = self.qs.filter(Q(estArchive=False, estEpingle=True)).distinct()#.order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
-        context['articles_partages'] = []#self.qs.filter(Q(estArchive=False, partagesAsso__isnull=False))#.distinct().order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
-        context['articles_archives'] = self.qs.filter(Q(estArchive=True)).distinct()#.order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
+        context['articles_epingles'] = self.qs.filter(Q(estArchive=False,
+                                                        estEpingle=True)).distinct()  # .order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
+        context[
+            'articles_partages'] = []  # self.qs.filter(Q(estArchive=False, partagesAsso__isnull=False))#.distinct().order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
+        context['articles_archives'] = self.qs.filter(
+            Q(estArchive=True)).distinct()  # .order_by(F('date_modification').desc(nulls_last=True), '-date_creation')
 
-        context['asso_list'] = Choix_global.slugsNomsAssoEtPublic#[(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
-        context['dossiers_list'] = Choix.type_annonce_base#[(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
+        context[
+            'asso_list'] = Choix_global.slugsNomsAssoEtPublic  # [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
+        context[
+            'dossiers_list'] = Choix.type_annonce_base  # [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
         context['typeFiltre'] = "aucun"
         context['suivis'] = get_suivis_forum(self.request)
         context['ordreTriPossibles'] = Choix.ordre_tri_articles
@@ -382,10 +428,12 @@ class ListeArticles(ListView):
         if 'categorie' in self.request.GET:
             context['typeFiltre'] = "categorie"
             try:
-                context['categorie_courante'] = [x[1] for x in Choix.type_annonce if x[0] == self.request.GET['categorie']][0]
+                context['categorie_courante'] = \
+                [x[1] for x in Choix.type_annonce if x[0] == self.request.GET['categorie']][0]
             except:
                 try:
-                    context['categorie_courante'] = [x[1] for x in Choix.type_annonce_projets if x[0] == self.request.GET['categorie']][0]
+                    context['categorie_courante'] = \
+                    [x[1] for x in Choix.type_annonce_projets if x[0] == self.request.GET['categorie']][0]
                 except:
                     try:
                         projet = Projet.objects.get(slug=self.request.GET['categorie'])
@@ -397,7 +445,8 @@ class ListeArticles(ListView):
             context['typeFiltre'] = "archives"
         if 'ordreTri' in self.request.GET:
             try:
-                context['ordre_triage'] = list(Choix.ordre_tri_articles.keys())[list(Choix.ordre_tri_articles.values()).index(self.request.GET['ordreTri'])]
+                context['ordre_triage'] = list(Choix.ordre_tri_articles.keys())[
+                    list(Choix.ordre_tri_articles.values()).index(self.request.GET['ordreTri'])]
             except:
                 context['ordre_triage'] = self.request.GET['ordreTri']
         else:
@@ -428,12 +477,13 @@ class ListeArticles_asso(ListView, FormMixin):
         params = dict(self.request.GET.items())
         self.asso = Asso.objects.get(slug=self.kwargs['asso'])
         self.request.session["asso_slug"] = self.kwargs['asso']
-        #self.q_objects = self.request.user.getQObjectsAssoArticles()
-        #qs = Article.objects.filter(Q(asso__slug=self.asso.slug) & self.q_objects).distinct()
+        # self.q_objects = self.request.user.getQObjectsAssoArticles()
+        # qs = Article.objects.filter(Q(asso__slug=self.asso.slug) & self.q_objects).distinct()
         if self.request.user.est_autorise(self.asso.slug):
             qs = Article.objects.filter(Q(asso__slug=self.asso.slug, estArchive=False, )).distinct()
         else:
-            qs = Article.objects.filter(self.request.user.getQObjectsAssoArticles(), asso__slug=self.asso.slug, estArchive=False, ).distinct()
+            qs = Article.objects.filter(self.request.user.getQObjectsAssoArticles(), asso__slug=self.asso.slug,
+                                        estArchive=False, ).distinct()
 
         self.categorie = None
         if "auteur" in params:
@@ -449,13 +499,13 @@ class ListeArticles_asso(ListView, FormMixin):
             elif params['ordreTri'] == "-start_time":
                 qs = qs.filter(start_time__isnull=False)
             if params['ordreTri'] == "titre":
-                qs = qs.extra(select={'lower_name':'lower(titre)'}).order_by('lower_name')
+                qs = qs.extra(select={'lower_name': 'lower(titre)'}).order_by('lower_name')
             else:
                 qs = qs.order_by(params['ordreTri'])
         else:
             qs = qs.annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
-                ).order_by('-latest')
+            ).order_by('-latest')
 
         self.qs = qs
         return qs.filter(Q(estEpingle=False))
@@ -478,7 +528,7 @@ class ListeArticles_asso(ListView, FormMixin):
         #     page_number = self.request.GET.get('page_archives')
         # context['page_archives_obj'] = paginator_archives.get_page(page_number)
 
-        #context['articles_partages'] = paginator.get_page(page_number)
+        # context['articles_partages'] = paginator.get_page(page_number)
         # qs = self.qs
         # if self.asso.slug == "public":
         #     qs = qs.exclude(Q(asso__slug="pc")|Q(asso__slug="rtg")|Q(asso__slug="fer")|Q(asso__slug="gt")|Q(asso__slug="scic")|Q(asso__slug="citealt")|Q(asso__slug="viure")|Q(asso__slug="bzz2022"))
@@ -486,9 +536,11 @@ class ListeArticles_asso(ListView, FormMixin):
         #     pass
         # else:
         #     qs = qs.filter(asso__slug=self.asso.slug)
-        context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.get_type_annonce_asso(self.asso.slug)]
+        context['categorie_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in
+                                     Choix.get_type_annonce_asso(self.asso.slug)]
 
-        proj = Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(estArchive=False)
+        proj = Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(
+            estArchive=False)
 
         context['projets_list'] = [(x.slug, x.titre, x.get_couleur) for x in proj]
         #
@@ -501,9 +553,10 @@ class ListeArticles_asso(ListView, FormMixin):
         #     ateliers = ateliers.exclude(asso__slug="rtg")
         # context['ateliers_list'] = [(x.slug, x.titre, x.get_couleur) for x in ateliers]
 
-        context['asso_list'] = Choix_global.slugsNomsAssoEtPublic#[(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
+        context[
+            'asso_list'] = Choix_global.slugsNomsAssoEtPublic  # [(x.nom, x.slug) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
         context['dossier_courant'] = self.categorie
-        context['user_membreAsso'] = self.request.user.est_autorise(self.asso.slug)
+        context['user_membreAsso'] = self.asso.est_autorise(self.request.user)
         context['typeFiltre'] = "aucun"
         context['suivis'] = get_suivis_forum(self.request)
         self.form = Article_rechercheForm(self.request.GET or None)
@@ -517,10 +570,12 @@ class ListeArticles_asso(ListView, FormMixin):
             context['typeFiltre'] = "categorie"
             context['urlCategorie'] = "&categorie=" + self.request.GET['categorie']
             try:
-                context['categorie_courante'] = [x[1] for x in Choix.type_annonce if x[0] == self.request.GET['categorie']][0]
+                context['categorie_courante'] = \
+                [x[1] for x in Choix.type_annonce if x[0] == self.request.GET['categorie']][0]
             except:
                 try:
-                    context['categorie_courante'] = [x[1] for x in Choix.type_annonce_projets if x[0] == self.request.GET['categorie']][0]
+                    context['categorie_courante'] = \
+                    [x[1] for x in Choix.type_annonce_projets if x[0] == self.request.GET['categorie']][0]
                 except:
                     context['categorie_courante'] = ""
         else:
@@ -530,7 +585,8 @@ class ListeArticles_asso(ListView, FormMixin):
             context['typeFiltre'] = "archives"
         if 'ordreTri' in self.request.GET:
             context['urlOrdreTri'] = "&ordreTri=" + self.request.GET['ordreTri']
-            context['ordre_triage'] = list(Choix.ordre_tri_articles.keys())[list(Choix.ordre_tri_articles.values()).index(self.request.GET['ordreTri'])]
+            context['ordre_triage'] = list(Choix.ordre_tri_articles.keys())[
+                list(Choix.ordre_tri_articles.values()).index(self.request.GET['ordreTri'])]
         else:
             context['urlOrdreTri'] = ""
             context['ordre_triage'] = "date de dernière modification"
@@ -538,15 +594,14 @@ class ListeArticles_asso(ListView, FormMixin):
         return context
 
 
-
 @login_required
 def articlesPartages(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
         return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso': asso})
-    q_object = Q(partagesAsso__slug=asso.slug) | Q(partagesAsso__slug='public')& ~Q(asso=asso) & Q(estArchive=False)
+    q_object = Q(partagesAsso__slug=asso.slug) | Q(partagesAsso__slug='public') & ~Q(asso=asso) & Q(estArchive=False)
     article_list = Article.objects.filter(q_object)
-    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso': asso})
 
 
 @login_required
@@ -559,23 +614,26 @@ def get_album_article_ajax(request, article_slug):
 def articlesArchives(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
-        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso':asso})
+        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso': asso})
     article_list = Article.objects.filter(asso=asso, estArchive=True)
-    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso':asso})
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'asso': asso})
 
 
 def get_articlesParTag(asso, tag):
-    q_objects = Q(asso__slug=asso.slug) | Q(partagesAsso__slug=asso.slug)| Q(asso__slug='public')| Q(partagesAsso__slug='public')
+    q_objects = Q(asso__slug=asso.slug) | Q(partagesAsso__slug=asso.slug) | Q(asso__slug='public') | Q(
+        partagesAsso__slug='public')
     article_list = Article.objects.filter(q_objects & Q(tags__name__in=[tag, ])).distinct()
     return article_list
+
 
 @login_required
 def articlesParTag(request, asso, tag):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
-        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso':asso})
+        return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'asso': asso})
     article_list = get_articlesParTag(asso, tag)
-    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'tag':tag})
+    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'tag': tag})
+
 
 @login_required
 def get_articles_pardossier(request):
@@ -583,13 +641,15 @@ def get_articles_pardossier(request):
     if "asso" in request.GET:
         asso = testIsMembreAsso_bool(request, request.GET['asso'])
         if not asso:
-            return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'categorie_courante':request.GET['categorie']})
+            return render(request, 'blog/ajax/listeArticles_template.html',
+                          {'article_list': [], 'categorie_courante': request.GET['categorie']})
 
         q_objects = Q(asso=asso) & request.user.getQObjectsAssoArticles()
     elif "asso_slug" in request.session:
         asso = testIsMembreAsso_bool(request, request.session['asso_slug'])
         if not asso:
-            return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': [], 'categorie_courante':request.GET['categorie']})
+            return render(request, 'blog/ajax/listeArticles_template.html',
+                          {'article_list': [], 'categorie_courante': request.GET['categorie']})
 
         q_objects = Q(asso=asso) & request.user.getQObjectsAssoArticles()
 
@@ -599,15 +659,19 @@ def get_articles_pardossier(request):
         q_objects = q_objects & Q(estArchive=False)
 
     article_list = Article.objects.filter(q_objects).distinct()
-    return render(request, 'blog/ajax/listeArticles_template.html', {'article_list': article_list, 'categorie_courante':request.GET['categorie']})
+    return render(request, 'blog/ajax/listeArticles_template.html',
+                  {'article_list': article_list, 'categorie_courante': request.GET['categorie']})
+
 
 @login_required
 def get_tags_asso(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if asso:
-        return set(list(Article.objects.filter(asso=asso , estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
+        return set(list(Article.objects.filter(asso=asso, estArchive=False).order_by('tags__name').values_list('tags',
+                                                                                                               flat=True).distinct()))
     else:
         return []
+
 
 @login_required
 def get_tags_articles(request):
@@ -615,19 +679,23 @@ def get_tags_articles(request):
     if "asso" in request.GET:
         asso = testIsMembreAsso_bool(request, request.GET['asso'])
         if asso:
-            inner_qs = set(list(Article.objects.filter(asso=asso , estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
+            inner_qs = set(list(
+                Article.objects.filter(asso=asso, estArchive=False).order_by('tags__name').values_list('tags',
+                                                                                                       flat=True).distinct()))
         else:
             inner_qs = []
     else:
-        inner_qs = set(list(Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
+        inner_qs = set(list(Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
+            estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
 
     inner_qs.remove(None)
     if inner_qs:
         try:
-            tags = [(reverse('blog:articlesParTag', kwargs={'asso':asso.slug, 'tag':t}), t)
+            tags = [(reverse('blog:articlesParTag', kwargs={'asso': asso.slug, 'tag': t}), t)
                     for t in Tag.objects.filter(id__in=inner_qs).order_by('name') if t]
         except Exception as e:
-            action.send(sender=request.user, verb='bug', description=str(e) + " ;" + str(Tag.objects.filter(id__in=inner_qs).order_by('name')))
+            action.send(sender=request.user, verb='bug',
+                        description=str(e) + " ;" + str(Tag.objects.filter(id__in=inner_qs).order_by('name')))
             tags = None
     return render(request, 'blog/ajax/listeTags_template.html', {'tags': tags})
 
@@ -652,19 +720,21 @@ def ajouterNouveauProjet(request):
             suivre_projet(request, projet.slug)
 
             suffix = "_" + projet.asso.slug
-            action.send(request.user, verb='projet_nouveau'+suffix, action_object=projet, url=url,
-                    description="a ajouté un projet : '%s'" % projet.titre)
+            action.send(request.user, verb='projet_nouveau' + suffix, action_object=projet, url=url,
+                        description="a ajouté un projet : '%s'" % projet.titre)
             return redirect(url)
 
     else:
         form = ProjetForm(request, request.POST or None, request.FILES or None, )
-    return render(request, 'blog/ajouterProjet.html', { "form": form, })
+    return render(request, 'blog/ajouterProjet.html', {"form": form, })
+
 
 class ModifierProjet(UpdateView):
     model = Projet
     form_class = ProjetChangeForm
     template_name_suffix = '_modifier'
-    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    # fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
         return Projet.objects.get(slug=self.kwargs['slug'])
@@ -676,24 +746,28 @@ class ModifierProjet(UpdateView):
         if not self.object.estArchive:
             url = self.object.get_absolute_url()
             suffix = "_" + self.object.asso.slug
-            action.send(self.request.user, verb='projet_modifier'+suffix, action_object=self.object, url=url,
-                         description="a modifié le projet: '%s'" % self.object.titre)
-        #envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
+            action.send(self.request.user, verb='projet_modifier' + suffix, action_object=self.object, url=url,
+                        description="a modifié le projet: '%s'" % self.object.titre)
+        # envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
         return HttpResponseRedirect(self.get_success_url())
 
-    def get_form(self,*args, **kwargs):
+    def get_form(self, *args, **kwargs):
         form = super(ModifierProjet, self).get_form(*args, **kwargs)
-        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.estMembre_str(x.slug)]
+        form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if
+                                       self.request.user.estMembre_str(x.slug)]
         return form
+
 
 class SupprimerProjet(DeleteAccess, DeleteView):
     model = Projet
     success_url = reverse_lazy('blog:index_projets')
     template_name_suffix = '_supprimer'
-#    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
         return Projet.objects.get(slug=self.kwargs['slug'])
+
 
 @login_required
 def ajouterFicheProjet(request, slug):
@@ -705,17 +779,20 @@ def ajouterFicheProjet(request, slug):
         url = fiche_projet.get_absolute_url()
 
         suffix = "_" + fiche_projet.projet.asso.slug
-        action.send(request.user, verb='projet_nouveau'+suffix + "_ficheProjet", action_object=fiche_projet.projet, url=url,
-                description="a ajouté une 'fiche projet' : '%s'" % fiche_projet.projet.titre)
+        action.send(request.user, verb='projet_nouveau' + suffix + "_ficheProjet", action_object=fiche_projet.projet,
+                    url=url,
+                    description="a ajouté une 'fiche projet' : '%s'" % fiche_projet.projet.titre)
         return redirect(url)
 
-    return render(request, 'blog/ficheprojet_creer.html', { "form": form, "projet":projet})
+    return render(request, 'blog/ficheprojet_creer.html', {"form": form, "projet": projet})
+
 
 class ModifierFicheProjet(UpdateView):
     model = FicheProjet
     form_class = FicheProjetChangeForm
     template_name_suffix = '_modifier'
-    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    # fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
         return FicheProjet.objects.get(projet__slug=self.kwargs['slug'])
@@ -727,9 +804,10 @@ class ModifierFicheProjet(UpdateView):
         if not self.object.projet.estArchive:
             url = self.object.get_absolute_url()
             suffix = "_" + self.object.projet.asso.slug
-            action.send(self.request.user, verb='projet_modifier'+suffix+"ficheProjet", action_object=self.object, url=url,
-                         description="a modifié la fiche du projet: '%s'" % self.object.projet.titre)
-        #envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
+            action.send(self.request.user, verb='projet_modifier' + suffix + "ficheProjet", action_object=self.object,
+                        url=url,
+                        description="a modifié la fiche du projet: '%s'" % self.object.projet.titre)
+        # envoi_emails_articleouprojet_modifie(self.object, "Le projet " +  self.object.titre + "a été modifié", False)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -737,13 +815,14 @@ class SupprimerFicheProjet(DeleteAccess, DeleteView):
     model = FicheProjet
     success_url = reverse_lazy('blog:index_projets')
     template_name_suffix = '_supprimer'
-#    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
         return FicheProjet.objects.get(projet__slug=self.kwargs['slug'])
 
     def get_success_url(self):
-        return reverse('blog:lire_projet', kwargs={'slug':self.object.projet.slug})
+        return reverse('blog:lire_projet', kwargs={'slug': self.object.projet.slug})
 
 
 @login_required
@@ -751,7 +830,7 @@ def lireProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
 
     if not projet.est_autorise(request.user):
-        return render(request, 'notMembre.html', {"asso":"Permacat"})
+        return render(request, 'notMembre.html', {"asso": "Permacat"})
 
     commentaires = CommentaireProjet.objects.filter(projet=projet).order_by("date_creation")
     actions = action_object_stream(projet)
@@ -763,17 +842,20 @@ def lireProjet(request, slug):
         comment.projet = projet
         comment.auteur_comm = request.user
         projet.date_dernierMessage = comment.date_creation
-        projet.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(strip_tags(comment.commentaire).replace('&nspb',' ')))[:96] + "..."
+        projet.dernierMessage = ("(" + str(comment.auteur_comm) + ") " + str(
+            strip_tags(comment.commentaire).replace('&nspb', ' ')))[:96] + "..."
         projet.save(sendMail=False)
         comment.save()
-        url = projet.get_absolute_url()+"#idConversation"
+        url = projet.get_absolute_url() + "#idConversation"
         suffix = "_" + projet.asso.slug
-        action.send(request.user, verb='projet_message'+suffix, action_object=projet, url=url,
+        action.send(request.user, verb='projet_message' + suffix, action_object=projet, url=url,
                     description="a réagit au projet: '%s'" % projet.titre)
-        #envoi_emails_articleouprojet_modifie(projet, request.user.username + " a réagit au projet: " +  projet.titre, False)
+        # envoi_emails_articleouprojet_modifie(projet, request.user.username + " a réagit au projet: " +  projet.titre, False)
         return redirect(request.path)
 
-    return render(request, 'blog/lireProjet.html', {'projet': projet, 'form': form, 'commentaires':commentaires, 'actions':actions, "articles_lies":articles_lies},)
+    return render(request, 'blog/lireProjet.html',
+                  {'projet': projet, 'form': form, 'commentaires': commentaires, 'actions': actions,
+                   "articles_lies": articles_lies}, )
 
 
 class ListeProjets(ListView):
@@ -809,7 +891,7 @@ class ListeProjets(ListView):
                 qs = qs.filter(date_modification__isnull=False)
             qs = qs.order_by(params['ordreTri'])
         else:
-            qs = qs.order_by('-date_creation', '-date_dernierMessage',  'categorie', 'auteur')
+            qs = qs.order_by('-date_creation', '-date_dernierMessage', 'categorie', 'auteur')
 
         self.qs = qs
         return qs.filter(estArchive=False)
@@ -835,7 +917,8 @@ class ListeProjets(ListView):
         if 'categorie' in self.request.GET:
             context['typeFiltre'] = "categorie"
             try:
-                context['categorie_courante'] = [x[1] for x in Choix.type_projet if x[0] == self.request.GET['categorie']][0]
+                context['categorie_courante'] = \
+                [x[1] for x in Choix.type_projet if x[0] == self.request.GET['categorie']][0]
             except:
                 context['categorie_courante'] = ""
         if 'statut' in self.request.GET:
@@ -891,7 +974,8 @@ def telecharger_fichier(request):
             return response
     else:
         mess = "Fichier introuvable"
-    return render(request, 'blog/telechargement.html', {'fichier':file_path, 'message': mess})
+    return render(request, 'blog/telechargement.html', {'fichier': file_path, 'message': mess})
+
 
 #
 # def upload(request):
@@ -937,18 +1021,20 @@ def suivre_article(request, slug, actor_only=True):
 def projets_suivis(request, slug):
     projet = Projet.objects.get(slug=slug)
     suiveurs = followers(projet)
-    return render(request, "blog/projets_suivis.html", {'suiveurs': suiveurs, "projet":projet})
+    return render(request, "blog/projets_suivis.html", {'suiveurs': suiveurs, "projet": projet})
+
 
 @login_required
 def articles_suivis(request, slug):
     article = Article.objects.get(slug=slug)
     suiveurs = followers(article)
-    return render(request, 'blog/articles_suivis.html', {'suiveurs': suiveurs, "article":article, })
+    return render(request, 'blog/articles_suivis.html', {'suiveurs': suiveurs, "article": article, })
+
 
 @login_required
 def articles_suiveurs(request, asso_slug='punlic'):
-    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_'+ str(asso_slug))
-    suiveurs = sorted(followers(suivi), key= lambda x: str.lower(x.username))
+    suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(asso_slug))
+    suiveurs = sorted(followers(suivi), key=lambda x: str.lower(x.username))
     return render(request, 'blog/articles_suivis.html', {'suiveurs': suiveurs, })
 
 
@@ -963,6 +1049,7 @@ def suivre_articles(request, asso_slug='public', actor_only=True):
         actions.follow(request.user, suivi, actor_only=actor_only, send_action=False)
     return redirect('blog:acceuil')
 
+
 @login_required
 @csrf_exempt
 def suivre_projets(request, actor_only=True):
@@ -975,7 +1062,6 @@ def suivre_projets(request, actor_only=True):
     return redirect('blog:index_projets')
 
 
-
 class ModifierCommentaireArticle(UpdateView):
     model = Commentaire
     form_class = CommentaireArticleChangeForm
@@ -986,7 +1072,7 @@ class ModifierCommentaireArticle(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        if self.object.commentaire and self.object.commentaire !='<br>':
+        if self.object.commentaire and self.object.commentaire != '<br>':
             self.object.date_modification = now()
             self.object.save()
         else:
@@ -1004,7 +1090,7 @@ class ModifierCommentaireProjet(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        if self.object.commentaire and self.object.commentaire !='<br>':
+        if self.object.commentaire and self.object.commentaire != '<br>':
             self.object.date_modification = now()
             self.object.save()
         else:
@@ -1026,7 +1112,6 @@ def ajouterEvenement(request, date=None):
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
 
 
-
 @login_required
 def ajouterEvenementArticle(request, slug_article):
     form = EvenementArticleForm(request.POST or None)
@@ -1034,14 +1119,15 @@ def ajouterEvenementArticle(request, slug_article):
     if form.is_valid():
         article = Article.objects.get(slug=slug_article)
         ev = form.save(request, article)
-        action.send(request.user, 
-                    action_object=article, 
+        action.send(request.user,
+                    action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
-                    description="a ajouté une date à l'article '%s'"%article.titre)
+                    description="a ajouté une date à l'article '%s'" % article.titre)
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+
 
 @login_required
 def ajouterDocumentPartage(request, slug_article):
@@ -1050,14 +1136,15 @@ def ajouterDocumentPartage(request, slug_article):
 
     if form.is_valid():
         form.save(article)
-        action.send(request.user, 
-                    action_object=article, 
+        action.send(request.user,
+                    action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
-                    description="a ajouté un document partagé à l'article '%s'"%article.titre)
+                    description="a ajouté un document partagé à l'article '%s'" % article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterDocumentPartage.html', {'form': form, "article": article})
+
 
 @login_required
 def supprimerDocumentPartage(request, slug_docpartage):
@@ -1067,9 +1154,10 @@ def supprimerDocumentPartage(request, slug_docpartage):
                 action_object=article,
                 url=article.get_absolute_url(),
                 verb="article_modifier_" + article.asso.slug,
-                description="a supprimé le document partagé %s de l'article '%s'"%(doc.nom, article.titre))
+                description="a supprimé le document partagé %s de l'article '%s'" % (doc.nom, article.titre))
     doc.delete()
     return redirect(article.get_absolute_url())
+
 
 @login_required
 def modifierDocumentPartage(request, slug_docpartage):
@@ -1091,15 +1179,14 @@ def ajouterReunionArticle(request, slug_article):
 
     if form.is_valid():
         form.save(request.user, article, )
-        action.send(request.user, 
-                    action_object=article, 
+        action.send(request.user,
+                    action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
-                    description="a ajouté une réunion à l'article '%s'"%article.titre)
+                    description="a ajouté une réunion à l'article '%s'" % article.titre)
         return redirect(article)
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
-
 
 
 @login_required
@@ -1113,6 +1200,7 @@ def associerReunionArticle(request, slug_article):
         return redirect(reunion)
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": art})
+
 
 @login_required
 def supprimerReunionArticle(request, slug_reunion):
@@ -1129,15 +1217,16 @@ def ajouterSalonArticle(request, slug_article):
 
     if form.is_valid():
         salon = form.save(request, article)
-        if salon.estPublic:
-            action.send(request.user, 
-                        action_object=article, 
+        if salon.type_salon == 0 or salon.type_salon == 2:
+            action.send(request.user,
+                        action_object=article,
                         url=article.get_absolute_url(),
                         verb="article_modifier_" + article.asso.slug,
-                        description="a ajouté un salon à l'article '%s'"%article.titre)
+                        description="a ajouté un salon à l'article '%s'" % article.titre)
         return redirect(salon.article)
 
-    return render(request, 'blog/ajouterSalon.html', {'form': form, 'article':article, })
+    return render(request, 'blog/ajouterSalon.html', {'form': form, 'article': article, })
+
 
 @login_required
 def associerSalonArticle(request, slug_article):
@@ -1146,15 +1235,16 @@ def associerSalonArticle(request, slug_article):
 
     if form.is_valid():
         salon = form.save(article)
-        if salon.estPublic:
+        if salon.type_salon == 0 or salon.type_salon == 2:
             action.send(request.user,
-                    action_object=article, 
-                    url=article.get_absolute_url(),
-                    verb="article_modifier_" + article.asso.slug,
-                    description="a ajouté un salon à l'article '%s'"%article.titre)
+                        action_object=article,
+                        url=article.get_absolute_url(),
+                        verb="article_modifier_" + article.asso.slug,
+                        description="a ajouté un salon à l'article '%s'" % article.titre)
         return redirect(article)
 
-    return render(request, 'blog/associerSalon.html', {'form': form, 'article':article})
+    return render(request, 'blog/associerSalon.html', {'form': form, 'article': article})
+
 
 class SupprimerEvenementArticle(DeleteAccess, DeleteView):
     model = Evenement
@@ -1177,21 +1267,23 @@ def ajouterAdresseArticle(request, id_article):
     if form_adresse2.is_valid():
         adresse = form_adresse2.save()
         form.save(article, adresse)
-        action.send(request.user, 
-                    action_object=article, 
+        action.send(request.user,
+                    action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
-                    description="a ajouté un lieu à l'article '%s'"%article.titre)
+                    description="a ajouté un lieu à l'article '%s'" % article.titre)
         return redirect(article)
 
-    return render(request, 'blog/ajouterAdresse.html', {'article':article, 'form': form, 'form_adresse2':form_adresse2 })
+    return render(request, 'blog/ajouterAdresse.html',
+                  {'article': article, 'form': form, 'form_adresse2': form_adresse2})
 
 
 @login_required
 def voirAdresseArticle(request, id_adresseArticle):
     lieu = AdresseArticle.objects.get(id=id_adresseArticle)
     titre = str(lieu)
-    return render(request, 'blog/carte_lieu.html', {'titre':titre, "lieu":lieu})
+    return render(request, 'blog/carte_lieu.html', {'titre': titre, "lieu": lieu})
+
 
 class SupprimerAdresseArticle(DeleteView):
     model = AdresseArticle
@@ -1227,28 +1319,29 @@ class ModifierAdresseArticle(UpdateView):
         self.object = form.save()
         return HttpResponseRedirect(self.object.get_absolute_url)
 
+
 @login_required
 def ajouterTodoArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
     form = TodoArticleForm(request.POST or None)
 
     if form.is_valid():
-        form.save(article,)
+        form.save(article, )
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
-                    description="a ajouté un todo à l'article '%s'"%article.titre)
+                    description="a ajouté un todo à l'article '%s'" % article.titre)
         return redirect(article)
 
-    return render(request, 'blog/ajouterTodoArticle.html', {'article':article, 'form': form})
+    return render(request, 'blog/ajouterTodoArticle.html', {'article': article, 'form': form})
 
 
 class ModifierTodoArticle(UpdateView):
     model = TodoArticle
     form_class = TodoArticleChangeForm
     template_name_suffix = '_modifier'
-    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+    # fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
 
 class SupprimerTodoArticle(DeleteView):
@@ -1272,9 +1365,8 @@ class SupprimerTodoArticle(DeleteView):
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
 
-
 @login_required
-def todoArticle_toggle(request, slug_article, slug_todo) :
+def todoArticle_toggle(request, slug_article, slug_todo):
     """Toggle the completed status of a task from done to undone, or vice versa.
     Redirect to the list from which the task came.
     """
@@ -1284,8 +1376,7 @@ def todoArticle_toggle(request, slug_article, slug_todo) :
         todo.estFait = not todo.estFait
         todo.save()
 
-        return redirect(reverse('blog:lireArticle', kwargs={'slug':slug_article}))
-
+        return redirect(reverse('blog:lireArticle', kwargs={'slug': slug_article}))
 
 
 class ListeTodo_asso(ListView):
@@ -1316,8 +1407,6 @@ class ListeTodo_asso(ListView):
         context = super().get_context_data(**kwargs)
         context['asso_list'] = Choix_global.slugsNomsAssoEtPublic
         return context
-
-
 
 
 class ListeDocPtg_asso(ListView):
@@ -1352,29 +1441,30 @@ class ListeDocPtg_asso(ListView):
         return context
 
 
-
 @login_required
 def voirCarteLieux(request, id_article):
     article = Article.objects.get(id=id_article)
     lieux = article.getLieux()
-    titre = "Lieux associés à l'article '" + str(article.titre) +"'"
-    return render(request, 'blog/carte_lieux.html', {'titre':titre, "lieux":lieux})
+    titre = "Lieux associés à l'article '" + str(article.titre) + "'"
+    return render(request, 'blog/carte_lieux.html', {'titre': titre, "lieux": lieux})
+
 
 @login_required
 def voirCarteLieux_article(request, id_article):
     article = Article.objects.get(id=id_article)
     lieux = article.getLieux()
-    titre = "Lieux associés à l'article '" + str(article.titre) +"'"
-    return render(request, 'blog/carte_lieux.html', {"lieux":lieux, "titre":titre})
+    titre = "Lieux associés à l'article '" + str(article.titre) + "'"
+    return render(request, 'blog/carte_lieux.html', {"lieux": lieux, "titre": titre})
+
 
 @login_required
-def voirLieux(request,):
+def voirLieux(request, ):
     if not request.user.is_superuser:
         return HttpResponseForbidden("Vous n'avez pas l'autorisation de voir les lieux")
     titre = "tous les lieux"
     lieux = AdresseArticle.objects.filter().order_by('titre')
 
-    return render(request, 'blog/carte_touslieux.html', {'titre':titre, "lieux":lieux})
+    return render(request, 'blog/carte_touslieux.html', {'titre': titre, "lieux": lieux})
 
 
 @login_required
@@ -1387,32 +1477,33 @@ def supprimerAtelierArticle(request, article_slug, atelier_slug):
 
     return lireArticle(request, article_slug)
 
+
 # methode pour migrer les donnees
 def changerArticles_jardin(request):
+    return render(request, 'blog/accueil.html')
     from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
     articles = Article.objects.filter(categorie="Jardin")
     for article in articles:
         new_art = Art_jardin.objects.create(categorie='Discu',
-                                titre = article.titre,
-                                auteur = article.auteur,
-                                slug = article.slug,
-                                contenu = article.contenu,
-                                date_creation = article.date_creation,
-                                date_modification = article.date_modification,
-                                estPublic = article.estPublic,
-                                estModifiable = article.estModifiable,
-                            
-                                date_dernierMessage = article.date_dernierMessage,
-                                dernierMessage = article.dernierMessage,
-                                estArchive = article.estArchive,)
+                                            titre=article.titre,
+                                            auteur=article.auteur,
+                                            slug=article.slug,
+                                            contenu=article.contenu,
+                                            date_creation=article.date_creation,
+                                            date_modification=article.date_modification,
+                                            estPublic=article.estPublic,
+                                            estModifiable=article.estModifiable,
+
+                                            date_dernierMessage=article.date_dernierMessage,
+                                            dernierMessage=article.dernierMessage,
+                                            estArchive=article.estArchive, )
         commentaires = Commentaire.objects.filter(article=article)
         for commentaire in commentaires:
-            new = Comm_jardin.objects.create(auteur_comm = commentaire.auteur_comm, commentaire = commentaire.commentaire,
-                                     article = new_art, date_creation= commentaire.date_creation)
+            new = Comm_jardin.objects.create(auteur_comm=commentaire.auteur_comm, commentaire=commentaire.commentaire,
+                                             article=new_art, date_creation=commentaire.date_creation)
         article.delete()
 
     return render(request, 'blog/accueil.html')
-
 
 
 @login_required
@@ -1423,7 +1514,7 @@ def filtrer_articles(request):
         articles_list = Article.objects.filter(q_object).distinct()
 
     f = ArticleFilter(request.GET, queryset=articles_list)
-    #f = articles_list
+    # f = articles_list
     return render(request, 'blog/article_filter.html', {'filter': f})
 
 
@@ -1438,26 +1529,27 @@ def ajax_categories(request):
             cat = None
 
         return render(request, 'blog/ajax/categories_dropdown_list_options.html',
-                      {'categories': Choix.get_type_annonce_asso(nomAsso), 'categorie_courante':cat})
+                      {'categories': Choix.get_type_annonce_asso(nomAsso), 'categorie_courante': cat})
     except:
-        return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'categories': Choix.get_type_annonce_asso("defaut")})
+        return render(request, 'blog/ajax/categories_dropdown_list_options.html',
+                      {'categories': Choix.get_type_annonce_asso("defaut")})
+
 
 @login_required
 def ajax_infosArticle(request, slug_article):
     try:
         article = get_object_or_404(Article, slug=slug_article)
-        nb_dates= Evenement.objects.filter(article=article).count() + 1 if article.start_time else 0
+        nb_dates = Evenement.objects.filter(article=article).count() + 1 if article.start_time else 0
         nb_fichiers = Document.objects.filter(article=article).count()
         nb_docptg = DocumentPartage.objects.filter(article=article).count()
-        nb_comm =  Commentaire.objects.filter(article=article).count()
+        nb_comm = Commentaire.objects.filter(article=article).count()
 
-
-        return render(request, 'blog/ajax/infos_article.html',  {'nb_dates': nb_dates,
-                                                                 'nb_fichiers': nb_fichiers,
-                                                                 'nb_docptg': nb_docptg,
-                                                                 'nb_comm': nb_comm,})
+        return render(request, 'blog/ajax/infos_article.html', {'nb_dates': nb_dates,
+                                                                'nb_fichiers': nb_fichiers,
+                                                                'nb_docptg': nb_docptg,
+                                                                'nb_comm': nb_comm, })
     except:
-        return render(request, 'blog/ajax/infos_article.html',)
+        return render(request, 'blog/ajax/infos_article.html', )
 
 
 def ajaxListeArticles(request):
@@ -1471,9 +1563,9 @@ def ajaxListeArticles(request):
         return render(request, 'blog/ajax/listeArticles.html',
                       {'qs': qs})
     except:
-        qs = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(estArchive=False)
+        qs = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
+            estArchive=False)
         return render(request, 'blog/ajax/categories_dropdown_list_options.html', {'qs': qs})
-
 
 
 class TagAutocomplete(autocomplete.Select2QuerySetView):
@@ -1490,7 +1582,6 @@ class TagAutocomplete(autocomplete.Select2QuerySetView):
         return qs
 
 
-
 @login_required
 def ajax_dernierscommentaires(request):
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
@@ -1499,13 +1590,11 @@ def ajax_dernierscommentaires(request):
     return render(request, 'blog/template_commentaires_tableau.html', {'comm_list': derniers_comm})
 
 
-
 @login_required
 def ajouterArticleLiens(request, slug_article):
     article = Article.objects.get(slug=slug_article)
     form = ArticleLiensForm(request.POST or None)
     form_article = Article_rechercheForm(request.POST or None)
-
 
     if form.is_valid() and form_article.is_valid():
         article_lie = form_article.cleaned_data['article']
@@ -1518,14 +1607,16 @@ def ajouterArticleLiens(request, slug_article):
                         description="a lié l'article '%s' à '%s'" % (article.titre, lien.article_lie.titre))
         return redirect(article)
 
-    return render(request, 'blog/articleliens_ajouter.html', {'article':article, 'form': form, 'form_article': form_article})
+    return render(request, 'blog/articleliens_ajouter.html',
+                  {'article': article, 'form': form, 'form_article': form_article})
+
 
 class ModifierArticleLiens(UpdateView):
     model = ArticleLiens
     form_class = ArticleLiensChangeForm
     template_name_suffix = '_modifier'
-    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
+    # fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def form_valid(self, form):
         self.object = form.save()
@@ -1570,13 +1661,15 @@ def ajouterArticleLienProjet(request, slug_article):
                         description="a lié l'article '%s' au projet '%s'" % (article.titre, lien.projet_lie.titre))
         return redirect(article)
 
-    return render(request, 'blog/articlelienprojet_ajouter.html', {'article':article, 'form': form, 'form_projet': form_projet})
+    return render(request, 'blog/articlelienprojet_ajouter.html',
+                  {'article': article, 'form': form, 'form_projet': form_projet})
+
 
 class ModifierArticleLienProjet(UpdateView):
     model = ArticleLienProjet
     form_class = ArticleLienProjetChangeForm
     template_name_suffix = '_modifier'
-    #fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+    # fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
 
 class SupprimerArticleLienProjet(DeleteView):
@@ -1600,8 +1693,6 @@ class SupprimerArticleLienProjet(DeleteView):
             return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer")
 
 
-
-
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         calc = len(self.q) > 1
@@ -1610,12 +1701,14 @@ class ArticleAutocomplete(autocomplete.Select2QuerySetView):
             return Article.objects.none()
 
         if calc:
-            #if "asso_slug" in self.request.session:
+            # if "asso_slug" in self.request.session:
             #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__slug=self.request.session["asso_slug"]).exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre")
-            #else:
-                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre").filter(Q(estArchive=False) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)) )
+            # else:
+            qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by(
+                "titre").filter(Q(estArchive=False) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)))
 
         return qs
+
 
 class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -1626,11 +1719,16 @@ class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
 
         if calc:
             if "asso_slug" in self.request.session:
-                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(asso__slug=self.request.session["asso_slug"]) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                             estArchive=True).filter(Q(asso__slug=self.request.session["asso_slug"]) & (
+                            Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
             else:
-                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                             estArchive=True).filter(
+                    Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
 
         return qs
+
 
 class ProjetAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -1639,4 +1737,6 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated or calc:
             return Projet.objects.none()
 
-        return Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+        return Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                      estArchive=True).filter(
+            Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")

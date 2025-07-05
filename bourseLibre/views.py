@@ -1341,9 +1341,11 @@ def testIsMembreSalon(request, slug):
 @login_required
 def salon_accueil(request):
     salons_su = []
-    salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__estPublic=False).order_by("salon__titre")
+    salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__type_salon=1).order_by("salon__titre")
     salons_prives = [s.salon for s in salons_inscrit]
-    salons_publics = Salon.objects.filter(estPublic=True).order_by("titre")
+    salons_publics = Salon.objects.filter(type_salon=0).order_by("titre")
+    salons_groupes = [s for s in Salon.objects.filter(type_salon=2).order_by("titre") if s.est_autorise(request.user)]
+
     dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=pytz.UTC)
     salons_recents = [s.salon for s in salons_inscrit.filter(Q(salon__date_dernierMessage__gte=dateMin) | Q(salon__date_creation__gte=dateMin)).order_by(Lower("salon__titre"))]
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
@@ -1356,7 +1358,7 @@ def salon_accueil(request):
             inner_qs.remove((None, ))
     tags = Tag.objects.filter(id__in=inner_qs)
 
-    return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })
+    return render(request, 'salon/accueilSalons.html', {'salons_prives':salons_prives, "salons_publics":salons_publics, "salons_groupes":salons_groupes, "salons_recents":salons_recents, "salons_su":salons_su, "invit":invit, "suivis":suivis, "tags":tags })
 
 
 class ListeSalons(ListView):
@@ -1367,13 +1369,13 @@ class ListeSalons(ListView):
 
     def get_queryset(self):
         self.params = dict(self.request.GET.items())
-        salons_publics = Salon.objects.filter(estPublic=True).order_by("titre")
+        salons_publics = Salon.objects.filter(type_salon=0).order_by("titre")
         return salons_publics
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context["salons_prives"] = [s.salon for s in InscritSalon.objects.filter(profil=self.request.user, salon__estPublic=False).order_by("salon__titre").distinct()]
+        context["salons_prives"] = [s.salon for s in InscritSalon.objects.filter(profil=self.request.user, salon__type_salon=1).order_by("salon__titre").distinct()]
         suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
         context["invit"] = InvitationDansSalon.objects.filter(profil_invite=self.request.user).order_by("salon__titre")
 
@@ -1416,7 +1418,7 @@ def salon(request, slug):
         message.save()
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
         url = message.get_absolute_url()
-        if salon.estPublic:
+        if salon.estPublic():
             action.send(request.user, verb='envoi_salon_public'+str(salon.slug),
                         action_object=message, target=group, url=url,
                         description="a envoyé un message dans le salon [public] '" + str(salon.titre))
@@ -1457,7 +1459,7 @@ def creerSalon(request):
         form.save_m2m()
         suivre_salon(request, salon.slug)
 
-        if salon.estPublic:
+        if salon.estPublic():
             url = reverse('salon', kwargs={'slug':salon.slug})
             action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, target=group, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 
@@ -1482,7 +1484,7 @@ def modifierSalon(request, slug):
 
         form.save_m2m()
 
-        if salon.estPublic:
+        if salon.estPublic():
             url = reverse('salon', kwargs={'slug':salon.slug})
             action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 

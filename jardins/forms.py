@@ -80,12 +80,12 @@ class SalonJardinForm(forms.ModelForm):
 
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic' ]
+        fields = ['titre', 'type_salon' ]
 
     def save(self, request, jardin):
         instance = super(SalonJardinForm, self).save(commit=False)
         instance.jardin = jardin
-        instance.estPublic = False
+        instance.type_salon = 1
         instance.save()
         inscrit = InscritSalon(salon=instance, profil=request.user)
         inscrit.save()

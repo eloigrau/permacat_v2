@@ -572,7 +572,7 @@ class creerAction_articlenouveauForm(forms.Form):
 class SalonForm(forms.ModelForm):
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic', 'description', 'tags']
+        fields = ['titre', 'type_salon', 'description', 'tags']
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -594,13 +594,13 @@ class Lien_AssoSalon_adminForm(forms.ModelForm):
 class SalonForm_admin(forms.ModelForm):
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic', 'description', 'tags', 'slug']
+        fields = ['titre', 'type_salon', 'description', 'tags', 'slug']
 
 
 class ModifierSalonForm(forms.ModelForm):
     class Meta:
         model = Salon
-        fields = ['titre', 'estPublic', 'description', 'tags']
+        fields = ['titre', 'type_salon', 'description', 'tags']
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -620,9 +620,10 @@ class InviterDansSalonForm(forms.Form):
 
     def __init__(self, salon, *args, **kwargs):
         super(InviterDansSalonForm, self).__init__(*args, **kwargs)
-        self.fields['profil_invite'].choices = [(u.id, u) for i, u in
+        if salon.type_salon == 1:
+            self.fields['profil_invite'].choices = [(u.id, u) for i, u in
                                                 enumerate(Profil.objects.all().order_by('username')) if
-                                                salon.estPublic or not salon.est_autorise(u)]
+                                                not salon.est_autorise(u)]
 
 
 class Profil_rechercheForm(forms.ModelForm):

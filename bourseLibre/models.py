@@ -1267,6 +1267,11 @@ def getOrCreateConversation(nom1, nom2):
     return convers
 
 
+class Type_Salon(models.IntegerChoices):
+    PUBLIC = 0, _('Public')
+    PRIVE = 1, _('Privé (sur invitation)')
+    #ASSO = 2, _("Réservé à tous les membres d'un groupe")
+
 class Salon(models.Model):
     titre = models.CharField(max_length=250)
     auteur = models.CharField(max_length=100)
@@ -1276,7 +1281,8 @@ class Salon(models.Model):
     date_dernierMessage = models.DateTimeField(verbose_name=_("Date de Modification"), auto_now=False, blank=True, null=True)
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
     membres = models.ManyToManyField(Profil, through='InscritSalon')
-    estPublic = models.BooleanField(verbose_name=_("Salon public ou privé (public si coché)"), default=False)
+    #estPublic = models.BooleanField(verbose_name=_("Salon public ou privé (public si coché)"), default=False)
+    type_salon = models.IntegerField(default=Type_Salon.PUBLIC, choices=Type_Salon.choices)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Le salon doit être associé à un article existant (sinon créez un article avec une date)", blank=True, null=True)
     jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
@@ -1284,6 +1290,7 @@ class Salon(models.Model):
 
     tags = TaggableManager(verbose_name=_("Mots clés"), help_text="Liste de mots-clés séparés par une virgule", blank=True, related_name="tag_salon")
 
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         ordering = ('titre',)
@@ -1314,9 +1321,9 @@ class Salon(models.Model):
 
         super(Salon, self).save(*args, **kwargs)
 
-
-    def est_autorise(self, user):
-        return self.estPublic or user in self.getInscrits() or user in self.getInvites()
+    @property
+    def estPublic(self, user):
+        return self.type_salon == Type_Salon.PUBLIC
 
     def est_membre(self, user):
         return user in self.membres.all()
@@ -1335,6 +1342,16 @@ class Salon(models.Model):
 
     def getSuivi(self):
         return Suivis.objects.get_or_create(nom_suivi="salon_" + str(self.slug))[0]
+
+    def est_autorise(self, user):
+        if self.type_salon == Type_Salon.PUBLIC:
+            return True
+        elif self.type_salon == Type_Salon.PRIVE:
+            return user in self.getInscritsEtInvites()
+        elif self.type_salon == Type_Salon.ASSO:
+            if self.asso :
+                return user.est_autorise(self.asso.slug)
+            return True
 
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)

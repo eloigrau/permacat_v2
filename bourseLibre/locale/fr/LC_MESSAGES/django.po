@@ -1628,7 +1628,7 @@ msgstr "Avril"
 #: venv/lib/python3.9/site-packages/django/utils/dates.py:29
 #: venv/lib/python3.9/site-packages/django_ledger/models/entity.py:747
 msgid "May"
-msgstr "Peut"
+msgstr "Mai"
 #: venv/lib/python3.9/site-packages/django/utils/dates.py:30
 #: venv/lib/python3.9/site-packages/django_ledger/models/entity.py:748
 msgid "June"

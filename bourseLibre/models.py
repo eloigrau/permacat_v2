@@ -1322,7 +1322,7 @@ class Salon(models.Model):
         super(Salon, self).save(*args, **kwargs)
 
     @property
-    def estPublic(self, user):
+    def estPublic(self):
         return self.type_salon == Type_Salon.PUBLIC
 
     def est_membre(self, user):

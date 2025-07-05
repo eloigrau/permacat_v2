@@ -1418,7 +1418,7 @@ def salon(request, slug):
         message.save()
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
         url = message.get_absolute_url()
-        if salon.estPublic():
+        if salon.estPublic:
             action.send(request.user, verb='envoi_salon_public'+str(salon.slug),
                         action_object=message, target=group, url=url,
                         description="a envoyé un message dans le salon [public] '" + str(salon.titre))
@@ -1459,7 +1459,7 @@ def creerSalon(request):
         form.save_m2m()
         suivre_salon(request, salon.slug)
 
-        if salon.estPublic():
+        if salon.estPublic:
             url = reverse('salon', kwargs={'slug':salon.slug})
             action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, target=group, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 
@@ -1484,7 +1484,7 @@ def modifierSalon(request, slug):
 
         form.save_m2m()
 
-        if salon.estPublic():
+        if salon.estPublicœ:
             url = reverse('salon', kwargs={'slug':salon.slug})
             action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 

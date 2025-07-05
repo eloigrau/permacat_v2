@@ -257,6 +257,13 @@ class Asso(models.Model):
             return True
         return getattr(user, "adherent_" + self.slug, False)
 
+    def est_autorise(self, user):
+        if self.slug == "public":
+            return True
+        elif self.slug == "conf66":
+            return user.isCotisationAJour(self.slug)
+
+        return getattr(user, "adherent_" + self.slug, False)
 
     def is_adhesion_anneecourante(self, user, mois_precedents=6):
         time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
@@ -576,9 +583,8 @@ class Profil(AbstractUser):
     def est_autorise(self, slug_asso):
         if slug_asso == "public":
             return True
-        #elif slug_asso in ["conf66", "scic" ]:
-        #    return self.isCotisationAJour(slug_asso)
-
+        elif slug_asso in ["conf66", "scic"]:
+            return self.isCotisationAJour(slug_asso)
 
         return getattr(self, "adherent_" + slug_asso)
 
@@ -597,7 +603,6 @@ class Profil(AbstractUser):
     def get_salons(self, ):
         return [s.salon for s in InvitationDansSalon.objects.filter(profil_invite=self)] + \
             [s.salon for s in InscritSalon.objects.filter(profil=self)]
-
 
     @property
     def get_jardins(self,):
@@ -840,13 +845,13 @@ class Produit(models.Model):  # , BaseProduct):
         return "[A propos de l'annonce de '" + self.nom_produit + "']: "
 
     def est_autorise(self, user):
-        if self.asso.slug == "public":
+        if user == self.user or self.asso.slug == "public":
             return True
-
-        #elif self.asso.slug == "conf66":
-        #    return self.asso.is_adhesion_anneecourante(user)
+        elif self.asso.slug == "conf66":
+            return user.isCotisationAJour(self.asso.slug)
 
         return getattr(user, "adherent_" + self.asso.slug, False)
+
 
     @property
     def est_public(self):
@@ -1527,13 +1532,13 @@ class MessageGeneral(models.Model):
         return super(MessageGeneral, self).save()
 
     def est_autorise(self, user):
-        if self.asso.slug == "public":
+        if user == self.auteur or self.asso.slug == "public":
             return True
-
-        #elif self.asso.slug == "conf66":
-        #    return self.asso.is_adhesion_anneecourante(user)
+        elif self.asso.slug == "conf66":
+            return user.isCotisationAJour(self.asso.slug)
 
         return getattr(user, "adherent_" + self.asso.slug, False)
+
 
 class Suivis(models.Model):
     nom_suivi = models.TextField(null=False, blank=False)

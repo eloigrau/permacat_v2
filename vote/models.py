@@ -201,14 +201,7 @@ class Suffrage(SuffrageBase):
         return Choix.get_couleur(self.type_vote)
 
     def est_autorise(self, user):
-        if self.asso.slug == "public":
-            return True
-
-        elif self.asso.slug == "conf66":
-            return self.asso.is_adhesion_anneecourante(user)
-
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
 
     @property

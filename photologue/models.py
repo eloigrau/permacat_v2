@@ -244,14 +244,8 @@ class Album(models.Model):
     def est_autorise(self, user):
         if not self.asso:
             return True
-        if self.asso.slug == "public":
-            return True
 
-        elif self.asso.slug == "conf66":
-            return self.asso.is_adhesion_anneecourante(user, delai_mois_precedents=6)
-
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
     def latest(self, limit=LATEST_LIMIT, public=True):
         if not limit:
@@ -343,13 +337,9 @@ class Document(models.Model):
 
 
     def est_autorise(self, user):
-        if not self.asso or self.asso.slug == "public":
+        if not self.asso:
             return True
-
-        #elif self.asso.slug == "conf66":
-        #    return self.asso.is_adhesion_anneecourante(user)
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
     @property
     def getHitNumber(self,):

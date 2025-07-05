@@ -156,10 +156,7 @@ class Atelier(models.Model):
     def est_autorise(self, user):
         if user == self.auteur:
             return True
-        if self.asso.slug == "public":
-            return True
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
     def est_complet(self):
         if not self.nbMaxInscriptions:

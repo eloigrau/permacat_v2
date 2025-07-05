@@ -442,16 +442,12 @@ class Article(models.Model):
         return mark_safe(html)
 
     def est_autorise(self, user):
-        if user == self.auteur or  self.asso.slug == "public" or self.partagesAsso.filter(slug="public"):
+        if user == self.auteur or self.partagesAsso.filter(slug="public").exists():
             return True
-        elif self.asso.slug == "conf66":
-            return user.isCotisationAJour(self.asso.slug)#
-
-        adhesion = getattr(user, "adherent_" + self.asso.slug, False)
-        if adhesion :
-            return adhesion
+        elif self.asso.est_autorise(user):
+            return True
         for asso in self.get_partagesAsso:
-            if getattr(user, "adherent_" + asso.slug, False):
+            if asso.est_autorise(user):
                 return True
         return False
 
@@ -664,7 +660,6 @@ class Commentaire(models.Model):
                     pass
         return retour
 
-
     def est_autorise(self, user):
         return self.projet.est_autorise(user)
 
@@ -745,12 +740,9 @@ class Projet(models.Model):
             return Choix.couleurs_annonces["Autre"]
 
     def est_autorise(self, user):
-        if user == self.auteur or self.asso.slug == "public":
+        if user == self.auteur:
             return True
-        elif self.asso.slug == "conf66":
-            return user.isCotisationAJour(self.asso.slug)
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
     @property
     def has_ficheprojet(self):
@@ -787,14 +779,7 @@ class FicheProjet(models.Model):
 
 
     def est_autorise(self, user):
-        if self.projet.asso.slug == "public":
-            return True
-
-        elif self.asso.slug == "conf66":
-            return user.isCotisationAJour(self.asso.slug)
-
-
-        return getattr(user, "adherent_" + self.projet.asso.slug, False)
+        return self.projet.est_autorise(user)
 
     @property
     def titre(self):
@@ -1006,198 +991,3 @@ class Projet_recherche(models.Model):
                                #help_text=mark_safe("<p style='color:teal'>Taper 2 lettres du titre du projet recherché'</p>")
                                )
 
-
-#
-# class Atelier_new(models.Model):
-#     categorie = models.CharField(max_length=30,
-#         choices=(Choix.type_atelier),
-#         default='0', verbose_name=_("categorie")
-#     statut = models.CharField(max_length=30,
-#         choices=(Choix.statut_atelier),
-#         default='proposition', verbose_name=_("Statut de l'atelier")
-#     titre = models.CharField(verbose_name=_("Titre de l'atelier",max_length=120)
-#     slug = models.SlugField(max_length=100, default=uuid.uuid4)
-#     description = models.TextField(null=True, blank=True)
-#     materiel = models.TextField(null=True, blank=True, verbose_name=_("Matériel/outils nécessaires")
-#     referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name=_("Référent(e.s)")
-#     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-# #    projet = models.OneToOneField(Projet)
-#     start_time = models.DateField(verbose_name=_("Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
-#     heure_atelier = models.TimeField(verbose_name=_("Heure de début", help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
-#     heure_atelier_fin = models.TimeField(verbose_name=_("Heure de fin ", help_text="Horaire de fin (hh:mm)",
-#                                     default="17:00", blank=True, null=True)
-#
-#     date_creation = models.DateTimeField(verbose_name=_("Date de parution", default=timezone.now)
-#     date_modification = models.DateTimeField(verbose_name=_("Date de modification", default=timezone.now)
-#     tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name=_("Tarif de l'atelier par personne", )
-#     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-#     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
-#
-#     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'atelier")
-#     nbMaxInscriptions = models.IntegerField( verbose_name=_("Nombre maximum d'inscriptions", help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
-#
-#     class Meta:
-#         ordering = ('-date_creation',)
-#
-#     def __str__(self):
-#         return self.titre
-#
-#     def get_absolute_url(self):
-#         return reverse('ateliers:lireAtelier', kwargs={'slug': self.slug})  # + "#idTitreAtelier"
-#
-#     def save(self, sendMail=True, *args, **kwargs):
-#         ''' On save, update timestamps '''
-#         emails, suiveurs = [], []
-#         message_notif = ""
-#         if not self.id:
-#             self.date_creation = timezone.now()
-#
-#             try:
-#                 self.auteur
-#             except:
-#                 self.auteur = Profil.objects.first()
-#
-#             suivi, created = Suivis.objects.get_or_create(nom_suivi='ateliers')
-#             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv)]
-#             if sendMail:
-#                 emails = [suiv.email for suiv in suiveurs]
-#             else:
-#                 emails = []
-#             titre = "Nouvel atelier proposé"
-#             if self.start_time:
-#                 message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
-#                     DATE_INPUT_FORMAT) + " a été proposé"
-#                 message_notif = "L'atelier [" + self.asso.nom + "] '" + self.titre + "' le " + self.start_time.strftime(
-#                     DATE_INPUT_FORMAT) + " a été proposé"
-#             else:
-#                 message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été proposé"
-#                 message_notif = "L'atelier [" + self.asso.nom + "] '" + self.titre + "' a été proposé"
-#         else:
-#             if sendMail:
-#                 titre = "Atelier modifié"
-#                 if self.start_time:
-#                     message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' le " + self.start_time.strftime(
-#                         DATE_INPUT_FORMAT) + " a été modifié"
-#                     message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + "' le " + self.start_time.strftime(
-#                         DATE_INPUT_FORMAT) + " a été modifié"
-#                 else:
-#                     message = "L'atelier [" + self.asso.nom + "]' <a href='https://www.perma.cat" + self.get_absolute_url() + "'>" + self.titre + "</a>' a été modifié"
-#                     message_notif = "L'atelier [" + self.asso.nom + "]' " + self.titre + " a été modifié"
-#
-#         ret = super(Atelier_new, self).save(*args, **kwargs)
-#         if emails:
-#             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
-#             payload = {"head": titre, "body": message_notif,
-#                        "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
-#             for suiv in suiveurs:
-#                 try:
-#                     send_user_notification(suiv, payload=payload, ttl=7200)
-#                 except:
-#                     pass
-#         return ret
-#
-#     @property
-#     def get_couleur(self):
-#         try:
-#             return Choix.couleurs_ateliers[self.categorie]
-#         except:
-#             return Choix.couleurs_ateliers['0']
-#
-#     #@property
-#     #def get_inscrits(self):
-#     #    return [x[0] for x in InscriptionAtelier.objects.filter(atelier=self).values_list('user__username')]
-#
-#     @property
-#     def get_couleur_cat(self, cat):
-#         try:
-#             return Choix.couleurs_ateliers[cat]
-#         except:
-#             return Choix.couleurs_ateliers['0']
-#
-#     def est_autorise(self, user):
-#         if user == self.auteur:
-#             return True
-#         if self.asso.slug == "public":
-#             return True
-#
-#         return getattr(user, "adherent_" + self.asso.slug)
-#
-#     def est_complet(self):
-#         if not self.nbMaxInscriptions:
-#             return False
-#         return len(self.get_inscrits) >= self.nbMaxInscriptions
-#
-#     @property
-#     def heure_fin_atelier(self, ):
-#         if self.start_time and self.heure_atelier_fin:
-#             return self.heure_atelier_fin
-#         else:
-#             return None
-#
-#     @property
-#     def get_logo_nomgroupe_html(self, ):
-#         return self.asso.get_logo_nomgroupe_html_taille(taille=18)
-#
-#
-# class InscriptionAtelier_new(models.Model):
-#     user = models.ForeignKey(Profil, on_delete=models.CASCADE)
-#     atelier = models.ForeignKey(Atelier_new, on_delete=models.CASCADE)
-#     date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription", editable=False, auto_now_add=True)
-#
-#     def __unicode__(self):
-#         return self.__str()
-#
-#     def __str__(self):
-#         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(self.atelier)
-#
-#
-#
-# class CommentaireAtelier_new(models.Model):
-#     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
-#     commentaire = models.TextField()
-#     atelier = models.ForeignKey(Atelier_new, on_delete=models.CASCADE)
-#     date_creation = models.DateTimeField(auto_now_add=True)
-#
-#     def __unicode__(self):
-#         return self.__str__()
-#
-#     def __str__(self):
-#         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.atelier)
-#
-#     @property
-#     def get_edit_url(self):
-#         return reverse('ateliers:modifierCommentaireAtelier',  kwargs={'id':self.id})
-#
-#
-#     def get_absolute_url(self):
-#         return self.atelier.get_absolute_url()
-#
-#     def get_absolute_url_discussion(self):
-#         return self.atelier.get_absolute_url() + "#idConversation"
-#
-#     def save(self, *args, **kwargs):
-#         ''' On save, update timestamps '''
-#         retour = super(CommentaireAtelier_new, self).save(*args, **kwargs)
-#
-#         values = username_re.findall(self.commentaire)
-#         if values:
-#             for v in values:
-#                 try:
-#                     p = Profil.objects.get(username__iexact=v)
-#                     titre_mention = "Vous avez été mentionné dans un commentaire de l'atelier '" + self.atelier.titre  +"'"
-#                     msg_mention = str(self.auteur_comm.username) + " vous a mentionné <a href='https://www.perma.cat"+self.get_absolute_url_discussion()+"'>dans un commentaire</a> de l'atelier '" + self.atelier.titre +"'"
-#                     msg_mention_notif = " vous a mentionné dans un commentaire de l'atelier '" + self.atelier.titre +"'"
-#                     action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre_mention,
-#                                 message=msg_mention,
-#                                 emails=[p.email, ])
-#                     action.send(self.auteur_comm, verb='mention_' + p.username, url=self.get_absolute_url(),
-#                                 description=msg_mention_notif, )
-#
-#                     payload = {"head": titre_mention, "body": str(self.auteur_comm.username) + msg_mention_notif,
-#                                "icon": static('android-chrome-256x256.png'), "url": self.get_absolute_url()}
-#                     send_user_notification(p, payload=payload, ttl=7200)
-#
-#                 except Exception as e:
-#                     pass
-#
-#         return retour

@@ -154,10 +154,7 @@ class Reunion(models.Model):
 
 
     def est_autorise(self, user):
-        if self.asso.slug == "public":
-            return True
-
-        return getattr(user, "adherent_" + self.asso.slug, False)
+        return self.asso.est_autorise(user)
 
     @property
     def getDistanceTotale(self):

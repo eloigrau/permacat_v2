@@ -646,8 +646,8 @@ def contact_admins(request):
             envoyeur = request.user.username + " (" + request.user.email + ") "
             email = request.user.email
         sujet = form.cleaned_data['sujet']
-        message_txt = envoyeur + " a envoyé l'email suivant : "+ form.cleaned_data['msg']
-        message_html = envoyeur + " a envoyé l'email' suivant : " + form.cleaned_data['msg']
+        message_txt = envoyeur + " a envoyé le message suivant : "+ form.cleaned_data['msg']
+        message_html = envoyeur + " a envoyé le message suivant : " + form.cleaned_data['msg']
         MessageAdmin.objects.create(email=email, message=message_txt, sujet=sujet)
 
         admin = Profil.objects.get(username="Eloi")
@@ -658,26 +658,46 @@ def contact_admins(request):
             action.send(request.user, verb='envoi_salon_prive',  url="/gestion/bourseLibre/messageadmin/",
                 description="a envoyé un message aux admin (%s)" %admin.username)
 
-        try:
-            envoiMailAdmin = False
-            if envoiMailAdmin and not LOCALL:
-                mail_admins(sujet, message_txt, html_message=message_html)
-                if form.cleaned_data['renvoi']:
-                    if request.user.is_anonymous:
-                        send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, form.cleaned_data['email'], [form.cleaned_data['email'],], fail_silently=False, html_message=message_html)
-                    else:
-                        send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, request.user.email, [request.user.email,], fail_silently=False, html_message=message_html)
+        # try:
+        #     envoiMailAdmin = False
+        #     if envoiMailAdmin and not LOCALL:
+        #         mail_admins(sujet, message_txt, html_message=message_html)
+        #         if form.cleaned_data['renvoi']:
+        #             if request.user.is_anonymous:
+        #                 send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, form.cleaned_data['email'], [form.cleaned_data['email'],], fail_silently=False, html_message=message_html)
+        #             else:
+        #                 send_mail(sujet, "Vous avez envoyé aux administrateurs du site www.perma.cat le message suivant : " + message_html, request.user.email, [request.user.email,], fail_silently=False, html_message=message_html)
+        #
+        #     return render(request, 'contact/message_envoye.html', {'sujet': sujet, 'msg': message_html,
+        #                                            'envoyeur': envoyeur ,
+        #                                            "destinataire": "administrateurs "})
+        # except BadHeaderError:
+        #     return render(request, 'erreur.html', {'msg':'Invalid header found.'})
 
-            return render(request, 'contact/message_envoye.html', {'sujet': sujet, 'msg': message_html,
-                                                   'envoyeur': envoyeur ,
+        #return render(request, 'erreur.html', {'msg':"Désolé, une ereur s'est produite"})
+
+        return render(request, 'contact/message_envoye.html', {'sujet': sujet, 'msg': message_html,  'envoyeur': envoyeur ,
                                                    "destinataire": "administrateurs "})
-        except BadHeaderError:
-            return render(request, 'erreur.html', {'msg':'Invalid header found.'})
-
-        return render(request, 'erreur.html', {'msg':"Désolé, une ereur s'est produite"})
-
     return render(request, 'contact/contact.html', {'form': form, "isContactProducteur":False})
 
+
+@login_required
+def signaler_bug(request):
+    form = ContactForm(request.POST or None, )
+
+    if form.is_valid():
+        sujet = form.cleaned_data['sujet']
+        message_txt = "<a href='"+request.user.get_profil_url()+"'>" + str(request.user.username) + "</a> a signalé un bug : "+ form.cleaned_data['msg']
+        MessageAdmin.objects.create(email=request.user.email, message=message_txt, sujet=sujet)
+
+        admin = Profil.objects.get(username="Eloi")
+        action.send(request.user, verb='envoi_salon_prive',  url="/gestion/bourseLibre/messageadmin/",
+            description="a envoyé un message aux admin (%s)" %admin.username)
+        return render(request, 'contact/message_envoye.html', {'sujet': sujet, 'msg': message_txt,
+                                                               "envoyeur": request.user.username,
+                                                   "destinataire": "administrateurs "})
+
+    return render(request, 'contact/signaler_bug.html', {'form': form, "isContactProducteur":False})
 
 
 

@@ -145,6 +145,7 @@ def contact_admins(request):
         form = ContactForm()
     return render(request, 'permagora/contact.html', {'form': form, "isContactProducteur":False})
 
+
 def cgu(request):
     return render(request, 'permagora/cgu.html', )
 

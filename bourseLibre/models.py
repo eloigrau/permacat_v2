@@ -383,6 +383,9 @@ class Profil(AbstractUser):
 
         return super(Profil, self).save(*args, **kwargs)
 
+    def get_profil_url(self):
+        return reverse('profil', kwargs={'user_id':self.id})
+
     @property
     def get_username_annuaire(self):
        if self.accepter_annuaire:

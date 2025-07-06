@@ -2,11 +2,11 @@
 <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
 <a  href="{{salon.get_absolute_url}}" class="boutonSalon" >
        {% if salon.type_salon == 0 %}
-            <badge class="badge badge-info">Salon Public</badge> -
+            <badge class="badge badge-info">Salon Public</badge>
         {% elif salon.type_salon == 1 %}
-            <badge class="badge badge-primary">Salon Privé</badge> -
+            <badge class="badge badge-primary">Salon Privé</badge>
         {% elif salon.type_salon == 2 %}
-             {{salon.asso.get_logo_nomgroupe_html|safe }} -
+             {{salon.asso.get_logo_nomgroupe_html|safe }}
        {% endif %}
 
     {{ salon.titre }} </a>

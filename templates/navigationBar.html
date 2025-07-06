@@ -480,6 +480,7 @@
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'contact_admins' %}"> Contacter admins </a></li>
+                            <li><a class="dropdown-item" href="{% url 'signaler_bug' %}"> Signaler un bug </a></li>
                             <li><a class="dropdown-item" href="{% url 'cgu' %}"> CGU </a></li>
                             <li><hr class="dropdown-divider"></li>
                             {% if request.user.is_superuser %}

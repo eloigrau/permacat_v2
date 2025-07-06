@@ -140,6 +140,7 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
 
     re_path(r'^contact_admins/$', views.contact_admins, name='contact_admins',),
+    re_path(r'^signaler_bug/$', views.signaler_bug, name='signaler_bug',),
     re_path(r'^charte/$', views_base.charte, name='charte',),
     re_path(r'^cgu/$', views_base.cgu, name='cgu',),
     re_path(r'^liens/$', views_base.liens, name='liens',),

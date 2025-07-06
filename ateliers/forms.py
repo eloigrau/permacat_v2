@@ -13,7 +13,7 @@ from bourseLibre.utils import slugify_pcat
 
 class AtelierForm(forms.ModelForm):
     referent = forms.ChoiceField(label='Référent atelier')
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                                   label="Atelier public ou réservé aux adhérents de l'asso :", )
 
     class Meta:

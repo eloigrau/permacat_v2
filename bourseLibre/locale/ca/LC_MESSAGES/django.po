@@ -586,7 +586,7 @@ msgid "Une info sur le forum (Article)"
 msgstr "Una informació sobre el fòrum (article)"
 #: templates/navigationBar.html:375
 msgid "Une Petite Annonce"
-msgstr "Un petit anunci"
+msgstr "Una anunci"
 #: templates/navigationBar.html:377
 msgid "Un Atelier"
 msgstr "Un taller"

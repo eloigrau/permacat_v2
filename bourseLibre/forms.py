@@ -12,6 +12,7 @@ from blog.models import Article
 from dal import autocomplete
 from local_captcha.fields import CaptchaField
 from adherents.models import Adherent
+from django.utils.translation import gettext_lazy as _
 
 #from .constantes import Choix
 #from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
@@ -23,7 +24,7 @@ fieldsCommunsProduits = ['souscategorie', 'nom_produit', 'description', 'estUneO
 
 class ProduitCreationForm(forms.ModelForm):
     estUneOffre = forms.ChoiceField(choices=((1, "Offre"), (0, "Demande")), label='', required=True)
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                                   label="Annonce publique ou réservée aux adhérents de l'asso :", )
     monnaies = forms.ModelMultipleChoiceField(label='Monnaie(s)', required=False, queryset=Monnaie.objects.all(),
                                               widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }))
@@ -570,9 +571,11 @@ class creerAction_articlenouveauForm(forms.Form):
 
 
 class SalonForm(forms.ModelForm):
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=False,)
+
     class Meta:
         model = Salon
-        fields = ['titre', 'type_salon', 'description', 'tags']
+        fields = ['titre', 'type_salon', 'asso', 'description', 'tags']
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -585,6 +588,14 @@ class SalonForm(forms.ModelForm):
         inscrit.save()
         return instance
 
+    def clean(self):
+        cleaned_data = super().clean()
+        type_salon = cleaned_data.get("type_salon")
+        asso = cleaned_data.get("asso")
+
+        if type_salon == 2 and not asso:
+            msg = _("Pour créer un salon de 'Groupe', vous devez choisir à quel Groupe il appartient ci-dessous :")
+            self.add_error("asso", msg)
 
 class Lien_AssoSalon_adminForm(forms.ModelForm):
     class Meta:

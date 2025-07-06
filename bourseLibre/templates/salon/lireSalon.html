@@ -10,50 +10,60 @@
     <div class="col-md-12">
         <div class="row ">
             <div class="col-md-4 textleft ">
-                 <a href="{% url 'salon_accueil' %}">
-                    <button type="button" class="btn  btn-info" >
-                       {% fa5_icon 'home' 'fas' title='home'%}
+                <a href="{% url 'salon_accueil' %}">
+                    <button type="button" class="btn  btn-info">
+                        {% fa5_icon 'home' 'fas' title='home'%}
                     </button>
-                    </a>
+                </a>
             </div>
             <div class="col-md-4 ">
             </div>
             <div class="col-md-4 textright">
-            <a href="{% url 'suivre_salon' slug_salon=salon.slug%}">
-                {% if request.user|is_following:suivis %}
-                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
-                     {% fa5_icon 'bell' title='abonnement ' %}
-                </button>
-                {% else %}
-                <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
-                     {% fa5_icon 'bell-slash' title='abonnement ' %}
-                </button>
-                {% endif %}
-            </a>
-                <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-                 {% fa5_icon 'question-circle' %}
+                <a href="{% url 'suivre_salon' slug_salon=salon.slug%}">
+                    {% if request.user|is_following:suivis %}
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom"
+                            title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
+                        {% fa5_icon 'bell' title='abonnement ' %}
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom"
+                            title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
+                        {% fa5_icon 'bell-slash' title='abonnement ' %}
+                    </button>
+                    {% endif %}
+                </a>
+                <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help"
+                        title="En savoir plus...">
+                    {% fa5_icon 'question-circle' %}
                 </button>
                 <!-- Modal -->
-                <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog textaide" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                          <div class="row justify-content-center">
-                           <h5 > Qu'est ce qu'un salon de discussion ?</h5>
-                          </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                        <div class="modal-body textleft">
-                          <p>Le salon de discussion est un espace où on peut discuter en petit groupe pour s'exprimer librement, un peu comme un groupe "whatsapp" ou "telegram"...</p>
-                            <p>Chaque "Salon" est indépendant. Il est soit ouvert à toustes (public) soit sur invitation (privé). Un salon "privé" n'est accessible et visible que par les membres du salon (sur invitation d'un des membres), tandis que les salons "publics" peuvent etre consultés et commentés par tous les inscrits.</p>
-                            <p>Il est possible de rattacher un salon de discussion à un article du forum : pour cela il faut "ajouter un salon" depuis la page de l'article (sous le titre).</p>
-                            {% if not salon.estPublic %}<p>Pour voir les participant.es au salon privé et en inviter d'autres, il faut cliquer sur le bouton bleu "Salon de discussion Privé"</p>
-                            {% endif %}
+                <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog textaide" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="row justify-content-center">
+                                    <h5> Qu'est ce qu'un salon de discussion ?</h5>
+                                </div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body textleft">
+                                <p>Le salon de discussion est un espace où on peut discuter en petit groupe pour
+                                    s'exprimer librement, un peu comme un groupe "whatsapp" ou "telegram"...</p>
+                                <p>Chaque "Salon" est indépendant. Il est soit ouvert à toustes (public) soit sur
+                                    invitation (privé). Un salon "privé" n'est accessible et visible que par les membres
+                                    du salon (sur invitation d'un des membres), tandis que les salons "publics" peuvent
+                                    etre consultés et commentés par tous les inscrits.</p>
+                                <p>Il est possible de rattacher un salon de discussion à un article du forum : pour cela
+                                    il faut "ajouter un salon" depuis la page de l'article (sous le titre).</p>
+                                {% if not salon.estPublic %}<p>Pour voir les participant.es au salon privé et en inviter
+                                d'autres, il faut cliquer sur le bouton bleu "Salon de discussion Privé"</p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                  </div>
                 </div>
             </div>
         </div>
@@ -71,55 +81,65 @@
 {% block content %}
 <div class="anchor_blank" id="idContenu"></div>
 <nav class="nav nav-tabs justify-content-center">
-    <a class="nav-item nav-link active" href="#discussion" data-toggle="tab">{% fa5_icon 'comments' class='iconleft' %}</a>
+    <a class="nav-item nav-link active" href="#discussion" data-toggle="tab">
+        {% fa5_icon 'comments' class='iconleft' %}</a>
     <a class="nav-item nav-link" href="#infos" data-toggle="tab"> {% fa5_icon 'info' %}</a>
     <a class="nav-item nav-link" href="#dates" data-toggle="tab"> {% fa5_icon 'calendar' %}</a>
-{% if not salon.estPublic %}
+    {% if salon.type_salon == 1 %}
     <a class="nav-item nav-link" href="#membres" data-toggle="tab"> {% fa5_icon 'users' %}</a>
-{% endif %}
+    {% endif %}
 </nav>
 
 <div class="tab-content">
-  <div class="tab-pane fade show active" id="discussion">
+    <div class="tab-pane fade show active" id="discussion">
         <div class="row">
             <div class="col-sm-12">
-{% include 'salon.html'%}
+                {% include 'salon.html'%}
             </div>
-       </div>
+        </div>
     </div>
-  <div class="tab-pane fade" id="infos">
-    <div class="row" id="contact">
-        <div class="col-sm-12 textcenter">
-        <table class="table table-condensed ">
-            <tbody>
+    <div class="tab-pane fade" id="infos">
+        <div class="row" id="contact">
+            <div class="col-sm-12 textcenter">
+                <table class="table table-condensed ">
+                    <tbody>
+                    <tr>
+                        <td class="nomProprieteSalon">
+                        </td>
+                        <td class="textcenter">
+                                    <a href="{% url 'modifierSalon' slug=salon.slug %}">
+                                        <button type="button" class="btn btn-sm btn-warning"> Modifier</button>
+                                    </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="nomProprieteSalon">
+                            Type de Salon :
+                        </td>
+                        <td>
+                            <p class="textcenter">
+                            {% if salon.type_salon == 0 %}
+                                Le Salon est Public (ouvert à tous les inscrits)
+                            {% elif salon.type_salon == 1 %}
+                                Le Salon est Privé (visible sur invitation)
+                            {% elif salon.type_salon == 2 %}
+                                Le Salon est ouvert à <a href="{% url 'carte' asso=salon.asso %}">tous les membres du groupe '{{salon.asso.nom}}'</a></p>
+                            {% endif %}
+                            </p>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="nomProprieteSalon">
                             Description :
                         </td>
                         <td class="textleft">
-                    {% if salon.description%}
+                            {% if salon.description%}
                             <div class="row">
-                            <div class="col-sm-12">
-                            {{salon.description|safe}}
-                            </div></div>
-
-                            <div class="row">
-                            <div class="col-sm-12 textcenter">
-                                <a href="{% url 'modifierSalon' slug=salon.slug %}">
-                                    <button type="button" class="btn btn-sm btn-warning" > Modifier </button>
-                                </a>
+                                <div class="col-sm-12">
+                                    {{salon.description|safe}}
+                                </div>
                             </div>
-                            </div>
-                            {%else%}
-                    <div class="row">
-                    <div class="col-sm-12 textcenter">
-                        <a href="{% url 'modifierSalon' slug=salon.slug %}">
-                            <button type="button" class="btn btn-sm btn-warning" > Modifier le titre / la description
-                            </button>
-                        </a>
-                    </div>
-                    </div>
-                    {%endif%}
+                            {% endif %}
                         </td>
                     </tr>
                     {% if salon.article or jointure_articles %}
@@ -128,21 +148,21 @@
                             Article associé :
                         </td>
                         <td class="textcenter">
-                        {% if salon.article %}
+                            {% if salon.article %}
                             <a href="{{salon.article.get_absolute_url }}">
                                 <button type="button" class="btn btn-secondary btn-sm ">
-                                {{salon.article.titre|couperTexte:30}}
-                            </button>
+                                    {{salon.article.titre|couperTexte:30}}
+                                </button>
                             </a>
-                        {%endif%}
+                            {%endif%}
 
-                        {% for jointure in jointure_articles %}
-                        <a href="{{jointure.article.get_absolute_url }}">
-                            <button type="button" class="btn btn-secondary btn-sm ">
-                            {{jointure.article.titre}}
-                        </button>
-                        </a>
-                        {% endfor %}
+                            {% for jointure in jointure_articles %}
+                            <a href="{{jointure.article.get_absolute_url }}">
+                                <button type="button" class="btn btn-secondary btn-sm ">
+                                    {{jointure.article.titre}}
+                                </button>
+                            </a>
+                            {% endfor %}
                         </td>
                     </tr>
                     {%endif%}
@@ -152,11 +172,11 @@
                             Jardin associé :
                         </td>
                         <td class="textcenter">
-                        <a href="{{salon.jardin.get_absolute_url }}">
-                            <button type="button" class="btn btn-secondary btn-sm ">
-                            {{salon.jardin.titre}}
-                        </button>
-                        </a>
+                            <a href="{{salon.jardin.get_absolute_url }}">
+                                <button type="button" class="btn btn-secondary btn-sm ">
+                                    {{salon.jardin.titre}}
+                                </button>
+                            </a>
                         </td>
                     </tr>
                     {%endif%}
@@ -166,31 +186,30 @@
                             Mots clés :
                         </td>
                         <td class="textcenter">
-                           {% for tag in salon.tags.names %}
-                                <span class="badge badge-info">{{tag}}</span>
-                           {% endfor %}
+                            {% for tag in salon.tags.names %}
+                            <span class="badge badge-info">{{tag}}</span>
+                            {% endfor %}
                         </td>
                     </tr>
                     {%endif%}
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-  </div>
-  <div class="tab-pane fade" id="membres">
+    <div class="tab-pane fade" id="membres">
 
         <div class="row justify-content-center">
             <div class="col-sm-12">
-
-        <table class="table table-condensed ">
-            <tbody>
+                <table class="table table-condensed ">
+                    <tbody>
                     <tr>
                         <td class="nomProprieteSalon">
                             Membres du salon
                         </td>
                         <td class="textleft">
                             {% for i in inscrits %}
-                                <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last%}, {%endif%}
+                            <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last%}, {%endif%}
                             {% endfor %}
                         </td>
                         <td class="textleft">
@@ -201,12 +220,14 @@
                             Mails
                         </td>
                         <td class="textleft">
-                             <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}</div>
-                        <div class="textright">   </div>
+                            <div id="listeMails">{% for i in inscrits %}{{i.email}}{%if not forloop.last %}, {%endif%}{% endfor %}
+                            </div>
+                            <div class="textright"></div>
 
                         </td>
                         <td class="textright">
-                            <button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier</button>
+                            <button class="btn btn-success" onclick="copyToClipboardElement('#listeMails')">Copier
+                            </button>
                         </td>
                     </tr>
                     <tr>
@@ -214,50 +235,55 @@
                             Invités
                         </td>
                         <td class="textleft">
-                        {% for i in invites %}
-                        <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last %}, {%endif%}
-                        {% endfor %}
+                            {% for i in invites %}
+                            <a href="{{i.get_absolute_url}}">{{i}}</a>{%if not forloop.last %}, {%endif%}
+                            {% endfor %}
 
                             <a href="{% url 'inviterDansSalon' slug_salon=salon.slug %}">
-                                <button type="button" class="btn btn-success" > <i class="fa fa-plus"></i>  Inviter une personne
+                                <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Inviter une
+                                    personne
                                 </button>
                             </a>
                         </td>
                         <td class="textright">
                             <a href="{% url 'sortirDuSalon' slug_salon=salon.slug %}">
-                                <button type="button" class="btn btn-danger"  onclick="clicked();" id="boutonSortir" > <i class="fa fa-minus"></i>  sortir du salon
+                                <button type="button" class="btn btn-danger" onclick="clicked();" id="boutonSortir"><i
+                                        class="fa fa-minus"></i> sortir du salon
                                 </button>
                             </a>
                         </td>
                     </tr>
 
-            </tbody>
-        </table>
-
-        </div>
-    </div>
-</div>
-
-<div class="tab-pane fade " id="dates">
-        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-
-        <div class="row justify-content-center" >
-            <div class="col-sm-12 textcenter">
-                <h4>Dates : </h4>
+                    </tbody>
+                </table>
             </div>
         </div>
-              {%for date in dates %}
-             <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
-                 <a class="btn btn-sm btn-danger textleft" href="{% url 'supprimerEvenementSalon' slug_salon=salon.slug  id_evenementSalon=date.id %}" ><i class="fa fa-times"></i> </a></p>
-            </p>
-              {%endfor%}
-            <hr>
-              <p><a class="btn btn-sm btn-success textleft" href="{% url 'ajouterEvenementSalon' slug_salon=salon.slug %}" ><i class="fa fa-plus"></i> Ajouter un événement sur l'agenda</a></p>
-
-      </div>
     </div>
-</div>
+
+    <div class="tab-pane fade " id="dates">
+        <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+            <div class="contenu atelier">
+
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+                        <h4>Dates : </h4>
+                    </div>
+                </div>
+                {%for date in dates %}
+                <p>{{date.start_time |date:"l d F Y"}} : {{date.titre}}
+                    <a class="btn btn-sm btn-danger textleft"
+                       href="{% url 'supprimerEvenementSalon' slug_salon=salon.slug  id_evenementSalon=date.id %}"><i
+                            class="fa fa-times"></i> </a></p>
+                </p>
+                {%endfor%}
+                <hr>
+                <p><a class="btn btn-sm btn-success textleft"
+                      href="{% url 'ajouterEvenementSalon' slug_salon=salon.slug %}"><i class="fa fa-plus"></i> Ajouter
+                    un événement sur l'agenda</a></p>
+
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -270,6 +296,7 @@
            return false;
        }
     }
+
 </script>
 
 {% endblock %}

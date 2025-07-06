@@ -186,11 +186,6 @@ class ArticleChangeForm(forms.ModelForm):
         #         instance.themes.remove(theme)
         return instance
 
-#
-# class ModificationArticleForm(forms.ModelForm):
-#     class Meta:
-#         model = ModificationArticle
-#         fields = ['description',]
 
 
 class AssociationSalonArticleForm(forms.ModelForm):
@@ -268,7 +263,7 @@ class CommentaireArticleChangeForm(forms.ModelForm):
 
 
 class ProjetForm(forms.ModelForm):
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                               label="Projet public ou réservé aux adhérents de l'asso :", )
     class Meta:
         model = Projet
@@ -333,7 +328,7 @@ class ProjetChangeForm(forms.ModelForm):
 
 
 class ProjetForm(forms.ModelForm):
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                               label="Projet public ou réservé aux adhérents de l'asso :", )
     class Meta:
         model = Projet

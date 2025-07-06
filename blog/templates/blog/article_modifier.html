@@ -14,112 +14,88 @@
 </div>
 
 
-<script>
-    $(function() {
-    // Enable on all forms
-    $('form').areYouSure();
-    });
-</script>
-
- <script>
-$(document).ready(function () {
-    var partage = $("#id_partagesAsso_0")
-		if (partage.prop('checked')){
-			 $("#id_partagesAsso").children().each((index, element) => {
-			 	if (index > 0){
-					element.style.visibility = "hidden";
-					$(element).children().children('input').prop("checked", false);
-			 	}
-			 });
-		}else{
-			 $("#id_partagesAsso").children().each((index, element) => {
-			 	if (index > 0){
-					element.style.visibility = "visible";
-			 	}
-			 });
-		}
-
-      var asso_node = $("#id_asso");
-      var url = $("#articleForm").attr("ajax_categories-url");  // get the url of the `load_cities` view
-      var asso = asso_node.val();  // get the selected country ID from the HTML input
-
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request
-        data: {
-          'asso': asso,
-          'categorie_courante': '{{form.instance.categorie}}'
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#id_categorie").html(data);  // replace the contents of the city input with the data that came from the server
-        }
-      });
-
-	 if (asso != "1"){
-		  $("#id_partagesAsso").parent().removeClass("cache");
-		  $("#id_partagesAsso").children().each((index, element) => {
-				element.style.visibility = "visible";
-		 });
-		  $("#id_estEpingle").prop('disabled', false);
-		  $("#id_partagesAsso_0").prop('disabled', false);
-	 }else{
-		  $("#id_partagesAsso").children().each((index, element) => {
-				element.style.visibility = "hidden";
-		 });
-		  $("#id_partagesAsso_0").prop('disabled', true);
-		  $("#id_estEpingle").prop('disabled', true);
-	 };
-
-});
-
-
-    $("#id_partagesAsso_0").change(function () {
-		if ($(this).prop('checked')){
-			 $("#id_partagesAsso").children().each((index, element) => {
-			 	if (index > 0){
-					element.style.visibility = "hidden";
-					$(element).children().children('input').prop("checked", false);
-			 	}
-			 });
-		}else{
-			 $("#id_partagesAsso").children().each((index, element) => {
-			 	if (index > 0){
-					element.style.visibility = "visible";
-			 	}
-			 });
-		}
-	});
-
-    $("#id_asso").change(function () {
-      var url = $("#articleForm").attr("ajax_categories-url");  // get the url of the `load_cities` view
-      var asso = $(this).val();  // get the selected country ID from the HTML input
-
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request
-        data: {
-          'asso': asso       // add the country id to the GET parameters
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#id_categorie").html(data);  // replace the contents of the city input with the data that came from the server
-        }
-      });
-
-	 if (asso != "1"){
-		  $("#id_partagesAsso").parent().removeClass("cache");
-		  $("#id_partagesAsso").children().each((index, element) => {
-				element.style.visibility = "visible";
-		 });
-		  $("#id_estEpingle").prop('disabled', false);
-		  $("#id_partagesAsso_0").prop('disabled', false);
-	 }else{
-		  $("#id_partagesAsso").children().each((index, element) => {
-				element.style.visibility = "hidden";
-		 });
-		  $("#id_partagesAsso_0").prop('disabled', true);
-		  $("#id_estEpingle").prop('disabled', true);
-	 };
-    });
-
-  </script>
 {% endblock %}
 
-{% block comment %}{% endblock %}
+
+{% block comment %}
+var type_salon_Select = document.querySelector('select[name=type_salon]')
+
+function showAssoIfTypeAsso() {
+    var shouldHide = type_salon_Select.value != '2';
+    var select_asso = document.querySelector("select[name=asso]").parentElement;
+    select_asso.style.display = shouldHide ? 'none' : null;
+    select_asso.disabled = !shouldHide;
+};
+{% endblock %}
+{% block scriptblock %}
+<script>
+$(function() {
+    $('form').areYouSure();
+});
+
+function updateForm() {
+    var url = $("#articleForm").attr("ajax_categories-url"); // get the url of the `load_cities` view
+    var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
+
+    $.ajax({ // initialize an AJAX request
+      url: url, // set the url of the request
+      data: {
+        'asso': asso,
+        'categorie_courante': '{{form.instance.categorie}}'
+      },
+      success: function(data) { // `data` is the return of the `load_cities` view function
+        $("#id_categorie").html(data); // replace the contents of the city input with the data that came from the server
+      }
+    });
+
+    var select_partages = document.getElementById("id_partagesAsso").parentElement;
+    var partage = $("#id_partagesAsso_0");
+
+    if (asso == "1") {
+        select_partages.style.display = 'none';
+        select_partages.style.visibility = "hidden";
+
+        $("#id_partagesAsso").children().each((index, element) => {
+          if (index > 0) {
+            element.style.visibility = "hidden";
+            $(element).children().children('input').prop("checked", false);
+          }
+        });
+        $("#id_estEpingle").prop('disabled', true);
+
+    }else{
+        select_partages.style.display = 'inline';
+         select_partages.style.visibility = "visible";
+        $("#id_estEpingle").prop('disabled', false);
+        $("#id_partagesAsso").children().each((index, element) => {
+            $(element).children().children('input').prop("checked", false);
+            element.style.visibility = "visible";
+        });
+    }
+};
+
+
+function updateCheckbox() {
+  if ($("#id_partagesAsso_0").prop('checked')) {
+    $("#id_partagesAsso").children().each((index, element) => {
+      if (index > 0) {
+        element.style.visibility = "hidden";
+        $(element).children().children('input').prop("checked", false);
+      }
+    });
+  } else {
+    $("#id_partagesAsso").children().each((index, element) => {
+        element.style.visibility = "visible";
+    });
+  }
+}
+$(document).ready(function() {
+    updateForm();
+    updateCheckbox();
+    $("#id_partagesAsso_0").change(updateCheckbox);
+    $("#id_asso").change(updateForm);
+  });
+
+
+</script>
+{% endblock %}

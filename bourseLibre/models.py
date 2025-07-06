@@ -1270,7 +1270,7 @@ def getOrCreateConversation(nom1, nom2):
 class Type_Salon(models.IntegerChoices):
     PUBLIC = 0, _('Public')
     PRIVE = 1, _('Privé (sur invitation)')
-    #ASSO = 2, _("Réservé à tous les membres d'un groupe")
+    ASSO = 2, _("Réservé à tous les membres d'un groupe du site")
 
 class Salon(models.Model):
     titre = models.CharField(max_length=250)
@@ -1282,7 +1282,7 @@ class Salon(models.Model):
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
     membres = models.ManyToManyField(Profil, through='InscritSalon')
     #estPublic = models.BooleanField(verbose_name=_("Salon public ou privé (public si coché)"), default=False)
-    type_salon = models.IntegerField(default=Type_Salon.PUBLIC, choices=Type_Salon.choices)
+    type_salon = models.IntegerField(verbose_name=_("Type de Salon"), default=Type_Salon.PUBLIC, choices=Type_Salon.choices)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Le salon doit être associé à un article existant (sinon créez un article avec une date)", blank=True, null=True)
     jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
@@ -1327,7 +1327,13 @@ class Salon(models.Model):
         return self.type_salon == Type_Salon.PUBLIC
 
     def est_membre(self, user):
-        return user in self.membres.all()
+        if self.type_salon == Type_Salon.PUBLIC:
+            return True
+        elif self.type_salon == Type_Salon.PRIVE:
+            return user in self.getInscritsEtInvites()
+        elif self.type_salon == Type_Salon.ASSO:
+            return self.asso.est_autorise(user)
+        return False
 
     def getInscrits(self):
         return [u.profil for u in InscritSalon.objects.filter(salon=self)]
@@ -1336,10 +1342,10 @@ class Salon(models.Model):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
     def getInscritsEtInvites(self):
-        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)] + [u.profil for u in InscritSalon.objects.filter(salon=self)]
+        return self.getInscrits() + self.getInvites()
 
-    def getArticles(self):
-        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
+    #def getArticles(self):
+       # return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
     def getSuivi(self):
         return Suivis.objects.get_or_create(nom_suivi="salon_" + str(self.slug))[0]
@@ -1350,9 +1356,10 @@ class Salon(models.Model):
         elif self.type_salon == Type_Salon.PRIVE:
             return user in self.getInscritsEtInvites()
         elif self.type_salon == Type_Salon.ASSO:
-            if self.asso :
+            if self.asso:
                 return user.est_autorise(self.asso.slug)
             return True
+
 
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)

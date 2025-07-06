@@ -36,3 +36,18 @@
 
 {% endblock %}
 
+{% block scriptblock %}
+<script>
+  var type_salon_Select = document.querySelector('select[name=type_salon]')
+
+  function showAssoIfTypeAsso() {
+    var shouldHide = type_salon_Select.value != '2';
+    var select_asso = document.querySelector("select[name=asso]").parentElement;
+    select_asso.style.display = shouldHide ? 'none'  : null ;
+    select_asso.disabled = !shouldHide;
+  };
+  type_salon_Select.addEventListener('change', showAssoIfTypeAsso);
+  showAssoIfTypeAsso();
+
+</script>
+{% endblock %}

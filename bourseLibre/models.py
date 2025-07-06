@@ -1330,7 +1330,12 @@ class Salon(models.Model):
         return user in self.membres.all()
 
     def getInscrits(self):
-        return [u.profil for u in InscritSalon.objects.filter(salon=self)]
+        if self.type_salon == Type_Salon.PUBLIC:
+            return Profil.objects.filter(is_active=True)
+        elif self.type_salon == Type_Salon.PRIVE:
+            return [u.profil for u in InscritSalon.objects.filter(salon=self)]
+        elif self.type_salon == Type_Salon.ASSO:
+            return self.asso.getProfils()
 
     def getInvites(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]

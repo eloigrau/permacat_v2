@@ -27,4 +27,5 @@ class Migration(migrations.Migration):
             name='type_salon',
             field=models.IntegerField(choices=[(0, 'Public'), (1, 'Privé (sur invitation)'), (2, "Réservé à tous les membres d'un groupe")], default=0),
         ),
+        migrations.RunPython(change_type_salon, ),
     ]

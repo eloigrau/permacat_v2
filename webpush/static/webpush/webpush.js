@@ -49,18 +49,18 @@ window.addEventListener('load', function() {
         return;
     }
     Notification.requestPermission(function (result) {
-                if (result === 'granted') {
-                    navigator.serviceWorker.ready.then(function (registration) {
-                        registration.showNotification('Perma.Cat', {
-                            body: 'Hola, votre première Notification de la plateforme perma.Cat, tout fonctionne ;)',
-                            icon: '/android-chrome-256x256.png',
-                            tag: 'Premier message'
-                        }).then(function(event){
-                            console.log(event);
-                        });
-                    });
-                }
+        if (result === 'granted') {
+            navigator.serviceWorker.ready.then(function (registration) {
+                registration.showNotification('Perma.Cat', {
+                    body: 'Hola, votre première Notification de la plateforme perma.Cat, tout fonctionne ;)',
+                    icon: '/android-chrome-256x256.png',
+                    tag: 'Premier message'
+                }).then(function(event){
+                    console.log(event);
+                });
             });
+        }
+    });
     // Check the current Notification permission.
     // If its denied, it's a permanent block until the
     // user changes the permission
@@ -93,7 +93,7 @@ window.addEventListener('load', function() {
                 subBtn.textContent = gettext("Se désabonner des notifications instantanées");
                 subBtn.disabled = false;
                 isPushEnabled = true;
-                showMessage(gettext('Vous êtes bien abonné-e aux notifications sur cet appareil'));
+                showMessage(gettext('Vous êtes abonné-e aux notifications sur cet appareil'));
               }
             });
         }
@@ -141,7 +141,7 @@ function subscribe(reg) {
                   subBtn.textContent = gettext("Se désabonner des notifications instantanées");
                   subBtn.disabled = false;
                   isPushEnabled = true;
-                  showMessage(gettext('Vous êtes bien abonné-e aux notifications sur cet appareil'));
+                  showMessage(gettext('Vous êtes abonné-e aux notifications sur cet appareil'));
                 }
               });
           })

@@ -417,9 +417,10 @@
                             <li><a class="dropdown-item" href="{% url 'mesActions' %}"> {% translate 'mes Publications' %} </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'switchThemeSombre' %}?next={{request.get_full_path}}"> {% translate 'Thème' %} {%if request.user.css_dark %} {% translate 'Clair' %}{% else %} {% translate 'Sombre' %} {% endif %}</a></li>
+                            {% if request.user.is_superuser %}
                             <li>{% get_current_language as LANGUAGE_CODE %}
                                 <a class="dropdown-item" href="{% url 'switchLanguage' %}?next={{request.get_full_path}}"> {%if LANGUAGE_CODE == 'fr' %} Cat {% else %} Fr {% endif %}</a></li>
-
+                            {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
                         </ul>

@@ -1,6 +1,10 @@
 {% extends 'base_notifications.html' %}
 {% load activity_tags %}
 {% load fontawesome_5 %}
+{% load webpush_notifications %}
+{% block header%}
+{% webpush_header %}
+{%endblock%}
 
 {% block subtitle %}
 
@@ -121,7 +125,12 @@
 </div>
 <hr>
 
-
+<div class="row justify-content-center textcenter">
+    <div class="col-sm-12  col-md-10 textcenter">
+        <p class="textcenter"> {% webpush_button with_class="btn btn-info btn-sm" %}</p>
+        <p class="textpetit" id="webpush-message"></p>
+    </div>
+</div>
 
 
 {% endblock %}

@@ -58,7 +58,7 @@
             <div class="col-sm-12 col-md-9 textcenter">
 
                 <p>Retrouvez dans les différens onglets ci-dessus toutes les pages auxquelles vous êtes abonné-e (c'est à dire les pages pour lesquelles vous recevez
-    une info par mail ou par notification). </p>
+                une info par mail ou par notification). </p>
                 <hr>
                   <p>:
                         <a href="{% url 'reinitialiserTousMesAbonnement' %}" class="btn btn-primary" type="button">cliquer ici pour réinitialiser vos abonnements (recevoir par mails toutes les nouvelles infos)</a>
@@ -66,11 +66,16 @@
                 <p>
                     <a href="{% url 'supprimerTousMesAbonnement' %}" class="btn btn-danger" type="button">cliquer ici pour supprimer tous vos abonnements (ne plus recevoir de mails)</a>
                 </p>
-<hr>
-        <p>Pour recevoir les notifications sur navigateur (firefox/chrome, sur smartphone et/ou ordi), et ainsi être informé "en direct" des pages auxquelles vous êtes abonné-e, vous pouvez aussi recevoir les notifications
+            <hr>
+            <p>Pour recevoir les notifications sur navigateur (firefox/chrome, sur smartphone et/ou ordi), et ainsi être informé "en direct" des pages auxquelles vous êtes abonné-e, vous pouvez aussi recevoir les notifications
              sur votre smartphone ou ordinateur (indépendamment pour chaque appareil) en cliquant sur le bouton ci-dessous</p>
             <p class="textcenter"> {% webpush_button with_class="btn btn-info" %}</p>
 
+            <div class="row justify-content-center textcenter">
+                <div class="col-sm-12  col-md-10">
+                    <p class="textpetit" id="webpush-message"></p>
+                </div>
+            </div>
             </div>
         </div>
 
@@ -201,16 +206,11 @@
         </div>
 
 {% else %}
-        <p class="textcenter" >Vous n'avez cucun abonnement dans cette catégorie</p>
+        <p class="textcenter" >Vous n'avez aucun abonnement dans cette catégorie</p>
 {% endif %}
     </div>
 </div>
 
 
-<div class="row justify-content-center textcenter">
-    <div class="col-sm-12  col-md-10">
-        <h4 id="webpush-message"></h4>
-    </div>
-</div>
 
 {% endblock %}

@@ -260,7 +260,7 @@ class Asso(models.Model):
     def est_autorise(self, user):
         if self.slug == "public":
             return True
-        elif self.slug == "conf66":
+        elif self.slug in Choix.slugsAsso_accesParCotisation:
             return user.isCotisationAJour(self.slug)
 
         return getattr(user, "adherent_" + self.slug, False)
@@ -439,11 +439,11 @@ class Profil(AbstractUser):
             return True
         return getattr(self, "adherent_" + asso, False)
 
-    def isCotisationAJour(self, asso_slug, mois_precedents=6):
+    def isCotisationAJour(self, asso_slug, mois_anprecedent=6):
         if not self.statutMembre_asso(asso_slug):
             return False
-        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
-        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).count() > 0
+        time_threshold = datetime(datetime.now().year - 1, mois_anprecedent, 1).date()
+        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).exists()
 
     @property
     def statutMembre_str_asso(self, asso):

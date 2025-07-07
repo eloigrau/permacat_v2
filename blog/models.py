@@ -285,7 +285,6 @@ class Article(models.Model):
     themes = models.ManyToManyField(Theme, related_name="themes", verbose_name=_("Thèmes :"), blank=True)
     zonegeo = models.ForeignKey(ZoneGeo, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Zone géographique"),  )
 
-
     class Meta:
         ordering = ('-date_creation', )
         

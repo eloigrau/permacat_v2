@@ -16,14 +16,14 @@
     {% if request.session.asso_slug %} {{request.session.asso_slug | getNomGroupeFromSlug}} - {% endif %} Défraiement
 </h3>
 <h4 class="textcenter">
-    Liste des événements (réunions, trocs...)
+    Liste des notes de frais
 </h4>
 <div class="row align-items-center reunion_titre_page_index">
     <div class="col-md-4 offset-md-4 textcenter justify-content-center">
 
-        <a href="{% url 'defraiement:ajouterReunion' asso_slug=request.session.asso_slug %}">
+        <a href="{% url 'defraiement:ndf_ajouter' asso_slug=request.session.asso_slug %}">
         <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter une réunion / un déplacement
+                <i class="fa fa-plus"></i> Ajouter une note de frais
             </button>
         </a>
     </div>
@@ -38,7 +38,7 @@
             <div class="modal-content">
               <div class="modal-header">
                   <div class="row justify-content-center">
-                   <h5 > </h5>
+                   <h5 > Vous pouvez ajouter ici une note de frais pour le groupe, afin de simplifier la comptabilité ! Merci</h5>
                   </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -67,7 +67,7 @@
  <a href="?{{ request.GET.urlencode }}&annee=2025#ref-annee">
     <button type="button" class="btn {% if request.GET.annee == '2025' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2025</button></a>
     {% comment %}
- <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug%}?" method="get" role = "search">
+ <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:ndf_liste' asso_slug=request.session.asso_slug%}?" method="get" role = "search">
      <span class="input-group-append">
         <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
         <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">ok</button>
@@ -80,7 +80,7 @@
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
             <li class="nav-item  subnavbar2 align-items-center">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
+                  <a  href="{% url 'defraiement:ndf_liste' asso_slug=request.session.asso_slug %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                       <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>Tout</h6>
                       </button>
@@ -113,26 +113,22 @@
                 </div>
     </div></div>
 <div class="infinite-container ">
-    {% for reunion in reunion_list %}
+    {% for ndf in ndf_list %}
 
 <div class="infinite-item ">
    <div class="row justify-content-center ">
-    <div class="col-sm-12 col-ms-12 col-lg-10 textcenter" >
-        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelieDefraiementList" >
+    <div class="col-sm-12 col-ms-12 col-lg-10 " >
+        <a  href="{% url 'defraiement:ndf_detail' pk=ndf.pk %}" class="boutonAtelieDefraiementList" >
 
             <table style="width:100%; ">
                 <tr>
-            <td style="background-color:{{reunion.get_couleur}}; width:25%;"> {{reunion.get_logo_nomgroupe_html|safe}} {{ reunion.get_categorie_display }}
+            <td class="textcenter" style="width:25%;"> {{ndf.asso.get_logo_nomgroupe_html|safe}} {{ ndf.get_categorie_display }}
             </td>
-            <td style="background-color:{{reunion.get_couleur}}; width:40%;
-    font-variant: small-caps;" > {{ reunion.titre }}
-            </td>
-
-        <td class="textepetit" style=" width:20%; "> {{reunion.participants.all | length}} participant.es, {{reunion.getDistanceTotale}}km</td>
-
-            {% if reunion.start_time %}
-        <td class="textepetit " style=" width:15%; ">{{ reunion.start_time|date:"DATE_FORMAT" }}</td>
+            <td style="width:100%;" > {{ ndf.titre }},  {{ ndf.montant }} euros payés par {{ ndf.participant }}{% if ndf.date_note %}, le {{ ndf.date_note|date:"DATE_FORMAT" }}
         {% endif %}
+            </td>
+
+
            </tr>
             </table>
         </a>
@@ -144,7 +140,7 @@
 </div>
 {% include 'pagination_new.html' %}
 
-        {% if list_archive %}
+{% if ndf_list_archive %}
 <hr>
         <div class="textcenter">
             <button id="btn-archives"  type="button" class="btn btn-lg btn-info" onclick="toggle_visibility('archives');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
@@ -153,32 +149,20 @@
         </div>
         <hr>
         <div id="archives" style='display:none;'>
-            {% for reunion in list_archive %}
+            {% for ndf in ndf_list_archive %}
    <div class="row justify-content-center ">
     <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
-        <a  href="{% url 'defraiement:lireReunion_id' id=reunion.id %}" class="boutonAtelier" > <div style="background-color:{{reunion.reunion.get_couleur}};
-    font-variant: small-caps;" >{{reunion.get_logo_nomgroupe_html}} {{ reunion.titre }}  </div>
-            {% if reunion.start_time %}
-        <p class="textepetit">le {{ reunion.start_time|date:"DATE_FORMAT" }}</p>
+        <a  href="{{ndf.get_absolute_url}}" class="boutonAtelier" >
+            <span style="font-variant: small-caps;" >{{ndf.asso.get_logo_nomgroupe_html}} {{ ndf.titre }} : {{ndf.montant}} euros  </span>
+            {% if ndf.date_note %}
+        <p class="textepetit">le {{ ndf.date_note|date:"DATE_FORMAT" }}</p>
         {% endif %}</a>
 
     </div>
    </div>
             {% endfor %}
         </div>
-
     {% endif %}
-
-<p class="textcenter">
-
-{% if request.session.asso_slug %}
-<a href="{% url 'defraiement:recapitulatif'  asso_slug=request.session.asso_slug%}">
-<button type="button" class="btn btn-primary" >
-        <i class="fa fa-arrow-right"></i> Récapitulatif
-    </button>
-    </a>&ensp;
-{% endif %}
-</p>
 <script>
     function toggle_visibility(id) {
        var e = document.getElementById(id);

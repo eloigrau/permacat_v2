@@ -26,7 +26,7 @@
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
 {% if request.session.asso_slug == "conf66" %}
-    <a href="{% url 'defraiement:ajouterParticipantConf66' %}">
+    <a href="{% url 'defraiement:ajouterParticipantAsso' asso_slug=request.session.asso_slug%}">
     <button type="button" class="btn btn-success" >
         <i class="fa fa-plus"></i> Ajouter un adhérent de la Conf
     </button>

@@ -1,6 +1,6 @@
 from bourseLibre.views_base import DeleteAccess
 from django.shortcuts import render, redirect, reverse, get_object_or_404, HttpResponseRedirect
-from django.views.generic import ListView, UpdateView, DeleteView
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from django.http import HttpResponseForbidden
 from django.urls import reverse_lazy
 from bourseLibre.models import Asso
@@ -10,8 +10,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, \
     ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm, \
-    ChoixAdherentConf
-from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion
+    ChoixAdherentConf, NoteDeFrais_form, NoteDeFrais_update_form
+from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion, NoteDeFrais, \
+    ChoixMoyenPaiement
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 from datetime import datetime
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -310,18 +311,20 @@ def ajouterParticipant(request, asso_slug):
 
 
 @login_required
-def ajouterParticipantConf66(request):
+def ajouterParticipantAsso(request, asso_slug):
     form = ChoixAdherentConf(request.POST or None, )
     if form.is_valid():
         adherent = form.cleaned_data["adherent"]
         part = ParticipantReunion.objects.create(
-            asso=Asso.objects.get(slug="conf66"),
+            asso=Asso.objects.get(slug=asso_slug),
             nom=adherent.nom + " " + adherent.prenom,
             adresse=adherent.adresse)
         url = request.session.get('reunion_courante_url', part.get_absolute_url())
         return redirect(url)
 
-    return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
+    if asso_slug=='conf66':
+        return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
+    return render(request, 'defraiement/ajouterParticipant.html', {'form': form }) # 'form_adresse':form_adresse,
 
 
 @login_required
@@ -422,7 +425,7 @@ def voirLieux(request,):
 # class ListeReunions(ListView):
 #     model = Reunion
 #     context_object_name = "reunion_list"
-#     template_name = "reunions/reunion_list.html"
+#     template_name = "defraiement/reunion_list.html"
 #     paginate_by = 100
 #
 #     def get_queryset(self):
@@ -588,3 +591,137 @@ class Echo:
 #     csv_data += [(a.nom +" "+ a.prenom, a.statut, a.production_ape,a.adresse.code_postal+ " " + a.adresse.commune,  a.email, a.adresse.telephone, a.get_adhesion_an(2020).montant,
 #           a.get_adhesion_an(2020).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2021).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2022).montant, a.get_adhesion_an(2023).montant, a.get_adhesion_an(2023).montant) for a in Adherent.objects.all() ]
 
+
+class NoteDeFrais_ajouter(UserPassesTestMixin, CreateView, ):
+    model = NoteDeFrais
+    template_name = 'defraiement/ndf_ajouter.html'
+
+    def test_func(self):
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+
+        return self.asso.est_autorise(self.request.user) or self.request.user == self.object.profil
+
+    def get_form(self):
+        return NoteDeFrais_form(self.asso.slug, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.auteur = self.request.user
+        self.object.asso = self.asso
+        self.object.save()
+        return redirect(self.object.get_absolute_url())
+
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.slug
+        return context
+
+class NoteDeFrais_detail(UserPassesTestMixin, DetailView):
+    model = NoteDeFrais
+    template_name = 'defraiement/ndf_detail.html'
+
+    def test_func(self):
+        self.asso = testIsMembreAsso(self.request, self.request.session['asso_slug'])
+        return self.asso.est_autorise(self.request.user) or self.request.user == self.object.profil
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+class NoteDeFrais_modifier(UserPassesTestMixin, UpdateView, ):
+    model = NoteDeFrais
+    template_name = 'defraiement/ndf_modifier.html'
+    form_class = NoteDeFrais_update_form
+
+    def test_func(self):
+        self.asso = testIsMembreAsso(self.request, self.request.session['asso_slug'])
+        return self.asso.est_autorise(self.request.user) or self.request.user == self.object.profil
+
+    def get_object(self):
+        return NoteDeFrais.objects.get(pk=self.kwargs['pk'])
+
+    def get_form_kwargs(self):
+        kwargs = super(NoteDeFrais_modifier, self).get_form_kwargs()
+        kwargs.update({'asso_slug': self.asso.slug})
+        return kwargs
+
+    def form_valid(self, form):
+        self.object = form.save()
+        if "next" in self.request.GET:
+            return redirect(self.request.GET["next"])
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.slug
+        return context
+
+class NoteDeFrais_supprimer(UserPassesTestMixin, DeleteView, ):
+    model = NoteDeFrais
+    template_name_suffix = '_supprimer'
+
+    def test_func(self):
+        self.asso = testIsMembreAsso(self.request, self.request.session['asso_slug'])
+        return self.asso.est_autorise(self.request.user) or self.request.user == self.object.profil
+
+    def get_success_url(self):
+        return reverse('defraiement:ndf_list', kwargs={'asso_slug': self.asso.slug})
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.slug
+        return context
+
+
+
+class ListeNdf_asso(UserPassesTestMixin, ListView):
+    model = NoteDeFrais
+    context_object_name = "ndf_list"
+    template_name = "defraiement/ndf_list.html"
+    paginate_by = 100
+
+    def test_func(self):
+        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.request.session['asso_slug'] = self.asso.slug
+        return self.asso.est_autorise(self.request.user)
+
+    def get_queryset(self):
+        self.params = dict(self.request.GET.items())
+        self.asso = Asso.objects.get(slug=self.kwargs['asso_slug'])
+        self.request.session["asso_slug"] = self.asso.slug
+        qs = NoteDeFrais.objects.filter(estArchive=False, asso=self.asso)
+
+        if "annee" in self.params:
+            qs = qs.filter(date_note__year=self.params['annee'])
+        else:
+            qs = qs.filter(date_note__year=datetime.now().year)
+
+        if "categorie" in self.params:
+            qs = qs.filter(categorie=self.params['categorie'])
+
+        if "ordreTri" in self.params:
+            qs = qs.order_by(self.params['ordreTri'])
+        else:
+            qs = qs.order_by('-date_note', 'categorie', 'titre', )
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        self.request.session["asso_slug"] = self.asso.slug
+
+        context['ndf_list_archive'] = NoteDeFrais.objects.filter(estArchive=False, asso=self.asso)
+        cat = context['ndf_list_archive'].values_list('categorie', flat=True).distinct()
+        context['categorie_list'] = [x for x in ChoixMoyenPaiement.choices if x[0] in cat]
+        context['ordreTriPossibles'] = Choix.ordre_tri_ndf
+        context['type_courant'] = self.params["categorie"] if "categorie" in self.params else ""
+
+        return context

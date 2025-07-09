@@ -1,0 +1,10 @@
+{% extends 'base_defraiement2.html' %}
+{% load i18n %}
+{% block subtitle %}
+<div class="row">
+	<div class="col col-md-12 textcenter"><h3>{% translate 'Ajouter une Note de frais' %}</h3></div>
+</div>
+{% endblock %}
+{% block content %}
+{% include 'form_template.html'%}
+{% endblock %}

@@ -77,13 +77,6 @@
 </div>
 {% include 'pagination_new.html' %}
 
-<p class="textcenter">
-<a href="{% url 'defraiement:recapitulatif'  asso_slug=request.session.asso_slug %}">
-<button type="button" class="btn btn-success" >
-        <i class="fa fa-arrow-right"></i> Récapitulatif
-    </button>
-    </a>&ensp;
-</p>
 <script>
     function toggle_visibility(id) {
        var e = document.getElementById(id);

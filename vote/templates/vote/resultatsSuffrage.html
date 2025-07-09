@@ -24,7 +24,7 @@
     {% for qb, res in res_bin.items %}
     <h5>{{qb}}  {{res.resultat}}
 
-    <button id="btn-detail-qb-{{forloop.counter}}" type="button" class="btn btn-lg" onclick="toggle_visibility('detail-qb-{{forloop.counter}}');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
+    <button id="btn-detail-qb-{{forloop.counter}}" type="button" class="btn btn-lg btn-info" onclick="toggle_visibility('detail-qb-{{forloop.counter}}');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
        <i class="fa fa-eye"></i>
     </button>
         </h5>

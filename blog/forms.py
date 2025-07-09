@@ -94,12 +94,12 @@ class ArticleForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -159,12 +159,12 @@ class ArticleChangeForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -271,12 +271,12 @@ class ProjetForm(forms.ModelForm):
         widgets = {
         'contenu': SummernoteWidget(),
               'start_time':forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -315,12 +315,12 @@ class ProjetChangeForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -336,12 +336,12 @@ class ProjetForm(forms.ModelForm):
         widgets = {
         'contenu': SummernoteWidget(),
               'start_time':forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -451,7 +451,7 @@ class EvenementForm(forms.ModelForm):
         fields = ['start_time', 'titre_even', 'article', ]
         widgets = {
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -469,12 +469,12 @@ class EvenementArticleForm(forms.ModelForm):
         fields = ['start_time', 'titre_even', ]
         widgets = {
             'start_time':forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -590,7 +590,7 @@ class ReunionArticleForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),

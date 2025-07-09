@@ -13,7 +13,7 @@ class AdhesionForm(forms.ModelForm):
         fields = ['date_cotisation', 'montant', 'moyen', 'detail']
         widgets = {
             'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -28,7 +28,7 @@ class AdhesionForm_adherent(forms.ModelForm):
         fields = [ 'adherent', 'date_cotisation', 'montant', 'moyen', 'detail']
         widgets = {
             'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -58,7 +58,7 @@ class AdherentForm_conf66(forms.ModelForm):
 
         widgets = {
             'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -78,7 +78,7 @@ class AdherentForm(forms.ModelForm):
 
         widgets = {
             'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),

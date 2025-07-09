@@ -22,12 +22,12 @@ class SuffrageForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -74,12 +74,12 @@ class SuffrageChangeForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),

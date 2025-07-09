@@ -30,6 +30,14 @@ class Choix:
                         "Titre":'titre',
                         "Catégorie":'categorie',
     }
+    ordre_tri_ndf = {
+                        "Date <":'-date_note',
+                        "Date >":'date_note',
+                        "Titre":'titre',
+                        "Catégorie":'categorie',
+                        "Auteur":'auteur',
+                        "Payeur":'participant',
+    }
 
 def get_typereunion(asso):
     return [(i, j) for i, j in Choix.type_reunion if j in Choix.type_reunion_asso[asso]]
@@ -238,47 +246,43 @@ class Distance_ParticipantReunion(models.Model):
         return self.distance
 
 
-# class Atelier(models.Model):
-#     categorie = models.CharField(max_length=30,
-#                                  choices=(Choix.type_atelier),
-#                                  default='0', verbose_name=_("categorie")
-#     statut = models.CharField(max_length=30,
-#                               choices=(Choix.statut_atelier),
-#                               default='proposition', verbose_name=_("Statut de l'atelier")
-#     titre = models.CharField(verbose_name=_("Titre de l'atelier", max_length=120)
-#     slug = models.SlugField(max_length=100, default=uuid.uuid4)
-#     description = models.TextField(null=True, blank=True)
-#     materiel = models.TextField(null=True, blank=True, verbose_name=_("Matériel/outils nécessaires")
-#     referent = models.CharField(max_length=120, null=True, blank=True, verbose_name=_("Référent(e.s)")
-#     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
-#     #    projet = models.OneToOneField(Projet)
-#     start_time = models.DateField(verbose_name=_("Date prévue (affichage dans l'agenda)", help_text="(jj/mm/an)",
-#                                   default=timezone.now, blank=True, null=True)
-#     heure_atelier = models.TimeField(verbose_name=_("Heure prévue", help_text="Horaire de départ (hh:mm)",
-#                                      default="17:00", blank=True, null=True)
-#
-#     date_creation = models.DateTimeField(verbose_name=_("Date de parution", default=timezone.now)
-#     date_modification = models.DateTimeField(verbose_name=_("Date de modification", default=timezone.now)
-#
-#     date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message", auto_now=False, blank=True,
-#                                                null=True)
-#     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True,
-#                                       help_text="Heure prévue (hh:mm)")
-#     duree_prevue = models.TimeField(verbose_name=_("Durée prévue", help_text="Durée de l'atelier estimée",
-#                                     default="02:00", blank=True, null=True)
-#     tarif_par_personne = models.CharField(max_length=100, default='gratuit',
-#                                           help_text="Tarif de l'atelier par personne",
-#                                           verbose_name=_("Tarif de l'atelier par personne", )
-#     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-#     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
-#
-#     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'atelier")
-#
-#     class Meta:
-#         ordering = ('-date_creation',)
-#
-#     def __str__(self):
-#         return self.titre
-#
-#     def get_absolute_url(self):
-#         return reverse('ateliers:lireAtelier', kwargs={'slug': self.slug})
+CHOIX_MOYEN = ("VIR", "Virement"), ("CHQ", "Chèque"), ("ESP", "Espèce"), ("HA", "HelloAsso"), ("Autre", "Autre"),
+
+class ChoixMoyenPaiement(models.IntegerChoices):
+    VIREMENT = 0, _("Virement")
+    CHQ = 1, _("Chèque")
+    ESPECES = 2, _("Espèce")
+    AUTRE = 3, _("Autre")
+
+class ChoixTypeNdf(models.IntegerChoices):
+    ACHAT = 0, _("Achat")
+    HEBERGEMENT = 1, _("Hebergement")
+    RESTAU = 2, _("Restauration")
+    AUTRE = 3, _("Autre")
+
+
+class NoteDeFrais(models.Model):
+    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
+    participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
+    date_creation = models.DateField(verbose_name=_("Date de création"), auto_now_add=True)
+    date_note = models.DateField(verbose_name=_("Date du paiement"), editable=True, auto_now_add=False)
+    titre = models.CharField(max_length=10, blank=False, verbose_name=_("Titre de la note de frais"))
+    categorie = models.IntegerField(blank=False, choices=ChoixTypeNdf.choices,
+                                 default='0', verbose_name=_("Categorie de frais"))
+    montant = models.CharField(max_length=10, blank=False, verbose_name=_("Montant de la note de frais"))
+    moyen = models.IntegerField(blank=False, verbose_name=_("Moyen de paiement"), choices=ChoixMoyenPaiement.choices, )
+    detail = models.TextField(null=True, blank=False)
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, null=False)
+
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver la Note de frais"))
+
+    def __str__(self):
+        return str(self.date_creation.strftime('%Y')) + ": " + str(self.montant) + " euros (" + str(self.moyen) + ")"
+
+    def get_absolute_url(self):
+        return reverse('defraiement:ndf_detail', kwargs={'pk': self.pk})
+    def get_update_url(self):
+        return reverse('defraiement:ndf_modifier', kwargs={'pk': self.pk})
+    def get_delete_url(self):
+        return reverse('defraiement:ndf_supprimer', kwargs={'pk': self.pk})
+

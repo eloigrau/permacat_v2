@@ -304,10 +304,8 @@ class Article(models.Model):
         url = self.get_absolute_url_site + "#ref-titre"
         if creation or forcerCreationMails:
             titre = "Nouvel article"
-            message = "Un article a été posté dans le forum [" + str(
-                self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
-            message_notif = "Un article a été posté dans le forum [" + str(
-                self.asso.nom) + "] : "+ self.titre
+            message = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
+            message_notif = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
             emails = [suiv.email for suiv in suiveurs]
@@ -385,7 +383,6 @@ class Article(models.Model):
     @property
     def get_logo_categorie(self):
         return Choix.get_logo(self.categorie)
-
 
     @property
     def get_categorie_display2(self):

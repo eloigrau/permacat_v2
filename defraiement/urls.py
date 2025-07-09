@@ -38,7 +38,7 @@ urlpatterns = [
 
     path(r'participant/<int:id>', views.lireParticipant, name='lireParticipant'),
     path(r'ajouterParticipant/<str:asso_slug>', views.ajouterParticipant, name='ajouterParticipant'),
-    path(r'ajouterParticipantConf66/', views.ajouterParticipantConf66, name='ajouterParticipantConf66'),
+    path(r'ajouterParticipantAsso/<str:asso_slug>', views.ajouterParticipantAsso, name='ajouterParticipantAsso'),
     path(r'modifierParticipant/<int:id>',
         login_required(views.ModifierParticipant.as_view(), login_url='/auth/login/'), name='modifierParticipant'),
     path(r'modifierTrajet/<int:pk>',
@@ -59,4 +59,11 @@ urlpatterns = [
     re_path(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),
     path(r'carte_reunions/<str:asso_slug>', views.carte_reunions, name='carte_reunions'),
 #    re_path(r'pageTest/$', views.pageTest, name='pageTest'),
+
+    path(r'ndf_liste/<str:asso_slug>', views.ListeNdf_asso.as_view(), name='ndf_liste'),
+    path(r'ajouter_ndf/<str:asso_slug>', views.NoteDeFrais_ajouter.as_view(), name='ndf_ajouter'),
+    path(r'ndf_detail/<int:pk>', views.NoteDeFrais_detail.as_view(), name='ndf_detail'),
+    path(r'modifier_ndf/<int:pk>',login_required(views.NoteDeFrais_modifier.as_view(), login_url='/auth/login/'), name='ndf_modifier'),
+    path(r'supprimer_ndf/<int:pk>',login_required(views.NoteDeFrais_supprimer.as_view(), login_url='/auth/login/'), name='ndf_supprimer'),
+
 ]

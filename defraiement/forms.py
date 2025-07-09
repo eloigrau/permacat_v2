@@ -4,7 +4,7 @@ import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso
 from photologue.models import Album
-from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion
+from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais
 from django.core.exceptions import ValidationError
 from bourseLibre.utils import slugify_pcat
 from adherents.models import Adherent
@@ -20,7 +20,7 @@ class ReunionForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -58,7 +58,7 @@ class ReunionChangeForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -122,76 +122,41 @@ class Distance_ParticipantReunionForm(forms.ModelForm):
         fields = ['type_trajet', 'distance', 'contexte_distance',]
 
 
-
-"""
-An example of minimum requirements to make MultiValueField-MultiWidget for Django forms.
-"""
-import pickle
-
-from django.http import HttpResponse
-from django import forms
-from django.template import Context, Template
-from django.views.decorators.csrf import csrf_exempt
-
-
-class MultiWidgetBasic(forms.widgets.MultiWidget):
-    def __init__(self, attrs=None):
-        widgets = [forms.TextInput(),
-                   forms.TextInput()]
-        super(MultiWidgetBasic, self).__init__(widgets, attrs)
-
-    def decompress(self, value):
-        if value:
-            return pickle.loads(value)
-        else:
-            return ['', '']
-
-
-class MultiExampleField(forms.fields.MultiValueField):
-    widget = MultiWidgetBasic
-
-    def __init__(self, *args, **kwargs):
-        list_fields = [forms.fields.CharField(max_length=31),
-                       forms.fields.CharField(max_length=31)]
-        super(MultiExampleField, self).__init__(list_fields, *args, **kwargs)
-
-    def compress(self, values):
-        ## compress list to single object
-        ## eg. date() >> u'31/12/2012'
-        return pickle.dumps(values)
-
-class MultiWidgetBool(forms.widgets.MultiWidget):
-    def __init__(self, attrs=None):
-        widgets = [forms.CheckboxInput(), forms.CheckboxInput(), ]
-        super(MultiWidgetBool, self).__init__(widgets, attrs)
-
-    def decompress(self, value):
-        if value:
-            return pickle.loads(value)
-        else:
-            return ['', '']
-
-
-class MultiBoolField(forms.fields.MultiValueField):
-    widget = MultiWidgetBool
-
-    def __init__(self, *args, **kwargs):
-        list_fields = [forms.fields.BooleanField(),
-                       forms.fields.BooleanField()]
-        super(MultiBoolField, self).__init__(list_fields, *args, **kwargs)
-
-class FormForm(forms.Form):
-    a = forms.BooleanField()
-    b = forms.CharField(max_length=32)
-    c = forms.CharField(max_length=32, widget=forms.widgets.Textarea())
-    d = forms.CharField(max_length=32, widget=forms.widgets.SplitDateTimeWidget())
-    e = forms.CharField(max_length=32, widget=MultiWidgetBasic())
-    #f = MultiExampleField()
-    f = MultiBoolField()
-
-
 class ChoixAdherentConf(forms.Form):
     adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Adhérent", )
 
     class Meta:
         fields = ['adherent']
+
+class NoteDeFrais_form(forms.ModelForm):
+    participant = forms.ModelChoiceField(queryset=ParticipantReunion.objects.all().order_by('nom'), required=True,
+                                  label="Participant ", )
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(NoteDeFrais_form, self).__init__(*args, **kwargs)
+        self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
+
+    class Meta:
+        model = NoteDeFrais
+        fields = ['titre', 'participant', 'date_note', 'montant', 'categorie', 'moyen', 'detail' ]
+
+
+        widgets = {
+              'date_note':  forms.DateInput(
+                format=('%d-%m-%Y'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+        }
+
+class NoteDeFrais_update_form(forms.ModelForm):
+    participant = forms.ModelChoiceField(queryset=ParticipantReunion.objects.all().order_by('nom'), required=True,
+                                  label="Payé par", )
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(NoteDeFrais_update_form, self).__init__(*args, **kwargs)
+        self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
+
+    class Meta:
+        model = NoteDeFrais
+        fields = ['titre', 'participant', 'date_note', 'montant', 'categorie', 'moyen', 'detail', 'estArchive' ]

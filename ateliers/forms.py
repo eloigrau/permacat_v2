@@ -23,7 +23,7 @@ class AtelierForm(forms.ModelForm):
             'description': SummernoteWidget(),
             'materiel': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -85,7 +85,7 @@ class AtelierChangeForm(forms.ModelForm):
             'materiel': SummernoteWidget(),
             'outils': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),

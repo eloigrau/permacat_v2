@@ -729,16 +729,16 @@ class Monnaie(models.Model):
 class Produit(models.Model):  # , BaseProduct):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE,)
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), editable=False)
-    date_debut = models.DateField(verbose_name=_("Débute le (jj/mm/an)"), null=True, blank=True)
+    date_debut = models.DateField(verbose_name=_("Débute le "), null=True, blank=True)
     #proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
-    date_expiration = models.DateField(verbose_name=_("Expire le (jj/mm/an)"), blank=True, null=True, )#default=proposed_renewal_date, )
+    date_expiration = models.DateField(verbose_name=_("Expire le "), blank=True, null=True, )#default=proposed_renewal_date, )
     nom_produit = models.CharField(max_length=250, verbose_name=_("Titre de l'annonce"))
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, verbose_name=_("Description de l'annonce"))
     slug = models.SlugField(max_length=100)
 
     stock_initial = models.FloatField(default=1, verbose_name=_("Quantité disponible"), max_length=250, validators=[MinValueValidator(1), ])
     stock_courant = models.FloatField(default=1, max_length=250, validators=[MinValueValidator(0), ])
-    prix = models.CharField(max_length=150, verbose_name=_("Tarif"), blank=True)
+    prix = models.CharField(max_length=150, verbose_name=_("Tarif (si besoin)"), blank=True)
     unite_prix = models.CharField(
         max_length=8,
         choices=Choix.monnaies,
@@ -753,7 +753,7 @@ class Produit(models.Model):  # , BaseProduct):
     #photo = StdImageField(upload_to='imagesProduits/', blank=True, variations={'large': (640, 480), 'thumbnail': (100, 100, True)}) # all previous features in one declaration
 
     estUneOffre = models.BooleanField(default=True, verbose_name='Offre (cochez) ou Demande (décochez)')
-    estPublique = models.BooleanField(default=False, verbose_name='Publique (cochez) ou Interne (décochez) [réservé aux membres permacat]')
+    #estPublique = models.BooleanField(default=False, verbose_name='Publique (cochez) ou Interne (décochez)')
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     objects = InheritanceManager()
 
@@ -766,6 +766,10 @@ class Produit(models.Model):  # , BaseProduct):
     @property
     def titre(self):
         return self.nom_produit
+
+    @property
+    def estPublique(self):
+        return self.asso.slug =='public'
 
     @property
     def est_perimee(self):

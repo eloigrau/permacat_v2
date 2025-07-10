@@ -61,6 +61,9 @@ function updateForm() {
         });
         $("#id_estEpingle").prop('disabled', true);
 
+    }else if(asso == ""){
+        select_partages.style.display = 'none';
+        select_partages.style.visibility = "hidden";
     }else{
         select_partages.style.display = 'inline';
          select_partages.style.visibility = "visible";

@@ -22,8 +22,9 @@
 <div class="form-group">
 {% with tyype=field|field_type %}
 {% with entete=field|field_entete %}
+
 {% if entete %}
-    {{field.label_tag}}
+    {{field.label_tag}}{% if field.field.required %} *{% endif %}
 {%endif%}
 {{ field.errors }}
 {% if tyype == 'SummernoteWidget' or tyype == 'CheckboxSelectMultiple' %}
@@ -31,7 +32,16 @@
 {% elif tyype == 'CheckboxInput' %}
   {{field}} {{field.label}}
 {% else %}
+{%if field.errors %}
+
+    {% render_field field class="form-control is-invalid" placeholder=field.label %}
+{% else %}
+{% if not entete %}
     {% render_field field class="form-control" placeholder=field.label%}
+{% else %}
+    {% render_field field class="form-control" %}
+{% endif %}
+{% endif %}
 {% endif %}
 
 {% if field.help_text %}

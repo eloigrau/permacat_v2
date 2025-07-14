@@ -36,7 +36,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
     production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production")
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
-    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année")
+    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année", widget=forms.CheckboxSelectMultiple(attrs={}))
 
     def __init__(self, asso_slug, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,6 +70,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         fields = {
             'statut': ['exact', ],
         }
+        widget = { }
 
 
 class ContactCarteFilter(django_filters.FilterSet):

@@ -110,6 +110,14 @@
               popupAnchor: [1, -34],
               shadowSize: [41, 41]
         });
+            var violetIcon = L.icon({
+              iconUrl: "{% static 'img/marker-icon-violet.png' %}",
+              shadowUrl: "{% static 'img/marker-shadow.png' %}",
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+            });
 
         var markers = L.markerClusterGroup({ maxClusterRadius: 5 });
         {% for profil in adherents %}
@@ -121,12 +129,14 @@
             var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '2' or profil.statut == 'CotSol'%}
             var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
-            {% elif profil.statut == '3' %}
-            var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            {% elif profil.statut == '3' or profil.statut == '7'%}
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '5' %}
             var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% elif profil.statut == '4' %}
-            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            var marker = L.marker([lat, lon], {icon: greyIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
+            {% elif profil.statut == '6' %}
+            var marker = L.marker([lat, lon], {icon: violetIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug%}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% else %}
             var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:adherent_detail' pk=profil.pk asso_slug=request.session.asso_slug %}"> {{profil.nom}} {{profil.prenom}}</a>');
             {% endif %}
@@ -144,8 +154,8 @@
         {% leaflet_map "yourmap" callback="window.map_init_basic" %}
     </div>
 </div>
-<p class="textepetit textcenter">Bleu : Cotisant Solidaire; Vert : à titre principal; Jaune : à titre secondaire; Orange
-    : retraité.e; Gris : CC; Noir : ?</p>
+<p class="textepetit textcenter">Vert : à titre principal; Bleu : Cotisant Solidaire; Jaune : à titre secondaire; Orange
+    : Conjoint Collaborateur ou aide familial; Gris : retraité.e; Violet : Porteur de projet; Noir : statut inconnu</p>
 
 <hr>
 <div class="row">

@@ -221,31 +221,22 @@ def adherent_ajouter(request, asso_slug):
 
     return render(request, 'adherents/adherent_ajouter.html', {"form": form, "asso_slug":asso_slug})
 
-@login_required
 def creerAdherent(telephone, asso, nom=None, prenom=None, email=None, rue=None, commune=None, code_postal=None, profil=None):
     if not(telephone or nom or prenom or email or code_postal):
         return 0, None
 
-    if not Adherent.objects.filter(adresse__code_postal=code_postal,
-                                 adresse__telephone=telephone,
-                                nom=nom,
+    if not Adherent.objects.filter(nom=nom,
                                 prenom=prenom,
-                                email=email,
                                    asso=asso).exists():
-        if code_postal and telephone:
+        try:
             adresse, created = Adresse.objects.get_or_create(
-                                        telephone=telephone,
-                                        commune=commune,
-                                        code_postal=code_postal,
-                                        rue=rue,
-                                        )
-        else:
-            adresse = Adresse.objects.create(
-                                        telephone=telephone,
+                                            telephone=telephone,
                                             commune=commune,
                                             code_postal=code_postal,
                                             rue=rue,
-                                        )
+                                            )
+        except:
+            adresse = Adresse.objects.create()
         p, created = Adherent.objects.get_or_create(
                                         nom=nom,
                                         prenom=prenom,
@@ -278,17 +269,14 @@ def ajouterLesMembresGroupe(request, asso_slug ):
     m = ""
     j=0
     for i, adherent in enumerate(profils):
-        #if j>5 or i> 200:
-         #   break
-
-        res, p = creerAdherent(telephone=adherent.adresse.telephone if adherent.adresse.telephone else None,
+        res, p = creerAdherent(telephone=adherent.adresse.telephone if adherent.adresse else None,
                              asso=asso,
                              nom=adherent.last_name,
                              prenom=adherent.first_name,
                              email=adherent.email,
-                             rue=adherent.adresse.rue,
-                             commune=adherent.adresse.commune,
-                             code_postal=adherent.adresse.code_postal,
+                             rue=adherent.adresse.rue if adherent.adresse else None,
+                             commune=adherent.adresse.commune if adherent.adresse else None,
+                             code_postal=adherent.adresse.code_postal if adherent.adresse else None,
                              profil=adherent
                              )
         if res:

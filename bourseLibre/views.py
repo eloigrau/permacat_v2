@@ -1570,6 +1570,11 @@ def sortirDuSalon(request, slug_salon):
     salon = testIsMembreSalon(request, slug_salon)
     inscription = InscritSalon.objects.filter(salon=salon, profil=request.user)
     inscription.delete()
+    message = Message_salon.objects.create(
+        salon=salon,
+        message="%s a quitté le salon"%(request.user),
+        auteur=get_object_or_404(Profil, username="bot_permacat"),
+        date_creation=now()).save()
     return redirect("salon_accueil")
 
 

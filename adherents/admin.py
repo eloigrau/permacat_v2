@@ -4,7 +4,7 @@ from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusion, Contact
 
 @admin.register(Adherent)
 class Adherent_Admin(admin.ModelAdmin):
-    list_display = ('nom', 'prenom', 'email', 'profil', 'get_adhesions')
+    list_display = ('nom', 'prenom', 'email', 'profil', 'get_adhesions', 'production_ape')
     search_fields = ('nom', 'email', )
 
 @admin.register(Adhesion)

@@ -27,7 +27,7 @@ STATUT_CHOICES = (
 
 def get_choix_Production():
     if not LOCALL:
-        return [(p, dict_ape[p] if p in dict_ape else p) for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
+        return [(p, dict_ape[p] if p in dict_ape else str(p[:10]) + " (inconnu)") for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
     else:
         return []
 

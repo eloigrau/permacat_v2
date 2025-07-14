@@ -19,7 +19,7 @@ from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentFor
 from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
                      ListeDiffusion, Comm_adherent, ProjetPhoning)
 from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso
-from bourseLibre.views import testIsMembreAsso
+from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
 from .filters import AdherentsCarteFilter, ContactCarteFilter
 #from .constantes import get_slug_salon
 from django.utils.timezone import now
@@ -41,22 +41,30 @@ def is_membre_bureau(user, asso_slug="conf66"):
     return user.estmembre_bureau(asso_slug)
 
 
+
 @login_required
 def set_projet_phoning(request, asso_slug, url_redirect):
     projet = get_object_or_404(ProjetPhoning, slug=asso_slug)
     request.session['projet_courant'] = projet
     return redirect(url_redirect)
 
+class TestMembreAssoMixin(UserPassesTestMixin):
+    def test_func(self):
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+        self.request.session["asso_slug"] = self.asso.slug
+        return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
 
-class ListeAdherents(UserPassesTestMixin, ListView):
+class TestBureauAssoMixin(UserPassesTestMixin):
+    def test_func(self):
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+        self.request.session["asso_slug"] = self.asso.slug
+        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user.is_superuser
+
+class ListeAdherents(TestMembreAssoMixin, ListView):
     model = Adherent
     context_object_name = "adherents"
     template_name = "adherents/carte_adherents.html"
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        self.request.session["asso_slug"] = self.asso.slug
-        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -89,14 +97,9 @@ class ListeAdherents(UserPassesTestMixin, ListView):
         else:
             return "adherents/carte_adherents.html"
 
-class AdherentDetailView(UserPassesTestMixin, DetailView, ):
+class AdherentDetailView(TestMembreAssoMixin, DetailView, ):
     model = Adherent
     template_name_suffix = '_detail'
-
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        self.request.session["asso_slug"] = self.asso.slug
-        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -123,13 +126,15 @@ def monProfil(request, asso_slug):
 
     return redirect('adherents:adherent_detail', pk=adherents[0].pk, asso_slug=asso_slug)
 
-class AdherentDeleteView(UserPassesTestMixin, DeleteView):
+
+
+class AdherentDeleteView(TestBureauAssoMixin, DeleteView):
     model = Adherent
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
 
     def get_success_url(self):
         desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
@@ -142,9 +147,8 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     form_class = AdherentChangeForm
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
-
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
 
     def form_valid(self, form):
         desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
@@ -172,9 +176,9 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
         self.adherent = self.adresse.adherent_set.first()
-        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.adherent.profil
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.adherent.profil or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -194,7 +198,9 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
 
 @login_required
 def adherent_ajouter(request, asso_slug):
-    asso = testIsMembreAsso(request, asso_slug)
+    asso = Asso.objects.get(slug=asso_slug)
+    if not (request.user.est_membre_bureau(asso_slug) or request.user.is_superuser):
+        return HttpResponseForbidden()
 
     if asso_slug == "conf66":
         form = AdherentForm_conf66(request.POST or None)
@@ -288,16 +294,17 @@ def ajouterLesMembresGroupe(request, asso_slug ):
 
     return redirect("adherents:adherent_liste", {"asso_slug":asso_slug})
 
-class ListeAdhesions(UserPassesTestMixin, ListView):
+class ListeAdhesions(TestMembreAssoMixin, ListView):
     model = Adhesion
     context_object_name = "adhesions"
     template_name = "adherents/adhesion_liste.html"
     ordering = ("-date_cotisation__year", "adherent__nom")
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
         self.request.session["asso_slug"] = self.asso.slug
-        return is_membre_bureau(self.request.user, self.asso.slug)
+        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.object.adherent.profil or self.request.user.is_superuser
+
 
     def get_queryset(self):
         return Adhesion.objects.filter(asso=self.asso).order_by("-date_cotisation")
@@ -310,7 +317,7 @@ class ListeAdhesions(UserPassesTestMixin, ListView):
         return context
 
 
-class AdhesionDetailView(UserPassesTestMixin, DetailView):
+class AdhesionDetailView(TestBureauAssoMixin, DetailView):
     model = Adhesion
 
     def get_context_data(self, **kwargs):
@@ -318,11 +325,8 @@ class AdhesionDetailView(UserPassesTestMixin, DetailView):
         context['asso_slug'] = self.asso.slug
         return context
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
 
-class AdhesionDeleteView(UserPassesTestMixin, DeleteView):
+class AdhesionDeleteView(TestBureauAssoMixin, DeleteView):
     model = Adhesion
     template_name_suffix = '_supprimer'
 
@@ -334,16 +338,12 @@ class AdhesionDeleteView(UserPassesTestMixin, DeleteView):
         self.adherent = ad.adherent
         return ad
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         return context
 
-class AdhesionUpdateView(UserPassesTestMixin, UpdateView):
+class AdhesionUpdateView(TestBureauAssoMixin, UpdateView):
     model = Adhesion
     template_name_suffix = '_modifier'
     fields = ["date_cotisation", "montant", "moyen", "detail"]
@@ -351,20 +351,14 @@ class AdhesionUpdateView(UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return self.object.adherent.get_absolute_url()
 
-
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
-
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         return context
 
 def ajouterAdhesion(request, asso_slug, adherent_pk):
-    asso = testIsMembreAsso(request, asso_slug,)
-    if not is_membre_bureau(request.user):
+    asso = Asso.objects.get(slug=asso_slug)
+    if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
     form = AdhesionForm(request.POST or None)
@@ -380,7 +374,7 @@ def ajouterAdhesion(request, asso_slug, adherent_pk):
 
 
 def ajouterAdhesion_2(request,  asso_slug, ):
-    asso = testIsMembreAsso(request,  asso_slug, )
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
@@ -397,6 +391,7 @@ def ajouterAdhesion_2(request,  asso_slug, ):
 login_required
 def normaliser_adherents(request, asso_slug):
     """A view that streams a large CSV file."""
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     # profils = Adherent.objects.all()
@@ -425,7 +420,8 @@ def normaliser_adherents(request, asso_slug):
 
 login_required
 def get_csv2(request, asso_slug):
-    if not is_membre_bureau(request.user, asso_slug):
+    asso = Asso.objects.get(slug=asso_slug)
+    if not asso.est_autorise(request.user):
         return HttpResponseForbidden()
     # Create the HttpResponse object with the appropriate CSV header.
     response = HttpResponse(
@@ -471,6 +467,7 @@ def write_csv_data(request, csv_data):
 login_required
 def get_csv_adherents(request, asso_slug):
     """A view that streams a large CSV file."""
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom")
@@ -478,8 +475,10 @@ def get_csv_adherents(request, asso_slug):
     current_year = date.today().isocalendar()[0]
 
     csv_data = [
-        ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT","MONTANT2020","MOYEN2020","MONTANT2021","MOYEN2021","MONTANT2022","MOYEN2022","MONTANT2023","MOYEN2023","MONTANT2024","MOYEN2024"),]
-    csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune,  a.email, a.adresse.telephone, a.get_profil_username,
+        ("NOM","PRENOM","GAEC","STATUT(0?-1AP-2ATS-3CC-4Retraite-5ATS-6PP-7AF)","APE", "ADRESSE POSTALE","CODE POSTAL","COMMUNE","ADRESSE MAIL","TELEPHONE","PROFIL_PCAT",
+         "MONTANT%s"%(current_year-4),"MOYEN%s"%(current_year-4),"MONTANT%s"%(current_year-3),"MOYEN%s"%(current_year-3),
+         "MONTANT%s"%(current_year-2),"MOYEN%s"%(current_year-2),"MONTANT%s"%(current_year-1),"MOYEN%s"%(current_year-1),"MONTANT%s"%(current_year),"MOYEN%s"%(current_year)),]
+    csv_data += [(a.nom, a.prenom, a.nom_gaec, a.get_statut_display(), a.production_ape,a.adresse.rue,a.adresse.code_postal,a.adresse.commune, a.email, a.adresse.telephone, a.get_profil_username,
                   a.get_adhesion_an(current_year-4).montant, a.get_adhesion_an(current_year-4).moyen,
                   a.get_adhesion_an(current_year-3).montant, a.get_adhesion_an(current_year-3).moyen,
                   a.get_adhesion_an(current_year-2).montant, a.get_adhesion_an(current_year-2).moyen,
@@ -491,6 +490,7 @@ def get_csv_adherents(request, asso_slug):
 login_required
 def get_csv_adherents_pasajour(request, asso_slug):
     """A view that streams a large CSV file."""
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
@@ -504,6 +504,7 @@ def get_csv_adherents_pasajour(request, asso_slug):
 login_required
 def get_csv_listeMails(request, asso_slug):
     """A view that streams a large CSV file."""
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom")
@@ -777,6 +778,7 @@ def getMails(request, asso_slug):
 
 @login_required
 def get_infos_adherent(request, asso_slug, type_info="email"):
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
@@ -820,6 +822,8 @@ def get_infos_contacts(request, projet_pk, type_info="email"):
 
 @login_required
 def get_infos_listeMail(request, asso_slug, listeMail_pk, type_info="email"):
+    if not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
     liste = get_object_or_404(ListeDiffusion, pk=listeMail_pk)
     if type_info == "email":
         mails = liste.get_liste_mails
@@ -830,6 +834,8 @@ def get_infos_listeMail(request, asso_slug, listeMail_pk, type_info="email"):
 
 @login_required
 def get_infos_adherents_pasajour(request, asso_slug):
+    if not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
     mails = list(set([a.email for a in profils if not a.get_adhesion_an(current_year)]))
@@ -844,15 +850,11 @@ def get_infos_adherents_ajour(request, asso_slug):
 
     return render(request, 'adherents/template_liste.html', {'liste': mails, "asso_slug":asso_slug})
 
-class ListeInscriptionsMails(UserPassesTestMixin, ListView):
+class ListeInscriptionsMails(TestMembreAssoMixin, ListView):
     model = InscriptionMail
     context_object_name = "inscriptions"
     template_name = "adherents/inscriptionMail_liste.html"
     ordering = ['liste_diffusion']
-
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.asso
 
     def get_queryset(self):
         return InscriptionMail.objects.filter(liste_diffusion__asso=self.asso).order_by("-date_inscription")
@@ -864,7 +866,7 @@ class ListeInscriptionsMails(UserPassesTestMixin, ListView):
         return context
 
 
-class InscriptionMailDetailView(UserPassesTestMixin, DetailView):
+class InscriptionMailDetailView(TestMembreAssoMixin, DetailView):
     model = InscriptionMail
 
     def get_context_data(self, **kwargs):
@@ -873,11 +875,8 @@ class InscriptionMailDetailView(UserPassesTestMixin, DetailView):
         context['asso_slug'] = self.asso.slug
         return context
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
 
-class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
+class InscriptionMailDeleteView(TestMembreAssoMixin, DeleteView):
     model = InscriptionMail
     template_name_suffix = '_supprimer'
 
@@ -889,16 +888,12 @@ class InscriptionMailDeleteView(UserPassesTestMixin, DeleteView):
     def get_success_url(self):
         return self.listeMail.get_absolute_url()
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         return context
 
-class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
+class InscriptionMailUpdateView(TestMembreAssoMixin, UpdateView):
     model = InscriptionMail
     template_name_suffix = '_modifier'
 
@@ -908,17 +903,13 @@ class InscriptionMailUpdateView(UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return self.object.liste_diffusion.get_absolute_url()
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         return context
 
 
-class Comm_adherent_modifier(UserPassesTestMixin, UpdateView):
+class Comm_adherent_modifier(TestBureauAssoMixin, UpdateView):
     model = Comm_adherent
     template_name_suffix = '_modifier'
     fields = ["commentaire"]
@@ -926,17 +917,13 @@ class Comm_adherent_modifier(UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return self.object.adherent.get_absolute_url()
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         return context
 
 
-class Comm_adherent_supprimer(UserPassesTestMixin, DeleteView):
+class Comm_adherent_supprimer(TestBureauAssoMixin, DeleteView):
     model = Comm_adherent
     template_name_suffix = '_supprimer'
 
@@ -947,10 +934,6 @@ class Comm_adherent_supprimer(UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return self.adherent.get_absolute_url()
-
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -970,17 +953,11 @@ def get_mails(asso_slug, typeListe="bureau"):
         return list(set([a.email for a in profils if not a.get_adhesion_an(current_year).montant and a.email]))
 
 
-class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
+class ListeDiffusion_liste(TestMembreAssoMixin, ListView, ):
     model = ListeDiffusion
     context_object_name = "listesDiffusion"
     template_name = "adherents/listediffusion_list.html"
     ordering = ['nom']
-
-
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        self.request.session["asso_slug"] = self.asso.slug
-        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_queryset(self):
         return ListeDiffusion.objects.filter(asso=self.asso).order_by("nom")
@@ -1004,13 +981,10 @@ class ListeDiffusion_liste(UserPassesTestMixin, ListView, ):
         return context
 
 
-class ListeDiffusionDetailView(UserPassesTestMixin, DetailView):
+class ListeDiffusionDetailView(TestMembreAssoMixin, DetailView):
     model = ListeDiffusion
     ordering = ['nom']
 
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.request.user.isCotisationAJour(self.asso.slug) or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1019,7 +993,7 @@ class ListeDiffusionDetailView(UserPassesTestMixin, DetailView):
         return context
 
 
-class ListeDiffusionDeleteView(UserPassesTestMixin, DeleteView):
+class ListeDiffusionDeleteView(TestBureauAssoMixin, DeleteView):
     model = ListeDiffusion
     template_name_suffix = '_supprimer'
 
@@ -1032,7 +1006,7 @@ class ListeDiffusionDeleteView(UserPassesTestMixin, DeleteView):
         return ad
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
         return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_context_data(self, **kwargs):
@@ -1040,18 +1014,13 @@ class ListeDiffusionDeleteView(UserPassesTestMixin, DeleteView):
         context['asso_slug'] = self.asso.slug
         return context
 
-class ListeDiffusionUpdateView(UserPassesTestMixin, UpdateView):
+class ListeDiffusionUpdateView(TestBureauAssoMixin, UpdateView):
     model = ListeDiffusion
     template_name_suffix = '_modifier'
     fields = ["nom"]
 
     def get_success_url(self):
         return self.object.adherent.get_absolute_url()
-
-    def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return is_membre_bureau(self.request.user, self.asso.slug)
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1060,6 +1029,7 @@ class ListeDiffusionUpdateView(UserPassesTestMixin, UpdateView):
 
 @login_required
 def creerInscriptionMail_adherent(request, asso_slug, adherent_pk):
+    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
@@ -1092,8 +1062,8 @@ def creerInscriptionMail(request, asso_slug):
 
 @login_required
 def creerListeDiffusion(request, asso_slug):
-    asso = testIsMembreAsso(request, asso_slug)
-    if not is_membre_bureau(request.user, asso_slug):
+    asso = Asso.objects.get(slug=asso_slug)
+    if not asso.est_autorise(request.user) and not request.user.is_superuser:
         return HttpResponseForbidden()
 
     form = ListeDiffusionForm(request.POST or None)

@@ -52,7 +52,7 @@ msgid "Montant de l'adhesion"
 msgstr "Montant de l'adhésion"
 #: adherents/models.py:121
 msgid "Moyen de paiement"
-msgstr "Moyen de Paiment"
+msgstr "Moyen de paiement"
 #: adherents/models.py:139 adherents/models.py:229 blog/models.py:765
 #: jardins/models.py:241 jardins/models.py:277 bourseLibre/models.py:334
 #: bourseLibre/models.py:1339 bourseLibre/models.py:1352

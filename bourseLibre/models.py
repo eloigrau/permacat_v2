@@ -261,7 +261,7 @@ class Asso(models.Model):
         if self.slug == "public":
             return True
         elif self.slug in Choix.slugsAsso_accesParCotisation:
-            return user.isCotisationAJour(self.slug)
+            return user.isCotisationAJour(self.slug) or user.estmembre_bureau(self.slug)
 
         return getattr(user, "adherent_" + self.slug, False)
 

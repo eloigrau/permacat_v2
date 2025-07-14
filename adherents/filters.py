@@ -26,7 +26,7 @@ STATUT_CHOICES = (
 )
 
 def get_choix_Production():
-    return [(p, dict_ape[p] if p in dict_ape else str(p[:10]) + " (inconnu)") for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
+    return [(p, dict_ape[p] if p in dict_ape else str(p[:10]) + " (inconnu)") for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() if p ]
 
 
 class AdherentsCarteFilter(django_filters.FilterSet):

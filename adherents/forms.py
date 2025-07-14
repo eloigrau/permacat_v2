@@ -85,12 +85,16 @@ class AdherentForm(forms.ModelForm):
             }
 
 class AdherentChangeForm(forms.ModelForm):
+
     class Meta:
         model = Adherent
         fields = ['nom', 'prenom', 'email', ]
 
 
 class AdherentChangeForm_conf66(forms.ModelForm):
+    production_ape = forms.ChoiceField(label="Production",
+                                       help_text="Selectionner la production correspondant à votre code APE dans la liste",
+                                       choices=list_ape)
 
     class Meta:
         model = Adherent

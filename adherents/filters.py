@@ -26,15 +26,13 @@ STATUT_CHOICES = (
 )
 
 def get_choix_Production():
-    if not LOCALL:
-        return [(p, dict_ape[p] if p in dict_ape else str(p[:10]) + " (inconnu)") for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
-    else:
-        return []
+    return [(p, dict_ape[p] if p in dict_ape else str(p[:10]) + " (inconnu)") for p in Adherent.objects.all().values_list('production_ape', flat=True).distinct() ]
+
 
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ", required=False)
     statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
-    production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production")
+    production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production", widget=forms.Select(attrs={'width':'100%;'}))
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
     annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année", widget=forms.CheckboxSelectMultiple(attrs={}))
 

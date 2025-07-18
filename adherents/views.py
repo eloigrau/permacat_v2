@@ -58,7 +58,7 @@ class TestBureauAssoMixin(UserPassesTestMixin):
     def test_func(self):
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
         self.request.session["asso_slug"] = self.asso.slug
-        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user.is_superuser
+        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user.is_superuser
 
 class ListeAdherents(TestMembreAssoMixin, ListView):
     model = Adherent
@@ -134,7 +134,7 @@ class AdherentDeleteView(TestBureauAssoMixin, DeleteView):
 
     def test_func(self):
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
+        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
 
     def get_success_url(self):
         desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
@@ -148,7 +148,7 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
+        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
 
     def form_valid(self, form):
         desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(
@@ -178,7 +178,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
         self.adresse = Adresse.objects.get(pk=self.kwargs['pk'])
         self.adherent = self.adresse.adherent_set.first()
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.adherent.profil or self.request.user.is_superuser
+        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.adherent.profil or self.request.user.is_superuser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -199,7 +199,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
 @login_required
 def adherent_ajouter(request, asso_slug):
     asso = Asso.objects.get(slug=asso_slug)
-    if not (request.user.est_membre_bureau(asso_slug) or request.user.is_superuser):
+    if not (request.user.estmembre_bureau(asso_slug) or request.user.is_superuser):
         return HttpResponseForbidden()
 
     if asso_slug == "conf66":
@@ -303,7 +303,7 @@ class ListeAdhesions(TestMembreAssoMixin, ListView):
     def test_func(self):
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
         self.request.session["asso_slug"] = self.asso.slug
-        return self.request.user.est_membre_bureau(self.asso.slug) or self.request.user == self.object.adherent.profil or self.request.user.is_superuser
+        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.object.adherent.profil or self.request.user.is_superuser
 
 
     def get_queryset(self):
@@ -467,7 +467,6 @@ def write_csv_data(request, csv_data):
 login_required
 def get_csv_adherents(request, asso_slug):
     """A view that streams a large CSV file."""
-    asso = Asso.objects.get(slug=asso_slug)
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom")

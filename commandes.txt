@@ -59,3 +59,4 @@ python manage.py remove_stale_contenttypes --settings=bourseLibre.settings.produ
 #/home/tchenrezi/Django/venv3.6/bin/python /PycharmProjects/mercatLliure/manage.py migrate --run-syncdb
 #./manage.py clear_index
 #./manage.py update_index
+sudo certbot --expand --nginx -d www.perma.cat

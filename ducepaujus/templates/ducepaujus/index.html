@@ -50,7 +50,7 @@ https://www.tooplate.com/view/2116-blugoon
                 <nav class="main-nav" role="navigation">
                     <ul class="main-menu ul-class">
                         <li><a href="#section1">Présentation</a></li>
-                        <!--li><a href="#section2">2025</a></li-->
+                        <li><a href="#section2">2025</a></li>
                         <li><a href="#section3">Photos</a></li>
                         <li><a href="#section4">Contact</a></li>
                     </ul>
@@ -59,13 +59,17 @@ https://www.tooplate.com/view/2116-blugoon
         </div>
     </div>
 
-    <div class="container">
-        <div class="top-header">
-            <img src="{% static 'ducepaujus/images/vigne2_resized.jpeg' %}" alt="Vigne"/>
-        </div>
-        <section class="section about-me" data-section="section1">
-            <div class="section-heading">
+        <section class="section about-me" data-section="section_intro">
+            <div class="container">
+            <div class="top-header">
+                <img src="{% static 'ducepaujus/images/vigne2_resized.jpeg' %}" alt="Vigne"/>
+            </div>
+            </div>
+        </section>
 
+        <section class="section about-me" data-section="section1">
+    <div class="container">
+            <div class="section-heading">
                 <h2>Présentation</h2>
                 <div class="line-dec"></div>
                 <span>Nous sommes un collectif de producteurs de fruits (avant tout du raisin), regroupés
@@ -73,7 +77,6 @@ https://www.tooplate.com/view/2116-blugoon
             </div>
             <div class="right-image-post">
                 <div class="row">
-
                     <div class="col-md-12">
                         <div class="left-text">
                             <h4>Un projet expérimental</h4>
@@ -115,7 +118,6 @@ https://www.tooplate.com/view/2116-blugoon
             </div>
             <div class="left-image-post">
                 <div class="row">
-
                     <div class="col-md-4">
                         <div class="left-image">
                             <img src="{% static 'ducepaujus/images/vigne6_resized.jpeg' %}" alt="Vigne"/>
@@ -130,16 +132,56 @@ https://www.tooplate.com/view/2116-blugoon
                             <p>Le site <a href="www.Perma.cat">www.Perma.cat </a> comme outil de communication interne
                                 et externe. </p>
                             <p>L'association PermAgora Catalane en soutien</p>
-                            <!--div class="white-button">
-                              <a href="#">Read More</a>
-                            </div-->
                         </div>
                     </div>
 
                 </div>
             </div>
-        </section>
-    </div>
+            <div class="left-image-post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="left-image">
+                            <img src="{% static 'ducepaujus/images/vigne6_resized.jpeg' %}" alt="Vigne"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="right-text">
+                            <h4>Le jus : </h4>
+                            <p>Il est issu de vignes non traitées et à minima avec un travail des sols correspondant aux critères de l'agriculture biologique. a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section my-work" data-section="section2">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Millesime 2025</h2>
+            </div>
+            <div class="right-image-post">
+                <div class="row">
+
+                    <div class="col-md-8">
+                        <div class="left-text">
+                            <p>Sur cette année toutes les parcelles ont une base de non labour. </p>
+                            <p>Multi cépages: 12% de muscat d'Alexandrie, 8% de datier italia, 30% de carignan blanc et noir, 45% de grenache blanc, gris, noir et 5% de cépages de raisin de table (Alphonse Lavallée, muscat de hambourg, etc...)</p>
+<p>Terroirs: Alberes (Sant-Andreu), Aspres (Forques), Riberal (Pesillà de la Ribera) et Fenolleda (Montner).  </p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="right-image">
+                            <img src="{% static 'ducepaujus/images/vigne5_resized.jpeg' %}" alt="Vigne"/>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
     <!--section class="section my-services" data-section="section2">
       <div class="container">
         <div class="section-heading">

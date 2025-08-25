@@ -378,6 +378,11 @@ button:hover {
     padding-bottom: 60px;
     border-bottom: 2px solid rgba(250, 250, 250, 0.1);
 }
+.left-image-post {
+    margin-bottom: 60px;
+    padding-bottom: 60px;
+    border-bottom: 2px solid rgba(250, 250, 250, 0.1);
+}
 
 .left-image img,
 .right-image img {

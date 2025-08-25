@@ -1,0 +1,441 @@
+{% load static %}
+{% load cookielaw_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>Du Cep au Jus</title>
+    <meta name="description" content="Projet Du Cep au Jus"/>
+    <meta name="author" content="PermAgora"/>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'ducepaujus/vendor/bootstrap/css/bootstrap.min.css' %}"/>
+    <!-- Additional CSS Files -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'ducepaujus/css/fontawesome.css' %}"/>
+    <link rel="stylesheet" href="{% static 'ducepaujus/css/tooplate-style.css' %}"/>
+    <link rel="stylesheet" href="{% static 'ducepaujus/css/owl.css' %}"/>
+    <link rel="stylesheet" href="{% static 'ducepaujus/css/lightbox.css' %}"/>
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'permagora/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'permagora/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'permagora/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'permagora/site.webmanifest '%}">
+    <link rel="mask-icon" href="{% static 'permagora/safari-pinned-tab.svg' %}" color="#78d55b">
+    <meta name="msapplication-TileColor" content="#ffc40d">
+    <meta name="msapplication-TileImage" content="{% static 'permagora/mstile-144x144.png' %}">
+    <meta name="theme-color" content="#ffc40d">
+
+</head>
+<!--
+Tooplate 2116 Blugoon
+https://www.tooplate.com/view/2116-blugoon
+-->
+<body>
+<div id="page-wraper">
+    <!-- Sidebar Menu -->
+    <div class="responsive-nav">
+        <i class="fa fa-bars" id="menu-toggle"></i>
+        <div id="menu" class="menu">
+            <i class="fa fa-times" id="menu-close"></i>
+            <div class="container">
+                <div class="image">
+                    <a href="#"><img src="{% static 'ducepaujus/images/vigne_logo_resized.jpg' %}" alt="Du Cep au Jus"/></a>
+                </div>
+                <div class="author-content">
+                    <h4>Du Cep Au Jus</h4>
+                    <span>Projet 100% collectif</span>
+                </div>
+                <nav class="main-nav" role="navigation">
+                    <ul class="main-menu ul-class">
+                        <li><a href="#section1">Présentation</a></li>
+                        <!--li><a href="#section2">2025</a></li-->
+                        <li><a href="#section3">Photos</a></li>
+                        <li><a href="#section4">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="top-header">
+            <img src="{% static 'ducepaujus/images/vigne2_resized.jpeg' %}" alt="Vigne"/>
+        </div>
+        <section class="section about-me" data-section="section1">
+            <div class="section-heading">
+
+                <h2>Présentation</h2>
+                <div class="line-dec"></div>
+                <span>Nous sommes un collectif de producteurs de fruits (avant tout du raisin), regroupés
+                  pour s'entraider et produire des jus de fruit.</span>
+            </div>
+            <div class="right-image-post">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="left-text">
+                            <h4>Un projet expérimental</h4>
+                            <p>Le projet " Du cep au jus" est né de la rencontre d'envies de création: </p>
+
+                            <ul >
+                                <li> Expérimenter une pratique agricole à travers un collectif.</li>
+                                <li> Intégrer dans cette démarche des publics spécifiques</li>
+                                <li> Promouvoir des pratiques respectueuses du vivant, de la biodiversité.</li>
+                            </ul>
+                            <p> et de besoins: </p>
+                            <ul>
+                                <li> Avoir du soutien pour s'occuper de petites parcelles de vigne (avec l'accord des propriétaires)
+                                </li>
+                                <li> Apprendre différentes formes de taille et expérimentation de suivis de culture</li>
+                                <li> Mutualiser des productions pour bénéficier de bonnes conditions de mise en
+                                    bouteille.
+                                </li>
+                                <li> Ne pas laisser partir à l'abandon des parcelles de vigne intéressantes (cépages,
+                                    âge, terroir)
+                                </li>
+                            </ul>
+                            <p>Cette rencontre à permis de créer un projet allant du cep (taille, mode de culture) au
+                                jus (vendanges collectives, mutualisation de la récolte) avec la participation d'un
+                                ESAT, au sein de l'association PermAgora Catalane. Les participants sont bénévoles
+                              (avec accès à des bouteilles à prix coutant). La vente des bouteilles permet de financer
+                                la mise en bouteille et d'avoir un fond de budget propre au projet pour les
+                                investissements futurs.
+                            </p>
+                        </div>
+                    </div>
+                    <!--div class="col-md-4">
+                        <div class="right-image">
+                            <img src="{% static 'ducepaujus/images/vigne5_resized.jpeg' %}" alt="Vigne"/>
+                        </div>
+                    </div-->
+
+                </div>
+            </div>
+            <div class="left-image-post">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="left-image">
+                            <img src="{% static 'ducepaujus/images/vigne6_resized.jpeg' %}" alt="Vigne"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="right-text">
+                            <h4>L'équipe: </h4>
+                            <p> Chris, Flo, Eloi, Laurie, Francine et bien d'autres bénévoles...</p>
+                            <p>L'<a href="https://www.esat-lemona.com/" target="_blank">ESAT Le Mona de Tordères</a></p>
+                            <p>Le site <a href="www.Perma.cat">www.Perma.cat </a> comme outil de communication interne
+                                et externe. </p>
+                            <p>L'association PermAgora Catalane en soutien</p>
+                            <!--div class="white-button">
+                              <a href="#">Read More</a>
+                            </div-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <!--section class="section my-services" data-section="section2">
+      <div class="container">
+        <div class="section-heading">
+          <h2>2025</h2>
+          <div class="line-dec"></div>
+          <span>Nous avons regroupé la production de plusieurs vignes</span>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="service-item">
+              <i class="fa fa-area-chart"></i>
+              <h4>Sorède</h4>
+              <p>Donec sit amet tempor quam. Maecenas nec aliquam leo, sed tincidunt urna.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="service-item">
+              <i class="fa fa-check-square-o"></i>
+              <h4>Pezillà la rivière</h4>
+              <p>Etiam at porta nulla, et euismod enim. Nullam semper ipsum et dui scelerisque.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="service-item">
+              <i class="fa fa-question-circle"></i>
+              <h4>Montner</h4>
+              <p>Phasellus orci leo, elementum ac risus id, euismod porta lorem. Quisque feugiat.</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="service-item">
+              <i class="fa fa-support"></i>
+              <h4>Pesillà</h4>
+              <p>Mauris eu est vitae erat condimentum pellentesque. Fusce vehicula nunc.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section-->
+
+    <section class="section my-work" data-section="section3">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Photos</h2>
+                <div class="line-dec"></div>
+                <span>Quelques souvenirs...</span>
+            </div>
+            <div class="row">
+                <div class="isotope-wrapper">
+                    <!--form class="isotope-toolbar">
+                      <label><input type="radio" data-type="*" checked="" name="isotope-filter" />
+                        <span>all</span></label>
+                      <label><input type="radio" data-type="pretty" name="isotope-filter" />
+                        <span>pretty</span></label>
+                      <label><input type="radio" data-type="sexy" name="isotope-filter" />
+                        <span>sexy</span></label>
+                      <label><input type="radio" data-type="beach" name="isotope-filter" />
+                        <span>beach</span></label>
+                    </form-->
+                    <div class="isotope-box">
+                        <div class="isotope-item" data-type="beach">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne1_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne1_resized.jpeg' %}"
+                                       data-lightbox="image-1"
+                                       data-title="Caption"><i class="fa fa-search"></i></a>
+                                    <h4>Vigne </h4>
+                                    <span>Cep à Saint Jean Pla de Corts (Laurie)</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+
+                        <!--div class="isotope-item" data-type="sexy">
+                          <figure class="snip1321">
+                            <img src="{% static 'ducepaujus/images/vigne2_resized.jpeg' %}" alt="Vigne" />
+                            <figcaption>
+                              <a href="{% static 'ducepaujus/images/vigne2_resized.jpeg' %}' %}"
+                                data-lightbox="image-1"
+                                data-title="Sunshine Woman"><i class="fa fa-search"></i></a>
+                              <h4>Sexy Lady</h4>
+                              <span>there you go sexy girl</span>
+                            </figcaption>
+                          </figure>
+                        </div-->
+
+                        <div class="isotope-item" data-type="pretty">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne3_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne3_resized.jpeg' %}"
+                                       data-lightbox="image-1"
+                                       data-title="Pretty Girl"><i class="fa fa-search"></i></a>
+                                    <h4>Raisin du Jap'On</h4>
+                                    <span>Récolte à Pezillà (Cris)</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+
+                        <div class="isotope-item" data-type="pretty">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne4_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne4_resized.jpeg' %}"
+                                       data-lightbox="image-1"
+                                       data-title="Escalator Blue"><i class="fa fa-search"></i></a>
+                                    <h4>100% pur jus</h4>
+                                    <span>Cuvée 2024 (Pierre)</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+
+                        <div class="isotope-item" data-type="beach">
+                          <figure class="snip1321">
+                            <img src="{% static 'ducepaujus/images/vigne5_resized.jpeg' %}" alt="Vigne" />
+                            <figcaption>
+                              <a href="{% static 'ducepaujus/images/vigne5_resized.jpeg' %}"
+                                data-lightbox="image-1"
+                                data-title="Her Feeling"><i class="fa fa-search"></i></a>
+                              <h4>Her Feeling</h4>
+                              <span>Ut sollicitudin risus</span>
+                            </figcaption>
+                          </figure>
+                        </div>
+
+                        <div class="isotope-item" data-type="sexy">
+                          <figure class="snip1321">
+                            <img src="{% static 'ducepaujus/images/vigne6_resized.jpeg' %}" alt="Vigne" />
+                            <figcaption>
+                              <a href="{% static 'ducepaujus/images/vigne6_resized.jpeg' %}"
+                              data-lightbox="image-1" data-title="Sexy Bikini">
+                              <i class="fa fa-search"></i></a>
+                              <h4>Vigne au Jap'On</h4>
+                              <span></span>
+                            </figcaption>
+                          </figure>
+                        </div>
+                        <div class="isotope-item" data-type="sexy">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne7_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne7_resized.jpeg' %}"
+                                       data-lightbox="image-1" data-title="Sexy Bikini">
+                                        <i class="fa fa-search"></i></a>
+                                    <h4>Vigne du Jap'On</h4>
+                                    <span>Raisins 2025</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="isotope-item" data-type="sexy">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne8_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne8_resized.jpeg' %}"
+                                       data-lightbox="image-1" data-title="Sexy Bikini">
+                                        <i class="fa fa-search"></i></a>
+                                    <h4>Vigne au Jap'On</h4>
+                                    <span>Le cerisier à droite est devenu le tuteur</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="isotope-item" data-type="sexy">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne9_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne9_resized.jpeg' %}"
+                                       data-lightbox="image-1" data-title="Sexy Bikini">
+                                        <i class="fa fa-search"></i></a>
+                                    <h4>Raisin du Jap'On</h4>
+                                    <span>Une vigne qu'elle est belle !</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="isotope-item" data-type="sexy">
+                            <figure class="snip1321">
+                                <img src="{% static 'ducepaujus/images/vigne10_resized.jpeg' %}" alt="Vigne"/>
+                                <figcaption>
+                                    <a href="{% static 'ducepaujus/images/vigne10_resized.jpeg' %}"
+                                       data-lightbox="image-1" data-title="Sexy Bikini">
+                                        <i class="fa fa-search"></i></a>
+                                    <h4>Débourage à la vigne de Laurie</h4>
+                                    <span>Cep reparti !</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section contact-me" data-section="section4">
+        <div class="container">
+            <div class="section-heading">
+                <h2>Contact</h2>
+                <div class="line-dec"></div>
+                <span>Si vous désirez plus de renseignements ou que vous souhaitez nous rejoindre pour l'aventure 2026, vous pouvez nous contacter avec le formulaire ci-dessous</span>
+            </div>
+
+            <div class="row">
+                <div class="right-content">
+                    <div class="container">
+                        <form id="contact" action="" method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <fieldset>
+                                        <input name="name" type="text" class="form-control"
+                                               id="name" placeholder="Nom" required=""/>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6">
+                                    <fieldset>
+                                        <input name="email" type="text" class="form-control"
+                                               id="id_email" placeholder="Email" required=""/>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-12">
+                                    <fieldset>
+                        <textarea name="message" rows="6" class="form-control"
+                                  id="id_msg" placeholder="Message" required=""></textarea>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-12">
+                                    <fieldset>
+                                        <button type="submit" id="form-submit" class="button">
+                                            Envoyer le Message
+                                        </button>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'ducepaujus/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'ducepaujus/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'ducepaujus/js/isotope.min.js' %}"></script>
+<script src="{% static 'ducepaujus/js/owl-carousel.js' %}"></script>
+<script src="{% static 'ducepaujus/js/lightbox.js' %}"></script>
+<script src="{% static 'ducepaujus/js/custom.js' %}"></script>
+<script>
+      //according to loftblog tut
+      $(".main-menu li:first").addClass("active");
+
+      var showSection = function showSection(section, isAnimate) {
+        var direction = section.replace(/#/, ""),
+          reqSection = $(".section").filter(
+            '[data-section="' + direction + '"]'
+          ),
+          reqSectionPos = reqSection.offset().top - 0;
+
+        if (isAnimate) {
+          $("body, html").animate(
+            {
+              scrollTop: reqSectionPos
+            },
+            800
+          );
+        } else {
+          $("body, html").scrollTop(reqSectionPos);
+        }
+      };
+
+      var checkSection = function checkSection() {
+        $(".section").each(function() {
+          var $this = $(this),
+            topEdge = $this.offset().top - 80,
+            bottomEdge = topEdge + $this.height(),
+            wScroll = $(window).scrollTop();
+          if (topEdge < wScroll && bottomEdge > wScroll) {
+            var currentId = $this.data("section"),
+              reqLink = $("a").filter("[href*=\\#" + currentId + "]");
+            reqLink
+              .closest("li")
+              .addClass("active")
+              .siblings()
+              .removeClass("active");
+          }
+        });
+      };
+
+      $(".main-menu").on("click", "a", function(e) {
+        e.preventDefault();
+        showSection($(this).attr("href"), true);
+      });
+
+      $(window).scroll(function() {
+        checkSection();
+      });
+
+</script>
+</body>
+</html>

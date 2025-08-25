@@ -40,13 +40,12 @@ class Calendar(LocaleTextCalendar):
     # formats a day as a td
     # filter events by day
     def formatday(self, request, day, weekday, events_arti, events_proj, events_atel, events_autre, events_salon, events_vote):
-        events_per_day_arti = events_arti.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
-        #events_per_day_arti_jardin = events_arti_jardin.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
-        events_per_day_proj = events_proj.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
-        events_per_day_autre = events_autre.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
-        events_per_day_salon = events_salon.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
+        events_per_day_arti = events_arti.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day)).order_by('start_time')
+        events_per_day_proj = events_proj.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day)).order_by('start_time')
+        events_per_day_autre = events_autre.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day)).order_by('start_time')
+        events_per_day_salon = events_salon.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day)).order_by('start_time')
         #events_per_day_votes = None#events_vote.filter(Q(start_time__day=day) | Q(start_time__day__lt=day, end_time__day__gte=day))
-        events_per_day_atel = events_atel.filter(Q(start_time__day=day))
+        events_per_day_atel = events_atel.filter(Q(start_time__day=day)).order_by('start_time')
 
         def getAjout(event):
             ajout = " "
@@ -67,10 +66,6 @@ class Calendar(LocaleTextCalendar):
             if event.est_autorise(request.user):
                 titre = event.titre if len(event.titre)<40 else event.titre[:37] + "..."
                 d += "<div class='event'><a href='"+event.get_absolute_url() +"'><i class='fa fa-comments iconleft'></i> "+getAjout(event)+titre+'</a> </div>'
-        #for event in events_per_day_arti_jardin:
-        #    if event.est_autorise(request.user):
-        #        titre = event.titre if len(event.titre)<40 else event.titre[:37] + "..."
-        #        d += "<div class='event'> <a href='"+event.get_absolute_url() +"'><i class='fa fa-pagelines iconleft'></i> "+getAjout(event)+titre+'</a> </div>'
         for event in events_per_day_proj:
             if event.est_autorise(request.user):
                 titre = event.titre if len(event.titre)<40 else event.titre[:37] + "..."
@@ -88,7 +83,7 @@ class Calendar(LocaleTextCalendar):
         for event in events_per_day_salon:
             if event.est_autorise(request.user):
                 titre = event.titre if len(event.titre)<40 else event.titre[:37] + "..."
-                d += "<div class='event'> <a href='"+event.get_absolute_url() +"'><i class='fa fa-pagelines' ></i> "+getAjout(event)+titre+'</a> </div>'
+                d += "<div class='event'> <a href='"+event.get_absolute_url() +"'><i class='fa fa-user-shield' ></i> "+getAjout(event)+titre+'</a> </div>'
 
         #for event in events_per_day_votes:
          #   if event.estPublic or (not request.user.is_anonymous and request.user.adherent_pc):

@@ -23,7 +23,7 @@ app_name = 'vote'
 
 urlpatterns = [
     re_path(r'^$', views.accueil, name="accueil"),
-    re_path(r'^suffrages/$', login_required(views.ListeSuffrages.as_view(), login_url='/auth/login/'), name="index"),
+    path(r'suffrages/', login_required(views.ListeSuffrages.as_view(), login_url='/auth/login/'), name="index"),
     re_path(r'^suffrage/(?P<slug>[-\w]+)$', views.lireSuffrage, name='lireSuffrage'),
     re_path(r'^modifierSuffrage/(?P<slug>[-\w]+)$', login_required(views.ModifierSuffrage.as_view(), login_url='/auth/login/'), name='modifierSuffrage'),
     re_path(r'^supprimerSuffrage/(?P<slug>[-\w]+)$',

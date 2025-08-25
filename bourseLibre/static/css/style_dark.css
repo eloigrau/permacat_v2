@@ -1344,6 +1344,7 @@ a:link           { color: #3366BB }  /* unvisited links       */
     font-variant:normal;
     font-style:italic;
     line-height:0.9em;
+    text-align: center;
 }
 
 .commentaire{

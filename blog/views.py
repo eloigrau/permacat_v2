@@ -1236,8 +1236,8 @@ def associerSalonArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        salon = form.save(article)
-        if salon.type_salon == 0 or salon.type_salon == 2:
+        asso_salon = form.save(article)
+        if asso_salon.salon.type_salon == 0 or asso_salon.salon.type_salon == 2:
             action.send(request.user,
                         action_object=article,
                         url=article.get_absolute_url(),

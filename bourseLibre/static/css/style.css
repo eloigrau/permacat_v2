@@ -1350,6 +1350,7 @@ a:active         { color: #005c99 }  /* active links          */
     font-variant:normal;
     font-style:italic;
     line-height:0.9em;
+    text-align: center;
 }
 
 .commentaire{

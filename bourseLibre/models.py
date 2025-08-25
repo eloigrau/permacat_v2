@@ -239,6 +239,11 @@ class Asso(models.Model):
     email = models.EmailField(null=True)
     date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
     is_bureau = models.BooleanField(verbose_name=_("Le collectif a un bureau dont seuls les membres accéder à certaines infos (=> créer salon avec lien AssoSalon)"), default=False)
+    is_defraiement = models.BooleanField(verbose_name=_("Le groupe a un espace defraiement"), default=False)
+    is_adhesions = models.BooleanField(verbose_name=_("Le groupe a un espace adhésions"), default=False)
+    is_listeContacts = models.BooleanField(verbose_name=_("Le groupe a un espace de listes de diffusion"), default=False)
+    is_listeDiffusion = models.BooleanField(verbose_name=_("Le groupe a un espace de listes de contacts"), default=False)
+
 
     def __unicode__(self):
         return self.__str()

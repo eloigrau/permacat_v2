@@ -651,6 +651,9 @@ class Article_rechercheForm(forms.ModelForm):
         widgets = {
             'article': autocomplete.ModelSelect2(url='blog:article-ac')
         }
+        help_texts = {
+            'article': 'Chercher dans les titres des articles',
+        }
 
     def save(self):
         instance = super(Article_rechercheForm, self).save()
@@ -663,6 +666,9 @@ class Article_asso_rechercheForm(forms.ModelForm):
         fields = ("article", )
         widgets = {
             'article': autocomplete.ModelSelect2(url='blog:article-ac-asso')
+        }
+        help_texts = {
+            'article': 'Chercher dans les titres des articles du groupe',
         }
 
     def save(self):

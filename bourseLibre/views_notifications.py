@@ -91,7 +91,7 @@ def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
 def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
     if dateMinimum:
         dateMin = dateMinimum if dateMinimum.date() > datetime.now().date() - timedelta(
-            days=30) else datetime.now().date() - timedelta(days=20)
+            days=60) else datetime.now().date() - timedelta(days=60)
     else:
         dateMin = (datetime.now() - timedelta(days=7)).replace(tzinfo=utc)
 
@@ -450,13 +450,14 @@ def nbDerniersMessages(request):
     dateMin = date_messages if date_messages > date_limite else date_limite
 
     messages = Message.objects.exclude(auteur=request.user).filter(Q(date_creation__gt=dateMin) & (Q(conversation__profil1=request.user) | Q(conversation__profil2=request.user)))
-    notifs = getNbNewNotifications(request)
-        #Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__gt=dateMin) & (Q(profil2__id=request.user.id) | Q(profil1__id=request.user.id)))
-    dico = {"nb_messages": len(messages), "nb_notifs": notifs,
+    notifs = getNotificationsParDate(request, dateMinimum=request.user.date_notifications)
+    #Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__gt=dateMin) & (Q(profil2__id=request.user.id) | Q(profil1__id=request.user.id)))
+    dico = {"nb_messages": "20+" if len(messages) > 20 else str(len(messages)), "nb_notifs": "20+" if len(notifs) > 20 else str(len(notifs)),
             #"dateMin": dateMin,"date_messages":date_messages,"maintenant":datetime.now().replace(tzinfo=utc),
             #"messages": [m.message for m in messages],
             #"dates": [m.date_creation for m in messages]
             #"listeConv":[(m.conversation.get_destinataire(request), m.conversation.get_absolute_url()) for m in messages]
             }
+
 
     return JsonResponse(dico, safe=True)

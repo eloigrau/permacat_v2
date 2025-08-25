@@ -12,11 +12,14 @@
     {{ hidden_field }}
   {% endfor %}
 
+{{ form.non_field_errors}}
+
     {% for error in form.errors %}
     <div class="invalid-feedback">
       {{ error }}
     </div>
     {% endfor %}
+
 
 {% for field in form.visible_fields %}
 <div class="form-group">

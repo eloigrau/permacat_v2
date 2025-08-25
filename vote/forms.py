@@ -14,7 +14,7 @@ from datetime import timedelta
 from bourseLibre.utils import slugify_pcat
 
 class SuffrageForm(forms.ModelForm):
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all().all(), required=True, label="Suffrage public ou réservé aux adhérents de l'asso :",)
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True, label="Suffrage public ou réservé aux adhérents de l'asso :",)
 
     class Meta:
         model = Suffrage
@@ -37,8 +37,8 @@ class SuffrageForm(forms.ModelForm):
         cleaned_data = super().clean()
         date_debut = cleaned_data.get("start_time")
         date_expiration = cleaned_data.get("end_time")
-        if date_debut < now().date() + timedelta(days=1):
-            raise forms.ValidationError('Le suffrage ne peut pas démarrer avant demain')
+        if date_debut < now().date():
+            raise forms.ValidationError("Le suffrage ne peut pas démarrer avant aujourd'hui")
 
         if date_expiration <= date_debut:
             raise forms.ValidationError('La date de fin doit etre postérieure à la date de début')
@@ -60,7 +60,6 @@ class SuffrageForm(forms.ModelForm):
 
         instance.auteur = userProfile
         instance.article = article
-
         instance.save(userProfile)
 
         return instance

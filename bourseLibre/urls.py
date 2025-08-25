@@ -41,6 +41,7 @@ urlpatterns = [
     # re_path(r'^chat/', include('chat.urls')),
     path(r'agenda/', include('cal.urls')),
     path(r'agoratransition/', include('agoratransition.urls', namespace='agoratransition')),
+    path(r'ducepaujus/', include('ducepaujus.urls', namespace='ducepaujus')),
     path(r'permagora/', include('permagora.urls', namespace='permagora')),
     path(r'defraiement/', include('defraiement.urls', 'defraiement')),
     path(r'carto/', include('carto.urls')),

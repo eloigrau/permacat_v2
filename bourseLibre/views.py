@@ -66,7 +66,7 @@ from itertools import chain
 from .filters import ProfilCarteFilter
 from django.db.models.functions import Greatest, Lower
 CharField.register_lookup(Lower, "lower")
-from bourseLibre.settings.production import LOCALL
+from bourseLibre.settings.production import LOCALL, SERVER_EMAIL
 
 def getEvenementsSemaine(request):
     current_week = date.today().isocalendar()[1]
@@ -139,8 +139,6 @@ def bienvenue(request):
     evenements_passes, evenements_semaine = getEvenementsSemaine(request)
     derniers, articles, votes = [], [], []
     invit_salons = 0
-
-    print(str(getTestLanguage(request)))
 
     if request.user.is_authenticated:
         nbNotif = getNbNewNotifications(request)
@@ -472,6 +470,7 @@ def admin_asso_rtg(request):
 
 
 def presentation_asso(request, asso):
+    request.session["asso_slug"] = asso
     return render(request, 'asso/'+ asso + "/presentation_asso.html")
 
 def organisation_citealt(request):
@@ -1763,3 +1762,51 @@ def switchLanguage(request):
         request.user.language = "fr"
 
     return redirect(request.GET.get("next", "bienvenue"))
+
+
+def ducepaujus(request):
+    if request.user.is_anonymous:
+        form = ContactMailForm(request.POST or None, )
+    else:
+        form = ContactForm(request.POST or None, )
+
+    if form.is_valid():
+        if request.user.is_anonymous:
+            envoyeur = "Anonyme : " + form.cleaned_data['email']
+            email = form.cleaned_data['email']
+        else:
+            envoyeur = request.user.username + " (" + request.user.email + ") "
+            email = request.user.email
+            
+        sujet = form.cleaned_data['sujet']
+        message_txt = envoyeur + " a envoyé le message suivant : " + form.cleaned_data['msg']
+        message_html = envoyeur + " a envoyé le message suivant : " + form.cleaned_data['msg']
+        # MessageAdmin.objects.create(email=email, message=message_txt, sujet=sujet)
+        #
+        # admin = Profil.objects.get(username="Eloi")
+        # if request.user.is_anonymous:
+        #     action.send(admin, verb='envoi_salon_prive', url="/gestion/bourseLibre/messageadmin/",
+        #                 description="a envoyé un message aux admin (%s)" % admin.username)
+        # else:
+        #     action.send(request.user, verb='envoi_salon_prive', url="/gestion/bourseLibre/messageadmin/",
+        #                 description="a envoyé un message aux admin (%s)" % admin.username)
+
+        try:
+            envoiMailAdmin = True
+            if envoiMailAdmin and not LOCALL:
+                if request.user.is_anonymous:
+                    send_mail(sujet, "Vous avez envoyé à PermAgora le message suivant : " + message_html, SERVER_EMAIL, ["permagora66@gmail.com",], fail_silently=False, html_message=message_html)
+                else:
+                    send_mail(sujet, "Vous avez envoyé à PermAgora le message suivant : " + message_html, SERVER_EMAIL, ["permagora66@gmail.com",], fail_silently=False, html_message=message_html)
+
+            return render(request, 'contact/message_envoye.html', {'sujet': sujet, 'msg': message_html,
+                                                   'envoyeur': envoyeur ,
+                                                   "destinataire": "administrateurs "})
+        except BadHeaderError:
+            return render(request, 'erreur.html', {'msg':'Invalid header found.'})
+
+        return render(request, 'contact/message_envoye.html',
+                      {'sujet': sujet, 'msg': message_html, 'envoyeur': envoyeur,
+                       "destinataire": "administrateurs "})
+
+    return render(request, 'ducepaujus.html', {"form": form})

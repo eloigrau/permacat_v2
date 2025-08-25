@@ -9,8 +9,9 @@
 
 <form  id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
   {% csrf_token %}
-
+    {% if reponses_b_form %}
     <p class="h5">Questions soumises au vote binaire : </p>
+    {% endif %}
     <div id="rb_formset">
     {% for form in reponses_b_form %}
         <div class="row">

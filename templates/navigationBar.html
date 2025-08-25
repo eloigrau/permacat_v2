@@ -24,16 +24,19 @@
                     <li class="nav-item dropdown nav5">
                         <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'presentation_groupes' %}"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% if request.session.asso_slug %}
-                            {{ request.session.asso_slug | getLogoGroupeFromSlug }}
-                        {% else %}
                             {% translate 'Groupes' %}
-                        {% endif %}
                         </a>
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
-
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='public' %}">Public</a>
+                                <a class="dropdown-item dropdown-toggle" href="#">Public</a>
+                                <ul class="dropdown-menu nav5-dropdown-submenu">
+                                    <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='public' %}"> {% fa5_icon 'info' class='iconleft' %}Présentation</a></li>
+
+                                    <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"><i
+                                            class='fa fa-compass'></i> {% translate 'Carte / Annuaire de tous les inscrits'  %}</a></li>
+                                    <li><a class="dropdown-item" href="{% url  'blog:acceuil'  %}?base"><i
+                                            class='fa fa-comments'></i> {% translate 'Accueil du Forum'  %}</a></li>
+                                </ul>
                             </li>
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermaCat</a>
@@ -97,7 +100,7 @@
                                         {% fa5_icon 'comments' class='iconleft' %}Dossiers en cours </a></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'defraiement:reunions_asso' asso_slug='rtg' %}">
-                                        {% fa5_icon 'comments' class='iconleft' %}Defraiement </a></li>
+                                        {% fa5_icon 'car-side' class='iconleft' %}Defraiement </a></li>
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
@@ -123,9 +126,6 @@
                                 <a class="dropdown-item dropdown-toggle" href="#">PermAgora</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='scic' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
-                                    <li><a class="dropdown-item"
-                                           href="{% url 'blog:index_asso' asso='scic'%}#ref-titre">
-                                        {% fa5_icon 'comments' class='iconleft' %}{% translate 'Forum' %}</a></li>
                                     {% if request.user.adherent_scic %}
                                     <li><a class="dropdown-item"
                                            href="https://www.perma.cat/forum/article/mise-en-place-de-lorganisation-de-permagora#ref-titre">
@@ -181,7 +181,7 @@
                                             class='fa fa-database'></i> Administration </a></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'defraiement:reunions_asso' asso_slug='scic' %}">
-                                        {% fa5_icon 'comments' class='iconleft' %}Defraiement </a></li>
+                                        {% fa5_icon 'car-side' class='iconleft' %}Defraiement </a></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'photologue:doc-list'%}?asso=scic#ref-titre"><i
                                             class='fa fa-file iconleft '></i> Documents</a></li>
@@ -263,7 +263,7 @@
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='viure' %}"><i
                                             class='fa fa-compass iconleft'></i> {% translate 'Carte / Annuaire' %} </a></li>
                                     <li><a class="dropdown-item"
-                                           href="{% url 'blog:index_asso' asso='viure'%}#ref-titre"><
+                                           href="{% url 'blog:index_asso' asso='viure'%}#ref-titre">
                                         {% fa5_icon 'comments' class='iconleft' %}{% translate 'Forum' %}</a></li>
                                     <li><a class="dropdown-item"
                                            href="{% url 'photologue:doc-list'%}?asso=viure#ref-titre"><i
@@ -296,17 +296,9 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='conf66' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_conf66 %}
                                     <li class="metanavbar"> Espace Adhérents :</li>
-                                            <li><a class="dropdown-item" href="{% url 'adherents:accueil' asso_slug='conf66' %}"><i
-                                                    class='fa fa-compass iconleft'></i> Carte des adhérents </a></li>
-                                            <li><a class="dropdown-item"
-                                                   href="{% url 'blog:index_asso' asso='conf66'%}#ref-titre">
-                                                {% fa5_icon 'comments' class='iconleft' %}Forum</a></li>
                                             <li><a class="dropdown-item"
                                                    href="https://www.perma.cat/forum/article/organisation-de-la-communication-interne-de-la-confederation-paysanne#ref-titre">
                                                 {% fa5_icon 'sitemap' class='iconleft' colored='green' %}Organisation</a></li>
-                                            <li><a class="dropdown-item"
-                                                   href="{% url 'photologue:doc-list'%}?asso=conf66#ref-titre"><i
-                                                    class='fa fa-file iconleft '></i> Documents</a></li>
 
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusion_liste' asso_slug='conf66' %}">
                                     <i class='fa fa-envelope iconleft'></i> Listes de mails</a></li>
@@ -314,50 +306,79 @@
                                     <li class="metanavbar">Espace Admin :</li>
                                 <li ><a class="dropdown-item"  href="{% url 'adherents:adhesion_liste' asso_slug='conf66' %}"> <i
                                                             class='fa fa-arrow-right iconleft'></i>Gérer les Adhésions</a></li>
-
-                                    <li><a class="dropdown-item"
-                                           href="{% url 'defraiement:reunions_asso' asso_slug='conf66' %}">
-                                        {% fa5_icon 'comments' class='iconleft' %}Defraiement </a></li>
                                     {% endif %}
                                     {% endif %}
                                 </ul>
                             </li>
                         </ul>
                     </li>
+                    {% if request.session.asso_slug and request.session.asso_slug|estMembreAsso:request.user %}
                     <li class="nav-item dropdown nav5">
                         <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'blog:acceuil' %}"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if request.session.asso_slug %}
+                            {{ request.session.asso_slug | getLogoGroupeFromSlug }}
+                        {% else %}
                             {% translate 'Espaces' %}
+                        {% endif %}
+
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="{% url  'blog:acceuil'  %}">
+                        {% fa5_icon 'comments' class='iconleft' %}{% translate 'Forum du groupe' %}</a></li>
 
-                            <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"> <i
+
+                            {% if request.session.asso_slug %}
+                            <li><a class="dropdown-item" href="{% url 'carte'  asso=request.session.asso_slug %}"> <i
+                                    class='fa fa-compass iconleft'></i>{% translate 'Carte / Annuaire du groupe' %} </a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"> <i
                                     class='fa fa-compass iconleft'></i>{% translate 'Carte / Annuaire' %} </a></li>
-                            <li><a class="dropdown-item" href="{% url 'salon_accueil' %}">
-                                <i class='fa fa-users iconleft'></i> {% translate 'Salons' %}</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            {% endif %}
                             <li><a class="dropdown-item" href="{% url 'photologue:doc-list' %}"> <i
-                                    class='fa fa-file iconleft'></i> {% translate 'Fichiers' %} </a></li>
+                                    class='fa fa-file iconleft'></i> {% translate 'Fichiers / Documents' %} </a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:docptg_list' %}"> <i
                                     class='fa fa-link iconleft'></i> {% translate 'Documents partagés' %} </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'marche' %}"> <i
-                                    class='fa fa-shopping-basket iconleft'></i>{% translate 'Altermarché/Annonces' %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"> <i
-                                    class='fa fa-wrench iconleft'></i>{% translate 'Ateliers' %}</a></li>
+                                    class='fa fa-shopping-basket iconleft'></i>{% translate 'Altermarché / Annonces' %}</a></li>
                             <li><a class="dropdown-item" href="{% url 'blog:index_projets' %}"> <i
                                     class='fa fa-folder-open iconleft'></i>{% translate 'Projets' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'ateliers:index_ateliers' %}"> <i
+                                    class='fa fa-wrench iconleft'></i>{% translate 'Ateliers / Chantiers participatif' %}</a></li>
                             <li><hr class="dropdown-divider"></li>
+                                {% if request.session.asso_slug|is_adhesions %}
+                                        <li><a class="dropdown-item" href="{% url 'adherents:accueil' asso_slug=request.session.asso_slug %}"><i
+                                                class='fa fa-compass iconleft'></i> {% translate 'Les adhérents' %} </a></li>
+                                {% endif %}
+                                {% if request.session.asso_slug|is_defraiement %}
+                                    <li><a class="dropdown-item" href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}"><i
+                                            class='fa fa-car-side iconleft'></i> Défraiement </a></li>
+                                {% endif %}
+                                {% if request.session.asso_slug|is_listeContacts %}
+                                    <li><a class="dropdown-item" href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}"><i
+                                            class='fa fa-clipboard-list iconleft'></i> Listes de diffusion </a></li>
+                                {% endif %}
+                                {% if request.session.asso_slug|is_listeDiffusion %}
+                                    <li><a class="dropdown-item" href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}"><i
+                                            class='fa fa-address-book iconleft'></i> Contacts </a></li>
+                                {% endif %}
                             <li><a class="dropdown-item" href="{% url 'blog:todoarticle_list' %}"> <i
                                     class='fa fa-tasks iconleft'></i> {% translate 'Yapluka / Todo' %} </a></li>
+
                             <li><a class="dropdown-item" href="{% url 'photologue:album-list' %}"> <i
                                     class='fa fa-image iconleft'></i> Albums photo</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'vote:index' %}"><i
+                                    class='fa fa-envelope iconleft'></i>Suffrages </a></li>
                         </ul>
                     </li>
+                            {% endif %}
 
-                    <li class="nav-item nav2"><a class="nav-link" href="{% url  'blog:acceuil'  %}">
-                        {% fa5_icon 'comments' class='iconleft' colored='blue' %}{% translate 'Forum' %}</a></li>
+                    <li class="nav-item nav3"><a class="nav-link" href="{% url 'salon_accueil' %}">
+                        <i class='fa fa-users iconleft'></i> {% translate 'Salons' %}</a></li>
+                    <li class="nav-item nav2"><a class="nav-link" href="{% url  'blog:acceuil'  %}?base">
+                        {% fa5_icon 'comments' class='iconleft' %}{% translate 'Forum' %}</a></li>
                     <li class="nav-item nav3"><a class="nav-link" href="{% url 'cal:agenda' %}"> <i
                             class='fa fa-calendar iconleft'></i>{% translate 'Agenda' %}</a></li>
                 </ul>

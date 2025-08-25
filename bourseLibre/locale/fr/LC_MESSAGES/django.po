@@ -1815,26 +1815,26 @@ msgstr[1] ""
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d mois"
+msgstr[1] "%(num)d mois"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:10
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d semaine"
+msgstr[1] "%(num)d semaines"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:11
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d jour"
+msgstr[1] "%(num)d jours"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:12
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d heure"
+msgstr[1] "%(num)d heures"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:13
 #, python-format
 msgid "%(num)d minute"
@@ -5318,10 +5318,10 @@ msgid "Archiver la proposition"
 msgstr "Archiver LA proposition"
 #: vote/models.py:127
 msgid "Vote anonyme"
-msgstr "Voter anonyme"
+msgstr "Vote anonyme"
 #: vote/models.py:129
 msgid "Date de début du vote"
-msgstr "Date de Début du vote"
+msgstr "Date de début du vote"
 #: vote/models.py:130
 msgid "Date de fin du vote"
 msgstr "Date de fin du vote"

@@ -147,6 +147,8 @@ class NoteDeFrais_form(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
+
+            'detail': SummernoteWidget(),
         }
 
 class NoteDeFrais_update_form(forms.ModelForm):

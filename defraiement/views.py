@@ -718,7 +718,7 @@ class ListeNdf_asso(UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         self.request.session["asso_slug"] = self.asso.slug
 
-        context['ndf_list_archive'] = NoteDeFrais.objects.filter(estArchive=False, asso=self.asso)
+        context['ndf_list_archive'] = NoteDeFrais.objects.filter(estArchive=True, asso=self.asso)
         cat = context['ndf_list_archive'].values_list('categorie', flat=True).distinct()
         context['categorie_list'] = [x for x in ChoixMoyenPaiement.choices if x[0] in cat]
         context['ordreTriPossibles'] = Choix.ordre_tri_ndf

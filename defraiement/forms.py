@@ -129,12 +129,12 @@ class ChoixAdherentConf(forms.Form):
         fields = ['adherent']
 
 class NoteDeFrais_form(forms.ModelForm):
-    participant = forms.ModelChoiceField(queryset=ParticipantReunion.objects.all().order_by('nom'), required=True,
+    participant = forms.ModelChoiceField(queryset=ParticipantReunion.objects.all().order_by('nom'), required=False,
                                   label="Participant ", )
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(NoteDeFrais_form, self).__init__(*args, **kwargs)
-        self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
+        self.fields['participant'].choices = [("", "---------"), ] + [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
 
     class Meta:
         model = NoteDeFrais

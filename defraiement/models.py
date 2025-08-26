@@ -266,7 +266,7 @@ class NoteDeFrais(models.Model):
     participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
     date_creation = models.DateField(verbose_name=_("Date de création"), auto_now_add=True)
     date_note = models.DateField(verbose_name=_("Date du paiement"), editable=True, auto_now_add=False)
-    titre = models.CharField(max_length=10, blank=False, verbose_name=_("Titre de la note de frais"))
+    titre = models.CharField(max_length=120, blank=False, verbose_name=_("Titre de la note de frais"))
     categorie = models.IntegerField(blank=False, choices=ChoixTypeNdf.choices,
                                  default='0', verbose_name=_("Categorie de frais"))
     montant = models.CharField(max_length=10, blank=False, verbose_name=_("Montant de la note de frais"))

@@ -147,7 +147,6 @@ class NoteDeFrais_form(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
-
             'detail': SummernoteWidget(),
         }
 
@@ -157,8 +156,18 @@ class NoteDeFrais_update_form(forms.ModelForm):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(NoteDeFrais_update_form, self).__init__(*args, **kwargs)
-        self.fields['participant'].choices = [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
+        self.fields['participant'].choices = [("", "---------"), ] + [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
 
     class Meta:
         model = NoteDeFrais
         fields = ['titre', 'participant', 'date_note', 'montant', 'categorie', 'moyen', 'detail', 'estArchive' ]
+
+        widgets = {
+              'date_note':  forms.DateInput(
+                format=('%d-%m-%Y'),
+                attrs={'class': 'form-control',
+                       'type': 'date'
+                       }),
+
+            'detail': SummernoteWidget(),
+        }

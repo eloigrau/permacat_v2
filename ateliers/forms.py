@@ -27,8 +27,8 @@ class AtelierForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
-            'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }
 
     def save(self, request, article):
@@ -89,8 +89,8 @@ class AtelierChangeForm(forms.ModelForm):
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
-            'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }
 
 

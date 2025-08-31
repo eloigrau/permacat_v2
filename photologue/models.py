@@ -3,6 +3,7 @@ import unicodedata
 from importlib import import_module
 from inspect import isclass
 from functools import partial
+from django.utils.crypto import get_random_string
 
 import exifread
 import os
@@ -658,11 +659,19 @@ class Photo(ImageModel):
             kwargs.update(recreate=True)
 
         if self.slug is None:
-            self.slug = slugify(self.title)
+            if self.title:
+                self.slug = slugify(self.title)
+            else:
+                self.slug = slugify(get_random_string(8))
 
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
+        if self.slug is None:
+            if self.title:
+                self.slug = slugify(self.title)
+            else:
+                self.slug = slugify(get_random_string(8))
         return reverse('photologue:photo', kwargs={'slug':self.slug}) + "#photos"
 
     def get_album(self):

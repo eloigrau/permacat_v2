@@ -46,7 +46,7 @@ def recalculerDistanceReunion(request, slug_reunion):
 def lireParticipant(request, id):
     part = get_object_or_404(ParticipantReunion, id=id)
     reunions = part.reunion_set.all().order_by('start_time')
-    reu = [(r, part.getDistance_route(r)) for r in reunions]
+    reu = [(r, part.getDistance_route_allerretour(r)) for r in reunions]
     context = {"part":part, 'reunions': reu}
 
     return render(request, 'defraiement/lireParticipant.html', context,)
@@ -147,7 +147,7 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     else:
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, ).order_by('start_time','categorie',)
 
-    annee = request.GET.get('annee')
+    annee = request.GET.get('annee', False)
     if annee:
         reunions = reunions.filter(start_time__year=annee)
 

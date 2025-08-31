@@ -48,7 +48,7 @@
                 <thead><td>Date</td><td>Titre</td><td>Catégorie</td><td>Code  Postal</td><td>Commune</td><td>Distance (aller-retour)</td></thead>
             {% for r in reunions %}
                 <tr>
-                    <td> <a href="{{r.0.get_absolute_url}}" >{{r.0.start_time}}</a></td>
+                    <td> <a href="{{r.0.get_absolute_url}}" >{{r.0.start_time|date:"%d-%M-%Y"}}</a></td>
                      <td><a href="{{r.0.get_absolute_url}}" >{{r.0.titre}}</a></td>
                     <td> <a href="{{r.0.get_absolute_url}}" >{{r.0.get_categorie_display}}</a></td>
                     <td> <a href="{{r.0.get_absolute_url}}" >{{r.0.adresse.code_postal}}</a></td>

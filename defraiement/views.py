@@ -150,6 +150,9 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     annee = request.GET.get('annee', False)
     if annee:
         reunions = reunions.filter(start_time__year=annee)
+    else:
+        annee = now().year
+        reunions = reunions.filter(start_time__year=annee)
 
     if type_export == "km":
         entete, lignes = getRecapitulatif_km(request, reunions, asso, export=True)

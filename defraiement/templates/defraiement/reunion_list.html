@@ -112,6 +112,26 @@
                     {% endfor %}
                 </div>
     </div></div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+<table class="table2 table table-condensed tableprofils table-striped table-middle sortable">
+        <thead><td>Categorie</td><td><b>Titre</b></td><td>Distance Totale</td><td>date</td><td>Commune</td><td>Nb de participant-es</td></thead>
+    {% for reunion in reunion_list %}
+        <tr>
+            <td class="textepetit " style="background-color:{{reunion.get_couleur}}; "> {{reunion.get_logo_nomgroupe_html|safe}} {{ reunion.get_categorie_display }}</td>
+            <td style="background-color:{{reunion.get_couleur}}; font-variant: small-caps;" >
+        <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelieDefraiementList" ><b>{{ reunion.titre }}</b></a></td>
+        <td class="textepetit" style="background-color:{{reunion.get_couleur}};"> {{reunion.getDistanceTotale}} km</td>
+        <td class="textepetit " style="background-color:{{reunion.get_couleur}};"> {% if reunion.start_time %}{{ reunion.start_time|date:"DATE_FORMAT" }}{% endif %}</td>
+        <td class="textepetit " style="background-color:{{reunion.get_couleur}};" > {{ reunion.adresse.commune }}</td>
+        <td class="textepetit" style="background-color:{{reunion.get_couleur}};"> {{reunion.participants.all | length}}</td>
+        </tr>
+     {% endfor %}
+</table>
+    </div>
+</div>
+{% comment %}
 <div class="infinite-container ">
     {% for reunion in reunion_list %}
 
@@ -122,17 +142,18 @@
 
             <table style="width:100%; ">
                 <tr>
-            <td style="background-color:{{reunion.get_couleur}}; width:25%;"> {{reunion.get_logo_nomgroupe_html|safe}} {{ reunion.get_categorie_display }}
-            </td>
+            <td style="background-color:{{reunion.get_couleur}}; width:25%;"> {{reunion.get_logo_nomgroupe_html|safe}} {{ reunion.get_categorie_display }}</td>
             <td style="background-color:{{reunion.get_couleur}}; width:40%;
-    font-variant: small-caps;" > {{ reunion.titre }}
-            </td>
+    font-variant: small-caps;" > {{ reunion.titre }}</td>
+            <td style="background-color:{{reunion.get_couleur}}; width:20%;
+    font-variant: small-caps;" > {{ reunion.adresse.commune }}</td>
 
-        <td class="textepetit" style=" width:20%; "> {{reunion.participants.all | length}} participant.es, {{reunion.getDistanceTotale}}km</td>
+        <td class="textepetit" style=""> {{reunion.participants.all | length}} participant.es</td>
+        <td class="textepetit" style=""> {{reunion.getDistanceTotale}} km</td>
 
-            {% if reunion.start_time %}
-        <td class="textepetit " style=" width:15%; ">{{ reunion.start_time|date:"DATE_FORMAT" }}</td>
-        {% endif %}
+
+        <td class="textepetit " style=" width:15%; "> {% if reunion.start_time %}{{ reunion.start_time|date:"DATE_FORMAT" }}{% endif %}</td>
+
            </tr>
             </table>
         </a>
@@ -142,6 +163,7 @@
 
     {% endfor %}
 </div>
+{% endcomment %}
 {% include 'pagination_new.html' %}
 
         {% if list_archive %}

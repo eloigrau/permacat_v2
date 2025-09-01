@@ -195,6 +195,27 @@ def export_participants(request, asso):
     return response
 
 @login_required
+def export_UnParticipant(request, asso, participant_id):
+    asso = testIsMembreAsso(request, asso)
+    if not isinstance(asso, Asso):
+        raise PermissionDenied
+
+    participant = ParticipantReunion.objects.get(id=participant_id, asso=asso)
+
+    lignes = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
+
+    annee = request.GET.get('annee', now().year)
+    for r in participant.reunion_set.filter(start_time__year=annee).order_by('start_time'):
+        lignes.append([participant.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, participant.getDistance_route_allerretour(r)])
+
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    return StreamingHttpResponse(
+            (writer.writerow(row) for row in lignes),
+            content_type="text/csv",
+        )
+    return response
+@login_required
 def ajouterReunion(request, asso_slug):
     form = ReunionForm(asso_slug, request.POST or None)
     request.session["asso_slug"] = asso_slug

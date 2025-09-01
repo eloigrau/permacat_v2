@@ -65,4 +65,12 @@
 <hr>
 
 
+<p class="textcenter">
+    <a href="{% url 'defraiement:export_UnParticipant' asso=request.session.asso_slug participant_id=part.id %}?{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+        &nbsp;Exporter en CSV
+        </button>
+    </a>
+</p>
+
 {% endblock %}

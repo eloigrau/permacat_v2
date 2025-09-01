@@ -170,6 +170,30 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
     return response
 
 
+
+@login_required
+def export_participants(request, asso):
+    asso = testIsMembreAsso(request, asso)
+    if not isinstance(asso, Asso):
+        raise PermissionDenied
+
+    participants = ParticipantReunion.objects.filter(asso=asso).order_by("nom")
+
+    lignes = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
+
+    annee = request.GET.get('annee', now().year)
+    for p in participants:
+        for r in p.reunion_set.filter(start_time__year=annee).order_by('start_time'):
+            lignes.append([p.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, p.getDistance_route_allerretour(r)])
+
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    return StreamingHttpResponse(
+            (writer.writerow(row) for row in lignes),
+            content_type="text/csv",
+        )
+    return response
+
 @login_required
 def ajouterReunion(request, asso_slug):
     form = ReunionForm(asso_slug, request.POST or None)

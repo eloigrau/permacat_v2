@@ -56,6 +56,7 @@ urlpatterns = [
     path(r'recapitulatif/<str:asso_slug>/', views.recapitulatif, name='recapitulatif'),
     #path(r'recapitulatif/<str:asso_slug>/<int:annee>', views.recapitulatif_annee, name='recapitulatif_annee'),
     path(r'export_recapitulatif/<str:asso>/<str:type_reunion>/<str:type_export>', views.export_recapitulatif, name='export_recapitulatif'),
+    path(r'export_participants/<str:asso>/', views.export_participants, name='export_participants'),
     re_path(r'voirTousLieux/$', views.voirLieux, name='voirTousLieux'),
     path(r'carte_reunions/<str:asso_slug>', views.carte_reunions, name='carte_reunions'),
 #    re_path(r'pageTest/$', views.pageTest, name='pageTest'),

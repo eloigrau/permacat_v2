@@ -77,6 +77,16 @@
 </div>
 {% include 'pagination_new.html' %}
 
+<hr>
+
+<p class="textcenter">
+    <a href="{% url 'defraiement:export_participants' asso=request.session.asso_slug %}?{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+        &nbsp;Exporter en CSV
+        </button>
+    </a>
+</p>
+
 <script>
     function toggle_visibility(id) {
        var e = document.getElementById(id);

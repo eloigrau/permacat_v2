@@ -128,6 +128,9 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='scic' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_scic %}
                                     <li><a class="dropdown-item"
+                                           href="{% url 'blog:index_asso' asso='conf66' %}">
+                                        {% fa5_icon 'comments' %}Forum</a></li>
+                                    <li><a class="dropdown-item"
                                            href="https://www.perma.cat/forum/article/mise-en-place-de-lorganisation-de-permagora#ref-titre">
                                         {% fa5_icon 'sitemap' class='iconleft' colored='green' %}Organisation</a></li>
                                     <li><hr class="dropdown-divider"></li>
@@ -299,8 +302,17 @@
                                     {% if request.user.adherent_conf66 %}
                                     <li class="metanavbar"> Espace Adhérents :</li>
                                             <li><a class="dropdown-item"
+                                                   href="https://www.perma.cat/cooperateurs/carte/conf66">
+                                                {% fa5_icon 'compass' %}Carte/Annuaire des adhérents</a></li>
+                                            <li><a class="dropdown-item"
+                                                   href="{% url 'blog:index_asso' asso='conf66' %}">
+                                                {% fa5_icon 'comments' %}Forum</a></li>
+                                            <li><a class="dropdown-item"
                                                    href="https://www.perma.cat/forum/article/organisation-de-la-communication-interne-de-la-confederation-paysanne#ref-titre">
                                                 {% fa5_icon 'sitemap' class='iconleft' colored='green' %}Organisation</a></li>
+                                            <li><a class="dropdown-item"
+                                                   href="https://www.perma.cat/forum/article/communiques-de-presse#ref-titre">
+                                                {% fa5_icon 'comments' %}Communiqués de presse</a></li>
 
                                 <li ><a class="dropdown-item"   href="{% url 'adherents:listeDiffusion_liste' asso_slug='conf66' %}">
                                     <i class='fa fa-envelope iconleft'></i> Listes de mails</a></li>

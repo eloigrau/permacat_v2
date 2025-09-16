@@ -128,7 +128,7 @@
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='scic' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_scic %}
                                     <li><a class="dropdown-item"
-                                           href="{% url 'blog:index_asso' asso='conf66' %}">
+                                           href="{% url 'blog:index_asso' asso='scic' %}">
                                         {% fa5_icon 'comments' %}Forum</a></li>
                                     <li><a class="dropdown-item"
                                            href="https://www.perma.cat/forum/article/mise-en-place-de-lorganisation-de-permagora#ref-titre">
@@ -171,10 +171,6 @@
                                                    target="_blank" rel="noopener noreferrer nofollow"><i
                                                     class='fa fa-file iconleft'></i> Groupe de W Jardins partagés </a>
                                             </li>
-                                            <li><a class="dropdown-item"
-                                                   href="https://www.perma.cat/salon/d/permagora-jardins-saint-jean"
-                                                   target="_blank" rel="noopener noreferrer nofollow"><i
-                                                    class='fa fa-file iconleft'></i> Jardins Saint Jean </a></li>
                                         </ul>
                                     </li>
                                     <li class="dropdown-submenu">
@@ -204,6 +200,8 @@
 
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'permagorapresentation:acceuil' %}"><i
+                                            class='fa fa-compass iconleft'></i> Présentation PermAgora </a></li>
                                     <li><a class="dropdown-item" href="{% url 'ducepaujus:accueil_ducepaujus' %}"><i
                                             class='fa fa-compass iconleft'></i> Du Cep au Jus </a></li>
                                     <li><a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i

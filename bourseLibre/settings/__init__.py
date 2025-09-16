@@ -148,6 +148,7 @@ INSTALLED_APPS = [
     #'WebUI',
      #'emoji_picker',
     "django_minify_html",
+    "permagorapresentation",
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',

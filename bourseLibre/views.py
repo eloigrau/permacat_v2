@@ -590,8 +590,8 @@ def profil_contact(request, user_id):
             message_txt = ""
             message_html = form.cleaned_data['msg']
             recepteurs = [recepteur.email,]
-            if form.cleaned_data['renvoi'] :
-                recepteurs = [recepteur.email, request.user.email]
+            #if form.cleaned_data['renvoi'] :
+            #    recepteurs = [recepteur.email, request.user.email]
 
             send_mail(
                 sujet,

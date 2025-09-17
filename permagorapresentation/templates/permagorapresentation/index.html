@@ -75,10 +75,11 @@
                   <li><a href="#">Deep Dropdown 5</a></li>
                 </ul>
               </li-->
-              <li><a href="{% url 'agora:acceuil' %}">Agora de la transition</a></li>
-              <li><a href="{% url 'ducepaujus:accueil_ducepaujus' %}">Du Cep au Jus</a></li>
+              <li><a href="{% url 'bienvenue' %}">Perma.Cat</a></li>
               <li><a href="{% url 'jardins:accueil' %}">Jardinothèque</a></li>
+              <li><a href="{% url 'ducepaujus:accueil_ducepaujus' %}">Du Cep au Jus</a></li>
               <li><a href="https://tinyurl.com/mu9kw47n">Carte broyat</a></li>
+              <li><a href="{% url 'agora:acceuil' %}">Agora de la transition</a></li>
             </ul>
           </li>
           <li><a href="#contact">Contact</a></li>
@@ -1046,10 +1047,16 @@ des plantes, les monnaies, le changement climatique, la Sécurité Sociale de l�
               <div class="loading">Chargement</div>
               <div class="error-message"></div>
               <div class="sent-message">Votre message a bien été envoyé, merci !</div>
-
+              {% if request.user.is_anonymous %}
+              {% include 'form_template2.html' with form=form_captcha %}
+              {% endif %}
               <button type="submit" id="form-submit" class="button">
                                             Envoyer le Message
                               </button>
+              {% if msg2 %}
+              <p>{{msg2}}</p>
+              {% endif %}
+
             </div>
 
           </div>

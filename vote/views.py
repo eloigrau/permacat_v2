@@ -247,7 +247,7 @@ def voter(request, slug):
     if not suffrage.est_autorise(request.user):
         return render(request, 'notPermacat.html',)
 
-    if suffrage.get_statut[0] != 0:
+    if suffrage.get_statut[0] != "0":
         return render(request, 'vote/voteTermine.html',)
 
     vote = Vote.objects.filter(auteur=request.user, suffrage=suffrage)
@@ -296,16 +296,19 @@ class ListeSuffrages(ListView):
     def get_queryset(self):
         params = dict(self.request.GET.items())
 
-        if "archives" in params and params['archives']:
-            qs = Suffrage.objects.filter(estArchive=True)
+        if "base" in self.request.GET:
+            qs = Suffrage.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter().order_by("-date_creation")
+        elif "asso" in self.request.GET:
+            self.request.session["asso_slug"] = self.request.GET["asso"]
+            qs = Suffrage.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.GET["asso"]).order_by("-date_creation")
+        elif "asso_slug" in self.request.session:
+            qs = Suffrage.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.session["asso_slug"]).order_by("-date_creation")
         else:
-            qs = Suffrage.objects.filter(estArchive=False)
+            qs = Suffrage.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
 
 
         if not self.request.user.is_authenticated:
             qs = qs.none()
-        else:
-            qs = qs.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre())
 
         if "auteur" in params:
             qs = qs.filter(auteur__username=params['auteur'])
@@ -318,17 +321,12 @@ class ListeSuffrages(ListView):
                 qs = qs.filter(end_time__date__lte=now() )
             if params['statut'] == '2':
                 qs = qs.filter(Q(start_time__date__gte=now()))
-        if "permacat" in params  and self.request.user.adherent_pc:
-            if params['permacat'] == "True":
-                qs = qs.filter(estPublic=False)
-            else:
-                qs = qs.filter(estPublic=True)
 
         if "ordreTri" in params:
             qs = qs.order_by(params['ordreTri'])
         else:
             qs = qs.order_by('-date_dernierMessage', '-date_creation', 'type_vote', 'auteur')
-
+        self.qs = qs
         return qs
 
     def get_context_data(self, **kwargs):
@@ -336,8 +334,8 @@ class ListeSuffrages(ListView):
         context = super().get_context_data(**kwargs)
 
         # context['producteur_list'] = Profil.objects.values_list('username', flat=True).distinct()
-        context['auteur_list'] = Suffrage.objects.order_by('auteur').values_list('auteur__username', flat=True).distinct()
-        cat= Suffrage.objects.order_by('type_vote').values_list('type_vote', flat=True).distinct()
+        context['auteur_list'] = self.qs.values_list('auteur__username', flat=True).distinct()
+        cat = Suffrage.objects.order_by('type_vote').values_list('type_vote', flat=True).distinct()
         context['type_vote_list'] = [(x[0], x[1], Choix.get_couleur(x[0])) for x in Choix.type_vote if x[0] in cat]
         context['typeFiltre'] = "aucun"
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="suffrages")
@@ -361,12 +359,16 @@ class ListeSuffrages(ListView):
                 context['type_vote_courant'] = [x[1] for x in Choix.type_vote if x[0] == self.request.GET['type_vote']][0]
             except:
                 context['type_vote_courant'] = ""
-        if 'permacat' in self.request.GET:
-            context['typeFiltre'] = "permacat"
         if 'archives' in self.request.GET:
             context['typeFiltre'] = "archives"
         if 'ordreTri' in self.request.GET:
             context['typeFiltre'] = "ordreTri"
+        if 'asso' in self.request.GET:
+            context['asso_courante'] = Asso.objects.get(slug=self.request.GET['asso']).nom
+        elif "asso_slug" in self.request.session:
+            context['asso_courante'] = Asso.objects.get(slug=self.request.session["asso_slug"]).nom
+
+        context["asso_list"] = [(x.slug, x.nom) for x in Asso.objects.all().order_by("id") if self.request.user.est_autorise(x.slug)]
         return context
 
 

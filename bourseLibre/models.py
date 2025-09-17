@@ -239,6 +239,11 @@ class Asso(models.Model):
     email = models.EmailField(null=True)
     date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
     is_bureau = models.BooleanField(verbose_name=_("Le collectif a un bureau dont seuls les membres accéder à certaines infos (=> créer salon avec lien AssoSalon)"), default=False)
+    is_defraiement = models.BooleanField(verbose_name=_("Le groupe a un espace defraiement"), default=False)
+    is_adhesions = models.BooleanField(verbose_name=_("Le groupe a un espace adhésions"), default=False)
+    is_listeContacts = models.BooleanField(verbose_name=_("Le groupe a un espace de listes de diffusion"), default=False)
+    is_listeDiffusion = models.BooleanField(verbose_name=_("Le groupe a un espace de listes de contacts"), default=False)
+
 
     def __unicode__(self):
         return self.__str()
@@ -260,8 +265,8 @@ class Asso(models.Model):
     def est_autorise(self, user):
         if self.slug == "public":
             return True
-        elif self.slug == "conf66":
-            return user.isCotisationAJour(self.slug)
+        elif self.slug in Choix.slugsAsso_accesParCotisation:
+            return user.isCotisationAJour(self.slug) or user.estmembre_bureau(self.slug)
 
         return getattr(user, "adherent_" + self.slug, False)
 
@@ -383,6 +388,9 @@ class Profil(AbstractUser):
 
         return super(Profil, self).save(*args, **kwargs)
 
+    def get_profil_url(self):
+        return reverse('profil', kwargs={'user_id':self.id})
+
     @property
     def get_username_annuaire(self):
        if self.accepter_annuaire:
@@ -436,11 +444,11 @@ class Profil(AbstractUser):
             return True
         return getattr(self, "adherent_" + asso, False)
 
-    def isCotisationAJour(self, asso_slug, mois_precedents=6):
+    def isCotisationAJour(self, asso_slug, mois_anprecedent=6):
         if not self.statutMembre_asso(asso_slug):
             return False
-        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
-        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).count() > 0
+        time_threshold = datetime(datetime.now().year - 1, mois_anprecedent, 1).date()
+        return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).exists()
 
     @property
     def statutMembre_str_asso(self, asso):
@@ -726,16 +734,16 @@ class Monnaie(models.Model):
 class Produit(models.Model):  # , BaseProduct):
     user = models.ForeignKey(Profil, on_delete=models.CASCADE,)
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), editable=False)
-    date_debut = models.DateField(verbose_name=_("Débute le (jj/mm/an)"), null=True, blank=True)
+    date_debut = models.DateField(verbose_name=_("Débute le "), null=True, blank=True)
     #proposed_renewal_date = datetime.date.today() + datetime.timedelta(weeks=3)
-    date_expiration = models.DateField(verbose_name=_("Expire le (jj/mm/an)"), blank=True, null=True, )#default=proposed_renewal_date, )
+    date_expiration = models.DateField(verbose_name=_("Expire le "), blank=True, null=True, )#default=proposed_renewal_date, )
     nom_produit = models.CharField(max_length=250, verbose_name=_("Titre de l'annonce"))
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, verbose_name=_("Description de l'annonce"))
     slug = models.SlugField(max_length=100)
 
     stock_initial = models.FloatField(default=1, verbose_name=_("Quantité disponible"), max_length=250, validators=[MinValueValidator(1), ])
     stock_courant = models.FloatField(default=1, max_length=250, validators=[MinValueValidator(0), ])
-    prix = models.CharField(max_length=150, verbose_name=_("Tarif"), blank=True)
+    prix = models.CharField(max_length=150, verbose_name=_("Tarif (si besoin)"), blank=True)
     unite_prix = models.CharField(
         max_length=8,
         choices=Choix.monnaies,
@@ -750,7 +758,7 @@ class Produit(models.Model):  # , BaseProduct):
     #photo = StdImageField(upload_to='imagesProduits/', blank=True, variations={'large': (640, 480), 'thumbnail': (100, 100, True)}) # all previous features in one declaration
 
     estUneOffre = models.BooleanField(default=True, verbose_name='Offre (cochez) ou Demande (décochez)')
-    estPublique = models.BooleanField(default=False, verbose_name='Publique (cochez) ou Interne (décochez) [réservé aux membres permacat]')
+    #estPublique = models.BooleanField(default=False, verbose_name='Publique (cochez) ou Interne (décochez)')
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     objects = InheritanceManager()
 
@@ -763,6 +771,10 @@ class Produit(models.Model):  # , BaseProduct):
     @property
     def titre(self):
         return self.nom_produit
+
+    @property
+    def estPublique(self):
+        return self.asso.slug =='public'
 
     @property
     def est_perimee(self):
@@ -1270,7 +1282,7 @@ def getOrCreateConversation(nom1, nom2):
 class Type_Salon(models.IntegerChoices):
     PUBLIC = 0, _('Public')
     PRIVE = 1, _('Privé (sur invitation)')
-    #ASSO = 2, _("Réservé à tous les membres d'un groupe")
+    ASSO = 2, _("Réservé à tous les membres d'un groupe du site")
 
 class Salon(models.Model):
     titre = models.CharField(max_length=250)
@@ -1282,7 +1294,7 @@ class Salon(models.Model):
     dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True)
     membres = models.ManyToManyField(Profil, through='InscritSalon')
     #estPublic = models.BooleanField(verbose_name=_("Salon public ou privé (public si coché)"), default=False)
-    type_salon = models.IntegerField(default=Type_Salon.PUBLIC, choices=Type_Salon.choices)
+    type_salon = models.IntegerField(verbose_name=_("Type de Salon"), default=Type_Salon.PUBLIC, choices=Type_Salon.choices)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Le salon doit être associé à un article existant (sinon créez un article avec une date)", blank=True, null=True)
     jardin = models.ForeignKey("jardins.Jardin", on_delete=models.CASCADE,
@@ -1327,7 +1339,13 @@ class Salon(models.Model):
         return self.type_salon == Type_Salon.PUBLIC
 
     def est_membre(self, user):
-        return user in self.membres.all()
+        if self.type_salon == Type_Salon.PUBLIC:
+            return True
+        elif self.type_salon == Type_Salon.PRIVE:
+            return user in self.getInscritsEtInvites()
+        elif self.type_salon == Type_Salon.ASSO:
+            return self.asso.est_autorise(user)
+        return False
 
     def getInscrits(self):
         if self.type_salon == Type_Salon.PUBLIC:
@@ -1341,10 +1359,10 @@ class Salon(models.Model):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
     def getInscritsEtInvites(self):
-        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)] + [u.profil for u in InscritSalon.objects.filter(salon=self)]
+        return self.getInscrits() + self.getInvites()
 
-    def getArticles(self):
-        return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
+    #def getArticles(self):
+       # return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
 
     def getSuivi(self):
         return Suivis.objects.get_or_create(nom_suivi="salon_" + str(self.slug))[0]
@@ -1355,9 +1373,10 @@ class Salon(models.Model):
         elif self.type_salon == Type_Salon.PRIVE:
             return user in self.getInscritsEtInvites()
         elif self.type_salon == Type_Salon.ASSO:
-            if self.asso :
+            if self.asso:
                 return user.est_autorise(self.asso.slug)
             return True
+
 
 class InscritSalon(models.Model):
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE)

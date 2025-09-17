@@ -20,13 +20,13 @@ dict_ape = {
     "0127Z": "Culture de plantes à boissons",
     "0128Z": "Culture de plantes à épices, aromatiques, médicinales et pharmaceutiques",
     "0141Z": "Élevage de vaches laitières",
-    "0142Z": "Élevage d autres bovins et de buffles",
+    "0142Z": "Élevage d'autres bovins et de buffles",
     "0143Z": "Élevage de chevaux et d autres équidés",
     "0144Z": "Élevage de chameaux et d autres camélidés",
-    "0145Z": "Élevage d ovins et de caprins",
+    "0145Z": "Élevage d'ovins et de caprins",
     "0146Z": "Élevage de porcins",
     "0147Z": "Élevage de volailles",
-    "0149Z": "Élevage d autres animaux",
+    "0149Z": "Élevage d'autres animaux",
     "0150Z": "Culture et élevage associés",
     "0161Z": "Activités de soutien aux cultures",
     "0162Z": "Activités de soutien à la production animale",
@@ -39,7 +39,7 @@ dict_ape = {
 
 list_ape = [(k, k+" : " + v) for k, v in dict_ape.items()]
 
-CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "Conjoint Collaborateur"), ("4", "Retraité.e"), ("5", "ATS"), ("6", "Porteur de projet")
+CHOIX_STATUTS = ("0", "?"), ("1", "A titre principal"), ("2", "Cotisant Solidaire"), ("3", "Conjoint Collaborateur"), ("4", "Retraité.e"), ("5", "ATS"), ("6", "Porteur de projet"), ('7', 'Aide familial')
 
 CHOIX_MOYEN = ("VIR", "Virement"), ("CHQ", "Chèque"), ("ESP", "Espèce"), ("HA", "HelloAsso"), ("Autre", "Autre"),
 

@@ -19,8 +19,8 @@ $(document).ready(function() {
         location.href="/search/?"+recherche;
     });
 
-fetchNotifications();
-setInterval(fetchNotifications, 60000);
+    fetchNotifications();
+    setInterval(fetchNotifications, 60000);
 });
 
 document.onreadystatechange = function() {
@@ -227,18 +227,44 @@ function fetchNotifications() {
         .then(response => response.json())
         .then(data => {
             var e = document.getElementById('nbmessage-badge');
-            if (data.nb_messages > 0) {
+            if (data.nb_messages != "0") {
                 e.innerText = "(" + data.nb_messages + ")";
                 e.style.display = 'inline-block';
             } else {
                 e.style.display = 'none';
             }
             var e = document.getElementById('nbnotifs-badge');
-            if (data.nb_notifs > 0) {
+            if (data.nb_notifs != "0") {
                 e.innerText = "(" + data.nb_notifs + ")";
                 e.style.display = 'inline-block';
             } else {
                 e.style.display = 'none';
+            }
+            try{
+                if (window.location.href.endsWith("bienvenue/")){
+                    var e = document.getElementById('msg-msgprives');
+                    if (data.nb_messages != "0") {
+                        if (data.nb_messages == "1") {
+                            e.innerText = "Vous avez 1 nouveau message";
+                        }else{
+                            e.innerText = "Vous avez " + data.nb_messages + " nouveaux messages";
+                        }
+                    } else {
+                        e.innerText = "Messages privés";
+                    }
+                    var e = document.getElementById('msg-notifs');
+                    if (data.nb_notifs != "0") {
+                        if (data.nb_notifs == "1") {
+                            e.innerText = "Vous avez 1 notification";
+                        }else{
+                            e.innerText = "Vous avez " + data.nb_notifs + " notifications";
+                        }
+                    } else {
+                        e.innerText = "Notifications";
+                    }
+                }
+            }catch(error){
+                console.log(error);
             }
         })
         .catch(error => console.error('Erreur lors de la récupération des notifications:', error));

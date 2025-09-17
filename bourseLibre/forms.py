@@ -12,6 +12,7 @@ from blog.models import Article
 from dal import autocomplete
 from local_captcha.fields import CaptchaField
 from adherents.models import Adherent
+from django.utils.translation import gettext_lazy as _
 
 #from .constantes import Choix
 #from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
@@ -22,9 +23,8 @@ fieldsCommunsProduits = ['souscategorie', 'nom_produit', 'description', 'estUneO
 
 
 class ProduitCreationForm(forms.ModelForm):
-    estUneOffre = forms.ChoiceField(choices=((1, "Offre"), (0, "Demande")), label='', required=True)
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
-                                  label="Annonce publique ou réservée aux adhérents de l'asso :", )
+    estUneOffre = forms.ChoiceField(choices=((1, "Offre"), (0, "Demande")), label="L'annonce est une offre (vous donnez..) ou une demande (vous cherchez...) ?", required=True)
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True, label="Annonce publique ou réservée aux membres du groupe :", )
     monnaies = forms.ModelMultipleChoiceField(label='Monnaie(s)', required=False, queryset=Monnaie.objects.all(),
                                               widget=forms.CheckboxSelectMultiple(attrs={'class': 'cbox_asso', }))
 
@@ -32,16 +32,15 @@ class ProduitCreationForm(forms.ModelForm):
         model = Produit
         exclude = ('user',)
 
-        fields = ['nom_produit', 'description', 'date_debut', 'estUneOffre', 'asso', 'date_expiration', 'monnaies',
-                  'prix', ]
+        fields = ['nom_produit', 'description', 'date_debut', 'estUneOffre', 'asso', 'date_expiration', 'monnaies', 'prix', ]
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }, ),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -50,8 +49,7 @@ class ProduitCreationForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(ProduitCreationForm, self).__init__(*args, **kwargs)
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if
-                                       request.user.estMembre_str(x.slug)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if x.est_autorise(request.user)]
 
     def clean(self):
         cleaned_data = super().clean()
@@ -82,12 +80,12 @@ class Produit_aliment_CreationForm(ProduitCreationForm):
         fields = fieldsCommunsProduits
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }, ),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -105,12 +103,12 @@ class Produit_vegetal_CreationForm(ProduitCreationForm):
         fields = fieldsCommunsProduits
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }, ),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -135,12 +133,12 @@ class Produit_service_CreationForm(ProduitCreationForm):
         fields = fieldsCommunsProduits
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }, ),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -165,12 +163,12 @@ class Produit_objet_CreationForm(ProduitCreationForm):
         fields = fieldsCommunsProduits
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -184,12 +182,12 @@ class Produit_offresEtDemandes_CreationForm(ProduitCreationForm):
         fields = ['nom_produit', 'description', 'asso', 'date_debut', 'date_expiration', ]
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -208,12 +206,12 @@ class Produit_offresEtDemandes_modifier_form(ProduitModifierForm):
                   'monnaies', 'prix', 'date_debut', 'date_expiration', ]
         widgets = {
             'date_debut': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'date_expiration': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -312,13 +310,20 @@ class AdresseForm5(forms.ModelForm):
         adresse.save()
         return adresse
 
+    def __init__(self, request, *args, **kargs):
+        super(AdresseForm5, self).__init__(request, *args, **kargs)
+        field = self.fields['latitude']
+        field.widget = field.hidden_widget()
+        field2 = self.fields['longitude']
+        field2.widget = field2.hidden_widget()
+
 
 class ProfilCreationForm(UserCreationForm):
-    username = forms.CharField(label="Pseudonyme (sans espace)*",
+    username = forms.CharField(label="Pseudonyme (sans espace)",
                                help_text="Attention : Pas d'espace, et les majuscules sont importantes...")
-    description = forms.CharField(label=None, help_text="Une description de vous même", required=False,
+    description = forms.CharField(label="Présentez-vous brièvement", help_text="Une description de vous même", required=False,
                                   widget=forms.Textarea)
-    competences = forms.CharField(label=None,
+    competences = forms.CharField(label="Vos compétences",
                                   help_text="Par exemple: electricien, bouturage, aromatherapie, pépinieriste, etc...",
                                   required=False, widget=forms.Textarea, )
     site_web = forms.CharField(label="Votre site web", help_text="n'oubliez pas le https://", required=False)
@@ -330,7 +335,7 @@ class ProfilCreationForm(UserCreationForm):
     adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent-e de l'asso 'Ramène Ta Graine'")
     adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent-e de l'asso 'PermAgora'")
     adherent_jp = forms.BooleanField(required=False, label="Je suis intéressé-e par les jardins partagés")
-    adherent_ssa = forms.BooleanField(required=False, label="Je suis intéressé-e collectif pour expérimenter une forme de SSA dans le 66")
+    adherent_ssa = forms.BooleanField(required=False, label="Je suis intéressé-e par le collectif pour expérimenter une forme de SSA dans le 66")
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
     accepter_annuaire = forms.BooleanField(required=False, initial=True,
@@ -338,7 +343,7 @@ class ProfilCreationForm(UserCreationForm):
     inscrit_newsletter = forms.BooleanField(required=False, initial=True,
                                             label="J'accepte de m'abonner aux emails de Perma.cat")
     accepter_conditions = forms.BooleanField(required=True,
-                                             label="J'ai lu et j'accepte les Conditions Générales d'Utilisation du site*", )
+                                             label="J'ai lu et j'accepte les Conditions Générales d'Utilisation du site", )
 
     #pseudo_june = forms.CharField(label="Pseudonyme dans le réseau de la monnaie libre",  help_text="Si vous avez un compte en June",required=False)
 
@@ -432,9 +437,9 @@ class ProfilChangeForm_admin(UserChangeForm):
 class ContactForm(forms.Form):
     sujet = forms.CharField(max_length=100, label="Sujet", )
     msg = forms.CharField(label="Message", widget=SummernoteWidget)
-    renvoi = forms.BooleanField(label="recevoir une copie",
-                                help_text="Cochez si vous souhaitez obtenir une copie du mail envoyé.", required=False
-                                )
+    #renvoi = forms.BooleanField(label="recevoir une copie",
+     #                           help_text="Cochez si vous souhaitez obtenir une copie du mail envoyé.", required=False
+     #                           )
     #captcha = CaptchaField()
 
 
@@ -529,7 +534,7 @@ class Adhesion_permacatForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -547,7 +552,7 @@ class Adhesion_assoForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'date_cotisation': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -570,9 +575,11 @@ class creerAction_articlenouveauForm(forms.Form):
 
 
 class SalonForm(forms.ModelForm):
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=False,)
+
     class Meta:
         model = Salon
-        fields = ['titre', 'type_salon', 'description', 'tags']
+        fields = ['titre', 'type_salon', 'asso', 'description', 'tags']
         widgets = {
             'description': SummernoteWidget(),
         }
@@ -585,6 +592,14 @@ class SalonForm(forms.ModelForm):
         inscrit.save()
         return instance
 
+    def clean(self):
+        cleaned_data = super().clean()
+        type_salon = cleaned_data.get("type_salon")
+        asso = cleaned_data.get("asso")
+
+        if type_salon == 2 and not asso:
+            msg = _("Pour créer un salon de 'Groupe', vous devez choisir à quel Groupe il appartient ci-dessous :")
+            self.add_error("asso", msg)
 
 class Lien_AssoSalon_adminForm(forms.ModelForm):
     class Meta:
@@ -645,12 +660,12 @@ class EvenementSalonForm(forms.ModelForm):
         fields = ['start_time', 'titre_even', ]
         widgets = {
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),

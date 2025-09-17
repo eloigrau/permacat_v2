@@ -94,12 +94,12 @@ class ArticleForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -159,12 +159,12 @@ class ArticleChangeForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -186,11 +186,6 @@ class ArticleChangeForm(forms.ModelForm):
         #         instance.themes.remove(theme)
         return instance
 
-#
-# class ModificationArticleForm(forms.ModelForm):
-#     class Meta:
-#         model = ModificationArticle
-#         fields = ['description',]
 
 
 class AssociationSalonArticleForm(forms.ModelForm):
@@ -268,7 +263,7 @@ class CommentaireArticleChangeForm(forms.ModelForm):
 
 
 class ProjetForm(forms.ModelForm):
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                               label="Projet public ou réservé aux adhérents de l'asso :", )
     class Meta:
         model = Projet
@@ -276,12 +271,12 @@ class ProjetForm(forms.ModelForm):
         widgets = {
         'contenu': SummernoteWidget(),
               'start_time':forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -320,12 +315,12 @@ class ProjetChangeForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -333,7 +328,7 @@ class ProjetChangeForm(forms.ModelForm):
 
 
 class ProjetForm(forms.ModelForm):
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                               label="Projet public ou réservé aux adhérents de l'asso :", )
     class Meta:
         model = Projet
@@ -341,12 +336,12 @@ class ProjetForm(forms.ModelForm):
         widgets = {
         'contenu': SummernoteWidget(),
               'start_time':forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
               'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -456,7 +451,7 @@ class EvenementForm(forms.ModelForm):
         fields = ['start_time', 'titre_even', 'article', ]
         widgets = {
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -474,12 +469,12 @@ class EvenementArticleForm(forms.ModelForm):
         fields = ['start_time', 'titre_even', ]
         widgets = {
             'start_time':forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
             'end_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -595,7 +590,7 @@ class ReunionArticleForm(forms.ModelForm):
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
@@ -656,6 +651,9 @@ class Article_rechercheForm(forms.ModelForm):
         widgets = {
             'article': autocomplete.ModelSelect2(url='blog:article-ac')
         }
+        help_texts = {
+            'article': 'Chercher dans les titres des articles',
+        }
 
     def save(self):
         instance = super(Article_rechercheForm, self).save()
@@ -668,6 +666,9 @@ class Article_asso_rechercheForm(forms.ModelForm):
         fields = ("article", )
         widgets = {
             'article': autocomplete.ModelSelect2(url='blog:article-ac-asso')
+        }
+        help_texts = {
+            'article': 'Chercher dans les titres des articles du groupe',
         }
 
     def save(self):

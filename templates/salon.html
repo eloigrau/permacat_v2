@@ -5,11 +5,13 @@
 {% include 'pagination_new.html' %}
 <div class=" commentaires"  id="idConversation_2">
 <div class="conversation">
-              <div class="conversation-container">
+  <div class="conversation-container">
     {% for comment in page_obj %}
 	<div class="row anchor_blank" id="comm_{{comment.id}}"></div>
     {%if comment.auteur.username == 'bot_permacat' %}
-    <div class="row message sent">
+    <div class="row message sent textright">
+        <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}{% else %}{{ comment.date_creation|date:"l d F G:i" }}{% endif %}</span>
+
         <div class="col-sm-12 mAjouter une liste de diffusionessage_bot">
             <p>{{ comment.message|safe }}</p>
         </div>
@@ -18,7 +20,7 @@
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} ">
 
                 {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}"> {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur}}</a>{% endifchanged %}
-                <span class="metadata">{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}
+                <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }} {% else %}{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{% endif %}{{ comment.date_creation|date:"G:i" }}
 
                 {% if request.user == comment.auteur or request.user.is_superuser %}
                 <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>

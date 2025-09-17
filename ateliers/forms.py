@@ -12,9 +12,9 @@ import re
 from bourseLibre.utils import slugify_pcat
 
 class AtelierForm(forms.ModelForm):
-    referent = forms.ChoiceField(label='Référent atelier')
-    asso = forms.ModelChoiceField(queryset=Asso.objects.all(), required=True,
-                                  label="Atelier public ou réservé aux adhérents de l'asso :", )
+    referent = forms.ChoiceField(label="Référent-e de l'atelier")
+    asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
+                                  label="Atelier public ou réservé aux membres du groupe :", )
 
     class Meta:
         model = Atelier
@@ -23,12 +23,12 @@ class AtelierForm(forms.ModelForm):
             'description': SummernoteWidget(),
             'materiel': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
-            'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }
 
     def save(self, request, article):
@@ -85,12 +85,12 @@ class AtelierChangeForm(forms.ModelForm):
             'materiel': SummernoteWidget(),
             'outils': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
+                format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
-            'heure_atelier': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
-            'heure_atelier_fin': forms.TimeInput(attrs={'type':"time", },format='%H:%M'),
+            'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
+            'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }
 
 

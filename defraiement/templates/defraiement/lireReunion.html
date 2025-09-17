@@ -32,15 +32,11 @@
     <div class="row titre_reunion" style="background-color:{{reunion.reunion.get_couleur}};margin-bottom:5px;">
         <div class="col textcenter" >
               <h2> Reunion : {{ reunion.titre }}</h2>
-
- <p class="inscrit_reunion textcenter">
-     {{ reunion.get_categorie_display }}
 {% if reunion.start_time %}
-     , le {{ reunion.start_time|date:"l d F Y"}},
-{% endif %}
-
+ <p class="inscrit_reunion textcenter">
+le {{ reunion.start_time|date:"l d F Y"}}
     </p>
-
+{% endif %}
      {% if reunion.article %}
             <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre|couperTexte:30}}</a></p>
 {% endif %}
@@ -49,7 +45,7 @@
  	<div class="row">
     <div class="col-md-12 textcenter">
 		<p>
-                {{reunion.get_logo_nomgroupe_html|safe}}
+                {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }}
 		</p>
         <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil_nom' reunion.auteur.username %}">{{reunion.auteur.username}}</a>, dernière modification le {{ reunion.date_modification|date:"DATE_FORMAT" }}
 
@@ -93,8 +89,8 @@
         {% if liste_participants %}
             <table class="table table-condensed ">
                 <tr>
-                <th>Participant (conducteur)</th>
-                <th>Distance</th>
+                <th>Participant</th>
+                <th>Distance (aller-retour)</th>
                 <th>GMaps</th>
                 <th>Type de trajet</th>
                 <th>Modifier/Supprimer</th>
@@ -120,6 +116,7 @@
                          {{part.4.get_type_trajet_display}}
                     </td>
                     <td>
+                        <a class="btn btn-sm btn-warning textleft" href="{% url 'defraiement:modifierTrajet' pk=part.4.pk %}"> modifier </a><a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
                         <a class="btn btn-sm btn-warning textleft" href="{% url 'defraiement:modifierTrajet' pk=part.4.pk %}"> modifier </a><a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
                     </td>
 				</tr>

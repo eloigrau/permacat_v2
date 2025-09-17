@@ -31,12 +31,28 @@ from django.contrib.auth.decorators import login_required, permission_required
 from unidecode import unidecode
 
 
+def testIsMembreAsso_bool(request, asso):
+    if asso == "public":
+        return Asso.objects.get(nom="Public")
+
+    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
+    if assos:
+        assos = assos[0]
+
+        if not assos.is_membre(request.user) and not request.user.is_superuser:
+            return None
+        return assos
+
+    return None
+
 class Contact_ajouter(UserPassesTestMixin, CreateView, ):
     model = Contact
     template_name_suffix = '_ajouter'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_form(self):
@@ -70,7 +86,9 @@ class Contact_modifier(UserPassesTestMixin, UpdateView, ):
     template_name_suffix = '_modifier'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_form(self):
@@ -127,7 +145,9 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_success_url(self):
@@ -158,8 +178,10 @@ class Contact_liste(UserPassesTestMixin, ListView):
     template_name_complet = "adherents/carte_contacts.html"
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
-        return self.asso #is_membre_bureau(self.request.user, self.asso.slug)
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
+        return True
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -420,15 +442,20 @@ def ajouterMembresGroupe(request, asso_slug ):
     for i, adherent in enumerate(profils):
         #if j>5 or i> 200:
          #   break
+        adh = Adherent.objects.filter(profil=adherent)
+        if adh:
+            ad = adh[0]
+        else:
+            ad= None
         res, p = creerContact(projet=projet,
                               telephone=adherent.adresse.telephone,
-                             nom=adherent.nom,
-                             prenom=adherent.prenom ,
+                             nom=adherent.first_name,
+                             prenom=adherent.last_name ,
                              email=adherent.email,
                              rue=adherent.adresse.rue,
                              commune=adherent.adresse.commune,
                              code_postal=adherent.adresse.code_postal,
-                             adherent=adherent,
+                             adherent=ad,
                               )
         if res:
             m += "<p>ajout " + str(adherent) +"</p>"
@@ -720,7 +747,9 @@ class ProjetPhoning_ajouter(UserPassesTestMixin, CreateView):
     template_name_suffix = '_ajouter'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_form(self):
@@ -745,7 +774,9 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
     template_name_suffix = '_modifier'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_form(self):
@@ -753,7 +784,7 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        return redirect("adherents:phoning_projet_complet", {"asso_slug":self.asso.slug})
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         return self.object.get_absolute_url()
@@ -770,7 +801,9 @@ class ProjetPhoning_supprimer(UserPassesTestMixin, DeleteView, ):
     template_name_suffix = '_supprimer'
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_success_url(self):
@@ -789,7 +822,9 @@ class ProjetPhoning_liste(UserPassesTestMixin, ListView):
     template_name = "adherents/projetphoning_list.html"
 
     def test_func(self):
-        self.asso = testIsMembreAsso(self.request, self.kwargs['asso_slug'])
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
         return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_queryset(self):

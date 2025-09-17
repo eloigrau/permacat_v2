@@ -4,13 +4,13 @@ from .models import Adherent, Adhesion, InscriptionMail, ListeDiffusion, Contact
 
 @admin.register(Adherent)
 class Adherent_Admin(admin.ModelAdmin):
-    list_display = ('nom', 'prenom', 'email', 'profil', 'get_adhesions')
+    list_display = ('nom', 'prenom', 'email', 'profil', 'get_adhesions', 'production_ape')
     search_fields = ('nom', 'email', )
 
 @admin.register(Adhesion)
 class Adhesion_Admin(admin.ModelAdmin):
-    list_display = ('adherent', 'date_cotisation', 'montant')
-    search_fields = ('adherent', )
+    list_display = ('adherent', 'date_cotisation', 'montant', 'asso')
+    search_fields = ('adherent__nom', 'adherent__prenom', 'adherent__profil__prenom',  'adherent__profil__nom', )
 
 @admin.register(ContactContact)
 class ContactContact_Admin(admin.ModelAdmin):

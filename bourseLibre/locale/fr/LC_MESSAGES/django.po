@@ -52,7 +52,7 @@ msgid "Montant de l'adhesion"
 msgstr "Montant de l'adhésion"
 #: adherents/models.py:121
 msgid "Moyen de paiement"
-msgstr "Moyen de Paiment"
+msgstr "Moyen de paiement"
 #: adherents/models.py:139 adherents/models.py:229 blog/models.py:765
 #: jardins/models.py:241 jardins/models.py:277 bourseLibre/models.py:334
 #: bourseLibre/models.py:1339 bourseLibre/models.py:1352
@@ -140,19 +140,19 @@ msgid "categorie"
 msgstr "catégorie"
 #: ateliers/models.py:50
 msgid "Statut de l'atelier"
-msgstr "Statt de l'atelier"
+msgstr "Statut de l'atelier"
 #: ateliers/models.py:51
 msgid "Titre de l'atelier"
 msgstr "Titre de l'atelier"
 #: ateliers/models.py:54
 msgid "Matériel/outils nécessaires"
-msgstr "MATÉRIEL / OUTILS NÉCESSAIS"
+msgstr "Matériel/outils nécessaires"
 #: ateliers/models.py:55
 msgid "Référent(e.s)"
 msgstr "Référent-e-s)"
 #: ateliers/models.py:57
 msgid "Date prévue (affichage dans l'agenda)"
-msgstr "Date Prévue (Affichage dans l'agenda)"
+msgstr "Date Prévue (affichage dans l'agenda)"
 #: ateliers/models.py:58
 msgid "Heure de début"
 msgstr "Heure de début"
@@ -182,7 +182,7 @@ msgid "Public ou réservé aux membres permacat"
 msgstr ""
 #: blog/models.py:274 jardinpartage/models.py:81
 msgid "Modifiable par les autres"
-msgstr "Modifiable par les Autres"
+msgstr "Modifiable par les autres membres du groupe"
 #: blog/models.py:275
 msgid "Article épinglé"
 msgstr "Article épinglé"
@@ -574,7 +574,7 @@ msgid "Un Fichier / Document"
 msgstr "Un Fichier / Document"
 #: templates/navigationBar.html:396
 msgid "Ajouter la page actuelle"
-msgstr "AJOUTER LA PAGE ACTUELLE"
+msgstr "Ajouter la page actuelle"
 #: templates/navigationBar.html:403
 msgid "Gérer mes favoris"
 msgstr "Gérer mes favoris"
@@ -1815,26 +1815,26 @@ msgstr[1] ""
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d mois"
+msgstr[1] "%(num)d mois"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:10
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d semaine"
+msgstr[1] "%(num)d semaines"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:11
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d jour"
+msgstr[1] "%(num)d jours"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:12
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d heure"
+msgstr[1] "%(num)d heures"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:13
 #, python-format
 msgid "%(num)d minute"
@@ -5318,10 +5318,10 @@ msgid "Archiver la proposition"
 msgstr "Archiver LA proposition"
 #: vote/models.py:127
 msgid "Vote anonyme"
-msgstr "Voter anonyme"
+msgstr "Vote anonyme"
 #: vote/models.py:129
 msgid "Date de début du vote"
-msgstr "Date de Début du vote"
+msgstr "Date de début du vote"
 #: vote/models.py:130
 msgid "Date de fin du vote"
 msgstr "Date de fin du vote"
@@ -5391,10 +5391,10 @@ msgid "Je fais partie de 'la Cité Altruiste'"
 msgstr "Je fais partitie de 'la citation altruiste'"
 #: bourseLibre/models.py:344
 msgid "Je fais partie du collectif 'Viure'"
-msgstr "Je fais partitie du collectif 'viure'"
+msgstr "Je fais partie du collectif 'Viure'"
 #: bourseLibre/models.py:345
 msgid "Je fais partie du collectif 'Bzzz'"
-msgstr "Je fais partitie du collectif 'bzzz'"
+msgstr "Je fais partie du collectif 'Bzzz'"
 #: bourseLibre/models.py:346
 msgid "Je suis adhérent à la confédération Paysanne 66"
 msgstr "Je suis adhérent à la compédération paysanne 66"
@@ -5512,8 +5512,8 @@ msgstr "Administration et Fichiers de l'association Fermille"
 msgid "Administration et fichiers de l'association Ramène Ta Graine"
 msgstr "Administration et Fichiers de l'association Ramène ta graine"
 #: bourseLibre/templates/bienvenue.html:26
-msgid "Bon dia "
-msgstr "Belle journée"
+msgid "Bon dia"
+msgstr "Bon dia"
 #: bourseLibre/templates/gallerie.html:5
 msgid "Gallerie d'images"
 msgstr "Galerie d'images"

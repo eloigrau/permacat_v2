@@ -13,7 +13,10 @@ import re
 register = template.Library()
 
 class Constantes:
-    typesAvecEntete = ['Select', " NumberInput", "DateInput","DateTimeInputWidget", "SummernoteWidget", "CheckboxSelectMultiple" ]#'Textarea',
+    typesAvecEntete = ['Select', " NumberInput", "DateInput", "DateTimeInputWidget", "SummernoteWidget",
+                       "CheckboxSelectMultiple", "TextInput", 'Textarea', "ClearableFileInput","TagWidget",
+                       "TimeInput"]
+    #typesAvecEntete = ['Select', " NumberInput", "DateInput","DateTimeInputWidget", "SummernoteWidget", "CheckboxSelectMultiple", "TextInput" ]#'Textarea',
     width = 10
     dicoMois = {"January".center(width): "Janvier".center(width), "February".center(width): "Février".center(width),
                 "March".center(width): "Mars".center(width), "April".center(width): "Avril".center(width),
@@ -37,7 +40,6 @@ def is_checkbox(field):
 def field_type(field):
     return field.field.widget.__class__.__name__
 
-#def field_sansentete(field):
 @register.filter(name='field_entete')
 def field_entete(field):
     type= str(field.field.widget.__class__.__name__)
@@ -294,3 +296,24 @@ def getLogoGroupeFromSlug(slug):
 @register.filter(is_safe=True)
 def getNomGroupeFromSlug(slug):
     return mark_safe(Asso.objects.get(slug=slug).nom)
+
+
+@register.filter(is_safe=True)
+def estMembreAsso(slug, user):
+    return Asso.objects.get(slug=slug).est_autorise(user)
+
+@register.filter(is_safe=True)
+def is_adhesions(slug):
+    return Asso.objects.get(slug=slug).is_adhesions
+
+@register.filter(is_safe=True)
+def is_defraiement(slug):
+    return Asso.objects.get(slug=slug).is_defraiement
+
+@register.filter(is_safe=True)
+def is_listeContacts(slug):
+    return Asso.objects.get(slug=slug).is_listeContacts
+
+@register.filter(is_safe=True)
+def is_listeDiffusion(slug):
+    return Asso.objects.get(slug=slug).is_listeDiffusion

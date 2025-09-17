@@ -55,16 +55,15 @@ class Atelier(models.Model):
     referent = models.CharField(max_length=120, null=True, blank=True,  verbose_name=_("Référent(e.s)"))
     auteur = models.ForeignKey(Profil, on_delete=models.CASCADE, null=True)
     start_time = models.DateField(verbose_name=_("Date prévue (affichage dans l'agenda)"), help_text="(jj/mm/an)", default=timezone.now, blank=True, null=True)
-    heure_atelier = models.TimeField(verbose_name=_("Heure de début"), help_text="Horaire de départ (hh:mm)", default="14:00", blank=True, null=True)
-    heure_atelier_fin = models.TimeField(verbose_name=_("Heure de fin"), help_text="Horaire de fin (hh:mm)",
-                                    default="17:00", blank=True, null=True)
+    heure_atelier = models.TimeField(verbose_name=_("Heure de début"), help_text="hh:mm", default="14:00", blank=True, null=True)
+    heure_atelier_fin = models.TimeField(verbose_name=_("Heure de fin"), help_text="hh:mm", default="17:00", blank=True, null=True)
 
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
     date_modification = models.DateTimeField(verbose_name=_("Date de modification"), default=timezone.now)
 
     #date_dernierMessage = models.DateTimeField(verbose_name=_("Date du dernier message", auto_now=False, blank=True, null=True)
     #dernierMessage = models.CharField(max_length=100, default=None, blank=True, null=True, help_text="Heure prévue (hh:mm)")
-    tarif_par_personne = models.CharField(max_length=100, default='gratuit', help_text="Tarif de l'atelier par personne", verbose_name=_("Tarif de l'atelier par personne"), )
+    tarif_par_personne = models.CharField(max_length=100, default='gratuit', blank=True, verbose_name=_("Tarif de l'atelier par personne"), )
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 

@@ -586,7 +586,7 @@ msgid "Une info sur le forum (Article)"
 msgstr "Una informació sobre el fòrum (article)"
 #: templates/navigationBar.html:375
 msgid "Une Petite Annonce"
-msgstr "Un petit anunci"
+msgstr "Una anunci"
 #: templates/navigationBar.html:377
 msgid "Un Atelier"
 msgstr "Un taller"
@@ -940,13 +940,13 @@ msgstr "{value!r} no és un {number_type} vàlid."
 #: venv/lib/python3.9/site-packages/click/types.py:470
 #, python-brace-format
 msgid "{value} is not in the range {range}."
-msgstr "{valor} no es troba a la gamma {range}."
+msgstr "{value} no es troba a la gamma {range}."
 #: venv/lib/python3.9/site-packages/click/types.py:611
 msgid "{value!r} is not a valid boolean."
-msgstr "{valor! R} no és un booleà vàlid."
+msgstr "{value!r} no és un booleà vàlid."
 #: venv/lib/python3.9/site-packages/click/types.py:635
 msgid "{value!r} is not a valid UUID."
-msgstr "{valor! R} no és un uuid vàlid."
+msgstr "{value!r} no és un uuid vàlid."
 #: venv/lib/python3.9/site-packages/click/types.py:822
 msgid "file"
 msgstr "dossier"
@@ -965,7 +965,7 @@ msgstr "{nom} {filename!r} és un fitxer."
 #: venv/lib/python3.9/site-packages/click/types.py:894
 #, python-brace-format
 msgid "{name} '{filename}' is a directory."
-msgstr "{nom} '{FileName}' és un directori."
+msgstr "{nom} '{filename}' és un directori."
 #: venv/lib/python3.9/site-packages/click/types.py:903
 msgid "{name} {filename!r} is not readable."
 msgstr "{nom} {filename!r} no es pot llegir."
@@ -1058,23 +1058,19 @@ msgstr "Introduïu només dígits separats per comes."
 #, python-format
 msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
 msgstr ""
-"Assegureu -vos que aquest valor és %(límit_value) s (és %(show_value) s)."
+"Assegureu -vos que aquest valor és %(limit_value)s (és %(show_value)s).)."
 #: venv/lib/python3.9/site-packages/django/core/validators.py:392
 #, python-format
 msgid "Ensure this value is less than or equal to %(limit_value)s."
-msgstr ""
-"Assegureu -vos que aquest valor sigui inferior o igual a %(límit_value) s."
+msgstr "Assegureu -vos que aquest valor sigui inferior o igual a %(limit_value)s."
 #: venv/lib/python3.9/site-packages/django/core/validators.py:401
 #, python-format
 msgid "Ensure this value is greater than or equal to %(limit_value)s."
-msgstr ""
-"Assegureu -vos que aquest valor sigui superior o igual a %(límit_value) s."
+msgstr "Assegureu -vos que aquest valor sigui superior o igual a %(límit_value)s."
 #: venv/lib/python3.9/site-packages/django/core/validators.py:410
 #, python-format
 msgid "Ensure this value is a multiple of step size %(limit_value)s."
-msgstr ""
-"Assegureu -vos que aquest valor és un múltiple de la mida de pas "
-"%(límit_value) s."
+msgstr "Assegureu -vos que aquest valor és un múltiple de la mida de pas %(límit_value)s."
 #: venv/lib/python3.9/site-packages/django/core/validators.py:420
 #, python-format
 msgid ""
@@ -1126,8 +1122,8 @@ msgid ""
 "File extension “%(extension)s” is not allowed. Allowed extensions are: "
 "%(allowed_extensions)s."
 msgstr ""
-"L'extensió del fitxer \"%(extensió) S\" no està permesa. Les extensions "
-"permeses són: %(permesa_extensions) s."
+"L'extensió del fitxer “%(extension)s” no està permesa. Les extensions "
+"permeses són: %(allowed_extensions)s."
 #: venv/lib/python3.9/site-packages/django/core/validators.py:605
 msgid "Null characters are not allowed."
 msgstr "Els personatges nuls no estan permesos."
@@ -1138,15 +1134,15 @@ msgstr "i"
 #: venv/lib/python3.9/site-packages/django/db/models/base.py:1425
 #, python-format
 msgid "%(model_name)s with this %(field_labels)s already exists."
-msgstr "%(model_name) s amb aquest %(Field_Labels) ja existeix."
+msgstr "%(model_name) s amb aquest %(field_labels)s ja existeix."
 #: venv/lib/python3.9/site-packages/django/db/models/constraints.py:17
 #, python-format
 msgid "Constraint “%(name)s” is violated."
-msgstr "La restricció \" %(name)s\" es viola."
+msgstr "La restricció “%(name)s” es viola."
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:128
 #, python-format
 msgid "Value %(value)r is not a valid choice."
-msgstr "Valor %(valor) R no és una opció vàlida."
+msgstr "Valor %(value)r no és una opció vàlida."
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:129
 msgid "This field cannot be null."
 msgstr "Aquest camp no pot ser nul."
@@ -1156,20 +1152,17 @@ msgstr "Aquest camp no pot estar en blanc."
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:131
 #, python-format
 msgid "%(model_name)s with this %(field_label)s already exists."
-msgstr "%(Model_name) s amb aquest %(Field_Label) ja existeix."
+msgstr "%(model_name)s amb aquest %(field_label)s ja existeix."
 #. Translators: The 'lookup_type' is one of 'date', 'year' or
 #. 'month'. Eg: "Title must be unique for pub_date year"
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:135
 #, python-format
-msgid ""
-"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
-msgstr ""
-"%(Field_Label)s ha de ser únic per a %(date_field_label)s %(Lookup_Type) "
-"s."
+msgid "%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr "%(field_label)s ha de ser únic per a %(date_field_label)s %(lookup_type)s. "
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:173
 #, python-format
 msgid "Field of type: %(field_type)s"
-msgstr "Camp de tipus: %(camp_type) s"
+msgstr "Camp de tipus: %(field_type) s"
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:1094
 #, python-format
 msgid "'%(value)s' value must be either True or False."
@@ -1216,8 +1209,6 @@ msgstr "Data (sense temps)"
 msgid "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
 "HH:MM[:ss[.uuuuuu]][TZ] format."
 msgstr ""
-msgid "“%(value)s” value has an invalid format. It must be in YYYY-MM-DD "
-"HH:MM[:ss[.uuuuuu]][TZ] format."
 #: venv/lib/python3.9/site-packages/django/db/models/fields/__init__.py:1497
 #, python-format
 msgid ""
@@ -1347,7 +1338,7 @@ msgstr "El valor ha de ser vàlid json."
 #: venv/lib/python3.9/site-packages/django/db/models/fields/related.py:919
 #, python-format
 msgid "%(model)s instance with %(field)s %(value)r does not exist."
-msgstr "%(model)s instància amb (field)s %(value)r no existeix."
+msgstr "%(model)s instància amb %(field)s %(value)r no existeix."
 #: venv/lib/python3.9/site-packages/django/db/models/fields/related.py:921
 msgid "Foreign Key (type determined by related field)"
 msgstr "Clau estrangera (tipus determinat per camp relacionat)"
@@ -1464,7 +1455,7 @@ msgid ""
 "%(field_names)s. You may need to file a bug report if the issue persists."
 msgstr ""
 "Falten dades de ManagementForm o s’han manipulat. Camps que falten: "
-"%(Field_names) s. És possible que hàgiu de presentar un informe d’errors si "
+"%(field_names)s. És possible que hàgiu de presentar un informe d’errors si "
 "el problema persisteix."
 #: venv/lib/python3.9/site-packages/django/forms/formsets.py:67
 #, python-format
@@ -1489,15 +1480,15 @@ msgstr "Corregiu les dades duplicades de  %(field)s."
 #: venv/lib/python3.9/site-packages/django/forms/models.py:891
 #, python-format
 msgid "Please correct the duplicate data for %(field)s, which must be unique."
-msgstr "Corregiu les dades duplicades de %(camp), que han de ser úniques."
+msgstr "Corregiu les dades duplicades de %(field)s, que han de ser úniques."
 #: venv/lib/python3.9/site-packages/django/forms/models.py:898
 #, python-format
 msgid ""
 "Please correct the duplicate data for %(field_name)s which must be unique "
 "for the %(lookup)s in %(date_field)s."
 msgstr ""
-"Corregiu les dades duplicades de %(nom de camp) que han de ser úniques per a"
-" la %(cerca) a %(date_field)s."
+"Corregiu les dades duplicades de %(field_name)s que han de ser úniques per a"
+" la %(lookup)s a %(date_field)s."
 #: venv/lib/python3.9/site-packages/django/forms/models.py:907
 msgid "Please correct the duplicate values below."
 msgstr "Corregiu els valors duplicats a continuació."
@@ -1520,7 +1511,7 @@ msgid ""
 "%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
 "may be ambiguous or it may not exist."
 msgstr ""
-"%(dateTime)s no es podia interpretar a la zona horària %(corrent_timezone) s;"
+"%(datetime)s no es podia interpretar a la zona horària %(current_timezone) s;"
 " Pot ser ambigu o pot no existir."
 #: venv/lib/python3.9/site-packages/django/forms/widgets.py:463
 msgid "Clear"
@@ -1837,32 +1828,32 @@ msgstr[1] ""
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d mes"
+msgstr[1] "%(num)d mesos"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:10
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d setmana"
+msgstr[1] "%(num)d setmanes"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:11
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d dia"
+msgstr[1] "%(num)d dies"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:12
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d hora"
+msgstr[1] "%(num)d hores"
 #: venv/lib/python3.9/site-packages/django/utils/timesince.py:13
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d minut"
+msgstr[1] "%(num)d minuts"
 #: venv/lib/python3.9/site-packages/django/views/csrf.py:111
 msgid "Forbidden"
 msgstr "Prohibit"
@@ -1951,12 +1942,11 @@ msgid ""
 "Future %(verbose_name_plural)s not available because "
 "%(class_name)s.allow_future is False."
 msgstr ""
-"Future %(verbose_name_plural) no està disponible perquè %(nom_class) "
-"s.allow_future és fals."
+"Future %(verbose_name_plural)s no està disponible perquè %(class_name)s.allow_future és fals."
 #: venv/lib/python3.9/site-packages/django/views/generic/dates.py:692
 #, python-format
 msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
-msgstr "Cadena de data no vàlida \“%(datestr)s” Format “%(format)s”"
+msgstr "Cadena de data no vàlida “%(datestr)s” format “%(format)s”"
 #: venv/lib/python3.9/site-packages/django/views/generic/detail.py:56
 #, python-format
 msgid "No %(verbose_name)s found matching the query"
@@ -1982,7 +1972,7 @@ msgstr "“%(path)s” no existeix"
 #: venv/lib/python3.9/site-packages/django/views/static.py:79
 #, python-format
 msgid "Index of %(directory)s"
-msgstr "Índex de %(directori)s"
+msgstr "Índex de %(directory)s"
 #: venv/lib/python3.9/site-packages/django/views/templates/default_urlconf.html:7
 #: venv/lib/python3.9/site-packages/django/views/templates/default_urlconf.html:220
 msgid "The install worked successfully! Congratulations!"
@@ -2029,7 +2019,7 @@ msgstr "Afegiu %s"
 #: venv/lib/python3.9/site-packages/django_common/admin.py:222
 #, python-format
 msgid "%(name)s object with primary key %(key)r does not exist."
-msgstr "No existeix l'objecte %(name)samb la clau primària %(clau)."
+msgstr "No existeix l'objecte %(name)s amb la clau primària %(key)r."
 #: venv/lib/python3.9/site-packages/django_common/admin.py:323
 #, python-format
 msgid "Change %s"
@@ -2040,7 +2030,7 @@ msgstr "Aquesta ordre genera secret_key"
 #: venv/lib/python3.9/site-packages/django_common/management/commands/generate_secret_key.py:24
 #, python-format
 msgid "SECRET_KEY length default=%d"
-msgstr "Secret_key longitud default=%d"
+msgstr "SECRET_KEY longitud default=%d"
 #: venv/lib/python3.9/site-packages/django_common/management/commands/generate_secret_key.py:27
 #, python-format
 msgid "alphabet to use default=%s"
@@ -2422,10 +2412,10 @@ msgid ""
 "{entity_model}."
 msgstr ""
 "User {user_model} ha de tenir privilegis d'administració per a l'entitat "
-"model {Entity_Model}."
+"model {entity_model}."
 #: venv/lib/python3.9/site-packages/django_ledger/io/io_library.py:188
 msgid "Ledger Model must be a string or UUID or LedgerModel"
-msgstr "El model Ledger ha de ser una cadena o UUID o LEDGERMODEL"
+msgstr "El model Ledger ha de ser una cadena o UUID o LedgerModel"
 #: venv/lib/python3.9/site-packages/django_ledger/io/io_library.py:220
 msgid ""
 "Total transactions Credits and Debits must be equal. Got CREDITs: {} and "
@@ -2681,7 +2671,7 @@ msgstr "Model d’entitat"
 #: venv/lib/python3.9/site-packages/django_ledger/models/invoice.py:418
 #: venv/lib/python3.9/site-packages/django_ledger/models/purchase_order.py:299
 msgid "Must pass user_model when using entity_slug."
-msgstr "Ha de passar user_model quan s'utilitza Entity_Slug."
+msgstr "Ha de passar user_model quan s'utilitza entity_slug."
 #: venv/lib/python3.9/site-packages/django_ledger/models/bank_account.py:169
 msgid "Bank Account"
 msgstr "Compte bancari"
@@ -2793,7 +2783,7 @@ msgstr "Factures"
 #: venv/lib/python3.9/site-packages/django_ledger/models/bill.py:1116
 #, python-format
 msgid "Do you want to mark Bill %s as Draft?"
-msgstr "Voleu marcar com a esborrany el projecte de llei?"
+msgstr "Voleu marcar com a esborrany el projecte de llei %s ?"
 #: venv/lib/python3.9/site-packages/django_ledger/models/bill.py:1221
 #, python-format
 msgid "Do you want to mark Bill %s as In Review?"
@@ -2801,7 +2791,7 @@ msgstr "Voleu marcar Bill %s com en revisió?"
 #: venv/lib/python3.9/site-packages/django_ledger/models/bill.py:1328
 #, python-format
 msgid "Do you want to mark Bill %s as Approved?"
-msgstr "Voleu marcar el projecte de llei que s'aprova?"
+msgstr "Voleu marcar el projecte de llei que s'aprova %s ?"
 #: venv/lib/python3.9/site-packages/django_ledger/models/bill.py:1451
 #, python-format
 msgid "Do you want to mark Bill %s as Paid?"
@@ -2976,17 +2966,17 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "The Closing Entry Model {closing_entry_model} does not belong to Entity {self.name}"
-msgstr "El model d'entrada de tancament {cloking_entry_model} no pertany a l'entitat {self.name}"
+msgstr "El model d'entrada de tancament {closing_entry_model} no pertany a l'entitat {self.name}"
 #: venv/lib/python3.9/site-packages/django_ledger/models/entity.py:431
 #, python-brace-format
 msgid "The Closing Entry Model date {closing_entry_model.closing_date} "
 msgstr ""
-"La data del model d’entrada de tancament {cloking_entry_model.closing_date}"
+"La data del model d’entrada de tancament {closing_entry_model.closing_date}"
 #: venv/lib/python3.9/site-packages/django_ledger/models/entity.py:531
 #, python-brace-format
 msgid "Cannot create closing entry with a future date {closing_date}."
 msgstr ""
-"No es pot crear l'entrada de tancament amb una data futura {cloking_date}."
+"No es pot crear l'entrada de tancament amb una data futura {closing_date}."
 #: venv/lib/python3.9/site-packages/django_ledger/models/entity.py:763
 msgid "Default Chart of Accounts"
 msgstr "Gràfic per defecte dels comptes"
@@ -3606,7 +3596,7 @@ msgid ""
 "Journal Entries with date {earliest_date} cannot be deleted because of "
 "latest closing "
 msgstr ""
-"Les entrades de revistes amb data {Early_date} no es poden suprimir a causa "
+"Les entrades de revistes amb data {earliest_date} no es poden suprimir a causa "
 "del darrer tancament"
 #: venv/lib/python3.9/site-packages/django_ledger/models/ledger.py:680
 msgid ""
@@ -3614,7 +3604,7 @@ msgid ""
 "{self.get_entity_name()}?"
 msgstr ""
 "Esteu segur que voleu eliminar Ledger {self.name} de l'entitat "
-"{self.get_entity_name ()}?"
+"{self.get_entity_name()}?"
 #: venv/lib/python3.9/site-packages/django_ledger/models/mixins.py:51
 msgid "Slug field must contain at least 10 characters."
 msgstr "El camp de llimac ha de contenir almenys 10 caràcters."
@@ -5113,15 +5103,15 @@ msgstr "Creeu la unitat de mesura"
 #, python-brace-format
 msgid "User {self.request.user.username} cannot access entity {entity_slug}."
 msgstr ""
-"Usuari {self.request.user.username} no pot accedir a Entity {Entity_Slug}."
+"Usuari {self.request.user.username} no pot accedir a Entity {entity_slug}."
 #: venv/lib/python3.9/site-packages/django_ledger/views/item.py:89
 #, python-brace-format
 msgid ""
 "The Unit of Measure {unit_abbr} already created for Entity "
 "{entity_model.name}."
 msgstr ""
-"La unitat de mesura {unitat_abbr} ja creada per a Entity "
-"{Entity_Model.Name}."
+"La unitat de mesura {unit_abbr} ja creada per a Entity "
+"{entity_model.name}."
 #: venv/lib/python3.9/site-packages/django_ledger/views/item.py:97
 msgid "Update Unit of Measure"
 msgstr "Actualitzar la unitat de mesura"
@@ -5200,7 +5190,7 @@ msgstr "Número de trimestre no vàlid"
 #: venv/lib/python3.9/site-packages/django_ledger/views/mixins.py:83
 #, python-brace-format
 msgid "Invalid quarter format. Cannot parse {quarter} into integer."
-msgstr "Format de trimestre no vàlid. No es pot analitzar {quart} a Integer."
+msgstr "Format de trimestre no vàlid. No es pot analitzar {quarter} a Integer."
 #: venv/lib/python3.9/site-packages/django_ledger/views/mixins.py:95
 msgid "No quarter specified"
 msgstr "Sense trimestre especificat"

@@ -148,6 +148,7 @@ def inscription_permagora(request):
     if request.user.adherent_scic:
         request.user.adherent_scic = False
         request.user.save()
+        request.session['asso_slug'] = "public"
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_scic')
         actions.unfollow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_permagora', target=asso, url=request.user.get_absolute_url(),
@@ -156,6 +157,7 @@ def inscription_permagora(request):
         request.user.adherent_scic = True
         request.user.save()
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_scic')
+        request.session['asso_slug'] = "scic"
         actions.follow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_permagora', target=asso, url=request.user.get_absolute_url(),
                     description="s'est inscrit.e au groupe PermAgora")
@@ -168,6 +170,7 @@ def inscription_citealt(request):
     if request.user.adherent_citealt:
         request.user.adherent_citealt = False
         request.user.save()
+        request.session['asso_slug'] = "public"
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_citealt')
         actions.unfollow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_citealt', target=asso, url=request.user.get_absolute_url(),
@@ -175,6 +178,7 @@ def inscription_citealt(request):
     else:
         request.user.adherent_citealt = True
         request.user.save()
+        request.session['asso_slug'] = "citealt"
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_citealt')
         actions.follow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_citealt', target=asso, url=request.user.get_absolute_url(),
@@ -187,6 +191,7 @@ def inscription_viure(request):
     if request.user.adherent_viure:
         request.user.adherent_viure = False
         request.user.save()
+        request.session['asso_slug'] = "public"
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_viure')
         actions.unfollow(request.user, suivi, send_action=False)
         url = reverse('presentation_asso', kwargs={'asso': 'viure'})
@@ -195,6 +200,7 @@ def inscription_viure(request):
     else:
         request.user.adherent_viure = True
         request.user.save()
+        request.session['asso_slug'] = "viure"
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_viure')
         actions.follow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_viure', target=asso, url=request.user.get_absolute_url(),
@@ -208,6 +214,7 @@ def inscription_asso(request, asso_slug):
     if getattr(request.user, "adherent_"+asso_slug):
         setattr(request.user, "adherent_"+asso_slug, False)
         request.user.save()
+        request.session['asso_slug'] = "public"
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_'+asso_slug)
         actions.unfollow(request.user, suivi, send_action=False)
         url = reverse('presentation_asso', kwargs={'asso': asso_slug})
@@ -216,6 +223,7 @@ def inscription_asso(request, asso_slug):
     else:
         setattr(request.user, "adherent_"+asso_slug, True)
         request.user.save()
+        request.session['asso_slug'] = asso_slug
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles'+asso_slug)
         actions.follow(request.user, suivi, send_action=False)
         action.send(request.user, verb='inscription_'+asso_slug, target=asso, url=request.user.get_absolute_url(),

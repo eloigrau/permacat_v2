@@ -1178,13 +1178,15 @@ def ajouterReunionArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        form.save(request.user, article, )
+        reu = form.save(request.user, article, )
+
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
                     description="a ajouté une réunion à l'article '%s'" % article.titre)
-        return redirect(article)
+
+        return redirect(reverse('defraiement:ajouterAdresseReunion', kwargs={"slug": reu.slug}))
 
     return render(request, 'blog/ajouterReunionArticle.html', {'form': form, "article": article})
 
@@ -1234,8 +1236,8 @@ def associerSalonArticle(request, slug_article):
     article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        salon = form.save(article)
-        if salon.type_salon == 0 or salon.type_salon == 2:
+        asso_salon = form.save(article)
+        if asso_salon.salon.type_salon == 0 or asso_salon.salon.type_salon == 2:
             action.send(request.user,
                         action_object=article,
                         url=article.get_absolute_url(),

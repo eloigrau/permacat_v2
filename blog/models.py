@@ -23,8 +23,8 @@ from tinymce import models as tinymce_models
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
     type_projet = ('Part','Participation à un évènement'), ('AGO',"Organisation d'une AGO"), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
-    type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
-                   ('Documentation','Documentation'),  ('covoit','Covoiturage'), \
+    type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
+                   ('Documentation','Documentation'),  \
                     ('Point', 'Idée / Point de vue'),  ('Recette', 'Recette'), ('BonPlan','Bon Plan / achat groupé'), \
                      ('Divers','Divers')
     type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('coordination', "Coordination"), ('reunion', "Réunions"), \
@@ -285,7 +285,6 @@ class Article(models.Model):
     themes = models.ManyToManyField(Theme, related_name="themes", verbose_name=_("Thèmes :"), blank=True)
     zonegeo = models.ForeignKey(ZoneGeo, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Zone géographique"),  )
 
-
     class Meta:
         ordering = ('-date_creation', )
         
@@ -305,10 +304,8 @@ class Article(models.Model):
         url = self.get_absolute_url_site + "#ref-titre"
         if creation or forcerCreationMails:
             titre = "Nouvel article"
-            message = "Un article a été posté dans le forum [" + str(
-                self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
-            message_notif = "Un article a été posté dans le forum [" + str(
-                self.asso.nom) + "] : "+ self.titre
+            message = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
+            message_notif = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
             emails = [suiv.email for suiv in suiveurs]
@@ -386,7 +383,6 @@ class Article(models.Model):
     @property
     def get_logo_categorie(self):
         return Choix.get_logo(self.categorie)
-
 
     @property
     def get_categorie_display2(self):

@@ -5,7 +5,7 @@ import django_filters
 from datetime import datetime, timedelta
 
 class ArticleFilter(django_filters.FilterSet):
-    asso = django_filters.ModelMultipleChoiceFilter(field_name='asso', queryset=Asso.objects.all(),
+    asso = django_filters.ModelMultipleChoiceFilter(field_name='asso', queryset=Asso.objects.all().order_by("id"),
         widget=forms.CheckboxSelectMultiple)
     titre = django_filters.CharFilter(lookup_expr='icontains',)
     contenu = django_filters.CharFilter(lookup_expr='icontains', )

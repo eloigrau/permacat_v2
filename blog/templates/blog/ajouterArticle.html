@@ -1,8 +1,9 @@
 {% extends 'blog/base_blog2.html' %}
+{% load i18n %}
 
 {% block subtitle %}
 <div class="row">
-	<div class="col col-md-12 textcenter"><h3>Ajouter un article</h3></div>
+	<div class="col col-md-12 textcenter"><h3>{% translate 'Ajouter un article' %}</h3></div>
 	</div>
 {% endblock %}
 {% block content %}
@@ -21,71 +22,81 @@
 </form>
 </div>
     </div>
+{% endblock %}
+{% block scriptblock %}
 <script>
-    $(function() {
-    	$('form').areYouSure();
-    });
-
-    $("#id_partagesAsso_0").change(function () {
-		if ($(this).prop('checked')){
-			 $("#id_partagesAsso").children().each((index, element) => {
-			 	if (index > 0){
-					element.style.visibility = "hidden";
-					$(element).children().children('input').prop("checked", false);
-			 	}
-			 });
-		}else{
-			 $("#id_partagesAsso").children().each((index, element) => {
-			 	if (index > 0){
-					element.style.visibility = "visible";
-			 	}
-			 });
-		}
-	});
-
-    $("#id_asso").change(function () {
-      var url = $("#articleForm").attr("ajax_categories-url");  // get the url of the `load_cities` view
-      var asso = $(this).val();  // get the selected asso ID from the HTML input
-
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request
-        data: {
-          'asso': asso       // add the country id to the GET parameters
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#id_categorie").html(data);  // replace the contents of the city input with the data that came from the server
-        }
-      });
-	 if (asso != "1"){
-		  $("#id_partagesAsso").parent().removeClass("cache");
-		  $("#id_partagesAsso").children().each((index, element) => {
-				element.style.visibility = "visible";
-		 });
-		  $("#id_estEpingle").prop('disabled', false);
-		  $("#id_partagesAsso_0").prop('disabled', false);
-	 }else{
-		  $("#id_partagesAsso").children().each((index, element) => {
-				element.style.visibility = "hidden";
-		 });
-		  $("#id_partagesAsso_0").prop('disabled', true);
-		  $("#id_estEpingle").prop('disabled', true);
-	 };
-    });
-
-
-$(document).ready(function() {
-    $('#articleForm').one('submit', function() {
-        var btn = $("#btn-valider");
-        btn.prop("disabled", true);
-        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
-        setTimeout(function () {
-             btn.removeAttr("disabled")
-             btn.html( `veuillez patientez...` );
-          }, 10000);
-    });
-
-      $("#id_partagesAsso").parent().addClass("cache");
+$(function() {
+    $('form').areYouSure();
 });
-  </script>
+
+function updateForm() {
+    var url = $("#articleForm").attr("ajax_categories-url"); // get the url of the `load_cities` view
+    var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
+
+    if (asso){
+		$.ajax({ // initialize an AJAX request
+		  url: url, // set the url of the request
+		  data: {
+			'asso': asso,
+			'categorie_courante': '{{form.instance.categorie}}'
+		  },
+		  success: function(data) { // `data` is the return of the `load_cities` view function
+			$("#id_categorie").html(data); // replace the contents of the city input with the data that came from the server
+		  }
+		});
+    }
+
+    var select_partages = document.getElementById("id_partagesAsso").parentElement;
+    var partage = $("#id_partagesAsso_0");
+
+    if (asso == "1") {
+        select_partages.style.display = 'none';
+        select_partages.style.visibility = "hidden";
+
+        $("#id_partagesAsso").children().each((index, element) => {
+          if (index > 0) {
+            element.style.visibility = "hidden";
+            $(element).children().children('input').prop("checked", false);
+          }
+        });
+        $("#id_estEpingle").prop('disabled', true);
+
+    }else if(asso == ""){
+        select_partages.style.display = 'none';
+        select_partages.style.visibility = "hidden";
+    }else{
+        select_partages.style.display = 'inline';
+         select_partages.style.visibility = "visible";
+        $("#id_estEpingle").prop('disabled', false);
+        $("#id_partagesAsso").children().each((index, element) => {
+            $(element).children().children('input').prop("checked", false);
+            element.style.visibility = "visible";
+        });
+    }
+};
+
+
+function updateCheckbox() {
+  if ($("#id_partagesAsso_0").prop('checked')) {
+    $("#id_partagesAsso").children().each((index, element) => {
+      if (index > 0) {
+        element.style.visibility = "hidden";
+        $(element).children().children('input').prop("checked", false);
+      }
+    });
+  } else {
+    $("#id_partagesAsso").children().each((index, element) => {
+        element.style.visibility = "visible";
+    });
+  }
+}
+$(document).ready(function() {
+    updateForm();
+    updateCheckbox();
+    $("#id_partagesAsso_0").change(updateCheckbox);
+    $("#id_asso").change(updateForm);
+  });
+
+
+</script>
 {% endblock %}

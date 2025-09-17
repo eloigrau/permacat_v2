@@ -127,7 +127,7 @@ class SuffrageBase(models.Model):
     estAnonyme = models.BooleanField(default=False, verbose_name=_("Vote anonyme"))
 
     start_time = models.DateField(verbose_name=_("Date de début du vote"), null=True,blank=False, help_text="jj/mm/année")
-    end_time = models.DateField(verbose_name=_("Date de fin du vote"),  null=True,blank=False, help_text="jj/mm/année")
+    end_time = models.DateField(verbose_name=_("Date de fin du vote (inclu)"),  null=True,blank=False, help_text="jj/mm/année")
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     article = models.ForeignKey("blog.Article", on_delete=models.CASCADE,
                                 help_text="Article associé",
@@ -135,6 +135,12 @@ class SuffrageBase(models.Model):
 
     class Meta:
         abstract = True
+
+    @property
+    def get_logo_nomgroupe_html(self, taille=18):
+        if self.article:
+            return self.article.get_logo_nomgroupe_html
+        return self.asso.get_logo_nomgroupe_html
 
 
 class Suffrage(SuffrageBase):
@@ -169,8 +175,8 @@ class Suffrage(SuffrageBase):
 
     def get_resultats(self):
         statut = self.get_statut
-        if statut[0] != 1:
-            return statut[1]
+        #if statut[0] != 1:
+        #    return statut[1]
 
         qsb, qsm = self.questions
         res_qb, res_qm = {}, {}
@@ -187,12 +193,12 @@ class Suffrage(SuffrageBase):
     @property
     def get_statut(self):
         if self.start_time <= timezone.now().date():
-            if self.end_time >= timezone.now().date():
-                statut = (0, "Le vote est en cours ")
+            if self.end_time > timezone.now().date():
+                statut = ("0", "Le vote est en cours ")
             else:
-                statut = (1, "Le vote est terminé ")
+                statut = ("1", "Le vote est terminé ")
         else:
-            statut = (2, "Le vote n'a pas encore démarré ")
+            statut = ("2", "Le vote n'a pas encore démarré ")
         return statut
 
 

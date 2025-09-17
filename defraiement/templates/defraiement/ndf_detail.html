@@ -1,0 +1,80 @@
+{% extends 'base_defraiement2.html' %}
+
+{% block header%}
+{% load leaflet_tags %}
+{% load static %}
+{% load fontawesome_5 %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3> Note de frais : {{notedefrais.titre}} </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col textcenter">
+<div class="btn-group">
+                <a href="{{notedefrais.get_update_url}}">
+                    <button type="button" class="btn btn-sm btn-warning">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Modifier
+                    </button>
+                </a>
+                <a href="{{notedefrais.get_delete_url}}">
+                    <button type="button" class="btn btn-sm btn-danger">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Supprimer
+                    </button>
+                </a>
+            </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tablepanier table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %}">
+            <tbody>
+            <tr>
+                <td style="width:30%">Auteur :</td>
+                <td>{{notedefrais.auteur}}</td>
+            </tr>
+            <tr>
+                <td style="width:30%">Note de frais pour :</td>
+                <td>{{notedefrais.participant}}</td>
+            </tr>
+            {% if notedefrais.participant.profil %}
+            <tr>
+                <td >adherent :</td>
+                <td><a href="{{notedefrais.participant.profil.get_absolute_url}}">{{notedefrais.adherent.profil}}</a></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td >date de paiement :</td>
+                <td>{{notedefrais.date_note}}</td>
+            </tr>
+            <tr>
+                <td >Montant :</td>
+                <td>{{notedefrais.montant}}</td>
+            </tr>
+            <tr>
+                <td >Moyen de paiement :</td>
+                <td>{{notedefrais.get_moyen_display}}</td>
+            </tr>
+            <tr>
+                <td >Catégorie :</td>
+                <td>{{notedefrais.get_categorie_display}}</td>
+            </tr>
+            <tr>
+                <td >Détails :</td>
+                <td>{{notedefrais.detail|safe}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

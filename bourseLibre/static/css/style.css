@@ -1350,6 +1350,7 @@ a:active         { color: #005c99 }  /* active links          */
     font-variant:normal;
     font-style:italic;
     line-height:0.9em;
+    text-align: center;
 }
 
 .commentaire{
@@ -2930,4 +2931,11 @@ overflow-x: scroll;
 }
 .visible{
     display:block;
+}
+
+.form_class{
+background-color:#e6f2ff;
+border: 1px solid #5cacf2;
+  padding: 20px;
+  border-radius: 10px;
 }

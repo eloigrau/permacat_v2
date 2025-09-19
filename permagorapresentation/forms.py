@@ -16,11 +16,12 @@ class ContactForm(forms.ModelForm):
              'msg': SummernoteWidget(),
         }
 
+
     def save(self,):
         instance = super(ContactForm, self).save()
         if not LOCALL:
             envoyeur = self.cleaned_data["nom"] + ' (' + self.cleaned_data["email"] + ')'
-            sujet = '[DuCepAuJus] Nouveau message'
+            sujet = '[PermAgora] Nouveau message'
             message_html = envoyeur + " a envoyé le message: " + self.cleaned_data['msg']
             send_mail(sujet, message_html,  SERVER_EMAIL, LIST_EMAIL_SUIVI, fail_silently=False, html_message=message_html)
 

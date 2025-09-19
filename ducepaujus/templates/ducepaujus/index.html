@@ -437,29 +437,34 @@ https://www.tooplate.com/view/2116-blugoon
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-md-6">
-                                    <fieldset>
-                                        <input name="name" type="text" class="form-control"
-                                               id="name" placeholder="Nom" required=""/>
-                                    </fieldset>
+                                        <input name="nom" type="text" class="form-control"
+                                               id="id_nom" placeholder="Nom" required="" {% if not request.user.is_anonymous %}value="{{request.user.username}}"{% endif %}/>
                                 </div>
                                 <div class="col-md-6">
-                                    <fieldset>
                                         <input name="email" type="text" class="form-control"
-                                               id="id_email" placeholder="Email" required=""/>
-                                    </fieldset>
+                                               id="id_email" placeholder="Email" required=""  {% if not request.user.is_anonymous %}value="{{request.user.email}}"{% endif %}/>
                                 </div>
                                 <div class="col-md-12">
-                                    <fieldset>
-                        <textarea name="message" rows="6" class="form-control"
+                        <textarea name="msg" rows="6" class="form-control"
                                   id="id_msg" placeholder="Message" required=""></textarea>
-                                    </fieldset>
                                 </div>
+                                      {% if request.user.is_anonymous %}
+                                <div class="col-md-12 textcenter">
+                                    <div class="container"  style="width:150px">
+                                      {% include 'form_template2bis.html' with form=form_captcha %}
+                                    </div>
+                                </div>
+                                      {% endif %}
                                 <div class="col-md-12">
                                     <fieldset>
+
                                         <button type="submit" id="form-submit" class="button">
                                             Envoyer le Message
                                         </button>
                                     </fieldset>
+              {% if msg2 %}
+              <p>{{msg2|safe}}</p>
+              {% endif %}
                                 </div>
                             </div>
                         </form>

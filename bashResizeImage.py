@@ -14,6 +14,6 @@ dossier = "/home/tchenrezi/PycharmProjects/permacat_server/bourseLibre/static/ag
 dossier = "/home/tchenrezi/Téléchargements/wetrnsfer/"
 dossier = "/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/static/ducepaujus/images/"
 dossier = "/home/eloi/Téléchargements/2116_blugoon/"
-dossier = "/home/eloi/tmp/images/"
+dossier = "/home/eloi/tmp/img2/ff/"
 
 resizeImgesDossier(dossier)

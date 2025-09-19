@@ -19,7 +19,7 @@ msgstr ""
 
 #: local_captcha/fields.py:189 local_captcha/fields.py:223
 msgid "Invalid CAPTCHA"
-msgstr "Réponse invalide"
+msgstr "Captcha invalide"
 
 #: local_captcha/templates/captcha/image.html:3
 #: local_captcha/templates/captcha/widgets/captcha.html:4

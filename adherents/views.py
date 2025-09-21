@@ -138,8 +138,9 @@ class AdherentDeleteView(TestBureauAssoMixin, DeleteView):
 
     def get_success_url(self):
         desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
-        action.send(self.request.user, verb="adherent_"+self.asso.slug+"_supprimer", url=reverse('adherents:accueil'), description=desc)
-        return reverse('adherents:accueil')
+        action.send(self.request.user, verb="adherent_"+self.asso.slug+"_supprimer", url=reverse('adherents:accueil', kwargs={"asso_slug":self.asso.slug}), description=desc)
+        return reverse('adherents:accueil', kwargs={"asso_slug":self.asso.slug} )
+
 
 class AdherentUpdateView(UserPassesTestMixin, UpdateView):
     model = Adherent

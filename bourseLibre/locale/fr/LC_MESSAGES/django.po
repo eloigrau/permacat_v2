@@ -2060,7 +2060,7 @@ msgid "Relative to"
 msgstr "Par rapport à"
 #: venv/lib/python3.9/site-packages/django_ledger/forms/auth.py:15
 msgid "Password"
-msgstr "Mot de passe"
+msgstr "Mot de passe*"
 #: venv/lib/python3.9/site-packages/django_ledger/forms/bank_account.py:53
 #: venv/lib/python3.9/site-packages/django_ledger/forms/bank_account.py:101
 msgid "Enter account name..."

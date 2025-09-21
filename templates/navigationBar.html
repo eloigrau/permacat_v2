@@ -300,7 +300,7 @@
                                     {% if request.user.adherent_conf66 %}
                                     <li class="metanavbar"> Espace Adhérents :</li>
                                             <li><a class="dropdown-item"
-                                                   href="https://www.perma.cat/cooperateurs/carte/conf66">
+                                                   href="{% url 'adherents:adherent_liste' asso_slug='scic'%}">
                                                 {% fa5_icon 'compass' %}Carte/Annuaire des adhérents</a></li>
                                             <li><a class="dropdown-item"
                                                    href="{% url 'blog:index_asso' asso='conf66' %}">

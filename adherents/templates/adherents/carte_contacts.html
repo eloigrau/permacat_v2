@@ -27,6 +27,12 @@
                  <i class="fa fa-info"></i>
             </button>
         </a>
+        <a href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}">
+            <button type="button" class="btn btn-sm btn-primary">
+                Version Telephone
+            </button>
+        </a>
+
         <div id="info_contacts"></div>
     </div>
 </div>

@@ -17,12 +17,14 @@
         <li class="nav-item nav-jardin">{{asso_slug | getLogoGroupeFromSlug}}</li>
         {% if request.session.projet_phoning_nom %}
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}">{{ request.session.projet_phoning_nom }}</a></li>
+        {% comment %}
         {% if asso_slug == "conf66" %}
 		<li class="nav-item nav-notif"><a class="adropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}&istel=true&isatp=true"> Liste Simple</a></li>
 		{% else %}
         <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste Simple</a></li>
 		{% endif %}
-        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste Complète</a></li>
+        {% endcomment %}
+        <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste des contacts</a></li>
 		<li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' asso_slug=request.session.asso_slug  %}"> Outils</a></li>
          {% else %}
         <li class="nav-item nav-notif"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug  %}">Choisir un projet</a></li>

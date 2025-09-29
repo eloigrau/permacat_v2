@@ -11,7 +11,7 @@ import datetime
 import json
 
 class Adherent(models.Model):
-    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
+    profil = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True, blank=True)
     nom = models.CharField(verbose_name=_("Nom"), max_length=120)
     nom_gaec = models.CharField(verbose_name=_("Gaec"), max_length=120, blank=True)
     prenom = models.CharField(verbose_name=_("Prénom"), max_length=120, blank=True)

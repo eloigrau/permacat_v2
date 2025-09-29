@@ -88,11 +88,11 @@
             </tr>
             <tr>
                 <td style="width:250px">Cotisation à jour :</td>
-                <td>{% if user.isCotisationAJour_conf66 %} oui {% else %} non {% endif %}</td>
+                <td>{% if adherent.isCotisationAJour %} oui {% else %} non {% endif %}</td>
             </tr>
             <tr>
                 <td style="width:250px">Membre du bureau :</td>
-                <td>{% if user.estmembre_bureau_conf %} oui {% else %} non {% endif %}</td>
+                <td>{% if adherent.estmembre_bureau %} oui {% else %} non {% endif %}</td>
             </tr>
             </tbody>
         </table>

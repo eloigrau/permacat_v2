@@ -533,16 +533,15 @@ class Profil(AbstractUser):
     def estmembre_bureau(self, asso_slug):
         if not asso_slug:
             return False
-        if self.is_authenticated:
-            try:
-                if Asso.objects.get(slug=asso_slug).is_bureau:
-                    lien_bureau = Lien_AssoSalon.objects.filter(asso__slug=asso_slug, slug_type="bureau")
-                    if lien_bureau.exists():
-                        return lien_bureau[0].salon.est_autorise(self)
-                else:
-                    return True
-            except:
-                return False
+        try:
+            if Asso.objects.get(slug=asso_slug).is_bureau:
+                lien_bureau = Lien_AssoSalon.objects.filter(asso__slug=asso_slug, slug_type="bureau")
+                if lien_bureau.exists():
+                    return lien_bureau[0].salon.est_autorise(self)
+            else:
+                return True
+        except:
+            return False
             #if asso_slug == "conf66" and self.adherent_conf66 and Salon.objects.filter(slug="conf66_bureau_2023").exists():
             #    return Salon.objects.get(slug="conf66_bureau_2023").est_autorise(self)
             #elif asso_slug == "scic" and self.adherent_scic and Salon.objects.filter(slug="salon-du-cercle-coeur-de-permagora").exists():

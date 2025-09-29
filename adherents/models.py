@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from permagora.models import LATITUDE_DEFAUT
 from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS, NB_COLORS_RANGE, RANGE_COLORS_PHONING
 from django.utils import timezone
-import datetime
+from datetime import datetime
 import json
 
 class Adherent(models.Model):
@@ -59,7 +59,7 @@ class Adherent(models.Model):
 
     def getInscriptions_listeMails_csvggl(self):
         liste = " ::: ".join(["listeDiff_" + i.liste_diffusion.nom for i in self.get_inscriptionsMail])
-        an = int(datetime.date.today().year)
+        an = int(datetime.now().year)
         for i in range(1):
             if self.adhesion_set.filter(date_cotisation__year=int(an-i)).exists():
                 liste += " ::: Adhesion_" + str(an-i)
@@ -78,14 +78,12 @@ class Adherent(models.Model):
             return ad[0]
         return Adhesion()
 
-    def get_adhesion_anneecourante(self, mois_precedents=6):
+    def get_adhesion_anneecourante(self, mois_precedents=4):
         time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
-        return self.adhesion_set.filter(date_cotisation__gt=time_threshold).exists()
-        return self.get_adhesion_an(datetime.now().year)
+        return self.adhesion_set.filter(asso=self.asso, date_cotisation__gt=time_threshold)
 
-    def is_adhesion_anneecourante(self, mois_precedents=6):
-        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
-        return self.adhesion_set.filter(date_cotisation__gt=time_threshold).exists()
+    def is_adhesion_anneecourante(self, mois_precedents=4):
+        return self.get_adhesion_anneecourante().exists()
 
     @property
     def get_production_str(self):
@@ -116,6 +114,15 @@ class Adherent(models.Model):
             return self.profil.username
         return ""
 
+    @property
+    def estmembre_bureau(self):
+        if self.profil:
+            return self.profil.estmembre_bureau(self.asso.slug)
+        return False
+
+    @property
+    def isCotisationAJour(self):
+        return self.is_adhesion_anneecourante()
 
 class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name=_("Adhérent"))

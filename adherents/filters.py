@@ -81,6 +81,8 @@ class ContactCarteFilter(django_filters.FilterSet):
     mescontacts = django_filters.BooleanFilter(label="Mes contacts", method='get_mescontacts_filter', widget=forms.CheckboxInput(),)
     dejacontacte = django_filters.ChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter', )
     statut = django_filters.ChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter', )
+    production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production",  method='get_production_ape_filter',
+                                                 widget=forms.Select(attrs={'width': '100%;'}))
 
     def get_statut_filter(self, queryset, field_name, value):
         if value == '0':
@@ -95,6 +97,9 @@ class ContactCarteFilter(django_filters.FilterSet):
             return queryset.filter(Q(adherent__statut="2") | Q(adherent__statut="4"))
         else:
             return queryset
+
+    def get_production_ape_filter(self, queryset, field_name, value):
+        return queryset.filter(adherent__production_ape=value)
 
     def get_istel_filter(self, queryset, field_name, value):
         if value:

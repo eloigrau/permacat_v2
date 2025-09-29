@@ -251,7 +251,7 @@ class csvText_form(forms.Form):
 class ProjetPhoning_form(forms.ModelForm):
     class Meta:
         model = ProjetPhoning
-        fields = [ "titre", 'asso', 'description']
+        fields = ["titre", 'asso', 'description']
         widgets = {
             'description': SummernoteWidget(),
         }

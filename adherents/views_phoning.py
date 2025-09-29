@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
-
+from django.core.exceptions import MultipleObjectsReturned
 from django.http import HttpResponseForbidden
 import csv
 from django.db.models import BooleanField, ExpressionWrapper, Q
@@ -375,12 +375,18 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
     else:
 
         if code_postal and telephone:
-            adresse, created = Adresse.objects.get_or_create(
-                                        telephone=telephone,
-                                        commune=commune,
-                                        code_postal=code_postal,
-                                        rue=rue,
-                                        )
+            try:
+                adresse, created = Adresse.objects.get_or_create(
+                                            telephone=telephone,
+                                            commune=commune,
+                                            code_postal=code_postal,
+                                            rue=rue,
+                                            )
+            except MultipleObjectsReturned:
+                adresse = Adresse.objects.filter(telephone=telephone,
+                                            commune=commune,
+                                            code_postal=code_postal,
+                                            rue=rue).first()
         else:
             if telephone or commune or code_postal or rue:
                 adresse = Adresse.objects.create(

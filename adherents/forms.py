@@ -5,6 +5,7 @@ from local_summernote.widgets import SummernoteWidget
 from .models import ProjetPhoning
 from bourseLibre.models import Asso
 
+from django.core.exceptions import ValidationError
 
 class AdhesionForm(forms.ModelForm):
 
@@ -64,6 +65,22 @@ class AdherentForm_conf66(forms.ModelForm):
                        }),
             }
 
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(AdherentForm_conf66, self).__init__(*args, **kwargs)
+        self.asso_slug = asso_slug
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+
+        try:
+            Adherent.objects.get(nom__iexact=cleaned_data['nom'], prenom__iexact=cleaned_data['prenom'], asso__slug=self.asso_slug)
+        except Adherent.DoesNotExist:
+            pass
+        else:
+            raise ValidationError('Un adhérent avec ce nom et prénom existe déjà')
+
+        # Always return cleaned_data
+        return cleaned_data
 
 class AdherentForm(forms.ModelForm):
     rue = forms.CharField(label="Rue", required=False)
@@ -73,7 +90,7 @@ class AdherentForm(forms.ModelForm):
 
     class Meta:
         model = Adherent
-        fields = [ 'nom', 'prenom', 'email', 'rue', 'code_postal', 'commune', 'telephone', ]
+        fields = ['nom', 'prenom', 'email', 'rue', 'code_postal', 'commune', 'telephone', ]
 
 
         widgets = {
@@ -83,6 +100,23 @@ class AdherentForm(forms.ModelForm):
                        'type': 'date'
                        }),
             }
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(AdherentForm, self).__init__(*args, **kwargs)
+        self.asso_slug = asso_slug
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+
+        try:
+            Adherent.objects.get(nom=cleaned_data['nom'],prenom=cleaned_data['prenom'],asso=cleaned_data['asso'])
+        except Adherent.DoesNotExist:
+            pass
+        else:
+            raise ValidationError('Un adhérent avec ce nom et prénom existe déjà')
+
+        # Always return cleaned_data
+        return cleaned_data
 
 class AdherentChangeForm(forms.ModelForm):
 

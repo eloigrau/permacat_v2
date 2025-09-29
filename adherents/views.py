@@ -204,9 +204,9 @@ def adherent_ajouter(request, asso_slug):
         return HttpResponseForbidden()
 
     if asso_slug == "conf66":
-        form = AdherentForm_conf66(request.POST or None)
+        form = AdherentForm_conf66(asso_slug, request.POST or None)
     else:
-        form = AdherentForm(request.POST or None)
+        form = AdherentForm(asso_slug, request.POST or None)
     if form.is_valid():
         adresse = Adresse.objects.create(
             rue=form.cleaned_data['rue'],

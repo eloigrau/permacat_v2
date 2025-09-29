@@ -33,10 +33,10 @@ def get_choix_Production():
 
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ", required=False)
-    statut = django_filters.ChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
-    production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production", widget=forms.Select(attrs={'width':'100%;'}))
+    statut = django_filters.MultipleChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
+    production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",)
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
-    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année", widget=forms.CheckboxSelectMultiple(attrs={}))
+    annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année", )
 
     def __init__(self, asso_slug, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -63,7 +63,7 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         return queryset.filter(pk__in=membres)
 
     def get_production_ape_filter(self, queryset, field_name, value):
-        return queryset.filter(production_ape=value)
+        return queryset.filter(production_ape__in=value)
 
     class Meta:
         model = Adherent
@@ -79,10 +79,10 @@ class ContactCarteFilter(django_filters.FilterSet):
                                                              'tabindex': 1, 'autofocus': '1'}))
     istel = django_filters.BooleanFilter(label="avec un telephone", method='get_istel_filter', widget=forms.CheckboxInput(),)
     mescontacts = django_filters.BooleanFilter(label="Mes contacts", method='get_mescontacts_filter', widget=forms.CheckboxInput(),)
-    dejacontacte = django_filters.ChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter', )
-    statut = django_filters.ChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter', )
-    production_ape = django_filters.ChoiceFilter(choices=get_choix_Production(), label="Production",  method='get_production_ape_filter',
-                                                 widget=forms.Select(attrs={'width': '100%;'}))
+    dejacontacte = django_filters.MultipleChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter',)
+    statut = django_filters.MultipleChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter',)
+    production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",  method='get_production_ape_filter',
+                                                 )
 
     def get_statut_filter(self, queryset, field_name, value):
         if value == '0':
@@ -92,7 +92,7 @@ class ContactCarteFilter(django_filters.FilterSet):
         elif value == '2':
             return queryset.filter(Q(commentaire__isnull=False) & Q(commentaire__icontains="Votant"))
         elif value == '3':
-            return queryset.filter(Q(adherent__isnull=True )|Q(adherent__statut__isnull=True)|Q(adherent__statut="0"))
+            return queryset.filter(Q(adherent__isnull=True ) | Q(adherent__statut__isnull=True) | Q(adherent__statut="0"))
         elif value == '4':
             return queryset.filter(Q(adherent__statut="2") | Q(adherent__statut="4"))
         else:

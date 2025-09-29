@@ -838,6 +838,10 @@ class ProjetPhoning_liste(UserPassesTestMixin, ListView):
             self.qs = ProjetPhoning.objects.filter(asso__slug=self.request.session["asso_slug"])
         else:
             self.qs = ProjetPhoning.objects.filter(asso__slug__in=self.request.user.getListeSlugsAssos())
+
+        if not self.request.user.is_superuser:
+            self.qs = self.qs.filter(estArchive=False)
+
         return self.qs
 
     def get_context_data(self, **kwargs):
@@ -846,6 +850,7 @@ class ProjetPhoning_liste(UserPassesTestMixin, ListView):
         context['asso_list'] = [(x.slug, x.nom,) for x in Asso.objects.all().order_by("id") if
                                 self.request.user.est_autorise(x.slug)]
         context["asso_slug"] = self.asso.slug
+        context["is_membre_bureau"] = is_membre_bureau(self.request.user, self.asso.slug)
 
         #context["filter"] = filter
         return context

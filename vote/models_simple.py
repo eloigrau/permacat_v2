@@ -168,7 +168,6 @@ class VoteSimple_binaire(models.Model):
         return getStrFromChoix_ouinon(self.choix)
 
 
-
 #
 # class Question_base(models.Model):
 #     suffrage = models.ForeignKey(Suffrage, on_delete=models.CASCADE)

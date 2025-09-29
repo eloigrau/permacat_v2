@@ -231,6 +231,7 @@ class ProjetPhoning(models.Model):
     titre = models.CharField(verbose_name=_("Nom du projet"), max_length=200, blank=False)
     date_creation = models.DateTimeField(verbose_name=_("Date de création"), default=timezone.now)
     description = models.TextField(null=True, blank=True)
+    estArchive = models.BooleanField(default=False, verbose_name=_("Archiver le projet (seuls les memrbes du bureau peuvent voir les projets archivés)"))
 
 
     def __str__(self):

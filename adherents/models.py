@@ -238,7 +238,7 @@ class ProjetPhoning(models.Model):
         return str(self.titre)
 
     def get_absolute_url(self):
-         return reverse('adherents:phoning_projet_simple', kwargs={'projet_pk':self.pk, 'asso_slug':self.asso.slug})
+         return reverse('adherents:phoning_projet_complet', kwargs={'projet_pk':self.pk, 'asso_slug':self.asso.slug})
     def get_update_url(self):
         return reverse('adherents:phoning_projet_modifier', kwargs={'pk': self.pk, 'asso_slug':self.asso.slug})
     def get_delete_url(self):

@@ -82,6 +82,7 @@ urlpatterns = [
     path(r'<str:asso_slug>/phoning/projet/simple/<int:projet_pk>', login_required(views_phoning.Contact_liste.as_view()), name="phoning_projet_simple"),
     path(r'<str:asso_slug>/phoning/projet/courant/simple', views_phoning.phoning_projet_courant, name="phoning_projet_courant"),
     path(r'<str:asso_slug>/phoning/projet/courant/complet', login_required(views_phoning.Contact_liste.as_view()), name="phoning_projet_complet"),
+    path(r'<str:asso_slug>/phoning/projet/complet/<int:projet_pk>', login_required(views_phoning.Contact_liste.as_view()), name="phoning_projet_complet"),
     #path(r'phoning/contact_ajouter/', views.creerListeDiffusion, name="listeDiffusion_creer"),
     path(r'<str:asso_slug>/phoning/ajouter/acceuil', views_phoning.contact_ajouter_accueil, name="phoning_contact_outils"),
     path(r'<str:asso_slug>/phoning/projet/courant/ajouter', login_required(views_phoning.Contact_ajouter.as_view()), name="phoning_contact_ajouter"),

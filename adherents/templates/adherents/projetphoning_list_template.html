@@ -10,7 +10,7 @@
 {% for liste in projets %}
             <tr>
                 <td>{{liste.asso.get_logo_nomgroupe_html|safe }} </td>
-                <td  style="width:100%;"><a href="{{liste.get_absolute_url}}"> {{liste}} </a></td>
+                <td  style="width:100%;"><a href="{{liste.get_absolute_url}}"> {{liste}} {% if liste.estArchive %}<span class="badge badge-light" data-toggle="tooltip" data-placement="bottom" title="archivé">Archivé</span>{% endif %}</a></td>
             </tr>
 {% endfor %}
             </tbody>

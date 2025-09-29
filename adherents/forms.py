@@ -256,6 +256,14 @@ class ProjetPhoning_form(forms.ModelForm):
             'description': SummernoteWidget(),
         }
 
+class ProjetPhoning_UpdateForm(forms.ModelForm):
+    class Meta:
+        model = ProjetPhoning
+        fields = [ "titre", 'asso', 'description', 'estArchive']
+        widgets = {
+            'description': SummernoteWidget(),
+        }
+
 
     def __init__(self, request, *args, **kwargs):
         super(ProjetPhoning_form, self).__init__(*args, **kwargs)

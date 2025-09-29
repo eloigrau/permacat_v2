@@ -10,7 +10,8 @@ from django.db.models import BooleanField, ExpressionWrapper, Q
 from urllib import parse
 from blog.models import Projet
 from .forms import (Contact_form, Contact_update_form, ContactContact_form,
-                    ListeTel_form, csvFile_form, csvText_form, ProjetPhoning_form)
+                    ListeTel_form, csvFile_form, csvText_form, ProjetPhoning_form,
+                    ProjetPhoning_UpdateForm)
 
 from .models import Adherent, Contact, ContactContact, ProjetPhoning
 from bourseLibre.models import Adresse, Profil, Asso
@@ -780,7 +781,7 @@ class ProjetPhoning_modifier(UserPassesTestMixin, UpdateView):
         return is_membre_bureau(self.request.user, self.asso.slug)
 
     def get_form(self):
-        return ProjetPhoning_form(self.request, **self.get_form_kwargs())
+        return ProjetPhoning_UpdateForm(self.request, **self.get_form_kwargs())
 
     def form_valid(self, form):
         self.object = form.save()

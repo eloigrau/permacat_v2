@@ -78,12 +78,16 @@ class Adherent(models.Model):
             return ad[0]
         return Adhesion()
 
-    def get_adhesion_anneecourante(self, mois_precedents=8):
-        time_threshold = datetime(datetime.now().year - 1, mois_precedents, 1)
+    def get_adhesion_anneecourante(self, mois_de_lan_precedent=8):
+        time_threshold = datetime(datetime.now().year - 1, mois_de_lan_precedent, 1)
         return self.adhesion_set.filter(asso=self.asso, date_cotisation__gt=time_threshold)
 
-    def is_adhesion_anneecourante(self, mois_precedents=4):
+    def is_adhesion_anneecourante(self,):
         return self.get_adhesion_anneecourante().exists()
+
+    @property
+    def isCotisationAJour(self):
+        return self.is_adhesion_anneecourante()
 
     @property
     def get_production_str(self):
@@ -120,9 +124,6 @@ class Adherent(models.Model):
             return self.profil.estmembre_bureau(self.asso.slug)
         return False
 
-    @property
-    def isCotisationAJour(self):
-        return self.is_adhesion_anneecourante()
 
 class Adhesion(models.Model):
     adherent = models.ForeignKey(Adherent, on_delete=models.CASCADE, verbose_name=_("Adhérent"))

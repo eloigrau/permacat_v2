@@ -149,7 +149,7 @@ class AdherentUpdateView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.object.profil or self.request.user.is_superuser
+        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.get_object().profil or self.request.user.is_superuser
 
     def form_valid(self, form):
         desc = " a modifié l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)+ " (" + str(

@@ -18,7 +18,7 @@ class Adherent(models.Model):
     production_ape = models.CharField(verbose_name=_("Production (APE)"), max_length=120, blank=True)
     statut = models.CharField(verbose_name=_("Statut d'agriculteur"), max_length=5,
                               choices=CHOIX_STATUTS, default='0',)
-    adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
+    adresse = models.ForeignKey(Adresse, on_delete=models.SET_NULL, null=True)
     email = models.EmailField(verbose_name=_("Email"), blank=True)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name=_("Groupe"), null=True,)
 

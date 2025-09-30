@@ -152,8 +152,8 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
         return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_success_url(self):
-        #desc = " a supprimé l'adhérent : " + str(self.object.nom) + ", " + str(self.object.prenom)
-        #action.send(self.request.user, verb='adherent_conf66_supprimer', url=reverse('adherents:accueil'), description=desc)
+        #desc = " a supprimé le contact : " + str(self.object.nom) + ", " + str(self.object.prenom)
+        #action.send(self.request.user, verb='adherent_conf66_contact_supprimer', url=reverse('adherents:accueil'), description=desc)
         return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug})
 
 

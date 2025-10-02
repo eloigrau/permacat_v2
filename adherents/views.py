@@ -18,7 +18,7 @@ from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentFor
     Contact_form, Contact_update_form, ContactContact_form)
 from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
                      ListeDiffusion, Comm_adherent, ProjetPhoning)
-from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso
+from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso, LATITUDE_DEFAUT, LONGITUDE_DEFAUT
 from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
 from .filters import AdherentsCarteFilter, ContactCarteFilter
 #from .constantes import get_slug_salon
@@ -1179,3 +1179,78 @@ def ajouterMailAListeDiffusion(request, asso_slug, listeDiffusion_pk):
         return redirect(listeDiffusion)
 
     return render(request, 'adherents/listediffusion_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion, "asso_slug":asso_slug})
+
+
+@login_required
+def admin_restaurerAdherents(request, asso_slug):
+    from .forms import csvAdherents_form
+    import io
+    if asso_slug != "conf66" or not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
+    form = csvAdherents_form(request.POST or None, request.FILES or None)
+    m=""
+    if form.is_valid():
+        adherents = request.FILES['fichier_csv_adherents']
+        adhesions = request.FILES['fichier_csv_adhesions']
+        adresses = request.FILES['fichier_csv_adresses']
+        with io.TextIOWrapper(adresses, encoding="utf-8") as data_adresses:
+            csv_adresses = csv.DictReader(data_adresses, delimiter=',')
+            for i, line in enumerate(csv_adresses):
+                if not Adresse.objects.filter(id=line["id"]).exists():
+                    try:
+                        adres = Adresse.objects.create(id=line["id"], rue=line["rue"],
+                                                                   code_postal=line["code_postal"],
+                                                                   commune=line["commune"],
+                                                                   telephone=line["telephone"],
+                                                                   pays=line["pays"],
+                                                                   latitude=float(line["latitude"]) if line["latitude"] else LATITUDE_DEFAUT,
+                                                                   longitude=float(line["longitude"]) if line["longitude"]  else LONGITUDE_DEFAUT)
+
+                    except Exception as e:
+                        m += "<p>"+str(e)+" " + str(line) + "</p>"
+        with io.TextIOWrapper(adherents, encoding="utf-8") as data_adherents:
+            csv_adherents = csv.DictReader(data_adherents, delimiter=',')
+            for i, line in enumerate(csv_adherents):
+                if (line["asso_id"] == "12" or line["asso_id"] == "1") and not Adherent.objects.filter(id=line["id"]).exists():
+                    print(line)
+                    try:
+                        adresse = Adresse.objects.get(id=line["adresse_id"])
+                        if line["profil_id"]:
+                            try:
+                                profil = Profil.objects.get(id=line["profil_id"])
+                            except:
+                                profil = None
+                        else:
+                            profil = None
+                        asso = Asso.objects.get(id=12)
+                        adh = Adherent.objects.create(id=line["id"], nom=line["nom"],
+                                                                               prenom=line["prenom"],
+                                                                               statut=line["statut"],
+                                                                               production_ape=line["production_ape"],
+                                                                               email=line["email"],
+                                                                               nom_gaec=line["nom_gaec"],
+                                                                               adresse=adresse,
+                                                                               profil=profil,
+                                                                               asso=asso)
+
+                    except Exception as e:
+                        m += "<p>"+str(e)+" " + str(line) + "</p>"
+
+        with io.TextIOWrapper(adhesions, encoding="utf-8") as data_adhesions:
+            csv_adhesions = csv.DictReader(data_adhesions, delimiter=',')
+            for i, line in enumerate(csv_adhesions):
+                if line["asso_id"] == "12" and not Adhesion.objects.filter(id=line["id"]).exists():
+                    try:
+                        adherent = Adherent.objects.get(id=line["adherent_id"])
+                        asso = Asso.objects.get(id=line["asso_id"])
+                        adh = Adhesion.objects.create(id=line["id"], date_cotisation=line["date_cotisation"],
+                                                                               montant=line["montant"],
+                                                                               moyen=line["moyen"],
+                                                                               detail=line["detail"],
+                                                                               adherent=adherent,
+                                                                               asso=asso,)
+                    except Exception as e:
+                        m += "<p>"+str(e)+" " + str(line) + "</p>"
+        return render(request, 'adherents/admin_restaurerAdherents.html', { "msg": m})
+
+    return render(request, 'adherents/admin_restaurerAdherents.html', {"form": form, "asso_slug": asso_slug})

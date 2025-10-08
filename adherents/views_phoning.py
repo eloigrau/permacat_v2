@@ -152,8 +152,8 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
         return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
     def get_success_url(self):
-        #desc = " a supprimé le contact : " + str(self.object.nom) + ", " + str(self.object.prenom)
-        #action.send(self.request.user, verb='adherent_conf66_contact_supprimer', url=reverse('adherents:accueil'), description=desc)
+        desc = " a supprimé le contact : " + str(self.object.nom) + ", " + str(self.object.prenom)
+        action.send(self.request.user, verb='adherent_conf66_contact_supprimer', url=reverse('adherents:accueil'), description=desc)
         return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug})
 
 
@@ -374,29 +374,15 @@ def creerContact(projet, telephone, nom=None, prenom=None, email=None, rue=None,
                 c.save()
     else:
 
-        if code_postal and telephone:
-            try:
-                adresse, created = Adresse.objects.get_or_create(
-                                            telephone=telephone,
+        if telephone or commune or code_postal or rue:
+            adresse = Adresse.objects.create(
+                                        telephone=telephone,
                                             commune=commune,
                                             code_postal=code_postal,
                                             rue=rue,
-                                            )
-            except MultipleObjectsReturned:
-                adresse = Adresse.objects.filter(telephone=telephone,
-                                            commune=commune,
-                                            code_postal=code_postal,
-                                            rue=rue).first()
+                                        )
         else:
-            if telephone or commune or code_postal or rue:
-                adresse = Adresse.objects.create(
-                                            telephone=telephone,
-                                                commune=commune,
-                                                code_postal=code_postal,
-                                                rue=rue,
-                                            )
-            else:
-                adresse = None
+            adresse = None
         p, created = Contact.objects.get_or_create(
                                 nom=nom,
                                 prenom=prenom,

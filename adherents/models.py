@@ -169,12 +169,12 @@ class ListeDiffusion(models.Model):
 
     @property
     def get_liste_mails(self):
-        return [i.get_email() for i in self.inscriptionmail_set.all() if "@" in i.get_email()]
+        return [i.get_email for i in self.inscriptionmail_set.all() if "@" in i.get_email]
 
     @property
     def get_liste_adherents(self, avecMail=True):
         if avecMail:
-            return [i.adherent for i in self.inscriptionmail_set.all() if "@" in i.get_email()]
+            return [i.adherent for i in self.inscriptionmail_set.all() if "@" in i.get_email]
         else:
             return [i.adherent for i in self.inscriptionmail_set.all()]
 

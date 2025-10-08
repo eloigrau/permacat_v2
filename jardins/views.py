@@ -337,15 +337,21 @@ def voir_plante(request, cd_nom):
         p = Plante.objects.get(CD_NOM=int(cd_nom))
     except:
         return render(request, "jardins/plante.html", {"msg":"plante introuvable (" + str(cd_nom) +")"})
-    plantesDeJardins = p.plantedejardin_plante.all()
-    jardins = set(j.jardin for j in plantesDeJardins)
-    graines = p.graine_set.all()
-    grainotheques = set(j.grainotheque for j in graines)
-    from pygbif import occurrences
-    import re
-    #infos = occurrences.search(q=p.LB_NOM)
-    infos = occurrences.search(scientificName=p.LB_NOM)
-    infos2 = set(re.findall("(https:\/\/inaturalist-open-data\S+(?:png|jpe?g|gif))", str(infos)))
+
+
+    if request.user.is_authenticated:
+        plantesDeJardins = p.plantedejardin_plante.all()
+        jardins = set(j.jardin for j in plantesDeJardins)
+        graines = p.graine_set.all()
+        grainotheques = set(j.grainotheque for j in graines)
+        from pygbif import occurrences
+        import re
+        #infos = occurrences.search(q=p.LB_NOM)
+        infos = occurrences.search(scientificName=p.LB_NOM)
+        infos2 = set(re.findall("(https:\/\/inaturalist-open-data\S+(?:png|jpe?g|gif))", str(infos)))
+    else:
+        jardins, grainotheques, infos2 = [], [], []
+
 
     return render(request, "jardins/plante.html", {"plante":p, "jardins":jardins, "grainotheques":grainotheques, "infos2":infos2})
 

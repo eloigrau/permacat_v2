@@ -56,13 +56,15 @@ def ajax_ajouterFavoris(request):
 
 
 def modal_ajouterFavoris(request):
-    url_path = request.GET.get('url_path', None)
-    if 'nom_favoris' in request.POST:
-        nom = request.POST.get('nom_favoris', None)
-    else:
-        nb = Favoris.objects.filter(profil=request.user, nom__startswith='favoris').count()
-        nom = 'favoris ' + str(nb)
 
-    favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
+    if request.user.is_authenticated:
+        url_path = request.GET.get('url_path', None)
+        if 'nom_favoris' in request.POST:
+            nom = request.POST.get('nom_favoris', None)
+        else:
+            nb = Favoris.objects.filter(profil=request.user, nom__startswith='favoris').count()
+            nom = 'favoris ' + str(nb)
+
+        favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
 
     return redirect(url_path)

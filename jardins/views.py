@@ -338,7 +338,6 @@ def voir_plante(request, cd_nom):
     except:
         return render(request, "jardins/plante.html", {"msg":"plante introuvable (" + str(cd_nom) +")"})
 
-
     if request.user.is_authenticated:
         plantesDeJardins = p.plantedejardin_plante.all()
         jardins = set(j.jardin for j in plantesDeJardins)

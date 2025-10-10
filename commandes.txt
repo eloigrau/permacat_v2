@@ -29,11 +29,16 @@ psql -U postgres -h 82.64.236.35 -p 32770
 sudo -u postgres -i
 sudo su postgres
 \c site
+\copy (select * from "bourseLibre_adresse" ) TO '/home/udjango/pg_backup/adresses_ok.csv'  WITH DELIMITER ',' CSV HEADER;
+\copy (select * from "adherents_adhesion" ) TO '/home/udjango/pg_backup/adhesions_ok.csv'  WITH DELIMITER ',' CSV HEADER;
+\copy (select * from "adherents_adherent" ) TO '/home/udjango/pg_backup/adherents_ok.csv'  WITH DELIMITER ',' CSV HEADER;
+
 ##scp -P 32770 udjango@82.64.236.35:/home/udjango/permacat/permacat.dump ./permacat.dump
 ##rsync -arvz -e 'ssh -p 32770' --progress udjango@82.64.236.35:/home/udjango/permacat/permacat.dump ./permacat.dump
 #scp /home/udjango/permacat/permacat.dump tchenrezi@tchenrezi-N750BU:/home/tchenrezi/
 cp -P 32768 eloi@82.64.236.35:/root/backups/site/pg_dump_site_2021-11-25_02-50-01.backup /home/tchenrezi/
 cp -P 32768 eloi@82.64.236.35:/root/backups/site/pg_dump_site_2021-09-07_02-50-01.backup /home/tchenrezi/backups_site/
+cp -P 32768 eloi@82.64.236.35:/mnt/permacat/backups/site/pg_dump_site_2025-09-30_02-50-01.backup /home/tchenrezi/backups_site/
 scp -P 32768 /home/tchenrezi/XX.csv  udjango@82.64.236.35:/home/udjango/permacat/
 
 cd /home/udjango/permacat
@@ -61,3 +66,6 @@ python manage.py remove_stale_contenttypes --settings=bourseLibre.settings.produ
 #./manage.py clear_index
 #./manage.py update_index
 sudo certbot --expand --nginx -d www.perma.cat
+
+adherents_adherent                         | table | postgres
+ public | adherents_adhesion

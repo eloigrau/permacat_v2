@@ -110,4 +110,6 @@ urlpatterns = [
 
     path(r'<str:asso_slug>/phoning/projet/<int:pk>/ajax_infocontact', views_phoning.ajax_infocontact, name="phoning_ajax_infocontact"),
     path(r'<str:projet_pk>/infos_contacts/<str:type_info>', views.get_infos_contacts, name="get_infos_contacts"),
+
+    path(r'<str:asso_slug>/admin_restaurerAdherents', views.admin_restaurerAdherents, name="admin_restaurerAdherents"),
 ]

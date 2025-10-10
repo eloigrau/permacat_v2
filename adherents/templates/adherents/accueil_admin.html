@@ -34,9 +34,9 @@
                    Modif APE
                 </button>
              </a>
-             <a href="{% url 'adherents:normaliser_adherents' asso_slug=request.session.asso_slug %}">
+             <a href="{% url 'adherents:admin_restaurerAdherents' asso_slug=request.session.asso_slug %}">
                 <button type="button" class="btn btn-success" >
-                   normaliser_adherents
+                   admin_restaurerAdherents
                 </button>
              </a>
         {% endif %}

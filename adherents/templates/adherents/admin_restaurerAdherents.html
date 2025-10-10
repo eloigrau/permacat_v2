@@ -1,0 +1,31 @@
+{% extends 'base_adherents.html' %}
+{% block subtitle %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> restaurer adherents supprimés par mégarde depuis csv</h3>
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
+        enctype="multipart/form-data">
+            {% include 'form_template.html'%}
+    </form>
+
+    </div>
+   </div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        {{msg|safe}}
+   </div>
+
+</div>
+
+{% endblock %}
+

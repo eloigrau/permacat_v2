@@ -240,6 +240,11 @@ class ListeTel_form(forms.Form):
 class csvFile_form(forms.Form):
     fichier_csv = forms.FileField(label="Selectionner CSV avec colonnes nom,prenom,telephone (+ en option: email, rue, commune, code_postal)", required=True, )
 
+class csvAdherents_form(forms.Form):
+    fichier_csv_adherents = forms.FileField(label="Selectionner CSV adherents", required=True, )
+    fichier_csv_adhesions = forms.FileField(label="Selectionner CSV adesions", required=True, )
+    fichier_csv_adresses = forms.FileField(label="Selectionner CSV adresses)", required=True, )
+
 
 class csvText_form(forms.Form):
     texte_csv = forms.CharField(label=" copier/coller le contenu du csv ici", required=True,

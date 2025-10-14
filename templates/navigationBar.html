@@ -125,7 +125,7 @@
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">PermAgora</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='scic' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'permagorapresentation:accueil' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     {% if request.user.adherent_scic %}
                                     <li><a class="dropdown-item"
                                            href="{% url 'blog:index_asso' asso='scic' %}">
@@ -200,8 +200,6 @@
 
                                     {% endif %}
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'permagorapresentation:accueil' %}"><i
-                                            class='fa fa-compass iconleft'></i> Présentation PermAgora </a></li>
                                     <li><a class="dropdown-item" href="{% url 'ducepaujus:accueil_ducepaujus' %}"><i
                                             class='fa fa-compass iconleft'></i> Du Cep au Jus </a></li>
                                     <li><a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i
@@ -655,7 +653,7 @@
                                 <a class="dropdown-item" href="{% url 'jardins:accueil' %}">{% translate 'Jardins et Grainothèques' %}</a>
                             </li>
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item " href="{% url 'presentation_asso' asso='scic' %}">PermAgora</a>
+                                <a class="dropdown-item " href="{% url 'permagorapresentation:accueil' %}">PermAgora</a>
                             </li>
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item " href="{% url 'presentation_asso' asso='viure' %}">Viure</a>

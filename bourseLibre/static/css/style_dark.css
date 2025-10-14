@@ -2168,6 +2168,10 @@ caption {
 
 }
 
+#btn-afficher-calendrier{
+    display: none;
+}
+
 /* ============================
 				Mobile Responsiveness
    ============================*/
@@ -2196,7 +2200,9 @@ caption {
 	#calendar .daybefore{
 		min-height:20px;
 		display: none;
-
+	}
+	#btn-afficher-calendrier{
+		display: block;
 	}
 
     #calendar .joursemaine{

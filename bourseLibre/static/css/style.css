@@ -2192,6 +2192,10 @@ caption {
 				Mobile Responsiveness
    ============================*/
 
+#btn-afficher-calendrier{
+    display: none;
+}
+
 @media screen and  (max-width: 960px) {
 
 
@@ -2216,7 +2220,10 @@ caption {
 	#calendar .daybefore{
 		min-height:20px;
 		display: none;
-
+	}
+	#btn-afficher-calendrier{
+		display: block;
+      width: 100%;
 	}
 
     #calendar .joursemaine{

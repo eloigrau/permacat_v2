@@ -423,6 +423,9 @@ h6 {
   }
 }
 
+.member-info ul {
+list-style: "";
+}
 /* Mobile Navigation */
 @media (max-width: 1199px) {
   .mobile-nav-toggle {
@@ -1411,6 +1414,13 @@ section,
   font-size: 14px;
   font-weight: 400;
   color: color-mix(in srgb, var(--default-color), transparent 50%);
+}
+
+.chefs .team-member .member-info ul span {
+  display: inline;
+  font-size: 14px;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--default-color), transparent 10%);
 }
 
 .chefs .team-member .member-info p {

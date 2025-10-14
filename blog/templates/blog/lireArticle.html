@@ -328,7 +328,7 @@
                                     {{ doc.date_creation|date:"d/m/Y" }}
                                 </td>
                                 <td>
-                                    <a href="{{ doc.get_absolute_url }}" class="btn btn-info" style="width:100%;">{{ doc.nom }}</a>
+                                    <a href="{{ doc.get_absolute_url }}" style="width:100%;">{{ doc.nom }}</a>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-light btn-sm"
@@ -424,10 +424,10 @@
                         <tr><td>
                             {{ todo.date_creation|date:"d/m/Y" }}
                         </td>
-                            <td>
+                            <td  style="width:30%;  text-align:left;">
                                 {{ todo.titre }}
                             </td>
-                            <td style="width:50%;  text-align:left;">
+                            <td style="width:30%;  text-align:left;">
                                 {% if todo.description %}
                                 {{ todo.description }}
                                 {% endif %}
@@ -436,7 +436,7 @@
                                 <form method="post" action="{% url 'blog:todoArticle_toggle' slug_article=article.slug slug_todo=todo.slug %}" role="form">
                 {% csrf_token %}
                 <button class="btn {% if todo.estFait %}btn-info{% else %}btn-secondary{% endif %} btn-sm" type="submit" name="toggle_done">
-                                {{ todo.estFait|translateOuiNon }}
+                                {{ todo.estFait|translateFaitPasFait}}
                 </button>
               </form>
                             </td>

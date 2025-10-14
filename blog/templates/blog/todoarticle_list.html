@@ -84,10 +84,10 @@
                         {% for todo in todoarticle_list %}
                         <tr>
                         <td> {{ todo.article.get_logo_nomgroupe_html|safe }}</td>
-                            <td>
+                            <td style="width:30%; text-align:left;">
                                 {{ todo.titre }}
                             </td>
-                            <td style="width:50%; text-align:left;">
+                            <td style="width:30%; text-align:left;">
                                 {% if todo.description %}
                                 {{ todo.description }}
                                 {% endif %}
@@ -102,7 +102,7 @@
                                 <form method="post" action="{% url 'blog:todoArticle_toggle' slug_article=todo.article.slug slug_todo=todo.slug %}" role="form">
                 {% csrf_token %}
                 <button class="btn {% if todo.estFait %}btn-info{% else %}btn-secondary{% endif %} btn-sm" type="submit" name="toggle_done">
-                                {{ todo.estFait|translateOuiNon }}
+                                {{ todo.estFait|translateFaitPasFait }}
                 </button>
               </form>
                             </td>

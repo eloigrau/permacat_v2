@@ -61,6 +61,10 @@ def translate_month(yearname):
 def translateOuiNon(truefalse):
     return "Oui" if truefalse else "Non"
 
+@register.filter(name='translateFaitPasFait')
+def translateFaitPasFait(truefalse):
+    return "Fait" if truefalse else "Pas encore fait"
+
 
 @register.filter(is_safe=True)
 def ordreTriStr(value):

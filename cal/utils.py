@@ -145,7 +145,7 @@ class Calendar(LocaleTextCalendar):
             events_proj = events_proj.filter(asso__slug=asso_slug)
             events_autre = events_autre.filter(Q(article__asso__slug=asso_slug) | Q(article__partagesAsso__slug=asso_slug)| Q(article__partagesAsso__slug='public'))
 
-        cal = '<table  class=" table-condensed" id="calendar">\n'
+        cal = '<table  class="table-condensed" id="calendar">\n'
         #cal += self.formatmonthname(self.year, self.month, withyear=withyear)+'\n'
 
         for i in self.iterweekdays():

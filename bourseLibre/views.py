@@ -1154,11 +1154,15 @@ def partagerPosition(request, slug_conversation):
 
     if form_adresse.is_valid():
         adresse = form_adresse.save()
-        mess = request.user.username + "<a href='" + reverse('voirLieu', kwargs={'id_lieu':adresse.id}) + \
-               "#ref-titre'>" + " a partagé une position avec vous</a> (<a href='"+adresse.getGoogleUrl + \
-               "' target='_blank'  rel='noopener noreferrer nofollow'>voir sur google</a>)"
-        message = Message(message=mess, conversation=conversation, auteur=request.user)
-        message.save()
+        try :
+            url = reverse('voirLieu', kwargs={'id_lieu':adresse.id})
+            mess = request.user.username + "<a href='" + url + ">" + \
+                   " a partagé une position avec vous</a> (<a href='"+adresse.getGoogleUrl + \
+                   "' target='_blank'  rel='noopener noreferrer nofollow'>voir sur google</a>)"
+            message = Message(message=mess, conversation=conversation, auteur=request.user)
+            message.save()
+        except:
+            pass
 
         return redirect(conversation)
 

@@ -26,11 +26,10 @@
                     {% for doc in object_list %}
                     <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
-                        <td  class="textleft" style="min-width:40%;">
-                           <h5> <a href="{{doc.doc.url}}" class="btn btn-success" style="width:100%;">
-                                {{ doc.titre }} {% fa5_icon 'download' class='iconright' %}
+                        <td   style="min-width:40%;">
+                            <a href="{{doc.doc.url}}" style="width:100%;">
+                                {% fa5_icon 'download' class='iconright' %} {{ doc.titre }}
                             </a>
-                           </h5>
                         </td>
                         <td>
                             {% if doc.article %}

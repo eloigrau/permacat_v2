@@ -51,8 +51,9 @@ def ajax_ajouterFavoris(request):
         nb = Favoris.objects.filter(profil=request.user, nom__startswith='favoris').count()
         nom = 'favoris ' + str(nb)
     favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
-
-    return redirect(url_path)
+    if url_path:
+        return redirect(url_path)
+    return redirect("bienvenue")
 
 
 def modal_ajouterFavoris(request):

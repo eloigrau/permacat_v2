@@ -11,13 +11,13 @@
 {% block subtitle %}
 <div class="row titre_adherents">
     <div class="col textcenter">
-        <h3>Les Listes de diffusion par Mail </h3>
+        <h3>Les Listes de diffusion par Mail</h3>
     </div>
 </div>
 {% if is_membre_bureau %}
 <div class="row ">
     <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' asso_slug=request.session.asso_slug %}">Ajouter une liste</a>
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' asso_slug=request.session.asso_slug %}">[bureau] Ajouter une liste</a>
     </div>
 </div>
 {% endif %}
@@ -28,6 +28,39 @@
 
  {% include 'adherents/template_listeDiffusion_liste.html'%}
 
+{% if dico_ListesProduction %}
+<div class="row">
+    <div class="col textcenter">
+        <table class="table table-condensed tableprofils table-striped table-middle ²">
+            <thead><tr>
+                <th>Nom de la liste</th>
+                <th>Adhérents</th>
+                <th>-</th>
+            </tr></thead>
+            <tbody>
+{% for nom, adherents in dico_ListesProduction.items %}
+            <tr>
+                <td> {{nom}}({{adherents|length}})</td>
+                <td>
+                    {%for m in adherents %}
+                        {{m}} {% if not forloop.last %}, {% endif%}
+                    {%endfor%}
+                </td>
+                <td>
+                    <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
+                        <button type="button" class="btn btn-sm btn-primary">
+                            Copier la liste des mails
+                        </button>
+                    </a>
+                </td>
+            </tr>
+{% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% endif %}
 {% if is_membre_bureau %}
         <h4 class="textcenter" >Pour le bureau :</h4>
 <hr>
@@ -43,7 +76,7 @@
     </div>
 </div>
 
-
+<hr>
 <div class="row">
     <div class="col textcenter">
         <table class="table table-condensed tableprofils table-striped table-middle ²">

@@ -19,19 +19,35 @@
 
 <div class="row">
     <div class="col-sm-12 textcenter ">
-        <h3>Inviter quelqu'un dans le salon "{{salon.titre}}"</h3>
+        <h3>Inviter une personne inscrite dans le salon "{{salon.titre}}"</h3>
     </div>
 </div>
-<div class="row">
-	<div class="col-sm-12">
-<form id="myForm"  class="form-horizontal" role="form" action="" method="post"
-	enctype="multipart/form-data">
-	{% csrf_token %} <input type="hidden" name="Atelier"
-		value="{{ salon }}"> {% include 'form_template.html'%}
-</form>
 
-</div>
+<div class="row justify-content-center">
+<div class="col-sm-12 col-md-10 col-lg-8 form_class">
+    <p>Rechercher dans les noms, prénoms ou pseudonime (tapez les premières lettres puis cliquer sur le pseudonyme)...</p>
+        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% include 'form_template2.html' %}
+{% if invite %}
+<div class="row justify-content-center" id="titre2">
+  <div class="col-sm-12 col-md-10">
+      {% include 'profil_tableau.html' with user=invite%}
     </div>
+</div>
+{% endif %}
+            <div class="row ">
+            <div class="col col-sm-12 textright">
+{% if not invite %}
+                <input id="btn-profil" type="submit" class="btn btn-secondary" type="submit" name="voirprofil" value="Voir profil">
+{% endif %}
+                <input id="btn-valider" type="submit" class="btn btn-primary" name="valider" value="Inviter">
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 {% endblock %}
 

@@ -15,18 +15,16 @@
                 <th>Lien</th>
                 <th>Auteur</th>
                 <th>Tags</th>
-
-                {%if article.auteur == request.user or request.user.is_superuser %}
+                {% if article.auteur == request.user or request.user.is_superuser %}
                 <th>Edit</th>
                 {% endif %}
-
             </tr>
             </thead>
             <tbody class="infinite-container justify-content-center">
                     {% for doc in object_list %}
                     <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
-                        <td   style="min-width:40%;">
+                        <td style="min-width:40%;">
                             <a href="{{doc.doc.url}}" style="width:100%;">
                                 {% fa5_icon 'download' class='iconright' %} {{ doc.titre }}
                             </a>

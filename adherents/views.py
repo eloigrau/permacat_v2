@@ -21,7 +21,7 @@ from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContac
 from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso, LATITUDE_DEFAUT, LONGITUDE_DEFAUT
 from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
 from .filters import AdherentsCarteFilter, ContactCarteFilter
-#from .constantes import get_slug_salon
+from .constantes import dict_ape
 from django.utils.timezone import now
 from actstream.models import Action
 from datetime import date, timedelta, datetime
@@ -962,24 +962,34 @@ class ListeDiffusion_liste(TestMembreAssoMixin, ListView, ):
     def get_queryset(self):
         return ListeDiffusion.objects.filter(asso=self.asso).order_by("nom")
 
+    def get_mails_productions(self):
+        profils = Adherent.objects.filter(asso=self.asso).order_by("nom").distinct()
+        # current_year = date.today().isocalendar()[0]
+        dico = {}
+        productions = [p for p in
+                       Adherent.objects.filter(asso__slug="conf66").values_list('production_ape', flat=True).distinct()
+                       if p and p != "-"]
+        for prod in productions:
+            dico[str(prod) + ": " + dict_ape[prod] if prod in dict_ape else str(prod[:10]) + " (inconnu)"] = list(set([a.email for a in profils if a.profil and a.email and a.production_ape == prod]))
+        return dico
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         context['actions'] = Action.objects.filter(verb__startswith="listeDiff_"+self.asso.slug).order_by('-timestamp')
-        context['dico_ListesBase'] = {'Bureau': get_mails(typeListe="bureau"),
-                                        'Adhérents à jour':get_mails(typeListe="ajour"),
-                                        "Adhérents de l'année dernière pas à jour de cotisation":get_mails(typeListe="anneeprecedente_pasajour"),
-                                        'Adhérents (depuis 2021) pas à jour de cotisation':get_mails(typeListe="pasajour")}
+        context['dico_ListesBase'] = {'Bureau': get_mails(asso_slug=self.asso.slug, typeListe="bureau"),
+                                        'Adhérents à jour':get_mails(asso_slug=self.asso.slug, typeListe="ajour"),
+                                        "Adhérents de l'année dernière pas à jour de cotisation":get_mails(asso_slug=self.asso.slug, typeListe="anneeprecedente_pasajour"),
+                                        'Adhérents (depuis 2021) pas à jour de cotisation':get_mails(asso_slug=self.asso.slug, typeListe="pasajour")
+                                     }
+        if self.asso.slug == "conf66":
+            context['dico_ListesProduction'] = self.get_mails_productions()
+
+
         context['is_membre_bureau'] = self.request.user.estmembre_bureau(self.asso.slug)
 
         return context
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.slug
-        return context
-
 
 class ListeDiffusionDetailView(TestMembreAssoMixin, DetailView):
     model = ListeDiffusion

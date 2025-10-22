@@ -12,6 +12,7 @@ from .forms import Produit_aliment_CreationForm, Produit_vegetal_CreationForm, P
     Produit_objet_modifier_form, Produit_vegetal_modifier_form, ChercherConversationForm, InviterDansSalonForm, \
     MessageChangeForm, ContactMailForm, Produit_offresEtDemandes_CreationForm, Produit_offresEtDemandes_modifier_form, \
     SalonForm, Message_salonForm, ModifierSalonDesciptionForm, Profil_rechercheForm, EvenementSalonForm, FavorisForm
+from bourseLibre.forms import Profil_recherche2Form
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
    Adhesion_asso, Adhesion_permacat, EvenementSalon,MessageAdmin, Favoris
@@ -1226,6 +1227,7 @@ def profil_autocomplete_recherche(request):
 
     return redirect('agora_conversation', destinataire=destinataire)
 
+
 class ProfilAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
@@ -1235,9 +1237,24 @@ class ProfilAutocomplete(autocomplete.Select2QuerySetView):
         qs = Profil.objects.filter().order_by("username")
 
         if self.q:
-            qs = qs.filter(Q(username__istartswith=self.q) | Q(username__contains=self.q)).order_by("username")
+            qs = qs.filter(Q(username__istartswith=self.q) | Q(username__icontains=self.q)).order_by("username")
 
         return qs
+
+
+class ProfilAutocomplete2(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated:
+            return Profil.objects.none()
+
+        qs = Profil.objects.filter().order_by("username")
+
+        if self.q:
+            qs = qs.filter(Q(username__istartswith=self.q) | Q(username__icontains=self.q) | Q(last_name__icontains=self.q) | Q(first_name__icontains=self.q)).order_by("username")
+
+        return qs
+
 
 @login_required
 def getNbProduits_expires(request):
@@ -1554,18 +1571,22 @@ def invitationDansSalon(request, slug_salon):
 @login_required
 def inviterDansSalon(request, slug_salon):
     salon = testIsMembreSalon(request, slug_salon)
-    form = InviterDansSalonForm(salon, request.POST or None)
+    #form = InviterDansSalonForm(salon, request.POST or None)
+    form = Profil_recherche2Form(request, salon, request.POST or None)
     if form.is_valid():
-        invite = get_object_or_404(Profil, id=int(form.cleaned_data['profil_invite']))
-        if not InvitationDansSalon.objects.filter(salon=salon, profil_invite=invite, profil_invitant=request.user).count():
-            invitation = InvitationDansSalon(salon=salon, profil_invite=invite, profil_invitant=request.user)
-            invitation.save()
-            message = Message_salon.objects.create(
-                salon=salon,
-                message="%s a invité %s."%(invitation.profil_invitant, invitation.profil_invite),
-                auteur=get_object_or_404(Profil, username="bot_permacat"),
-                date_creation=now()).save()
-        return redirect(salon.get_absolute_url())
+        invite = form.cleaned_data['profil']#get_object_or_404(Profil, id=int(form.cleaned_data['profil']))
+        if 'voirprofil' in request.POST:
+            return render(request, 'salon/inviterDansSalon.html', {'form': form, 'salon':salon, 'invite':invite})
+        else:
+            if not InvitationDansSalon.objects.filter(salon=salon, profil_invite=invite, profil_invitant=request.user).count():
+                invitation = InvitationDansSalon(salon=salon, profil_invite=invite, profil_invitant=request.user)
+                invitation.save()
+                message = Message_salon.objects.create(
+                    salon=salon,
+                    message="%s a invité %s."%(invitation.profil_invitant, invitation.profil_invite),
+                    auteur=get_object_or_404(Profil, username="bot_permacat"),
+                    date_creation=now()).save()
+            return redirect(salon.get_absolute_url())
     return render(request, 'salon/inviterDansSalon.html', {'form': form, 'salon':salon})
 
 @login_required

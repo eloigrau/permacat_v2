@@ -657,6 +657,30 @@ class Profil_rechercheForm(forms.ModelForm):
         return instance
 
 
+class Profil_recherche2Form(forms.ModelForm):
+    class Meta:
+        model = Profil_recherche
+        fields = ("profil",)
+        widgets = {
+            'profil': autocomplete.ModelSelect2(url='profil_ac2')
+        }
+
+    def __init__(self, request, salon, *args, **kwargs):
+        super(Profil_recherche2Form, self).__init__(*args, **kwargs)
+        if salon.type_salon == 1:
+            # choix = []
+            # for i, j in self.fields['profil'].choices:
+            #     adh =  Adherent.objects.filter(asso__slug=request.session['asso_slug'], profil__username=j)
+            #     if adh.exists():
+            #         choix.append((i, j + adh[0].nom))
+            #     else:
+            #         choix.append((i, j))
+            #if choix:
+                #self.fields['profil'].choices = choix
+            #self.fields['profil'].choices = [(i, j + Adherent.objects.filter(asso=request.session['asso_slug'], profil__username=j)[0].nom if Adherent.objects.filter(profil__username=j).exists() else j for i, j in self.fields['profil'].choices]
+            pass
+            #self.fields['profil'].choices = self.fields['profil'].choices
+
 class EvenementSalonForm(forms.ModelForm):
     class Meta:
         model = EvenementSalon

@@ -91,11 +91,9 @@ urlpatterns = [
     re_path(r'^site/pourquoi/$', views_base.presentation_site_pkoi, name='presentation_site_pkoi'),
     re_path(r'^site/conseils/$', views_base.presentation_site_conseils, name='presentation_site_conseils'),
     re_path(r'^permacat/statuts/$', views_base.statuts, name='statuts'),
-    # re_path(r'^ramenetagraine/statuts/$', views.statuts_rtg, name='statuts_rtg'),
-
-
     re_path(r'^gestion/', admin.site.urls, name='admin',),
 
+    # re_path(r'^ramenetagraine/statuts/$', views.statuts_rtg, name='statuts_rtg'),
     # re_path(r'^jet/', include('jet.urls')),  # Django JET URLS
     # re_path(r'^jet/dashboard/', include('jet.dashboard.urls')),  # Django JET dashboard URLS
     # re_path(r'^admin/', admin.site.urls),
@@ -132,11 +130,9 @@ urlpatterns = [
     path(r'compte/ajouterAdhesion/<str:slugAsso>', login_required(views_admin.ajouterAdhesion), name='ajouterAdhesion',),
     re_path(r'^compte/activite/(?P<pseudo>[\w.@+-]+)/$', login_required(views_base.activite), name='activite',),
     re_path(r'^register/$', views.register, name='senregistrer',),
-    re_path(r'^reset-password/$',
-        PasswordResetView.as_view(template_name='accounts/reset_password.html',
+    re_path(r'^reset-password/$', PasswordResetView.as_view(template_name='accounts/reset_password.html',
                                   email_template_name='accounts/reset_password_email.html',
-                                  success_url=reverse_lazy('bienvenue')),
-        name='reset_password'),
+                                  success_url=reverse_lazy('bienvenue')), name='reset_password'),
     # re_path(r'^password/reset/$', views.reset_password, name='reset_password'),
     re_path(r'^password/change/$', views.change_password, name='change_password'),
     path('auth/', include('django.contrib.auth.urls')),
@@ -190,7 +186,6 @@ urlpatterns = [
         login_required(views.ajouterAuPanier), name='produit_ajouterAuPanier', ),
     re_path(r'^panier/supprimerItem/(?P<item_id>[0-9]+)',
         login_required(views.enlever_du_panier), name='supprimerDuPanier', ),
-
     re_path(r'^requetes/afficher/$',
         login_required(views.afficher_requetes), name='afficher_requetes', ),
 
@@ -199,7 +194,9 @@ urlpatterns = [
     re_path(r'^conversations/$', login_required(views.ListeConversations.as_view()), name='conversations'),
     re_path(r'^conversations/chercher/$', login_required(views.chercherConversation), name='chercher_conversation'),
     re_path(r'^conversations/profil_ac/$', login_required(views.ProfilAutocomplete.as_view(), login_url='/auth/login/'), name='profil_ac'),
+    re_path(r'^conversations/profil_ac2/$', login_required(views.ProfilAutocomplete2.as_view(), login_url='/auth/login/'), name='profil_ac2'),
     path(r'conversations/profil_autocomplete_recherche/', views.profil_autocomplete_recherche, name="profil_autocomplete_recherche"),
+    #path(r'salons/profil_autocomplete_recherche/', views.profil_autocomplete_recherche_salon, name="profil_autocomplete_recherche_salon"),
 
     re_path(r'^suivre_conversation/$', views_inscriptions.suivre_conversations, name='suivre_conversations'),
     re_path(r'^suivre_produits/$', views_inscriptions.suivre_produits, name='suivre_produits'),

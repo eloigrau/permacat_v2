@@ -14,109 +14,136 @@
         <h3>Les Listes de diffusion par Mail</h3>
     </div>
 </div>
-{% if is_membre_bureau %}
-<div class="row ">
-    <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_creer' asso_slug=request.session.asso_slug %}">[bureau] Ajouter une liste</a>
-    </div>
-</div>
-{% endif %}
 {% endblock %}
 
 
 {% block content %}
 
- {% include 'adherents/template_listeDiffusion_liste.html'%}
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#theme" data-toggle="tab">Par thème</a>
+    <a class="nav-item nav-link " href="#production" data-toggle="tab">Par production</a>
+    {% if is_membre_bureau %}
+    <a class="nav-item nav-link " href="#bureau" data-toggle="tab">Bureau</a>
+    <a class="nav-item nav-link " href="#histo" data-toggle="tab">Historique</a>
+    {% endif %}
+</nav>
 
-{% if dico_ListesProduction %}
-<div class="row">
-    <div class="col textcenter">
-        <table class="table table-condensed tableprofils table-striped table-middle ²">
-            <thead><tr>
-                <th>Nom de la liste</th>
-                <th>Adhérents</th>
-                <th>-</th>
-            </tr></thead>
-            <tbody>
-{% for nom, adherents in dico_ListesProduction.items %}
-            <tr>
-                <td> {{nom}}({{adherents|length}})</td>
-                <td>
-                    {%for m in adherents %}
-                        {{m}} {% if not forloop.last %}, {% endif%}
-                    {%endfor%}
-                </td>
-                <td>
-                    <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
-                        <button type="button" class="btn btn-sm btn-primary">
-                            Copier la liste des mails
-                        </button>
-                    </a>
-                </td>
-            </tr>
-{% endfor %}
-            </tbody>
-        </table>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="theme">
 
+        {% if is_membre_bureau %}
+        <div class="row ">
+            <div class="col textcenter">
+                <a class="btn btn-danger" href="{% url 'adherents:listeDiffusion_creer' asso_slug=request.session.asso_slug %}">
+                    [bureau] Ajouter une liste</a>
+            </div>
+        </div>
+        {% endif %}
+        {% include 'adherents/template_listeDiffusion_liste.html'%}
     </div>
+
+    <div class="tab-pane fade" id="production">
+        {% if dico_ListesProduction %}
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle ²">
+                    <thead>
+                    <tr>
+                        <th>Nom de la liste</th>
+                        <th>Adhérents</th>
+                        <th>-</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for nom, adherents in dico_ListesProduction.items %}
+                    <tr>
+                        <td> {{nom}}({{adherents|length}})</td>
+                        <td>
+                            {%for m in adherents %}
+                            {{m}} {% if not forloop.last %}, {% endif%}
+                            {%endfor%}
+                        </td>
+                        <td>
+                            <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
+                                <button type="button" class="btn btn-sm btn-primary">
+                                    Copier la liste des mails
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if is_membre_bureau %}
+    <div class="tab-pane fade" id="bureau">
+        <div class="row ">
+            <div class="col textcenter">
+
+                <a href="{% url 'adherents:get_csv_listeMails' asso_slug=request.session.asso_slug %}" target="_blank"
+                   rel="noopener noreferrer nofollow">
+                    <button type="button" class="btn btn-sm btn-primary">
+                        &nbsp;Exporter en CSV pour Google
+                    </button>
+                </a>
+                <a class="btn btn-success"
+                   href="{% url 'adherents:inscriptionMail_liste' asso_slug=request.session.asso_slug %}">Gérer la liste
+                    des inscriptions</a></li>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle ²">
+                    <thead>
+                    <tr>
+                        <th>Nom de la liste</th>
+                        <th>Adhérents</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for nom, adherents in dico_ListesBase.items %}
+                    <tr>
+                        <td> {{nom}}({{adherents|length}})</td>
+                        <td>
+                            {%for m in adherents %}
+                            {{m}} {% if not forloop.last %}, {% endif%}
+                            {%endfor%}
+                        </td>
+                        <td>
+                            <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
+                                <button type="button" class="btn btn-sm btn-primary">
+                                    Copier la liste des mails
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="histo">
+        <div class="row">
+            <div class="col textcenter">
+                <div id="historique" >
+                    {% include 'adherents/template_actions.html'%}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
-{% endif %}
-{% if is_membre_bureau %}
-        <h4 class="textcenter" >Pour le bureau :</h4>
-<hr>
-<div class="row ">
-    <div class="col textcenter">
 
-    <a href="{% url 'adherents:get_csv_listeMails' asso_slug=request.session.asso_slug %}" target="_blank" rel="noopener noreferrer nofollow">
-        <button type="button" class="btn btn-sm btn-primary">
-            &nbsp;Exporter en CSV pour Google
-        </button>
-    </a>
-		<a class="btn btn-success" href="{% url 'adherents:inscriptionMail_liste' asso_slug=request.session.asso_slug %}">Gérer la liste des inscriptions</a></li>
-    </div>
-</div>
-
-<hr>
-<div class="row">
-    <div class="col textcenter">
-        <table class="table table-condensed tableprofils table-striped table-middle ²">
-            <thead><tr>
-                <th>Nom de la liste</th>
-                <th>Adhérents</th>
-                <th></th>
-            </tr></thead>
-            <tbody>
-{% for nom, adherents in dico_ListesBase.items %}
-            <tr>
-                <td> {{nom}}({{adherents|length}})</td>
-                <td>
-                    {%for m in adherents %}
-                        {{m}} {% if not forloop.last %}, {% endif%}
-                    {%endfor%}
-                </td>
-                <td>
-                    <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
-                        <button type="button" class="btn btn-sm btn-primary">
-                            Copier la liste des mails
-                        </button>
-                    </a>
-                </td>
-            </tr>
-{% endfor %}
-            </tbody>
-        </table>
-
-    </div>
-</div>
-<hr>
- <div class="textcenter">
-        <button id="btn-archives"  type="button" class="btn btn-lg btn-info" onclick="toggle_visibility('historique');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
-            Afficher l'historique
-        </button>
-    </div>
-    <div id="historique" style='display:none;'>
- {% include 'adherents/template_actions.html'%}
-    </div>
-
-{% endif %}
 {% endblock %}

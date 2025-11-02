@@ -667,7 +667,7 @@ class Projet(models.Model):
         choices=(Choix.statut_projet ),
         default='prop', verbose_name=_("statut"))
     titre = models.CharField(max_length=250)
-    auteur = models.ForeignKey(Profil, on_delete=models.CASCADE)
+    auteur = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
     slug = models.SlugField(max_length=100)
     contenu = models.TextField(null=True)
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)

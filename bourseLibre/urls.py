@@ -91,6 +91,7 @@ urlpatterns = [
     re_path(r'^site/pourquoi/$', views_base.presentation_site_pkoi, name='presentation_site_pkoi'),
     re_path(r'^site/conseils/$', views_base.presentation_site_conseils, name='presentation_site_conseils'),
     re_path(r'^permacat/statuts/$', views_base.statuts, name='statuts'),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     re_path(r'^gestion/', admin.site.urls, name='admin',),
 
     # re_path(r'^ramenetagraine/statuts/$', views.statuts_rtg, name='statuts_rtg'),
@@ -202,11 +203,6 @@ urlpatterns = [
     re_path(r'^suivre_produits/$', views_inscriptions.suivre_produits, name='suivre_produits'),
     re_path(r'^sereabonner/$', views_inscriptions.sereabonner, name='sereabonner'),
     re_path(r'^sedesabonner/$', views_inscriptions.sedesabonner, name='sedesabonner'),
-
-    re_path(r'^supprimerTousMesAbonnement/$', views_inscriptions.supprimerTousMesAbonnement, name='supprimerTousMesAbonnement'),
-    re_path(r'^sedesabonner/$', views_inscriptions.sedesabonner, name='sedesabonner'),
-
-
     re_path(r'^sedesabonner_particuliers/$', views_inscriptions.sedesabonner_particuliers, name='sedesabonner_particuliers'),
     re_path(r'^sereabonner_salons/$', views_inscriptions.sereabonner_salons, name='sereabonner_salons'),
     re_path(r'^sedesabonner_salons/$', views_inscriptions.sedesabonner_salons, name='sedesabonner_salons'),

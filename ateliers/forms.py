@@ -85,7 +85,7 @@ class AtelierChangeForm(forms.ModelForm):
             'materiel': SummernoteWidget(),
             'outils': SummernoteWidget(),
             'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
+                format=('%Y-%m-%d'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),

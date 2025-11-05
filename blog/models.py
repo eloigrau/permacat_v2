@@ -150,8 +150,8 @@ class Choix:
         "bzz2022": "nom_bzz2022.webp",
         "jp": "nom_jp.webp",
         "conf66":"nom_conf66.png",
-        "ssa":"nom_ssa.png"
-        "ducepaj":"logo_ducepaj.png"
+        "ssa":"nom_ssa.png",
+        "ducepaj":"logo_ducepaj.png",
     }
 
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')

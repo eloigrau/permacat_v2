@@ -688,7 +688,8 @@ def get_tags_articles(request):
         inner_qs = set(list(Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
             estArchive=False).order_by('tags__name').values_list('tags', flat=True).distinct()))
 
-    inner_qs.remove(None)
+    if None in inner_qs:
+        inner_qs.remove(None)
     if inner_qs:
         try:
             tags = [(reverse('blog:articlesParTag', kwargs={'asso': asso.slug, 'tag': t}), t)

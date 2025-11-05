@@ -240,7 +240,19 @@
                                 </ul>
                             </li>
                             {% endif %}
-
+                            {% if request.user.adherent_ducepaj %}
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Du Cep au Jus</a>
+                                <ul class="dropdown-menu  nav5-dropdown-submenu">
+                                    <li><a class="dropdown-item" href="{% url 'ducepaujus:accueil_ducepaujus'  %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'blog:index_asso' asso='ducepaj'%}#ref-titre">{% fa5_icon 'comments' class='iconleft' %}> Forum</a></li>
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'photologue:doc-list'%}?asso=ducepaj#ref-titre"><i
+                                            class='fa fa-file iconleft '></i> Documents</a></li>
+                                </ul>
+                            </li>
+                            {% endif %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">SLA/SSA 66</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">

@@ -308,6 +308,8 @@ class Asso(models.Model):
             return Profil.objects.filter(adherent_conf66=True).order_by("username")
         elif self.slug == "ssa":
             return Profil.objects.filter(adherent_ssa=True).order_by("username")
+        elif self.slug == "ducepaj":
+            return Profil.objects.filter(adherent_ducepaj=True).order_by("username")
         return Profil.objects.none()
 
     def getProfils_Annuaire(self):
@@ -359,6 +361,7 @@ class Profil(AbstractUser):
     adherent_conf66 = models.BooleanField(verbose_name=_("Je suis adhérent à la confédération Paysanne 66"), default=False)
     adherent_jp = models.BooleanField(verbose_name=_("Je suis intéressé.e par les jardins partagés"), default=False)
     adherent_ssa = models.BooleanField(verbose_name=_("Je suis intéressé.e par la SSA"), default=False)
+    adherent_ducepaj = models.BooleanField(verbose_name=_("Je fais partie du collectif Du Cep au Jus"), default=False)
 
     accepter_conditions = models.BooleanField(verbose_name=_("J'ai lu et j'accepte les conditions d'utilisation du site"), default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name=_("J'accepte d'apparaitre dans l'annuaire du site et la carte et rend mon profil visible par tous"), default=True)
@@ -498,10 +501,15 @@ class Profil(AbstractUser):
             else:
                 return "Non adhérent de la Confédération Paysanne 66"
         elif asso == "ssa":
-            if self.adherent_conf66:
+            if self.adherent_ssa:
                 return "participant au collectif SSA"
             else:
                 return "Non participant au collectif SSA"
+        elif asso == "ducepaj":
+            if self.adherent_ducepaj:
+                return "participant au collectif Du Cep au Jus"
+            else:
+                return "Non participant au collectif Du Cep au Jus"
 
 
     def estMembre_str(self, nom_asso):
@@ -526,6 +534,8 @@ class Profil(AbstractUser):
         elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
             return True
         elif self.adherent_ssa and (nom_asso == "ssa" or nom_asso == "Sécurité Sociale Alimentaire 66") :
+            return True
+        elif self.adherent_ducepaj and (nom_asso == "ducepaj" or nom_asso == "Du Cep au Jus") :
             return True
         else:
             return False

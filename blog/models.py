@@ -51,6 +51,8 @@ class Choix:
                         ('Cercle2',"Cercle Jardins"),('Cercle3',"Cercle Thématique"),('Cercle4',"Cercle Communication"),\
                         ('Cercle5',"Cercle Partenariat"),('Cercle6',"Cercle Evenementiel"),('tram66',"TRAM 66")
 
+    type_annonce_ducepaj = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Agenda'),  ('documentation',"Documentation")
+
     type_annonce_conf66 = ('Annonce', 'Information'), ("Idees", "Idées"), ('administratif', 'Gestion de la conf66'), ('evenement', 'Actions/Evènement'), \
                           ("safer", "SAFER"), ("cdpnaf", "CDPNAF"), ("Commission", "Commission"), ("eau", "Eau"), ("photovolt", "Photovoltaïque")
     # ("elevage", "Elevage"),  ("viticulture", "Viticulture"),("maraichage", "Maraichage"), ("ppam","PPAM"),("arboriculture", "Arboriculture")
@@ -59,6 +61,7 @@ class Choix:
         "public": type_annonce_public,
         "pc": type_annonce_base,
         "scic": type_annonce_scic,
+        "ducepaj": type_annonce_ducepaj,
         "fer": type_annonce_base,
         "rtg": type_annonce_base,
         "viure": type_annonce_viure,
@@ -69,7 +72,7 @@ class Choix:
         "ssa":type_annonce_ssa
     }
 
-    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66 + type_annonce_ssa
+    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66 + type_annonce_ssa + type_annonce_ducepaj
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",

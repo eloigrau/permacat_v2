@@ -8,7 +8,7 @@ from local_summernote.widgets import SummernoteWidget
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from blog.models import Article
+from blog.models import Article, Discussion
 from dal import autocomplete
 from local_captcha.fields import CaptchaField
 from adherents.models import Adherent
@@ -726,6 +726,11 @@ class FavorisForm(forms.ModelForm):
         instance.profil = request.user
         instance.save()
         return instance
+
+class DiscussionForm(forms.ModelForm):
+    class Meta:
+        model = Discussion
+        fields = ['titre', 'slug']
 
 
 

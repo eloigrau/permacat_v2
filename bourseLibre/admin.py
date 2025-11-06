@@ -13,7 +13,7 @@ from django.contrib.admin.models import LogEntry
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import ProfilCreationForm, ProfilChangeForm_admin, SalonForm, SalonForm_admin, Lien_AssoSalon_adminForm
+from .forms import ProfilCreationForm, ProfilChangeForm_admin, DiscussionForm, SalonForm_admin, Lien_AssoSalon_adminForm
 from .models import Profil, Salon
 from django.utils.translation import gettext_lazy as _
 
@@ -117,7 +117,7 @@ class InscriptionNewsletterAsso_Admin(admin.ModelAdmin):
 class Discussion_Admin(admin.ModelAdmin):
     list_display  = ('article', 'titre', 'slug')
     search_fields = ('titre','article__titre')
-    #form = SalonForm
+    form = DiscussionForm
 
 admin.site.register(Conversation)
 admin.site.register(Commentaire)

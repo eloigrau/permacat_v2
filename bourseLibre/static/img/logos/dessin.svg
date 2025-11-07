@@ -129,6 +129,16 @@
        y1="76.489868"
        x2="200.57927"
        y2="88.328712" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient10139"
+       id="linearGradient965"
+       gradientUnits="userSpaceOnUse"
+       x1="139.04989"
+       y1="82.409299"
+       x2="168.39243"
+       y2="82.409302"
+       gradientTransform="translate(-7.043645,27.973016)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -141,10 +151,10 @@
      inkscape:cx="580.53467"
      inkscape:cy="366.98842"
      inkscape:document-units="mm"
-     inkscape:current-layer="g8237-7"
+     inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="967"
+     inkscape:window-width="1400"
+     inkscape:window-height="817"
      inkscape:window-x="0"
      inkscape:window-y="28"
      inkscape:window-maximized="1"
@@ -777,5 +787,55 @@
            style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:7.0842px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.906644;stroke-miterlimit:4;stroke-dasharray:none"
            id="tspan1818-0-9-5-5">SSA</tspan></text>
     </g>
+    <rect
+       style="fill:#e6c8ff;fill-opacity:1;stroke:url(#linearGradient965);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2049-92-7"
+       width="28.356539"
+       height="11.838847"
+       x="132.49925"
+       y="104.46289"
+       rx="8.5132799"
+       ry="3.7392802"
+       inkscape:export-xdpi="57.704617"
+       inkscape:export-ydpi="57.704617" />
+    <text
+       transform="scale(0.74689605,1.3388744)"
+       id="text1774-1-6-6-02-5"
+       y="83.969345"
+       x="180.26517"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:5.16985px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.661642;stroke-miterlimit:4;stroke-dasharray:none"
+       xml:space="preserve"
+       inkscape:export-xdpi="57.704617"
+       inkscape:export-ydpi="57.704617"><tspan
+         id="tspan1818-0-1-3"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:5.16985px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.661642;stroke-miterlimit:4;stroke-dasharray:none"
+         y="83.969345"
+         x="180.26517"
+         sodipodi:role="line">Du Cep au Jus</tspan></text>
+    <rect
+       style="fill:#e6c8ff;fill-opacity:1;stroke:url(#linearGradient965);stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect970"
+       width="28.356539"
+       height="11.838847"
+       x="132.49925"
+       y="104.46289"
+       rx="8.5132799"
+       ry="3.7392802"
+       inkscape:export-xdpi="57.704617"
+       inkscape:export-ydpi="57.704617" />
+    <text
+       transform="scale(0.74689605,1.3388744)"
+       id="text974"
+       y="83.969345"
+       x="180.26517"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:5.16985px;line-height:1.25;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.661642;stroke-miterlimit:4;stroke-dasharray:none"
+       xml:space="preserve"
+       inkscape:export-xdpi="57.704617"
+       inkscape:export-ydpi="57.704617"><tspan
+         id="tspan972"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:5.16985px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:0.661642;stroke-miterlimit:4;stroke-dasharray:none"
+         y="83.969345"
+         x="180.26517"
+         sodipodi:role="line">Du Cep au Jus</tspan></text>
   </g>
 </svg>

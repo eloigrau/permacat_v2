@@ -71,7 +71,7 @@ class Contact_ajouter(UserPassesTestMixin, CreateView, ):
         #action.send(self.request.user, verb='jardins_nouveau_jp', action_object=self.object, url=self.object.get_absolute_url(),
         #             description="a ajouté le Jardin: '%s'" % self.object.titre)
 
-        return redirect("adherents:phoning_projet_courant", kwargs={'asso_slug': self.asso.slug})
+        return redirect("adherents:phoning_projet_courant", asso_slug=self.asso.slug)
 
 
     def get_context_data(self, **kwargs):

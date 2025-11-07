@@ -530,7 +530,7 @@ class AdresseArticleChangeForm(forms.ModelForm):
 class DocumentPartageArticleForm(forms.ModelForm):
     class Meta:
         model = DocumentPartage
-        fields = ['nom', ]
+        fields = ['nom', 'duree']
 
     def save(self, article):
         instance = super(DocumentPartageArticleForm, self).save(commit=False)

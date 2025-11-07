@@ -480,11 +480,15 @@ class AssociationSalonArticle(models.Model):
     def __str__(self):
         return str(self.salon) + " - "+ str(self.article)
 
+
+CHOIX_DOC_PTG = ("0", "Semestriel"), ("1", "Annuel"), ("2", "Mensuel"), ("3", "Hebdomadaire"),
+
 class DocumentPartage(models.Model):
     nom = models.CharField(verbose_name=_("Nom du document (ou lien http)"), help_text="Minimum 6 lettres", max_length=100, null=True, blank=False, default="", validators=[MinLengthValidator(6)])
     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))
     slug = models.SlugField(max_length=100)
     date_creation = models.DateTimeField(auto_now_add=True)
+    duree = models.CharField(verbose_name=_("Durée du pad"), max_length=2, choices=CHOIX_DOC_PTG, default='0',)
 
     def __str__(self):
         return "(" + str(self.nom) + ") "+ str(self.url)
@@ -493,7 +497,14 @@ class DocumentPartage(models.Model):
     def url(self):
         if self.nom.startswith("http"):
             return self.nom
-        return "https://semestriel.framapad.org/p/" + self.slug
+        if self.duree == '0':
+            return "https://semestriel.framapad.org/p/" + self.slug
+        elif self.duree == '1':
+            return "https://annuel.framapad.org/p/" + self.slug
+        elif self.duree == '2':
+            return "https://mensuel.framapad.org/p/" + self.slug
+        elif self.duree == '3':
+            return "https://hebdo.framapad.org/p/" + self.slug
 
     def get_url(self):
         return self.url

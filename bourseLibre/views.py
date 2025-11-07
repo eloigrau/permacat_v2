@@ -166,7 +166,7 @@ def bienvenue(request):
         #                                        derniers_articles[:8], )]),
         #                   key=lambda x: x.date_modification if x.date_modification else x.date_creation)[::-1]
 
-        articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).order_by('-date_creation')
+        articles = Article.objects.filter(Q(date_creation__gt=dateMin) & Q(estArchive=False) & QObject).distinct().order_by('-date_creation')
 
         derniers = articles.annotate(
             latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')

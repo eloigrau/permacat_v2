@@ -96,9 +96,14 @@ class LiensSalon_Admin(admin.ModelAdmin):
     search_fields = ('salon',)
     form = Lien_AssoSalon_adminForm
 
+@admin.register(Evenement)
+class Evenement_Admin(admin.ModelAdmin):
+    list_display  = ('titre_even', 'article','start_time',)
+    search_fields = ('titre_even', 'article__titre', 'auteur__username')
+    autocomplete_fields = ('article',)
+
 #admin.site.register(Art_jardin, Article_jardinAdmin)
 admin.site.register(MessageAdmin)
-admin.site.register(Evenement)
 admin.site.register(EvenementAcceuil)
 admin.site.register(FicheProjet)
 admin.site.register(Panier)
@@ -115,14 +120,25 @@ class InscriptionNewsletterAsso_Admin(admin.ModelAdmin):
 
 @admin.register(Discussion)
 class Discussion_Admin(admin.ModelAdmin):
-    list_display  = ('article', 'titre', 'slug')
+    list_display = ('article', 'titre', 'slug')
+    autocomplete_fields = ('article',)
     search_fields = ('titre','article__titre')
-    form = DiscussionForm
+    #form = DiscussionForm
 
 admin.site.register(Conversation)
-admin.site.register(Commentaire)
 #admin.site.register(Comm_jardin)
-admin.site.register(CommentaireProjet)
+
+@admin.register(Commentaire)
+class Commentaire_Admin(admin.ModelAdmin):
+    list_display  = ('article', 'auteur_comm', 'discussion',)
+    search_fields = ('article__titre', 'auteur_comm', 'discussion')
+    autocomplete_fields = ('article',)
+
+@admin.register(CommentaireProjet)
+class Commentaire_Admin(admin.ModelAdmin):
+    list_display  = ('projet', 'auteur_comm',)
+    search_fields = ('projet__titre', 'auteur_comm')
+    autocomplete_fields = ('projet',)
 
 admin.site.register(Fiche)
 admin.site.register(CommentaireFiche)
@@ -130,7 +146,12 @@ admin.site.register(atelier_fiche)
 
 admin.site.register(LogEntry)
 
-admin.site.register(Atelier)
+@admin.register(Atelier)
+class Atelier_Admin(admin.ModelAdmin):
+    list_display  = ('titre', 'auteur','asso',)
+    search_fields = ('titre', 'article__titre', 'auteur__username')
+    autocomplete_fields = ('article',)
+
 admin.site.register(CommentaireAtelier)
 admin.site.register(InscriptionAtelier)
 

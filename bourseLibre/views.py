@@ -1524,7 +1524,7 @@ def modifierSalon(request, slug):
 
         form.save_m2m()
 
-        if salon.estPublicœ:
+        if salon.estPublic:
             url = reverse('salon', kwargs={'slug':salon.slug})
             action.send(request.user, verb='creation_salon_public_'+str(salon.slug), action_object=salon, url=url, description="a créé un nouveau salon public: " + str(salon.titre))
 
@@ -1538,25 +1538,30 @@ class ModifierSalonClass(UpdateView):
     def get_object(self):
         return Salon.objects.get(slug=self.kwargs['slug'])
 
+
 @login_required
 def invitationDansSalon(request, slug_salon):
     salon = get_object_or_404(Salon, slug=slug_salon)
     invit = InvitationDansSalon.objects.filter(salon=salon, profil_invite=request.user)
     if request.POST:
         if "annuler" not in request.POST:
-            message = Message_salon.objects.create(
+            p, message = Message_salon.objects.get_or_create(
                 salon=salon,
                 message="%s a accepté l'invitation. Bienvenue !"%request.user,
                 auteur=get_object_or_404(Profil, username="bot_permacat"),
-                date_creation=now()).save()
-            inscription = InscritSalon(salon=salon, profil=request.user)
+                date_creation=now())
+            p, inscription = InscritSalon.objects.get_or_create(salon=salon, profil=request.user)
             group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
             request.user.groups.add(group)
-            inscription.save()
+            suivi, created = Suivis.objects.get_or_create(nom_suivi='salon_' + str(slug_salon))
+            if suivi in following(request.user):
+                actions.unfollow(request.user, suivi)
+            else:
+                actions.follow(request.user, suivi, actor_only=True, send_action=False)
         else:
             message = Message_salon.objects.create(
                 salon=salon,
-                message="%s a décliné l'invitation."%invit.profil_invite,
+                message="%s a décliné l'invitation."%request.user,
                 auteur=get_object_or_404(Profil, username="bot_permacat"),
                 date_creation=now()).save()
         for i in invit:

@@ -1063,6 +1063,7 @@ def suivre_projets(request, actor_only=True):
     return redirect('blog:index_projets')
 
 
+
 class ModifierCommentaireArticle(UpdateView):
     model = Commentaire
     form_class = CommentaireArticleChangeForm

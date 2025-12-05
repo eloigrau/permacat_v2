@@ -1406,7 +1406,7 @@ class InvitationDansSalon(models.Model):
     date_creation = models.DateTimeField(verbose_name=_("Date de création"), editable=False, auto_now_add=True)
 
     def __str__(self):
-        return str(self.salon) + "' - invitant : " + self.profil_invitant.username + " - invité : " + self.profil_invite.username
+        return self.profil_invitant.username + " a invité "+ self.profil_invite.username+ " au salon " + str(self.salon)
 
     @property
     def texte(self):

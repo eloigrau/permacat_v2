@@ -1545,12 +1545,12 @@ def invitationDansSalon(request, slug_salon):
     invit = InvitationDansSalon.objects.filter(salon=salon, profil_invite=request.user)
     if request.POST:
         if "annuler" not in request.POST:
-            p, message = Message_salon.objects.get_or_create(
+            message, created = Message_salon.objects.get_or_create(
                 salon=salon,
                 message="%s a accepté l'invitation. Bienvenue !"%request.user,
                 auteur=get_object_or_404(Profil, username="bot_permacat"),
                 date_creation=now())
-            p, inscription = InscritSalon.objects.get_or_create(salon=salon, profil=request.user)
+            inscription, created = InscritSalon.objects.get_or_create(salon=salon, profil=request.user)
             group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
             request.user.groups.add(group)
             suivi, created = Suivis.objects.get_or_create(nom_suivi='salon_' + str(slug_salon))

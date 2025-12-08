@@ -20,7 +20,7 @@ class ContactContact_Admin(admin.ModelAdmin):
 @admin.register(Contact)
 class Contact_Admin(admin.ModelAdmin):
     list_display = ("projet", "nom", "prenom", "email", )
-    search_fields = ('projet', 'nom', 'prenom', 'email', )
+    search_fields = ('projet__titre', 'nom', 'prenom', 'email', )
 
 
 admin.site.register(InscriptionMail)

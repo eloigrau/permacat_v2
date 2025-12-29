@@ -45,7 +45,7 @@ def recalculerDistanceReunion(request, slug_reunion):
 @login_required
 def lireParticipant(request, id):
     part = get_object_or_404(ParticipantReunion, id=id)
-    reunions = part.reunion_set.all().order_by('start_time')
+    reunions = part.reunion_set.all().order_by('-start_time')
     reu = [(r, part.getDistance_route_allerretour(r)) for r in reunions]
     context = {"part":part, 'reunions': reu}
 

@@ -580,7 +580,7 @@ class ListeParticipants(ListView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        context['list_archive'] = Reunion.objects.filter(estArchive=True, asso=self.asso)
+        #context['list_archive'] = Reunion.objects.filter(estArchive=True, asso=self.asso)
         context['asso_courante'] = self.asso
         return context
 

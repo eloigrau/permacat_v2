@@ -14,7 +14,7 @@
 <p class="textcenter">
     <a href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}">
         <button type="button" class="btn btn-sm btn-primary">
-        &nbsp;  <i class="fa fa-arrow-right"></i> liste des réunions {{request.session.asso_slug | getNomGroupeFromSlug}}
+        &nbsp;  <i class="fa fa-arrow-right"></i> liste des participant-es {{request.session.asso_slug | getNomGroupeFromSlug}}
         </button>
     </a>
 </p>
@@ -25,7 +25,7 @@
 
         <a href="{% url 'defraiement:ajouterParticipant' asso_slug=request.session.asso_slug %}">
         <button type="button" class="btn btn-success" >
-                <i class="fa fa-plus"></i> Ajouter un participant
+                <i class="fa fa-plus"></i> Ajouter un-e participant-e
             </button>
         </a>&ensp;
     </div>
@@ -66,7 +66,7 @@
     <div class="col-sm-12 col-ms-10 col-lg-8 textcenter " >
         <a  href="{% url 'defraiement:lireParticipant' id=part.id %}" class="boutonAtelier" >
             <div style="font-variant: small-caps;" >{{ part.asso.get_logo_nomgroupe_html|safe }} {{ part.nom }}  </div>
-            <p class="textepetit"> {{part.reunion_set.all | length}} reunions, {{part.getDistance_routeTotale}}km</p>
+            <p class="textepetit">  {{part.getDistance_routeTotale}}km</p>
           </a>
 
     </div>

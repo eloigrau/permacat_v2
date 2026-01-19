@@ -231,13 +231,13 @@ def articleSupprimerAlbum(request, slug):
 
 class SupprimerArticle(DeleteAccess, DeleteView):
     model = Article
-    success_url = reverse_lazy('blog:index')
+    success_url = reverse_lazy('blog:acceuil')
     template_name_suffix = '_supprimer'
 
     #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
 
     def get_object(self):
-        return Article.objects.get(slug=self.kwargs['slug'])
+        return get_object_or_404(Article, slug=self.kwargs['slug'])
 
     def get_success_url(self, *args, **kwargs):
         suffix = "_" + self.object.asso.slug

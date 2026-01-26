@@ -1,7 +1,7 @@
 from bourseLibre.views_base import DeleteAccess
 from django.shortcuts import render, redirect, reverse, get_object_or_404, HttpResponseRedirect
 from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, FileResponse
 from django.urls import reverse_lazy
 from bourseLibre.models import Asso
 from bourseLibre.views import testIsMembreAsso
@@ -54,11 +54,12 @@ def lireParticipant(request, id):
 def getRecapitulatif_km(request, reunions, asso, export=False):
     participants = ParticipantReunion.objects.filter(asso=asso)
     if export:
-        entete = ["nom", ] + [r.titre+ " (" + str(r.start_time) + ")"  for r in reunions] + ["total Euros",]
+        entete = ["nom", ] + [r.titre  for r in reunions] + ["total Euros",]
     else:
-        entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["km parcourus",]
+        entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" +r.titre+"</a>" for r in reunions] + ["km parcourus",]
     lignes = []
-    lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["", ])
+    lignes.append(["date"] + [r.start_time for r in reunions] + ["", ])
+    lignes.append(["Catégorie"] + [r.get_categorie_display() for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
         if sum(distances) > 0:
@@ -76,10 +77,10 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, 
     if export:
         entete = ["nom", ] + [r.titre for r in reunions] + ["total Euros",]
     else:
-        entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" + r.titre+"</a>" + " (" + str(r.start_time) + ")" for r in reunions] + ["total Euros",]
+        entete = ["nom", ] + ["<a href="+r.get_absolute_url()+">" + r.titre+"</a>" for r in reunions] + ["total Euros",]
     lignes = []
-
-    lignes.append([""] + [r.get_categorie_display() for r in reunions] + ["Total", ])
+    lignes.append(["date"] + [r.start_time for r in reunions] + ["", ])
+    lignes.append(["Catégorie"] + [r.get_categorie_display() for r in reunions] + ["Total", ])
     distancesTotales = [r.getDistanceTotale for r in reunions]
     prixTotal = sum(distancesTotales) * float(tarifKilometrique)
     if prixTotal < float(prixMax):
@@ -134,13 +135,18 @@ def recapitulatif(request, asso_slug):
     return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
 
 
-def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
+@login_required
+def ecrire_csv(request, csv_data, filename):
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = FileResponse(streaming_content=(writer.writerow(row) for row in csv_data),)
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response
+
+def export_recapitulatif(request, asso, type_reunion="999", type_export="km", prixMax="100000", tarifKilometrique="1"):
     asso = testIsMembreAsso(request, asso)
     if not isinstance(asso, Asso):
         raise PermissionDenied
-
-    prixMax = request.GET.get('prixMax', 100000)
-    tarifKilometrique = request.GET.get('tarifKilometrique', 1)
 
     if type_reunion != "999":
         reunions = Reunion.objects.filter(estArchive=False, asso=asso, categorie=type_reunion).order_by('start_time','categorie',)
@@ -161,14 +167,9 @@ def export_recapitulatif(request, asso, type_reunion="999", type_export="km",):
         entete, lignes = getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, export=True)
         csv_data = [entete, ] + lignes
 
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    return StreamingHttpResponse(
-        (writer.writerow(row) for row in csv_data),
-        content_type="text/csv",
-        )
-    return response
-
+    nomexport = "km" if type_export == "km" else "euros"
+    filename = "Defraiement - " + asso.nom + " - " + str(annee) + " - "+ nomexport + ".csv"
+    return ecrire_csv(request, csv_data, filename)
 
 
 @login_required
@@ -179,20 +180,16 @@ def export_participants(request, asso):
 
     participants = ParticipantReunion.objects.filter(asso=asso).order_by("nom")
 
-    lignes = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
+    csv_data = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
 
     annee = request.GET.get('annee', now().year)
     for p in participants:
         for r in p.reunion_set.filter(start_time__year=annee).order_by('start_time'):
-            lignes.append([p.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, p.getDistance_route_allerretour(r)])
+            csv_data.append([p.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, p.getDistance_route_allerretour(r)])
 
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    return StreamingHttpResponse(
-            (writer.writerow(row) for row in lignes),
-            content_type="text/csv",
-        )
-    return response
+    filename = "Defraiement - " + asso.nom + " - " + str(annee) + " - participants.csv"
+    return ecrire_csv(request, csv_data, filename)
+
 
 @login_required
 def export_UnParticipant(request, asso, participant_id):
@@ -202,19 +199,15 @@ def export_UnParticipant(request, asso, participant_id):
 
     participant = ParticipantReunion.objects.get(id=participant_id, asso=asso)
 
-    lignes = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
+    csv_data = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
 
     annee = request.GET.get('annee', now().year)
     for r in participant.reunion_set.filter(start_time__year=annee).order_by('start_time'):
-        lignes.append([participant.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, participant.getDistance_route_allerretour(r)])
+        csv_data.append([participant.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, participant.getDistance_route_allerretour(r)])
 
-    pseudo_buffer = Echo()
-    writer = csv.writer(pseudo_buffer)
-    return StreamingHttpResponse(
-            (writer.writerow(row) for row in lignes),
-            content_type="text/csv",
-        )
-    return response
+    filename = "Defraiement - " + asso.nom + " - " + str(annee) + " - " + participant.nom + ".csv"
+    return ecrire_csv(request, csv_data, filename)
+
 @login_required
 def ajouterReunion(request, asso_slug):
     form = ReunionForm(asso_slug, request.POST or None)
@@ -598,28 +591,9 @@ class ModifierDistance_ParticipantReunion(UpdateView):
     template_name_suffix = '_modifier'
     fields = ['type_trajet', 'distance', 'contexte_distance',]
 
-#
-# from django.http import HttpResponse
-# from django.template import Context, Template
-# from django.views.decorators.csrf import csrf_exempt
-# from .forms import FormForm
-#
-# @csrf_exempt
-# def pageTest(request):
-#     form = FormForm()
-#     if request.method == 'POST':
-#         form = FormForm(request.POST)
-#
-#     t = Template("""<form method="post" action=".">{{f}}<input type="submit"><form>""")
-#     c = {'f': form.as_p()}
-#     return HttpResponse(t.render(Context(c)))
-
-
-
 
 import csv
 
-from django.http import StreamingHttpResponse
 
 class Echo:
     """An object that implements just the write method of the file-like

@@ -101,9 +101,14 @@
 {% endif %}
 
 <p class="textcenter">
-    <a href="{% url 'defraiement:export_recapitulatif' asso=request.session.asso_slug type_reunion=type_courant type_export=unite  %}?{% if request.GET.tarifKilometrique %}tarifKilometrique={{ request.GET.tarifKilometrique }}{% endif%}{% if request.GET.prixMax %}&prixMax={{ request.GET.prixMax }}{% endif%}{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
+    <a href="{% url 'defraiement:export_recapitulatif' asso=request.session.asso_slug type_reunion=type_courant type_export='km'  tarifKilometrique=tarifKilometrique prixMax=prixMax %}?{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
         <button type="button" class="btn btn-sm btn-primary">
-        &nbsp;Exporter en CSV
+            Exporter les kilomètres en CSV
+        </button>
+    </a>
+    <a href="{% url 'defraiement:export_recapitulatif' asso=request.session.asso_slug type_reunion=type_courant type_export=unite  tarifKilometrique=tarifKilometrique prixMax=prixMax %}?{% if request.GET.annee %}&annee={{ request.GET.annee }}{% endif%}" target="_blank" rel="noopener noreferrer nofollow">
+        <button type="button" class="btn btn-sm btn-primary">
+            Exporter les euros en CSV
         </button>
     </a>
 </p>

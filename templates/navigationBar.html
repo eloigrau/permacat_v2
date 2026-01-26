@@ -601,6 +601,7 @@
 
                             <li><a class="dropdown-item" href="{% url 'adhesion_entree' %}"> Faire un don</a></li>
 
+                            {% comment %}
                             <li class="nav-item">
                                 <form class="form-inline my-2 my-lg-0 justify-content-center form-group navbar-form "
                                       action="{% url 'chercher' %}" method="get" role="search">
@@ -614,6 +615,7 @@
                                     </input>
                                 </form>
                             </li>
+                            {% endcomment %}
 
                         </ul>
                     </li>

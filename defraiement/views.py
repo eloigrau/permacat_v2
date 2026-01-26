@@ -132,7 +132,7 @@ def recapitulatif(request, asso_slug):
 
         return render(request, 'defraiement/recapitulatif.html', {"form": form, "entete":entete, "lignes":lignes, "unite":"euros", "asso_list":asso_list, "type_list":type_list, "type_courant":type_reunion, "prixMax":prixMax, "tarifKilometrique":tarifKilometrique})
 
-    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "type_courant":type_reunion, "prixMax":"", "tarifKilometrique":""},)
+    return render(request, 'defraiement/recapitulatif.html', {"form": form, "asso":asso, "entete":entete, "lignes":lignes, "unite":"km", "asso_list":asso_list, "type_list":type_list, "type_courant":type_reunion, "prixMax":"0", "tarifKilometrique":"0"},)
 
 
 @login_required

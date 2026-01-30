@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block header %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/paint_style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'permapaint/css/paint_style.css' %}">
 <!--script src="{% static 'js/canvas2img.js' %}"></script-->
 {% endblock %}
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
@@ -118,8 +118,8 @@
 {% endblock %}
 {% block scriptblock %}
 <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-<script src="{% static 'js/jquery.are-you-sure.js' %}"></script>
-<script src="{% static 'js/paint.js' %}"></script>
+<script src="{% static 'permapaint/js/jquery.are-you-sure.js' %}"></script>
+<script src="{% static 'permapaint/js/paint.js' %}"></script>
 <script>$(document).ready(pencil());</script>
 
 

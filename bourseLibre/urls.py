@@ -52,7 +52,7 @@ urlpatterns = [
     path(r'photolog/', include('photologue.urls', namespace='photologue')),
     path(r'permachat/', include("permachat.urls", namespace="permachat")),
     #path(r'chat/', include("chat_old.urls", namespace="permachat")),
-    path(r'permapaint/', include("paint.urls", namespace="permapaint")),
+    path(r'permapaint/', include("permapaint.urls", namespace="permapaint")),
     path('qr_code/', include('qr_code.urls', namespace="qr_code")),
 #    path(r'phonebook/', include('phonebook.urls')),
     re_path('^', include('django.contrib.auth.urls')),

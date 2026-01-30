@@ -141,7 +141,7 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'webpush',
-    'paint',
+    'permapaint',
     #'exo_mentions',
     #'newsletter',
     'django_social_share',

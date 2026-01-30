@@ -628,13 +628,13 @@ msgid "Ajouter la page actuelle à mes favoris"
 msgstr "Ajouter la page actuelle à mes favoris"
 #: templates/navigationBar.html:670
 msgid "Choisissez un nom pour ce lien :"
-msgstr "Choisissez un nom pour ce camé:"
+msgstr "Choisissez un nom pour ce lien :"
 #: templates/wiki/base_site.html:54
 msgid "Search from current article..."
 msgstr "Recherche de l'article actuel ..."
 #: templates/wiki/base_site.html:56
 msgid "Search whole wiki..."
-msgstr "Recherchez entier wiki ..."
+msgstr "Recherchez dans le wiki ..."
 #: templates/wiki/base_site.html:80
 msgid "Account Settings"
 msgstr "Paramètres du compte"

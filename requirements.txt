@@ -16,7 +16,7 @@ cloudinary==1.10.0
 colour==0.1.5
 cryptography==39.0.0
 dj-database-url==2.2.0
-django==4.2.14
+django==4.2.27
 django-acme-challenge==1.2
 django-activity-stream==2.0.0
 django-anymail==11.0.1
@@ -141,3 +141,7 @@ whitenoise==6.7.0
 Whoosh==2.7.4
 yarl==1.9.4
 zipp==3.19.2
+channels==4.3.2
+channels_redis==4.3.0
+django-channels==0.7.0
+

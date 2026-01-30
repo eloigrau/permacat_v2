@@ -115,6 +115,9 @@ function get_salons_fromtag(badge, url_tag) {
     {% if salons_groupes %}
     <a class="nav-item nav-link" href="#asso" data-toggle="tab"> De Groupe</a>
     {% endif %}
+    {% if request.user.is_superuser %}
+    <a class="nav-item nav-link" href="#chat" data-toggle="tab"> Chat</a>
+    {% endif %}
     {% if tags %}
     <a class="nav-item nav-link" href="#motscles" data-toggle="tab"> Par mot-clés</a>
     {% endif %}
@@ -132,6 +135,33 @@ function get_salons_fromtag(badge, url_tag) {
   </div>
   <div class="tab-pane fade" id="asso">
        {% include 'salon/salons_list_template.html' with salons=salons_groupes%}
+  </div>
+  <div class="tab-pane fade" id="chat">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 textcenter">
+
+                <a href="{% url 'permachat:index' %}">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-chat">permaChat</i>
+                    </button>
+                </a>
+                <a href="{% url 'permachat:room' room_name='test' %}">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-chat">permaChat room test</i>
+                    </button>
+                </a>
+                <a href="{% url 'permachat:paint' room_name='test' %}">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-chat">permaChat paint test</i>
+                    </button>
+                </a>
+                <a href="{% url 'permapaint:index' %}">
+                    <button type="button" class="btn btn-success">
+                        <i class="fa fa-chat">permapaint</i>
+                    </button>
+                </a>
+            </div>
+        </div>
   </div>
   <div class="tab-pane fade" id="motscles">
       <p class="textcenter">Selectionner un mot clé : </p>

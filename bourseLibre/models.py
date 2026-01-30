@@ -447,10 +447,10 @@ class Profil(AbstractUser):
             return True
         return getattr(self, "adherent_" + asso, False)
 
-    def isCotisationAJour(self, asso_slug, mois_anprecedent=2):
+    def isCotisationAJour(self, asso_slug, mois_dansanprecedent=2):
         if not self.statutMembre_asso(asso_slug):
             return False
-        time_threshold = datetime(datetime.now().year - 1, mois_anprecedent, 1).date()
+        time_threshold = datetime(datetime.now().year - 1, mois_dansanprecedent, 1).date()
         return self.getAdhesions(asso_slug).filter(date_cotisation__gt=time_threshold).exists()
 
     @property

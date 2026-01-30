@@ -392,7 +392,7 @@ def get_articles_asso_d3_hierar_projet(request, asso_slug):
                         "type": "atelier" if isinstance(item, Atelier) else
                                 "pad" if isinstance(item, DocumentPartage) else
                                 "document",
-                        }for item in itertools.chain(Atelier.objects.filter(article=lien.article), Document.objects.filter(article=lien.article),DocumentPartage.objects.filter(article=art),) ]
+                        }for item in itertools.chain(Atelier.objects.filter(article=lien.article), Document.objects.filter(article=lien.article),DocumentPartage.objects.filter(article=lien.article),) ]
                     }for lien in liste_liens.filter(projet_lie=proj).distinct()]
             })
 

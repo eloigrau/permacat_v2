@@ -66,6 +66,6 @@ def modal_ajouterFavoris(request):
             nom = 'favoris ' + str(nb)
 
         favoris, created = Favoris.objects.get_or_create(profil=request.user, url=url_path, nom=nom)
-    else:
-        url_path = request.url
+        if url_path:
+            return redirect(url_path)
     return redirect("bienvenue")

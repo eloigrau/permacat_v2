@@ -90,6 +90,7 @@ else:
 # pip install django-fontawesome django-model_utils django-debug_toolbar django-haystack django-bootstrap django-extensions django-leaflet django-filter django-rest-framework django-scheduler django-widget-tweaks
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.contenttypes',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -108,6 +109,8 @@ INSTALLED_APPS = [
     'jardinpartage',
     'fiches',
     'ateliers',
+    'permachat',
+    #'chat_old',
     #'django_extensions',
     #'django_filters',
     'cal',
@@ -138,6 +141,7 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
     'webpush',
+    'paint',
     #'exo_mentions',
     #'newsletter',
     'django_social_share',
@@ -149,6 +153,7 @@ INSTALLED_APPS = [
      #'emoji_picker',
     "django_minify_html",
     "permagorapresentation",
+    "collectifssa",
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',
@@ -248,10 +253,18 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'bourseLibre.wsgi.application'
+ASGI_APPLICATION = "permachat.asgi.application"
+#ASGI_APPLICATION = "chat_old.asgi.application"
 
-
-# except:
-
+#redis_host = os.environ.get('REDIS_HOST', 'localhost')
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],#"hosts": [(127.0.0.1 or redis_host, 6378)],
+        },
+    },
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     #{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
@@ -533,9 +546,44 @@ HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 7 }
 HITCOUNT_KEEP_HIT_IN_DATABASE = { 'days': 400 }
 
 
+
 #CAPTCHA_FONT_PATH =
 #CAPTCHA_IMAGE_SIZE = (50, 25)
 #FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
+
+
+##### Project-specific settings
+
+NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS = True
+
+MSG_TYPE_MESSAGE = 0  # For standard messages
+MSG_TYPE_WARNING = 1  # For yellow messages
+MSG_TYPE_ALERT = 2  # For red & dangerous alerts
+MSG_TYPE_MUTED = 3  # For just OK information that doesn't bother users
+MSG_TYPE_ENTER = 4  # For just OK information that doesn't bother users
+MSG_TYPE_LEAVE = 5  # For just OK information that doesn't bother users
+MSG_TYPE_PAINT = 6  # For paint messages
+
+MESSAGE_TYPES_CHOICES = (
+    (MSG_TYPE_MESSAGE, 'MESSAGE'),
+    (MSG_TYPE_WARNING, 'WARNING'),
+    (MSG_TYPE_ALERT, 'ALERT'),
+    (MSG_TYPE_MUTED, 'MUTED'),
+    (MSG_TYPE_ENTER, 'ENTER'),
+    (MSG_TYPE_LEAVE, 'LEAVE'),
+    (MSG_TYPE_PAINT, 'PAINT'),
+)
+
+MESSAGE_TYPES_LIST = [
+    MSG_TYPE_MESSAGE,
+    MSG_TYPE_WARNING,
+    MSG_TYPE_ALERT,
+    MSG_TYPE_MUTED,
+    MSG_TYPE_ENTER,
+    MSG_TYPE_LEAVE,
+    MSG_TYPE_PAINT
+]
+
 
 #on met ça a la fin pour importer les settings de production sur le serveur
 try:

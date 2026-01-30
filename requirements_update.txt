@@ -106,7 +106,6 @@ googletrans==4.0.2
 gunicorn==23.0.0
 h11==0.16.0
 h2==4.3.0
-helloasso-apiv5==1.0.0
 hiredis==3.3.0
 hpack==4.1.0
 html5lib==1.1

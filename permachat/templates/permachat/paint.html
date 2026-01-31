@@ -2,8 +2,8 @@
 {% load static %}
 {% block header %}
 <link rel="stylesheet" type="text/css" href="{% static 'permapaint/css/paint_style.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'permapaint/css/permachat_style.css' %}">
-<!--script src="{% static 'js/canvas2img.js' %}"></script-->
+<link rel="stylesheet" type="text/css" href="{% static 'permachat/css/permachat_style.css' %}">
+<!--script src="{% static 'permapaint/js/canvas2img.js' %}"></script-->
 {% endblock %}
 
 {% block subtitle %}
@@ -139,11 +139,12 @@
 {% block scriptblock %}
 <script src="http://code.jquery.com/jquery-1.8.3.js" type="text/javascript"></script>
 <script src="{% static 'js/jquery.are-you-sure.js' %}" type="text/javascript"></script>
-<script src="{% static 'js/paint_chat.js' %}" type="text/javascript"></script>
-<script src="{% static 'js/reconnecting-websocket.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'permachat/js/paint_chat.js' %}" type="text/javascript"></script>
+<script src="{% static 'permachat/js/reconnecting-websocket.min.js' %}" type="text/javascript"></script>
 <script>$(document).ready(pencil());</script>
 
   <script>
+
 $(function () {
     // Correctly decide between ws:// and wss://
     const roomName = "{{room.slug}}";

@@ -173,45 +173,45 @@
     </div>
     <div class="anchor_blank" id="idContenu"></div>
     <nav class="nav nav-tabs justify-content-center">
-        <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"><i
-                class="fa fa-align-center icon-left"></i> </a>
-        <a class="nav-item nav-link" href="#historique" data-toggle="tab"> <i class="fa fa-info icon-left"></i></a>
+        <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"  title="Contenu de l'article"><i class="fa fa-align-center icon-left"></i> </a>
+        <a class="nav-item nav-link" href="#historique" data-toggle="tab" title="Informations sur l'article> <i class="fa fa-info icon-left"></i></a>
         {% if lieux %}
-        <a class="nav-item nav-link" href="#lieux" data-toggle="tab">
-            <i class="fa fa-map-marker icon-left"></i></a>
+        <a class="nav-item nav-link" href="#lieux" data-toggle="tab" title="Lieux (carte)">
+            <i class="fa fa-map-marker icon-left"></i>
+        </a>
         {% endif %}
         {% if dates %}
-        <a class="nav-item nav-link" href="#dates" data-toggle="tab"><i class="fa fa-calendar icon-left"></i></a>
+        <a class="nav-item nav-link" href="#dates" data-toggle="tab" title="Dates"><i class="fa fa-calendar icon-left"></i></a>
         {% endif %}
         {% if article.album %}
         <a class="nav-item nav-link" href="#album"
        onclick="get_album_article('{% url 'blog:get_album_article_ajax' article_slug=article.slug %}')" data-toggle="tab"
-       id="navtab_tags"> <i class="fa fa-camera-retro icon-left"></i></a>
+       id="navtab_tags" title="Album photo associé"> <i class="fa fa-camera-retro icon-left"></i></a>
         {% endif %}
         {% if salons %}
-        <a class="nav-item nav-link" href="#salons" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
+        <a class="nav-item nav-link" href="#salons" data-toggle="tab" title="Salons de discussion"><i class="fa fa-users icon-left"></i></a>
         {% endif %}
         {% if ateliers %}
-        <a class="nav-item nav-link" href="#ateliers" data-toggle="tab">{% fa5_icon 'wrench' %}</a>
+        <a class="nav-item nav-link" href="#ateliers" data-toggle="tab" title="Ateliers">{% fa5_icon 'wrench' %}</a>
         {% endif %}
         {% if todos %}
-        <a class="nav-item nav-link" href="#todos" data-toggle="tab"> <i class="fa fa-tasks icon-left"></i></a>
+        <a class="nav-item nav-link" href="#todos" data-toggle="tab" title="Les Yapluka"> <i class="fa fa-tasks icon-left"></i></a>
         {% endif %}
         {% if reunions %}
-        <a class="nav-item nav-link" href="#reunions" data-toggle="tab"><i class="fa fa-users icon-left"></i></a>
+        <a class="nav-item nav-link" href="#reunions" data-toggle="tab" title="Défraiement kilométrique"><i class="fa fa-users icon-left"></i></a>
         {% endif %}
         {% if documents %}
-        <a class="nav-item nav-link" href="#documents" data-toggle="tab"><i class="fa fa-file icon-left"></i></a>
+        <a class="nav-item nav-link" href="#documents" data-toggle="tab" title="Documents"><i class="fa fa-file icon-left"></i></a>
         {% endif %}
         {% if documents_partages %}
-        <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab"><i class="fa fa-link icon-left"></i></a>
+        <a class="nav-item nav-link" href="#documents_partages" data-toggle="tab" title="Documents partagés"><i class="fa fa-link icon-left"></i></a>
         {% endif %}
         {% if suffrages or sondages %}
-        <a class="nav-item nav-link" href="#suffrages" data-toggle="tab"><i class="fa fa-paper-plane"></i>
+        <a class="nav-item nav-link" href="#suffrages" data-toggle="tab" title="Sondages / suffrages"><i class="fa fa-paper-plane"></i>
             <i class="fa fa-paper-plane-top"></i></a>
         {% endif %}
-        <a class="nav-item nav-link" href="#partager" data-toggle="tab"> <i class="fa fa-share icon-left"></i></a>
-        <a class="nav-item nav-link" href="#plus" data-toggle="tab"> <i class="fa fa-plus icon-left"></i></a>
+        <a class="nav-item nav-link" href="#partager" data-toggle="tab" title="Partager l'article"> <i class="fa fa-share icon-left"></i></a>
+        <a class="nav-item nav-link" href="#plus" data-toggle="tab" title="Ajouter à l'article..."> <i class="fa fa-plus icon-left"></i></a>
     </nav>
 
     <div class="tab-content">

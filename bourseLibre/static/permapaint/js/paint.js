@@ -7,9 +7,12 @@ var isFill = true, isStroke = false, currentTypeColor = 1;
 
 var bounds = canvas.getBoundingClientRect();
 
+
 window.addEventListener("load", function(){bounds = canvas.getBoundingClientRect();})
 window.addEventListener("resize", function(){bounds = canvas.getBoundingClientRect();})
-
+window.addEventListener("scroll", (event) => {
+ bounds = canvas.getBoundingClientRect();
+})
 var pi2 = Math.PI * 2;
 var resizerRadius = 8;
 var rr = resizerRadius * resizerRadius;

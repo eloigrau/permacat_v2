@@ -24,3 +24,4 @@ def accueil(request):
             msg2 = "<em>Une erreur s'est produite lors de l'envoi du message (%s), veuillez réessayer ou envoyer un mail à permagora66@gmail.com </em>"%form_contact.errors
 
     return render(request, 'collectifssa/index.html', {"msg":msg, "msg2":msg2, "form": form_contact, "form_captcha": form_captcha, "anchor":anchor })
+#index #left-sidebar

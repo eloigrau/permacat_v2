@@ -245,3 +245,6 @@ class InscriptionAtelier(models.Model):
         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(self.atelier)
 
 
+
+class Atelier_recherche(models.Model):
+    atelier = models.ForeignKey(Atelier, on_delete=models.CASCADE, null=True, blank=True,)

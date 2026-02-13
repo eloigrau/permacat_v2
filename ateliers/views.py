@@ -2,7 +2,8 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse_lazy
 from .models import CommentaireAtelier, Choix, Atelier, InscriptionAtelier
-from .forms import AtelierForm, CommentaireAtelierForm, AtelierChangeForm, ContactParticipantsForm, CommentaireAtelierChangeForm
+from .forms import AtelierForm, CommentaireAtelierForm, AtelierChangeForm, ContactParticipantsForm, \
+    CommentaireAtelierChangeForm, Atelier_rechercheForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +11,7 @@ from blog.models import Article
 from actstream.models import following
 from bourseLibre.settings.production import SERVER_EMAIL
 from datetime import timedelta
+from django.views.generic.edit import FormMixin
 
 from django.utils.timezone import now
 from django.dispatch import Signal
@@ -28,6 +30,7 @@ from hitcount.views import HitCountMixin
 from bs4 import BeautifulSoup
 from webpush import send_user_notification
 from django.templatetags.static import static
+from dal import autocomplete
 
 def accueil(request):
     return redirect("ateliers:index_ateliers")
@@ -46,7 +49,8 @@ def ajouterAtelier(request, article_slug=None):
         action.send(request.user, verb='atelier_nouveau', action_object=atelier, url=atelier.get_absolute_url(),
                      description="a ajouté l'atelier: '%s'" % atelier.titre)
         return redirect(atelier.get_absolute_url())
-    return render(request, 'ateliers/atelier_ajouter.html', { "form": form, })
+
+    return render(request, 'ateliers/atelier_ajouter.html', { "form": form})
 
 
 # @login_required
@@ -183,11 +187,24 @@ def lireAtelier(request, atelier):
     return render(request, 'ateliers/lireAtelier.html', {'atelier': atelier,  'form': form_comment, 'commentaires':commentaires, 'user_inscrit': user_inscrit, 'inscrits': inscrits},)
 
 
-class ListeAteliers(ListView):
+class ListeAteliers(ListView, FormMixin):
     model = Atelier
     context_object_name = "atelier_list"
     template_name = "ateliers/index_ateliers.html"
     paginate_by = 30
+
+    form_class = Atelier_rechercheForm
+
+
+    def post(self, request, *args, **kwargs):
+        # first construct the form to avoid using it as instance
+        self.success_url = self.request.get_full_path()
+        form = self.get_form()
+        if form.is_valid():
+            if form.cleaned_data["atelier"]:
+                self.success_url = form.cleaned_data["atelier"].get_absolute_url()
+        return HttpResponseRedirect(self.success_url)
+
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
@@ -226,6 +243,9 @@ class ListeAteliers(ListView):
 
         if "mc" in self.request.GET:
             context['typeFiltre'] = "mc"
+
+        self.form = Atelier_rechercheForm(self.request.POST or None)
+        context['form_atelier_recherche'] = self.get_form()
 
         return context
 
@@ -342,3 +362,21 @@ def get_qr_code(request, slug):
 def ateliersArchives(request):
     atelier_list = Atelier.objects.filter(request.user.getQObjectsAssoAteliers()).filter(estArchive=True)
     return render(request, 'ateliers/listAtelier_template.html', {'atelier_list': atelier_list})
+
+
+
+class AtelierAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        calc = len(self.q) > 1
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated or not calc:
+            return Atelier.objects.none()
+
+        if calc:
+            # if "asso_slug" in self.request.session:
+            #    qs = Article.objects.filter(titre__icontains=self.q, estArchive=False, asso__slug=self.request.session["asso_slug"]).exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("titre")
+            # else:
+            qs = Atelier.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by(
+                "titre").filter(Q(estArchive=False) & (Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)))
+
+        return qs

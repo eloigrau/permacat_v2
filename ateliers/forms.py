@@ -1,15 +1,13 @@
 from django import forms
-from .models import Atelier, CommentaireAtelier, Atelier, InscriptionAtelier
-from django.utils.text import slugify
+from .models import CommentaireAtelier, Atelier, Atelier_recherche
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Profil
 from blog.forms import SummernoteWidgetWithCustomToolbar
 from bourseLibre.models import Asso
-from django.utils.timezone import now
-from django.shortcuts import redirect
 import re
 from bourseLibre.utils import slugify_pcat
+from dal import autocomplete
 
 class AtelierForm(forms.ModelForm):
     referent = forms.ChoiceField(label="Référent-e de l'atelier")
@@ -145,3 +143,19 @@ class CommentaireAtelierChangeForm(forms.ModelForm):
 class ContactParticipantsForm(forms.Form):
     msg = forms.CharField(label="Message", widget=SummernoteWidget)
 
+
+class Atelier_rechercheForm(forms.ModelForm):
+
+    class Meta:
+        model = Atelier_recherche
+        fields = ("atelier", )
+        widgets = {
+            'atelier': autocomplete.ModelSelect2(url='ateliers:atelier-ac')
+        }
+        help_texts = {
+            'atelier': 'Chercher dans les titres des ateliers',
+        }
+
+    def save(self):
+        instance = super(Atelier_rechercheForm, self).save()
+        return instance

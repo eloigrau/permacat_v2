@@ -254,9 +254,9 @@
                             </li>
                             {% endif %}
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item dropdown-toggle" href="#">SLA/SSA 66</a>
+                                <a class="dropdown-item dropdown-toggle" href="#">SSA 66</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
-                                    <li><a class="dropdown-item" href="{% url 'presentation_asso'  asso='ssa' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
+                                    <li><a class="dropdown-item" href="{% url 'collectifssa:accueil_collectifssa'  %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='ssa' %}"><i
                                             class='fa fa-compass iconleft'></i> {% translate 'Carte / Annuaire' %} </a></li>
                                     <li><hr class="dropdown-divider"></li>
@@ -673,7 +673,7 @@
                                 <a class="dropdown-item " href="{% url 'presentation_asso' asso='viure' %}">Viure</a>
                             </li>
                             <li class="dropdown-submenu">
-                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='conf66' %}">Confédération Paysanne 66</a>
+                                <a class="dropdown-item " href="{% url 'collectifssa:accueil_collectifssa' %}">Collectif SSA 66</a>
                             </li>
                         </ul>
                     </li>

@@ -44,4 +44,5 @@ urlpatterns = [
 
     path('ajax/ateliersArchives/', views.ateliersArchives, name='ateliersArchives'),
 
+    re_path(r'^atelier-ac/$', views.AtelierAutocomplete.as_view(), name='atelier-ac', ),
 ]

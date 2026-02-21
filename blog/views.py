@@ -475,8 +475,10 @@ class ListeArticles_asso(ListView, FormMixin):
 
     def get_queryset(self):
         params = dict(self.request.GET.items())
-        self.asso = Asso.objects.get(slug=self.kwargs['asso'])
-        self.request.session["asso_slug"] = self.kwargs['asso']
+        self.asso = Asso.objects.filter(slug=self.kwargs['asso']).first()
+        if not self.asso:
+            self.asso = Asso.objects.get(slug='public')
+        self.request.session["asso_slug"] = self.asso.slug
         # self.q_objects = self.request.user.getQObjectsAssoArticles()
         # qs = Article.objects.filter(Q(asso__slug=self.asso.slug) & self.q_objects).distinct()
         if self.request.user.est_autorise(self.asso.slug):

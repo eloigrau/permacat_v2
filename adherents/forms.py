@@ -109,7 +109,7 @@ class AdherentForm(forms.ModelForm):
         cleaned_data = self.cleaned_data
 
         try:
-            Adherent.objects.get(nom=cleaned_data['nom'],prenom=cleaned_data['prenom'],asso=cleaned_data['asso'])
+            Adherent.objects.get(nom=cleaned_data['nom'],prenom=cleaned_data['prenom'], asso__slug=self.asso_slug)
         except Adherent.DoesNotExist:
             pass
         else:

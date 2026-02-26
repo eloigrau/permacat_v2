@@ -107,10 +107,10 @@ function get_ateliers_archives(url_tag) {
 }
 </script>
     <nav class="nav nav-tabs justify-content-center">
-      <a class="nav-item nav-link active" href="#prevus" data-toggle="tab">Prévus</a>
-      <a class="nav-item nav-link " href="#passes" data-toggle="tab">Passés</a>
-      <a class="nav-item nav-link " href="#propositions" data-toggle="tab">Proposés</a>
-        <a class="nav-item nav-link" href="#archives"
+      <a class="nav-item nav-link active" href="#prevus" data-toggle="tab" title="Voir les ateliers dont la date n'est pas encore pasée" >Prévus</a>
+      <a class="nav-item nav-link " href="#passes" data-toggle="tab" title="Voir les ateliers dont la date est dépassée">Passés</a>
+      <a class="nav-item nav-link " href="#propositions" data-toggle="tab" title="Voir les ateliers dont la date n'est pas encore fixée"> Proposés</a>
+        <a class="nav-item nav-link" href="#archives" title="Voir les ateliers qui ont été archivés"
        onclick="get_ateliers_archives('{% url 'ateliers:ateliersArchives' %}')" data-toggle="tab"
        id="navtab_archives"> Archivés</a>
     </nav>

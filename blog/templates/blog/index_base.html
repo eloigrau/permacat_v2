@@ -474,28 +474,28 @@ function get_tags_articles(url_tag) {
 </div>
 <nav class="nav nav-tabs justify-content-center">
     {%if articles_epingles%}
-    <a class="nav-item nav-link active" href="#art_groupe_epingle" data-toggle="tab" id="navtab_epingles"> Epinglés</a>
+    <a class="nav-item nav-link active" href="#art_groupe_epingle" data-toggle="tab" id="navtab_epingles" title="Article à la Une"> Epinglés</a>
     {% endif%}
 <a class="nav-item nav-link     {%if not articles_epingles%}active {% endif%}" href="#art_groupe" data-toggle="tab" id="navtab_groupe"> Fil d'actu</a>
 
     {% if categorie_list %}
-    <a class="nav-item nav-link" href="#art_dossier" data-toggle="tab" id="navtab_dossier"> Par dossier</a>
+    <a class="nav-item nav-link" href="#art_dossier" data-toggle="tab" id="navtab_dossier" title="Parcourir le forum par Dossier thématique"> Par dossier</a>
     {% endif%}
     {% if request.session.asso_slug %}
     <a class="nav-item nav-link" href="#art_motscles"
-       onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{request.session.asso_slug}}')" data-toggle="tab"
+       onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{request.session.asso_slug}}')" data-toggle="tab" title="Parcourir le forum par Mot-clé"
        id="navtab_tags"> Par mot clé</a>
     <a class="nav-item nav-link" href="#art_partage"
        onclick="get_articles_partages('{% url 'blog:articlesPartages' asso=request.session.asso_slug %}')" data-toggle="tab"
-       id="navtab_partages"> Partagés</a>
+       id="navtab_partages" title="Voir les articles partagés avec ce groupe"> Partagés</a>
     <a class="nav-item nav-link" href="#art_archive"
        onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=request.session.asso_slug %}')" data-toggle="tab"
-       id="navtab_archives"> Archivés</a>
+       id="navtab_archives" title="Voir les articles 'archivés' "> Archivés</a>
 
     {% if user_membreAsso and request.session.asso_slug %}
     <a class="nav-item nav-link" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}"
 
-       id="navtab_visu"> Map </a>
+       id="navtab_visu" title="Visualiser l'arborescence de tous les articles du groupe"> Map </a>
     {% endif %}
     {% endif%}
 </nav>

@@ -8,7 +8,7 @@ class LienArticleAdmin(admin.ModelAdmin):
 
 admin.site.register(Theme)
 admin.site.register(AssociationSalonArticle, LienArticleAdmin)
-admin.site.register(DocumentPartage), LienArticleAdmin
+admin.site.register(DocumentPartage, LienArticleAdmin)
 admin.site.register(ArticleLiens, LienArticleAdmin)
 admin.site.register(ArticleLienProjet, LienArticleAdmin)
 admin.site.register(ZoneGeo)

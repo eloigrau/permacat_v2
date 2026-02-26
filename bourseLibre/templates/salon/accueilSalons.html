@@ -109,17 +109,17 @@ function get_salons_fromtag(badge, url_tag) {
 
 <div class="anchor_blank" id="idContenu"></div>
 <nav class="nav nav-tabs justify-content-center">
-    <a class="nav-item nav-link active" href="#recents" data-toggle="tab">Récents </a>
-    <a class="nav-item nav-link" href="#publics" data-toggle="tab"> Publics</a>
-    <a class="nav-item nav-link" href="#prives" data-toggle="tab"> Privés</a>
+    <a class="nav-item nav-link active" href="#recents" data-toggle="tab" title="Voir les Salons qui ont été actifs récemment">Récents </a>
+    <a class="nav-item nav-link" href="#publics" data-toggle="tab" title="Voir les Salons 'publics' (visibles par toustes)"> Publics</a>
+    <a class="nav-item nav-link" href="#prives" data-toggle="tab" title="Voir les Salons privés auxquels vous participez "> Privés</a>
     {% if salons_groupes %}
-    <a class="nav-item nav-link" href="#asso" data-toggle="tab"> De Groupe</a>
+    <a class="nav-item nav-link" href="#asso" data-toggle="tab" title="Voir les Salons du groupe"> De Groupe</a>
     {% endif %}
     {% if request.user.is_superuser %}
-    <a class="nav-item nav-link" href="#chat" data-toggle="tab"> Chat</a>
+    <a class="nav-item nav-link" href="#chat" data-toggle="tab" title="Voir le Chat en direct"> Chat</a>
     {% endif %}
     {% if tags %}
-    <a class="nav-item nav-link" href="#motscles" data-toggle="tab"> Par mot-clés</a>
+    <a class="nav-item nav-link" href="#motscles" data-toggle="tab" title="Voir les Salons par mot-clé"> Par mot-clés</a>
     {% endif %}
 </nav>
 

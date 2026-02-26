@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from django.urls import reverse_lazy
 from .models import CommentaireAtelier, Choix, Atelier, InscriptionAtelier
 from .forms import AtelierForm, CommentaireAtelierForm, AtelierChangeForm, ContactParticipantsForm, \
-    CommentaireAtelierChangeForm, Atelier_rechercheForm
+    CommentaireAtelierChangeForm, Atelier_rechercheForm, AtelierDupliquerForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
@@ -46,6 +46,20 @@ def ajouterAtelier(request, article_slug=None):
         article = None
     if form.is_valid():
         atelier = form.save(request, article)
+        action.send(request.user, verb='atelier_nouveau', action_object=atelier, url=atelier.get_absolute_url(),
+                     description="a ajouté l'atelier: '%s'" % atelier.titre)
+        return redirect(atelier.get_absolute_url())
+
+    return render(request, 'ateliers/atelier_ajouter.html', { "form": form})
+
+
+@login_required
+def dupliquerAtelier(request, atelier_slug):
+    atelier_acopier = Atelier.objects.get(slug=atelier_slug)
+    form = AtelierDupliquerForm(request, atelier_acopier, request.POST or None)
+
+    if form.is_valid():
+        atelier = form.save(request, atelier_acopier)
         action.send(request.user, verb='atelier_nouveau', action_object=atelier, url=atelier.get_absolute_url(),
                      description="a ajouté l'atelier: '%s'" % atelier.titre)
         return redirect(atelier.get_absolute_url())

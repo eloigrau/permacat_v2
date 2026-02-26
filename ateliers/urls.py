@@ -35,6 +35,7 @@ urlpatterns = [
     re_path(r'^supprimerAtelier/(?P<slug>[-\w]+)$', login_required(views.SupprimerAtelier.as_view(), login_url='/auth/login/'), name='supprimerAtelier'),
     re_path(r'^ajouterAtelier/(?P<article_slug>[-\w]+)$', login_required(views.ajouterAtelier), name='ajouterAtelier_article'),
     path('ajouterAtelier/', login_required(views.ajouterAtelier), name='ajouterAtelier'),
+    path('dupliquerAtelier/<str:atelier_slug>', login_required(views.dupliquerAtelier), name='dupliquerAtelier'),
 
     path('suivre_ateliers/', views.suivre_ateliers, name='suivre_ateliers'),
 #    path('copierAteliers/', views.copierAteliers, name='copierAteliers'),

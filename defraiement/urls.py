@@ -31,8 +31,8 @@ urlpatterns = [
      path(r'ajouterAdresseReunion/<str:slug>/', views.ajouterAdresseReunion, name='ajouterAdresseReunion'),
      path(r'ajouterAdresseReunionChezParticipant/<str:slug>/', views.ajouterAdresseReunionChezParticipant, name='ajouterAdresseReunionChezParticipant'),
      path(r'recalculerDistanceReunion/<str:slug_reunion>/', views.recalculerDistanceReunion, name='recalculerDistanceReunion'),
-    re_path(r'^modifierReunion/(?P<slug>[-\w]+)/$',
-        login_required(views.ModifierReunion.as_view(), login_url='/auth/login/'), name='modifierReunion'),
+    path(r'modifierReunion/<str:slug>/', login_required(views.ModifierReunion.as_view(), login_url='/auth/login/'), name='modifierReunion'),
+    path(r'dupliquerReunion/<str:reunion_slug>/',views.dupliquerReunion, name='dupliquerReunion'),
     re_path(r'^supprimerReunion/(?P<slug>[-\w]+)$', login_required(views.SupprimerReunion.as_view(), login_url='/auth/login/'), name='supprimerReunion'),
     path(r'ajouterReunion/<str:asso_slug>', login_required(views.ajouterReunion), name='ajouterReunion'),
 

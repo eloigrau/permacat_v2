@@ -13,7 +13,10 @@
                <button type="button" class="btn btn-sm btn-warning">
                  &nbsp;Modifier
                </button></a>
-            </div>
+            <a href="{%if request.user.is_authenticated %}{% url 'defraiement:dupliquerReunion' reunion_slug=reunion.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 &nbsp;Dupliquer
+               </button></a>
             {% endif %}
             {%if request.user.is_superuser or request.user == reunion.auteur  %}
 				<a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerReunion' slug=reunion.slug %}{% endif %}">
@@ -36,6 +39,8 @@
  <p class="inscrit_reunion textcenter">
 le {{ reunion.start_time|date:"l d F Y"}}
     </p>
+{% else %}
+            PAS de date renseignée (modifiez la réunion avec le bouton ci-dessus)
 {% endif %}
      {% if reunion.article %}
             <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre|couperTexte:30}}</a></p>

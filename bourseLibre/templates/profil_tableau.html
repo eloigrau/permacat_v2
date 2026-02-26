@@ -150,7 +150,27 @@
     {%if request.user.adherent_bzz2022 or request.user == user  or request.user.is_superuser%}
         <tr>
             <td style="width:200px">Inscrit au collectif Bzzz *: </td>
-            <td>{{user.adherent_bzz2022|translateOuiNon }}</td>
+            <td>{{user.adherent_bzz2022|translateOuiNon }}
+       {% if request.user.is_superuser %}
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='bzz2022' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a>
+        {% endif %}</td>
+        </tr>
+    {% endif %}
+    {%if request.user.adherent_ducepaj or request.user == user  or request.user.is_superuser%}
+        <tr>
+            <td style="width:200px">Inscrit au collectif Du Cep Au Jus *: </td>
+            <td>{{user.adherent_bzz2022|translateOuiNon }}
+       {% if request.user.is_superuser %}
+        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='ducepaj' %}">
+            <button type="button" class="btn btn-sm btn-warning">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+            </button>
+        </a>
+        {% endif %}</td>
         </tr>
     {% endif %}
     {%if request.user.adherent_jp or request.user == user  or request.user.is_superuser%}

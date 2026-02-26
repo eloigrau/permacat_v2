@@ -23,7 +23,11 @@
             <div class = "btn-group">
             <a href="{%if request.user.is_authenticated %}{% url 'ateliers:modifierAtelier' slug=atelier.slug %}{% endif %}">
                <button type="button" class="btn btn-sm btn-warning">
-                 &nbsp;Modifier
+                 Modifier
+               </button></a>
+            <a href="{%if request.user.is_authenticated %}{% url 'ateliers:dupliquerAtelier' atelier_slug=atelier.slug %}{% endif %}">
+               <button type="button" class="btn btn-sm btn-warning">
+                 Dupliquer
                </button></a>
             </div>
             {% endif %}

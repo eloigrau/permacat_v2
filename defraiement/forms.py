@@ -2,12 +2,11 @@ from django import forms
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
-from bourseLibre.models import Asso
-from photologue.models import Album
+from bourseLibre.models import Asso, Adresse
 from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais
-from django.core.exceptions import ValidationError
 from bourseLibre.utils import slugify_pcat
 from adherents.models import Adherent
+from datetime import datetime
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -49,6 +48,53 @@ class ReunionForm(forms.ModelForm):
 
         return instance
 
+
+class ReunionDupliquerForm(forms.ModelForm):
+
+    class Meta:
+        model = Reunion
+        fields = ['categorie', 'titre', 'description', 'start_time']
+        widgets = {
+            'contenu': SummernoteWidget(),
+             'start_time':  forms.DateInput(),
+        }
+
+    def __init__(self, reunion, *args, **kwargs):
+        super(ReunionDupliquerForm, self).__init__(*args, **kwargs)
+        self.fields['categorie'].choices = [x for x in Choix.type_reunion if x[1] in Choix.type_reunion_asso[reunion.asso.slug]]
+        self.fields['categorie'].initial = reunion.categorie
+        self.fields['titre'].initial = reunion.titre
+        self.fields['description'].initial = reunion.description
+        self.fields['start_time'].initial = reunion.start_time
+        self.fields["asso"].initial = reunion.asso
+
+    def save(self, userProfil, reunion):
+        instance = super(ReunionDupliquerForm, self).save(commit=False)
+
+        max_length = Reunion._meta.get_field('slug').max_length
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
+
+        for x in itertools.count(1):
+            if not Reunion.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d" % (orig[:max_length - len(str(x)) - 1], x)
+
+        instance.auteur = userProfil
+
+
+        adresse = Adresse.objects.create(
+            rue=reunion.adresse.rue,
+            code_postal=reunion.adresse.code_postal,
+            commune=reunion.adresse.commune,
+            telephone=reunion.adresse.telephone,
+        )
+        instance.adresse = adresse
+        instance.asso = reunion.asso
+        instance.save()
+
+        return instance
 
 class ReunionChangeForm(forms.ModelForm):
 

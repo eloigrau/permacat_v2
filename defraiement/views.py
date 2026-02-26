@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, \
     ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm, \
-    ChoixAdherentConf, NoteDeFrais_form, NoteDeFrais_update_form
+    ChoixAdherentConf, NoteDeFrais_form, NoteDeFrais_update_form, ReunionDupliquerForm
 from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion, NoteDeFrais, \
     ChoixMoyenPaiement
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
@@ -220,6 +220,20 @@ def ajouterReunion(request, asso_slug):
         return redirect(reverse('defraiement:ajouterAdresseReunion', kwargs={"slug": reu.slug}))
 
     return render(request, 'defraiement/ajouterReunion.html', { "form": form})
+
+
+@login_required
+def dupliquerReunion(request, reunion_slug):
+    reunion = Reunion.objects.get(slug=reunion_slug)
+    form = ReunionDupliquerForm(reunion, request.POST or None)
+
+    if form.is_valid():
+        reu = form.save(request.user, reunion, )
+        reu.save()
+        return redirect(reverse('defraiement:lireReunion', kwargs={"slug": reu.slug}))
+
+    return render(request, 'defraiement/ajouterReunion.html', { "form": form})
+
 
 
 @login_required

@@ -66,7 +66,6 @@ class ReunionDupliquerForm(forms.ModelForm):
         self.fields['titre'].initial = reunion.titre
         self.fields['description'].initial = reunion.description
         self.fields['start_time'].initial = reunion.start_time
-        self.fields["asso"].initial = reunion.asso
 
     def save(self, userProfil, reunion):
         instance = super(ReunionDupliquerForm, self).save(commit=False)

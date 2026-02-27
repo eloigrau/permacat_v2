@@ -68,7 +68,7 @@ class Atelier(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
 
     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver l'atelier"))
-    nbMaxInscriptions = models.IntegerField(verbose_name=_("Nombre maximum d'inscriptions"), help_text="Nombre maximum de personnes inscrites", blank=True, null=True)
+    nbMaxInscriptions = models.IntegerField(verbose_name=_("Nombre maximum d'inscriptions"), help_text="Nombre maximum de personnes qui peuvent s'inscrire", blank=True, null=True)
 
     class Meta:
         ordering = ('-date_creation', )

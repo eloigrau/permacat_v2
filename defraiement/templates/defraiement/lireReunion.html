@@ -25,11 +25,12 @@
                </button></a>
             {% endif %}
         </div>
+        </div>
  </div>
 {% endblock %}
 
 {% block content %}
-    <div class="row contenu reunion">
+     <div class="row contenu reunion">
     <div class="col justify-content-center">
 
     <div class="row titre_reunion" style="background-color:{{reunion.reunion.get_couleur}};margin-bottom:5px;">
@@ -122,7 +123,6 @@ le {{ reunion.start_time|date:"l d F Y"}}
                     </td>
                     <td>
                         <a class="btn btn-sm btn-warning textleft" href="{% url 'defraiement:modifierTrajet' pk=part.4.pk %}"> modifier </a><a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
-                        <a class="btn btn-sm btn-warning textleft" href="{% url 'defraiement:modifierTrajet' pk=part.4.pk %}"> modifier </a><a class="btn btn-sm btn-danger textleft" href="{% url 'defraiement:supprimerParticipantReunion' slug_reunion=reunion.slug id_participantReunion=part.0.id%}"><i class="fa fa-times"></i> </a>
                     </td>
 				</tr>
             {% endfor %}
@@ -157,7 +157,6 @@ le {{ reunion.start_time|date:"l d F Y"}}
 
 </div>
 </div>
-<hr>
 
 
 {% endblock %}

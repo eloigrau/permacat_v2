@@ -125,7 +125,7 @@ class Noeuds():
         return self.ateliers_id[cat]
 
     def get_document_id(self, cat):
-        if not cat in self.ateliers_id:
+        if not cat in self.document_id:
             self.document_id[cat] = 4000000 + len(self.document_id)
         return self.document_id[cat]
 

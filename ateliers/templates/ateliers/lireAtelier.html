@@ -96,10 +96,6 @@
             </span>
 		</p>
         <p class="infos  textepetit">rédigé le {{ atelier.date_creation|date:"DATE_FORMAT" }}, par <a href="{% url 'profil' atelier.auteur.id %}">{{atelier.auteur.username}}</a>, dernière modification le {{ atelier.date_modification|date:"DATE_FORMAT" }}
-            <span class="badge badge-light">
-            {% get_hit_count for atelier as nbvues %}
-            {{ nbvues }} vue{{nbvues|pluralize:"s"}}
-            </span>
 		</p>
     </div>
     </div>
@@ -138,20 +134,15 @@
             {%if request.user.is_authenticated %}
                  {% if user_inscrit %}
                     <p>Tu es inscrit.e à cet atelier
-
                     <a href="{% url 'ateliers:annulerInscription' slug=atelier.slug %}">
                        <button type="button" class="btn btn-warning btn-sm">
                             Se désinscrire
                        </button>
                     </a>
 					</p>
-
-
                 {% else %}
                     {% if not atelier.est_complet  %}
-<form>
    <input type="button" class="btn btn-success" id="btn-sinscrire3" onclick="clicked();" value="S'inscrire à l'atelier">
-</form>
                     {%else%}
             <button type="button" class="btn btn-warning">Atelier complet</button>
                     {%endif%}
@@ -260,32 +251,38 @@
                         {% include 'ateliers/qr_code_get.html'%}
 					</td>
 				</tr>
-
+                {% if user_inscrit or request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}
 				<tr>
-                     {% if user_inscrit or request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}
 					<td class="nomProprieteAtelier">
 						Inscrits ({{inscrits|length}}{% if atelier.nbMaxInscriptions %}/{{atelier.nbMaxInscriptions}}{% endif %}):
 					</td>
 					<td class="proprieteAtelier">
-                        {% for i in inscrits %}
-                        <a href="{% url 'profil_nom' i %}">{{i}}</a>{%if not forloop.last%}, {% endif %}
+                        {% for type_inscription, i in inscrits %}
+                            {% if type_inscription == 0  %}
+                                <a href="{% url 'profil_nom' i %}">{{i}}</a>{%if not forloop.last%}, {% endif %}
+                            {% else %}
+                                {{i}}{%if not forloop.last%}, {% endif %}
+                            {% endif %}
 					    {% endfor %}
-                        {% if not user_inscrit  %}
-
-                    {% if not atelier.est_complet  %}
-                        <p>
-<form>
-   <input type="button" class="btn btn-success float-right" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
-</form>
-                        </p>
-                    {%else%}
-                        <button type="button" class="btn btn-warning float-right">Atelier complet</button>
-                    {%endif%}
-                    {%endif%}
+                        {% if user_inscrit %}
+                            <a href="{% url 'ateliers:annulerInscription' slug=atelier.slug %}">
+                               <button type="button" class="btn btn-warning btn-sm">
+                                    Se désinscrire
+                               </button>
+                            </a>
+                        {% else %}
+                            {% if not atelier.est_complet  %}
+                            <input type="button" class="btn btn-success float-right" id="btn-sinscrire2" onclick="clicked();" value="S'inscrire à l'atelier">
+                            {%else%}
+                            <button type="button" class="btn btn-warning float-right"> Atelier complet</button>
+                            {% endif %}
+                        {% endif %}
+                        {% if request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur %}
+                                <input type="button" class="btn btn-success float-right" id="btn-sinscrire5" onclick="inscrireemail();" value="Inscrire un email">
+                        {% endif %}
 					</td>
-                    {%endif%}
-
 				</tr>
+                {% endif %}
 			</tbody>
 		</table>
 	</div>
@@ -302,6 +299,9 @@
            }else{
            location.href='{{atelier.get_absolute_url}}#idTitreAtelier';
        }
+    }
+    function inscrireemail() {
+       location.href='{% url 'ateliers:inscriptionEmailAtelier' slug=atelier.slug %}';
     }
 </script>
 {% endblock %}

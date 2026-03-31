@@ -142,7 +142,8 @@ class Atelier(models.Model):
 
     @property
     def get_inscrits(self):
-        return [x[0] for x in InscriptionAtelier.objects.filter(atelier=self).values_list('user__username')]
+        return [(0, x[0]) for x in InscriptionAtelier.objects.filter(atelier=self).values_list('user__username')] + \
+               [(1, x[0]) for x in InscriptionEmailAtelier.objects.filter(atelier=self).values_list('email').distinct()]
 
     @property
     def get_couleur_cat(self, cat):
@@ -234,7 +235,7 @@ class CommentaireAtelier(models.Model):
         return retour
 
 class InscriptionAtelier(models.Model):
-    user = models.ForeignKey(Profil, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profil, on_delete=models.SET_NULL, null=True)
     atelier = models.ForeignKey(Atelier, on_delete=models.CASCADE)
     date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
 
@@ -243,6 +244,18 @@ class InscriptionAtelier(models.Model):
 
     def __str__(self):
         return "(" + str(self.id) + ") " + str(self.user) + " " + str(self.date_inscription) + " " + str(self.atelier)
+
+
+class InscriptionEmailAtelier(models.Model):
+    email = models.EmailField(verbose_name=_("Email"), blank=False, null=False)
+    atelier = models.ForeignKey(Atelier, on_delete=models.CASCADE)
+    date_inscription = models.DateTimeField(verbose_name=_("Date d'inscription"), editable=False, auto_now_add=True)
+
+    def __unicode__(self):
+        return self.__str()
+
+    def __str__(self):
+        return "(" + str(self.id) + ") " + str(self.email) + " " + str(self.date_inscription) + " " + str(self.atelier)
 
 
 

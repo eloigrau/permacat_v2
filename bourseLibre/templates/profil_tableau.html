@@ -163,7 +163,7 @@
     {%if request.user.adherent_ducepaj or request.user == user  or request.user.is_superuser%}
         <tr>
             <td style="width:200px">Inscrit au collectif Du Cep Au Jus *: </td>
-            <td>{{user.adherent_bzz2022|translateOuiNon }}
+            <td>{{user.adherent_ducepaj|translateOuiNon }}
        {% if request.user.is_superuser %}
         <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='ducepaj' %}">
             <button type="button" class="btn btn-sm btn-warning">

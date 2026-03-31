@@ -1,15 +1,15 @@
 {% extends 'base_profil.html' %}
-{% block header%}
+{% block header %}
 {% load leaflet_tags %}
 {% load static %}
 {% load app_filters %}
 {% load avatar_tags %}
 {% load fontawesome_5 %}
-{%endblock%}
-{%block header2 %}
+{% endblock %}
+{% block header2 %}
 {% leaflet_js %}
 {% leaflet_css %}
-{%endblock%}
+{% endblock %}
 {% block title %} - {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.get_username }} {% endif %}
 {% endblock %}
 {% block subtitle %}

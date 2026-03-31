@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse_lazy
-from .models import CommentaireAtelier, Choix, Atelier, InscriptionAtelier
+from .models import CommentaireAtelier, Choix, Atelier, InscriptionAtelier, InscriptionEmailAtelier
 from .forms import AtelierForm, CommentaireAtelierForm, AtelierChangeForm, ContactParticipantsForm, \
-    CommentaireAtelierChangeForm, Atelier_rechercheForm, AtelierDupliquerForm
+    CommentaireAtelierChangeForm, Atelier_rechercheForm, AtelierDupliquerForm, InscriptionEmailAtelierForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
@@ -117,20 +117,54 @@ def inscriptionAtelier(request, slug):
     messages.info(request, 'Vous êtes bien inscrit.e à cet atelier, notez le dans votre agenda !')
     return redirect(atelier.get_absolute_url())
 
+
+@login_required
+def ajouterAtelier(request, article_slug=None):
+    form = AtelierForm(request, request.POST or None)
+    if article_slug:
+        article = Article.objects.get(slug=article_slug)
+    else:
+        article = None
+    if form.is_valid():
+        atelier = form.save(request, article)
+        action.send(request.user, verb='atelier_nouveau', action_object=atelier, url=atelier.get_absolute_url(),
+                     description="a ajouté l'atelier: '%s'" % atelier.titre)
+        return redirect(atelier.get_absolute_url())
+
+    return render(request, 'ateliers/atelier_ajouter.html', { "form": form})
+
+@login_required
+def inscriptionEmailAtelier(request, slug):
+    atelier = get_object_or_404(Atelier, slug=slug)
+    form = InscriptionEmailAtelierForm(request.POST or None)
+    if form.is_valid():
+        inscript = form.save(atelier)
+        action.send(request.user, verb='atelier_inscription', action_object=atelier, url=atelier.get_absolute_url(),
+                 description="s'est inscrit-e à l'atelier: '%s'" % atelier.titre)
+        return redirect(atelier.get_absolute_url())
+
+    return render(request, 'ateliers/atelier_inscrire_email.html', { "form": form, "atelier":atelier})
+
 @login_required
 def annulerInscription(request, slug):
     atelier = get_object_or_404(Atelier, slug=slug)
     inscript = InscriptionAtelier.objects.filter(user=request.user, atelier=atelier)
-    inscript.delete()
-    action.send(request.user, verb='atelier_désinscription', action_object=atelier, url=atelier.get_absolute_url(),
-                 description="s'est désinscrit de l'atelier: '%s'" % atelier.titre)
+    for i in inscript:
+        i.delete()
+    inscript = InscriptionEmailAtelier.objects.filter(email=request.user.email, atelier=atelier)
+    for i in inscript:
+        i.delete()
+    action.send(request.user, verb='atelier_inscription', action_object=atelier, url=atelier.get_absolute_url(),
+                     description="s'est désinscrit-e de l'atelier: '%s'" % atelier.titre)
+
     return redirect(atelier.get_absolute_url())
 
 @login_required
 def contacterParticipantsAtelier(request, slug):
     atelier = get_object_or_404(Atelier, slug=slug)
     form = ContactParticipantsForm(request.POST or None, )
-    inscrits = [x[0] for x in InscriptionAtelier.objects.filter(atelier=atelier).values_list('user__email')]
+    inscrits = [x[0] for x in InscriptionAtelier.objects.filter(atelier=atelier).values_list('user__email')]  \
+        + [x[0] for x in InscriptionEmailAtelier.objects.filter(atelier=atelier).values_list('email').distinct()]
     try:
         referent = Profil.objects.get(username=atelier.referent)
         inscrits.append(referent.email)
@@ -163,10 +197,9 @@ def lireAtelier(request, atelier):
     inscrits = atelier.get_inscrits
 
     if not request.user.is_anonymous:
-        user_inscrit = request.user.username in inscrits
+        user_inscrit = request.user.username in [i[1] for i in inscrits if i[0] == 0] or request.user.email in [i[1] for i in inscrits if i[0] == 1]
     else:
-        user_inscrit = []
-
+        user_inscrit = False
 
     hit_count = HitCount.objects.get_for_object(atelier)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)

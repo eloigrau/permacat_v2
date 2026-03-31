@@ -1,5 +1,5 @@
 from django import forms
-from .models import CommentaireAtelier, Atelier, Atelier_recherche
+from .models import CommentaireAtelier, Atelier, Atelier_recherche, InscriptionEmailAtelier
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Profil
@@ -191,6 +191,19 @@ class CommentaireAtelierForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(CommentaireAtelierForm, self).__init__(request, *args, **kwargs)
         self.fields['commentaire'].strip = False
+
+class InscriptionEmailAtelierForm(forms.ModelForm):
+
+    class Meta:
+        model = InscriptionEmailAtelier
+        fields = ['email']
+
+
+    def save(self, atelier):
+        instance = super(InscriptionEmailAtelierForm, self).save(commit=False)
+        instance.atelier = atelier
+        instance.save()
+        return instance
 
 class CommentaireAtelierChangeForm(forms.ModelForm):
     commentaire = forms.CharField(required=False, widget=SummernoteWidget(attrs={}))

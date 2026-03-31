@@ -27,6 +27,7 @@ urlpatterns = [
     re_path(r'^atelier/(?P<slug>[-\w]+)$', views.lireAtelier_slug, name='lireAtelier'),
     re_path(r'^atelier/id/(?P<id>[-\w]+)$', views.lireAtelier_id, name='lireAtelier_id'),
     re_path(r'^atelier/inscription/(?P<slug>[-\w]+)$', views.inscriptionAtelier, name='inscriptionAtelier'),
+    re_path(r'^atelier/inscriptionEmailAtelier/(?P<slug>[-\w]+)$', views.inscriptionEmailAtelier, name='inscriptionEmailAtelier'),
     re_path(r'^atelier/annulerInscription/(?P<slug>[-\w]+)$', views.annulerInscription, name='annulerInscription'),
     re_path(r'^atelier/contacterParticipantsAtelier/(?P<slug>[-\w]+)$', views.contacterParticipantsAtelier, name='contacterParticipantsAtelier'),
 

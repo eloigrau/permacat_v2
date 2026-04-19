@@ -1,0 +1,111 @@
+{% extends 'collectifssa/base_ssa.html' %}
+{% block content %}
+<main>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'collectifssa:accueil_collectifssa' %}">
+                <i class="bi-back"></i>
+                <span>Collectif SSA 66</span>
+            </a>
+
+            <div class="d-lg-none ms-auto me-4">
+                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="d-none d-lg-block">
+                <a href="{% url 'blog:index_asso' asso='ssa' %}" class="navbar-icon bi-person"></a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <header class="site-header d-flex flex-column justify-content-center align-items-center" id="section_1">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+
+                <div class="col-lg-10 col-12 mb-5">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Acceuil</a></li>
+
+                            <li class="breadcrumb-item active" aria-current="page">Inscription au CLA</li>
+                        </ol>
+                    </nav>
+
+                    <h2 class="text-white">Inscription au Comité Local de l'Alimentation</h2>
+
+                </div>
+
+
+            </div>
+        </div>
+    </header>
+
+
+    <section class="topics-detail-section section-padding" id="topics-detail">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                    <h3 class="mb-4">Le Comité Local de l'Alimentation</h3>
+
+                    <p>Ce sera l'instance de gouvernance de la Caisse Alimentaire. Le groupe de travail de coordination
+                        proposera un programme de formations et de prises de décision afin de définir ensemble
+                        le fonctionnent de la Caisse Alimentaire (conventionnement, cotisation, périmètre, monnaie, etc.)</p>
+
+                    <p>Il sera composé de tous les acteurs volontaires et représentatifs pour expérimenter une solution
+                        locale innovante : des mangeur-euses, des producteur-ices, des
+                                                distributeurs, des institutions locales, des strutures privées... Nous
+                                                souhaitons que les différent-e-s acteur-trices de l'alimentation dans
+                                                notre département soient impliqués dans la mise en place et la gestion
+                                                démocratique de cette expérimentation.
+                                            </p>
+
+                    <h6>La première rencontre du CLA aura lieu le mercredi 17 juin à Elne</h6>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                   <p>
+                       {% if deja_inscrit == 1 %}
+                        Vous êtes déjà inscrit-e pour cette rencontre. Merci de <a href="{% url 'collectifssa:accueil_collectifssa' %}">nous prévenir</a> si vous ne pouvez finalement pas venir le 17 juin"
+                    {% elif deja_inscrit == 2 %}
+                        Votre inscription a bien été enregistrée, Merci de votre participation ! pensez à le noter dans votre agenda ;)
+                    {% else %}
+                        Alors si vous souhaitez participer, merci de vous inscrire ci-dessous !
+                   </p>
+                    <form class="custom-form" method="post" role="form">
+                        {% csrf_token %}
+                           {% include 'form_template2bis.html' with form=form_inscriptionCLA %}
+
+                            {% if request.user.is_anonymous %}
+                            <div class="col-md-12 textcenter">
+                                <div class="container" style="width:150px">
+                                    {% include 'form_template2bis.html' with form=form_captcha %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">S'inscrire à la rencontre du 17 juin
+                                </button>
+                            </div>
+                            {% if msg %}
+                            <p>{{msg|safe}}</p>
+                            {% endif %}
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

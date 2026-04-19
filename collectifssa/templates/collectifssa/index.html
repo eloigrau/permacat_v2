@@ -1,34 +1,6 @@
+{% extends 'collectifssa/base_ssa.html' %}
 {% load static %}
-{% load cookielaw_tags %}
-<!DOCTYPE HTML>
-<html lang="fr">
-<head>
-    <title>Collectif SSA 66</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <meta name="description" content="Collectif pour une SSA 66"/>
-    <meta name="author" content="Eloi"/>
-
-    <title>Collectif SSA 66</title>
-
-    <!-- CSS FILES -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap"
-          rel="stylesheet">
-
-    <link href="{% static 'collectifssa/css/bootstrap.min.css' %}" rel="stylesheet">
-
-    <link href="{% static 'collectifssa/css/bootstrap-icons.css' %}" rel="stylesheet">
-
-    <link href="{% static 'collectifssa/css/templatemo-topic-listing.css' %}" rel="stylesheet">
-
-</head>
-
-<body id="top">
-
+{% block content %}
 <main>
 
     <nav class="navbar navbar-expand-lg">
@@ -125,7 +97,7 @@
 
                                             <p>Comme un peu partout en France (et même ailleurs), nous
                                                 allons mettre en place une caisse locale alimentaire inspirée de la
-                                                Sécurité Sociale de l'Alimentation.La première étape passe par la constitution d'un Comité
+                                                Sécurité Sociale de l'Alimentation. La première étape passe par la constitution d'un Comité
                                                 Local de l'Alimentation (CLA), organe décisionnaire de la future Caisse.
                                             </p>
                                             <p>
@@ -135,7 +107,7 @@
                                                 notre département soient impliqués dans la mise en place et la gestion
                                                 démocratique de cette expérimentation.
                                             </p>
-                                                <h6 style="text-align:center">Pour participer <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#CLAModal">inscrivez-vous ici</button>
+                                                <h6 style="text-align:center">Pour participer <a href="{% url 'collectifssa:inscriptionCLA' %}"><button type="button" class="btn btn-success" >inscrivez-vous ici</button></a>
                                         </h6>
                                     </div>
                                     </div>
@@ -145,53 +117,6 @@
                 </div>
             </section>
 
-<div class="modal fade" id="CLAModal" tabindex="-1" role="dialog" aria-labelledby="InscriptionCLAModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">S'inscrire à la 1ère rencontre du Comité Local de l'Alimentation</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-<form class="custom-form subscribe-form"  method="post" role="form" >
-{% csrf_token %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input name="nom" type="text" class="form-control"
-                                       id="id_nom" placeholder="Nom" required="" {% if not request.user.is_anonymous %}value="{{request.user.username}}" {% endif %}/>
-                            </div>
-                            <div class="col-md-6">
-                                <input name="email" type="text" class="form-control"
-                                       id="id_email" placeholder="Email" required="" {% if not request.user.is_anonymous %}value="{{request.user.email}}" {% endif %}/>
-                            </div>
-                            <div class="col-md-12">
-                        <textarea name="msg" rows="6" class="form-control" style="border-radius: 15px;"
-                                  id="id_msg" placeholder="Message"></textarea>
-                            </div>
-                            {% if request.user.is_anonymous %}
-                            <div class="col-md-12 textcenter">
-                                <div class="container" style="width:150px">
-                                    {% include 'form_template2bis.html' with form=form_captcha2 %}
-                                </div>
-                            </div>
-                            {% endif %}
-                            <div class="col-md-12">
-                                <fieldset>
-
-           <button type="submit" class="btn btn-primary">S'inscrire à la rencontre du 17 Juin</button>
-                                </fieldset>
-                                {% if msg3 %}
-                                <p>{{msg3|safe}}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-       </form>
-      </div>
-    </div>
-  </div>
-</div>
     <section class="explore-section section-padding" id="section_2">
         <div class="container">
             <div class="row">
@@ -468,95 +393,11 @@
     </section>
 
 </main>
-<footer class="site-footer section-padding">
-    <div class="container">
-        <div class="row">
-
-{% comment %}
-            <div class="col-lg-3 col-12 mb-4 pb-2">
-                <a class="navbar-brand mb-2" href="index.html">
-                    <i class="bi-back"></i>
-                    <span>Topic</span>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-6">
-                <h6 class="site-footer-title mb-3">Resources</h6>
-
-                <ul class="site-footer-links">
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">Home</a>
-                    </li>
-
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">How it works</a>
-                    </li>
-
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">FAQs</a>
-                    </li>
-
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">Contact</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
-                <h6 class="site-footer-title mb-3">Information</h6>
-
-                <p class="text-white d-flex mb-1">
-                    <a href="tel: 305-240-9671" class="site-footer-link">
-                        305-240-9671
-                    </a>
-                </p>
-
-                <p class="text-white d-flex">
-                    <a href="mailto:info@company.com" class="site-footer-link">
-                        info@company.com
-                    </a>
-                </p>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        English
-                    </button>
-
-                    <ul class="dropdown-menu">
-                        <li>
-                            <button class="dropdown-item" type="button">Thai</button>
-                        </li>
-
-                        <li>
-                            <button class="dropdown-item" type="button">Myanmar</button>
-                        </li>
-
-                        <li>
-                            <button class="dropdown-item" type="button">Arabic</button>
-                        </li>
-                    </ul>
-                </div>
-
-                <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
-                    <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
-
-            </div>
-
-{% endcomment %}
-        </div>
-    </div>
-</footer>
 
 
-<!-- JAVASCRIPT FILES -->
-<script src="{% static 'collectifssa/js/jquery.min.js' %}"></script>
-<script src="{% static 'collectifssa/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'collectifssa/js/jquery.sticky.js' %}"></script>
+{% endblock  %}
+
+
+    {% block scripts %}
 <script src="{% static 'collectifssa/js/click-scroll.js' %}"></script>
-<script src="{% static 'collectifssa/js/custom.js' %}"></script>
-
-</body>
-</html>
+    {% endblock %}

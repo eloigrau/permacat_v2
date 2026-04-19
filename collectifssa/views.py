@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import ContactForm
+from .forms import ContactForm, InscriptionForm
 from bourseLibre.forms import CaptchaForm
 from bourseLibre.models import Profil
 from actstream import action
@@ -9,13 +9,19 @@ from actstream import action
 def accueil(request):
     msg = None
     msg2 = None
+    msg3 = None
     anchor = None
     if request.user.is_anonymous:
         form_captcha = CaptchaForm(request.POST or None, )
+        form_captcha2 = CaptchaForm(request.POST or None, )
         form_contact = ContactForm(request.POST or None)
+        form_inscriptionCLA = InscriptionForm(request.POST or None)
     else:
         form_captcha = None
+        form_captcha2 = None
         form_contact = ContactForm(request.POST or None, initial={"nom":request.user.username, "email":request.user.email, })
+        form_inscriptionCLA = InscriptionForm(request.POST or None, initial={"nom":request.user.username, "email":request.user.email, })
+
 
     if request.method == 'POST':
         anchor = "contact"
@@ -35,5 +41,19 @@ def accueil(request):
         elif form_contact.errors:
             msg2 = "<em>Une erreur s'est produite lors de l'envoi du message (%s), veuillez réessayer ou envoyer un mail à CollectifSSA.Elne@proton.me </em>"%form_contact.errors
 
-    return render(request, 'collectifssa/index.html', {"msg":msg, "msg2":msg2, "form": form_contact, "form_captcha": form_captcha, "anchor":anchor })
+        if form_inscriptionCLA.is_valid() and (not request.user.is_anonymous or form_captcha2.is_valid()):
+            try:
+                if request.user.is_anonymous:
+                    admin = Profil.objects.get(username="Eloi")
+                    action.send(admin, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
+                        description="inscription Mail CLA (anonyme) " + form_inscriptionCLA.cleaned_data["email"] )
+                else:
+                    action.send(request.user, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
+                        description="inscription Mail CLA")
+            except :
+                pass
+            form_inscriptionCLA.save()
+            msg3 = "Votre inscription a bien été enregistrée, merci !"
+
+    return render(request, 'collectifssa/index.html', {"msg":msg, "msg2":msg2, "msg2":msg3, "form": form_contact, "form_captcha": form_captcha, "form_inscriptionCLA": form_inscriptionCLA, "form_captcha2": form_captcha2, "anchor":anchor })
 #index #left-sidebar

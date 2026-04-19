@@ -303,6 +303,7 @@
                                     {% endif %}
                                 </ul>
                             </li>
+                            {% comment %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Confédération Paysanne</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
@@ -333,6 +334,7 @@
                                     {% endif %}
                                 </ul>
                             </li>
+                            {% endcomment %}
                         </ul>
                     </li>
                     {% if request.session.asso_slug and request.session.asso_slug|estMembreAsso:request.user %}

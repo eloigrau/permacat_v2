@@ -174,7 +174,7 @@ class Choix:
         ("4", "Logistique"),
         ("5", "Partenaires"),
         ("6", "Atelier/rencontre"),
-        ("6", "Autre"),
+        ("7", "Autre"),
     )
 
     def get_couleur(categorie):

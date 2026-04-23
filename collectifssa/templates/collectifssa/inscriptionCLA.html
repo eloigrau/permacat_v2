@@ -31,7 +31,7 @@
                 <div class="col-lg-10 col-12 mb-5">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Acceuil</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'collectifssa:accueil_collectifssa' %}">Acceuil</a></li>
 
                             <li class="breadcrumb-item active" aria-current="page">Inscription au CLA</li>
                         </ol>
@@ -66,6 +66,12 @@
                                             </p>
 
                     <h6>La première rencontre du CLA aura lieu le mercredi 17 juin à Elne</h6>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                     <img src="{% static 'collectifssa/images/FlyerCLA.jpg' %}" class="img-fluid" style="width:100%;display:block;margin:15px;" alt="Nos valeurs">
                 </div>
             </div>
             <br>

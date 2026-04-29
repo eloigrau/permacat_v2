@@ -184,12 +184,12 @@ class UploadZipForm(forms.Form):
 class AlbumForm(forms.ModelForm):
     asso = forms.ModelChoiceField(queryset=Asso.objects.all().order_by("id"), required=True,
                               label="Album public ou réservé aux adhérents de l'asso :", )
-    article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False), required=False, empty_label=True,
-                              label="Associer l'album à un article du forum ?",)
+    #article = forms.ModelChoiceField(queryset=Article.objects.filter(estArchive=False), required=False, empty_label=True,
+    #                          label="Associer l'album à un article du forum ?",)
 
     class Meta:
         model = Album
-        fields = ['asso', 'title', 'description', 'tags', 'article', 'estModifiable', ]
+        fields = ['asso', 'title', 'description', 'tags', 'estModifiable', ]
         widgets = {
             'caption': SummernoteWidget(),
         }
@@ -209,10 +209,10 @@ class AlbumForm(forms.ModelForm):
         instance.auteur = request.user
         instance.save()
 
-        if self.cleaned_data['article']:
-            art = Article.objects.get(titre=self.cleaned_data['article'])
-            art.album = instance
-            art.save()
+        #if self.cleaned_data['article']:
+        #    art = Article.objects.get(titre=self.cleaned_data['article'])
+        #    art.album = instance
+        #    art.save()
 
         return instance
 

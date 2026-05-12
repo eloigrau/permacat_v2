@@ -266,4 +266,7 @@ class WatermarkAdmin(admin.ModelAdmin):
 
 admin.site.register(Watermark, WatermarkAdmin)
 
-admin.site.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'auteur', 'asso')
+
+admin.site.register(Document, DocumentAdmin)

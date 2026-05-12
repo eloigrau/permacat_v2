@@ -126,9 +126,9 @@ class DocListView(ListView, FormMixin):
         return HttpResponseRedirect(self.success_url)
 
     def get_queryset(self):
-
         if "reset_asso" in self.request.GET and "asso_slug" in self.request.session:
             del self.request.session["asso_slug"]
+
         if "asso" in self.request.GET:
             self.request.session["asso_slug"] = self.request.GET["asso"]
             qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.GET["asso"]).order_by("-date_creation")
@@ -149,6 +149,7 @@ class DocListView(ListView, FormMixin):
         if 'asso' in self.request.GET:
             self.request.session["asso_slug"] = self.request.GET['asso']
             self.form = Document_rechercheForm(self.request.GET or None)
+            context['asso_slug'] = self.request.GET['asso']
         else:
             self.form = Document_asso_rechercheForm(self.request.GET or None)
 

@@ -116,12 +116,6 @@ Filtrer / rechercher...
             <label class="checkbox-inline">{% render_field filter.form.adherent_pc %}</label>
               </div>
               {% endif %}
-              {% if asso.slug != "rtg" and request.user.adherent_rtg %}
-              <div>
-          {{ filter.form.adherent_rtg.label_tag }}
-            <label class="checkbox-inline">{% render_field filter.form.adherent_rtg %}</label>
-              </div>
-              {% endif %}
               {% if asso.slug != "citealt" and request.user.adherent_citealt %}
               <div>
           {{ filter.form.adherent_citealt.label_tag }}

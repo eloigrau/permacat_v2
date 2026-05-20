@@ -355,7 +355,7 @@ class ProfilCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = Profil
         fields = ['username', 'password1', 'password2', 'email', 'first_name', 'last_name', 'site_web', 'description',
-                  'competences', 'adherent_jp', 'adherent_pc', 'adherent_rtg', 'adherent_scic', 'adherent_viure',
+                  'competences', 'adherent_jp', 'adherent_pc', 'adherent_scic', 'adherent_viure',
                   'adherent_bzz2022', 'adherent_ssa', 'inscrit_newsletter', 'accepter_annuaire', 'accepter_conditions']
         exclude = ['slug', ]
 

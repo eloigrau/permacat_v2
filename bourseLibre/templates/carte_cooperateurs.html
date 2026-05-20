@@ -134,12 +134,6 @@ Filtrer / rechercher...
                 <label class="checkbox-inline">{% render_field filter.form.adherent_jp %}</label>
               </div>
               {% endif %}
-              {% if asso.slug != "conf66" and request.user.adherent_conf66 %}
-              <div>
-                  {{ filter.form.adherent_conf66.label_tag }}
-                    <label class="checkbox-inline">{% render_field filter.form.adherent_conf66 %}</label>
-              </div>
-              {% endif %}
             </div>
       </div>
 

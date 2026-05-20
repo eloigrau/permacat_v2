@@ -115,6 +115,12 @@ def ajouterArticle(request):
         return render(request, 'erreur2.html', {
             "msg": "Vous avez déjà posté %s articles depuis 24h, veuillez patienter un peu avant de poster un nouvel article, merci !" % NBMAX_ARTICLES})
 
+    time_threshold = datetime.now() - timedelta(minutes=1)
+    dernier = Article.objects.filter(auteur=request.user, date_creation__gt=time_threshold).exists()
+    if not request.user.is_superuser and dernier:
+        return render(request, 'erreur2.html', {
+            "msg": "Vous avez déjà posté un article il y a moins de 1 minute, veuillez vous assurer que vous n'essayez pas de poster pas le meme article plusieurs fois (ça peut arriver si vous appuyez plusieurs fois sur le bouton OK lors de la création de l'article)"})
+
     if form.is_valid():
         article = form.save(request.user, sendMail=False)
         for asso in form.cleaned_data["partagesAsso"]:

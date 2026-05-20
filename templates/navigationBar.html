@@ -83,25 +83,17 @@
 
                                 </ul>
                             </li>
-
+                            {% if request.user.adherent_rtg %}
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Ramène Ta Graine</a>
                                 <ul class="dropdown-menu  nav5-dropdown-submenu">
                                     <li><a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}">{% fa5_icon 'info' class='iconleft' %}Présentation </a></li>
-                                    {% if request.user.adherent_rtg %}
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{% url 'carte'  asso='rtg' %}"><i
-                                            class='fa fa-compass iconleft'></i> Carte / Annuaire </a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'blog:index_asso' asso='rtg'%}#ref-titre">{% fa5_icon 'comments' class='iconleft' %}
                                             Forum</a></li>
                                     <li><a class="dropdown-item"
-                                           href="{% url 'blog:lireArticle' slug='dossiersactions-en-cours'%}">
-                                        {% fa5_icon 'comments' class='iconleft' %}Dossiers en cours </a></li>
-                                    <li><a class="dropdown-item"
                                            href="{% url 'defraiement:reunions_asso' asso_slug='rtg' %}">
                                         {% fa5_icon 'car-side' class='iconleft' %}Defraiement </a></li>
-                                    {% endif %}
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item"
                                            href="https://1drv.ms/b/s!AgO84waSGnDoiDlHJeeJPxRRNJM_?e=ucgIvC"
@@ -111,6 +103,7 @@
                                             class='fa fa-euro-sign iconleft '></i> Adhésion en ligne </a></li>
                                 </ul>
                             </li>
+                            {% endif %}
 
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">{% translate 'Jardins Partagés' %}</a>
@@ -659,9 +652,7 @@
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item" href="{% url 'presentation_asso' asso='public' %}">{% translate 'Public' %}</a>
                             </li>
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item" href="{% url 'presentation_asso' asso='rtg' %}">Ramène Ta Graine</a>
-                            </li>
+
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item" href="{% url 'presentation_asso' asso='pc' %}">PermaCat</a>
                             </li>

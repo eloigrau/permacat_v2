@@ -97,10 +97,12 @@ def inscriptionCovoitCLA(request):
     deja_inscrit = 0
     if request.user.is_anonymous:
         form_captcha = CaptchaForm(request.POST or None, )
+        form_covoit = CovoitForm(inscript, request.POST or None)
     else:
         form_captcha = None
+        form_covoit = InscriptionForm(request.POST or None, initial={"nom":request.user.username })
 
-    form_covoit = CovoitForm(inscript, request.POST or None)
+
     if form_covoit.is_valid():
         form_covoit.save()
         admin = Profil.objects.get(username="Eloi")

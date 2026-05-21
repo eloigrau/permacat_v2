@@ -1,14 +1,20 @@
-sudo nano /etc/systemd/system/gunicorn.service
+sudo nano /etc/systemd/system/gunicorn_wsgi.service
+sudo nano /etc/systemd/system/gunicorn_asgi.service
 sudo systemctl status gunicorn
 sudo systemctl restart gunicorn
-sudo nano permacat/gunicorn_cfg.py 
+sudo systemctl restart gunicorn_wsgi
+sudo systemctl restart gunicorn_asgi
+sudo nano permacat/gunicorn_cfg.py
 sudo nano /etc/supervisor/conf.d/permacat-gunicorn.conf
 sudo nano /etc/systemd/system/gunicorn.service
+sudo nano /etc/systemd/system/gunicorn_asgi.service
 sudo nano /etc/systemd/system/gunicorn.socket
+sudo nano /etc/systemd/system/permacat-daphne.service
 
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start permacat_supervisor
+sudo supervisorctl start permacat-daphne
 sudo supervisorctl stop permacat_supervisor
 sudo supervisorctl restart permacat_supervisor
 sudo supervisorctl status
@@ -19,8 +25,8 @@ sudo systemctl restart nginx
 sudo service nginx restart
 sudo service nginx status
 sudo service nginx configtest
-sudo nano /etc/nginx/sites-enabled/permacat
-sudo certbot --expand --nginx -d perma.cat,www.perma.cat
+sudo nano /etc/nginx/sites-enabled/default
+sudo certbot --expand --nginx -d www.perma.cat
 sudo /etc/init.d/cron restart
 
 #pg_restore -U postgres -h 82.64.236.35 -p 32770 -c -d site data.dump

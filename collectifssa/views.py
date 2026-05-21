@@ -100,7 +100,7 @@ def inscriptionCovoitCLA(request):
         form_covoit = CovoitForm(inscript, request.POST or None)
     else:
         form_captcha = None
-        form_covoit = InscriptionForm(request.POST or None, initial={"nom":request.user.username })
+        form_covoit = CovoitForm(request.POST or None, initial={"nom":request.user.username })
 
 
     if form_covoit.is_valid():

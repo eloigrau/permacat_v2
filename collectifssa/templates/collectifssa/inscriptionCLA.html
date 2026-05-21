@@ -72,15 +72,9 @@
             <br>
             <div class="row">
                 <div class="col-lg-8 col-12 m-auto">
-                     <img src="{% static 'collectifssa/images/FlyerCLA.jpg' %}" class="img-fluid" style="width:100%;display:block;margin:15px;" alt="Nos valeurs">
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-lg-8 col-12 m-auto">
                    <p>
                        {% if deja_inscrit == 1 %}
-                        Vous êtes déjà inscrit-e pour cette rencontre. Merci de <a href="{% url 'collectifssa:accueil_collectifssa' %}">nous prévenir</a> si vous ne pouvez finalement pas venir le 17 juin"
+                        Vous êtes déjà inscrit-e pour cette rencontre. Merci de <a href="{% url 'collectifssa:accueil_collectifssa' %}">nous prévenir</a> si vous ne pouvez finalement pas venir le 17 juin
                     {% elif deja_inscrit == 2 %}
                         Votre inscription a bien été enregistrée, Merci de votre participation ! pensez à le noter dans votre agenda ;)
                     {% else %}
@@ -104,11 +98,20 @@
                             {% if msg %}
                             <p>{{msg|safe}}</p>
                             {% endif %}
-                        </div>
                     </form>
                     {% endif %}
+
+                   <p>
+                       Si vous souhaitez participer au covoiturage, vous pouvez <a href="{% url 'collectifssa:inscriptionCovoitCLA' %}"> vous inscrire ici </a>  (vous recherchez ou vous proposez une place dans un véhicule)
+                   </p>
                 </div>
 
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                     <img src="{% static 'collectifssa/images/FlyerCLA.jpg' %}" class="img-fluid" style="width:100%;display:block;margin:15px;" alt="CLA">
+                </div>
             </div>
         </div>
     </section>

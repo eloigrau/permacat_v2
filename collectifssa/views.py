@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import ContactForm, InscriptionForm
+from .forms import ContactForm, InscriptionForm, CovoitForm
 from .models import InscriptionCLA
 from bourseLibre.forms import CaptchaForm
 from bourseLibre.models import Profil
@@ -72,22 +72,44 @@ def inscriptionCLA(request):
         if InscriptionCLA.objects.filter(nom=request.user.username, email=request.user.email).exists():
             return render(request, 'collectifssa/inscriptionCLA.html', {"deja_inscrit":1,"msg":msg, "form_captcha": form_captcha, "form_inscriptionCLA": form_inscriptionCLA })
 
-
     if form_inscriptionCLA.is_valid():
+        form_inscriptionCLA.save()
         try:
+            admin = Profil.objects.get(username="Eloi")
             if request.user.is_anonymous:
-                admin = Profil.objects.get(username="Eloi")
                 action.send(admin, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
                     description="inscription Mail CLA (anonyme) " + form_inscriptionCLA.cleaned_data["email"] )
             else:
-                action.send(request.user, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
+                action.send(admin, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
                     description="inscription Mail CLA")
         except :
             pass
-        form_inscriptionCLA.save()
         msg = "Votre inscription a bien été enregistré-e, merci !"
         return render(request, 'collectifssa/inscriptionCLA.html', {"deja_inscrit":2, "msg":msg, "form_captcha": form_captcha, "form_inscriptionCLA": form_inscriptionCLA })
 
 
     return render(request, 'collectifssa/inscriptionCLA.html', {"deja_inscrit":0, "msg":msg, "form_captcha": form_captcha, "form_inscriptionCLA": form_inscriptionCLA })
+
+
+def inscriptionCovoitCLA(request):
+    msg = None
+    inscript = None
+    deja_inscrit = 0
+    if request.user.is_anonymous:
+        form_captcha = CaptchaForm(request.POST or None, )
+    else:
+        form_captcha = None
+
+    form_covoit = CovoitForm(inscript, request.POST or None)
+    if form_covoit.is_valid():
+        form_covoit.save()
+        admin = Profil.objects.get(username="Eloi")
+        action.send(admin, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
+            description="inscription Covoit CLA " + form_covoit.cleaned_data["nom"] )
+        deja_inscrit = 1
+
+        return render(request, 'collectifssa/covoitCLA.html', {"deja_inscrit":deja_inscrit, "msg":msg, "form_captcha": form_captcha, "form": form_covoit })
+
+
+    return render(request, 'collectifssa/covoitCLA.html', {"deja_inscrit":deja_inscrit, "msg":msg, "form_captcha": form_captcha, "form": form_covoit })
 

@@ -1,0 +1,96 @@
+{% extends 'collectifssa/base_ssa.html' %}
+{% block content %}
+{% load static %}
+<main>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'collectifssa:accueil_collectifssa' %}">
+                <i class="bi-back"></i>
+                <span>Collectif SSA 66</span>
+            </a>
+
+            <div class="d-lg-none ms-auto me-4">
+                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="d-none d-lg-block">
+                <a href="{% url 'blog:index_asso' asso='ssa' %}" class="navbar-icon bi-person"></a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <header class="site-header d-flex flex-column justify-content-center align-items-center" id="section_1">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+
+                <div class="col-lg-10 col-12 mb-5">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'collectifssa:accueil_collectifssa' %}">Acceuil</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'collectifssa:inscriptionCLA' %}">CLA</a></li>
+
+                            <li class="breadcrumb-item active" aria-current="page">Covoiturage</li>
+                        </ol>
+                    </nav>
+
+                    <h2 class="text-white">Covoiturage du 17 juin</h2>
+
+                </div>
+
+
+            </div>
+        </div>
+    </header>
+
+
+    <section class="topics-detail-section section-padding" id="topics-detail">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                    {% if deja_inscrit == 1 %}
+                        Votre inscription pour le covoiturage a bien été enregistrée, Merci de votre participation !
+                    {% else %}
+                        <p>Nous proposons de vous inscrire ci-dessous si vous souhaitez covoiturer pour venir à la rencontre du 17 juin. Nous vous recontacterons pour finaliser l'organisation. Merci !</p>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+            {% if deja_inscrit == 0 %}
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+
+                    <form class="custom-form" method="post" role="form">
+                        {% csrf_token %}
+                           {% include 'form_template2bis.html' with form=form %}
+
+                            {% if request.user.is_anonymous %}
+                            <div class="col-md-12 textcenter">
+                                <div class="container" style="width:150px">
+                                    {% include 'form_template2bis.html' with form=form_captcha %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">S'inscrire pour le Covoit'
+                                </button>
+                            </div>
+                            {% if msg %}
+                            <p>{{msg|safe}}</p>
+                            {% endif %}
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

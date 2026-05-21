@@ -8,4 +8,5 @@ app_name = 'collectifssa'
 urlpatterns = [
     path('', views.accueil, name="accueil_collectifssa"),
     path('inscriptionCLA', views.inscriptionCLA, name="inscriptionCLA"),
+    path('inscriptionCovoitCLA', views.inscriptionCovoitCLA, name="inscriptionCovoitCLA"),
 ]

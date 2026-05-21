@@ -6,5 +6,8 @@ source .env_variables
 python manage.py migrate --settings=bourseLibre.settings.production
 python manage.py crontab add --settings=bourseLibre.settings.production
 sudo systemctl restart nginx
+sudo systemctl restart permacat-daphne
+
+redis-server&
 sudo supervisorctl restart permacat_supervisor
 

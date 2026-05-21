@@ -6,19 +6,24 @@ sudo systemctl restart gunicorn_wsgi
 sudo systemctl restart gunicorn_asgi
 sudo nano permacat/gunicorn_cfg.py
 sudo nano /etc/supervisor/conf.d/permacat-gunicorn.conf
+sudo nano /etc/supervisor/conf.d/permacat-gunicorn.conf
 sudo nano /etc/systemd/system/gunicorn.service
 sudo nano /etc/systemd/system/gunicorn_asgi.service
+sudo nano /etc/systemd/system/gunicorn_wsgi.service
 sudo nano /etc/systemd/system/gunicorn.socket
 sudo nano /etc/systemd/system/permacat-daphne.service
 
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start permacat_supervisor
-sudo supervisorctl start permacat-daphne
 sudo supervisorctl stop permacat_supervisor
 sudo supervisorctl restart permacat_supervisor
 sudo supervisorctl status
 
+sudo systemctl start permacat-daphne
+sudo supervisorctl start permacat_supervisor
+sudo systemctl restart redis
+redis-server
 
 sudo systemctl daemon-reload
 sudo systemctl restart nginx 

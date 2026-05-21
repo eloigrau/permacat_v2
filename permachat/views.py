@@ -26,13 +26,13 @@ def room(request, room_name):
     params = dict(request.GET.items())
 
     if created:
-        if params["permanent"]:
+        if "permanent" in params and params["permanent"]:
             room.estPermanent = True
         room.name = room_name
         room.slug = slugify(room_name)
         room.save()
     messages = Message.objects.filter(room=room)[:30]
-    print ('Roooommsg' + str(messages) + " " + str(params))
+
     return render(request, "permachat/room.html", {"room": room, "messages":messages})
 
 
@@ -43,11 +43,12 @@ def paint(request, room_name):
     params = dict(request.GET.items())
     room, created = Room.objects.get_or_create(slug=room_name)
     if created:
-        if params["permanent"]:
+        if "permanent" in params and params["permanent"]:
             room.estPermanent = True
+        else:
+            room.estPermanent = False
         room.name = room_name
         room.slug = slugify(room_name)
         room.save()
     messages = Message.objects.filter(room=room)[:30]
-    print ('Roooommsg' + str(messages) + " " + str(params) + str(room))
     return render(request, "permachat/paint.html", {"room": room, "messages":messages})

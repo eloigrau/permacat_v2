@@ -144,8 +144,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             {
                 "type": "chat.message",
                 "roomName": roomName,
-                "username": self.scope["user"].username,
-                "message": message,
+                "username": str(self.scope["user"].username),
+                "message": str(message),
             }
         )
         await self.save_message(self.scope["user"].username, room, message)

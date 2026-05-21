@@ -6,6 +6,6 @@ app_name = 'permachat'
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("paint/<str:room_name>/", views.paint, name="paint"),
-    path("room/<str:room_name>/", views.room, name="room"),
+    path("image/<str:room_name>/", views.paint, name="paint"),
+    path("lieu/<str:room_name>/", views.room, name="room"),
 ]

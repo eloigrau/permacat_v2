@@ -41,7 +41,7 @@ function add_pixel() {
 }
 
 function reduce_pixel() {
-  if (ctx.lineWidth == 1) {
+  if (ctx.lineWidth <= 1) {
     ctx.lineWidth = 1;
   } else {
     ctx.lineWidth -= 1;
@@ -49,17 +49,17 @@ function reduce_pixel() {
 }
 
 function fill() {
-  isFill = true;
-  if(currentTypeColor == 0){
-    isStroke = !isStroke;
-  }
+    isFill = !isFill;
   currentTypeColor = 0;
+  if (!isFill && !isStroke ){
+    isStroke = true;
+  }
 }
 
 function outline() {
-   isStroke = true;
-  if(currentTypeColor == 1){
-    isFill = !isFill;
+   isStroke = !isStroke;
+  if (!isFill && !isStroke ){
+    isFill = true;
   }
   currentTypeColor = 1;
 }
@@ -166,6 +166,7 @@ function line (){
 
 // rectangle tool
 function rectangle (){
+    currentTypeColor = 0;
 
     canvas.onmousedown = function (e){
         img = ctx.getImageData(0, 0, width, height);

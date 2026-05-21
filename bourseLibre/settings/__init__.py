@@ -256,12 +256,12 @@ WSGI_APPLICATION = 'bourseLibre.wsgi.application'
 ASGI_APPLICATION = "permachat.asgi.application"
 #ASGI_APPLICATION = "chat_old.asgi.application"
 
-#redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],#"hosts": [(127.0.0.1 or redis_host, 6378)],
+            "hosts": [("127.0.0.1" or redis_host, 6379)],#"hosts": [(127.0.0.1 or redis_host, 6378)],
         },
     },
 }

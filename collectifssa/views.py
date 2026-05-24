@@ -122,8 +122,8 @@ def voirMessages(request):
     if not request.user.adherent_ssa:
         return HttpResponseForbidden()
 
-    listeMessages = InscriptionCLA.objects.filter().order_by('-date')
-    listeInscriptions = Message_collectifssa.objects.filter().order_by('-date')
-    listeCovoit = Covoit.objects.filter().order_by('-date')
+    listeMessages = Message_collectifssa.objects.filter().order_by('-date', "nom")
+    listeInscriptions = InscriptionCLA.objects.filter().order_by('-date', "nom")
+    listeCovoit = Covoit.objects.filter().order_by('-date', "nom")
 
     return render(request, 'collectifssa/voir_inscriptions.html', {"listeMessages":listeMessages, "listeInscriptions":listeInscriptions, "listeCovoit":listeCovoit})

@@ -41,7 +41,7 @@ class InscriptionForm(forms.ModelForm):
         instance = super(InscriptionForm, self).save()
         if not LOCALL:
             sujet = '[Collectifssa] Nouvelle inscription'
-            message_html = "Inscirption au CLA de : " + self.cleaned_data['email']
+            message_html = "Inscription au CLA de : " + self.cleaned_data['nom'] + " , "+self.cleaned_data['email'] +" " + self.cleaned_data['msg']
             send_mail(sujet, message_html,  SERVER_EMAIL, LIST_EMAIL_SUIVI, fail_silently=False, html_message=message_html)
 
 
@@ -65,7 +65,8 @@ class CovoitForm(forms.ModelForm):
         instance = super(CovoitForm, self).save()
         if not LOCALL:
             sujet = '[Collectifssa] Inscription Coivoiturage CLA'
-            message_html = "Inscirption au covoiturage CLA : " + self.cleaned_data['villeDepart']
+            message_html = "Inscription au covoiturage CLA : " + self.cleaned_data['nom'] + " , "+ self.cleaned_data['villeDepart'] \
+                           +" , "+ self.cleaned_data['telephone']
             send_mail(sujet, message_html, SERVER_EMAIL, LIST_EMAIL_SUIVI, fail_silently=False,
                       html_message=message_html)
 

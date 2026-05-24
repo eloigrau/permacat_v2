@@ -32,7 +32,7 @@
                         <th>Nom</th>
                         <th>email</th>
                         <th>message</th>
-                        <th>Commentaire</th>
+                        <th><em>Commentaire (interne)</em></th>
                     </tr></thead>
                     <tbody>
         {% for msg in listeMessages %}
@@ -40,7 +40,7 @@
                         <td>{{msg.nom}}</td>
                         <td>{{msg.email}}</td>
                         <td>{{msg.msg|safe}}</td>
-                        <td>{%if msg.commentaire%}{{msg.commentaire|safe}}{% endif %} <a class="btn btn-sm btn-warning textleft" href="{{msg.get_comm_editurl}}?next={{request.get_full_path|urlencode}}" ><i class="fa fa-edit"></i> </a></td>
+                        <td>{%if msg.commentaire%}<em>{{msg.commentaire|safe}}</em>{% endif %} <a class="btn btn-sm btn-warning textleft" href="{{msg.get_comm_editurl}}?next={{request.get_full_path|urlencode}}" ><i class="fa fa-edit"></i> </a></td>
 
                     </tr>
         {% endfor %}
@@ -68,7 +68,7 @@
                         <th>Nom</th>
                         <th>Email</th>
                         <th>Message</th>
-                        <th>Commentaire</th>
+                        <th><em>Commentaire (interne)</em></th>
                     </tr></thead>
                     <tbody>
                 {% for msg in listeInscriptions %}
@@ -76,7 +76,7 @@
                         <td>{{msg.nom}}</td>
                         <td>{{msg.email}}</td>
                         <td>{{msg.msg|safe}}</td>
-                        <td>{%if msg.commentaire%}{{msg.commentaire|safe}}{% endif %} <a class="btn btn-sm btn-warning textleft" href="{{msg.get_comm_editurl}}?next={{request.get_full_path|urlencode}}" ><i class="fa fa-edit"></i> </a></td>
+                        <td>{%if msg.commentaire%}<em>{{msg.commentaire|safe}}</em>{% endif %} <a class="btn btn-sm btn-warning textleft" href="{{msg.get_comm_editurl}}?next={{request.get_full_path|urlencode}}" ><i class="fa fa-edit"></i> </a></td>
                     </tr>
                 {% endfor %}
                         <tr>

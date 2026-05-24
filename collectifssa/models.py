@@ -21,16 +21,24 @@ class Message_collectifssa(models.Model):
 
     @property
     def get_comm_editurl(self):
-        return reverse('collectifssa:modifierComm', kwargs={'pk':self.pk})
+        return reverse('collectifssa:modifierComm_msg', kwargs={'pk':self.pk})
 
 class InscriptionCLA(models.Model):
     email = models.EmailField(verbose_name=_("Email"))
     nom = models.CharField(max_length=250, verbose_name=_("Nom prénom / Raison sociale"),)
     msg = models.TextField(verbose_name=_("Message (facultatif)"), null=True, blank=True)
     date = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
+    commentaire = models.TextField(verbose_name=_("Commentaire (interne)"), blank=True, null=True)
 
     def __str__(self):
         return self.nom + ", " + self.email + "; " + self.msg
+
+    def get_absolute_url(self):
+        return reverse('collectifssa:voirMessages')
+
+    @property
+    def get_comm_editurl(self):
+        return reverse('collectifssa:modifierComm_cla', kwargs={'pk':self.pk})
 
 class Covoit(models.Model):
     nom = models.CharField(max_length=250, verbose_name=_("Nom prénom"),)

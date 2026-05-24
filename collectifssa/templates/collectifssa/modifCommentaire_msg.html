@@ -1,0 +1,23 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load static %}
+{% load fontawesome_5 %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row">
+    <div class="col textcenter">
+        <h2>Modifier le commentaire du message</h2>
+        <p> {{message_collectifssa.nom}} : {{message_collectifssa.msg|safe}} </p>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+
+     {% include 'form_template.html'%}
+
+{% endblock %}

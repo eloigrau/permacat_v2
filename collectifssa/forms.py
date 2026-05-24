@@ -36,6 +36,14 @@ class CommMessage_form(forms.ModelForm):
         widgets = {
              'commentaire': SummernoteWidget(),
         }
+class CommCLA_form(forms.ModelForm):
+
+    class Meta:
+        model = InscriptionCLA
+        fields = ["commentaire"]
+        widgets = {
+             'commentaire': SummernoteWidget(),
+        }
 
 class InscriptionForm(forms.ModelForm):
 

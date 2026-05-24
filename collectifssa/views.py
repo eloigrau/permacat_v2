@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import ContactForm, InscriptionForm, CovoitForm, CommMessage_form
+from .forms import ContactForm, InscriptionForm, CovoitForm, CommMessage_form, CommCLA_form
 from .models import InscriptionCLA, Message_collectifssa, Covoit
 from bourseLibre.forms import CaptchaForm
 from bourseLibre.models import Profil
@@ -133,10 +133,22 @@ def voirMessages(request):
 class CommentaireMessage_modifier(UpdateView, ):
     model = Message_collectifssa
     form_class = CommMessage_form
-    template_name = 'collectifssa/modifCommentaire.html'
+    template_name = 'collectifssa/modifCommentaire_msg.html'
 
     def get_initial(self):
         msg = Message_collectifssa.objects.get(pk=self.kwargs["pk"])
+        return {
+            'commentaire': msg.commentaire,
+        }
+
+
+class CommentaireCLA_modifier(UpdateView, ):
+    model = InscriptionCLA
+    form_class = CommCLA_form
+    template_name = 'collectifssa/modifCommentaire_cla.html'
+
+    def get_initial(self):
+        msg = InscriptionCLA.objects.get(pk=self.kwargs["pk"])
         return {
             'commentaire': msg.commentaire,
         }

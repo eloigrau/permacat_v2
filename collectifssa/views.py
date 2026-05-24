@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .forms import ContactForm, InscriptionForm, CovoitForm
+from .forms import ContactForm, InscriptionForm, CovoitForm, CommMessage_form
 from .models import InscriptionCLA, Message_collectifssa, Covoit
 from bourseLibre.forms import CaptchaForm
 from bourseLibre.models import Profil
 from actstream import action
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from django.views.generic import UpdateView
 
 
 # Create your views here.
@@ -127,3 +128,19 @@ def voirMessages(request):
     listeCovoit = Covoit.objects.filter().order_by('-date', "nom")
 
     return render(request, 'collectifssa/voir_inscriptions.html', {"listeMessages":listeMessages, "listeInscriptions":listeInscriptions, "listeCovoit":listeCovoit})
+
+
+class CommentaireMessage_modifier(UpdateView, ):
+    model = Message_collectifssa
+    form_class = CommMessage_form
+    template_name = 'collectifssa/modifCommentaire.html'
+
+    def get_initial(self):
+        msg = Message_collectifssa.objects.get(pk=self.kwargs["pk"])
+        return {
+            'commentaire': msg.commentaire,
+        }
+
+
+
+

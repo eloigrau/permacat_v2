@@ -28,6 +28,15 @@ class ContactForm(forms.ModelForm):
         return instance
 
 
+class CommMessage_form(forms.ModelForm):
+
+    class Meta:
+        model = Message_collectifssa
+        fields = ["commentaire"]
+        widgets = {
+             'commentaire': SummernoteWidget(),
+        }
+
 class InscriptionForm(forms.ModelForm):
 
     class Meta:

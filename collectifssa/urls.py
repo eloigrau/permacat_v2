@@ -9,4 +9,5 @@ urlpatterns = [
     path('', views.accueil, name="accueil_collectifssa"),
     path('inscriptionCLA', views.inscriptionCLA, name="inscriptionCLA"),
     path('inscriptionCovoitCLA', views.inscriptionCovoitCLA, name="inscriptionCovoitCLA"),
+    path('voirMessages', views.voirMessages, name="voirMessages"),
 ]

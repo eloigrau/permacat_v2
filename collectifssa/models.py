@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -7,6 +8,7 @@ class Message_collectifssa(models.Model):
     email = models.EmailField(verbose_name=_("Email"))
     nom = models.CharField(max_length=250, verbose_name=_("Nom prénom / Raison sociale"),)
     msg = models.TextField(verbose_name=_("Message"), )
+    date = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
 
 
     def __str__(self):
@@ -17,6 +19,7 @@ class InscriptionCLA(models.Model):
     email = models.EmailField(verbose_name=_("Email"))
     nom = models.CharField(max_length=250, verbose_name=_("Nom prénom / Raison sociale"),)
     msg = models.TextField(verbose_name=_("Message (facultatif)"), null=True, blank=True )
+    date = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
 
     def __str__(self):
         return self.nom + ", " + self.email + "; " + self.msg
@@ -26,6 +29,7 @@ class Covoit(models.Model):
     villeDepart = models.CharField(max_length=100, verbose_name=_("Ville de départ"),)
     telephone = models.CharField(max_length=25, verbose_name=_("Téléphone"),)
     msg = models.TextField(verbose_name=_("Message (facultatif)"), null=True, blank=True )
+    date = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
     BESOINS = (
         ('0', "Je cherche une place dans une voiture"),
         ('1', "J'ai 1 place dans ma voiture"),

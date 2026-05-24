@@ -1,0 +1,202 @@
+{% extends 'base_adherents.html' %}
+
+{% block header%}
+{% load static %}
+{% load fontawesome_5 %}
+{% endblock %}
+
+{% block subtitle %}
+<div class="row titre_adherents">
+    <div class="col textcenter">
+        <h3>Les contacts du collectif SSA sur le site</h3>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+<nav class="nav nav-tabs justify-content-center">
+    <a class="nav-item nav-link active" href="#msg" data-toggle="tab">Messages</a>
+    <a class="nav-item nav-link " href="#inscriptions" data-toggle="tab">Inscriptions CLA</a>
+    <a class="nav-item nav-link " href="#covoit" data-toggle="tab">Covoiturage</a>
+</nav>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="msg">
+        <h4>Messages reçus sur le site</h4>
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle sortable">
+                    <thead><tr>
+                        <th>Date</th>
+                        <th>Nom</th>
+                        <th>email</th>
+                        <th>message</th>
+                    </tr></thead>
+                    <tbody>
+        {% for msg in listeMessages %}
+                    <tr>
+                        <td>{{msg.date|date:"d/m/Y"}} </td>
+                        <td>{{msg.nom}}</td>
+                        <td>{{msg.email}}</td>
+                        <td>{{msg.msg|safe}}</td>
+                    </tr>
+        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade " id="inscriptions">
+        <h4>Inscriptions au CLA sur le site</h4>
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle sortable">
+                    <thead><tr>
+                        <th>Date</th>
+                        <th>Nom</th>
+                        <th>email</th>
+                        <th>message</th>
+                    </tr></thead>
+                    <tbody>
+                {% for msg in listeInscriptions %}
+                    <tr>
+                        <td>{{msg.date|date:"d/m/Y"}} </td>
+                        <td>{{msg.nom}}</td>
+                        <td>{{msg.email}}</td>
+                        <td>{{msg.msg|safe}}</td>
+                    </tr>
+                {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="covoit">
+        <h4>Inscriptions au covoiturage</h4>
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle sortable">
+                    <thead><tr>
+                        <th>Date</th>
+                        <th>Nom</th>
+                        <th>Ville</th>
+                        <th>Besoin</th>
+                        <th>message</th>
+                    </tr></thead>
+                    <tbody>
+        {% for msg in listeCovoit %}
+                    <tr>
+                        <td>{{msg.date|date:"d/m/Y"}} </td>
+                        <td>{{msg.nom}}</td>
+                        <td>{{msg.villeDepart}}</td>
+                        <td>{{msg.get_besoin_display}}</td>
+                        <td>{{msg.msg|safe}}</td>
+                    </tr>
+        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% comment %}
+    <div class="tab-pane fade" id="production">
+        {% if dico_ListesProduction %}
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle ²">
+                    <thead>
+                    <tr>
+                        <th>Nom de la liste</th>
+                        <th>Adhérents</th>
+                        <th>-</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for nom, adherents in dico_ListesProduction.items %}
+                    <tr>
+                        <td> {{nom}}({{adherents|length}})</td>
+                        <td>
+                            {%for m in adherents %}
+                            {{m}} {% if not forloop.last %}, {% endif%}
+                            {%endfor%}
+                        </td>
+                        <td>
+                            <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
+                                <button type="button" class="btn btn-sm btn-primary">
+                                    Copier la liste des mails
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="tab-pane fade" id="bureau">
+        <div class="row ">
+            <div class="col textcenter">
+
+                <a href="{% url 'adherents:get_csv_listeMails' asso_slug=request.session.asso_slug %}" target="_blank"
+                   rel="noopener noreferrer nofollow">
+                    <button type="button" class="btn btn-sm btn-primary">
+                        &nbsp;Exporter en CSV pour Google
+                    </button>
+                </a>
+                <a class="btn btn-success"
+                   href="{% url 'adherents:inscriptionMail_liste' asso_slug=request.session.asso_slug %}">Gérer la liste
+                    des inscriptions</a></li>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col textcenter">
+                <table class="table table-condensed tableprofils table-striped table-middle ²">
+                    <thead>
+                    <tr>
+                        <th>Nom de la liste</th>
+                        <th>Adhérents</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for nom, adherents in dico_ListesBase.items %}
+                    <tr>
+                        <td> {{nom}}({{adherents|length}})</td>
+                        <td>
+                            {%for m in adherents %}
+                            {{m}} {% if not forloop.last %}, {% endif%}
+                            {%endfor%}
+                        </td>
+                        <td>
+                            <a onclick="copyToClipboard('{%for m in adherents %} {{m}}{% if not forloop.last %}, {% endif%}{%endfor%}')">
+                                <button type="button" class="btn btn-sm btn-primary">
+                                    Copier la liste des mails
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    {% endcomment %}
+</div>
+
+{% endblock %}

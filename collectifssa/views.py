@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from .forms import ContactForm, InscriptionForm, CovoitForm
-from .models import InscriptionCLA
+from .models import InscriptionCLA, Message_collectifssa, Covoit
 from bourseLibre.forms import CaptchaForm
 from bourseLibre.models import Profil
 from actstream import action
+from django.http import HttpResponseForbidden
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -115,3 +117,13 @@ def inscriptionCovoitCLA(request):
 
     return render(request, 'collectifssa/covoitCLA.html', {"deja_inscrit":deja_inscrit, "msg":msg, "form_captcha": form_captcha, "form": form_covoit })
 
+@login_required
+def voirMessages(request):
+    if not request.user.adherent_ssa:
+        return HttpResponseForbidden()
+
+    listeMessages = InscriptionCLA.objects.filter().order_by('-date')
+    listeInscriptions = Message_collectifssa.objects.filter().order_by('-date')
+    listeCovoit = Covoit.objects.filter().order_by('-date')
+
+    return render(request, 'collectifssa/voir_inscriptions.html', {"listeMessages":listeMessages, "listeInscriptions":listeInscriptions, "listeCovoit":listeCovoit})

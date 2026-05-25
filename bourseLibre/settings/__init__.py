@@ -102,6 +102,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     #'django.contrib.gis',
     'bootstrap','fontawesome_5','cookielaw_local',
+    'chatrooms',
+    'bootstrap4',
     #'haystack',
     'model_utils',
     'bourseLibre',

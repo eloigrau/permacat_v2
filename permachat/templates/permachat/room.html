@@ -27,7 +27,7 @@ $(function () {
     // Correctly decide between ws:// and wss://
     const roomName = "{{room.slug}}";
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-    var ws_path = ws_scheme + '://' + window.location.host + "/permachat/paint/" + roomName;
+    var ws_path = ws_scheme + '://' + window.location.host + "/permachat/room/" + roomName;
     console.log("Connecting to " + ws_path);
     var socket = new ReconnectingWebSocket(ws_path);
 
@@ -125,7 +125,10 @@ $(function () {
                     redraw_canvas(data.canvas);
                     break;
                 default:
-                    console.log("Unsupported message type!");
+                    ok_msg = "<div class='contextual-message text-muted'> message type inconnu" + data.message +
+                            "</div>";
+                    msgdiv.append(ok_msg);
+                    console.log("Unsupported message type!" + str(data.msg_type) + data.message);
                     return;
             }
             msgdiv.append(ok_msg);

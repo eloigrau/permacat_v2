@@ -219,7 +219,7 @@ class AlbumForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(AlbumForm, self).__init__(*args, **kwargs)
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all() if request.user.estMembre_str(x.slug)]
-        self.fields["article"].choices = [('', '(non)')] + [(x.id, x.titre) for i, x in enumerate(Article.objects.filter(estArchive=False).order_by('titre')) if request.user.estMembre_str(x.asso.slug)]
+       # self.fields["article"].choices = [('', '(non)')] + [(x.id, x.titre) for i, x in enumerate(Article.objects.filter(estArchive=False).order_by('titre')) if request.user.estMembre_str(x.asso.slug)]
 
 
 class AlbumChangeForm(forms.ModelForm):

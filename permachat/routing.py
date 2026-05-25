@@ -7,5 +7,7 @@ websocket_urlpatterns = [
     #path(r"ws/chat/<str:room_name>/", consumers.ChatConsumer.as_asgi()),
     #path(r"permachat/stream/", consumers.ChatConsumer),
     path("permachat/stream/", consumers.ChatConsumer.as_asgi()),
+    path("permachat/room/<str:roomName>", consumers.ChatConsumer.as_asgi()),
     path("permachat/paint/<str:roomName>", consumers.ChatConsumer.as_asgi()),
+    path("permachat/chat/", consumers.ChatConsumer2.as_asgi()),
 ]

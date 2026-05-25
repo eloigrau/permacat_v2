@@ -227,18 +227,22 @@ function fetchNotifications() {
         .then(response => response.json())
         .then(data => {
             var e = document.getElementById('nbmessage-badge');
-            if (data.nb_messages != "0") {
-                e.innerText = "(" + data.nb_messages + ")";
-                e.style.display = 'inline-block';
-            } else {
-                e.style.display = 'none';
+            if (e){
+                if (data.nb_messages != "0") {
+                    e.innerText = "(" + data.nb_messages + ")";
+                    e.style.display = 'inline-block';
+                } else {
+                    e.style.display = 'none';
+                }
             }
             var e = document.getElementById('nbnotifs-badge');
-            if (data.nb_notifs != "0") {
-                e.innerText = "(" + data.nb_notifs + ")";
-                e.style.display = 'inline-block';
-            } else {
-                e.style.display = 'none';
+            if (e){
+                if (data.nb_notifs != "0") {
+                    e.innerText = "(" + data.nb_notifs + ")";
+                    e.style.display = 'inline-block';
+                } else {
+                    e.style.display = 'none';
+                }
             }
             try{
                 if (window.location.href.endsWith("bienvenue/")){

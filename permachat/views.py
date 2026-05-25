@@ -39,7 +39,7 @@ def room(request, room_name):
     return render(request, "permachat/room.html", {"room": room, "messages":messages})
 
 @login_required
-def room_new(request, room_name):
+def room_new(request):
     return render(request, "permachat/room_new.html", {})
 
 

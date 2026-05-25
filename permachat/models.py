@@ -16,7 +16,7 @@ class Room(models.Model):
         if not self.titre:
             self.titre = self.slug
             self.save()
-        return self.titre + "\o/" if self.estPermanent else self.titre
+        return self.titre + " *" if self.estPermanent else self.titre
 
     @property
     def group_name(self):

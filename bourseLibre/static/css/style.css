@@ -338,7 +338,7 @@ section.p3 {
 
 
 .bs-dark{
-    text-color:black;
+    font-color:black;
   /*background-image:linear-gradient(90deg, #ffd0cc, #ffe6b3, #fcffcc, #f8ff99, #d9ffcc, #ccffdd, #ccfffb, #ccdbff);*/
 background-image:linear-gradient(40deg, white, white);
 border: 1px inset rgba(28,110,164,0.65);

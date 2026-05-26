@@ -14,7 +14,7 @@ body {
 }
 
 #page-wraper {
-    background: #4AA0DD no-repeat center center fixed;
+    background: #386232 no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -60,13 +60,13 @@ img {
     overflow: hidden;
 }
 
-ul {
+.ul-class {
     padding: 0;
     margin: 0;
     list-style: none;
 }
 
-ul li {
+.ul-class li {
     display: inline-block;
 }
 
@@ -232,7 +232,7 @@ html {
     left: 8%;
   -webkit-transition: -webkit-transform 233ms cubic-bezier(0, 0, 0.21, 1);
   -webkit-overflow-scrolling: touch;
-  background-color: #2279BD;
+  background-color: #293442;
   box-sizing: border-box;
   height: 100vh;  
   max-height: 100vh !important;
@@ -374,6 +374,11 @@ button:hover {
 /* Left & Right Post */
 
 .right-image-post {
+    margin-bottom: 60px;
+    padding-bottom: 60px;
+    border-bottom: 2px solid rgba(250, 250, 250, 0.1);
+}
+.left-image-post {
     margin-bottom: 60px;
     padding-bottom: 60px;
     border-bottom: 2px solid rgba(250, 250, 250, 0.1);

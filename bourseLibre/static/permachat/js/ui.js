@@ -18,7 +18,7 @@
                 this._parent.append(this._messageBar).append(this._roomsSidebar);
                 Chat.Incoming.onopen = function() {
                     ctx._status = 'open';
-                    //ctx._initServerLogsAndSidebar();
+                    ctx._initServerLogsAndSidebar();
                     ctx._initMessageBar();
                     // Also, manually invoke to retrieve the rooms list.
                     Chat.list();
@@ -77,7 +77,7 @@
                 if (e.which === 13) ctx._messageBarButton.click();
             })
         },
-/*
+
         _initServerLogsAndSidebar: function() {
             let ctx = this;
 
@@ -95,7 +95,7 @@
                 Chat.list();
             });
             this._roomsSidebar.append(this._refreshLink);
-        },*/
+        },
 
         _selectActiveRoom: function(roomName) {
             if (this._rooms[roomName]) {
@@ -126,6 +126,7 @@
                     $('<div class="caption"></div>').append("Salle : " + roomName).append(
                         $('<a href="#" style="margin-left: 8px">Quitter</a>').click(function() {
                             Chat.part(roomName)
+
                         })
                     )
                 );
@@ -236,7 +237,8 @@
             this._roomLinks = {};
             this._roomsSidebar.find('.room-item').remove();
             roomList.forEach(function(room) {
-                let roomLink = new $('<div class="room-item" />').text(room.name + room.perma);
+                const roomNames = JSON.parse(document.getElementById('salles').textContent);
+                let roomLink = new $('<div class="room-item" />').text(roomNames[room.name] + room.perma);
                 if (room.joined) roomLink.addClass('joined');
                 ctx._roomsSidebar.append(roomLink);
                 ctx._roomLinks[room.name] = roomLink;
@@ -250,7 +252,7 @@
             });
             if (this._rooms['']){
                 this._rooms[''].append(
-                    $('<div class="info" />').append("La liste des salles a bien été mise à jour")
+                    $('<div class="info" />').append("La liste des salles a bien été mise à jour. Cliquez sur une salle à gauche pour entrer et chatter")
                 );
                 this._rooms[''].scrollTop(this._rooms[''].prop("scrollHeight"));
             }
@@ -260,8 +262,9 @@
         _listUsers: function(roomName, users) {
             let room = this._rooms[roomName];
             let usersSet = {};
+            let usersUrl = {};
             users.forEach(function(user) {
-                usersSet[user.name] = users.you;
+                usersSet[user.name] = [user.you, user.url];
             });
             room.data('users', usersSet);
         },
@@ -273,8 +276,8 @@
             let usersList = room.find('.users');
             usersList.empty();
             Object.keys(users).sort().forEach(function(username) {
-                let entry = $('<div class="user"/>').text(username);
-                if (users[username]) entry.addClass("you");
+                let entry = $('<a href="'+users[username][1]+'"<div class="user"></div></a>').text(username);
+                if (users[username][0]) entry.addClass("you");
                 usersList.append(entry);
             });
         },
@@ -282,12 +285,12 @@
         // Handles receiving an error.
         _errorReceived: function(code, details) {
             this._selectActiveRoom('');
-            //this._rooms[''].append(
-            this._rooms.append(
+            this._rooms[''].append(
+            //this._rooms.append(
                 $('<div class="error" />').append("Error code: " + code + ' - details: ' + JSON.stringify(details))
             );
-            //this._rooms[''].scrollTop(this._rooms[''].prop("scrollHeight"));
-            this._rooms.scrollTop(this._rooms.prop("scrollHeight"));
+            this._rooms[''].scrollTop(this._rooms[''].prop("scrollHeight"));
+            //this._rooms.scrollTop(this._rooms.prop("scrollHeight"));
         },
 
         // Stops the socket.

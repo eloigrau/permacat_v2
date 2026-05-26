@@ -68,7 +68,8 @@
     grid-template-areas:
         "rooms room"
         "rooms message";
-    /*border: 1px solid #053200;*/
+    border: 1px solid #053200;
+    background-color:white;
 }
 
 #chat-content > .rooms-sidebar {
@@ -161,6 +162,7 @@
 #chat-content > .room > .messages .stamp {
     color: gray;
     font-weight: bold;
+    font-size: x-small;
     margin-right: 4px;
 }
 

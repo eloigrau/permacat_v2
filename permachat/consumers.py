@@ -437,9 +437,10 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
           also telling which one is the user joined to.
         """
 
-        rooms = await database_sync_to_async(lambda: list(Room.objects.order_by('slug')))()
+        rooms = await database_sync_to_async(lambda: list(Room.objects.order_by('titre')))()
         await self.send_json({"type": "notification", "code": "list", "list": [{
-            "name": room.titre, "perma": " *" if room.estPermanent else "", "joined": room.titre in self.ROOMS
+            "name": room.slug, "perma": " *" if room.estPermanent else "", "joined": room.titre in self.ROOMS
+           # "name": room.titre, "perma": " *" if room.estPermanent else "", "joined": room.titre in self.ROOMS
         } for room in rooms]})
 
     async def _expect_types(self, specs):
@@ -494,7 +495,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(room_name, {
             "type": "broadcast_joined",
             "user": self.scope["user"].username, "room_name": room_name,
-            "stamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "stamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         })
 
     async def _get_last_50_room_messages(self, room_name):
@@ -504,7 +505,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         """
 
         return [
-            {"stamp": message.date_creation.strftime("%Y-%m-%d %H:%M:%S"),
+            {"stamp": message.date_creation.strftime("%Y-%m-%d %H:%M"),
              "user": message.user.username, "body": message.content,
              "you": message.user == self.scope["user"]}
             for message in await database_sync_to_async(lambda: list(
@@ -520,7 +521,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         """
 
         return sorted([
-            {"name": channel.scope["user"].username, "you": channel.scope["user"] == self.scope["user"]} for channel in
+            {"name": channel.scope["user"].username, "you": channel.scope["user"] == self.scope["user"], "url":channel.scope["user"].get_profil_url()} for channel in
             self.ROOMS[room_name]
         ], key=lambda d: d['name'])
 
@@ -535,7 +536,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             return
 
         try:
-            await database_sync_to_async(lambda: Room.objects.get(titre=room_name))()
+            await database_sync_to_async(lambda: Room.objects.get(slug=room_name))()
             self.rooms = getattr(self, 'rooms', set())
             if room_name in self.rooms:
                 await self.send_json({"type": "error", "code": "room:already-joined", "details": {"name": room_name}})
@@ -555,7 +556,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(room_name, {
             "type": "broadcast_parted",
             "user": self.scope["user"].username, "room_name": room_name,
-            "stamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "stamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         })
 
     async def receive_part(self, room_name):
@@ -585,7 +586,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         """
 
         try:
-            perma = await Room.objects.aget(titre=room_name)
+            perma = await Room.objects.aget(slug=room_name)
             if perma.estPermanent:
                 return await database_sync_to_async(lambda: Message.objects.create(room=Room.objects.get(
                     titre=room_name
@@ -625,9 +626,9 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             if body:
                 message = await self._store_message(room_name, body)
                 if not hasattr(message, "date_creation"):
-                    await self._broadcast_message(room_name, body, now().strftime("%Y-%m-%d %H:%M:%S"))
+                    await self._broadcast_message(room_name, body, now().strftime("%Y-%m-%d %H:%M"))
                 else:
-                    await self._broadcast_message(room_name, body, message.date_creation.strftime("%Y-%m-%d %H:%M:%S"))
+                    await self._broadcast_message(room_name, body, message.date_creation.strftime("%Y-%m-%d %H:%M"))
             else:
                 await self.send_json({"type": "error", "code": "room:empty-message"})
         else:
@@ -644,7 +645,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_send(room_name, {
             "type": "broadcast_custom",
             "user": self.scope["user"].username, "room_name": room_name, "command": code, "payload": payload,
-            "stamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "stamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         })
 
     async def receive_custom(self, room_name, command, payload):

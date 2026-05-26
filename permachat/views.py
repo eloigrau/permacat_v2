@@ -40,7 +40,8 @@ def room(request, room_name):
 
 @login_required
 def room_new(request):
-    return render(request, "permachat/room_new.html", {})
+    rooms = {room.slug:room.titre for room in Room.objects.filter()}
+    return render(request, "permachat/room_new.html", {"rooms":rooms})
 
 
 

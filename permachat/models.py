@@ -6,7 +6,7 @@ class Room(models.Model):
     """
     A room for people to chat in.
     """
-    titre = models.CharField(max_length=255,  validators=[RegexValidator("^[a-zA-Z][a-zA-Z0-9_]*?(-[a-zA-Z0-9_]+)*$")])
+    titre = models.CharField(max_length=255, )
     estPermanent = models.BooleanField(default=False)
     slug = models.SlugField(unique=True)
     date_creation = models.DateTimeField(auto_now_add=True, editable=False)

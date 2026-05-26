@@ -280,20 +280,20 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
 
     USERS = {}
     ROOMS = {}
-
-    @classmethod
-    def _on_session_destroyed(cls, sender, **kwargs):
-        """
-        This handler is invoked when a token session is destroyed.
-          The websocket that is connected to this channel server
-          is popped out (closed).
-        :param sender: The session token being destroyed.
-        """
-
-        user = sender.user
-        consumer = cls.USERS.get(user and user.id)
-        if consumer:
-            async_to_sync(consumer.send_json)({"type": "notification", "code": "logged-out"}, True)
+    #
+    # @classmethod
+    # def _on_session_destroyed(cls, sender, **kwargs):
+    #     """
+    #     This handler is invoked when a token session is destroyed.
+    #       The websocket that is connected to this channel server
+    #       is popped out (closed).
+    #     :param sender: The session token being destroyed.
+    #     """
+    #
+    #     user = sender.user
+    #     consumer = cls.USERS.get(user and user.id)
+    #     if consumer:
+    #         async_to_sync(consumer.send_json)({"type": "notification", "code": "logged-out"}, True)
 
     @classmethod
     def _on_room_destroyed(cls, sender, instance, using, **kwargs):

@@ -37,7 +37,6 @@ $(function () {
         // Decode the JSON
         console.log("Got websocket message " + message.data);
         var data = JSON.parse(message.data);
-        console.log("messagereçuuu js " + data.toString());
         // Handle errors
         if (data.error) {
             alert(data.error);

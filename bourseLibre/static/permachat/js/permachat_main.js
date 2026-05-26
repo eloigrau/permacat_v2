@@ -101,8 +101,7 @@
 
             var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
             var ws_path = ws_scheme + '://' + window.location.host + "/permachat/chat/";
-            try{
-                let connection = new WebSocket(ws_path);
+            let connection = new WebSocket(ws_path);
 
                 connection.onopen = function(e) {
                     console.log("Connection started...", e);
@@ -157,9 +156,6 @@
                     ctx.Incoming.onfatal("websocket");
                 };
 
-            } catch (error) {
-               console.log("Error:", error.message);
-            }
         },
         /**
          * Disconnects the chat.

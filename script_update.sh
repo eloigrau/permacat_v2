@@ -9,4 +9,5 @@ python manage.py collectstatic --noinput --settings=bourseLibre.settings.product
 python manage.py crontab add --settings=bourseLibre.settings.production
 sudo systemctl restart nginx
 sudo supervisorctl restart permacat_supervisor
+sudo systemctl restart permacat-daphne
 

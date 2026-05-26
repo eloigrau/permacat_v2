@@ -13,6 +13,7 @@ sudo nano /etc/systemd/system/gunicorn_wsgi.service
 sudo nano /etc/systemd/system/gunicorn.socket
 sudo nano /etc/systemd/system/permacat-daphne.service
 
+
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start permacat_supervisor
@@ -80,3 +81,11 @@ sudo certbot --expand --nginx -d www.perma.cat
 
 adherents_adherent                         | table | postgres
  public | adherents_adhesion
+
+
+ Make sure to remove channels and daphne first.
+
+pip uninstall channels
+pip uninstall daphne
+
+python -m pip install -U channels["daphne"]

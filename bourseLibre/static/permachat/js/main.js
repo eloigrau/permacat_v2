@@ -99,7 +99,9 @@
 
             if (ctx._socket) throw new ChatError("The connection is already established", "already-connected");
 
-            let connection = new WebSocket("ws://" + window.location.host + "/permachat/chat/");
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            var ws_path = ws_scheme + '://' + window.location.host + "/permachat/chat/";
+            let connection = new WebSocket(ws_path);
             connection.onopen = function(e) {
                 console.log("Connection started...", e);
                 ctx._socket = this;

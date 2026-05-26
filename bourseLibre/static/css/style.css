@@ -969,17 +969,16 @@ border: 1px inset rgba(28,110,164,0.65);
     color: black;/*#6666ff*/
 }
 .col_vegetaux{
-    color: black;/*
-    text-color: #A9F5A9*/
+    color: black;
+    /*text-color: #A9F5A9*/
 }
 .col_services{
-    color: black;/*
-    text-color: #D8D8D8*/
+    color: black;
+    /*text-color: #D8D8D8*/
 }
 .col_objets{
     color: black;
-    /*
-    text-color: #0055FE*/
+    /* text-color: #0055FE*/
 }*/
 .col-centered{
     float: none;
@@ -1242,7 +1241,7 @@ a article_carte:active {
 
 @media (max-width: 920px) {
 .col_cat{
-    width: 100 %;
+    width: 100%;
 }
 
 .row{

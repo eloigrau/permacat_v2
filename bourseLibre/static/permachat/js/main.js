@@ -20,22 +20,22 @@
 
         /**
          * Sets the token into the local storage.
-         */
+         *//*
         setToken: function(token) {
             window.localStorage.setItem('token', token);
-        },
+        },*/
         /**
          * Retrieves the token from the local storage.
-         */
+         *//*
         getToken: function() {
             return window.localStorage.getItem('token');
-        },
+        },*/
         /**
          * Clears the token from the local storage.
-         */
+         *//*
         clearToken: function() {
             window.localStorage.removeItem('token');
-        },
+        },*/
 
         // Session-related auxiliary functions start here.
 
@@ -44,42 +44,42 @@
          * the current token. It will return 401 if not
          * authenticated, which is useful to update the
          * front-end.
-         */
+         *//*
         me: function() {
             return $.get('/profile', null, 'json');
-        },
+        },*/
         /**
          * Performs a log-in with the current username and
          *   password. The ajax query request
          * @param username The account username.
          * @param password The account password.
-         */
+         *//*
         login: function(username, password) {
             return $.post('/chatrooms/login', {
                 username: username,
                 password: password
             }, null, 'json');
-        },
+        },*/
         /**
          * Performs the registration of a new user account
          *   given username, email, and password.
          * @param username The account username.
          * @param email The account e-mail address.
          * @param password The account password.
-         */
+         *//*
         register: function(username, email, password) {
             return $.post('/register', {
                 username: username,
                 email: email,
                 password: password
             }, null, 'json');
-        },
+        },*/
         /**
          * Performs a logout of the current account.
-         */
+         *//*
         logout: function() {
             return $.post('/logout', null, 'json');
-        },
+        },*/
 
         // Socket-related utility functions start here.
 
@@ -103,62 +103,63 @@
             var ws_path = ws_scheme + '://' + window.location.host + "/permachat/chat/";
             try{
                 let connection = new WebSocket(ws_path);
+
+                connection.onopen = function(e) {
+                    console.log("Connection started...", e);
+                    ctx._socket = this;
+                    ctx.Incoming.onopen();
+                };
+                connection.onmessage = function(e) {
+                    let message = JSON.parse(e.data);
+                    console.log("Receiving message:", message, message.type, message.code);
+                    switch(message.type) {
+                        case "fatal":
+                            ctx.Incoming.onfatal(message.code);
+                            break;
+                        case "error":
+                            ctx.Incoming.onerror(message.code, message.details);
+                            break;
+                        default:
+                            switch(message.code) {
+                                case "list":
+                                    ctx.Incoming.onlist(message.list);
+                                    break;
+                                case "users":
+                                    ctx.Incoming.onusers(message.room_name);
+                                    break;
+                                case "message":
+                                    ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, message.body);
+                                    break;
+                                case "notification":
+                                    ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, message.body);
+                                    break;
+                                case "custom":
+                                    ctx.Incoming.oncustom(message.room_name, message.stamp, message.user, message.you, message.command, message.payload);
+                                    break;
+                                case "joined":
+                                    ctx.Incoming.onjoin(message.room_name, message.stamp, message.user, message.you, message.status);
+                                    break;
+                                case "parted":
+                                    ctx.Incoming.onpart(message.room_name, message.stamp, message.user, message.you);
+                                    break;
+                                /*default:
+                                    ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, "codeInconnu " + message.body);
+                                    */
+                            }
+                    }
+                };
+                connection.onclose = function(e) {
+                    console.log("closing connection...", e);
+                    ctx._socket = null;
+                };
+                connection.onerror = function(m) {
+                    console.log("Websocket error:", m);
+                    ctx.Incoming.onfatal("websocket");
+                };
+
             } catch (error) {
                console.log("Error:", error.message);
             }
-
-            connection.onopen = function(e) {
-                console.log("Connection started...", e);
-                ctx._socket = this;
-                ctx.Incoming.onopen();
-            };
-            connection.onmessage = function(e) {
-                let message = JSON.parse(e.data);
-                console.log("Receiving message:", message, message.type, message.code);
-                switch(message.type) {
-                    case "fatal":
-                        ctx.Incoming.onfatal(message.code);
-                        break;
-                    case "error":
-                        ctx.Incoming.onerror(message.code, message.details);
-                        break;
-                    default:
-                        switch(message.code) {
-                            case "list":
-                                ctx.Incoming.onlist(message.list);
-                                break;
-                            case "users":
-                                ctx.Incoming.onusers(message.room_name);
-                                break;
-                            case "message":
-                                ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, message.body);
-                                break;
-                            case "notification":
-                                ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, message.body);
-                                break;
-                            case "custom":
-                                ctx.Incoming.oncustom(message.room_name, message.stamp, message.user, message.you, message.command, message.payload);
-                                break;
-                            case "joined":
-                                ctx.Incoming.onjoin(message.room_name, message.stamp, message.user, message.you, message.status);
-                                break;
-                            case "parted":
-                                ctx.Incoming.onpart(message.room_name, message.stamp, message.user, message.you);
-                                break;
-                            /*default:
-                                ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, "codeInconnu " + message.body);
-                                */
-                        }
-                }
-            };
-            connection.onclose = function(e) {
-                console.log("closing connection...", e);
-                ctx._socket = null;
-            };
-            connection.onerror = function(m) {
-                console.log("Websocket error:", m);
-                ctx.Incoming.onfatal("websocket");
-            };
         },
         /**
          * Disconnects the chat.
@@ -229,12 +230,12 @@
             onpart: function(roomName, stamp, username, you) {}
         }
     };
-
+/*
     $(function() {
         // Pre-sets the token on each ajax request, if available.
         $(document).ajaxSend(function(e, xhr, opts) {
             let token = Chat.getToken();
             if (token) xhr.setRequestHeader('Authorization', 'Token ' + token);
         });
-    });
+    });*/
 })(jQuery);

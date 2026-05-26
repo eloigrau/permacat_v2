@@ -257,17 +257,6 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from .models import Room, Message
-import logging
-logger = logging.getLogger(__name__)
-logger.addHandler({
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": "PermaChat.log",
-        },
-    })
-
-print ('logger : ' +str(logger))
-
 
 class ChatConsumer2(AsyncJsonWebsocketConsumer):
     """
@@ -319,21 +308,21 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         # Set the signal for when the token sessions are destroyed.
         #session_destroyed.connect(self._on_session_destroyed, dispatch_uid='on_session_destroyed')
 
-        logger.info("New connection established")
+         #logger.info("New connection established")
         user = self.scope["user"]
         await self.accept()
         if not user or user.is_anonymous:
-            logger.info(">> It has no user - closing")
+            #logger.info(">> It has no user - closing")
             await self.send_json({"type": "fatal", "code": "not-authenticated"}, True)
             return False
         elif user.id in self.USERS:
-            logger.info(">> It is already connected with user: %d " % user.id)
+            #logger.info(">> It is already connected with user: %d " % user.id)
             return True
             #self.scope.pop("user", None)
             #await self.send_json({"type": "fatal", "code": "already-chatting"}, True)
             #return False
         else:
-            logger.info(">> It is connecting with user: %d - moving forward" % user.id)
+            #logger.info(">> It is connecting with user: %d - moving forward" % user.id)
             self.USERS[user.id] = self
             self.rooms = set()
             return True

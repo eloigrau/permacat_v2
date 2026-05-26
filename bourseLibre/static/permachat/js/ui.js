@@ -86,16 +86,19 @@
             this._rooms[''] = logs;
             this._roomLinks = {};
             this._parent.append(logs);
-            this._logsLink = $('<div/>').text('Logs').addClass('server-logs active');
+            this._logsLink = $('<div class="logslink"/>').text('Logs').addClass('server-logs active');
             this._logsLink.click(function() {
                 ctx._selectActiveRoom('');
             });
             this._roomsSidebar.append(this._logsLink);
-            this._refreshLink = $('<div/>').text('Rafraichir').addClass('reload');
+            this._refreshLink = $('<div class="logslink"/>').text('Rafraichir').addClass('reload');
             this._refreshLink.click(function() {
                 Chat.list();
             });
             this._roomsSidebar.append(this._refreshLink);
+
+            this._textSalles = $('<div class="textSalles"/>').text('Salles :');
+            this._roomsSidebar.append(this._textSalles);
         },
 
         _selectActiveRoom: function(roomName) {
@@ -176,7 +179,7 @@
                 this._refreshUsers(roomName);
                 let messages = this._rooms[roomName].find(".messages");
                 messages.append(
-                    $('<div/>').append(
+                    $('<div class="msg-chat-bot"/>').append(
                         $('<span class="stamp" />').text(stamp)
                     ).append(
                         $('<span class="author" />').text(username + (you ? ' (moi)' : ''))
@@ -207,7 +210,7 @@
         _messageReceived: function(roomName, stamp, username, you, body) {
             let messages = this._rooms[roomName].find(".messages");
             messages.append(
-                $('<div/>').append(
+                $('<div class="msg-chat"/>').append(
                     $('<span class="stamp" />').text(stamp)
                 ).append(
                     $('<span class="author" />').text(username + (you ? ' (moi)' : ''))
@@ -295,7 +298,6 @@
         _errorReceived: function(code, details) {
             this._selectActiveRoom('');
             this._rooms[''].append(
-            //this._rooms.append(
                 $('<div class="error" />').append("Error code: " + code + ' - details: ' + JSON.stringify(details))
             );
             this._rooms[''].scrollTop(this._rooms[''].prop("scrollHeight"));

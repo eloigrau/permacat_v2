@@ -63,7 +63,7 @@
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: minmax(150px, auto) 1fr;
     grid-template-areas:
         "rooms room";
     border: 1px solid #053200;
@@ -78,9 +78,11 @@
     border-right: 1px solid gray;
 }
 
-#chat-content > .rooms-sidebar > * {
-    font-size: 12px;
+#chat-content > .rooms-sidebar > room-item {
+    font-size: 16px;
+    padding: 2px;
 }
+
 
 #chat-content > .rooms-sidebar .server-logs {
     color: red;
@@ -132,12 +134,12 @@
     grid-area: room;
     display: grid;
     font-size: 14px;
-    grid-template-rows: 2fr 6fr 1fr;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
         "caption users"
         "messages messages"
         "message message";
-    height: 60vh;
+    height: 85vh;
 }
 
 #chat-content > .room > .caption {
@@ -219,4 +221,52 @@
 #chat-content > .room > .message > button {
     height: 24px;
     width: 96px;
+}
+
+.msg-chat{
+    padding:3px;
+}
+
+.msg-chat-bot{
+    font-size:12px;
+}
+
+.textSalles{
+    padding: 1em;
+    text-align: center;
+    font-style:oblique;
+}
+
+.logslink{
+    font-size:12px;
+}
+
+@media screen and (max-width: 600px) {
+    #chat-content {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            "rooms"
+            "room";
+        border: 1px solid #053200;
+        background-color:white;
+    }
+
+
+    #chat-content > .room {
+        grid-area: room;
+        display: grid;
+        font-size: 14px;
+        grid-template-rows: auto 1fr auto auto;
+        grid-template-areas:
+            "caption"
+            "messages"
+            "message"
+            "users ";
+        height: 60vh;
+    }
+
+
+
 }

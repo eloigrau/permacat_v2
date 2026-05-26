@@ -1,7 +1,11 @@
 from django.db import models
 from django.urls import reverse
 from bourseLibre.models import Profil
-from django.core.validators import RegexValidator
+from bourseLibre.utils import slugify_pcat
+
+import itertools
+#from django.core.validators import RegexValidator
+
 class Room(models.Model):
     """
     A room for people to chat in.
@@ -17,6 +21,23 @@ class Room(models.Model):
             self.titre = self.slug
             self.save()
         return self.titre + " *" if self.estPermanent else self.titre
+
+    def save(self, *args, **kwargs):
+        instance = super(models.Model, self).save(commit=False)
+
+        max_length = Room._meta.get_field('slug').max_length
+        instance.slug = orig = slugify_pcat(instance.titre, max_length)
+
+        for x in itertools.count(1):
+            if not Room.objects.filter(slug=instance.slug).exists():
+                break
+
+            # Truncate the original slug dynamically. Minus 1 for the hyphen.
+            instance.slug = "%s-%d"
+
+        instance.save()
+
+        return instance
 
     @property
     def group_name(self):

@@ -64,81 +64,77 @@
     {%endblock%}
     {%block header2 %}
     {%endblock%}
-
 </head>
 
 
 <body>
-
     {%block loader %}
- <div class="loader" id="loader">Chargement de Perma.Cat</div>
+     <div class="loader" id="loader">Chargement de Perma.Cat</div>
     {%endblock%}
- <div class="contenucharge" id="contenucharge">
-<div class="container-fluid" id="top" {% block div-container-global %} {% endblock%}>
-	<div class="row rowprincipal justify-content-center">
-		<div class="colprincipal">
-            {% block navbar%}
-            {% include 'navigationBar.html' %}
-            {% endblock%}
+    <div class="contenucharge" id="contenucharge">
+        <div class="container-fluid" id="top" {% block div-container-global %} {% endblock%}>
+            <div class="row rowprincipal justify-content-center">
+                <div class="colprincipal">
+                    {% block navbar%}
+                    {% include 'navigationBar.html' %}
+                    {% endblock%}
 
-        <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
-            <div class="panel-heading">
-                {% block panel-heading %}
-                <div class="panel-title soustitre contenu" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
-                    <div class="row justify-content-sm-center">
-                    <div class="col-sm-12 col-md-12 col-lg-12  textcenter">
-                        <div class="row ">
-                           {%block message%}
-                            {% if messages %}
-                            <ul class="messages">
-                                {% for message in messages %}
-                                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
+                    {% block bodycontenucomplet%}
+                    <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
+                        <div class="panel-heading">
+                            {% block panel-heading %}
+                            <div class="panel-title soustitre contenu" id="top_soustitre" {%block bodyEntete%}{%endblock%}>
+                                <div class="row justify-content-sm-center">
+                                <div class="col-sm-12 col-md-12 col-lg-12  textcenter">
+                                    <div class="row ">
+                                       {%block message%}
+                                        {% if messages %}
+                                        <ul class="messages">
+                                            {% for message in messages %}
+                                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                        {% endblock %}
+                                    </div>
+
+                                {% block banniere %}
+                                {% endblock%}
+                                    </div>
+                                </div>
+                            </div>
                             {% endblock %}
                         </div>
-
-                    {% block banniere %}
-                    {% endblock%}
-                        </div>
+                        <div class="panel-body">
+                                <div class="anchor_blank" id="ref-titre"></div>
+                            {% block submenu%}{% endblock %}
+                                {% block banniere2 %}
+                                {% endblock%}
+                            <div class="panel-body panelsoustitre  ">
+                                <div class="row justify-content-sm-center">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
+                                            {% block subtitle %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="panel-body bodycontenu">
+                                    {% block content %}{% endblock %}
+                                </div>
+                            </div>
                     </div>
+                    </div>
+                    {% endblock%}
                 </div>
-                {% endblock %}
             </div>
-            <div class="panel-body">
-                    <div class="anchor_blank" id="ref-titre"></div>
-                {% block submenu%}{% endblock %}
-                    {% block banniere2 %}
-                    {% endblock%}
-                <div class="panel-body panelsoustitre  ">
-                    <div class="row justify-content-sm-center">
-                        <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
-                                {% block subtitle %}{% endblock %}
-                        </div>
-                    </div>
-                    <div class="panel-body bodycontenu">
-                        {% block content %}{% endblock %}
-                    </div>
-                </div>
         </div>
-</div>
-
-</div>
-</div>
-</div>
- </div>
-
-
+    </div>
 </body>
-
 <footer>
-                {% block footer %}
+{% block footer %}
     <p class="textcenter">
     <a href="#top" id="scroll-to-top" class="btn"><i class="fa fa-angle-up"></i></a></p>
     <p class="textcenter textepetit">&copy; PermaCat; {% now 'd/m/Y' %}</p>
-                {% endblock %}
+{% endblock %}
 </footer>
-                        {% block scriptblock %}{% endblock %}
+{% block scriptblock %}{% endblock %}
 </html>
 {% endspaceless %}

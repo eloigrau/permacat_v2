@@ -1,12 +1,12 @@
 from django import forms
-from django.utils.text import slugify
+#from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso, Adresse
 from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais
 from bourseLibre.utils import slugify_pcat
 from adherents.models import Adherent
-from datetime import datetime
+#from datetime import datetime
 
 class DateInput(forms.DateInput):
     input_type = 'date'

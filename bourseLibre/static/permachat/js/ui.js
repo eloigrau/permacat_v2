@@ -13,13 +13,12 @@
                 this._rooms = {};
                 this._roomLinks = {};
                 this._activeRoom = '';
-                this._messageBar = $('<div/>').addClass('message');
                 this._parent = parent;
-                this._parent.append(this._messageBar).append(this._roomsSidebar);
+                this._parent.append(this._roomsSidebar);
                 Chat.Incoming.onopen = function() {
                     ctx._status = 'open';
                     ctx._initServerLogsAndSidebar();
-                    ctx._initMessageBar();
+                    //ctx._initMessageBar();
                     // Also, manually invoke to retrieve the rooms list.
                     Chat.list();
                 };
@@ -47,6 +46,7 @@
 
         _initMessageBar: function() {
             let ctx = this;
+
             this._messageBarText = $('<input type="text" placeholder="Ecrire un message..." />');
             this._messageBar.append(this._messageBarText);
             this._messageBarButton = $('<button class="btn btn-sm btn-primary">Envoyer</button>').css('font-size', '10px');
@@ -76,6 +76,7 @@
             this._messageBarText.keyup(function(e) {
                 if (e.which === 13) ctx._messageBarButton.click();
             })
+
         },
 
         _initServerLogsAndSidebar: function() {
@@ -130,6 +131,10 @@
                         })
                     )
                 );
+
+                this._messageBar = $('<div/>').addClass('message');
+                room.append(this._messageBar);
+                this._initMessageBar();
                 room.hide();
                 this._parent.append(room);
                 this._rooms[roomName] = room;
@@ -276,9 +281,13 @@
             let usersList = room.find('.users');
             usersList.empty();
             Object.keys(users).sort().forEach(function(username) {
-                let entry = $('<a href="'+users[username][1]+'"<div class="user"></div></a>').text(username);
-                if (users[username][0]) entry.addClass("you");
-                usersList.append(entry);
+                let link = document.createElement("a");
+                link.href =  users[username][1];
+                link.target = "_blank";
+                link.innerHTML = username;
+                if (users[username][0]) link.className = "you";
+                usersList.text("Présents : ");
+                usersList.append(link);
             });
         },
 

@@ -5,27 +5,35 @@
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 
 {%block header %}
-	<link rel="stylesheet" href="{% static 'permachat/css/permachat_style.css' %}" type="text/css" media="screen" />
-	<link rel="stylesheet" href="{% static 'permachat/css/chatroom_style.css' %}" type="text/css" media="screen" />
-	<script src="{% static 'permachat/js/jquery-1.12.2.min.js' %}" type="text/javascript"></script>font
-    <script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
-    <script type="text/javascript" src="{% static 'permachat/js/error.js' %}"></script>
-    <script type="text/javascript" src="{% static 'permachat/js/main.js' %}"></script>
-    <script type="text/javascript" src="{% static 'permachat/js/ui.js' %}"></script>
+<link href="{% static 'permachat/css/permachat_style.css' %}" media="screen" rel="stylesheet" type="text/css"/>
+<link href="{% static 'permachat/css/chatroom_style.css' %}" media="screen" rel="stylesheet" type="text/css"/>
+<script src="{% static 'permachat/js/jquery-1.12.2.min.js' %}" type="text/javascript"></script>font
 {% endblock  %}
 {%block banniere %}
 {% endblock  %}
 {% block panel-heading %}{%endblock%}
 {% block content %}
-<div id="content" class="container-fluid full-size">
+<div class="container-fluid full-size" id="content">
     <div id="display">
         <div id="chat-content"></div>
-            <div id="error-content" style="display: none">
-                <div class="alert alert-danger center-y center-x">
-                    An error has occurred while on chat: <span></span>. <a id="do-retry" href="#" role="button">Try again</a>
-                </div>
+        <div id="error-content" style="display: none">
+            <div class="alert alert-danger center-y center-x">
+                An error has occurred while on chat: <span></span>. <a href="#" id="do-retry" role="button">Try
+                again</a>
             </div>
-            <script type="text/javascript">
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block scriptblock %}
+<script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+<script src="{% static 'permachat/js/error.js' %}" type="text/javascript"></script>
+<script src="{% static 'permachat/js/main.js' %}" type="text/javascript"></script>
+<script src="{% static 'permachat/js/ui.js' %}" type="text/javascript"></script>
+
+<script type="text/javascript">
                 (function($) {
                     // From this point, interface-manipulating functions start.
                     // These are the front-end lifecycle of the application.
@@ -53,12 +61,10 @@
                         }
                     };
 
-                    window.sessionStorage.setItem('token', '{{request.user.username}}');
+                    /* window.sessionStorage.setItem('token', '{{request.user.username}}');*/
                     window.chatOpen();
 
                 })(jQuery);
-            </script>
-        </div>
-    </div>
-</div>
+
+</script>
 {% endblock %}

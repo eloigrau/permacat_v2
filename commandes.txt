@@ -1,19 +1,18 @@
-sudo nano /etc/systemd/system/gunicorn_wsgi.service
-sudo nano /etc/systemd/system/gunicorn_asgi.service
-sudo systemctl status gunicorn
-sudo systemctl restart gunicorn
-sudo systemctl restart gunicorn_wsgi
-sudo systemctl restart gunicorn_asgi
+
 sudo nano permacat/gunicorn_cfg.py
-sudo nano /etc/supervisor/conf.d/permacat-gunicorn.conf
-sudo nano /etc/supervisor/conf.d/permacat-gunicorn.conf
-sudo nano /etc/systemd/system/gunicorn.service
-sudo nano /etc/systemd/system/gunicorn_asgi.service
+
+# pcat systemd (deprecated)
 sudo nano /etc/systemd/system/gunicorn_wsgi.service
-sudo nano /etc/systemd/system/gunicorn.socket
+sudo systemctl status gunicorn_wsgi
+sudo systemctl restart gunicorn_wsgi
+sudo journalctl --vacuum-time=1d
+
+#daphne
 sudo nano /etc/systemd/system/permacat-daphne.service
+sudo systemctl start permacat-daphne
 
-
+#pcat supervisor
+sudo nano /etc/supervisor/conf.d/permacat-gunicorn_wsgi.conf
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start permacat_supervisor
@@ -21,17 +20,21 @@ sudo supervisorctl stop permacat_supervisor
 sudo supervisorctl restart permacat_supervisor
 sudo supervisorctl status
 
+# avec redis
 sudo systemctl start permacat-daphne
 sudo supervisorctl start permacat_supervisor
 sudo systemctl restart redis
 redis-server
 
+#nginx
 sudo systemctl daemon-reload
 sudo systemctl restart nginx 
 sudo service nginx restart
 sudo service nginx status
 sudo service nginx configtest
 sudo nano /etc/nginx/sites-enabled/default
+
+#certbot
 sudo certbot --expand --nginx -d www.perma.cat
 sudo /etc/init.d/cron restart
 

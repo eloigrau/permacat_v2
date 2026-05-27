@@ -3,7 +3,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}Tableau de bord SSA 66{% endblock %}
+{% block title %}Dashboard - Analytics{% endblock %}
 
 {% comment %}
 {% block vendor_css %}
@@ -24,98 +24,6 @@
 
 {% block content %}
 
-  <div class="row">
-    <div class="col-xxl-8 mb-6 order-0">
-      <div class="card h-100">
-        <div class="card-header d-flex justify-content-between">
-          <div class="card-title mb-0">
-            <h5 class="mb-1 me-2">Les Dossiers importants</h5>
-            <p class="card-subtitle">du Journal (Forum)</p>
-          </div>
-          <div class="dropdown">
-            <button class="btn text-body-secondary p-0" type="button" id="articles" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
-              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Accéder au journal (forum) du collectif</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-6">
-            <div class="d-flex flex-column align-items-center gap-1">
-              <p>Retrouvez les informations principales du collectif</p>
-            </div>
-          </div>
-          <ul class="p-0 m-0">
-              <a href="https://www.perma.cat/forum/article/communication-1">
-            <li class="d-flex align-items-center mb-5">
-              <div class="avatar flex-shrink-0 me-3">
-                <span class="avatar-initial rounded bg-label-primary">
-                  <i class="icon-base bx bx-mobile-alt"></i>
-                </span>
-              </div>
-              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                <div class="me-2">
-                  <h6 class="mb-0">Documentation Générale</h6>
-                  <small>Toutes les infos sur la SSA</small>
-                </div>
-              </div>
-            </li>
-              </a>
-              <a href="https://www.perma.cat/forum/article/reunions#ref-titre">
-            <li class="d-flex align-items-center mb-5">
-              <div class="avatar flex-shrink-0 me-3">
-                <span class="avatar-initial rounded bg-label-success">
-                  <i class="icon-base bx bx-closet"></i>
-                </span>
-              </div>
-              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                <div class="me-2">
-                  <h6 class="mb-0">Réunions du collectif</h6>
-                  <small>CR, prochaines dates...</small>
-                </div>
-              </div>
-            </li>
-              </a>
-              <a href="https://www.perma.cat/forum/article/valeurs-objectifs-et-raison-detre-du-collectif#ref-titre">
-            <li class="d-flex align-items-center mb-5">
-              <div class="avatar flex-shrink-0 me-3">
-                <span class="avatar-initial rounded bg-label-info">
-                  <i class="icon-base bx bx-home-alt"></i>
-                </span>
-              </div>
-              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                <div class="me-2">
-                  <h6 class="mb-0">Nos Valeurs, Objectifs et Raison d'être</h6>
-                </div>
-              </div>
-            </li>
-              </a>
-              <a href="https://www.perma.cat/forum/article/communication-1">
-            <li class="d-flex align-items-center">
-              <div class="avatar flex-shrink-0 me-3">
-                <span class="avatar-initial rounded bg-label-secondary">
-                  <i class="icon-base bx bx-football"></i>
-                </span>
-              </div>
-              <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                <div class="me-2">
-                  <h6 class="mb-0">Communication</h6>
-                  <small>Infos : Mails, site web, visio, ... </small>
-                </div>
-              </div>
-            </li>
-              </a>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-{% comment %}
   <div class="row">
     <div class="col-xxl-8 mb-6 order-0">
       <div class="card">
@@ -362,29 +270,28 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="mb-1 me-2">Sujets (Articles)</h5>
-            <p class="card-subtitle">du Journal (Forum)</p>
+            <h5 class="mb-1 me-2">Dossiers</h5>
+            <p class="card-subtitle">42.82k Total Sales</p>
           </div>
           <div class="dropdown">
-            <button class="btn text-body-secondary p-0" type="button" id="orderStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn text-body-secondary p-0" type="button" id="orederStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderStatistics">
-              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Accéder au journal (forum) du collectif</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orederStatistics">
+              <a class="dropdown-item" href="{% url 'blog:accueil' %}">Accéder au journal du collectif</a>
+              <a class="dropdown-item" href="javascript:void(0);">Share</a>
             </div>
           </div>
         </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-6">
             <div class="d-flex flex-column align-items-center gap-1">
-              <p>Retrouvez les informations principales du collectif</p>
+              <h3 class="mb-1">8,258</h3>
+              <small>Total Orders</small>
             </div>
+            <div id="orderStatisticsChart"></div>
           </div>
           <ul class="p-0 m-0">
-              <a href="https://www.perma.cat/forum/article/communication-1">
             <li class="d-flex align-items-center mb-5">
               <div class="avatar flex-shrink-0 me-3">
                 <span class="avatar-initial rounded bg-label-primary">
@@ -393,13 +300,14 @@
               </div>
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
-                  <h6 class="mb-0">Documentation Générale</h6>
-                  <small>Toutes les infos sur la SSA</small>
+                  <h6 class="mb-0">Electronic</h6>
+                  <small>Mobile, Earbuds, TV</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">82.5k</h6>
                 </div>
               </div>
             </li>
-              </a>
-              <a href="https://www.perma.cat/forum/article/reunions#ref-titre">
             <li class="d-flex align-items-center mb-5">
               <div class="avatar flex-shrink-0 me-3">
                 <span class="avatar-initial rounded bg-label-success">
@@ -408,13 +316,14 @@
               </div>
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
-                  <h6 class="mb-0">Réunions du collectif</h6>
-                  <small>CR, prochaines dates...</small>
+                  <h6 class="mb-0">Fashion</h6>
+                  <small>T-shirt, Jeans, Shoes</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">23.8k</h6>
                 </div>
               </div>
             </li>
-              </a>
-              <a href="https://www.perma.cat/forum/article/valeurs-objectifs-et-raison-detre-du-collectif#ref-titre">
             <li class="d-flex align-items-center mb-5">
               <div class="avatar flex-shrink-0 me-3">
                 <span class="avatar-initial rounded bg-label-info">
@@ -423,12 +332,14 @@
               </div>
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
-                  <h6 class="mb-0">Nos Valeurs, Objectifs et Raison d'être</h6>
+                  <h6 class="mb-0">Decor</h6>
+                  <small>Fine Art, Dining</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">849k</h6>
                 </div>
               </div>
             </li>
-              </a>
-              <a href="https://www.perma.cat/forum/article/communication-1">
             <li class="d-flex align-items-center">
               <div class="avatar flex-shrink-0 me-3">
                 <span class="avatar-initial rounded bg-label-secondary">
@@ -437,12 +348,14 @@
               </div>
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
-                  <h6 class="mb-0">Communication</h6>
-                  <small>Infos : Mails, site web, visio, ... </small>
+                  <h6 class="mb-0">Sports</h6>
+                  <small>Football, Cricket Kit</small>
+                </div>
+                <div class="user-progress">
+                  <h6 class="mb-0">99</h6>
                 </div>
               </div>
             </li>
-              </a>
           </ul>
         </div>
       </div>
@@ -614,5 +527,4 @@
     </div>
     <!--/ Transactions -->
   </div>
-{% endcomment %}
 {% endblock %}

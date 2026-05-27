@@ -30,7 +30,7 @@
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
             <h5 class="mb-1 me-2">Les Dossiers importants</h5>
-            <p class="card-subtitle">du Journal (Forum)</p>
+            <p class="card-subtitle">(Articles du Forum)</p>
           </div>
           <div class="dropdown">
             <button class="btn text-body-secondary p-0" type="button" id="articles" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -76,7 +76,7 @@
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
                   <h6 class="mb-0">Réunions du collectif</h6>
-                  <small>CR, prochaines dates...</small>
+                  <small>Comptes Rendus, prochaines dates, organisation...</small>
                 </div>
               </div>
             </li>
@@ -91,6 +91,7 @@
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
                   <h6 class="mb-0">Nos Valeurs, Objectifs et Raison d'être</h6>
+                  <small>Les fondements du collectif</small>
                 </div>
               </div>
             </li>
@@ -114,7 +115,27 @@
         </div>
       </div>
     </div>
+      <div class="col-xxl-4 mb-6 profile-report">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center flex-sm-row flex-column gap-10 flex-wrap">
+                <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
+                  <div class="card-title mb-6">
+                    <h5 class="text-nowrap mb-1">Salons de discussion</h5>
+                  </div>
+                      <a  href="https://www.perma.cat/salon/d/gt-animation">
+                  <div class="mt-sm-auto">
+                      <span class="text-success text-nowrap fw-medium"></span>
+                    <h4 class="mb-0">GT Animation</h4>
+                  </div>
+                        </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
+
 {% comment %}
   <div class="row">
     <div class="col-xxl-8 mb-6 order-0">
@@ -338,7 +359,7 @@
                 <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                   <div class="card-title mb-6">
                     <h5 class="text-nowrap mb-1">Profile Report</h5>
-                    <span class="badge bg-label-warning">YEAR 2022</span>
+                    <span class="badge bg-label-warning"></span>
                   </div>
                   <div class="mt-sm-auto">
                     <span class="text-success text-nowrap fw-medium">
@@ -347,7 +368,6 @@
                     <h4 class="mb-0">$84,686k</h4>
                   </div>
                 </div>
-                <div id="profileReportChart"></div>
               </div>
             </div>
           </div>
@@ -355,6 +375,7 @@
       </div>
     </div>
   </div>
+{% endcomment %}
 
   <div class="row">
     <!-- Order Statistics -->
@@ -614,5 +635,4 @@
     </div>
     <!--/ Transactions -->
   </div>
-{% endcomment %}
 {% endblock %}

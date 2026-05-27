@@ -1,303 +1,305 @@
 {% load theme %}
 
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-  <!-- ! Hide app brand if navbar-full -->
-  {% if not navbar_full %}
-  <div class="app-brand demo">
-    <a href="{% url 'dashboard:index' %}" class="app-brand-link">
+    <!-- ! Hide app brand if navbar-full -->
+    {% if not navbar_full %}
+    <div class="app-brand demo">
+        <a href="{% url 'dashboard:index' %}" class="app-brand-link">
       <span class="app-brand-logo demo">
         {% include 'partials/logo.html'  %}
       </span>
-      <span class="app-brand-text demo menu-text fw-bold ms-2">{% get_theme_variables 'template_name' %}</span>
-    </a>
-
-    <a href="{% url 'bienvenue' %}" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-      <i class="icon-base bx bx-chevron-left icon-sm d-flex align-items-center justify-content-center"></i>
-    </a>
-  </div>
-  {% endif %}
-
-
-  <div class="menu-inner-shadow"></div>
-
-  <ul class="menu-inner py-1">
-    <li class="menu-item">
-      <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
-        <i class="menu-icon icon-base bx bx-calendar"></i>
-        <div class="text-truncate">Notifications</div>
-        <span class="badge bg-warning rounded-pill ms-auto" id="nbnotifs-badge"></span>
-      </a>
-    </li>
-{% comment %}
-    <li class="menu-item {% if 'index' == request.resolver_match.url_name or '/dashboard/' in request.path %}active open{% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-home-smile"></i>
-        <div class="text-truncate">Notifications</div>
-        <span class="badge bg-warning rounded-pill ms-auto" id="nbnotifs-badge__2"></span>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item ">
-          <a href="{% url 'notificationsParGroupe'  %}" class="menu-link">
-            <div class="text-truncate">Du collectif</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
-            <div class="text-truncate">De tous les collectifs</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="{% url 'articles_visites'  %}" class="menu-link" target="_blank">
-            <div class="text-truncate">Dernières visites</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-{% endcomment %}
-
-    <li class="menu-header small text-uppercase">
-      <span class="menu-header-text">Echanger</span>
-    </li>
-    <!-- Layouts -->
-    <li class="menu-item {% if '/layouts/' in request.path  %}active open{% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-layout"></i>
-        <div class="text-truncate">Groupes</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
-          <a href="https://www.perma.cat/salon/d/gt-animation" class="menu-link">
-            <div class="text-truncate">Salon GT Animation</div>
-          </a>
-        </li>
-      </ul>
-
-    <li class="menu-item">
-      <a href="{% url 'conversations' %}" class="menu-link">
-        <i class="menu-icon icon-base bx bx-envelope"></i>
-        <div class="text-truncate">Messagerie</div>
-      </a>
-    </li>
-      <li class="menu-item {% if '/without_navbar/' in request.path %}active{% endif %}">
-          <a href="{% url 'permachat:chattons' %}" class="menu-link">
-            <i class="menu-icon icon-base bx bx-chat"></i>
-            <div class="text-truncate">Chat en direct</div>
-          </a>
-        </li>
-    </li>
-
-    <li class="menu-header small text-uppercase">
-      <span class="menu-header-text">Modules</span>
-    </li>
-
-    <li class="menu-item">
-      <a href="{% url 'cal:agenda' %}" class="menu-link" target="_blank">
-        <i class="menu-icon icon-base bx bx-calendar"></i>
-        <div class="text-truncate">Agenda</div>
-      </a>
-    </li>
-    <li class="menu-item">
-      <a href="{% url 'carte'  asso='ssa' %}" class="menu-link" target="_blank">
-        <i class="menu-icon icon-base bx bx-grid"></i>
-        <div class="text-truncate">Annuaire</div>
-      </a>
-    </li>
-  <li class="menu-item ">
-        <a href=" " class="menu-link menu-toggle">
-          <i class="menu-icon icon-base bx bx-box"></i>
-          <div class="text-truncate">Compléments</div>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">{% get_theme_variables 'template_name' %}</span>
         </a>
-        <ul class="menu-sub">
-          <li class="menu-item ">
-            <a href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}" class="menu-link">
-              <div class="text-truncate">Defraiement</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="{% url 'vote:index' %}" class="menu-link">
-              <div class="text-truncate">Suffrages</div>
-            </a>
-          </li>
-          <li class="menu-item ">
-            <a href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}" class="menu-link">
-              <div class="text-truncate">Listes de diffusion</div>
-            </a>
-          </li>
-        </ul>
-  </li>
 
-    <!-- Auth -->
-    <li class="menu-header small text-uppercase">
-      <span class="menu-header-text">Raccourcis</span>
-    </li>
-
-    <li class="menu-item">
-      <a href="{% url 'collectifssa:accueil_collectifssa' %}" class="menu-link" target="_blank">
-        <i class="menu-icon icon-base bx bx-calendar"></i>
-        <div class="text-truncate">Page web (publique)</div>
-      </a>
-    </li>
- <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
-      <a href="" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-dock-top"></i>
-        <div class="text-truncate">Documents</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{% url 'photologue:doc-list' %}" class="menu-link">
-            <div class="text-truncate">Fichiers</div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="{% url 'blog:docptg_list' %}" class="menu-link">
-            <div class="text-truncate">Documents partagés </div>
-          </a>
-        </li>
-      </ul>
-    </li>
-
- <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
-      <a href="" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-dock-top"></i>
-        <div class="text-truncate">Divers</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item">
-          <a href="{% url 'blog:todoarticle_list' %}" class="menu-link">
-            <div class="text-truncate">Yapluka (todo)</div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}" class="menu-link">
-            <div class="text-truncate">Defraiements </div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="{% url 'photologue:album-list' %}" class="menu-link">
-            <div class="text-truncate">Albums photo</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-<!-- Account -->
-    <li class="menu-header small text-uppercase">
-      <span class="menu-header-text">Mon compte</span>
-    </li>
-    <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
-      <a href="{% url 'profil_courant' %}" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-dock-top"></i>
-        <div class="text-truncate">Profil</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
-          <a href="{% url 'mesSuivis' %}" class="menu-link">
-            <div class="text-truncate">Mon profil </div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
-          <a href="{% url 'mesSuivis' %}" class="menu-link">
-            <div class="text-truncate">Abonnements / suivis </div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
-          <a href="{% url 'mesActions' %}" class="menu-link">
-            <div class="text-truncate">Historique</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
-          <a href="{% url 'logout' %}" class="menu-link">
-            <div class="text-truncate">Se déconnecter</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    <li class="menu-header small text-uppercase">
-      <span class="menu-header-text">Autre</span>
-    </li>
-
-<li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-dock-top"></i>
-        <div class="text-truncate">Perma.Cat</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item ">
-          <a href="" class="menu-link">
-            <div class="text-truncate">Visioconférence (Framatalk</div>
-          </a>
-        </li>
-        <li class="menu-item {">
-          <a href="https://framadate.org/create_poll.php?type=date&lang=fr" class="menu-link">
-            <div class="text-truncate">Sondage date (Framadate)</div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" class="menu-link">
-            <div class="text-truncate">Covoiturage (Togetzer)</div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="https://html-cleaner.com/" class="menu-link">
-            <div class="text-truncate">Html Cleaner</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
-          <a href="https://pdf2png.com/fr/" class="menu-link">
-            <div class="text-truncate">Pdf -> image</div>
-          </a>
-        </li>
-      </ul>
-
-      <li class="menu-item">
-        <a href="{% url 'faq' %}" class="menu-link" target="_blank">
-          <i class="menu-icon icon-base bx bx-support"></i>
-          <div class="text-truncate">FAQ du site</div>
+        <a href="{% url 'bienvenue' %}" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <i class="icon-base bx bx-chevron-left icon-sm d-flex align-items-center justify-content-center"></i>
         </a>
-      </li>
-    </li>
-<li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base bx bx-dock-top"></i>
-        <div class="text-truncate">Outils externes</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item ">
-          <a href="https://meet.jit.si/permacat_visio_public" class="menu-link">
-            <div class="text-truncate">Visioconférence (Framatalk</div>
-          </a>
-        </li>
-        <li class="menu-item {">
-          <a href="https://framadate.org/create_poll.php?type=date&lang=fr" class="menu-link">
-            <div class="text-truncate">Sondage date (Framadate)</div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" class="menu-link">
-            <div class="text-truncate">Covoiturage (Togetzer)</div>
-          </a>
-        </li>
-        <li class="menu-item ">
-          <a href="https://html-cleaner.com/" class="menu-link">
-            <div class="text-truncate">Html Cleaner</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
-          <a href="https://pdf2png.com/fr/" class="menu-link">
-            <div class="text-truncate">Pdf -> image</div>
-          </a>
-        </li>
-      </ul>
+    </div>
+    {% endif %}
 
-      <li class="menu-item">
-        <a href="{% url 'faq' %}" class="menu-link" target="_blank">
-          <i class="menu-icon icon-base bx bx-support"></i>
-          <div class="text-truncate">FAQ du site</div>
-        </a>
-      </li>
-    </li>
 
-  </ul>
+    <div class="menu-inner-shadow"></div>
 
+    <ul class="menu-inner py-1">
+        <li class="menu-item">
+            <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
+                <i class="menu-icon icon-base bx bx-calendar"></i>
+                <div class="text-truncate">Notifications</div>
+                <span class="badge bg-warning rounded-pill ms-auto" id="nbnotifs-badge"></span>
+            </a>
+        </li>
+        {% comment %}
+        <li class="menu-item ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-home-smile"></i>
+                <div class="text-truncate">Notifications</div>
+                <span class="badge bg-warning rounded-pill ms-auto" id="nbnotifs-badge__2"></span>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item ">
+                    <a href="{% url 'notificationsParGroupe'  %}" class="menu-link">
+                        <div class="text-truncate">Du collectif</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
+                        <div class="text-truncate">De tous les collectifs</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'articles_visites'  %}" class="menu-link" target="_blank">
+                        <div class="text-truncate">Dernières visites</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        {% endcomment %}
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Le Collectif SSA66</span>
+        </li>
+        <!-- Layouts -->
+        {% comment %}
+        <li class="menu-item {% if '/layouts/' in request.path  %}active open{% endif %}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-layout"></i>
+                <div class="text-truncate">Salons</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
+                    <a href="https://www.perma.cat/salon/d/gt-animation" class="menu-link">
+                        <div class="text-truncate">Salon GT Animation</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+            {% endcomment %}
+
+        <li class="menu-item {% if '/layouts/' in request.path  %}active open{% endif %}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-layout"></i>
+                <div class="text-truncate">Discuter</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
+                    <a href="https://www.perma.cat/salon/d/gt-animation" class="menu-link">
+                        <div class="text-truncate">Salon GT Animation</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
+                    <a href="{% url 'conversations' %}" class="menu-link">
+                        <div class="text-truncate">Messagerie</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
+                    <a href="{% url 'permachat:chattons' %}" class="menu-link">
+                        <div class="text-truncate">Chat en direct</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item">
+            <a href="" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <div class="text-truncate">Forum</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                    <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
+                        <div class="text-truncate">Accueil</div>
+                    </a>
+                </li>
+
+                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                    <a href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}" class="menu-link">
+                        <div class="text-truncate">Carte</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'cal:agenda' %}" class="menu-link">
+                        <div class="text-truncate">Agenda</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
+            <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <div class="text-truncate">Documents</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{% url 'photologue:doc-list' %}" class="menu-link">
+                        <div class="text-truncate">Fichiers</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="{% url 'blog:docptg_list' %}" class="menu-link">
+                        <div class="text-truncate">Documents partagés</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="{% url 'photologue:album-list' %}" class="menu-link">
+                        <div class="text-truncate">Albums photo</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="menu-item ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-box"></i>
+                <div class="text-truncate">Applications</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{% url 'ateliers:index_ateliers' %}" class="menu-link">
+                        <div class="text-truncate">Ateliers</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'carte'  asso='ssa' %}" class="menu-link">
+                        <div class="text-truncate">Annuaire</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}"
+                       class="menu-link">
+                        <div class="text-truncate">Defraiements</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'vote:index' %}" class="menu-link">
+                        <div class="text-truncate">Suffrages</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'blog:todoarticle_list' %}" class="menu-link">
+                        <div class="text-truncate">Yapluka (todo)</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}"
+                       class="menu-link">
+                        <div class="text-truncate">Listes de diffusion</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'collectifssa:accueil_collectifssa' %}" class="menu-link">
+                        <div class="text-truncate">Page web (publique)</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">----</span>
+        </li>
+
+        <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <div class="text-truncate">Profil</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                    <a href="{% url 'profil_courant' %}" class="menu-link">
+                        <div class="text-truncate">Mon profil</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                    <a href="{% url 'mesSuivis' %}" class="menu-link">
+                        <div class="text-truncate">Mes abonnements / suivis</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
+                    <a href="{% url 'mesActions' %}" class="menu-link">
+                        <div class="text-truncate">Mon historique</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
+                    <a href="{% url 'logout' %}" class="menu-link">
+                        <div class="text-truncate">Se déconnecter</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <div class="text-truncate">Perma.Cat</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item ">
+                    <a href="{% url 'presentation_site_pkoi' %}" class="menu-link">
+                        <div class="text-truncate">Pourquoi utiliser ce site ?</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'faq' %}" class="menu-link" target="_blank">
+                        <i class="menu-icon icon-base bx bx-support"></i>
+                        <div class="text-truncate">FAQ du site</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'contact_admins' %}" class="menu-link" target="_blank">
+                        <i class="menu-icon icon-base bx bx-support"></i>
+                        <div class="text-truncate">Contacter admins</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'signaler_bug' %}" class="menu-link" target="_blank">
+                        <i class="menu-icon icon-base bx bx-support"></i>
+                        <div class="text-truncate">Signaler un bug</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{% url 'cgu' %}" class="menu-link" target="_blank">
+                        <i class="menu-icon icon-base bx bx-support"></i>
+                        <div class="text-truncate">CGU</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <div class="text-truncate">Outils externes</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item ">
+                    <a href="https://meet.jit.si/permacat_visio_public" class="menu-link">
+                        <div class="text-truncate">Visioconférence (Framatalk</div>
+                    </a>
+                </li>
+                <li class="menu-item {">
+                    <a href="https://framadate.org/create_poll.php?type=date&lang=fr" class="menu-link">
+                        <div class="text-truncate">Sondage date (Framadate)</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" class="menu-link">
+                        <div class="text-truncate">Covoiturage (Togetzer)</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="https://html-cleaner.com/" class="menu-link">
+                        <div class="text-truncate">Html Cleaner</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
+                    <a href="https://pdf2png.com/fr/" class="menu-link">
+                        <div class="text-truncate">Pdf -> image</div>
+                    </a>
+                </li>
+            </ul>
+
+        </li>
+
+    </ul>
 
 
 </aside>

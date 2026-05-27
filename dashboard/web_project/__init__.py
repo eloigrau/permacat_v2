@@ -1,5 +1,5 @@
 
-# from sneat.web_project.bootstrap import TemplateBootstrap
+# from dashboard.web_project.bootstrap import TemplateBootstrap
 from dashboard.web_project.template_helpers.theme import TemplateHelper
 from django.conf import settings
 

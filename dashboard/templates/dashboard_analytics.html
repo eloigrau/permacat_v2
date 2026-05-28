@@ -25,11 +25,11 @@
 {% block content %}
 
   <div class="row">
-    <div class="col-xxl-8 mb-6 order-0">
+    <div class="col-xxl-8 col-lg-8 col-sm-12 mb-6 order-0">
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="mb-1 me-2">Les Articles principaux du collectif </h5>
+            <h5 class="mb-1 me-2">Les Articles principaux du collectif FLEXX{{is_flex}} {{is_front}}</h5>
           </div>
           <div class="dropdown">
             <button class="btn text-body-secondary p-0" type="button" id="articles" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -109,7 +109,7 @@
         </div>
       </div>
     </div>
-      <div class="col-xxl-4 mb-6 profile-report">
+      <div class="col-xxl-4 col-lg-4 col-sm-12 mb-6 profile-report">
           <div class="card h-100">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center flex-sm-row flex-column gap-10 flex-wrap">
@@ -118,11 +118,11 @@
                     <h5 class="text-nowrap mb-1">Salons de discussion</h5>
                   </div>
                       <a  href="https://www.perma.cat/salon/d/gt-animation">
-                  <div class="mt-sm-auto">
-                      <span class="text-success text-nowrap fw-medium"></span>
-                    <h4 class="mb-0">GT Animation</h4>
-                  </div>
-                        </a>
+                          <div class="mt-sm-auto">
+                              <span class="text-success text-nowrap fw-medium"></span>
+                            <h4 class="mb-0">GT Animation</h4>
+                          </div>
+                      </a>
                 </div>
               </div>
             </div>
@@ -377,8 +377,8 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="mb-1 me-2">Sujets (Articles)</h5>
-            <p class="card-subtitle">du Journal (Forum)</p>
+            <h5 class="mb-1 me-2">Forum </h5>
+            <p class="card-subtitle">Derniers articles</p>
           </div>
           <div class="dropdown">
             <button class="btn text-body-secondary p-0" type="button" id="orderStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -386,16 +386,13 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderStatistics">
               <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Accéder au journal (forum) du collectif</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
             </div>
           </div>
         </div>
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-6">
             <div class="d-flex flex-column align-items-center gap-1">
-              <p>Retrouvez les informations principales du collectif</p>
+              <p>Suivez les dernières infos sur PCat</p>
             </div>
           </div>
           <ul class="p-0 m-0">

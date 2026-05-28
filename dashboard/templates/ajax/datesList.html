@@ -1,0 +1,40 @@
+{% load fontawesome_5 %}
+{% load app_filters %}
+{% load static %}
+{% load activity_tags %}
+
+{% if datesList %}
+<ul class="p-0 m-0">
+    {% for dates  in datesList %}
+        {% for date  in dates %}
+        <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <div class="me-2">
+                <a href="{{date.get_absolute_url}}">
+                    <h6 class="mb-0">
+                        <i class="icon-base bx bx-calendar"></i> {{ date.start_time | date:"d/m/Y" }}
+                    </h6>
+                </a>
+              </div>
+              <div>
+                <a href="{{date.get_absolute_url}}">
+                    <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{date.titre}}</span></h6>
+                </a>
+              </div>
+            </div>
+        </li>
+        {% endfor %}
+    {% endfor %}
+</ul>
+
+{% else %}
+    <div class="row col-sm-12">Pas de dates prévues prochainement</div>
+{% endif %}
+
+{% if request.session.asso_slug %}
+{% include 'pagination_new_asso.html' %}
+{% else %}
+{% include 'pagination_new.html' %}
+{% endif %}
+
+

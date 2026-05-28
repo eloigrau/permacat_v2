@@ -1,0 +1,34 @@
+{% load fontawesome_5 %}
+{% load app_filters %}
+{% load static %}
+{% load activity_tags %}
+
+{% if commList %}
+<ul class="p-0 m-0">
+    {% for comm in commList %}
+        <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+                <div class="me-2">
+                <a href="{{ comm.get_absolute_url }}">
+                    <h6 class="mb-0">
+                        <span class="badge bg-label-secondary"> {{ comm.date_creation|date:"d/m" }}</span>
+                        <em>({{comm.auteur_comm}})</em> {{comm.commentaire|htmlClean|safe|sansp|couperTexte:200}}
+                    </h6>
+
+                </a>
+                </div>
+                <div>
+                <a href="{{ comm.article.get_absolute_url }}">
+                    <small>
+                        <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i> {{comm.article.titre}}</span>
+                    </small>
+                </a>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+    <div class="row col-sm-12">Pas de nouveaux commentaires</div>
+{% endif %}

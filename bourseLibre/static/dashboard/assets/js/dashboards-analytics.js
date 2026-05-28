@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
   labelColor = config.colors.textMuted;
   borderColor = config.colors.borderColor;
   fontFamily = config.fontFamily;
-
+/*
   // Order Area Chart
   // --------------------------------------------------------------------
   const orderAreaChartEl = document.querySelector('#orderChart'),
@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         show: false
       }
     };
+    */
   /*if (typeof orderAreaChartEl !== undefined && orderAreaChartEl !== null) {
     const orderAreaChart = new ApexCharts(orderAreaChartEl, orderAreaChartConfig);
     orderAreaChart.render();

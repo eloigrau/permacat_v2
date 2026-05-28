@@ -12,10 +12,10 @@ class TemplateBootstrapLayoutVertical:
             {
                 "layout": "vertical",
                 "content_navbar": True,
-                "content_layout": "compact",
+                "content_layout": "wide",
                 "is_navbar": True,
                 "is_menu": True,
-                "is_footer": True,
+                "is_footer": False,
             }
         )
 

@@ -1,0 +1,77 @@
+{% load fontawesome_5 %}
+{% load app_filters %}
+{% load static %}
+
+{% if docList %}
+<div class="table-responsive text-nowrap">
+  <table class="table">
+    <thead>
+        <th>Titre</th>
+        <th>Article lié</th>
+        <th>Date</th>
+        <th>Auteur</th>
+        <th>Tags</th>
+        <th>Edit</th>
+    </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+        {% for doc in docList %}
+        <tr>
+            <td >
+                <a href="{{doc.doc.url}}" style="width:100%;">
+                    {% fa5_icon 'download' class='iconright' %} {{ doc.titre }}
+                </a>
+
+                <button type="button" class="btn btn-light btn-sm"
+                        onclick="copyToClipboard('https://www.perma.cat{{doc.doc.url}}')">
+                    {% fa5_icon 'copy' title='Copier le lien' %}
+                </button>
+            </td>
+            <td>
+                {% if doc.article %}
+                <a href="{{doc.get_absolute_url}}" class="btn btn-light btn-sm">{% fa5_icon 'comments' class='iconleft' %} {{ doc.article.titre|couperTexte:25}}</a>
+                {% endif %}
+            </td>
+            <td>{{ doc.date_creation|date:"DATE_FORMAT" }}</td>
+            <td>{{ doc.auteur }}</td>
+            <td>
+                {% if doc.tags.names %}
+                <p class="card-text">
+                    <small>
+                        {% include 'listeTags_view_template.html' with tags=doc.tags.names %}
+                    </small>
+                </p>
+                {% endif%}
+            </td>
+            <td>
+        {%if doc.auteur == request.user or request.user.is_superuser %}
+                <a href="{{doc.get_change_url}}">
+                    <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-edit" aria-hidden="true"></i></button>
+                </a>
+                <a href="{{doc.get_delete_url}}">
+                    <button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </a>
+                {%if request.user.is_superuser %}
+                <a href="{% url 'photologue:associerDocumentArticle' doc_slug=doc.slug %}">
+                    <button type="button" class="btn btn-success btn-sm">
+                        <i class="fa fa-link" aria-hidden="true"></i> Associer</button>
+                </a>
+                {% endif %}
+        {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="row col-sm-12">Pas de documents ({{ request.session.asso_slug }}</div>
+{% endif %}
+
+{% if request.session.asso_slug %}
+{% include 'pagination_new_asso.html' %}
+{% else %}
+{% include 'pagination_new.html' %}
+{% endif %}
+
+

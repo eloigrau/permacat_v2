@@ -1,0 +1,41 @@
+{% load fontawesome_5 %}
+{% load app_filters %}
+{% load static %}
+{% load activity_tags %}
+
+{% if docList %}
+<ul class="p-0 m-0">
+    {% for doc in docList %}
+        <li class="d-flex align-items-center mb-5">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                  <div class="me-2">
+                      <span class="text-success text-nowrap fw-medium"></span>
+                    <a href="{{doc.get_absolute_url_fichier}}">
+                        <h6 class="mb-0"><i class="icon-base bx bx-file"></i> {{doc.titre}}</h6>
+                    </a>
+                  </div>
+                  <div>
+                        {% if doc.article %}
+                        <a href="{{doc.get_absolute_url}}">
+                        <small class="mb-0">
+                            <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{ doc.article.titre }}</span>
+                         </small>
+                        </a>
+                        {% endif %}
+                  </div>
+                </div>
+        </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+    <div class="row col-sm-12">Pas de documents ({{ request.session.asso_slug }}</div>
+{% endif %}
+
+{% if request.session.asso_slug %}
+{% include 'pagination_new_asso.html' %}
+{% else %}
+{% include 'pagination_new.html' %}
+{% endif %}
+
+

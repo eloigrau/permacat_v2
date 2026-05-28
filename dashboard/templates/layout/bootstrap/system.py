@@ -12,7 +12,7 @@ class TemplateBootstrapSystem:
             {
                 "layout": "blank",
                 "content_layout": "wide",
-                "display_customizer": False,
+                "display_customizer": True,
             }
         )
         # map_context according to updated context values

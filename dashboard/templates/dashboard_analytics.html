@@ -29,15 +29,14 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="mb-1 me-2">Les Dossiers importants</h5>
-            <p class="card-subtitle">(Articles du Forum)</p>
+            <h5 class="mb-1 me-2">Les Articles principaux du collectif </h5>
           </div>
           <div class="dropdown">
             <button class="btn text-body-secondary p-0" type="button" id="articles" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
-              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Accéder au journal (forum) du collectif</a>
+              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Acceuil du Forum</a>
               <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
               <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
               <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
@@ -45,11 +44,6 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-6">
-            <div class="d-flex flex-column align-items-center gap-1">
-              <p>Retrouvez les informations principales du collectif</p>
-            </div>
-          </div>
           <ul class="p-0 m-0">
               <a href="https://www.perma.cat/forum/article/communication-1">
             <li class="d-flex align-items-center mb-5">

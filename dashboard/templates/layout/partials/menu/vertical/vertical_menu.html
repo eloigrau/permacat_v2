@@ -23,9 +23,15 @@
     <ul class="menu-inner py-1">
         <li class="menu-item">
             <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
-                <i class="menu-icon icon-base bx bx-calendar"></i>
+                <i class="menu-icon icon-base bx bx-home-smile"></i>
                 <div class="text-truncate">Notifications</div>
                 <span class="badge bg-warning rounded-pill ms-auto" id="nbnotifs-badge"></span>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="{% url 'cal:agenda' %}" class="menu-link" target="_blank">
+                <i class="menu-icon icon-base bx bx-calendar"></i>
+                <div class="text-truncate">Agenda</div>
             </a>
         </li>
         {% comment %}
@@ -77,13 +83,18 @@
 
         <li class="menu-item {% if '/layouts/' in request.path  %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-layout"></i>
-                <div class="text-truncate">Discuter</div>
+                <i class="menu-icon icon-base bx bx-chat"></i>
+                <div class="text-truncate">Echanger</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
                     <a href="https://www.perma.cat/salon/d/gt-animation" class="menu-link">
                         <div class="text-truncate">Salon GT Animation</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                    <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
+                        <div class="text-truncate">Forum</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
@@ -99,34 +110,10 @@
             </ul>
         </li>
 
-        <li class="menu-item">
-            <a href="" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-dock-top"></i>
-                <div class="text-truncate">Forum</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
-                    <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
-                        <div class="text-truncate">Accueil</div>
-                    </a>
-                </li>
-
-                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
-                    <a href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}" class="menu-link">
-                        <div class="text-truncate">Carte</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{% url 'cal:agenda' %}" class="menu-link">
-                        <div class="text-truncate">Agenda</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
 
         <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
             <a href="#" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <i class="menu-icon icon-base bx bx-file"></i>
                 <div class="text-truncate">Documents</div>
             </a>
             <ul class="menu-sub">
@@ -150,7 +137,7 @@
 
         <li class="menu-item ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-box"></i>
+                <i class="menu-icon icon-base bx bx-cube"></i>
                 <div class="text-truncate">Applications</div>
             </a>
             <ul class="menu-sub">
@@ -199,6 +186,41 @@
             <span class="menu-header-text">----</span>
         </li>
 
+        <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <div class="text-truncate">Outils externes</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item ">
+                    <a href="https://meet.jit.si/permacat_visio_public" class="menu-link">
+                        <div class="text-truncate">Visioconférence (Framatalk</div>
+                    </a>
+                </li>
+                <li class="menu-item {">
+                    <a href="https://framadate.org/create_poll.php?type=date&lang=fr" class="menu-link">
+                        <div class="text-truncate">Sondage date (Framadate)</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" class="menu-link">
+                        <div class="text-truncate">Covoiturage (Togetzer)</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="https://html-cleaner.com/" class="menu-link">
+                        <div class="text-truncate">Html Cleaner</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
+                    <a href="https://pdf2png.com/fr/" class="menu-link">
+                        <div class="text-truncate">Pdf -> image</div>
+                    </a>
+                </li>
+            </ul>
+
+        </li>
+        {% comment %}
         <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-dock-top"></i>
@@ -227,6 +249,8 @@
                 </li>
             </ul>
         </li>
+        {% endcomment %}
+        {% comment %}
         <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-dock-top"></i>
@@ -264,40 +288,8 @@
                 </li>
             </ul>
         </li>
-        <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-dock-top"></i>
-                <div class="text-truncate">Outils externes</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item ">
-                    <a href="https://meet.jit.si/permacat_visio_public" class="menu-link">
-                        <div class="text-truncate">Visioconférence (Framatalk</div>
-                    </a>
-                </li>
-                <li class="menu-item {">
-                    <a href="https://framadate.org/create_poll.php?type=date&lang=fr" class="menu-link">
-                        <div class="text-truncate">Sondage date (Framadate)</div>
-                    </a>
-                </li>
-                <li class="menu-item ">
-                    <a href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" class="menu-link">
-                        <div class="text-truncate">Covoiturage (Togetzer)</div>
-                    </a>
-                </li>
-                <li class="menu-item ">
-                    <a href="https://html-cleaner.com/" class="menu-link">
-                        <div class="text-truncate">Html Cleaner</div>
-                    </a>
-                </li>
-                <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
-                    <a href="https://pdf2png.com/fr/" class="menu-link">
-                        <div class="text-truncate">Pdf -> image</div>
-                    </a>
-                </li>
-            </ul>
+        {%endcomment %}
 
-        </li>
 
     </ul>
 

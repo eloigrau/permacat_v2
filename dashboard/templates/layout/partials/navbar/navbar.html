@@ -27,7 +27,14 @@
     <ul class="navbar-nav flex-row align-items-center ms-auto">
       <!-- Place this tag where you want the button to render. -->
       <li class="nav-item lh-1 me-4">
-        <a class="github-button" href="" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Favoris">Favoris</a>
+          <a class="dropdown-toggle p-0" href="javascript:void(0);" aria-label="Favoris" data-bs-toggle="dropdown"></a>
+        <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'mesFavoris' %}">{% translate 'Gérer mes favoris' %}</a></li>
+
+          {% for fav in favoris_list %}
+              <li><a class="dropdown-item" href="{{fav.url}}"> {{fav.nom}}</a></li>
+          {% endfor %}
+        </ul>
       </li>
 
       <!-- User -->
@@ -39,7 +46,6 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a class="dropdown-item" href="javascript:void(0);">
               <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
                   <div class="avatar avatar-online">
@@ -50,30 +56,24 @@
                   <h6 class="mb-0">{{request.user.username}}</h6>
                 </div>
               </div>
-            </a>
           </li>
           <li>
             <div class="dropdown-divider my-1"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="javascript:void(0);"> <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span> </a>
+            <a class="dropdown-item" href="{% url 'profil_courant' %}"> <i class="icon-base bx bx-user icon-md me-3"></i><span>Mon Profil</span> </a>
           </li>
           <li>
-            <a class="dropdown-item" href="javascript:void(0);"> <i class="icon-base bx bx-cog icon-md me-3"></i><span>Settings</span> </a>
+            <a class="dropdown-item" href="{% url 'mesSuivis' %}"> <i class="icon-base bx bx-cog icon-md me-3"></i><span>Mes abonnements / suivis</span> </a>
           </li>
           <li>
-            <a class="dropdown-item" href="javascript:void(0);">
-              <span class="d-flex align-items-center align-middle">
-                <i class="flex-shrink-0 icon-base bx bx-credit-card icon-md me-3"></i><span class="flex-grow-1 align-middle">Billing Plan</span>
-                <span class="flex-shrink-0 badge rounded-pill bg-danger">4</span>
-              </span>
-            </a>
+            <a class="dropdown-item" href="{% url 'mesActions' %}"> <i class="icon-base bx bx-cog icon-md me-3"></i><span>Mon historique</span> </a>
           </li>
           <li>
             <div class="dropdown-divider my-1"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="javascript:void(0);"> <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Log Out</span> </a>
+            <a class="dropdown-item" href="{% url 'logout' %}"> <i class="icon-base bx bx-power-off icon-md me-3"></i><span>Déconnexion</span> </a>
           </li>
         </ul>
       </li>

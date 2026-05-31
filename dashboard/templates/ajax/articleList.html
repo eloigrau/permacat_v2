@@ -12,8 +12,10 @@
                 <div class="me-2">
                     <h6 class="mb-0">{{article.titre}}</h6>
                     <small>
-                        Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
-                          dans ({{ doc.article.get_categorie_display2 }})
+                        <span class="badge bg-label-secondary"> {{ article.date_creation|date:"DATE_FORMAT" }}</span>
+                         <span class="badge bg-label-primary"> Catégorie : {{ article.get_categorie_display2 }}</span>
+                    </small>
+                    <small>
                         {% if doc.tags.names %} - {% include 'listeTags_view_template.html' with tags=article.tags.names %} {% endif %}
                     </small>
                 </div>

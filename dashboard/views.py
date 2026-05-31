@@ -54,9 +54,9 @@ def derniersArticles(request, asso):
 
 
 @login_required
-def derniersCommentaires(request):
+def derniersCommentaires(request, asso):
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
     derniers_comm = Commentaire.objects.filter(
         Q(date_creation__gt=dateMin) & request.user.getQObjectsAssoCommentaires()).order_by('-date_creation')[:5]
-    return render(request, 'blog/template_commentaires_tableau.html', {'comm_list': derniers_comm})
+    return render(request, 'ajax/commList.html', {'commList': derniers_comm})
 

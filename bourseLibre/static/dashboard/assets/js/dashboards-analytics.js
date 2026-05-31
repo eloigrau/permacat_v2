@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
   labelColor = config.colors.textMuted;
   borderColor = config.colors.borderColor;
   fontFamily = config.fontFamily;
-
+/*
   // Order Area Chart
   // --------------------------------------------------------------------
   const orderAreaChartEl = document.querySelector('#orderChart'),
@@ -101,7 +101,8 @@ document.addEventListener('DOMContentLoaded', function (e) {
         show: false
       }
     };
-  if (typeof orderAreaChartEl !== undefined && orderAreaChartEl !== null) {
+    */
+  /*if (typeof orderAreaChartEl !== undefined && orderAreaChartEl !== null) {
     const orderAreaChart = new ApexCharts(orderAreaChartEl, orderAreaChartConfig);
     orderAreaChart.render();
   }
@@ -422,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
         }
       }
     };
+
   if (typeof growthChartEl !== undefined && growthChartEl !== null) {
     const growthChart = new ApexCharts(growthChartEl, growthChartOptions);
     growthChart.render();
@@ -859,5 +861,5 @@ document.addEventListener('DOMContentLoaded', function (e) {
   if (typeof weeklyExpensesEl !== undefined && weeklyExpensesEl !== null) {
     const weeklyExpenses = new ApexCharts(weeklyExpensesEl, weeklyExpensesConfig);
     weeklyExpenses.render();
-  }
+  }*/
 });

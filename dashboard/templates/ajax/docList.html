@@ -1,0 +1,37 @@
+{% load fontawesome_5 %}
+{% load app_filters %}
+{% load static %}
+{% load activity_tags %}
+
+{% if docList %}
+<ul class="p-0 m-0">
+    {% for doc in docList %}
+    <a href="{{doc.get_absolute_url_fichier}}">
+        <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                    <h6 class="mb-0">{{doc.titre}}</h6>
+
+                    <small>
+                        Publié le {{ doc.date_creation|date:"DATE_FORMAT" }}
+                         {% if doc.article %} dans ({{ doc.article.get_categorie_display2 }}) {{ doc.article }} {% endif %}
+                        {% if doc.tags.names %} - {% include 'listeTags_view_template.html' with tags=doc.tags.names %} {% endif %}
+                    </small>
+                </div>
+            </div>
+        </li>
+    </a>
+    {% endfor %}
+</ul>
+
+{% else %}
+    <div class="row col-sm-12">Pas de documents ({{ request.session.asso_slug }}</div>
+{% endif %}
+
+{% if request.session.asso_slug %}
+{% include 'pagination_new_asso.html' %}
+{% else %}
+{% include 'pagination_new.html' %}
+{% endif %}
+
+

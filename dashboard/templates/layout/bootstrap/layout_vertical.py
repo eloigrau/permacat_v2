@@ -1,4 +1,4 @@
-from sneat.web_project.template_helpers.theme import TemplateHelper
+from dashboard.web_project.template_helpers.theme import TemplateHelper
 
 """
 This is an entry and Bootstrap class for the theme level.
@@ -15,7 +15,7 @@ class TemplateBootstrapLayoutVertical:
                 "content_layout": "compact",
                 "is_navbar": True,
                 "is_menu": True,
-                "is_footer": True,
+                "is_footer": False,
             }
         )
 

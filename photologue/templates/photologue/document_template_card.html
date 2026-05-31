@@ -27,7 +27,7 @@
         <h5>{{ doc.titre }}</h5>
         {% if doc.tags.names %}
             <p class="card-text">
-            <small><em>Mots-clés : </em>
+            <small>
                 {% include 'listeTags_view_template.html' with tags=doc.tags.names %}
             </small>
             </p>

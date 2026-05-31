@@ -1,0 +1,28 @@
+{% load fontawesome_5 %}
+{% load app_filters %}
+{% load static %}
+{% load activity_tags %}
+
+{% if articleList %}
+<ul class="p-0 m-0">
+    {% for article in articleList %}
+    <a href="{{article.get_absolute_url}}">
+        <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <div class="me-2">
+                    <h6 class="mb-0">{{article.titre}}</h6>
+                    <small>
+                        Publié le {{ article.date_creation|date:"DATE_FORMAT" }}
+                          dans ({{ doc.article.get_categorie_display2 }})
+                        {% if doc.tags.names %} - {% include 'listeTags_view_template.html' with tags=article.tags.names %} {% endif %}
+                    </small>
+                </div>
+            </div>
+        </li>
+    </a>
+    {% endfor %}
+</ul>
+
+{% else %}
+    <div class="row col-sm-12">Pas d'article</div>
+{% endif %}

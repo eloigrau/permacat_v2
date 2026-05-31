@@ -1,5 +1,5 @@
 
-# from sneat.web_project.bootstrap import TemplateBootstrap
+# from dashboard.web_project.bootstrap import TemplateBootstrap
 from dashboard.web_project.template_helpers.theme import TemplateHelper
 from django.conf import settings
 
@@ -10,13 +10,15 @@ class TemplateLayout:
         # Init the Template Context using TEMPLATE_CONFIG
 
         # Set a default layout globally using settings.py. Can be set in the page level view file as well.
-        layout = "vertical"
+        #layout = "vertical"
+
+        context.update(settings.TEMPLATE_CONFIG)
 
         # Set the selected layout
         context.update(
             {
                 "layout_path": TemplateHelper.set_layout(
-                    "layout_" + layout + ".html", context
+                    "layout_vertical.html", context
                 ),
             }
         )

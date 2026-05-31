@@ -1,4 +1,4 @@
-from sneat.web_project.template_helpers.theme import TemplateHelper
+from dashboard.web_project.template_helpers.theme import TemplateHelper
 
 """
 This is an entry and Bootstrap class for the theme level.
@@ -12,7 +12,7 @@ class TemplateBootstrapSystem:
             {
                 "layout": "blank",
                 "content_layout": "wide",
-                "display_customizer": False,
+                "display_customizer": True,
             }
         )
         # map_context according to updated context values

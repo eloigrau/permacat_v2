@@ -1,6 +1,6 @@
 
 $(document).ready(function() {
-   $('.quantite-right-plus').click(function(e){
+   /*$('.quantite-right-plus').click(function(e){
         e.preventDefault();
         var quantite = parseFloat($('#quantite').val());
             $('#quantite').val(quantite + 1);
@@ -12,12 +12,12 @@ $(document).ready(function() {
             if(quantite>1){
              $('#quantite').val(quantite - 1);
             }
-    });
-
+    });*/
+/*
    $('.bouton_recherche').click(function(e){
         var recherche = $('#recherche').val();
         location.href="/search/?"+recherche;
-    });
+    });*/
 
     fetchNotifications();
     setInterval(fetchNotifications, 60000);
@@ -59,10 +59,10 @@ document.addEventListener("DOMContentLoaded", function(){
 	});
 */
 (function(){
-    $('bouton_rechercher').click(function(e) {
+   /* $('bouton_rechercher').click(function(e) {
         var recherche = $('#recherche').val();
         location.href="/search/?"+recherche;
-    });
+    });*/
 
     if ($('#scroll-to-top').length) {
 		var scrollTrigger = 100, // px
@@ -229,7 +229,7 @@ function fetchNotifications() {
             var e = document.getElementById('nbmessage-badge');
             if (e){
                 if (data.nb_messages != "0") {
-                    e.innerText = "(" + data.nb_messages + ")";
+                    e.innerText = data.nb_messages;
                     e.style.display = 'inline-block';
                 } else {
                     e.style.display = 'none';
@@ -238,7 +238,7 @@ function fetchNotifications() {
             var e = document.getElementById('nbnotifs-badge');
             if (e){
                 if (data.nb_notifs != "0") {
-                    e.innerText = "(" + data.nb_notifs + ")";
+                    e.innerText = data.nb_notifs ;
                     e.style.display = 'inline-block';
                 } else {
                     e.style.display = 'none';

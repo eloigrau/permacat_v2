@@ -1,13 +1,12 @@
 from django.urls import path
-from .views import DashboardView
+from dashboard import views
 
 app_name = 'dashboard'
 
 
 urlpatterns = [
-    path(
-        "",
-        DashboardView.as_view(template_name="dashboard_analytics.html"),
-        name="index",
-    )
+    path("", views.DashboardView.as_view(template_name="dashboard_analytics.html"), name="index",),
+    path('derniersDocs/<str:asso>/', views.derniersDocs, name='derniersDocs'),
+    path('derniersArticles/<str:asso>/', views.derniersArticles, name='derniersArticles'),
+    path('derniersCommentaires/<str:asso>/', views.derniersCommentaires, name='derniersCommentaires'),
 ]

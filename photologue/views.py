@@ -11,7 +11,7 @@ from .filters import DocumentFilter
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from bourseLibre.constantes import Choix as Choix_global
-from bourseLibre.views import testIsMembreAsso
+from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
 from blog.models import Article
 from django.core.exceptions import PermissionDenied
 from actstream import actions, action
@@ -454,3 +454,14 @@ class DocumentAutocomplete_asso(autocomplete.Select2QuerySetView):
                 qs = Document.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(), estArchive=True).filter(Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
 
         return qs
+
+
+@login_required
+def derniersDocs(request, asso):
+    asso = testIsMembreAsso_bool(request, asso)
+    if not asso:
+        docsList = Document.objects.filter(asso__slug="public").order_by("date_creation")[:5]
+    else:
+        docsList = Document.objects.filter(asso=asso).order_by("date_creation")[:5]
+    return render(request, 'photologue/ajax/derniersDocs.html', {'docsList': docsList, 'asso': asso})
+

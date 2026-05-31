@@ -1,4 +1,4 @@
-from sneat.web_project.template_helpers.theme import TemplateHelper
+from dashboard.web_project.template_helpers.theme import TemplateHelper
 
 
 """

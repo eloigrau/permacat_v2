@@ -42,6 +42,7 @@ urlpatterns = [
     re_path(r'^photo/(?P<slug>[\-\d\w]+)/$', login_required(views.PhotoDetailView.as_view()), name='photo'),
     re_path(r'^photolist/$', login_required(views.PhotoListView.as_view()), name='photo-list'),
     re_path(r'^doclist/$', login_required(views.DocListView.as_view()), name='doc-list'),
+    path('derniersDocs/<str:asso>/', views.derniersDocs, name='derniersDocs'),
     re_path(r'^filtrer_documents/$', views.filtrer_documents, name='filtrer_documents'),
     re_path(r'^ajouterPhoto/(?P<albumSlug>[\-\d\w]+)$', views.ajouterPhoto, name='ajouterPhoto'),
     re_path(r'^ajouterAlbum/$', views.ajouterAlbum, name='ajouterAlbum'),

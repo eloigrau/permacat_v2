@@ -1,14 +1,7 @@
 {% load static %}
 {% load theme %}
 <!DOCTYPE html>
-
-{% comment %}
-<html lang="fr" class="layout-menu-fixed {{navbar_type_class}} {{header_type_class}} {{menu_collapsed_class}} {{footer_fixed_class}} {{display_customizer_class}} {{content_layout_class}}" dir="{{text_direction_value}}" data-skin="{{skins}}" data-bs-theme="{{theme}}" data-assets-path="{% static 'dashboard/assets/' %}" data-base-url="{{url}}" data-framework="django" data-template="{{ menu_horizontal|yesno:'horizontal,vertical' }}-menu-{{ is_front|yesno:'front,' }}-{{ skins }}-{{ theme}}">
-
-<html lang="fr" class="layout-menu-fixed {{navbar_type_class}} {{header_type_class}} {{menu_collapsed_class}} {{footer_fixed_class}} {{display_customizer_class}} {{content_layout_class}}" dir="{{text_direction_value}}" data-skin="{{skins}}" data-bs-theme="{{theme}}" data-assets-path="{% static 'dashboard/assets/' %}" data-base-url="{{url}}" data-framework="django" data-template="vertical-menu-{{ skins }}-{{ theme}}">
-{% end comment %}
-
-<html lang="fr" class="layout-menu-fixed {{navbar_type_class}} {{header_type_class}} {{menu_collapsed_class}} {{footer_fixed_class}} {{display_customizer_class}} {{content_layout_class}}" dir="{{text_direction_value}}" data-skin="{{skins}}" data-bs-theme="{{theme}}" data-assets-path="{% static 'dashboard/assets/' %}" data-base-url="{{url}}" data-framework="django" data-template="{{ menu_horizontal|yesno:'horizontal,vertical' }}-menu-{{ is_front|yesno:'front,' }}-{{ skins }}-{{ theme}}"><head>
+<html lang="fr" class="layout-menu-fixed layout-compact"  data-assets-path="{% static 'dashboard/assets/' %}"  data-framework="django" data-template="vertical-menu"><head>
   <title>{% block title %}{% endblock title %} | {% get_theme_variables 'template_name' %} </title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />

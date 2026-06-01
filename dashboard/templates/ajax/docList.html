@@ -11,14 +11,14 @@
                   <div class="me-2">
                       <span class="text-success text-nowrap fw-medium"></span>
                     <a href="{{doc.get_absolute_url_fichier}}">
-                        <h6 class="mb-0"><i class="icon-base bx bx-file"></i> {{doc.titre|couperTexte:50}}</h6>
+                        <h6 class="mb-0"><i class="icon-base bx bx-file"></i> {{doc.titre|couperTexte:36}}</h6>
                     </a>
                   </div>
                   <div>
                         {% if doc.article %}
                         <a href="{{doc.get_absolute_url}}">
                         <small class="mb-0">
-                            <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{ doc.article.titre|couperTexte:50 }}</span>
+                            <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{ doc.article.titre|couperTexte:36 }}</span>
                          </small>
                         </a>
                         {% endif %}

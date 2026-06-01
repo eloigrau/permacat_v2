@@ -217,12 +217,39 @@
         </div>
       </div>
     </div>
-    <!-- Dossier principaux -->
+    <!-- Prochains RDV -->
     <div class="col-lg-6 col-sm-12 order-1 mb-6">
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
+            <h5 class="d-mb-1 me-2">Prochains rendez-vous</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="dernieres_dates"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <!-- Dossiers principaux -->
+    <div class="col-lg-6 col-sm-12 order-0 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
             <h5 class="d-mb-1 me-2">Articles principaux</h5>
+          </div>
+          <div class="dropdown">
+            <button class="btn text-body-secondary p-0" type="button" id="forum" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
+              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Acceuil du Forum</a>
+              <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">Arborescence</a>
+              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
+              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
+              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
+            </div>
           </div>
         </div>
         <div class="card-body">
@@ -294,10 +321,21 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="row">
+    <!-- Derniers Articles -->
+    <div class="col-lg-6 col-sm-12 order-1 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="d-mb-1 me-2">Derniers Articles</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="derniers_articles"></div>
+        </div>
+      </div>
+    </div>
     <!-- derniers docs -->
-    <div class="col-lg-6 col-sm-12 order-0 mb-6">
+    <div class="col-lg-6 col-sm-12 order-2 mb-6">
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
@@ -318,33 +356,8 @@
         </div>
       </div>
     </div>
-    <!-- Derniers Dossier -->
-    <div class="col-lg-6 col-sm-12 order-1 mb-6">
-      <div class="card h-100">
-        <div class="card-header d-flex justify-content-between">
-          <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Derniers Articles</h5>
-          </div>
-          <div class="dropdown">
-            <button class="btn text-body-secondary p-0" type="button" id="forum" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
-              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Acceuil du Forum</a>
-              <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">Arborescence</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div id="derniers_articles"></div>
-        </div>
-      </div>
-    </div>
     <!-- derniers Comm -->
-    <div class="col-lg-6 col-sm-12 order-2 mb-6">
+    <div class="col-lg-6 col-sm-12 order-3 mb-6">
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
@@ -357,19 +370,6 @@
       </div>
     </div>
 
-    <!-- Derniers Dossier -->
-    <div class="col-lg-6 col-sm-12 order-1 mb-6">
-      <div class="card h-100">
-        <div class="card-header d-flex justify-content-between">
-          <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Prochains rendez-vous</h5>
-          </div>
-        </div>
-        <div class="card-body">
-          <div id="dernieres_dates"></div>
-        </div>
-      </div>
-    </div>
   </div>
 
 {% endblock %}

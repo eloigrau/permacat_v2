@@ -25,13 +25,16 @@
 
     <ul class="navbar-nav flex-row align-items-center ms-auto">
       <!-- Place this tag where you want the button to render. -->
-      <li class="nav-item lh-1 me-4">
-        <a class="dropdown-toggle p-0" href="javascript:void(0);" data-bs-toggle="dropdown"><i class="fa fa-star"></i>Favoris</a>
+      <li class="nav-item navbar-dropdown dropdown-user dropdown lh-1 me-4">
+        <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+          <div class="">
+            <i class="icon-base bx bx-star  icon-md"></i>
+          </div>
+        </a>
         <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="{% url 'mesFavoris' %}">{% translate 'Gérer mes favoris' %}</a></li>
-
+          <li><a class="dropdown-item" href="{% url 'mesFavoris' %}">{% translate 'Gérer mes favoris' %}</a></li>
           {% for fav in favoris_list %}
-              <li><a class="dropdown-item" href="{{fav.url}}"> {{fav.nom}}</a></li>
+            <li><a class="dropdown-item" href="{{fav.url}}"> {{fav.nom}}</a></li>
           {% endfor %}
         </ul>
       </li>

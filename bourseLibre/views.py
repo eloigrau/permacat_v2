@@ -1091,6 +1091,7 @@ def chercher_produits(request):
 def lireConversation(request, destinataire):
     conversation = getOrCreateConversation(request.user.username, destinataire)
     messages = Message.objects.filter(conversation=conversation).order_by("date_creation")
+    profil_destinataire = Profil.objects.get(username=destinataire)
     paginator = Paginator(messages, 25) # Show 10 contacts per page.
     if not 'page' in request.GET:
         page_number = paginator.num_pages
@@ -1123,7 +1124,6 @@ def lireConversation(request, destinataire):
         action.send(request.user, verb='envoi_salon_prive', action_object=conversation, url=url, group=destinataire,
                     description="a envoyé un message privé à " + destinataire)
 
-        profil_destinataire = Profil.objects.get(username=destinataire)
         suivi, created = Suivis.objects.get_or_create(nom_suivi='conversations')
         if profil_destinataire in followers(suivi):
             titre = "Message Privé"
@@ -1145,7 +1145,7 @@ def lireConversation(request, destinataire):
             #             sujet + "\n" + message + "\n xxx \n" + str(profil_destinataire.email) + "\n erreur : " + str(inst))
         return redirect(request.path)
 
-    return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':destinataire})
+    return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':profil_destinataire})
 
 
 @login_required

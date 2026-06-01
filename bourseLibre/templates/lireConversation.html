@@ -89,9 +89,9 @@
 <div class="row">
     <div class="col-sm-8">
         {% if not page_obj %}
-        <h5>Commencer la discussion :</h5>
+        <h5>Commencer la discussion avec <a href="{{destinataire.get_profil_url}}">{{destinataire.username}}</a>:</h5>
         {% else %}
-        <h5>Répondre :</h5>
+        <h5>Répondre à <a href="{{destinataire.get_profil_url}}">{{destinataire.username}}</a></h5>
         {% endif %}
     </div>
     <div class="col-sm-4 textright">

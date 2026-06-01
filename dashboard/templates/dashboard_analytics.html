@@ -244,11 +244,11 @@
               <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
-              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Acceuil du Forum</a>
+              <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Accueil du Forum</a>
               <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">Arborescence</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
-              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>
+              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Explorer les Dossiers</a>
+              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Par Mots-clé</a>
+              <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Voir les Archives</a>
             </div>
           </div>
         </div>

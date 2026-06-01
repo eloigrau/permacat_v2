@@ -9,4 +9,5 @@ urlpatterns = [
     path('derniersDocs/<str:asso>/', views.derniersDocs, name='derniersDocs'),
     path('derniersArticles/<str:asso>/', views.derniersArticles, name='derniersArticles'),
     path('derniersCommentaires/<str:asso>/', views.derniersCommentaires, name='derniersCommentaires'),
+    path('prochainesDates/<str:asso>/', views.prochainesDates, name='prochainesDates'),
 ]

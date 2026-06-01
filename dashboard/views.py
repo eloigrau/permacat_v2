@@ -10,6 +10,9 @@ import pytz
 from django.db.models import Q
 from django.db.models.functions import Greatest
 
+from blog.models import Article, Projet, Evenement
+from bourseLibre.models import EvenementSalon, InscritSalon, Salon
+from ateliers.models import Atelier
 """
 This file is a view controller for multiple pages as a module.
 Here you can override the page view layout.
@@ -63,3 +66,31 @@ def derniersCommentaires(request, asso):
         Q(article__asso=asso, date_creation__gt=dateMin) & request.user.getQObjectsAssoCommentaires()).order_by('-date_creation')[:5]
     return render(request, 'ajax/commList.html', {'commList': derniers_comm})
 
+
+@login_required
+def prochainesDates(request, asso):
+    asso = testIsMembreAsso_bool(request, asso)
+    Q_filter = Q(start_time__gt=datetime.now().date())
+
+    if not asso:
+        asso = "public"
+
+    salons_inscrit = InscritSalon.objects.filter(profil=request.user, salon__type_salon=1).order_by("salon__titre")
+    salons_prives = [s.salon for s in salons_inscrit]
+    salons_publics = Salon.objects.filter(type_salon=0).order_by("titre")
+    salons_groupes = [s for s in Salon.objects.filter(type_salon=2).order_by("titre") if s.est_autorise(request.user)]
+
+    events = [
+        #"articles":
+            Article.objects.filter((Q(asso=asso) | Q(partagesAsso=asso) | Q(partagesAsso__slug='public')) & Q_filter).order_by("start_time")[:5],
+        #"projets":
+        Projet.objects.filter(Q(asso=asso) & Q_filter).order_by("start_time")[:5],
+        #"ateliers":
+        Atelier.objects.filter(Q(asso=asso) & Q_filter).order_by("start_time")[:5],
+        #"events":
+        Evenement.objects.filter(Q(article__asso=asso) & Q_filter).order_by("start_time")[:5],
+        #"salon":
+        EvenementSalon.objects.filter((Q(salon__in=salons_prives) | Q(salon__in=salons_publics) | Q(salon__in=salons_groupes)) & Q_filter).order_by("start_time")[:5],
+    ]
+
+    return render(request, 'ajax/datesList.html', {'datesList': events, 'asso': asso})

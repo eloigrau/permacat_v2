@@ -33,10 +33,19 @@ class AlbumListView(ListView):
     paginate_by = 15
 
     def get_queryset(self):
-        qs = Album.objects.on_site().exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre())
 
         if 'asso' in self.request.GET:
-            qs = qs.filter(asso__slug=self.request.GET["asso"])
+            self.request.session["asso_slug"] = self.request.GET["asso"]
+            asso_slug = self.request.session["asso_slug"]
+        elif "asso_slug" in self.request.session:
+            asso_slug = self.request.session["asso_slug"]
+        else:
+            asso_slug = "public"
+        if  self.request.user.est_autorise(asso_slug):
+            qs = Album.objects.on_site().filter(asso__slug=asso_slug)
+        else:
+            qs = Album.objects.none()
+
 
         return qs
 

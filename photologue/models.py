@@ -266,7 +266,9 @@ class Album(models.Model):
         if count > self.photo_count():
             count = self.photo_count()
         photo_set = self.photos.filter(sites__id=settings.SITE_ID)
-        return random.sample(set(photo_set), count)
+        if photo_set:
+            return random.sample(set(photo_set), count)
+        return photo_set
 
     def photo_count(self):
         return self.photos.count()

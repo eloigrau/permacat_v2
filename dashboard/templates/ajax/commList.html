@@ -11,7 +11,7 @@
                 <div class="me-2">
                 <a href="{{ comm.get_absolute_url }}">
                     <h6 class="mb-0">
-                        <span class="badge bg-label-dark">Disc</span> <span class="badge bg-label-secondary"> {{ comm.date_creation|date:"d/m" }}</span>
+                        <span class="badge bg-label-secondary"> {{ comm.date_creation|date:"d/m" }}</span>
                         <em>({{comm.auteur_comm}})</em> {{comm.commentaire|htmlClean|safe|sansp|couperTexte:200}}
                     </h6>
 

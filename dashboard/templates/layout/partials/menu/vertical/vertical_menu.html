@@ -23,7 +23,7 @@
     <ul class="menu-inner py-1">
         <li class="menu-item">
             <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
-                <i class="menu-icon icon-base bx bx-home-smile"></i>
+                <i class="menu-icon icon-base bx bx-bell"></i>
                 <div class="text-truncate">Notifications</div>
                 <span class="badge bg-info rounded-pill ms-auto" id="nbnotifs-badge"></span>
             </a>
@@ -89,17 +89,19 @@
             <ul class="menu-sub">
                 <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
                     <a href="https://www.perma.cat/salon/d/gt-animation" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-group"></i>
                         <div class="text-truncate">Salon GT Animation</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
                     <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-book"></i>
                         <div class="text-truncate">Forum</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
                     <a href="{% url 'conversations' %}" class="menu-link">
-                        <div class="text-truncate">  Messagerie  </div>
+                        <div class="text-truncate">Messagerie</div>
                         <span class="badge bg-info rounded-pill ms-auto" id="nbmessage-badge"></span>
 
                     </a>
@@ -121,16 +123,19 @@
             <ul class="menu-sub">
                 <li class="menu-item">
                     <a href="{% url 'photologue:doc-list' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-file"></i>
                         <div class="text-truncate">Fichiers</div>
                     </a>
                 </li>
                 <li class="menu-item ">
                     <a href="{% url 'blog:docptg_list' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-notepad"></i>
                         <div class="text-truncate">Documents partagés</div>
                     </a>
                 </li>
                 <li class="menu-item ">
                     <a href="{% url 'photologue:album-list' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-photo-album"></i>
                         <div class="text-truncate">Albums photo</div>
                     </a>
                 </li>
@@ -140,7 +145,7 @@
         <li class="menu-item ">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-cube"></i>
-                <div class="text-truncate">Applications</div>
+                <div class="text-truncate">Modules</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item">
@@ -231,39 +236,37 @@
             <ul class="menu-sub">
                 <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
                     <a href="{% url 'profil_courant' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-user"></i>
                         <div class="text-truncate">Mon profil</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
                     <a href="{% url 'mesSuivis' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-bell"></i>
                         <div class="text-truncate">Mes abonnements / suivis</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
                     <a href="{% url 'mesActions' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-history"></i>
                         <div class="text-truncate">Mon historique</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
                     <a href="{% url 'logout' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-log-out"></i>
                         <div class="text-truncate">Se déconnecter</div>
                     </a>
                 </li>
             </ul>
         </li>
         {% endcomment %}
-        {% comment %}
         <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-dock-top"></i>
+                <i class="menu-icon icon-base bx bx-navigation"></i>
                 <div class="text-truncate">Perma.Cat</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item ">
-                    <a href="{% url 'presentation_site_pkoi' %}" class="menu-link">
-                        <div class="text-truncate">Pourquoi utiliser ce site ?</div>
-                    </a>
-                </li>
                 <li class="menu-item">
                     <a href="{% url 'faq' %}" class="menu-link" target="_blank">
                         <i class="menu-icon icon-base bx bx-support"></i>
@@ -272,25 +275,16 @@
                 </li>
                 <li class="menu-item">
                     <a href="{% url 'contact_admins' %}" class="menu-link" target="_blank">
-                        <i class="menu-icon icon-base bx bx-support"></i>
                         <div class="text-truncate">Contacter admins</div>
                     </a>
                 </li>
                 <li class="menu-item">
                     <a href="{% url 'signaler_bug' %}" class="menu-link" target="_blank">
-                        <i class="menu-icon icon-base bx bx-support"></i>
                         <div class="text-truncate">Signaler un bug</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{% url 'cgu' %}" class="menu-link" target="_blank">
-                        <i class="menu-icon icon-base bx bx-support"></i>
-                        <div class="text-truncate">CGU</div>
                     </a>
                 </li>
             </ul>
         </li>
-        {%endcomment %}
 
 
     </ul>

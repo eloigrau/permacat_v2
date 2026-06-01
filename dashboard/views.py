@@ -43,11 +43,11 @@ def derniersDocs(request, asso):
 def derniersArticles(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
-        articleList = Article.objects.filter(asso__slug="public", estEpingle=False).annotate(
+        articleList = Article.objects.filter(asso__slug="public", estEpingle=False, estArchive=False).annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
             ).order_by('-latest')[:5]
     else:
-        articleList = Article.objects.filter(asso=asso, estEpingle=False).annotate(
+        articleList = Article.objects.filter(asso=asso, estEpingle=False, estArchive=False).annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
             ).order_by('-latest')[:5]
     return render(request, 'ajax/articleList.html', {'articleList': articleList, 'asso': asso})

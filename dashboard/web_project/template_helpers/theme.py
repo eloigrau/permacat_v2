@@ -9,7 +9,6 @@ class TemplateHelper:
 
     # ? Map context variables to template class/value/variables names
     def map_context(context):
-
         #! Menu Fixed (vertical support only)
         if context.get("layout") == "vertical":
             if context.get("menu_fixed") is True:
@@ -24,7 +23,6 @@ class TemplateHelper:
         else:
             context["container_class"] = "container-xxl"
             context["content_layout_class"] = "layout-compact"
-
 
     # Get theme variables by scope
     def get_theme_variables(scope):

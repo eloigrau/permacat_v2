@@ -1,16 +1,15 @@
 {% load i18n %}
 {% load static %}
 {% load theme %}
+{% load avatar_tags %}
 
 
 <nav class="layout-navbar {{container_class}} navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
-  {% if not navbar_hide_toggle %}
   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
     <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
       <i class="icon-base bx bx-menu icon-md"></i>
     </a>
   </div>
-  {% endif %}
   <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
 
   {% comment %}
@@ -41,27 +40,10 @@
       <li class="nav-item navbar-dropdown dropdown-user dropdown">
         <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
           <div class="avatar avatar-online">
-            <img src="{% static 'dashboard/assets/img/avatars/1.png' %}" alt class="rounded-circle" />
+            {% avatar request.user class="img-circle-profil" id="user_avatar" %}
           </div>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
-          <li>
-            <a class="dropdown-item" href="javascript:void(0);">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar avatar-online">
-                    <img src="{% static 'dashboard/assets/img/avatars/1.png' %}" alt class="w-px-40 h-auto rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">{{request.user.username}}</h6>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <div class="dropdown-divider my-1"></div>
-          </li>
           <li>
             <a class="dropdown-item" href="{% url 'profil_courant' %}"> <i class="icon-base bx bx-user icon-md me-3"></i><span>Mon Profil</span> </a>
           </li>

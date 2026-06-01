@@ -7,11 +7,14 @@
 <ul class="p-0 m-0">
     {% for doc in docList %}
         <li class="d-flex align-items-center mb-5">
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                <div class="me-2">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                  <div class="me-2">
+                      <span class="text-success text-nowrap fw-medium"></span>
                     <a href="{{doc.get_absolute_url_fichier}}">
-                        <h6 class="mb-0">{{doc.titre}}</h6>
+                        <h6 class="mb-0"><span class="badge bg-label-dark">Doc</span> {{doc.titre}}</h6>
                     </a>
+                  </div>
+                  <div>
                         {% if doc.article %}
                         <a href="{{doc.get_absolute_url}}">
                         <small class="mb-0">
@@ -19,13 +22,8 @@
                          </small>
                         </a>
                         {% endif %}
+                  </div>
                 </div>
-                {% comment %}
-                    <span class='badge bg-label-secondary'> {{ doc.date_creation|date:'DATE_FORMAT' }}</span>
-                    {% if doc.tags.names %} - {% include 'listeTags_view_template2.html' with tags=doc.tags.names %} {% endif %}
-                    </div>
-                {% endcomment %}
-            </div>
         </li>
     {% endfor %}
 </ul>

@@ -298,6 +298,9 @@ class Article(models.Model):
     def get_absolute_url(self):
         return reverse('blog:lireArticle', kwargs={'slug':self.slug})
 
+    def get_categorie_url(self):
+        return reverse('blog:index_asso', kwargs={'asso':self.asso.slug})+"?categorie="+str(self.categorie)+"&ancre_navtab=dossier#ref-navbargroupe"
+
     @property
     def get_absolute_url_site(self):
         return "https://www.perma.cat" + self.get_absolute_url()

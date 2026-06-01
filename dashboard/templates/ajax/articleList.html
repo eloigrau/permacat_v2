@@ -7,15 +7,17 @@
 <ul class="p-0 m-0">
     {% for article in articleList %}
         <li class="d-flex align-items-center mb-5">
-            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                <a href="{{article.get_absolute_url}}">
+            <div class="d-flex w-100 align-items-center justify-content-between">
                 <div class="me-2">
-                    <small>
-                         <span class="badge bg-label-info"> {{ article.get_categorie_display2 }}</span>
-                    </small>
-                    <h6 class="mb-0"> {{article.titre}}</h6>
+                    <a href="{{article.get_absolute_url}}">
+                     <h6 class="mb-0">{{article.titre}}</h6>
+                    </a>
                 </div>
+                <div class="me-2">
+                <a href="{{article.get_categorie_url}}">
+                    <small><span class="badge bg-label-info"> {{ article.get_categorie_display2 }}</span></small>
                 </a>
+                </div>
             </div>
         </li>
     {% endfor %}

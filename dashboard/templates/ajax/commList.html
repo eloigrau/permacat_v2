@@ -7,18 +7,23 @@
 <ul class="p-0 m-0">
     {% for comm in commList %}
         <li class="d-flex align-items-center mb-5">
-            <div class="d-flex w-100 flex-wrap align-items-center gap-2">
-                <a href="{{ comm.get_absolute_url }}">
+            <div class="d-flex w-100 align-items-center justify-content-between">
                 <div class="me-2">
+                <a href="{{ comm.get_absolute_url }}">
                     <h6 class="mb-0">
-                        <em>{{comm.auteur_comm}}</em>: {{comm.commentaire|htmlClean|safe|sansp|couperTexte:200}}
+                        <span class="badge bg-label-dark">Disc</span> <span class="badge bg-label-secondary"> {{ comm.date_creation|date:"d/m" }}</span>
+                        <em>({{comm.auteur_comm}})</em> {{comm.commentaire|htmlClean|safe|sansp|couperTexte:200}}
                     </h6>
-                        <small>
-                            <span class="badge bg-label-secondary"> {{ comm.date_creation|date:"DATE_FORMAT" }}</span>
-                            <span class="badge bg-label-primary">{{comm.article.titre}}</span>
-                        </small>
-                </div>
+
                 </a>
+                </div>
+                <div>
+                <a href="{{ comm.article.get_absolute_url }}">
+                    <small>
+                        <span class="badge bg-label-primary">{{comm.article.titre}}</span>
+                    </small>
+                </a>
+                </div>
             </div>
         </li>
     {% endfor %}

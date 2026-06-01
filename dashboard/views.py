@@ -43,20 +43,23 @@ def derniersDocs(request, asso):
 def derniersArticles(request, asso):
     asso = testIsMembreAsso_bool(request, asso)
     if not asso:
-        docsList = Article.objects.filter(asso__slug="public", estEpingle=False).annotate(
+        articleList = Article.objects.filter(asso__slug="public", estEpingle=False).annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
             ).order_by('-latest')[:5]
     else:
-        docsList = Article.objects.filter(asso=asso, estEpingle=False).annotate(
+        articleList = Article.objects.filter(asso=asso, estEpingle=False).annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
             ).order_by('-latest')[:5]
-    return render(request, 'ajax/docList.html', {'docList': docsList, 'asso': asso})
+    return render(request, 'ajax/articleList.html', {'articleList': articleList, 'asso': asso})
 
 
 @login_required
 def derniersCommentaires(request, asso):
+    asso = testIsMembreAsso_bool(request, asso)
+    if not asso:
+        return render(request, 'ajax/commList.html', {'commList': []})
     dateMin = (datetime.now() - timedelta(days=30)).replace(tzinfo=pytz.UTC)
     derniers_comm = Commentaire.objects.filter(
-        Q(date_creation__gt=dateMin) & request.user.getQObjectsAssoCommentaires()).order_by('-date_creation')[:5]
+        Q(article__asso=asso, date_creation__gt=dateMin) & request.user.getQObjectsAssoCommentaires()).order_by('-date_creation')[:5]
     return render(request, 'ajax/commList.html', {'commList': derniers_comm})
 

@@ -321,3 +321,9 @@ def is_listeContacts(slug):
 @register.filter(is_safe=True)
 def is_listeDiffusion(slug):
     return Asso.objects.get(slug=slug).is_listeDiffusion
+
+
+@register.filter(is_safe=True)
+def sansp(html):
+    return re.sub(r"<.*?>", "", html)
+

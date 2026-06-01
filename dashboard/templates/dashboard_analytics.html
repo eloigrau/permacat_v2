@@ -186,8 +186,10 @@
             <li class="d-flex align-items-center mb-5">
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
-                  <h6 class="mb-0">Documentation Générale</h6>
-                  <small>Toutes les infos sur la SSA</small>
+                    <small>
+                         <span class="badge bg-label-info"> Documentation </span>
+                    </small>
+                  <h6 class="mb-0"> Documentation Générale</h6>
                 </div>
               </div>
             </li>
@@ -196,8 +198,10 @@
             <li class="d-flex align-items-center mb-5">
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
+                    <small>
+                         <span class="badge bg-label-info"> Agenda </span>
+                    </small>
                   <h6 class="mb-0">Réunions du collectif</h6>
-                  <small>Comptes Rendus, prochaines dates, organisation...</small>
                 </div>
               </div>
             </li>
@@ -206,8 +210,10 @@
             <li class="d-flex align-items-center mb-5">
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
+                    <small>
+                         <span class="badge bg-label-info"> Organisation du Collectif</span>
+                    </small>
                   <h6 class="mb-0">Nos Valeurs, Objectifs et Raison d'être</h6>
-                  <small>Les fondements du collectif</small>
                 </div>
               </div>
             </li>
@@ -216,8 +222,10 @@
             <li class="d-flex align-items-center">
               <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
+                    <small>
+                         <span class="badge bg-label-info"> Organisation du Collectif</span>
+                    </small>
                   <h6 class="mb-0">Communication</h6>
-                  <small>Infos : Mails, site web, visio, ... </small>
                 </div>
               </div>
             </li>
@@ -246,7 +254,7 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Derniers Documents</h5>
+            <h5 class="d-mb-1 me-2"> Derniers Documents</h5>
           </div>
           <div class="dropdown">
             <button class="btn text-body-secondary p-0" type="button" id="orderStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -281,6 +289,7 @@
 {% endblock %}
 
   {% block script %}
+  <script src="{% static 'dashboard/assets/js/ui-popover.js' %}"></script>
 <script>
 $( document ).ready(function() {
     get_derniers('{% url 'dashboard:derniersDocs' asso=request.session.asso_slug %}', "#derniers_docs");

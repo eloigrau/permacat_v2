@@ -6,22 +6,18 @@
 {% if articleList %}
 <ul class="p-0 m-0">
     {% for article in articleList %}
-    <a href="{{article.get_absolute_url}}">
         <li class="d-flex align-items-center mb-5">
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                <a href="{{article.get_absolute_url}}">
                 <div class="me-2">
-                    <h6 class="mb-0">{{article.titre}}</h6>
                     <small>
-                        <span class="badge bg-label-secondary"> {{ article.date_creation|date:"DATE_FORMAT" }}</span>
-                         <span class="badge bg-label-primary"> Catégorie : {{ article.get_categorie_display2 }}</span>
+                         <span class="badge bg-label-info"> {{ article.get_categorie_display2 }}</span>
                     </small>
-                    <small>
-                        {% if doc.tags.names %} - {% include 'listeTags_view_template.html' with tags=article.tags.names %} {% endif %}
-                    </small>
+                    <h6 class="mb-0"> {{article.titre}}</h6>
                 </div>
+                </a>
             </div>
         </li>
-    </a>
     {% endfor %}
 </ul>
 

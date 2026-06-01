@@ -6,22 +6,27 @@
 {% if docList %}
 <ul class="p-0 m-0">
     {% for doc in docList %}
-    <a href="{{doc.get_absolute_url_fichier}}">
         <li class="d-flex align-items-center mb-5">
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
                 <div class="me-2">
-                    <h6 class="mb-0">{{doc.titre}}</h6>
-                    <small>
-                        <span class="badge bg-label-secondary"> {{ doc.date_creation|date:"DATE_FORMAT" }}</span>
+                    <a href="{{doc.get_absolute_url_fichier}}">
+                        <h6 class="mb-0">{{doc.titre}}</h6>
+                    </a>
                         {% if doc.article %}
-                         <span class="badge bg-label-primary">Dossier: {{ doc.article.titre }}</span>
+                        <a href="{{doc.get_absolute_url}}">
+                        <small class="mb-0">
+                            <span class="badge bg-label-primary"> {{ doc.article.titre }}</span>
+                         </small>
+                        </a>
                         {% endif %}
-                        {% if doc.tags.names %} - {% include 'listeTags_view_template.html' with tags=article.tags.names %} {% endif %}
-                    </small>
                 </div>
+                {% comment %}
+                    <span class='badge bg-label-secondary'> {{ doc.date_creation|date:'DATE_FORMAT' }}</span>
+                    {% if doc.tags.names %} - {% include 'listeTags_view_template2.html' with tags=doc.tags.names %} {% endif %}
+                    </div>
+                {% endcomment %}
             </div>
         </li>
-    </a>
     {% endfor %}
 </ul>
 

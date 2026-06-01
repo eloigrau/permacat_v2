@@ -12,13 +12,13 @@
               <div class="me-2">
                 <a href="{{date.get_absolute_url}}">
                     <h6 class="mb-0">
-                        <i class="icon-base bx bx-calendar"></i> {{ date.start_time | date:"d/m/Y" }}
+                        <i class="icon-base bx bx-calendar"></i> {{ date.start_time | date:"l j M" }}
                     </h6>
                 </a>
               </div>
               <div>
                 <a href="{{date.get_absolute_url}}">
-                    <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{date.titre}}</span></h6>
+                    <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{date.titre|couperTexte:50}}</span></h6>
                 </a>
               </div>
             </div>

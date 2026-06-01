@@ -246,7 +246,7 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Dossiers épinglés</h5>
+            <h5 class="d-mb-1 me-2">Articles épinglés</h5>
           </div>
         </div>
         <div class="card-body">
@@ -259,8 +259,10 @@
                 </a>
                     <small>Toutes les infos sur la SSA</small>
                   </div>
-                  <div class="me-2">
-                    <small><span class="badge bg-label-info"> Documentation </span></small>
+                  <div>
+                  <a href="https://www.perma.cat/forum/articles/ssa?categorie=documentation&ancre_navtab=dossier#ref-navbargroupe">
+                      <small><span class="badge bg-label-info"> Documentation </span></small>
+                    </a>
                   </div>
               </div>
             </li>
@@ -273,7 +275,9 @@
                   <small>Comptes Rendus, prochaines dates, organisation...</small>
                 </div>
                 <div class="me-2">
+                  <a href="https://www.perma.cat/forum/articles/ssa?categorie=Agenda&ancre_navtab=dossier#ref-navbargroupe">
                   <small> <span class="badge bg-label-info"> Agenda </span></small>
+                  </a>
                 </div>
               </div>
             </li>
@@ -286,7 +290,9 @@
                   <small>Infos : Mails, site web, visio, ... </small>
                 </div>
                 <div class="me-2">
+                  <a href="https://www.perma.cat/forum/articles/ssa?categorie=organisation&ancre_navtab=dossier#ref-navbargroupe">
                   <small> <span class="badge bg-label-info"> Organisation du Groupe </span></small>
+                  </a>
                 </div>
               </div>
             </li>
@@ -299,7 +305,9 @@
                   <small>Les bases du collectif</small>
                 </div>
                 <div class="me-2">
+                  <a href="https://www.perma.cat/forum/articles/ssa?categorie=organisation&ancre_navtab=dossier#ref-navbargroupe">
                   <small> <span class="badge bg-label-info"> Organisation du Groupe </span></small>
+                  </a>
                 </div>
               </div>
             </li>
@@ -312,7 +320,7 @@
       <div class="card h-100">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Derniers Dossiers</h5>
+            <h5 class="d-mb-1 me-2">Derniers Articles</h5>
           </div>
           <div class="dropdown">
             <button class="btn text-body-secondary p-0" type="button" id="forum" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -320,6 +328,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
               <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Acceuil du Forum</a>
+              <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">Arborescence</a>
               <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Dossiers</a>
               <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Mots-clé</a>
               <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Archives</a>

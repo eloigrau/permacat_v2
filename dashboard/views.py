@@ -3,33 +3,53 @@ from .web_project import TemplateLayout
 from photologue.models import Document
 from blog.models import Article, Commentaire
 from bourseLibre.views import testIsMembreAsso_bool
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 from datetime import datetime, timedelta
 import pytz
+from django.shortcuts import redirect
 from django.db.models import Q
 from django.db.models.functions import Greatest
-
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.template.loader import select_template
 from blog.models import Article, Projet, Evenement
-from bourseLibre.models import EvenementSalon, InscritSalon, Salon
+from bourseLibre.models import EvenementSalon, InscritSalon, Salon, Asso
 from ateliers.models import Atelier
-"""
-This file is a view controller for multiple pages as a module.
-Here you can override the page view layout.
-Refer to dashboards/urls.py file for more pages.
-"""
+from django.http import HttpResponseForbidden
+from .forms import ChoisirCollectifForm
 
-
-class DashboardView(TemplateView):
+class DashboardView(UserPassesTestMixin, TemplateView):
     # Predefined function
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in web_project/__init__.py file
-        self.request.session["asso_slug"] = "ssa" #self.kwargs['asso']
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
 
         return context
 
+    def test_func(self):
+        if not self.request.session.get("asso_slug", None):
+            return False
+        self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
+        return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
 
+    def handle_no_permission(self):
+        if not self.request.session.get("asso_slug", None):
+            return redirect("dashboard:choisirCollectif")
+
+        return render(self.request, "erreur.html", {"msg": "Vous n'êtes pas autorisé-e à voir ce contenu, désolé. (%s) " %(str(self.asso))})
+
+    def get_template_names(self):
+        return select_template(["dashboard_"+ self.request.session["asso_slug"] + ".html","dashboard_base.html"])
+
+
+
+@login_required
+def choisirCollectif(request):
+    form = ChoisirCollectifForm(request, request.POST or None)
+    if form.is_valid():
+        request.session["asso_slug"] = form.cleaned_data["asso"].slug
+        return redirect("dashboard:index")
+    return render(request, "choisirCollectif.html", {"form":form})
 
 
 @login_required

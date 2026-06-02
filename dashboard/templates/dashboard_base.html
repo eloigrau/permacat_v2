@@ -1,0 +1,123 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Tableau de bord {% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <!-- Raccourcis -->
+    {% block raccourcis %}
+    {% endblock %}
+    {% block agenda %}
+    <!-- Prochains RDV -->
+    <div class="col-lg-6 col-sm-12 order-1 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="d-mb-1 me-2">Prochains rendez-vous</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="dernieres_dates"></div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    {% block epingles %}
+    <!-- Dossiers principaux -->
+    {% endblock %}
+
+    {% block derniersArticles %}
+    <!-- Derniers Articles -->
+    <div class="col-lg-6 col-sm-12 order-1 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="d-mb-1 me-2">Derniers Articles</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="derniers_articles"></div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    {% block derniersDocs %}
+    <!-- derniers docs -->
+    <div class="col-lg-6 col-sm-12 order-2 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="d-mb-1 me-2"> Derniers Documents</h5>
+          </div>
+          <div class="dropdown">
+            <button class="btn text-body-secondary p-0" type="button" id="orderStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderStatistics">
+              <a class="dropdown-item" href="{% url 'photologue:doc-list'  %}?asso={{request.session.asso_slug}}">Tous les documents du groupe</a>
+              <a class="dropdown-item" href="{% url 'photologue:doc-list' %}?reset_asso=True">Tous les documents de la plateforme</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="derniers_docs"></div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    {% block derniersComm %}
+    <!-- derniers Comm -->
+    <div class="col-lg-6 col-sm-12 order-3 mb-6">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="d-mb-1 me-2"><i class="icon-base bx bx-comment"></i> Derniers Commentaires</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="derniers_commentaires"></div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+  </div>
+
+{% endblock %}
+
+  {% block script %}
+  <script src="{% static 'dashboard/assets/js/ui-popover.js' %}"></script>
+<script>
+$( document ).ready(function() {
+    get_derniers('{% url 'dashboard:derniersDocs' asso=request.session.asso_slug %}', "#derniers_docs");
+    get_derniers('{% url 'dashboard:derniersArticles' asso=request.session.asso_slug %}', "#derniers_articles");
+    get_derniers('{% url 'dashboard:derniersCommentaires' asso=request.session.asso_slug %}', "#derniers_commentaires");
+    get_derniers('{% url 'dashboard:prochainesDates' asso=request.session.asso_slug %}', "#dernieres_dates");
+});
+function get_derniers(url_tag, id_html) {
+
+    $.ajax({
+        url: url_tag,
+        type: "GET",
+        contentType: "application/x-www-form-urlencoded",
+        async: false,
+        data: { },
+        error: function(response, status, error_msg) {
+            console.log(error_msg);
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $(id_html).html(data);  // replace the contents of the city input with the data that came from the server
+        }
+    });
+}
+
+  </script>
+{% endblock %}
+
+
+
+

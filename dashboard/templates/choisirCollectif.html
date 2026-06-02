@@ -1,0 +1,33 @@
+{% extends 'layout/layout_blank.html' %}
+
+  {% load static %}
+
+  {% block header %}
+  <script src="{% static 'dashboard/libs/jquery/jquery.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-sm-12 order-0 mb-6 mt-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between">
+                    <h5 class="mb-1 me-2">Selectionner un Collectif pour accéder à son tableau de bord</h5>
+                </div>
+                <div class="card-body">
+                    <form id="articleForm" class="form-horizontal" role="form" action="" method="post">
+                        {% csrf_token %} {% include 'form_template2bis.html'%}
+
+                        <button id="btn-valider" type="submit" class="btn btn-primary">OK</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+

@@ -1,0 +1,184 @@
+{% extends 'dashboard_base.html' %}
+
+{% block raccourcis %}
+<div class="col-lg-6  col-sm-12 order-0 mb-6">
+  <div class="card h-100">
+    <div class="card-header d-flex justify-content-between">
+        <h5 class="mb-1 me-2">Raccourcis</h5>
+    </div>
+    <div class="card-body">
+    <ul class="p-0 m-0">
+      <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <div class="me-2">
+                  <a  href="https://www.perma.cat/collectifssa">
+                    <h6 class="mb-0"><i class="icon-base bx bx-world"></i> Site Web SSA 66 </h6>
+                  </a>
+                  <small>Notre site web "public"</small>
+              </div>
+            </div>
+      </li>
+      <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <div class="me-2">
+                  <a  href="https://www.perma.cat/salon/d/gt-animation">
+                    <h6 class="mb-0"><i class="icon-base bx bx-group"></i>  GT Animation </h6>
+                  </a>
+                    <small>Le salon de discussion du Groupe de Travail</small>
+              </div>
+              <div>
+                  <a  href="https://www.perma.cat/forum/article/reunions">
+                      <small><span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i> Réunions du collectif</span></small>
+                  </a>
+              </div>
+            </div>
+      </li>
+
+      <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <div class="me-2">
+                  <a  href="https://docs.google.com/spreadsheets/d/1gL3aDbIqWRd1kTmSgaRYsLa1PfQoAj2QXdKmDk7Z-MU/edit?gid=7005119"  target="_blank">
+                    <h6 class="mb-0"><i class="icon-base bx bx-book-content"></i>  Acteurs locaux </h6>
+                  </a>
+                    <small>Le ficher excel partagé</small>
+              </div>
+              <div>
+                  <a  href="https://www.perma.cat/forum/article/acteurs-locaux">
+                      <small><span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  Acteurs locaux et partenariats</span></small>
+                  </a>
+              </div>
+            </div>
+      </li>
+
+      <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <div class="me-2">
+                  <a  href="https://semestriel.framapad.org/p/constitution-du-cla"  target="_blank">
+                    <h6 class="mb-0"><i class="icon-base bx bx-book-content"></i>  Constitution CLA</h6>
+                  </a>
+                    <small>Le doc partagé sur le CLA</small>
+              </div>
+              <div>
+                  <a href="https://www.perma.cat/forum/article/acteurs-locaux">
+                      <small><span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  Acteurs locaux et partenariats</span></small>
+                  </a>
+              </div>
+            </div>
+      </li>
+      <li class="d-flex align-items-center mb-5">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+              <div class="me-2">
+                  <a href="https://semestriel.framapad.org/p/constitution-du-cla"  target="_blank">
+                    <h6 class="mb-0"><i class="icon-base bx bx-book-content"></i>  Prises de notes et CR</h6>
+                  </a>
+                    <small>Le doc partagé de prises de notes</small>
+              </div>
+              <div>
+                  <a  href="https://www.perma.cat/forum/article/reunions">
+                      <small> <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  Réunions du collectif</span></small>
+                  </a>
+              </div>
+            </div>
+      </li>
+    </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block epingles %}
+<!-- Dossiers principaux -->
+<div class="col-lg-6 col-sm-12 order-0 mb-6">
+  <div class="card h-100">
+    <div class="card-header d-flex justify-content-between">
+      <div class="card-title mb-0">
+        <h5 class="d-mb-1 me-2">Articles principaux</h5>
+      </div>
+      <div class="dropdown">
+        <button class="btn text-body-secondary p-0" type="button" id="forum" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="articles">
+          <a class="dropdown-item" href="{% url 'blog:acceuil' %}">Accueil du Forum</a>
+          <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">Arborescence</a>
+          <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=dossier#ref-navbargroupe">Explorer les Dossiers</a>
+          <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=tags#ref-navbargroupe">Par Mots-clé</a>
+          <a class="dropdown-item" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}?ancre_navtab=archives#ref-navbargroupe">Voir les Archives</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="p-0 m-0">
+        <li class="d-flex align-items-center mb-5">
+          <div class="d-flex w-100 align-items-center justify-content-between ">
+              <div class="me-2">
+              <a href="https://www.perma.cat/forum/article/communication-1">
+
+                  <h6 class="mb-0"><i class="icon-base bx bx-book-alt icon-sm"></i> Documentation Générale</h6>
+              </a>
+                <small>Toutes les infos sur la SSA</small>
+              </div>
+              <div>
+              <a href="https://www.perma.cat/forum/articles/ssa?categorie=documentation&ancre_navtab=dossier#ref-navbargroupe">
+                  <small><span class="badge bg-label-info"><i class="icon-base bx bx-folder icon-xs"></i>  Documentation </span></small>
+                </a>
+              </div>
+          </div>
+        </li>
+        <li class="d-flex align-items-center mb-5">
+          <div class="d-flex w-100 align-items-center justify-content-between">
+            <div class="me-2">
+              <a href="https://www.perma.cat/forum/article/reunions#ref-titre">
+
+                <h6 class="mb-0"><i class="icon-base bx bx-book-alt icon-sm"></i> Réunions du collectif</h6>
+              </a>
+              <small>Comptes Rendus, prochaines dates, organisation...</small>
+            </div>
+            <div class="me-2">
+              <a href="https://www.perma.cat/forum/articles/ssa?categorie=Agenda&ancre_navtab=dossier#ref-navbargroupe">
+              <small> <span class="badge bg-label-info"><i class="icon-base bx bx-folder icon-xs"></i>   Agenda </span></small>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="d-flex align-items-center mb-5">
+          <div class="d-flex w-100 align-items-center justify-content-between ">
+            <div class="me-2">
+              <a href="https://www.perma.cat/forum/article/communication-1">
+              <h6 class="mb-0"><i class="icon-base bx bx-book-alt icon-sm"></i> Communication</h6>
+              </a>
+              <small>Infos : Mails, site web, visio, ... </small>
+            </div>
+            <div class="me-2">
+              <a href="https://www.perma.cat/forum/articles/ssa?categorie=organisation&ancre_navtab=dossier#ref-navbargroupe">
+              <small> <span class="badge bg-label-info"><i class="icon-base bx bx-folder icon-xs"></i> Organisation du Groupe</span></small>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="d-flex align-items-center mb-5">
+          <div class="d-flex w-100 align-items-center justify-content-between ">
+            <div class="me-2">
+              <a href="https://www.perma.cat/forum/article/valeurs-objectifs-et-raison-detre-du-collectif#ref-titre">
+              <h6 class="mb-0">
+                  <i class="icon-base bx bx-book-alt icon-sm"></i> Nos Valeurs, Objectifs et Raison d'être</h6>
+              </a>
+              <small>Les bases du collectif</small>
+            </div>
+            <div class="me-2">
+              <a href="https://www.perma.cat/forum/articles/ssa?categorie=organisation&ancre_navtab=dossier#ref-navbargroupe">
+              <small> <span class="badge bg-label-info"><i class="icon-base bx bx-folder icon-xs"></i> Organisation du Groupe</span></small>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+

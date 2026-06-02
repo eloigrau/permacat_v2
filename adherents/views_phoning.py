@@ -229,7 +229,7 @@ class Contact_liste(UserPassesTestMixin, ListView):
 def phoning_projet_courant(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
 
-    if 'projet_courant_pk' in request.session:
+    if request.session.get('projet_courant_pk', None):
         #return redirect('adherents:phoning_projet_simple', projet_pk=request.session['projet_courant_pk'])
         reversed = reverse('adherents:phoning_projet_simple', kwargs={'asso_slug': asso_slug, 'projet_pk':request.session['projet_courant_pk']})  # create a base url
 

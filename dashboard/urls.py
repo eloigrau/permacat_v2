@@ -5,7 +5,8 @@ app_name = 'dashboard'
 
 
 urlpatterns = [
-    path("", views.DashboardView.as_view(template_name="dashboard_analytics.html"), name="index",),
+    path("", views.DashboardView.as_view(), name="index",),
+    path("choisirCollectif/", views.choisirCollectif, name="choisirCollectif",),
     path('derniersDocs/<str:asso>/', views.derniersDocs, name='derniersDocs'),
     path('derniersArticles/<str:asso>/', views.derniersArticles, name='derniersArticles'),
     path('derniersCommentaires/<str:asso>/', views.derniersCommentaires, name='derniersCommentaires'),

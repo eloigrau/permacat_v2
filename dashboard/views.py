@@ -76,6 +76,19 @@ def derniersArticles(request, asso):
             ).order_by('-latest')[:5]
     return render(request, 'ajax/articleList.html', {'articleList': articleList, 'asso': asso})
 
+@login_required
+def articlesEpingles(request, asso):
+    asso = testIsMembreAsso_bool(request, asso)
+    if not asso:
+        articleList = Article.objects.filter(asso__slug="public", estEpingle=True, estArchive=False).annotate(
+                latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
+            ).order_by('-latest')
+    else:
+        articleList = Article.objects.filter(asso=asso, estEpingle=True, estArchive=False).annotate(
+                latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
+            ).order_by('-latest')
+    return render(request, 'ajax/articleList.html', {'articleList': articleList, 'asso': asso})
+
 
 @login_required
 def derniersCommentaires(request, asso):

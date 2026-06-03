@@ -12,4 +12,5 @@ urlpatterns = [
     path('derniersArticles/<str:asso>/', login_required(views.derniersArticles, login_url='/auth/login/'), name='derniersArticles'),
     path('derniersCommentaires/<str:asso>/', login_required(views.derniersCommentaires, login_url='/auth/login/'), name='derniersCommentaires'),
     path('prochainesDates/<str:asso>/', login_required(views.prochainesDates, login_url='/auth/login/'), name='prochainesDates'),
+    path('articlesEpingles/<str:asso>/', login_required(views.articlesEpingles, login_url='/auth/login/'), name='articlesEpingles'),
 ]

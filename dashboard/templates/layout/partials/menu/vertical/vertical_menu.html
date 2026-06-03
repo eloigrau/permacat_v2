@@ -150,6 +150,35 @@
             <span class="menu-header-text"></span>
         </li>
 
+        <li class="menu-item ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon icon-base bx bx-plus"></i>
+                <div class="text-truncate">Publier...</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item ">
+                    <a href="{% url 'blog:ajouterNouvelArticle' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-book"></i>
+                        <div class="text-truncate">Un Article</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="{% url 'photologue:ajouterDocument' article_slug='None' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-file"></i>
+                        <div class="text-truncate">Un Document</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a href="{% url 'produit_proposer_entree' %}" class="menu-link">
+                        <i class="menu-icon icon-base bx bx-basket"></i>
+                        <div class="text-truncate">Une petite annonce</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-header small text-uppercase" >
+            <span class="menu-header-text"></span>
+        </li>
         <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-dock-top"></i>

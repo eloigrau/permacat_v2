@@ -3,6 +3,7 @@ from blog.models import Article
 from django.urls import reverse
 from django.utils import timezone
 import uuid
+from bourseLibre.constantes import get_bx_icon
 from bourseLibre.models import Profil, Suivis, Asso, username_re
 from actstream.models import followers
 from actstream import action
@@ -152,6 +153,9 @@ class Atelier(models.Model):
         except:
             return Choix.couleurs_ateliers['0']
 
+    @property
+    def get_bx_icon(self,):
+        return get_bx_icon("atelier")
 
     def est_autorise(self, user):
         if user == self.auteur:

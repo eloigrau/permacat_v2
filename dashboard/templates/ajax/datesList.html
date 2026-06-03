@@ -5,25 +5,29 @@
 
 {% if datesList %}
 <ul class="p-0 m-0">
-    {% for dates  in datesList %}
-        {% for date  in dates %}
+    <li class="d-flex align-items-center mb-5">
+        <div class="d-flex w-100 align-items-center justify-content-between">
+            <div class="me-2"><em>Date</em></div>
+            <div><em>Article associé</em></div>
+        </div>
+    </li>
+    {% for date  in datesList %}
         <li class="d-flex align-items-center mb-5">
             <div class="d-flex w-100 align-items-center justify-content-between">
               <div class="me-2">
                 <a href="{{date.get_absolute_url}}">
                     <h6 class="mb-0">
-                        <i class="icon-base bx bx-calendar"></i> {{ date.start_time | date:"l j M" }}
+                        <i class="icon-base bx {{date.get_bx_icon}}"></i> {{ date.start_time | date:"l j M" }}
                     </h6>
                 </a>
               </div>
               <div>
                 <a href="{{date.get_absolute_url}}">
-                    <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{date.titre|couperTexte:36}}</span></h6>
+                    <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{date.titre|couperTexte:42}}</span></h6>
                 </a>
               </div>
             </div>
         </li>
-        {% endfor %}
     {% endfor %}
 </ul>
 

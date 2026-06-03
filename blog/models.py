@@ -16,9 +16,7 @@ from jardins.models import Jardin
 from django.core.validators import MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 import uuid
-from adherents.models import Adhesion
-from bourseLibre.settings import DATE_INPUT_FORMAT
-from tinymce import models as tinymce_models
+from bourseLibre.constantes import get_bx_icon
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
@@ -305,6 +303,10 @@ class Article(models.Model):
     def get_absolute_url_site(self):
         return "https://www.perma.cat" + self.get_absolute_url()
 
+    @property
+    def get_bx_icon(self,):
+        return get_bx_icon("article")
+
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
         suiveurs = []
@@ -543,6 +545,10 @@ class Evenement(models.Model):
     def estPublic(self):
         return self.article.asso.slug == 'public'
 
+    @property
+    def get_bx_icon(self,):
+        return get_bx_icon("event")
+
     def est_autorise(self, user):
         return self.article.est_autorise(user)
 
@@ -724,6 +730,10 @@ class Projet(models.Model):
     def get_absolute_url_discussion(self):
         return self.get_absolute_url() + "#idConversation"
 
+    @property
+    def get_bx_icon(self,):
+        return get_bx_icon("event")
+
     def save(self, sendMail = True, *args, **kwargs):
         ''' On save, update timestamps '''
         emails = []
@@ -890,6 +900,9 @@ class EvenementAcceuil(models.Model):
     def est_autorise(self, user):
         return self.article.est_autorise(user)
 
+    @property
+    def get_bx_icon(self,):
+        return get_bx_icon("event")
 
 class AdresseArticle(models.Model):
     titre = models.CharField(verbose_name=_("Nom du lieu"),

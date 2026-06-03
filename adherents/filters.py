@@ -35,7 +35,7 @@ async def get_choix_Production():
 class AdherentsCarteFilter(django_filters.FilterSet):
     descrip = django_filters.CharFilter(lookup_expr='icontains', method='get_descrip_filter', label="Chercher : ", required=False)
     statut = django_filters.MultipleChoiceFilter(choices=CHOIX_STATUTS, label="Statut")
-    production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",)
+    # production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",)
     bureau = django_filters.BooleanFilter(label="Membre du bureau", method='get_bureau_filter',)
     annees = django_filters.MultipleChoiceFilter(choices=annees, method='get_annee_filter', label="Année", )
 
@@ -63,8 +63,8 @@ class AdherentsCarteFilter(django_filters.FilterSet):
         membres = [p.pk for p in get_salon_particulier(self.asso_slug).getInscritsEtInvites()]
         return queryset.filter(pk__in=membres)
 
-    def get_production_ape_filter(self, queryset, field_name, value):
-        return queryset.filter(production_ape__in=value)
+   # def get_production_ape_filter(self, queryset, field_name, value):
+   #     return queryset.filter(production_ape__in=value)
 
     class Meta:
         model = Adherent
@@ -82,8 +82,7 @@ class ContactCarteFilter(django_filters.FilterSet):
     mescontacts = django_filters.BooleanFilter(label="Mes contacts", method='get_mescontacts_filter', widget=forms.CheckboxInput(),)
     dejacontacte = django_filters.MultipleChoiceFilter(choices=NBCONTACTS_CHOICES, label="Déjà contacté", method='get_dejacontacte_filter',)
     statut = django_filters.MultipleChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter',)
-    production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",  method='get_production_ape_filter',
-                                                 )
+    #production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",  method='get_production_ape_filter',)
 
     def get_statut_filter(self, queryset, field_name, value):
         if value == '0':
@@ -99,8 +98,8 @@ class ContactCarteFilter(django_filters.FilterSet):
         else:
             return queryset
 
-    def get_production_ape_filter(self, queryset, field_name, value):
-        return queryset.filter(adherent__production_ape=value)
+   # def get_production_ape_filter(self, queryset, field_name, value):
+   #     return queryset.filter(adherent__production_ape=value)
 
     def get_istel_filter(self, queryset, field_name, value):
         if value:

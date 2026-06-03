@@ -5,6 +5,12 @@
 
 {% if articleList %}
 <ul class="p-0 m-0">
+    <li class="d-flex align-items-center mb-5">
+        <div class="d-flex w-100 align-items-center justify-content-between">
+            <div class="me-2"><em>Article</em></div>
+            <div><em>Dossier</em></div>
+        </div>
+    </li>
     {% for article in articleList %}
         <li class="d-flex align-items-center mb-5">
             <div class="d-flex w-100 align-items-center justify-content-between">
@@ -13,7 +19,7 @@
                      <h6 class="mb-0"><i class="icon-base bx bx-book-alt icon-xs"></i> {{article.titre|couperTexte:36|couperTexte:50}}</h6>
                     </a>
                 </div>
-                <div class="me-2">
+                <div>
                 <a href="{{article.get_categorie_url}}">
                     <small><span class="badge bg-label-info"><i class="icon-base bx bx-folder icon-sm"></i>   {{ article.get_categorie_display2 }}</span></small>
                 </a>

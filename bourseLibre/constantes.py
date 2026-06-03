@@ -75,3 +75,9 @@ class Choix():
 
     type_paiement_adhesion = ('0', 'Espèce'), ("1", "HelloAsso"), ("2", "Cheque"), ("3", "Virement")
 
+    bx_icons = {"defaut":"bx-calendar", "event": "bx-calendar", "article": "bx-calendar", "atelier":"bx-wrench","salon":"bx-group",}
+
+def get_bx_icon(nom):
+    if nom in Choix.bx_icons.keys():
+        return Choix.bx_icons[nom]
+    return Choix.bx_icons["defaut"]

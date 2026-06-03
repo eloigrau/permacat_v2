@@ -23,7 +23,7 @@ class Room(models.Model):
         return self.titre + " *" if self.estPermanent else self.titre
 
     def save(self, *args, **kwargs):
-        instance = super(Room, self).save(commit=False)
+        instance = super(Room, self).save()
 
         max_length = Room._meta.get_field('slug').max_length
         instance.slug = orig = slugify_pcat(instance.titre, max_length)

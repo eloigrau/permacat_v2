@@ -17,6 +17,7 @@ from bourseLibre.models import EvenementSalon, InscritSalon, Salon, Asso
 from ateliers.models import Atelier
 from django.http import HttpResponseForbidden
 from .forms import ChoisirCollectifForm
+from itertools import chain
 
 class DashboardView(UserPassesTestMixin, TemplateView):
     # Predefined function
@@ -102,15 +103,20 @@ def prochainesDates(request, asso):
 
     events = [
         #"articles":
-            Article.objects.filter((Q(asso=asso) | Q(partagesAsso=asso) | Q(partagesAsso__slug='public')) & Q_filter).order_by("start_time")[:5],
+        Article.objects.filter((Q(asso=asso) | Q(partagesAsso=asso) | Q(partagesAsso__slug='public')) & Q_filter).order_by("start_time")[:5],
         #"projets":
-        Projet.objects.filter(Q(asso=asso) & Q_filter).order_by("start_time")[:5],
+        Projet.objects.filter((Q(asso=asso) | Q(asso__slug="public")) & Q_filter).order_by("start_time")[:5],
         #"ateliers":
-        Atelier.objects.filter(Q(asso=asso) & Q_filter).order_by("start_time")[:5],
+        Atelier.objects.filter((Q(asso=asso) | Q(asso__slug="public")) & Q_filter).order_by("start_time")[:5],
         #"events":
-        Evenement.objects.filter(Q(article__asso=asso) & Q_filter).order_by("start_time")[:5],
+        Evenement.objects.filter((Q(article__asso=asso) | Q(article__asso__slug="public")) & Q_filter).order_by("start_time")[:5],
         #"salon":
         EvenementSalon.objects.filter((Q(salon__in=salons_prives) | Q(salon__in=salons_publics) | Q(salon__in=salons_groupes)) & Q_filter).order_by("start_time")[:5],
     ]
+    queryset = sorted(
+        chain(events[0], events[1], events[2], events[3], events[4], ),
+        key=lambda instance: instance.start_time,
+        reverse=False
+    )
 
-    return render(request, 'ajax/datesList.html', {'datesList': events, 'asso': asso})
+    return render(request, 'ajax/datesList.html', {'datesList': queryset, 'asso': asso})

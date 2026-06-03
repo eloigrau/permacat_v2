@@ -32,7 +32,7 @@ from model_utils.managers import InheritanceManager
 from taggit.managers import TaggableManager
 
 from webpush import send_user_notification
-from .constantes import Choix, DEGTORAD
+from .constantes import Choix, DEGTORAD, get_bx_icon
 from .settings.production import SERVER_EMAIL
 from .settings import LANGUAGES, LANGUAGE_CODE
 
@@ -1344,6 +1344,10 @@ class Salon(models.Model):
 
 
     @property
+    def get_bx_icon(self,):
+        return get_bx_icon("salon")
+
+    @property
     def estPublic(self):
         return self.type_salon == Type_Salon.PUBLIC
 
@@ -1511,6 +1515,10 @@ class EvenementSalon(models.Model):
     def est_autorise(self, user):
         return self.salon.est_autorise(user)
 
+
+    @property
+    def get_bx_icon(self,):
+        return get_bx_icon("salon")
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)

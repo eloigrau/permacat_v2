@@ -14,10 +14,18 @@
     {% block agenda %}
     <!-- Prochains RDV -->
     <div class="col-lg-6 col-sm-12 order-1 mb-6">
-      <div class="card h-100">
+      <div class="card">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Prochains rendez-vous</h5>
+            <h5 class="mb-1 me-2">Prochains rendez-vous</h5>
+              <p class="card-subtitle">Inscrits à <a href="{% url 'cal:agenda' %}">l'agenda </a></p>
+          </div>
+          <div class="d-block">
+            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#dernieres_dates"
+             onclick="get_derniers('{% url 'dashboard:prochainesDates' asso=request.session.asso_slug %}', '#dernieres_dates');"
+               role="button" aria-expanded="true" aria-controls="collapseExample">
+              Voir
+            </a>
           </div>
         </div>
         <div class="card-body">
@@ -33,10 +41,18 @@
     {% block derniersArticles %}
     <!-- Derniers Articles -->
     <div class="col-lg-6 col-sm-12 order-1 mb-6">
-      <div class="card h-100">
+      <div class="card">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2">Derniers Articles</h5>
+            <h5 class="mb-1 me-2">Derniers Articles</h5>
+              <p class="card-subtitle">Sur le <a href="{% url 'blog:acceuil' %}">Forum </a></p>
+          </div>
+          <div class="d-block">
+            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#derniers_articles"
+             onclick="get_derniers('{% url 'dashboard:derniersArticles' asso=request.session.asso_slug %}', '#derniers_articles');"
+               role="button" aria-expanded="true" aria-controls="collapseExample">
+              Voir
+            </a>
           </div>
         </div>
         <div class="card-body">
@@ -48,19 +64,18 @@
     {% block derniersDocs %}
     <!-- derniers docs -->
     <div class="col-lg-6 col-sm-12 order-2 mb-6">
-      <div class="card h-100">
+      <div class="card">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2"> Derniers Documents</h5>
+            <h5 class="mb-1 me-2"> Derniers Documents</h5>
+              <p class="card-subtitle">A disposition du Collectif</p>
           </div>
-          <div class="dropdown">
-            <button class="btn text-body-secondary p-0" type="button" id="orderStatistics" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="icon-base bx bx-dots-vertical-rounded icon-lg"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderStatistics">
-              <a class="dropdown-item" href="{% url 'photologue:doc-list'  %}?asso={{request.session.asso_slug}}">Tous les documents du groupe</a>
-              <a class="dropdown-item" href="{% url 'photologue:doc-list' %}?reset_asso=True">Tous les documents de la plateforme</a>
-            </div>
+          <div class="d-block">
+            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#derniers_docs"
+             onclick="get_derniers('{% url 'dashboard:derniersDocs' asso=request.session.asso_slug %}', '#derniers_docs');"
+               role="button" aria-expanded="true" aria-controls="collapseExample">
+              Voir
+            </a>
           </div>
         </div>
         <div class="card-body">
@@ -72,10 +87,18 @@
     {% block derniersComm %}
     <!-- derniers Comm -->
     <div class="col-lg-6 col-sm-12 order-3 mb-6">
-      <div class="card h-100">
+      <div class="card ">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="d-mb-1 me-2"><i class="icon-base bx bx-comment"></i> Derniers Commentaires</h5>
+            <h5 class="mb-1 me-2"><i class="icon-base bx bx-comment"></i> Derniers Commentaires</h5>
+              <p class="card-subtitle">Et discussions dans les Articles</p>
+          </div>
+          <div class="d-block">
+            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#derniers_commentaires"
+             onclick="get_derniers('{% url 'dashboard:derniersCommentaires' asso=request.session.asso_slug %}', '#derniers_commentaires');"
+               role="button" aria-expanded="true" aria-controls="collapseExample">
+              Voir
+            </a>
           </div>
         </div>
         <div class="card-body">
@@ -93,10 +116,6 @@
   <script src="{% static 'dashboard/assets/js/ui-popover.js' %}"></script>
 <script>
 $( document ).ready(function() {
-    get_derniers('{% url 'dashboard:derniersDocs' asso=request.session.asso_slug %}', "#derniers_docs");
-    get_derniers('{% url 'dashboard:derniersArticles' asso=request.session.asso_slug %}', "#derniers_articles");
-    get_derniers('{% url 'dashboard:derniersCommentaires' asso=request.session.asso_slug %}', "#derniers_commentaires");
-    get_derniers('{% url 'dashboard:prochainesDates' asso=request.session.asso_slug %}', "#dernieres_dates");
 });
 function get_derniers(url_tag, id_html) {
 

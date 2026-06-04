@@ -585,17 +585,19 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         :return: The stored message
         """
 
-        #try:
-        perma = await Room.objects.aget(slug=room_name)
-        if perma.estPermanent:
-            return await database_sync_to_async(lambda: Message.objects.create(room=Room.objects.get(
-                titre=room_name
-            ), content=body[:512], user=self.scope["user"]))()
-        return await database_sync_to_async(Message.objects.none)()
-        #except Room.DoesNotExist:
-        #    print("Erreur _store_message :" + str(e))
-        #except Exception as a:
-        #    print("Erreur _store_message :" + str(e))
+        try:
+            perma = await Room.objects.aget(slug=room_name)
+            if perma.estPermanent:
+                return await database_sync_to_async(lambda: Message.objects.create(room=Room.objects.get(
+                    titre=room_name
+                ), content=body[:512], user=self.scope["user"]))()
+            return await database_sync_to_async(Message.objects.none)()
+        except Room.DoesNotExist:
+            await self.send_json({"error": "messageNotStored Room.DoesNotExis"})
+            await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name}})
+        except Exception as e:
+            await self.send_json({"error": "messageNotStored" + e.code})
+            await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name, "room":room_name}})
 
     async def _broadcast_message(self, room_name, body, stamp):
         """

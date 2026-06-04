@@ -25,8 +25,7 @@
 {% endblock %}
 
 {% block scriptblock %}
-{{rooms|json_script:"salles"}}
-<script type="text/javascript">     window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+{{ rooms | json_script:"salles" }}
 <script src="{% static 'permachat/js/error.js' %}" type="text/javascript"></script>
 <script src="{% static 'permachat/js/permachat_main.js' %}" type="text/javascript"></script>
 <script src="{% static 'permachat/js/ui.js' %}" type="text/javascript"></script>
@@ -61,10 +60,7 @@
         }
     };
 
-    /* window.sessionStorage.setItem('token', '{{request.user.username}}');*/
     window.chatOpen();
-
-
 
 })(jQuery);
 

@@ -141,9 +141,9 @@
                                 case "parted":
                                     ctx.Incoming.onpart(message.room_name, message.stamp, message.user, message.you);
                                     break;
-                                /*default:
+                                default:
                                     ctx.Incoming.onmessage(message.room_name, message.stamp, message.user, message.you, "codeInconnu " + message.body);
-                                    */
+
                             }
                     }
                 };

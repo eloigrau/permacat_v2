@@ -57,11 +57,11 @@ class MessageAdmin(ModelAdmin):
     search_fields = ["content"]
     ordering = ["date_creation"]
 
-    def has_add_permission(self, request):
-        return False
+    #def has_add_permission(self, request):
+    #    return False
 
-    def has_change_permission(self, request, obj=None):
-        return obj is None
+    #def has_change_permission(self, request, obj=None):
+    #    return obj is None
 
 
 # Register your models here.

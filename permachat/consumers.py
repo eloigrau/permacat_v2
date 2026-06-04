@@ -596,8 +596,8 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             await self.send_json({"error": "messageNotStored Room.DoesNotExis"})
             await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name}})
         except Exception as e:
-            await self.send_json({"error": "messageNotStored" + e.code})
-            await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name, "room":room_name}})
+            await self.send_json({"error": "messageNotStored" + str(e)})
+            await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name, "erreur":str(e)}})
 
     async def _broadcast_message(self, room_name, body, stamp):
         """

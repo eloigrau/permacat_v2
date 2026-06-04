@@ -293,9 +293,9 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
         :param using: 'default'.
         """
 
-        room_consumers = cls.ROOMS.pop(instance.titre, set())
+        room_consumers = cls.ROOMS.pop(instance.slug, set())
         for consumer in room_consumers:
-            async_to_sync(consumer.receive_part)(instance.titre)
+            async_to_sync(consumer.receive_part)(instance.slug)
 
     async def accept_user(self):
         """
@@ -509,8 +509,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
              "user": message.user.username, "body": message.content,
              "you": message.user == self.scope["user"]}
             for message in await database_sync_to_async(lambda: list(
-                Message.objects.select_related('user').filter(room__titre=room_name).order_by("-date_creation")[:50]))()
-                #Message.objects.select_related('user').filter(room__name=room_name).order_by("-date_creation")[:50]))()
+                Message.objects.select_related('user').filter(room__slug=room_name).order_by("-date_creation")[:50]))()
         ]
 
     async def _get_room_users(self, room_name):
@@ -589,14 +588,12 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             perma = await Room.objects.aget(slug=room_name)
             if perma.estPermanent:
                 return await database_sync_to_async(lambda: Message.objects.create(room=Room.objects.get(
-                    titre=room_name
+                    slug=room_name
                 ), content=body[:512], user=self.scope["user"]))()
             return await database_sync_to_async(Message.objects.none)()
         except Room.DoesNotExist:
-            await self.send_json({"error": "messageNotStored Room.DoesNotExis"})
             await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name}})
         except Exception as e:
-            await self.send_json({"error": "messageNotStored" + str(e)})
             await self.send_json({"type": "error", "code": "messageNotStored", "details": {"name": room_name, "erreur":str(e)}})
 
     async def _broadcast_message(self, room_name, body, stamp):

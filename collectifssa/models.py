@@ -57,4 +57,4 @@ class Covoit(models.Model):
 
 
     def __str__(self):
-        return self.nom + ", " + self.email + "; " + self.msg
+        return self.nom + ", " + self.besoin + "; " + self.msg

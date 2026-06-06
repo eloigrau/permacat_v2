@@ -68,7 +68,7 @@ class CovoitForm(forms.ModelForm):
 
     class Meta:
         model = Covoit
-        fields = ['nom', 'villeDepart', "telephone", "besoin"]
+        fields = ['nom', 'villeDepart', "telephone", "besoin", "msg"]
         widgets = {
             'msg': SummernoteWidget(),
         }

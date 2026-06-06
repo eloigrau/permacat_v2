@@ -31,7 +31,7 @@ class InscriptionCLA(models.Model):
     commentaire = models.TextField(verbose_name=_("Commentaire (interne)"), blank=True, null=True)
 
     def __str__(self):
-        return self.nom + ", " + self.email + "; " + self.msg
+        return self.nom + ", " + self.email + "; " + str(self.msg)
 
     def get_absolute_url(self):
         return reverse('collectifssa:voirMessages')
@@ -57,4 +57,4 @@ class Covoit(models.Model):
 
 
     def __str__(self):
-        return self.nom + ", " + self.msg
+        return self.nom + ", " + str(self.msg)

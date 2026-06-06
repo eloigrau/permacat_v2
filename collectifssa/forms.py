@@ -73,11 +73,6 @@ class CovoitForm(forms.ModelForm):
             'msg': SummernoteWidget(),
         }
 
-    def __init__(self, inscript, *args, **kwargs):
-        super(CovoitForm, self).__init__(*args, **kwargs)
-        if inscript:
-            self.fields["nom"].initial = inscript.nom
-
     def save(self, ):
         instance = super(CovoitForm, self).save()
         if not LOCALL:

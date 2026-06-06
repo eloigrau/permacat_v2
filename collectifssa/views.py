@@ -96,11 +96,10 @@ def inscriptionCLA(request):
 
 def inscriptionCovoitCLA(request):
     msg = None
-    inscript = None
     deja_inscrit = 0
     if request.user.is_anonymous:
         form_captcha = CaptchaForm(request.POST or None, )
-        form_covoit = CovoitForm(inscript, request.POST or None)
+        form_covoit = CovoitForm(request.POST or None)
     else:
         form_captcha = None
         form_covoit = CovoitForm(request.POST or None, initial={"nom":request.user.username })

@@ -78,8 +78,11 @@ class CovoitForm(forms.ModelForm):
         if not LOCALL:
             sujet = '[Collectifssa] Inscription Coivoiturage CLA'
             message_html = "Inscription au covoiturage CLA : " + self.cleaned_data['nom'] + " , "+ self.cleaned_data['villeDepart'] \
-                           +" , "+ self.cleaned_data['telephone']
+                           +" , "+ self.cleaned_data['telephone'] + ": " + Covoit.BESOINS[int(self.cleaned_data['besoin'])][1]
             send_mail(sujet, message_html, SERVER_EMAIL, LIST_EMAIL_SUIVI, fail_silently=False,
                       html_message=message_html)
+        else:
+            print ("Inscription au covoiturage CLA : " + self.cleaned_data['nom'] + " , "+ self.cleaned_data['villeDepart'] \
+                           +" , "+ self.cleaned_data['telephone'] + ": " + Covoit.BESOINS[int(self.cleaned_data['besoin'])][1])
 
         return instance

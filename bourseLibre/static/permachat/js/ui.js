@@ -232,7 +232,7 @@
                     ).append(
                         $('<span class="author" />').text(message.user + (message.you ? ' (moi)' : ''))
                     ).append(
-                        $('<span class="message" />').text(message.body)
+                        $('<span class="message_chat" />').text(message.body)
                     )
                 );
             });

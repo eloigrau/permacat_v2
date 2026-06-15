@@ -1,0 +1,133 @@
+{% extends 'compta/base.html' %}
+
+{% block title %}Projet - {{ projet.titre }}{% endblock %}
+
+{% block content_compta %}
+<div class="mb-3">
+    <a href="{% url 'compta:tableau_de_bord' %}" class="btn btn-link p-0 text-decoration-none">
+        <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+    </a>
+</div>
+
+<div class="bg-white p-4 rounded shadow-sm mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+        <div>
+            <span class="badge bg-primary mb-2">{{ projet.budget_cercle.titre }}</span>
+            <h1 class="h2 mb-1">{{ projet.titre }}</h1>
+            <p class="text-muted">{{ projet.description|default:"Pas de description disponible." }}</p>
+        </div>
+        <div class="text-end">
+            <small class="text-muted d-block">Solde Projet</small>
+            <h2 class="{% if projet.solde >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                {{ projet.solde|floatformat:2 }} €
+            </h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-12">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted h6 text-uppercase"><i class="bi bi-cash-stack me-2"></i>Exécution Réelle</h5>
+                <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Total Recettes :</span>
+                    <span class="text-success fw-bold">+{{ projet.total_recettes|floatformat:2 }} €</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Total Dépenses :</span>
+                    <span class="text-danger fw-bold">-{{ projet.total_depenses|floatformat:2 }} €</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% comment %}
+    <div class="col-md-6">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-muted h6 text-uppercase"><i class="bi bi-graph-up-arrow me-2"></i>Suivi Prévisionnel</h5>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Écart budgétaire :</span>
+                    <span class="badge {% if projet.ecart_previsionnel >= 0 %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                        {{ projet.ecart_previsionnel|floatformat:2 }} €
+                    </span>
+                </div>
+            </div>
+            {% if projet.ecart_previsionnel < 0 %}
+                <div class="card-footer bg-danger-subtle text-danger border-0 small py-2">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Attention : Les dépenses réelles dépassent le prévisionnel !
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endcomment %}
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Historique des opérations</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Libellé</th>
+                    <th>Type</th>
+                    <th>Détails analytiques</th>
+                    <th class="text-end">Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td class="text-muted">{{ t.date|date:"d/m/Y" }}</td>
+                    <td><strong>{{ t.libelle }}</strong></td>
+                    <td>
+                        {% if t.type_transaction == 'RECETTE' %}
+                            <span class="badge bg-success-subtle text-success">Recette</span>
+                        {% elif t.type_transaction == 'DEPENSE' %}
+                            <span class="badge bg-danger-subtle text-danger">Dépense</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning text-dark">Transfert Émis</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if t.type_transaction == 'TRANSFERT' %}
+                            <i class="bi bi-arrow-right-short text-warning"></i> Transféré vers : <span class="badge bg-light text-dark border">{{ t.projet_destination.titre }}</span>
+                        {% else %}
+                            <span class="text-muted small">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
+                        {% if t.type_transaction == 'RECETTE' %}+{% else %}-{% endif %}{{ t.montant|floatformat:2 }} €
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% for t in transferts_recus %}
+                <tr class="table-success-subtle">
+                    <td class="text-muted">{{ t.date|date:"d/m/Y" }}</td>
+                    <td><strong>{{ t.libelle }} <small class="text-muted">(Reçu)</small></strong></td>
+                    <td><span class="badge bg-success">Transfert Reçu</span></td>
+                    <td>
+                        <i class="bi bi-arrow-left-short text-success"></i> Provenance : <span class="badge bg-light text-dark border">{{ t.projet.titre }}</span>
+                    </td>
+                    <td class="text-end fw-bold text-success">
+                        +{{ t.montant|floatformat:2 }} €
+                    </td>
+                </tr>
+                {% endfor %}
+
+                {% if not transactions and not transferts_recus %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Aucun mouvement financier sur ce projet.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

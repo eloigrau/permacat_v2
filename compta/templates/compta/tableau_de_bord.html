@@ -1,0 +1,62 @@
+{% extends 'compta/base.html' %}
+
+{% block title %}Tableau de Bord - Compta{% endblock %}
+
+{% block content_compta %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Tableau de Bord Analytique</h1>
+    <span class="badge bg-secondary fs-6">Vue d'ensemble</span>
+</div>
+
+{% for cercle in cercles %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+            <h3 class="h5 mb-0"><i class="bi bi-diagram-3-fill me-2"></i>Cercle : {{ cercle.titre }}</h3>
+            <span class="badge {% if cercle.solde >= 0 %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                Solde : {{ cercle.solde|floatformat:2 }} €
+            </span>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-3">{{ cercle.description|default:"Aucune description." }}</p>
+            <div class="row text-center mb-4">
+                <div class="col-6 ">
+                    <div class="border rounded p-2 bg-light">
+                        <small class="text-muted d-block">Recettes globales</small>
+                        <span class="text-success fw-bold">{{ cercle.total_recettes|floatformat:2 }} €</span>
+                    </div>
+                </div>
+                <div class="col-6 ">
+                    <div class="border rounded p-2 bg-light">
+                        <small class="text-muted d-block">Dépenses globales</small>
+                        <span class="text-danger fw-bold">{{ cercle.total_depenses|floatformat:2 }} €</span>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="card-title h6 text-uppercase text-muted border-bottom pb-2">Projets du cercle</h5>
+            <div class="list-group list-group-flush">
+                {% for projet in cercle.budgetprojets.all %}
+                    <a href="{% url 'compta:detail_projet' projet.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <strong class="text-primary">{{ projet }}</strong>
+                            {% if not projet.actif %}
+                                <span class="badge bg-warning text-dark ms-2">Inactif</span>
+                            {% endif %}
+                        </div>
+                        <span class="badge {% if projet.solde >= 0 %}bg-outline-success text-success border border-success{% else %}bg-outline-danger text-danger border border-danger{% endif %}">
+                            {{ projet.solde|floatformat:2 }} €
+                        </span>
+                    </a>
+                {% empty %}
+                    <div class="text-muted p-2">Aucun projet enregistré dans ce cercle.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <div class="alert alert-info shadow-sm text-center">
+        <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+        Aucun cercle de comptabilité trouvé. Commencez par en ajouter un dans l'administration.
+    </div>
+{% endfor %}
+{% endblock %}

@@ -19,7 +19,7 @@ import uuid
 from bourseLibre.constantes import get_bx_icon
 
 class Choix:
-    statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
+    statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ), #("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
     type_projet = ('Part','Participation à un évènement'), ('AGO',"Organisation d'une AGO"), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
     type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
                    ('Documentation','Documentation'),  \
@@ -683,6 +683,14 @@ class Commentaire(models.Model):
     def est_autorise(self, user):
         return self.projet.est_autorise(user)
 
+class Cercle(models.Model):
+    nom = models.CharField(max_length=250)
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, null=True)
+    slug = models.SlugField(max_length=100)
+
+    def __str__(self):
+        return  "[" + str(self.asso)+ "] " + self.nom
+
 class Projet(models.Model):
     categorie = models.CharField(max_length=10,
         choices=(Choix.type_projet),
@@ -710,7 +718,8 @@ class Projet(models.Model):
     end_time = models.DateField(verbose_name=_("Date de fin (optionnel, pour apparaitre dans l'agenda)"),  null=True,blank=True, help_text="jj/mm/année")
 
     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver le projet"))
-    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True, blank=True)
+    cercle = models.ForeignKey(Cercle, on_delete=models.SET_NULL, null=True, blank=True)
 
     tags = TaggableManager(verbose_name=_("Mots clés"), help_text=_("Liste de mots-clés séparés par une virgule"), blank=True)
 
@@ -774,7 +783,9 @@ class Projet(models.Model):
 
     @property
     def get_logo_nomgroupe_html(self, ):
-        return self.asso.get_logo_nomgroupe_html_taille(taille=18)
+        if self.asso:
+            return self.asso.get_logo_nomgroupe_html_taille(taille=18)
+        return Choix.get_logo_nomgroupe_html("---", taille=18)
 
 class FicheProjet(models.Model):
     projet = models.OneToOneField(Projet, on_delete=models.CASCADE, primary_key=True,)

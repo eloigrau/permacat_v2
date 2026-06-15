@@ -139,6 +139,7 @@ INSTALLED_APPS = [
     'jardins',
     'adherents',
     'ducepaujus',
+    'compta',
     #'phonebook',
     #'tinymce',
     'dal',

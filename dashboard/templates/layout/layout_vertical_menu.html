@@ -1,0 +1,44 @@
+{% extends 'layout/master.html' %}
+
+{% block layout %}
+<!-- Layout wrapper: Start -->
+<div class="layout-wrapper layout-content-navbar">
+  <div class="layout-container">
+    {% include "../layout/partials/menu/vertical/vertical_menu.html" %}
+
+    <!-- Layout page: Start -->
+    <div class="layout-page">
+      {% include "../layout/partials/navbar/navbar.html" %}
+
+
+      <!-- Content wrapper: Start -->
+      <div class="content-wrapper">
+        <!-- Content: Start -->
+          <div class="container-fluid flex-grow-1 container-p-y">
+            {% block content %}
+            {% endblock content %}
+          </div>
+          <!-- / Content: End -->
+
+      {% comment %}
+          {% if is_footer %}
+          <!-- Footer: Start -->
+          {% include "../layout/partials/footer/footer.html" %}
+          <!-- Footer: End -->
+          {% endif %}
+      {% endcomment %}
+
+          <div class="content-backdrop fade"></div>
+        </div>
+        <!--/ Content wrapper: End -->
+      </div>
+      <!-- / Layout page: End -->
+    </div>
+
+    <div class="layout-overlay layout-menu-toggle"></div>
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
+  </div>
+</div>
+<!-- Layout wrapper: End -->
+{% endblock layout %}

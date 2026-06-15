@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Theme, AssociationSalonArticle, Article_recherche, DocumentPartage, ArticleLiens, ArticleLienProjet, ZoneGeo
+from .models import Theme, AssociationSalonArticle, Article_recherche, DocumentPartage, ArticleLiens, ArticleLienProjet, ZoneGeo, Cercle
 
 # Register your models here.
 class LienArticleAdmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ admin.site.register(ArticleLiens, LienArticleAdmin)
 admin.site.register(ArticleLienProjet, LienArticleAdmin)
 admin.site.register(ZoneGeo)
 admin.site.register(Article_recherche)
+admin.site.register(Cercle)

@@ -2,6 +2,13 @@
 
 {% block title %}Projet - {{ projet.titre }}{% endblock %}
 
+{% block navcompta %}
+<div class="navbar-nav ms-auto">
+    <a class="nav-link btn btn-success btn-sm text-white px-3" href="{% url 'compta:ajouter_transaction' projet.id %}">
+        <i class="bi bi-cash-coin me-1"></i> Nouvelle Opération
+    </a>
+</div>
+{% endblock  %}
 {% block content_compta %}
 <div class="mb-3">
     <a href="{% url 'compta:tableau_de_bord' %}" class="btn btn-link p-0 text-decoration-none">
@@ -12,7 +19,8 @@
 <div class="bg-white p-4 rounded shadow-sm mb-4">
     <div class="d-flex justify-content-between align-items-start flex-wrap">
         <div>
-            <span class="badge bg-primary mb-2">{{ projet.budget_cercle.titre }}</span>
+            <a href="{{projet.budget_cercle.get_absolute_url}}"><span class="badge bg-primary mb-2">Cercle: {{ projet.budget_cercle.titre }}</span></a>
+            <a href="{{projet.projet.get_absolute_url}}"><span class="badge bg-success mb-2">Projet: {{ projet.projet.titre }}</span>
             <h1 class="h2 mb-1">{{ projet.titre }}</h1>
             <p class="text-muted">{{ projet.description|default:"Pas de description disponible." }}</p>
         </div>
@@ -29,15 +37,19 @@
     <div class="col-md-12">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title text-muted h6 text-uppercase"><i class="bi bi-cash-stack me-2"></i>Exécution Réelle</h5>
+                <h5 class="card-title text-muted h6 text-uppercase"><i class="bi bi-cash-stack me-2"></i>Total</h5>
                 <hr>
                 <div class="d-flex justify-content-between mb-2">
                     <span>Total Recettes :</span>
                     <span class="text-success fw-bold">+{{ projet.total_recettes|floatformat:2 }} €</span>
                 </div>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between mb-2">
                     <span>Total Dépenses :</span>
                     <span class="text-danger fw-bold">-{{ projet.total_depenses|floatformat:2 }} €</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Total Transferts (reçus - émis):</span>
+                    <span class="text-danger fw-bold">{{ projet.total_transfert|floatformat:2 }} €</span>
                 </div>
             </div>
         </div>
@@ -96,7 +108,7 @@
                     </td>
                     <td>
                         {% if t.type_transaction == 'TRANSFERT' %}
-                            <i class="bi bi-arrow-right-short text-warning"></i> Transféré vers : <span class="badge bg-light text-dark border">{{ t.projet_destination.titre }}</span>
+                        <i class="bi bi-arrow-right-short text-warning"></i> Transféré vers : <a href="{{ t.projet_destination.get_absolute_url }}"><span class="badge bg-light text-dark border">{{ t.projet_destination.titre }}</span></a>
                         {% else %}
                             <span class="text-muted small">-</span>
                         {% endif %}
@@ -113,7 +125,7 @@
                     <td><strong>{{ t.libelle }} <small class="text-muted">(Reçu)</small></strong></td>
                     <td><span class="badge bg-success">Transfert Reçu</span></td>
                     <td>
-                        <i class="bi bi-arrow-left-short text-success"></i> Provenance : <span class="badge bg-light text-dark border">{{ t.projet.titre }}</span>
+                        <i class="bi bi-arrow-left-short text-success"></i> Provenance : <a href="{{t.projet.get_absolute_url}}"><span class="badge bg-light text-dark border">{{ t.projet.titre }}</span></a>
                     </td>
                     <td class="text-end fw-bold text-success">
                         +{{ t.montant|floatformat:2 }} €

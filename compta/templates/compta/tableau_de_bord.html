@@ -19,16 +19,22 @@
         <div class="card-body">
             <p class="text-muted mb-3">{{ cercle.description|default:"Aucune description." }}</p>
             <div class="row text-center mb-4">
-                <div class="col-6 ">
+                <div class="col-4 ">
                     <div class="border rounded p-2 bg-light">
                         <small class="text-muted d-block">Recettes globales</small>
                         <span class="text-success fw-bold">{{ cercle.total_recettes|floatformat:2 }} €</span>
                     </div>
                 </div>
-                <div class="col-6 ">
+                <div class="col-4 ">
                     <div class="border rounded p-2 bg-light">
                         <small class="text-muted d-block">Dépenses globales</small>
                         <span class="text-danger fw-bold">{{ cercle.total_depenses|floatformat:2 }} €</span>
+                    </div>
+                </div>
+                <div class="col-4 ">
+                    <div class="border rounded p-2 bg-light">
+                        <small class="text-muted d-block">Transferts globaux</small>
+                        <span class="text-danger fw-bold">{{ cercle.total_transfert|floatformat:2 }} €</span>
                     </div>
                 </div>
             </div>

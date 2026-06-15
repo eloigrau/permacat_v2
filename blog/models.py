@@ -684,12 +684,12 @@ class Commentaire(models.Model):
         return self.projet.est_autorise(user)
 
 class Cercle(models.Model):
-    nom = models.CharField(max_length=250)
+    titre = models.CharField(max_length=250)
     asso = models.ForeignKey(Asso, on_delete=models.CASCADE, null=True)
     slug = models.SlugField(max_length=100)
 
     def __str__(self):
-        return  "[" + str(self.asso)+ "] " + self.nom
+        return  "[" + str(self.asso)+ "] " + self.titre
 
 class Projet(models.Model):
     categorie = models.CharField(max_length=10,

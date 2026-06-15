@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import BudgetCercle, BudgetProjet, Transaction
 from .forms import TransactionForm, BudgetProjetForm
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def tableau_de_bord(request):
     if not "asso_slug" in  request.session:
         asso_slug = "public"
@@ -13,6 +15,7 @@ def tableau_de_bord(request):
     return render(request, 'compta/tableau_de_bord.html', {'cercles': cercles})
 
 
+@login_required
 def detail_projet(request, projet_id):
     projet = get_object_or_404(BudgetProjet, pk=projet_id)
 
@@ -28,14 +31,11 @@ def detail_projet(request, projet_id):
         'transferts_recus': transferts_recus
     })
 
-
-def ajouter_transaction(request):
-    if request.method == 'POST':
-        form = TransactionForm(request.POST)
-        if form.is_valid():
-            transaction = form.save()
-            return redirect('compta:detail_projet', projet_id=transaction.projet.id)
-    else:
-        form = TransactionForm()
+@login_required
+def ajouter_transaction(request, projet_id):
+    form = TransactionForm(projet_id, request.POST or None)
+    if form.is_valid():
+        transaction = form.save()
+        return redirect('compta:detail_projet', projet_id=transaction.projet.id)
     return render(request, 'compta/ajouter_transaction.html', {'form': form})
 

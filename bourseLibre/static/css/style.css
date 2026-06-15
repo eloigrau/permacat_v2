@@ -1,73 +1,5 @@
 /* Style OK perma.cat */
 
-/* montserrat-subrayada-regular - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: 'Montserrat Subrayada';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../fonts/montserrat-subrayada-v17-latin-regular.eot'); /* IE9 Compat Modes */
-  src: url('../fonts/montserrat-subrayada-v17-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('../fonts/montserrat-subrayada-v17-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/montserrat-subrayada-v17-latin-regular.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/montserrat-subrayada-v17-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('../fonts/montserrat-subrayada-v17-latin-regular.svg#MontserratSubrayada') format('svg'); /* Legacy iOS */
-}
-
-/* montserrat-regular - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../fonts/montserrat-v25-latin-regular.eot'); /* IE9 Compat Modes */
-  src: url('../fonts/montserrat-v25-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('../fonts/montserrat-v25-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/montserrat-v25-latin-regular.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/montserrat-v25-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('../fonts/montserrat-v25-latin-regular.svg#Montserrat') format('svg'); /* Legacy iOS */
-}
-
-/* montserrat-700 - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 700;
-  src: url('../fonts/montserrat-v25-latin-700.eot'); /* IE9 Compat Modes */
-  src: url('../fonts/montserrat-v25-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('../fonts/montserrat-v25-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/montserrat-v25-latin-700.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/montserrat-v25-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('../fonts/montserrat-v25-latin-700.svg#Montserrat') format('svg'); /* Legacy iOS */
-}
-/* chivo-regular - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: 'Chivo';
-  font-style: normal;
-  font-weight: 400;
-  src: url('../fonts/chivo-v18-latin-regular.eot'); /* IE9 Compat Modes */
-  src: url('../fonts/chivo-v18-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('../fonts/chivo-v18-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/chivo-v18-latin-regular.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/chivo-v18-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('../fonts/chivo-v18-latin-regular.svg#Chivo') format('svg'); /* Legacy iOS */
-}
-
-/* chivo-700 - latin */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: 'Chivo';
-  font-style: normal;
-  font-weight: 700;
-  src: url('../fonts/chivo-v18-latin-700.eot'); /* IE9 Compat Modes */
-  src: url('../fonts/chivo-v18-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('../fonts/chivo-v18-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
-       url('../fonts/chivo-v18-latin-700.woff') format('woff'), /* Modern Browsers */
-       url('../fonts/chivo-v18-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
-       url('../fonts/chivo-v18-latin-700.svg#Chivo') format('svg'); /* Legacy iOS */
-}
 
 body {
     /*background: url("/static/img/background/bckgnd-2.jpg") 0 0 no-repeat fixed;*/
@@ -76,7 +8,7 @@ body {
     background-size:cover;
     margin: auto;
     width: 100%;
-    background-color:#18533f; /* #2B2A33 ou #386094 */
+    background-color:#d5f1fa; /* #2B2A33 ou #386094 */
     padding-top: 5px;
     color:black;
      -webkit-font-smoothing: antialiased;

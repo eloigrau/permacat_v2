@@ -1,4 +1,5 @@
 {% extends 'layout/layout_vertical_menu.html' %}
+{% load app_filters %}
 
 
 {% block content %}
@@ -6,13 +7,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="{% url 'compta:tableau_de_bord' %}">
-                <i class="bi bi-calculator-fill me-2"></i>Compta Par Projet
+                <i class="bi bi-calculator-fill me-2"></i>Compta {{ request.session.asso_slug | getNomGroupeFromSlug }}
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link btn btn-success btn-sm text-white px-3" href="{% url 'compta:ajouter_transaction' %}">
-                    <i class="bi bi-cash-coin me-1"></i> Nouvelle Transaction
-                </a>
-            </div>
+            {% block navcompta %}
+            {% endblock  %}
         </div>
     </nav>
 

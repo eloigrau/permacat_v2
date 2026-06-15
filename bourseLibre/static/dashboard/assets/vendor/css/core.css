@@ -215,7 +215,7 @@ body {
   line-height: var(--bs-body-line-height);
   color: var(--bs-body-color);
   text-align: var(--bs-body-text-align);
-  background-color: var(--bs-body-bg);/*#a6ccbe; #18533f;  */
+  background-color: #d5f1fa;/*Var(--bs-body-bg);/*#a6ccbe; #18533f;  */
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(34, 48, 62, 0);
 }

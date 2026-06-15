@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from blog.models import Cercle, Projet
+from django.urls import reverse
 
 class BudgetCercle(models.Model):
     titre = models.CharField(max_length=100, unique=True)
@@ -12,11 +13,18 @@ class BudgetCercle(models.Model):
     def __str__(self):
         return self.titre
 
+    @property
+    def get_absolute_url(self):
+        return reverse('compta:tableau_de_bord',)
+
     def total_recettes(self):
         return sum(projet.total_recettes() for projet in self.budgetprojets.all())
 
     def total_depenses(self):
         return sum(projet.total_depenses() for projet in self.budgetprojets.all())
+
+    def total_transfert(self):
+        return sum(projet.total_transfert() for projet in self.budgetprojets.all())
 
     def solde(self):
         return self.total_recettes() - self.total_depenses()
@@ -32,6 +40,10 @@ class BudgetProjet(models.Model):
     def __str__(self):
         return f"{self.budget_cercle.titre} - {self.projet.titre} - {self.titre}"
 
+    @property
+    def get_absolute_url(self):
+        return reverse('compta:detail_projet', kwargs={'projet_id':self.id})
+
     def total_recettes(self):
         # Recettes classiques + Transferts reçus en tant que destination
         recettes_pures = self.transactions.filter(type_transaction='RECETTE').aggregate(
@@ -39,6 +51,15 @@ class BudgetProjet(models.Model):
         transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', projet_destination=self).aggregate(
             total=models.Sum('montant'))['total'] or 0.0
         return float(recettes_pures) + float(transferts_recus)
+
+    def total_transfert(self):
+        # Dépenses classiques + Transferts émis (l'argent sort du projet)
+        transferts_emis = self.transactions.filter(type_transaction='TRANSFERT').aggregate(
+            total=models.Sum('montant'))['total'] or 0.0
+        transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', projet_destination=self).aggregate(
+            total=models.Sum('montant'))['total'] or 0.0
+        return float(transferts_recus) - float(transferts_emis)
+
 
     def total_depenses(self):
         # Dépenses classiques + Transferts émis (l'argent sort du projet)
@@ -77,7 +98,7 @@ class Transaction(models.Model):
     )
 
     type_transaction = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    libelle = models.CharField(max_length=200)
+    libelle = models.CharField(max_length=200, verbose_name="Libellé" )
     montant = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
     date = models.DateField()
     description = models.TextField(blank=True, null=True)

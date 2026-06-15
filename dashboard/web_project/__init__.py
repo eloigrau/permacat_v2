@@ -10,9 +10,9 @@ class TemplateLayout:
         # Init the Template Context using TEMPLATE_CONFIG
 
         # Set a default layout globally using settings.py. Can be set in the page level view file as well.
-        #layout = "vertical"
+        layout = "vertical"
 
-           #context.update(settings.TEMPLATE_CONFIG)
+        context.update(settings.TEMPLATE_CONFIG)
 
         # Set the selected layout
         context.update(

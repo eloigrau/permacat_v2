@@ -4,15 +4,15 @@ from compta.models import BudgetCercle, BudgetProjet
 from blog.models import Projet
 
 DATA = [
-    ("ANCRAGE", "#4FA8C7", "🎓", [
+    ("Ancrage", "#4FA8C7", "🎓", [
     ]),
-    ("ÉDUCATION", "#4FA8C7", "🎓", [
+    ("Éducation", "#4FA8C7", "🎓", [
     ]),
-    ("JARDINS", "#5CB85C", "🌱", [
+    ("Jardin", "#5CB85C", "🌱", [
     ]),
-    ("LABO D'IDÉES", "#F0AD4E", "💡", [
+    ("Labo d'idées", "#F0AD4E", "💡", [
     ]),
-    ("ÉVÈNEMENTS", "#C0392B", "🎪", [
+    ("Évènement", "#C0392B", "🎪", [
     ]),
 ]
 class Command(BaseCommand):
@@ -38,3 +38,4 @@ class Command(BaseCommand):
             p.cercle = cercle_a
             p.save()
             budget_projet, created = BudgetProjet.objects.get_or_create(projet=p, budget_cercle=cercle_a.budget_cercle, titre="Budget général")
+            self.stdout.write(self.style.SUCCESS(f"✓ création budget : {budget_projet} "))

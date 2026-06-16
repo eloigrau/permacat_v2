@@ -24,14 +24,14 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <li class="menu-item">
+        <li class="menu-item {% if '/notifications/' in request.path %}active{% endif %}">
             <a href="{% url 'notifications_news'  %}" class="menu-link" target="_blank">
                 <i class="menu-icon icon-base bx bx-bell"></i>
                 <div class="text-truncate">Notifications</div>
                 <span class="badge bg-info rounded-pill ms-auto" id="nbnotifs-badge"></span>
             </a>
         </li>
-        <li class="menu-item">
+        <li class="menu-item {% if '/agenda/' in request.path %}active{% endif %}">
             <a href="{% url 'cal:agenda' %}" class="menu-link" target="_blank">
                 <i class="menu-icon icon-base bx bx-calendar"></i>
                 <div class="text-truncate">Agenda</div>
@@ -43,32 +43,32 @@
         </li>
         <!-- Layouts -->
 
-        <li class="menu-item {% if '/layouts/' in request.path  %}active open{% endif %}">
+        <li class="menu-item {% if '/forum/' in request.path  or '/salons/' in request.path  or '/conversations/' in request.path  or  '/permachat/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-chat"></i>
                 <div class="text-truncate">Echanger</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                <li class="menu-item {% if '/forum/' in request.path %}active{% endif %}">
                     <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
                         <i class="menu-icon icon-base bx bx-book"></i>
                         <div class="text-truncate">Forum</div>
                     </a>
                 </li>
-                <li class="menu-item {% if '/account/' in request.path %}active{% endif %}">
+                <li class="menu-item {% if '/salon/' in request.path %}active{% endif %}">
                     <a href="{% url 'salon_accueil' %}" class="menu-link">
                         <i class="menu-icon icon-base bx bx-group"></i>
                         <div class="text-truncate">Salons de discussion</div>
                     </a>
                 </li>
-                <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
+                <li class="menu-item {% if '/conversations/' in request.path %}active{% endif %}">
                     <a href="{% url 'conversations' %}" class="menu-link">
                         <div class="text-truncate">Messagerie</div>
                         <span class="badge bg-info rounded-pill ms-auto" id="nbmessage-badge"></span>
 
                     </a>
                 </li>
-                <li class="menu-item {% if '/without_menu/' in request.path %}active{% endif %}">
+                <li class="menu-item {% if '/permachat/' in request.path %}active{% endif %}">
                     <a href="{% url 'permachat:chattons' %}" class="menu-link">
                         <div class="text-truncate">Chat en direct</div>
                     </a>
@@ -77,25 +77,25 @@
         </li>
 
 
-        <li class="menu-item {% if '/misc/' in request.path %}active open{% endif %}">
+        <li class="menu-item {% if '/photolog/' in request.path or '/forum/docPtgArticleList/' in request.path %}active open{% endif %}">
             <a href="#" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-file"></i>
                 <div class="text-truncate">Documents</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item">
+                <li class="menu-item {% if '/photolog/docs/' in request.path %}active{% endif %}">
                     <a href="{% url 'photologue:doc-list' %}" class="menu-link">
                         <i class="menu-icon icon-base bx bx-file"></i>
                         <div class="text-truncate">Fichiers</div>
                     </a>
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item {% if  '/forum/docPtgArticleList/' in request.path %}active{% endif %}">
                     <a href="{% url 'blog:docptg_list' %}" class="menu-link">
                         <i class="menu-icon icon-base bx bx-book-content"></i>
                         <div class="text-truncate">Documents partagés</div>
                     </a>
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item {% if '/photolog/album/' in request.path %}active{% endif %}">
                     <a href="{% url 'photologue:album-list' %}" class="menu-link">
                         <i class="menu-icon icon-base bx bx-photo-album"></i>
                         <div class="text-truncate">Albums photo</div>
@@ -104,39 +104,44 @@
             </ul>
         </li>
 
-        <li class="menu-item ">
+        <li class="menu-item {% if '/ateliers/' in request.path or  '/cooperateurs/carte/' in request.path or '/cooperateurs/carte/' in request.path or '/defraiement/' in request.path or '/vote/' in request.path or '/forum/todoArticleList/' in request.path or '/listesDiffusion/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-cube"></i>
                 <div class="text-truncate">Modules</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item">
+                <li class="menu-item {% if '/ateliers/' in request.path %}active{% endif %}">
                     <a href="{% url 'ateliers:index_ateliers' %}" class="menu-link">
                         <div class="text-truncate">Ateliers</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {% if '/cooperateurs/carte/' in request.path %}active{% endif %}">
                     <a href="{% url 'carte'  asso='ssa' %}" class="menu-link">
                         <div class="text-truncate">Annuaire</div>
                     </a>
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item {% if '/adherents/' in request.path %}active{% endif %}">
+                    <a href="{% url 'adherents:adherent_liste' asso_slug=ret.session.asso_slug %}" class="menu-link">
+                        <div class="text-truncate">Adhérents</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/defraiement/' in request.path %}active{% endif %}">
                     <a href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}"
                        class="menu-link">
                         <div class="text-truncate">Defraiements</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {% if '/vote/' in request.path %}active{% endif %}">
                     <a href="{% url 'vote:index' %}" class="menu-link">
                         <div class="text-truncate">Suffrages</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {% if '/forum/todoArticleList/' in request.path %}active{% endif %}">
                     <a href="{% url 'blog:todoarticle_list' %}" class="menu-link">
                         <div class="text-truncate">Yapluka (todo)</div>
                     </a>
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item {% if '/listesDiffusion/' in request.path %}active{% endif %} ">
                     <a href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}"
                        class="menu-link">
                         <div class="text-truncate">Listes de diffusion</div>
@@ -247,24 +252,24 @@
             </ul>
         </li>
         {% endcomment %}
-        <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
+        <li class="menu-item {% if '/contact/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon icon-base bx bx-navigation"></i>
                 <div class="text-truncate">Perma.Cat</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item">
+                <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
                     <a href="{% url 'faq' %}" class="menu-link" target="_blank">
                         <div class="text-truncate">FAQ du site</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {% if '/contact/contact_admins/' in request.path %}active{% endif %}">
                     <a href="{% url 'contact_admins' %}" class="menu-link" target="_blank">
                         <i class="menu-icon icon-base bx bx-support"></i>
                         <div class="text-truncate">Contacter admins</div>
                     </a>
                 </li>
-                <li class="menu-item">
+                <li class="menu-item {% if '/contact/signaler_bug/' in request.path %}active{% endif %}">
                     <a href="{% url 'signaler_bug' %}" class="menu-link" target="_blank">
                         <div class="text-truncate">Signaler un bug</div>
                     </a>

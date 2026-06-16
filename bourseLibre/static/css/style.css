@@ -8,7 +8,7 @@ body {
     background-size:cover;
     margin: auto;
     width: 100%;
-    background-color:#d5f1fa; /* #2B2A33 ou #386094 */
+    background-color:#dbedf2; /* #2B2A33 ou #386094 */
     padding-top: 5px;
     color:black;
      -webkit-font-smoothing: antialiased;
@@ -608,7 +608,7 @@ border: 1px inset rgba(28,110,164,0.65);
     margin-bottom: 10px;
     margin-left: 10px;
     margin-right: 10px;
-    background-color:#ffffef;
+    background-color:#e3edf0;
     min-height: 80vh;
 }
 
@@ -1545,7 +1545,7 @@ position: relative;
 }
 
 table.greenTable {
-  font-family: Georgia, serif;
+  /*font-family: Georgia, serif;*/
   border: 2px solid #24943A;
   background-color: #D4EED1;
   width: 100%;
@@ -1599,7 +1599,7 @@ table.greenTable tfoot .links a{
 
 
 .body_fiche{
-    font-family: Georgia, serif;
+    /*font-family: Georgia, serif;*/
     background-color:#ffffff;
     margin-bottom:100px;
 }
@@ -1621,7 +1621,7 @@ table.greenTable tfoot .links a{
     padding: 12px;
     margin: 12px;
 
-    font-family: Georgia, serif;
+    /*font-family: Georgia, serif;*/
     font-size: 28px;
     letter-spacing: 1px;
     word-spacing: 1px;
@@ -1649,7 +1649,6 @@ table.greenTable tfoot .links a{
     padding: 10px;
     margin: 10px;
 
-    font-family: Georgia, serif;
     font-size: 28px;
     letter-spacing: 1px;
     word-spacing: 1px;
@@ -2298,6 +2297,7 @@ caption {
     top: 0;
     z-index: 0;
 }
+/*
 h4, .h4 {
     font-size: 1.5em;
     font-weight: 600;
@@ -2307,7 +2307,7 @@ h6, .h6 {
     font-size: 0.9em;
     font-weight: 600;
     text-transform: uppercase;
-}
+}*/
 .card .description {
     font-size: 16px;
 }
@@ -2785,8 +2785,10 @@ min-height:40px;
 
 .titre-article-forum{
     box-shadow: 0 1px 6px 0px grey;
+    background-image: radial-gradient(#f7f7f7, #f4fff7)
+    /*
     background-image: radial-gradient(#f5ffd6, #ebf2d3);
-    /*background: linear-gradient(90deg, rgba(112,219,255,1) 0%, rgba(230,247,247,1) 12%, rgba(125,231,133,1) 50%, rgba(230,247,247,1) 88%, rgba(176,189,255,1) 100%);
+    background: linear-gradient(90deg, rgba(112,219,255,1) 0%, rgba(230,247,247,1) 12%, rgba(125,231,133,1) 50%, rgba(230,247,247,1) 88%, rgba(176,189,255,1) 100%);
     background-image: radial-gradient(#eef2ff, #ccdee8);
     background-image: radial-gradient(#f5ffd6, #ebf2d3);
     */

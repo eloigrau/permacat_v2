@@ -1,4 +1,18 @@
 {% extends 'layout/layout_vertical_menu.html' %}
+
+
+{% load static %}
+
+  {% block page_css %}
+    {% if request.user.css_dark %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap_dark.min.css' %}" type='text/css'/>
+    <link href="{% static 'css/style_dark.css' %}" type="text/css" rel="stylesheet" />
+    {% else %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type='text/css'/>
+    <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" />
+    {% endif %}
+{% endblock %}
+
 {% load app_filters %}
 
 

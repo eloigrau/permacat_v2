@@ -129,7 +129,7 @@ class CommentaireArticleForm(forms.ModelForm):
         exclude = ['article','auteur_comm']
         #
         widgets = {
-         'commentaire': SummernoteWidgetWithCustomToolbar(),
+         'commentaire': SummernoteWidget(),
                # 'commentaire': forms.Textarea(attrs={'rows': 1}),
             }
 

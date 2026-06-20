@@ -91,6 +91,8 @@ else:
 
 INSTALLED_APPS = [
     'daphne',
+    'dal',
+    'dal_select2',
     'django.contrib.contenttypes',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -142,8 +144,6 @@ INSTALLED_APPS = [
     'compta',
     #'phonebook',
     #'tinymce',
-    'dal',
-    'dal_select2',
     'webpush',
     'permapaint',
     #'exo_mentions',
@@ -386,6 +386,8 @@ LANGUAGES = (
    #('en', 'English'),
 )
 LANGUAGE_CODE = 'fr'
+
+SUMMERNOTE_THEME = 'bs4'
 
 SUMMERNOTE_CONFIG = {
     # Using SummernoteWidget - iframe mode, default

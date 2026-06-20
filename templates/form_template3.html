@@ -1,5 +1,8 @@
 {%load widget_tweaks %}
 {% load app_filters %}
+{% block header %}
+{{ form.media }}
+{% endblock %}
 
   {% for hidden_field in form.hidden_fields %}
     {{ hidden_field }}

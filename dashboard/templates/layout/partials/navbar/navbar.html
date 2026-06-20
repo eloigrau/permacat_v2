@@ -4,7 +4,7 @@
 {% load avatar_tags %}
 
 
-<nav class="layout-navbar {{container_class}} navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+<nav class="layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
     <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
       <i class="icon-base bx bx-menu icon-md"></i>
@@ -23,6 +23,12 @@
     <!-- /Search -->
   {% endcomment %}
 
+    <div class="navbar-nav align-items-center">
+      <div class="nav-item d-flex align-items-center">
+        {% block navbar_principal %}
+        {% endblock navbar_principal %}
+      </div>
+    </div>
     <ul class="navbar-nav flex-row align-items-center ms-auto">
       <!-- Place this tag where you want the button to render. -->
       <li class="nav-item navbar-dropdown dropdown-user dropdown lh-1 me-4">

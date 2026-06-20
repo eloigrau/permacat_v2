@@ -9,7 +9,7 @@
              <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
              <p>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug }} {% else %} Choisir un groupe {% endif %} </p> </button>
         </div>
-        <div class="navbar-collapse collapse " id="navbar_asso">
+        <div class="navbar-collapse collapse justify-content-center" id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
                 {% for  asso_id, asso_nom in asso_list %}
                 <a  href="{% url 'notificationsParGroupe' %}?asso={{asso_id}}#ref-titre">

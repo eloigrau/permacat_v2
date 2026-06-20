@@ -24,7 +24,6 @@ body {
     }
 }*/
 #top{
-padding-top:40px;
 }
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
@@ -640,25 +639,10 @@ border: 1px inset rgba(28,110,164,0.65);
 .bodycontenucomplet{
     padding: 1px ;
     border-radius: 0.4em;
-    /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
     min-width:200px;
     margin-bottom:20px;
-    /*background-color: rgba(255, 255, 255, .7);*/
-    /*border: 0.5px solid #053200;*/
 
 }
-/*
-#parent {
-    text-align:center;
-    background-color:blue;
-    height:400px;
-    width:600px;
-}
-.block {
-    height:100px;
-    width:200px;
-    text-align:left;
-}*/
 .center {
     margin:auto;
     text-align:center;
@@ -711,28 +695,12 @@ border: 1px inset rgba(28,110,164,0.65);
 .conversation {
   position: relative;
   background-color: #f7ffe0;
- /* background: #efe7dd url("https://cloud.githubusercontent.com/assets/398893/15136779/4e765036-1639-11e6-9201-67e728e86f39.jpg") repeat;*/
-  z-index: 0;
+   z-index: 0;
 }
 
-.conversation ::-webkit-scrollbar {
- /* transition: all .5s;
-  width: 5px;
-  height: 1px;
-  z-index: 10;*/
-}
-
-.conversation ::-webkit-scrollbar-track {
-  /*background: transparent;*/
-}
-
-.conversation ::-webkit-scrollbar-thumb {
-  /*background: #b3ada7;*/
-}
 
 .conversation .conversation-container {
   height: calc(100% - 68px);
-  /*box-shadow: inset 0 10px 10px -10px #000000;*/
   overflow-x: hidden;
   padding: 0 16px;
   margin-bottom: 5px;
@@ -930,20 +898,20 @@ border: 1px inset rgba(28,110,164,0.65);
   border: 0.8px solid black;
 }
 .tablepanier{
-    background-color:#87ceeb;
+    background-color:#dff6ff;
     color:black;
 }
 .tableprofils{
-    background-color: #ffffcc;
+    background-color: #f3f3f9;
     color:black;
 }
 .tablejardins{
-    background-color: #f2ffe6;
+    background-color: #f0f7eb;
     color:black;
 }
 .tablevotes{
-    background-color: #ffffcc;
-    width: 50%;
+    background-color: #e1e8f2;
+    width: 60%;
     margin-left:auto;
     margin-right:auto;
 }
@@ -1188,7 +1156,6 @@ a article_carte:active {
     margin-bottom: 10px;
     margin-left: 1px;
     margin-right: 1px;
-    background-color:#ffffef;
     min-height: 90vh;
 }
 }
@@ -2383,9 +2350,15 @@ a:hover, a:focus {
     color: #e95e37;
 }
 
+.nav-tabs {
+    float:none;
+    display:-ms-flexbox;
+    display:flex;
+    -ms-flex-wrap:nowrap;
+    flex-wrap:nowrap;
+}
 .nav-tabs > li {
     float:none;
-    display:inline-block;
 }
 .nav-tabs {
     text-align:center;

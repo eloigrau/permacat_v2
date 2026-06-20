@@ -27,13 +27,27 @@ document.addEventListener('DOMContentLoaded', function () {
     window.Helpers.scrollToActive((animate = false));
     window.Helpers.mainMenu = menu;
   });
-
   // Initialize menu togglers and bind click on each
   let menuToggler = document.querySelectorAll('.layout-menu-toggle');
   menuToggler.forEach(item => {
     item.addEventListener('click', event => {
       event.preventDefault();
       window.Helpers.toggleCollapsed();
+      // Enable menu state with local storage support if enableMenuLocalStorage = true from config.js
+      if (config.enableMenuLocalStorage && !window.Helpers.isSmallScreen()) {
+        try {
+          localStorage.setItem(
+            'templateCustomizer-' + templateName + '--LayoutCollapsed',
+            String(window.Helpers.isCollapsed())
+          );
+          // Update customizer checkbox state on click of menu toggler
+          let layoutCollapsedCustomizerOptions = document.querySelector('.template-customizer-layouts-options');
+          if (layoutCollapsedCustomizerOptions) {
+            let layoutCollapsedVal = window.Helpers.isCollapsed() ? 'collapsed' : 'expanded';
+            layoutCollapsedCustomizerOptions.querySelector(`input[value="${layoutCollapsedVal}"]`).click();
+          }
+        } catch (e) {}
+      }
     });
   });
 
@@ -43,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
     elem.onmouseenter = function () {
       // Set timeout to be a timer which will invoke callback after 300ms (not for small screen)
       if (!Helpers.isSmallScreen()) {
-        timeout = setTimeout(callback, 300);
+        timeout = setTimeout(callback, 0);
       } else {
         timeout = setTimeout(callback, 0);
       }
@@ -60,19 +74,6 @@ document.addEventListener('DOMContentLoaded', function () {
       // not for small screen
       if (!Helpers.isSmallScreen()) {
         document.querySelector('.layout-menu-toggle').classList.add('d-block');
-      }
-    });
-  }
-
-  // Display in main menu when menu scrolls
-  let menuInnerContainer = document.getElementsByClassName('menu-inner'),
-    menuInnerShadow = document.getElementsByClassName('menu-inner-shadow')[0];
-  if (menuInnerContainer.length > 0 && menuInnerShadow) {
-    menuInnerContainer[0].addEventListener('ps-scroll-y', function () {
-      if (this.querySelector('.ps__thumb-y').offsetTop) {
-        menuInnerShadow.style.display = 'block';
-      } else {
-        menuInnerShadow.style.display = 'none';
       }
     });
   }
@@ -122,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Auto update menu collapsed/expanded based on the themeConfig
       window.Helpers.setCollapsed(true, false);
+
 })();
 // Utils
 function isMacOS() {

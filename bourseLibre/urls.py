@@ -239,6 +239,11 @@ urlpatterns = [
 #    path(r'wiki_ecovillage_notifications/', include('django_nyt.urls')),
 #    path(r'wiki_ecovillage/', include('wiki.urls')),
 
+    path(r'docPtgArticleList/<str:asso>', login_required(views.ListeDocPtg_asso.as_view(), login_url='/auth/login/'),
+         name='docptg_list'),
+    path(r'docPtgArticleList/', login_required(views.ListeDocPtg_asso.as_view(), login_url='/auth/login/'),
+         name='docptg_list'),
+
     path(r'compte/mesFavoris/', views.Favoris_list.as_view(), name='mesFavoris', ),
     path(r'compte/favoris/ajouter/', login_required(views.favoris_ajouter), name='favoris_ajouter' ),
     path(r'compte/favoris/ajouter/ajax/', views_ajax.ajax_ajouterFavoris, name='favoris_ajouterPage_ajax'),

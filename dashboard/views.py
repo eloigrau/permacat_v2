@@ -49,6 +49,8 @@ def choisirCollectif(request):
     form = ChoisirCollectifForm(request, request.POST or None)
     if form.is_valid():
         request.session["asso_slug"] = form.cleaned_data["asso"].slug
+        if "next" in request.GET:
+            return redirect(request.GET["next"])
         return redirect("dashboard:index")
     return render(request, "choisirCollectif.html", {"form":form})
 

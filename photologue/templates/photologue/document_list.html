@@ -58,18 +58,11 @@
 <div class="row align-items-center">
 <div class="col-sm-12 textcenter">
     <div class="btn-group">
-        <a href="{% url 'photologue:ajouterDocument' article_slug='None' %}">
-        <button type="button" class="btn btn-success" >
+        <a href="{% url 'photologue:ajouterDocument' article_slug='None' %}" type="button" class="btn btn-success" >
                 <i class="fa fa-plus"></i> Ajouter un fichier/document
-            </button>
             </a>&ensp;
-
-</div>
-                 <div class="row no-gutters justify-content-center">
-    <a href="{% url 'photologue:filtrer_documents' %}">
-        <button type="button" class="btn  btn-success" >
+     <a href="{% url 'photologue:filtrer_documents' %}" type="button" class="btn btn-success" >
            {% fa5_icon 'search' title='chercher' %}&nbsp; Rechercher...
-        </button>
     </a>&ensp;</div>
 </div>
 </div>
@@ -103,7 +96,7 @@
              <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
              <p>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug}} {% else %} Choisir un groupe {% endif %} </p> </button>
         </div>
-        <div class="navbar-collapse collapse " id="navbar_asso">
+        <div class="navbar-collapse collapse justify-content-center" id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
                 <a  href="{% url 'photologue:doc-list' %}?reset_asso=true#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug%} btn-success{% else %}btn-primary{% endif %}">

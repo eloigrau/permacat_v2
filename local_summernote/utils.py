@@ -66,7 +66,6 @@ SUMMERNOTE_THEME_FILES = {
         ),
         'default_css': (
             'summernote/summernote.css',
-            'summernote/local_summernote.css',
         ),
         'default_js': (
             'summernote/jquery.ui.widget.js',
@@ -81,7 +80,7 @@ SUMMERNOTE_THEME_FILES = {
     },
     'bs4': {
         'base_css': (
-            'summernote/bootstrap.min.413.css',
+            'css/bootstrap.min.css',
             'tam-emoji/css/emoji.css',
         ),
         'base_js': (
@@ -90,7 +89,7 @@ SUMMERNOTE_THEME_FILES = {
         ),
         'default_css': (
             'summernote/summernote-bs4.css',
-            'summernote/local_summernote.css',
+            'summernote/summernote.css',
         ),
         'default_js': (
             'summernote/jquery.ui.widget.js',

@@ -1,6 +1,5 @@
 from django import forms
 from .models import Fiche, CommentaireFiche, Atelier
-from bourseLibre.forms import SummernoteWidgetWithCustomToolbar
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
@@ -114,7 +113,7 @@ class CommentaireFicheForm(forms.ModelForm):
         exclude = ['fiche','auteur_comm']
         #
         widgets = {
-         'commentaire': SummernoteWidgetWithCustomToolbar(),
+         'commentaire': SummernoteWidget(),
          #  'commentaire': SummernoteWidget(),
         #        'commentaire': forms.Textarea(attrs={'rows': 1}),
           }

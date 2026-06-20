@@ -29,7 +29,7 @@ from django.http import Http404
 from django.utils import timezone
 from taggit.models import Tag
 
-from blog.models import Article, Projet, EvenementAcceuil, Evenement, AssociationSalonArticle
+from blog.models import Article, Projet, EvenementAcceuil, Evenement, AssociationSalonArticle, DocumentPartage
 from ateliers.models import Atelier
 from vote.models import Suffrage, Vote
 #from jardinpartage.models import Article as Article_jardin
@@ -1707,6 +1707,38 @@ def accesfichier(request, path):
     return response
 
 
+class ListeDocPtg_asso(ListView):
+    model = DocumentPartage
+    context_object_name = "docptg_list"
+    template_name = "blog/docptg_list.html"
+    paginate_by = 50
+
+    def get_queryset(self):
+        params = dict(self.request.GET.items())
+        if "reset_asso" in params and "asso_slug" in self.request.session:
+            del self.request.session["asso_slug"]
+        qs = DocumentPartage.objects.exclude(
+            article__asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
+        if "asso" in self.kwargs:
+            self.asso = Asso.objects.get(slug=self.kwargs["asso"])
+            self.request.session["asso_slug"] = self.kwargs["asso"]
+            qs = qs.filter(article__asso__slug=self.kwargs["asso"])
+        elif "asso_slug" in self.request.session:
+            qs = qs.filter(article__asso__slug=self.request.session["asso_slug"])
+            self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
+        else:
+            self.asso = Asso.objects.get(slug='public')
+
+        self.qs = qs
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()
+        context['asso_courante'] = self.asso
+        return context
+
+
 
 class Favoris_list(ListView):
     model = Favoris
@@ -1840,3 +1872,5 @@ def ducepaujus(request):
                        "destinataire": "administrateurs "})
 
     return render(request, 'ducepaujus.html', {"form": form})
+
+

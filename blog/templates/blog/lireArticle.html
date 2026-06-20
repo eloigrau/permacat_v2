@@ -23,7 +23,7 @@
 <meta property="og:image" content="{% static 'android-chrome-256x256.png' %}" />
 {%endblock%}
 
-{% block title %}- Forum - {{article.titre|couperTexte:50}}{% endblock %}
+{% block title %}Forum - {{article.titre|couperTexte:50}}{% endblock %}
 
 {% block subtitle %}
 
@@ -216,7 +216,7 @@
 
     <div class="tab-content">
 
-        <div class="tab-pane fade show active " id="contenu">
+        <div class="tab-pane fade show active mt-0" id="contenu">
             <div class="row justify-content-center">
                 <div class="col contenu fiche">
                     {{ article.contenu |safe}}
@@ -228,14 +228,14 @@
             </div>
         </div>
 
-        <div class="tab-pane fade" id="album">
+        <div class="tab-pane fade mt-0" id="album">
             <div class="contenu atelier">
                 <div id="articles_album"></div>
             </div>
         </div>
 
 
-        <div class="tab-pane fade" id="documents">
+        <div class="tab-pane fade mt-0" id="documents">
             <div class="contenu atelier">
                 <div class="row justify-content-center">
                     <div class="col-sm-12 textcenter">
@@ -296,7 +296,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="documents_partages">
+        <div class="tab-pane fade mt-0" id="documents_partages">
             <div class="contenu atelier">
                 <div class="row justify-content-center">
                     <div class="col-sm-12 textcenter">
@@ -355,7 +355,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="reunions">
+        <div class="tab-pane fade mt-0" id="reunions">
             <div class="contenu atelier">
                 <div class="row justify-content-center">
                     <div class="col-sm-12 textcenter">
@@ -395,7 +395,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="todos">
+        <div class="tab-pane fade mt-0" id="todos">
             <div class="contenu atelier">
                 <div class="row justify-content-center">
                     <div class="col-sm-12 textcenter">
@@ -460,7 +460,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade " id="ateliers">
+        <div class="tab-pane fade  mt-0" id="ateliers">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter my-auto">
                 <div class="contenu atelier">
                     <div class="row justify-content-center">
@@ -497,7 +497,7 @@
         </div>
 
 
-        <div class="tab-pane fade " id="dates">
+        <div class="tab-pane fade mt-0 " id="dates">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
 
@@ -530,7 +530,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade " id="lieux">
+        <div class="tab-pane fade mt-0" id="lieux">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
                     <div class="row justify-content-center">
@@ -624,7 +624,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade " id="salons">
+        <div class="tab-pane fade mt-0" id="salons">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
                     <div class="row justify-content-center">
@@ -650,7 +650,7 @@
             </div>
         </div>
 
-        <div class="tab-pane " id="partager">
+        <div class="tab-pane fade mt-0" id="partager">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
                     <div class="row justify-content-center">
@@ -690,7 +690,7 @@
             </div>
         </div>
 
-        <div class="tab-pane " id="historique">
+        <div class="tab-pane  fade mt-0" id="historique">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
 

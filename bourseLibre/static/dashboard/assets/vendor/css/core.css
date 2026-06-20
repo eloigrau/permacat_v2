@@ -7834,7 +7834,7 @@ a.invert-bg-dark:hover, a.invert-bg-dark:focus {
   padding-block-start: 1.5rem !important;
 }
 .container-p-y:not([class^=pb-]):not([class*=" pb-"]) {
-  padding-block-end: 1.5rem !important;
+  /*padding-block-end: 1.5rem !important;*/
 }
 
 .container-m-ny:not([class^=mt-]):not([class*=" mt-"]) {
@@ -9338,7 +9338,7 @@ button:focus-visible {
 
 /* Dropdown item line height */
 li:not(:first-child) .dropdown-item, .dropdown-menu .dropdown-item:not(:first-child) {
-  margin-block-start: 2px;
+ /* margin-block-start: 2px;*/
 }
 .dropdown-item.text-danger:active {
   color: var(--bs-primary) !important;
@@ -9589,12 +9589,12 @@ li:not(:first-child) .dropdown-item, .dropdown-menu .dropdown-item:not(:first-ch
 }
 .nav-tabs:not(.nav-fill):not(.nav-justified) .nav-link,
 .nav-pills:not(.nav-fill):not(.nav-justified) .nav-link {
-  inline-size: 100%;
+  /*inline-size: 100%;*/
 }
 
 .tab-content:not(.doc-example-content) {
   z-index: 1;
-  padding: 1.5rem;
+  /*padding: 1.5rem;*/
 }
 .tab-content:not(.doc-example-content) .tab-pane {
   opacity: 0;
@@ -23034,7 +23034,7 @@ body:not(.modal-open) .layout-content-navbar .layout-navbar {
 :not(.layout-menu) > .menu-vertical.menu-collapsed:not(.layout-menu):not(:hover) .app-brand-logo ~ .app-brand-text,
 .layout-menu-collapsed:not(.layout-menu-hover):not(.layout-menu-offcanvas):not(.layout-menu-fixed-offcanvas) .layout-menu .app-brand-logo ~ .app-brand-text {
   overflow: hidden;
-  opacity: 0;
+  /*opacity: 0;*/
   text-overflow: ellipsis;
   white-space: nowrap;
 }

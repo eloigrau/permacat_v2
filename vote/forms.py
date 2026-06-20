@@ -5,7 +5,6 @@ from .models_simple import Sondage_binaire
 from django.utils.text import slugify
 import itertools
 from local_summernote.widgets import SummernoteWidget
-from blog.forms import SummernoteWidgetWithCustomToolbar
 from bourseLibre.settings import LOCALL
 from bourseLibre.models import Asso
 from django.forms import formset_factory, BaseFormSet
@@ -108,7 +107,7 @@ class CommentaireSuffrageForm(forms.ModelForm):
         model = Commentaire
         exclude = ['suffrage', 'auteur_comm']
         widgets = {
-         'commentaire': SummernoteWidgetWithCustomToolbar(),
+         'commentaire': SummernoteWidget(),
                # 'commentaire': forms.Textarea(attrs={'rows': 1}),
             }
 

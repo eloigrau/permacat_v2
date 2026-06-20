@@ -3,7 +3,6 @@ from .models import CommentaireAtelier, Atelier, Atelier_recherche, InscriptionE
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Profil
-from blog.forms import SummernoteWidgetWithCustomToolbar
 from bourseLibre.models import Asso
 import re
 from bourseLibre.utils import slugify_pcat
@@ -184,7 +183,7 @@ class CommentaireAtelierForm(forms.ModelForm):
         exclude = ['atelier','auteur_comm']
         #
         widgets = {
-          'commentaire': SummernoteWidgetWithCustomToolbar(),
+          'commentaire': SummernoteWidget(),
         #        'commentaire': forms.Textarea(attrs={'rows': 1}),
            }
 

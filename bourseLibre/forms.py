@@ -5,7 +5,6 @@ from .models import Produit, Produit_aliment, Produit_objet, Produit_service, Pr
     Produit_offresEtDemandes, Salon, InscritSalon, Adhesion_asso, Monnaie, Profil_recherche, EvenementSalon, Favoris, \
     Lien_AssoSalon
 from local_summernote.widgets import SummernoteWidget
-from blog.forms import SummernoteWidgetWithCustomToolbar
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from blog.models import Article, Discussion
@@ -462,7 +461,7 @@ class MessageForm(forms.ModelForm):
         exclude = ['conversation', 'auteur']
 
         widgets = {
-            'message': SummernoteWidgetWithCustomToolbar(),
+            'message': SummernoteWidget(),
         }
 
     def __init__(self, request, message=None, *args, **kwargs):
@@ -486,7 +485,7 @@ class MessageGeneralForm(forms.ModelForm):
         exclude = ['auteur', 'asso']
 
         widgets = {
-            'message': SummernoteWidgetWithCustomToolbar(),
+            'message': SummernoteWidget(),
         }
 
 

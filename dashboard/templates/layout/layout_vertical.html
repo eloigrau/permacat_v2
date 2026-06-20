@@ -1,26 +1,19 @@
 {% extends 'layout/master.html' %}
 
+{% if is_menu and request.user.is_authenticated %}
 {% block layout %}
 <!-- Layout wrapper: Start -->
 <div class="layout-wrapper layout-content-navbar {{ is_menu|yesno:',layout-without-menu' }}">
   <div class="layout-container">
 
-    {% if is_menu %}
     <!-- Menu: Start -->
     {% include "../layout/partials/menu/vertical/vertical_menu.html" %}
     <!-- Menu: End -->
-    {% endif %}
 
     <!-- Layout page: Start -->
     <div class="layout-page">
 
-
-      {% if is_navbar %}
-      <!-- Navbar: Start -->
       {% include "../layout/partials/navbar/navbar.html" %}
-      <!-- Navbar: End -->
-      {% endif %}
-
 
       <!-- Content wrapper: Start -->
       <div class="content-wrapper">
@@ -28,10 +21,10 @@
         {% if is_flex %}
         <div class="{{container_class}} d-flex align-items-stretch flex-grow-1 p-0">
           {% else %}
-          <div class="{{container_class}} flex-grow-1 container-p-y">
+          <div class="container-fluid flex-grow-1 container-p-y">
             {% endif %}
-            {% block content %}
-            {% endblock content %}
+            {% block content_total %}
+            {% endblock content_total %}
           </div>
           <!-- / Content: End -->
 
@@ -60,3 +53,4 @@
 </div>
 <!-- Layout wrapper: End -->
 {% endblock layout %}
+{% endif %}

@@ -16,7 +16,7 @@
   <!-- Sidebar -->
 <div class="area"></div>
 {% comment %}
-  <nav id="sidebarMenu2" class="main-menu d-lg-block sidebar ">
+  <nav id="sidebarMenu2" class="d-lg-block sidebar navbar-fixed-right">
             <ul>
                 <li>
                     <a href="https://jbfarrow.com">
@@ -109,16 +109,13 @@
         </nav>
 
 {% endcomment %}
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar ">
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar navbar-fixed-right">
     <div class="position-sticky textcenter">
       <div class="">
-        <!-- Collapse 1 -->
-        <!-- Collapsed content -->
         <ul id="sidebar_menu" class="">
             {% block sidebar_menu %}
             {% endblock %}
         </ul>
-        <!-- Collapse 2 -->
       </div>
     </div>
   </nav>

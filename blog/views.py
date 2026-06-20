@@ -615,6 +615,9 @@ def articlesPartages(request, asso):
 @login_required
 def get_album_article_ajax(request, article_slug):
     art = Article.objects.get(slug=article_slug)
+    if not testIsMembreAsso_bool(request, art.asso.slug):
+        return HttpResponseForbidden("Vous n'avez pas l'autorisation, désolé !")
+
     return render(request, 'blog/lireArticle_album.html', {'article': art})
 
 
@@ -1418,38 +1421,6 @@ class ListeTodo_asso(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_list'] = Choix_global.slugsNomsAssoEtPublic
-        return context
-
-
-class ListeDocPtg_asso(ListView):
-    model = DocumentPartage
-    context_object_name = "docptg_list"
-    template_name = "blog/docptg_list.html"
-    paginate_by = 50
-
-    def get_queryset(self):
-        params = dict(self.request.GET.items())
-        if "reset_asso" in params and "asso_slug" in self.request.session:
-            del self.request.session["asso_slug"]
-        qs = DocumentPartage.objects.exclude(
-            article__asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-date_creation")
-        if "asso" in self.kwargs:
-            self.asso = Asso.objects.get(slug=self.kwargs["asso"])
-            self.request.session["asso_slug"] = self.kwargs["asso"]
-            qs = qs.filter(article__asso__slug=self.kwargs["asso"])
-        elif "asso_slug" in self.request.session:
-            qs = qs.filter(article__asso__slug=self.request.session["asso_slug"])
-            self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
-        else:
-            self.asso = Asso.objects.get(slug='public')
-
-        self.qs = qs
-        return qs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()
-        context['asso_courante'] = self.asso
         return context
 
 

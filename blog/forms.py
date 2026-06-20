@@ -241,7 +241,7 @@ class CommentaireArticleForm(forms.ModelForm):
         exclude = ['article', 'auteur_comm', 'discussion']
         #
         widgets = {
-         'commentaire': SummernoteWidgetWithCustomToolbar(),
+         'commentaire': SummernoteWidget(),
         }
 
     def __init__(self, request, *args, **kwargs):
@@ -423,7 +423,7 @@ class CommentProjetForm(forms.ModelForm):
         exclude = ['projet','auteur_comm']
 
         widgets = {
-                'commentaire': SummernoteWidgetWithCustomToolbar(),
+                'commentaire': SummernoteWidget(),
             }
 
     def __init__(self, request, *args, **kwargs):

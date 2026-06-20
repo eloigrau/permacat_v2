@@ -705,7 +705,7 @@ msgstr "Afficher tous les albums"
 #: photologue/templates/photologue/album_list.html:8
 #: photologue/templates/photologue/album_list.html:13
 msgid "All galleries"
-msgstr "Tous les albums"
+msgstr "Albums photo"
 
 #: photologue/templates/photologue/includes/album_sample.html:8
 msgid "Published"

@@ -1,8 +1,9 @@
+{% spaceless %}
 {% load static %}
 {% load theme %}
 <!DOCTYPE html>
-<html lang="fr" class="layout-menu-fixed layout-compact"  data-assets-path="{% static 'dashboard/assets/' %}"  data-framework="django" data-template="vertical-menu"><head>
-  <title>{% block title %}{% endblock title %} | {% get_theme_variables 'template_name' %} </title>
+<html lang="fr" class="layout-menu-fixed layout-compact layout-menu-collapsed"  data-assets-path="{% static 'dashboard/assets/' %}"  data-framework="django" data-template="vertical-menu"><head>
+    <title>{% block title %}{% endblock %} Permacat</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
   <!-- Add Meta -->
@@ -62,5 +63,15 @@
 
   {% block script %} {% endblock script %}
 </body>
-
+<footer class="content-footer footer bg-footer-theme">
+  <div class="container-fluid">
+    <div class="footer-container align-items-center justify-content-center ">
+    <p class="textcenter">
+    <a href="#top" id="scroll-to-top" class="btn"><i class="fa fa-angle-up"></i></a></p>
+    <p class="textcenter textepetit">&copy; PermaCat; {% now 'd/m/Y' %}</p>
+    </div>
+  </div>
+</footer>
+{% block scriptblock %}{% endblock %}
 </html>
+{% endspaceless %}

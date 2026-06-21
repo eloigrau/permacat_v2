@@ -59,7 +59,7 @@ class LocalSummernoteConfig(AppConfig):
 
             # Additional media files only for SummernoteWidget
             'css': (),
-            'js': (),
+            'js': ('js/jquery.are-you-sure.js',),
 
             # Additional media files only for SummernoteInplacewidget
             'css_for_inplace': (),

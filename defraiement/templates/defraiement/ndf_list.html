@@ -5,10 +5,6 @@
 {% load app_filters %}
 
 {% load activity_tags %}
-{%block header %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
-{%endblock%}
 
 {%block subtitle%}
 
@@ -120,16 +116,16 @@
     <div class="col-sm-12 col-ms-12 col-lg-10 " >
         <a  href="{% url 'defraiement:ndf_detail' pk=ndf.pk %}" class="boutonAtelieDefraiementList" >
 
-            <table style="width:100%; ">
+            <table class="table-responsive" style="width:100%; ">
                 <tr>
-            <td class="textcenter" style="width:25%;"> {{ndf.asso.get_logo_nomgroupe_html|safe}} {{ ndf.get_categorie_display }}
-            </td>
-            <td style="width:100%;" > {{ ndf.titre }},  {{ ndf.montant }} euros payés par {{ ndf.participant }}{% if ndf.date_note %}, le {{ ndf.date_note|date:"DATE_FORMAT" }}
-        {% endif %}
-            </td>
+                <td class="textcenter" style="width:25%;"> {{ndf.asso.get_logo_nomgroupe_html|safe}} {{ ndf.get_categorie_display }}
+                </td>
+                <td style="width:100%;" > {{ ndf.titre }},  {{ ndf.montant }} euros payés par {{ ndf.participant }}
+                    {% if ndf.date_note %}, le {{ ndf.date_note|date:"DATE_FORMAT" }}{% endif %}
+                </td>
 
 
-           </tr>
+               </tr>
             </table>
         </a>
     </div>

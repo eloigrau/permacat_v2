@@ -10,7 +10,7 @@
 {% leaflet_js %}
 {% leaflet_css %}
 {% endblock %}
-{% block title %} - {% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.get_username }} {% endif %}
+{% block title %}{% if request.user.username == user.username %} Mon Profil {% else %}Profil de {{ user.get_username }} {% endif %} |
 {% endblock %}
 {% block subtitle %}
 <div class="row">

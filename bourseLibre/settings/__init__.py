@@ -444,28 +444,25 @@ SUMMERNOTE_CONFIG = {
       ]
     },
 
+    # Need authentication while uploading attachments.
+    'attachment_require_authentication': True,
 
-# Need authentication while uploading attachments.
-'attachment_require_authentication': True,
+    # You can disable attachment feature.
+    'disable_attachment': False,
 
-# You can disable attachment feature.
-'disable_attachment': True,
+    # Set `True` to return attachment paths in absolute URIs.
+    'attachment_absolute_uri': False,
 
-# Set `True` to return attachment paths in absolute URIs.
-'attachment_absolute_uri': False,
+    # You can add custom css/js for SummernoteWidget.
+    'css': (),
+    'js': ('js/jquery.are-you-sure.js',),
 
-# You can add custom css/js for SummernoteWidget.
-'css': (
-),
-'js': (
-),
-
-# You can also add custom css/js for SummernoteInplaceWidget.
-# !!! Be sure to put {{ form.media }} in template before initiate summernote.
-'css_for_inplace': (
-),
-'js_for_inplace': (
-),
+    # You can also add custom css/js for SummernoteInplaceWidget.
+    # !!! Be sure to put {{ form.media }} in template before initiate summernote.
+    'css_for_inplace': (
+    ),
+    'js_for_inplace': (
+    ),
 
 # Codemirror as codeview
 # If any codemirror settings are defined, it will include codemirror files automatically.
@@ -483,7 +480,7 @@ SUMMERNOTE_CONFIG = {
 # Lazy initialize
 # If you want to initialize summernote at the bottom of page, set this as True
 # and call `initSummernote()` on your page.
-'lazy': True,
+'lazy': False,
 
 # To use external plugins,
 # Include them within `css` and `js`.

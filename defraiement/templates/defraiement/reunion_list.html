@@ -5,11 +5,6 @@
 {% load app_filters %}
 
 {% load activity_tags %}
-{%block header %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
-{%endblock%}
-
 {%block subtitle%}
 
 <h3 class="textcenter">
@@ -67,7 +62,9 @@
 <a href="?{{ request.GET.urlencode }}&annee=2025#ref-annee">
     <button type="button" class="btn {% if request.GET.annee == '2025' %} btn-warning {%else%}btn-info{%endif%} ">2025</button></a>
  <a href="?{{ request.GET.urlencode }}&annee=2026#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2026' %} btn-warning{% elif not request.GET.annee %} btn-warning  {%else%}btn-info{%endif%} ">2026</button></a>
+    <button type="button" class="btn {% if request.GET.annee == '2026' %} btn-warning{% elif not request.GET.annee and not sansdate in request.GET %} btn-warning  {%else%}btn-info{%endif%} ">2026</button></a>
+ <a href="?sansdate#ref-annee">
+    <button type="button" class="btn {% if sansdate in request.GET %} btn-warning {%else%}btn-info{%endif%} ">Sans date</button></a>
     {% comment %}
  <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug%}?" method="get" role = "search">
      <span class="input-group-append">
@@ -117,7 +114,7 @@
 
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
-<table class="table2 table table-condensed tableprofils table-striped table-middle sortable">
+<table class="table2 table table-condensed tableprofils table-striped table-middle">
         <thead><td>Categorie</td><td><b>Titre</b></td><td>Distance Totale</td><td>date</td><td>Commune</td><td>Nb de participant-es</td></thead>
     {% for reunion in reunion_list %}
         <tr>

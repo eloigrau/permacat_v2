@@ -22324,7 +22324,7 @@ li:not(:first-child) .dropdown-item, .dropdown-menu .dropdown-item:not(:first-ch
   box-shadow: var(--bs-box-shadow-sm);
   /* Navbar static */
   inline-size: calc(100% - 1.625rem * 2);
-  margin-block: 1rem 0;
+  /*margin-block: 1rem 0;*/
   padding-block: 0;
   padding-inline: 1.5rem;
 }

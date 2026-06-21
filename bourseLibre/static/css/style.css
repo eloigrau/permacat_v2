@@ -227,6 +227,7 @@ section.p3 {
 
 .navbar-collapse {
     text-align: center;
+    justify-content: center;
   }
 .navbar{
     padding:0;

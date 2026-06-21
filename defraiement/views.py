@@ -531,6 +531,8 @@ class ListeReunions_asso(ListView):
 
         if "annee" in self.params:
             qs = qs.filter(start_time__year=self.params['annee'])
+        elif "sansdate" in self.params:
+            qs = qs.filter(start_time__isnull=True)
         else:
             qs = qs.filter(start_time__year=datetime.now().year)
 

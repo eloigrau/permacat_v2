@@ -681,7 +681,7 @@ class Photo(ImageModel):
                 self.slug = slugify(self.title)
             else:
                 self.slug = slugify(get_random_string(8))
-        return reverse('photologue:photo', kwargs={'slug':self.slug}) + "#photos"
+        return reverse('photologue:photo', kwargs={'slug':self.slug})
 
     def get_album(self):
         albums = self.albums.filter()

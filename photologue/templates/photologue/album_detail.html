@@ -1,23 +1,32 @@
 {% extends "photologue/root.html" %}
 {% load i18n %}
+{% load static %}
 
-{% block title %} - album : {{ album.title }}{% endblock %}
+{% block title %}Album : {{ album.title }} |{% endblock %}
+{% block header %}
+
+<script src="{% static 'dashboard/assets/vendor/libs/swiper/swiper.js' %}"></script>
+<link rel="stylesheet" href="{% static 'dashboard/assets/vendor/css/ui-carousel.css' %}" />
+{% endblock header %}
 
 {% block subtitle %}
 
 <div class="row ">
 
-<div class="col-md-3 textcenter">
-    <a href="{% url 'photologue:album-list' %}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Tous les albums</a>
-</div>
+    <div class="col-sm-12 col-md-3 textcenter">
+        <a class="btn btn-success" href="{% url 'photologue:album-list' %}"><i class="fa fa-arrow-left"></i> Tous les
+            albums</a>
+    </div>
 
-<div class="col-md-6 textcenter">
+    <div class="col-sm-12 col-md-6 textcenter">
         <h5>{{ album.title }}
- <small><button class="btn btn-light" id="copyButton" ><i class="fa fa-link"></i></button></small></h5>
-     <p class="">
-    {{ album.asso.get_logo_nomgroupe_html|safe }}
-     </p>
-     <p class="infos  textepetit">
+            <small>
+                <button class="btn btn-light" id="copyButton"><i class="fa fa-link"></i></button>
+            </small></h5>
+        <p class="">
+            {{ album.asso.get_logo_nomgroupe_html|safe }}
+        </p>
+        <p class="infos  textepetit">
 
             <a href="{% url 'profil' object.auteur.id %}">
                 <span class="badge badge-light">
@@ -28,127 +37,214 @@
             {% if album.estModifiables %}
             <span class="badge badge-light"> modifiable </span>
             {% endif %}
-            </p>
+        </p>
         {% if album.tags.names %}
-    <p><em>Mots-clés : </em>
-        {% include 'listeTags_view_template.html' with tags=album.tags.names %}
-    </p>
-    {% endif%}
+        <p><em>Mots-clés : </em>
+            {% include 'listeTags_view_template.html' with tags=album.tags.names %}
+        </p>
+        {% endif%}
         {% if articles %}
-    {% with total=articles.count %}
-    <p><em>Article{{total|pluralize:"s"}} associé{{total|pluralize:"s"}} : </em>
-    {%endwith%}
+        {% with total=articles.count %}
+        <p><em>Article{{total|pluralize:"s"}} associé{{total|pluralize:"s"}} : </em>
+            {%endwith%}
             {% for article in articles %}
-        <a href="{{article.get_absolute_url}}">{{article.titre|truncatechars:80}}</a>{%if not forloop.last%}, {%endif%}
-           {% endfor %}
-    </p>
-    {% endif%}
+            <a href="{{article.get_absolute_url}}">{{article.titre|truncatechars:80}}</a>{%if not forloop.last%},
+            {%endif%}
+            {% endfor %}
+        </p>
+        {% endif%}
 
 
-</div>
-<div class="col-sm-12 col-md-3 textcenter">
-    {% if album.auteur == request.user or request.user.is_superuser or album.estModifiable %}
-		<div class="btn-group textcenter">
-
+    </div>
+    <div class="col-sm-12 col-md-3 textcenter">
+        {% if album.auteur == request.user or request.user.is_superuser or album.estModifiable %}
+        <div class="btn-group textcenter">
             <a href="{% url 'photologue:modifierAlbum' slug=album.slug %}">
-               <button type="button" class="btn btn-sm btn-warning">
-               &nbsp;Modifier
-               </button></a>
-        {%if projet.auteur == request.user or request.user.is_superuser%}
+                <button class="btn btn-sm btn-warning" type="button">
+                    &nbsp;Modifier
+                </button>
+            </a>
+            {%if projet.auteur == request.user or request.user.is_superuser%}
             <a href="{% url 'photologue:supprimerAlbum' slug=album.slug %}">
-               <button type="button" class="btn btn-sm btn-danger">
-               &nbsp;Supprimer
-               </button></a>
-		</div>
+                <button class="btn btn-sm btn-danger" type="button">
+                    &nbsp;Supprimer
+                </button>
+            </a>
+            {%endif%}
+        </div>
         {%endif%}
-    {%endif%}
-</div>
+    </div>
 </div>
 <hr>
 
 {% if album.auteur == request.user or request.user.is_superuser or album.estModifiable %}
 
 <div class="row ">
-<div class="col-sm-12 textcenter">
+    <div class="col-sm-12 textcenter">
         <a href="{% url 'photologue:ajouterPhoto' albumSlug=album.slug %}">
-        <button type="button" class="btn btn-success" >
+            <button class="btn btn-success" type="button">
                 <i class="fa fa-plus"></i> Ajouter une ou des photos
             </button>
-            </a>&ensp;
+        </a>&ensp;
     </div>
 </div>
 <hr>
-    {% endif %}
+{% endif %}
 
 {% endblock %}
+
 {% block content %}
 
+<div class="row g-6">
+  <!-- Bootstrap carousel -->
+  <div class="col-md col-sm-12 textcenter">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        {% for photo in album.public %}
+        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="{{forloop.counter0}}" {% if forloop.first %}class="active"{% endif %}
+                aria-current="true" aria-label="{{photo.title}}"></button>
+        {% endfor %}
+      </div>
+      <div class="carousel-inner">
+        {% for photo in album.public %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <img class="d-block w-100" src="{{photo.get_absolute_url}}" alt="{{photo.title}}" />
+          <div class="carousel-caption d-none d-md-block">
+            <a href="{{photo.get_absolute_url}}">
+                <h3>{{photo.title}}</h3>
+                <p>{{photo.caption}}</p>
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      <a class="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExample" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </a>
+    </div>
+  </div>
+  </div>
+</div>
 
+{% comment %}
+<!-- Swiper -->
+<div class="row">
+    <div class="col-sm-12 mb-6 order-0">
+        <div class="col-12">
+            <!--h6 class="text-body-secondary mt-4">Thumbs Gallery</h6-->
+            <div id="swiper-gallery">
+                <div class="swiper gallery-top swiper-initialized swiper-horizontal swiper-backface-hidden">
+                    <div aria-live="polite" class="swiper-wrapper" id="swiper-wrapper-c8c60d596f55589a"
+                         style="transition-duration: 0ms; transform: translate3d(-5096px, 0px, 0px); transition-delay: 0ms;">
+
+	                    {% for photo in album.public %}
+                        <div aria-label="1 / 5"
+                             class="swiper-slide"
+                             role="group" style="background-image: {{photo.get_absolute_url}}; width: 1264px; margin-right: 10px;">Slide 1
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    <!-- Add Arrows -->
+                    <div aria-controls="swiper-wrapper-c8c60d596f55589a" aria-disabled="true"
+                         aria-label="Next slide" class="swiper-button-next swiper-button-white swiper-button-disabled" role="button"
+                         tabindex="-1"></div>
+                    <div aria-controls="swiper-wrapper-c8c60d596f55589a" aria-disabled="false" aria-label="Previous slide"
+                         class="swiper-button-prev swiper-button-white" role="button"
+                         tabindex="0"></div>
+                    <span aria-atomic="true" aria-live="assertive" class="swiper-notification"></span></div>
+                <div class="swiper gallery-thumbs swiper-initialized swiper-horizontal swiper-free-mode swiper-watch-progress swiper-backface-hidden swiper-thumbs">
+                    <div aria-live="polite" class="swiper-wrapper" id="swiper-wrapper-f410756410c28758fd"
+                         style="transform: translate3d(-318.5px, 0px, 0px); transition-duration: 0ms; transition-delay: 0ms;">
+
+	                    {% for photo in album.public %}
+                        <div aria-label="1 / 5"
+                             class="swiper-slide swiper-slide-prev"
+                             role="group" style="background-image: {{photo.get_display_url}}; width: 308.5px; margin-right: 10px;">
+                            {{photo.title}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <span aria-atomic="true" aria-live="assertive" class="swiper-notification"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endSwiper -->
 <div class="anchor_blank" id="ref-titre"></div>
 <div class="row justify-content-center" style="height:90vh;">
-<div class="col-sm-11 col-md-8 col-lg-5 textcenter">
-<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
+    <div class="col-sm-11 col-md-8 col-lg-5 textcenter">
+        <div class="carousel slide" data-ride="carousel" id="carouselExampleIndicators">
+            <ol class="carousel-indicators">
 	    {% for photo in album.public %}
             <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}" {% if forloop.first %} class="active"{% endif %}></li>
 	    {% endfor %}
-  </ol>
-  <div class="carousel-inner">
-	    {% for photo in album.public %}
-    <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
-	        <a href="{{ photo.get_absolute_url }}">
-	             <img class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}" class="thumbnail" alt="{{ photo.title }}">
-	        </a>
+            </ol>
+            <div class="carousel-inner">
+                {% for photo in album.public %}
+                <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
+                    <a href="{{ photo.get_absolute_url }}">
+                        <img alt="{{ photo.title }}"
+                             class="thumbnail" class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}">
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <a class="carousel-control-prev" data-slide="prev" href="#carouselExampleIndicators" role="button">
+                <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+                <span class="sr-only">Précédent</span>
+            </a>
+            <a class="carousel-control-next" data-slide="next" href="#carouselExampleIndicators" role="button">
+                <span aria-hidden="true" class="carousel-control-next-icon"></span>
+                <span class="sr-only">Suivant</span>
+            </a>
+        </div>
     </div>
-          {% endfor %}
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Précédent</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Suivant</span>
-  </a>
-</div>
-</div>
 </div>
 {% if album.description %}
 <hr>
 <div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
+    <div class="col-sm-12 textcenter">
         <p>{{ album.description|safe }}</p>
 
-</div>
+    </div>
 </div>
 {% endif %}
 <hr>
 
 <div class="row ">
-<div class="col-sm-12 textcenter">
-	    {% for photo in album.public %}
-	        <a href="{{ photo.get_absolute_url }}">
-	             <img src="{{ photo.get_thumbnail_url }}" class="thumbnail " alt="{{ photo.title }}">
-	        </a>
-	    {% endfor %}
+    <div class="col-sm-12 textcenter">
+        {% for photo in album.public %}
+        <a href="{{ photo.get_absolute_url }}">
+            <img alt="{{ photo.title }}" class="thumbnail " src="{{ photo.get_thumbnail_url }}">
+        </a>
+        {% endfor %}
+    </div>
 </div>
-</div>
+{% endcomment %}
 
- <script>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'dashboard/assets/js/ui-carousel.js' %}"></script>
+<script>
 document.getElementById("copyButton").addEventListener("click", function() {
     copyToClipboard();
 });
 function copyToClipboard() {
-
-var dummy = document.createElement('input'),
-text = window.location.href;
-document.body.appendChild(dummy);
-dummy.value = text;
-dummy.select();
-document.execCommand('copy');
-document.body.removeChild(dummy);
-
+    var dummy = document.createElement('input'),
+    text = window.location.href;
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
 }
+
 </script>
 
 {% endblock %}

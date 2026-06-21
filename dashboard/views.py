@@ -13,7 +13,7 @@ from django.db.models.functions import Greatest
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.template.loader import select_template
 from blog.models import Article, Projet, Evenement
-from bourseLibre.models import EvenementSalon, InscritSalon, Salon, Asso
+from bourseLibre.models import EvenementSalon, InscritSalon, Salon, Asso, Choix
 from ateliers.models import Atelier
 from django.http import HttpResponseForbidden
 from .forms import ChoisirCollectifForm
@@ -50,7 +50,10 @@ def choisirCollectif(request):
     if form.is_valid():
         request.session["asso_slug"] = form.cleaned_data["asso"].slug
         if "next" in request.GET:
-            return redirect(request.GET["next"])
+            url_new = request.GET["next"]
+            for slug in Choix.slugsAssoEtPublic:
+                url_new = url_new.replace("/"+slug+"/","/"+request.session["asso_slug"] + "/")
+            return redirect(url_new)
         return redirect("dashboard:index")
     return render(request, "choisirCollectif.html", {"form":form})
 

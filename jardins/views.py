@@ -30,7 +30,7 @@ def accueil(request):
     obj, created = GenericModel.objects.get_or_create(type_article='Jardins et Grainothèques', message="")
     hit_count = HitCount.objects.get_for_object(obj)
     hit_count_response = HitCountMixin.hit_count(request, hit_count)
-    return render(request, "jardins/accueil.html", {'msg':"Tout est pret"})
+    return render(request, "jardins/accueil.html", {})
 
 @login_required
 def accueil_admin(request):

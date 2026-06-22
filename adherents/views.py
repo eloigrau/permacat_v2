@@ -551,7 +551,7 @@ def modif_APE(request, asso_slug):
             a.production_ape = str(a.production_ape).split("PE ")[1]
             a.save()
             msg += str(a.production_ape) + " from " + old + "\n"
-    return render(request, "adherents/accueil_admin.html", {'msg':"Tout est pret"})
+    return render(request, "adherents/accueil_admin.html", {'msg':"Tout est ok"})
 
 
 

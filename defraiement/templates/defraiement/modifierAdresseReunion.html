@@ -1,13 +1,10 @@
 {% extends 'base_defraiement2.html' %}
-
 {% block header%}
 {% load leaflet_tags %}
 {% load static %}
-{{ form.media }}
 {% leaflet_js %}
 {% leaflet_css %}
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
-<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {%endblock%}
 
 {% block subtitle %}
@@ -61,26 +58,6 @@
             });
         });
 }
-$('.example').leafletLocationPicker({
-  alwaysOpen: false,
-  {% comment %}
-  className: baseClassName,
-  location: yourmap.center,
-  map: yourmap,
-  {% endcomment %}
-  locationFormat: '{lat}{sep}{lng}',
-  locationMarker: true,
-  locationDigits: 6,
-  locationSep: ',',
-  position: 'topright',
-  layer: 'OSM',
-  height: 140,
-  width: 200,
-  event: 'click',
-  cursorSize: '30px',
-  onChangeLocation: $.noop,
-  mapContainer: "#yourmap"
-});
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
@@ -108,4 +85,9 @@ $('.example').leafletLocationPicker({
         </a>
 </div>
 </div>
+{% endblock %}
+
+{% block scriptblock %}
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {% endblock %}

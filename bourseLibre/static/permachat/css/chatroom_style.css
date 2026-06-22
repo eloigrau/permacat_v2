@@ -139,7 +139,7 @@
         "caption users"
         "messages messages"
         "message message";
-    height: 85vh;
+    height: 65vh;
 }
 
 #chat-content > .room > .caption {

@@ -64,16 +64,15 @@
   {% block script %} {% endblock script %}
   {% block scriptblock %} {% endblock %}
 </body>
-{% block footer %}
 <footer class="content-footer footer bg-footer-theme">
   <div class="container-fluid">
     <div class="footer-container align-items-center justify-content-center ">
+      {% block footer_block %} {% endblock footer_block %}
     <p class="textcenter">
     <a href="#top" id="scroll-to-top" class="btn"><i class="fa fa-angle-up"></i></a></p>
     <p class="textcenter textepetit">&copy; PermaCat; {% now 'd/m/Y' %}</p>
     </div>
   </div>
 </footer>
-{% endblock footer %}
 </html>
 {% endspaceless %}

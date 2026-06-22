@@ -3,11 +3,9 @@
 {% block header%}
 {% load leaflet_tags %}
 {% load static %}
-{{ form.media }}
 {% leaflet_js %}
 {% leaflet_css %}
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" xmlns="http://www.w3.org/1999/html"/>
-<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {%endblock%}
 
 {% block subtitle %}
@@ -61,28 +59,6 @@
             });
         });
 }
-$('.example').leafletLocationPicker({
-  alwaysOpen: false,
-  {% comment %}
-  className: baseClassName,
-  location: yourmap.center,
-  map: yourmap,
-  {% endcomment %}
-  locationFormat: '{lat}{sep}{lng}',
-  locationMarker: true,
-  locationDigits: 6,
-  locationSep: ',',
-  position: 'topright',
-  layer: 'OSM',
-  height: 140,
-  width: 200,
-  event: 'click',
-  cursorSize: '30px',
-  onChangeLocation: $.noop,
-  mapContainer: "#yourmap"
-});
-
-
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
@@ -120,9 +96,12 @@ $('.example').leafletLocationPicker({
         </a>
 </div>
 </div>
+{% endblock %}
 
+{% block scriptblock %}
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 <script>
-
 function geoFindMe_2() {
   const status = document.querySelector("#status");
   const mapLink = document.querySelector("#map-link");
@@ -173,4 +152,8 @@ function geoFindMe_2() {
 }
 document.querySelector("#find-me").addEventListener("click", geoFindMe_2);
 </script>
+{% endblock %}
+{% block scriptblock %}
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {% endblock %}

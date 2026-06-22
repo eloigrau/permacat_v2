@@ -1,12 +1,10 @@
 {% extends 'blog/base_blog2.html' %}
 {% block header %}
-
 {% load leaflet_tags %}
 {% leaflet_js %}
 {% leaflet_css %}
 {% load static %}
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
-<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {%endblock%}
 {% block subtitle %}
 <h3>Ajouter un lieu à l'article '{{article.titre}}'</h3>
@@ -95,25 +93,10 @@
             });
         });
 }
-$('.example').leafletLocationPicker({
-  alwaysOpen: false,
-  {% comment %}
-  className: baseClassName,
-  map: yourmap,
-  location: yourmap.center,
-  {% endcomment %}
-  locationFormat: '{lat}{sep}{lng}',
-  locationMarker: true,
-  locationDigits: 6,
-  locationSep: ',',
-  position: 'topright',
-  layer: 'OSM',
-  height: 140,
-  width: 200,
-  event: 'click',
-  cursorSize: '30px',
-  onChangeLocation: $.noop,
-  mapContainer: "#yourmap"
-});
 </script>
+{% endblock %}
+
+{% block scriptblock %}
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {% endblock %}

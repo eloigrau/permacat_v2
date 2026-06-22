@@ -66,13 +66,11 @@
             <ul class="menu-sub">
                 <li class="menu-item {% if '/forum/' in request.path %}active{% endif %}">
                     <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-book"></i>
                         <div class="text-truncate">Forum</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/salon/' in request.path %}active{% endif %}">
                     <a href="{% url 'salon_accueil' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-group"></i>
                         <div class="text-truncate">Salons de discussion</div>
                     </a>
                 </li>
@@ -100,19 +98,16 @@
             <ul class="menu-sub">
                 <li class="menu-item {% if '/photolog/docs/' in request.path %}active{% endif %}">
                     <a href="{% url 'photologue:doc-list' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-file"></i>
                         <div class="text-truncate">Fichiers</div>
                     </a>
                 </li>
                 <li class="menu-item {% if  '/docPtgArticleList/' in request.path %}active{% endif %}">
                     <a href="{% url 'docptg_list' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-book-content"></i>
                         <div class="text-truncate">Documents partagés</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/photolog/album/' in request.path %}active{% endif %}">
                     <a href="{% url 'photologue:album-list' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-photo-album"></i>
                         <div class="text-truncate">Albums photo</div>
                     </a>
                 </li>
@@ -153,12 +148,12 @@
                 </li>
                 <li class="menu-item {% if '/vote/' in request.path %}active{% endif %}">
                     <a href="{% url 'vote:index' %}" class="menu-link">
-                        <div class="text-truncate">Suffrages</div>
+                        <div class="text-truncate">Votes</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/forum/todoArticleList/' in request.path %}active{% endif %}">
                     <a href="{% url 'blog:todoarticle_list' %}" class="menu-link">
-                        <div class="text-truncate">Yapluka (todo)</div>
+                        <div class="text-truncate">Yapluka</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/listesDiffusion/' in request.path %}active{% endif %} ">
@@ -189,19 +184,16 @@
             <ul class="menu-sub">
                 <li class="menu-item ">
                     <a href="{% url 'blog:ajouterNouvelArticle' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-book"></i>
                         <div class="text-truncate">Un Article</div>
                     </a>
                 </li>
                 <li class="menu-item ">
                     <a href="{% url 'photologue:ajouterDocument' article_slug='None' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-file"></i>
                         <div class="text-truncate">Un Document</div>
                     </a>
                 </li>
                 <li class="menu-item ">
                     <a href="{% url 'produit_proposer_entree' %}" class="menu-link">
-                        <i class="menu-icon icon-base bx bx-basket"></i>
                         <div class="text-truncate">Une petite annonce</div>
                     </a>
                 </li>

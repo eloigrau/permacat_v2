@@ -3,11 +3,9 @@
 {% block header%}
 {% load leaflet_tags %}
 {% load static %}
-{{ form.media }}
 {% leaflet_js %}
 {% leaflet_css %}
 <link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
-<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {%endblock%}
 
 {% block subtitle %}
@@ -117,4 +115,8 @@ $('.example').leafletLocationPicker({
 </form>
 </div>
 </div>
+{% endblock %}
+{% block scriptblock %}
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
 {% endblock %}

@@ -253,8 +253,21 @@
     </div>
 </div>
 
-<div id="infos_complementaires" class="about">
-    <div class="container-fluid">
+{% if request.user.is_superuser and msg %}
+<hr>
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        {{msg|safe}}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block footer_block %}
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+
             <ul class="check-list2 textcenter">
                 <li>Cette plateforme est développée bénévolement par <a
                         href="{% url 'permagora:bienvenue' %}">PermAgora</a>,
@@ -272,14 +285,4 @@
             </ul>
     </div>
 </div>
-{% if request.user.is_superuser and msg %}
-<hr>
-<div class="row justify-content-center">
-    <div class="col-sm-12 textcenter">
-        {{msg|safe}}
-    </div>
-</div>
-{% endif %}
-
 {% endblock %}
-

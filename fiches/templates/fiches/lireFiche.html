@@ -3,13 +3,10 @@
 {% load blog_filters %}
 {% load fontawesome_5 %}
 {% block subtitle %}
-
-
 {% endblock %}
-            {% block navbar%}
-{%if not request.user.is_authenticated %}
-{% else %}
-            {% include 'navigationBar.html' %}
+{% block navbar%}
+{%if request.user.is_authenticated %}
+     {% include 'navigationBar.html' %}
 {% endif %}
             {% endblock%}
 {% block content %}

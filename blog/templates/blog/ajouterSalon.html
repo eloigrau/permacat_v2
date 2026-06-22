@@ -1,11 +1,8 @@
 {% extends 'blog/base_blog2.html' %}
 
 {% block subtitle %}
-<div class="row justify-content-center">
-	<div class="col col-md-12 textcenter"><h3>Ajouter un salon de discussion</h3>
-		<p>Vous pouvez créer un salon de discussion qui sera associé à l'article {{article}}</p>
-	</div>
-</div>
+<h3>Ajouter un salon de discussion</h3>
+<p>Vous pouvez créer un salon de discussion qui sera associé à l'article {{article}}</p>
 {% endblock  %}
 {% block content %}
 {% if error_message %}

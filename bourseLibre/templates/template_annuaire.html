@@ -62,7 +62,7 @@
                     <table class="table table-condensed tableprofils table-striped table-middle sortable">
                         <thead class="thead-inverse">
                         <tr>
-                           {% comment %} <th>Avatar</th>{% endcomment %}
+                           <th>Avatar</th>
                             <th>Pseudo</th>
                             <th>Description</th>
                             <th>Savoir-faire</th>
@@ -71,13 +71,18 @@
                         <tbody>
                         {% for profil in profils %}
                         <tr>
-                            {% comment %}
+                            {% if profil.accepter_annuaire %}
                             <td><a href="{% url 'profil' profil.id %}">
                                 {% avatar profil 40 class="img-circle-profil" id="user_avatar" %}</a></td>
-                            {% endcomment %}
                             <td><a href="{% url 'profil' profil.id %}">{{ profil.username }}</a></td>
                             <td>{{ profil.description|safe }}</td>
                             <td>{{ profil.competences|safe }}</td>
+                            {% else %}
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                         </tbody>

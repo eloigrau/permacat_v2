@@ -23357,6 +23357,7 @@ body:not(.modal-open) .layout-content-navbar .layout-navbar {
 }
 .footer.content-footer .footer-container {
   block-size: 54px;
+  padding-left: 54px;
 }
 .footer .footer-link {
   display: inline-block;

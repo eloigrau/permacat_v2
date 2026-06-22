@@ -18,8 +18,7 @@ from actstream import actions, action
 from actstream.models import Follow, following
 from bourseLibre.settings.production import SERVER_EMAIL
 from bourseLibre.settings import LOCALL
-from .views import testIsMembreAsso, testIsMembreSalon
-from .utils import reabonnerProfil_base, desabonnerProfil_base, desabonnerProfil_particuliers, reabonnerProfil_salons, desabonnerProfil_salons
+from .utils import testIsMembreAsso, testIsMembreSalon, reabonnerProfil_base, desabonnerProfil_base, desabonnerProfil_particuliers, reabonnerProfil_salons, desabonnerProfil_salons
 CharField.register_lookup(Lower, "lower")
 
 @login_required

@@ -511,7 +511,7 @@ class ReponseQuestion_m(models.Model):
 
 class Commentaire(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name='auteur_comm_vote')
-    commentaire = models.TextField(blank=True, null=True)
+    commentaire = models.TextField(verbose_name="", blank=True, null=True)
     suffrage = models.ForeignKey(Suffrage, on_delete=models.CASCADE)
     date_creation = models.DateTimeField(auto_now_add=True)
 

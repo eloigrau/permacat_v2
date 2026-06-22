@@ -595,7 +595,7 @@ class Discussion(models.Model):
 
 class Commentaire(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
-    commentaire = models.TextField()
+    commentaire = models.TextField(verbose_name="")
     #commentaire = models.TextField()
 
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
@@ -822,7 +822,7 @@ class FicheProjet(models.Model):
 
 class CommentaireProjet(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
-    commentaire = models.TextField(blank=True)
+    commentaire = models.TextField(verbose_name="", blank=True)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
     date_creation = models.DateTimeField(auto_now_add=True)
 

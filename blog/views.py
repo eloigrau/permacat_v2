@@ -31,7 +31,7 @@ from bourseLibre.settings import NBMAX_ARTICLES
 from bourseLibre.forms import AdresseForm, AdresseForm2
 from bourseLibre.constantes import Choix as Choix_global
 from django.db.models.functions import Greatest, Lower
-from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
+from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool
 from ateliers.models import Atelier, CommentaireAtelier
 from photologue.models import Album
 from defraiement.models import Reunion

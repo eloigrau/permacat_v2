@@ -9,10 +9,10 @@
 <link href="{% static 'permachat/css/chatroom_style.css' %}" media="screen" rel="stylesheet" type="text/css"/>
 <script src="{% static 'permachat/js/reconnecting-websocket.min.js' %}" type="text/javascript"></script>
 {% endblock  %}
-{%block banniere %}
+{% block subtitle%}
+<h3>PermaChat en direct</h3>
 {% endblock  %}
-{% block panel-heading %}{%endblock%}
-{% block bodycontenucomplet%}
+{% block content %}
     <div id="display">
         <div id="chat-content"></div>
         <div id="error-content" style="display: none">

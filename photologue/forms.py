@@ -221,6 +221,8 @@ class AlbumForm(forms.ModelForm):
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all() if request.user.estMembre_str(x.slug)]
        # self.fields["article"].choices = [('', '(non)')] + [(x.id, x.titre) for i, x in enumerate(Article.objects.filter(estArchive=False).order_by('titre')) if request.user.estMembre_str(x.asso.slug)]
 
+        if "asso_slug" in request.session:
+            self.fields["asso"].initial = Asso.objects.get(slug=request.session["asso_slug"]).id
 
 class AlbumChangeForm(forms.ModelForm):
 
@@ -295,9 +297,11 @@ class DocumentForm(forms.ModelForm):
 
     def __init__(self, request, article=None, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
         if article:
             self.fields["asso"].initial = [article.asso.id,]
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
+        elif "asso_slug" in request.session:
+            self.fields["asso"].initial = Asso.objects.get(slug=request.session["asso_slug"]).id
 
 
     def save(self, request, article, commit=True):
@@ -333,7 +337,7 @@ class DocumentChangeForm(forms.ModelForm):
 
     def __init__(self, request, *args, **kwargs):
         super(DocumentChangeForm, self).__init__(*args, **kwargs)
-        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
+        self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)]
 
 
 class DocumentFormAsso(forms.ModelForm):

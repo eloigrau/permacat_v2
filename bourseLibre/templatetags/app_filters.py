@@ -9,6 +9,7 @@ from django_html_cleaner.cleaner import Cleaner
 import random
 import string
 import re
+from urllib import parse
 
 register = template.Library()
 
@@ -327,3 +328,27 @@ def is_listeDiffusion(slug):
 def sansp(html):
     return re.sub(r"<.*?>", "", html)
 
+
+
+@register.filter(is_safe=True)
+def urlSupprParam(param_url, nomParam):
+    if nomParam in param_url:
+        params = parse.parse_qs(param_url, keep_blank_values=True)
+        del params[nomParam]
+        return "&".join([str(k)+"="+ str(v[0]) for k, v in params.items() ])
+    return param_url
+
+@register.filter(is_safe=True)
+def isequal(a, b):
+    if str(a) == str(b):
+        return True
+    return False
+
+@register.filter(is_safe=True)
+def filterApostrophe(nom):
+    return nom.replace("'"," ")
+
+
+@register.filter(is_safe=True)
+def exists_asso_slug(req):
+    return "asso_slug" in req

@@ -1,7 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'layout/layout_blank.html' %}
 
-    {%block bodyEntete%}
-style="background-image:linear-gradient(40deg, #80fff4, white);"
-    {%endblock%}
 
-{% block panel-heading %} {%endblock%}
+
+{% block intro %}
+<div class="row justify-content-center align-items-center titre_adherents textcenter">
+    <div class="col-md-12">
+        {% block subtitle %}
+        {% endblock subtitle %}
+    </div>
+</div>
+{% endblock intro %}

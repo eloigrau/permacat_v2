@@ -1,8 +1,10 @@
 from actstream import actions
 from actstream.models import Follow, following
-from .models import Choix, Suivis
+from .models import Choix, Suivis, Asso, Salon
 import uuid
 from django.utils.text import slugify
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 
 def reabonnerProfil_base(profil):
     for suiv in Choix.suivisPossibles:
@@ -60,3 +62,41 @@ def slugify_pcat(titre, max_length):
     if slug == '':
         slug = uuid.uuid4()
     return slug
+
+
+
+def testIsMembreSalon(request, slug):
+    salon = get_object_or_404(Salon, slug=slug)
+    if not salon.est_autorise(request.user) and not request.user.is_superuser:
+        return render(request, 'notMembre.html', {'asso':salon.titre } )
+    return salon
+
+
+def testIsMembreAsso_bool(request, asso):
+    if asso == "public":
+        return Asso.objects.get(nom="Public")
+
+    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
+    if assos:
+        assos = assos[0]
+
+        if not assos.is_membre(request.user) and not request.user.is_superuser:
+            return None
+        return assos
+
+    return Asso.objects.get(nom="Public")
+
+def testIsMembreAsso(request, asso):
+    if asso == "public":
+        return Asso.objects.get(nom="Public")
+
+    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
+    if assos:
+        assos = assos[0]
+
+        if not assos.is_membre(request.user) and not request.user.is_superuser:
+            return render(request, 'notMembre.html', {'asso':assos } )
+        return assos
+
+    return Asso.objects.get(nom="Public")
+

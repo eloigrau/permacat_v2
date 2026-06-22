@@ -47,40 +47,29 @@
         </div>
     </div>
 </div>
-<hr>
-
 {%endblock%}
 {% block content %}
 <div class="anchor_blank" id="ref-annee"></div>
 <p class="textcenter">
-<a href="?{{ request.GET.urlencode }}&annee=2022#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2022' %} btn-warning {%else%}btn-info{%endif%} ">2022</button></a>
-<a href="?{{ request.GET.urlencode }}&annee=2023#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2023' %} btn-warning {%else%}btn-info{%endif%} ">2023</button></a>
-<a href="?{{ request.GET.urlencode }}&annee=2024#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2024' %} btn-warning {%else%}btn-info{%endif%} ">2024</button></a>
-<a href="?{{ request.GET.urlencode }}&annee=2025#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2025' %} btn-warning {%else%}btn-info{%endif%} ">2025</button></a>
- <a href="?{{ request.GET.urlencode }}&annee=2026#ref-annee">
-    <button type="button" class="btn {% if request.GET.annee == '2026' %} btn-warning{% elif not request.GET.annee and not sansdate in request.GET %} btn-warning  {%else%}btn-info{%endif%} ">2026</button></a>
- <a href="?sansdate#ref-annee">
-    <button type="button" class="btn {% if sansdate in request.GET %} btn-warning {%else%}btn-info{%endif%} ">Sans date</button></a>
+    {% for an in annees %}
+        {% if forloop.last %}
+            <a href="?{{ request.GET.urlencode |urlSupprParam:'annee'|urlSupprParam:'sansdate' }}&annee={{an}}#ref-annee">
+            <button type="button" class="btn {% if request.GET.annee|isequal:an %} btn-warning{% elif not request.GET.annee and not request.GET.sansdate %} btn-warning  {%else%}btn-info{%endif%} ">{{an}}</button></a>
+        {% else %}
+            <a href="?{{ request.GET.urlencode |urlSupprParam:'annee'|urlSupprParam:'sansdate' }}&annee={{an}}#ref-annee">
+                <button type="button" class="btn {% if request.GET.annee|isequal:an %} btn-warning {%else%}btn-info{%endif%} ">{{an}}</button></a>
+        {% endif %}
+    {% endfor %}
+<a href="?{{ request.GET.urlencode |urlSupprParam:'annee' }}&sansdate=True#ref-annee">
+    <button type="button" class="btn {% if request.GET.sansdate %} btn-warning {%else%}btn-info{%endif%} ">Sans date</button></a>
 
-    {% comment %}
- <form class="form-inline justify-content-center  navbar-form " action="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug%}?" method="get" role = "search">
-     <span class="input-group-append">
-        <input class="form-control fmr-sm-2" name="annee" type="text" placeholder="Année...">
-        <button class="btn navbar-btn btn-light my-2 my-sm-0" type="submit" data-toggle="tooltip" data-placement="bottom" title="Recherche rapide...">ok</button>
-    </span>
- </form>
-{% endcomment %}
 </p>
 <nav class="navbar  navbar-expand-md navbar-light justify-content-center">
-<div class="row justify-content-center">
+    <div class="row justify-content-center">
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
             <li class="nav-item  subnavbar2 align-items-center">
-                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
+                  <a  href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode |urlSupprParam:'categorie'  }}">
                       <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>Tout</h6>
                       </button>
@@ -88,7 +77,7 @@
             </li>
         {% for type_id, type_nom  in categorie_list %}
             <li class="nav-item  ">
-                  <a  href="?{{ request.GET.urlencode }}&categorie={{type_id}}">
+                  <a  href="?{{ request.GET.urlencode |urlSupprParam:'categorie'  }}&categorie={{type_id}}">
                       <button type="button" class="btn  btn-block {%if type_courant == type_id %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>{{type_nom}}</h6>
                    </button>
@@ -198,7 +187,7 @@
 <button type="button" class="btn btn-primary" >
         <i class="fa fa-arrow-right"></i> Récapitulatif
     </button>
-    </a>&ensp;
+    </a>
 {% endif %}
 </p>
 <script>

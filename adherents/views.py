@@ -19,7 +19,7 @@ from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentFor
 from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
                      ListeDiffusion, Comm_adherent, ProjetPhoning)
 from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso, LATITUDE_DEFAUT, LONGITUDE_DEFAUT
-from bourseLibre.views import testIsMembreAsso, testIsMembreAsso_bool
+from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool
 from .filters import AdherentsCarteFilter, ContactCarteFilter
 from .constantes import dict_ape
 from django.utils.timezone import now
@@ -64,7 +64,6 @@ class ListeAdherents(TestMembreAssoMixin, ListView):
     model = Adherent
     context_object_name = "adherents"
     template_name = "adherents/carte_adherents.html"
-
 
     def get_queryset(self):
         params = dict(self.request.GET.items())

@@ -74,6 +74,9 @@ width:100%;
 
 .navbarcontainer{
 }
+.subnavbar > .actif{
+    background-color: #aeceea;
+}
 .subnavbar > li{
  padding-left:20px;
   padding-right:20px;
@@ -314,7 +317,7 @@ border: 1px inset rgba(28,110,164,0.65);
 .navbar-light .navbar-nav .nav-item {
 	font-weight: 500;
     font-variant: small-caps;
-   }
+}
 
 .bs-dark .nav1 > a:hover{
     background-color: #ff9966;
@@ -1463,7 +1466,6 @@ ul.errorlist{
     padding-left: 0px;
 
 }
-
 .menuNavbar{
 
   visibility: hidden;
@@ -1635,18 +1637,8 @@ table.greenTable tfoot .links a{
 .titre_adherents{
     padding: 10px;
     margin: 10px;
-    font-size: 22px;
-    letter-spacing: 1px;
-    word-spacing: 1px;
-    color: #000000;
-    font-weight: 700;
-    text-decoration: none;
-    font-style: normal;
-    font-variant: small-caps;
-    text-transform: none;
-    border: 5px  #D9D9D9;
     border-radius: 15px;
-    background-color: #e6f7d4;
+    background-color: #e7f0e3;
 }
 
 .fiche_index{
@@ -2638,7 +2630,7 @@ padding-bottom:10px;
   position: fixed;
   top: 0;
   bottom: 0;
-  left:0px;
+  right:0px;
 
   /*left: -220px;*/
   padding: 64px 0 0; /* Height of navbar */

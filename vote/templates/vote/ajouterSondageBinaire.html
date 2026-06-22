@@ -1,12 +1,10 @@
 {% extends 'vote/baseVote.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
+{% block subtitle %}
+<h3>Ajouter un Sondage </h3>
+{% endblock subtitle %}
 
-<div class="row">
-	<div class="col col-md-12 textcenter"><h3>Ajouter un Sondage </h3>
-    </div>
-</div>
-	<hr>
+{% block content %}
 {% if error_message %}
 <p>
 	<strong>{{ error_message }}</strong>

@@ -153,7 +153,7 @@ class Atelier(models.Model):
 
 class CommentaireFiche(models.Model):
     auteur_comm = models.ForeignKey(Profil, on_delete=models.CASCADE)
-    commentaire = models.TextField()
+    commentaire = models.TextField(verbose_name="")
     fiche = models.ForeignKey(Fiche, on_delete=models.CASCADE)
     date_creation = models.DateTimeField(auto_now_add=True)
 

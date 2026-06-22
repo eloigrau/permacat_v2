@@ -4,7 +4,6 @@
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {%block subtitle%}
-
 <div class="row align-items-center">
 <div class="col-md-12 textcenter">
 <h4>Conversations Privées
@@ -24,7 +23,7 @@
 </div>
 
     </div>
-
+{% comment %}
 <div class="row align-items-center">
 <div class="col-md-12 textcenter">
         <a href="{% url 'chercher_conversation' %}">
@@ -36,7 +35,28 @@
 </div>
 
 <hr>
+{% endcomment %}
 
+<div class="row justify-content-center">
+    <div class="col-sm-12 textcenter">
+        <form class="form-horizontal" role="form" action="{% url 'profil_autocomplete_recherche' %}" method="get"
+            enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-3 textcenter">
+                    Ecrire à :
+                </div>
+                <div class="col-sm-6 textcenter">
+                    {% include 'form_template2.html' with form=profil_autocomplete_form %}
+                </div>
+                <div class="col-sm-3 textcenter">
+                    <button id ="btn-valider" type="submit" class="btn btn-primary">OK</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{%endblock%}
+{%block content%}
 <div class="row" >
 <div class="col-sm-12 col-md-10 offset-md-1 " >
       <table class="table table-condensed tableprofils table-striped table-middle">

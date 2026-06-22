@@ -10,6 +10,10 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum.css' %}"/>
 {% endif %}
 {% endblock  %}
+{% if not article_list %}
+<p class="textcenter"> Pas d'article trouvé</p>
+{% else %}
+
 <div class="table-responsive-vertical shadow-z-1 infinite-item ">
     <!-- Table starts here -->
     <table id="table" class="table_forum table-hover table-bordered table-mc-amber ">
@@ -93,3 +97,4 @@
         </tbody>
     </table>
 </div>
+{% endif %}

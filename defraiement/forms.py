@@ -3,7 +3,7 @@ from django import forms
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso, Adresse
-from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais
+from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais, get_typereunion
 from bourseLibre.utils import slugify_pcat
 from adherents.models import Adherent
 #from datetime import datetime
@@ -27,7 +27,7 @@ class ReunionForm(forms.ModelForm):
 
     def __init__(self, asso_slug, *args, **kwargs):
         super(ReunionForm, self).__init__(*args, **kwargs)
-        self.fields['categorie'].choices = [x for x in Choix.type_reunion if x[1] in Choix.type_reunion_asso[asso_slug]]
+        self.fields['categorie'].choices = get_typereunion(asso_slug)
 
     def save(self, userProfile):
         instance = super(ReunionForm, self).save(commit=False)

@@ -26,7 +26,22 @@
 {% block title %}Forum - {{article.titre|couperTexte:50}}{% endblock %}
 
 {% block subtitle %}
-
+<div class="row titre_fiche titre-article-forum">
+                <div class="col textcenter">
+                    <h3>
+                        {% if article.estArchive%}
+                        <span class="badge badge-light" title="Article archivé">archivé </span>
+                        {%endif%}
+                        {% if article.estEpingle%}
+                        <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
+                        {%endif%}
+                        {% if article.estModifiable%}
+                        <span class="fa fa-edit" title="Article modifiable">    </span>
+                        {%endif%}
+                        {{ article.titre }}
+                    </h3>
+                </div>
+            </div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 textcenter">
@@ -66,38 +81,7 @@
     </div>
 
 </div>
-
-{% endblock %}
-
-{% block sidebar_menu %}
-<li class="sidebarli">
-    <a href="#ref-titre">
-       <i class="fa fa-angle-up"></i>
-    </a>
-</li>
-<li class="sidebarli">
-    <a href="#idContenu">
-       <i class="fa fa-book"></i>
-    </a>
-</li>
-
-{% if commentaires %}
-<li class="sidebarli">
-    <a href="#idConversation">
-       <i class="fa fa-comments"></i>
-    </a>
-</li>
-{% endif %}
-<li class="sidebarli">
-    <a href="#idComenter">
-        <i class="fa fa-edit"></i>
-    </a>
-</li>
-
-
-{% endblock %}
-{% block contenu %}
-    <div class="row">
+<div class="row">
         <div class="col-sm-12 offset-md-2 col-md-8 textcenter">
             <p class="infos textepetit textcenter">
             <span>
@@ -137,22 +121,7 @@
                 </a>
 
             </p>
-            <div class="row titre_fiche titre-article-forum">
-                <div class="col textcenter">
-                    <h3>
-                        {% if article.estArchive%}
-                        <span class="badge badge-light" title="Article archivé">archivé </span>
-                        {%endif%}
-                        {% if article.estEpingle%}
-                        <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
-                        {%endif%}
-                        {% if article.estModifiable%}
-                        <span class="fa fa-edit" title="Article modifiable">    </span>
-                        {%endif%}
-                        {{ article.titre }}
-                    </h3>
-                </div>
-            </div>
+
             {%if article.start_time%}
             <p>
                 <a href="{% url 'cal:agenda' %} ">
@@ -171,6 +140,37 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block sidebar_menu %}
+<li class="sidebarli">
+    <a href="#ref-titre">
+       <i class="fa fa-angle-up"></i>
+    </a>
+</li>
+<li class="sidebarli">
+    <a href="#idContenu">
+       <i class="fa fa-book"></i>
+    </a>
+</li>
+
+{% if commentaires %}
+<li class="sidebarli">
+    <a href="#idConversation">
+       <i class="fa fa-comments"></i>
+    </a>
+</li>
+{% endif %}
+<li class="sidebarli">
+    <a href="#idComenter">
+        <i class="fa fa-edit"></i>
+    </a>
+</li>
+
+
+{% endblock %}
+{% block contenu %}
+
     <div class="anchor_blank" id="idContenu"></div>
     <nav class="nav nav-tabs justify-content-center">
         <a class="nav-item nav-link active" href="#contenu" data-toggle="tab"  title="Contenu de l'article"><i class="fa fa-align-center icon-left"></i> </a>
@@ -661,13 +661,13 @@
                     </div>
                     <table class="table textcenter" style="border:none;">
                         <tr>
-                            <td><i class="fa fa-copy iconleft"></i>
-                                {% copy_to_clipboard article "Copier le lien" %}</td>
+                            <td><span> <i class="fa fa-copy iconleft"></i>
+                                {% copy_to_clipboard article "Copier le lien" %}</span></td>
                         </tr>
                         <tr>
                             <td>
-                            {% fa5_icon 'envelope' %}
-                                {% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}
+                            <span>{% fa5_icon 'envelope' %}
+                                {% send_email 'Info Perma.Cat : {{article.titre}}' "Une info qui pourrait t'intéresser " article "Envoyer le lien par mail" %}</span>
                             </td>
                         </tr>
                         <tr>

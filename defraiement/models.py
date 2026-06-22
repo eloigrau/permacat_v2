@@ -18,7 +18,7 @@ class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ),
     type_reunion_asso = {
         "rtg": ["Réunion équipe", 'Troc de Graine', 'Atelier', 'Rencontre', 'FestiGraines', 'Visite de Jardin', 'Autre'],
-        "scic": ['Cercle Ancrage', 'Cercle thématique', 'Cercle Education', 'Cercle Jardins', 'Evenement', 'Divers',],
+        "scic": ['Cercle Ancrage', 'Cercle Labo', 'Cercle Education', 'Cercle Jardins', 'Cercle Evenement', ],
         "conf66": ['Réunion CS', 'Evenement', 'Manifestation']
       }
 
@@ -40,7 +40,10 @@ class Choix:
     }
 
 def get_typereunion(asso):
-    return [(i, j) for i, j in Choix.type_reunion if j in Choix.type_reunion_asso[asso]]
+    types_reunions = [(i, j) for i, j in Choix.type_reunion if asso in Choix.type_reunion_asso.keys() and j in Choix.type_reunion_asso[asso]]
+    if types_reunions:
+        return types_reunions
+    return [('0',"déplacements"), ]
 
 
 class ParticipantReunion(models.Model):

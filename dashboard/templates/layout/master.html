@@ -62,7 +62,9 @@
   {% block page_js %} {% endblock page_js %}
 
   {% block script %} {% endblock script %}
+  {% block scriptblock %} {% endblock %}
 </body>
+{% block footer %}
 <footer class="content-footer footer bg-footer-theme">
   <div class="container-fluid">
     <div class="footer-container align-items-center justify-content-center ">
@@ -72,6 +74,6 @@
     </div>
   </div>
 </footer>
-{% block scriptblock %}{% endblock %}
+{% endblock footer %}
 </html>
 {% endspaceless %}

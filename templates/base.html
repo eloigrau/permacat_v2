@@ -30,10 +30,10 @@
 
     <script src="{% static 'js/sorttable.js' %}"></script>
     {% fontawesome_5_static %}
-    {%block header %}
-    {%endblock%}
-    {%block header2 %}
-    {%endblock%}
+    {% block header %}
+    {% endblock header%}
+    {% block header2 %}
+    {% endblock header2%}
 {% endblock %}
 
 
@@ -48,11 +48,11 @@
                 {% block bodycontenucomplet%}
                 <div class="panel bodycontenucomplet {% block clspanel %}{% endblock %}">
                     <div class="panel-body">
-                            <div class="anchor_blank" id="ref-titre"></div>
+                        <div class="anchor_blank" id="ref-titre"></div>
                         {% block submenu%}{% endblock %}
                         <div class="panel-body panelsoustitre  ">
-                            <div class="row justify-content-sm-center">
-                                <div class="col-sm-12 col-md-12 col-lg-12 textcenter">
+                            <div class="row justify-content-center align-items-center titre_adherents textcenter">
+                                <div class="col-md-12">
                                         {% block subtitle %}{% endblock %}
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
-{% block panel-heading %} {%endblock%}
-
+{% block panel-heading %}{%endblock%}
+{% block subtitle %}{% endblock %}
 {% block submenu %}
 
 <div class="sticky-top">
@@ -10,11 +10,11 @@
                 <span class="navbar-toggler-icon"></span></button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar">
-		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notifications_news'  %}">Dernières Notifications</a></li>
-		<li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notificationsParDate'  %}"> Par date</a></li>
-        <li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notifications'  %}"> Par type</a></li>
-        <li class="nav-item nav-notif"><a class="dropdown-item"  href="{% url 'notificationsParGroupe'  %}"> Par groupe</a></li>
-        <li class="nav-item nav-notif "><a class="dropdown-item"  href="{% url 'articles_visites'  %}"> Dernières Visites</a></li>
+		<li class="nav-item nav-notif {% if 'notifications/activite/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notifications_news'  %}">Dernières Notifications</a></li>
+		<li class="nav-item nav-notif {% if 'notifications/parDate/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notificationsParDate'  %}"> Par date</a></li>
+        <li class="nav-item nav-notif {% if 'notifications/parType/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notifications'  %}"> Par type</a></li>
+        <li class="nav-item nav-notif {% if 'notifications/parGroupe/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notificationsParGroupe'  %}"> Par groupe</a></li>
+        <li class="nav-item nav-notif {% if 'notifications/visites/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'articles_visites'  %}"> Dernières Visites</a></li>
         {% if request.user.is_superuser %}
         <li class="nav-item nav4"> <a class="dropdown-item" href="https://www.perma.cat/gestion/hitcount/hit/"> Hits </a></li>
         {% endif %}

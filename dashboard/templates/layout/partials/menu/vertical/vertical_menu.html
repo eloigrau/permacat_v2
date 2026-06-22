@@ -4,17 +4,22 @@
 {% load avatar_tags %}
 {% load i18n %}
 
+
   {% if request.user.is_authenticated %}
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" data-bs-theme="dark">
     <!-- ! Hide app brand if navbar-full -->
     {% if not navbar_full %}
     <div class="app-brand demo">
-        <a href="{% url 'dashboard:choisirCollectif' %}?next={{ request.path }}" class="app-brand-link">
+        <a href="{% url 'dashboard:choisirCollectif' %}?next={{ request.get_full_path|urlencode  }}" class="app-brand-link">
 <span class="app-brand-logo demo">
                     <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="acceuil"/>
 </span>
+  {% if "asso_slug" in request.session %}
             <span class="app-brand-text demo menu-text fw-bold ms-2">{{request.session.asso_slug| getNomGroupeFromSlug}}</span>
 
+  {% else %}
+            <span class="app-brand-text demo menu-text fw-bold ms-2">Choisir un collectif</span>
+  {% endif %}
         </a>
 
         <a href="{% url 'bienvenue' %}" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -26,7 +31,14 @@
 
     <div class="menu-inner-shadow"></div>
 
+  {% if "asso_slug" in request.session %}
     <ul class="menu-inner py-1">
+        <li class="menu-item {% if '/dashboard/' in request.path %}active{% endif %}">
+            <a href="{% url 'dashboard:index'  %}" class="menu-link" >
+                <i class="menu-icon icon-base bx bx-home"></i>
+                <div class="text-truncate">Tableau de bord</div>
+            </a>
+        </li>
         <li class="menu-item {% if '/notifications/' in request.path %}active{% endif %}">
             <a href="{% url 'notifications_news'  %}" class="menu-link" >
                 <i class="menu-icon icon-base bx bx-bell"></i>
@@ -134,6 +146,11 @@
                         <div class="text-truncate">Defraiements</div>
                     </a>
                 </li>
+                <li class="menu-item {% if '/forum/projets/' in request.path %}active{% endif %}">
+                    <a href="{% url 'blog:index_projets' %}" class="menu-link">
+                        <div class="text-truncate">Projets</div>
+                    </a>
+                </li>
                 <li class="menu-item {% if '/vote/' in request.path %}active{% endif %}">
                     <a href="{% url 'vote:index' %}" class="menu-link">
                         <div class="text-truncate">Suffrages</div>
@@ -191,8 +208,9 @@
             </ul>
         </li>
         <li class="menu-header small text-uppercase" >
-            <span class="menu-header-text"></span>
+            <span class="menu-header-text">Divers</span>
         </li>
+        {% comment %}
         <li class="menu-item {% if '/compte/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <div class="text-truncate">
@@ -247,7 +265,7 @@
                   {% endfor %}
             </ul>
         </li>
-
+        {% endcomment %}
 
         <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -286,7 +304,7 @@
 
         <li class="menu-item {% if '/contact/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base bx bx-navigation"></i>
+                 <i class="menu-icon icon-base bx bx-support"></i>
                 <div class="text-truncate">Perma.Cat</div>
             </a>
             <ul class="menu-sub">
@@ -297,7 +315,6 @@
                 </li>
                 <li class="menu-item {% if '/contact/contact_admins/' in request.path %}active{% endif %}">
                     <a href="{% url 'contact_admins' %}" class="menu-link" target="_blank">
-                        <i class="menu-icon icon-base bx bx-support"></i>
                         <div class="text-truncate">Contacter admins</div>
                     </a>
                 </li>
@@ -311,6 +328,7 @@
 
 
     </ul>
+    {% endif %}
 
 
 </aside>

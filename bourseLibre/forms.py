@@ -50,6 +50,7 @@ class ProduitCreationForm(forms.ModelForm):
         super(ProduitCreationForm, self).__init__(*args, **kwargs)
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if x.est_autorise(request.user)]
 
+
     def clean(self):
         cleaned_data = super().clean()
         date_debut = cleaned_data.get("date_debut")
@@ -331,10 +332,10 @@ class ProfilCreationForm(UserCreationForm):
 
     #statut_adhesion = forms.ChoiceField(choices=Choix.statut_adhesion, label='', required=True)
     adherent_pc = forms.BooleanField(required=False, label="Je suis adhérent-e de l'asso 'Permacat'")
-    adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent-e de l'asso 'Ramène Ta Graine'")
+    #adherent_rtg = forms.BooleanField(required=False, label="Je suis adhérent-e de l'asso 'Ramène Ta Graine'")
     adherent_scic = forms.BooleanField(required=False, label="Je suis adhérent-e de l'asso 'PermAgora'")
     adherent_jp = forms.BooleanField(required=False, label="Je suis intéressé-e par les jardins partagés")
-    adherent_ssa = forms.BooleanField(required=False, label="Je suis intéressé-e par le collectif pour expérimenter une forme de SSA dans le 66")
+    adherent_ssa = forms.BooleanField(required=False, label="Je fais parti-e du collectif SSA 66")
     #adherent_gt = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Gardiens de la Terre'")
     #adherent_ame = forms.BooleanField(required=False, label="Je suis adhérent de l'asso 'Animal Mieux Etre'")
     accepter_annuaire = forms.BooleanField(required=False, initial=True,

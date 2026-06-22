@@ -16,6 +16,7 @@ from bourseLibre.forms import Profil_recherche2Form
 from .models import Profil, Produit, Adresse, Choix, Panier, Item, Asso, get_categorie_from_subcat, Conversation, Message, \
     MessageGeneral, getOrCreateConversation, Suivis, InscriptionNewsletter, Salon, InscritSalon, Message_salon, InvitationDansSalon,\
    Adhesion_asso, Adhesion_permacat, EvenementSalon,MessageAdmin, Favoris
+from .utils import testIsMembreAsso, testIsMembreAsso_bool, testIsMembreSalon
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
@@ -129,7 +130,15 @@ def getEvenementsSemaine(request):
 
     return eve_passe, eve_futur, #dict_passe, dict_futur #evenements, evenements2
 
+def bienvenue_anonyme(request):
+    nums = ['01', '02', '03', '04', '07', '10', '11', '13', '15', '17', '20', '21', '23', ]
+    nomImage = 'img/flo/resized0' + choice(nums)+'.png'
+    return render(request, "bienvenue_anonyme.html", {"nomImage":nomImage})
+
 def bienvenue(request):
+    if not request.user.is_authenticated:
+        return redirect("bienvenue_anonyme")
+    #return redirect("dashboard:index")
     nums = ['01', '02', '03', '04', '07', '10', '11', '13', '15', '17', '20', '21', '23', ]
     nomImage = 'img/flo/resized0' + choice(nums)+'.png'
     nbNotif = 0
@@ -178,34 +187,6 @@ class MyException(Exception):
 
     #return render(request, 'notMembre.html', {'asso':assos } )
 
-def testIsMembreAsso(request, asso):
-    if asso == "public":
-        return Asso.objects.get(nom="Public")
-
-    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
-    if assos:
-        assos = assos[0]
-
-        if not assos.is_membre(request.user) and not request.user.is_superuser:
-            return render(request, 'notMembre.html', {'asso':assos } )
-        return assos
-
-    return Asso.objects.get(nom="Public")
-
-
-def testIsMembreAsso_bool(request, asso):
-    if asso == "public":
-        return Asso.objects.get(nom="Public")
-
-    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
-    if assos:
-        assos = assos[0]
-
-        if not assos.is_membre(request.user) and not request.user.is_superuser:
-            return None
-        return assos
-
-    return Asso.objects.get(nom="Public")
 
 
 
@@ -1206,6 +1187,9 @@ class ListeConversations(ListView):
         context['conversations_archive'] = Conversation.objects.filter(Q(date_dernierMessage__isnull=False, date_dernierMessage__lte=dateMin) & (Q(profil2__id=self.request.user.id) | Q(profil1__id=self.request.user.id))).order_by('-date_dernierMessage')
         context['suivis'], created = Suivis.objects.get_or_create(nom_suivi="conversations")
         context['date_dernieresnotifs'] = self.request.user.date_messages
+
+        context['profil_autocomplete_form'] = Profil_rechercheForm(None)
+
         self.request.user.date_messages = now()
         self.request.user.save()
         return context
@@ -1370,13 +1354,6 @@ def agora(request, asso):
 
         return redirect(request.path)
     return render(request, 'agora.html', {'form': form, 'messages_echanges': messages, 'asso':asso, 'suivis':suivis})
-
-
-def testIsMembreSalon(request, slug):
-    salon = get_object_or_404(Salon, slug=slug)
-    if not salon.est_autorise(request.user) and not request.user.is_superuser:
-        return render(request, 'notMembre.html', {'asso':salon.titre } )
-    return salon
 
 @login_required
 def salon_accueil(request):

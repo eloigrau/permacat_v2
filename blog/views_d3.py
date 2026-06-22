@@ -6,7 +6,7 @@ from .forms import Article_rechercheForm
 from .models import Article, Commentaire, Projet, DocumentPartage, CommentaireProjet, Choix, ArticleLiens, ArticleLienProjet
 from .views import get_tags_asso, get_articlesParTag
 from django.contrib.auth.decorators import login_required
-from bourseLibre.views import testIsMembreAsso
+from bourseLibre.utils import testIsMembreAsso
 from ateliers.models import Atelier, CommentaireAtelier
 from django.db.models import Q
 from photologue.models import Document

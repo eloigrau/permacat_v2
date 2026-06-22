@@ -90,15 +90,6 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 						  </b>
 					  </div>
 					</div>
-				{% comment %}
-					<hr>
-					<div class="row" >
-					  <div class="col-sm-12 textcenter">
-						  <b> <a href="{% url 'inscription_newsletter' %}" class="btn btn-light btn-radius"><i class="fa fa-envelope-o"></i> S'inscrire à la newsletter</a>
-						  </b>
-					  </div>
-					</div>
-				{% endcomment %}
 					<hr>
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">
@@ -106,8 +97,6 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 						  </b>
 					  </div>
 					</div>
-
-
 				{% endif %}
 
 			</div>
@@ -127,6 +116,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">
+						  <b><a href="{% url 'dashboard:index' %}"> Tableau de bord</a></b> -
 						  <b><a href="{% url 'blog:acceuil' %}"> Forum</a></b> -
 						  <b><a href="{% url 'marche' %}">Annonces</a></b> -
 						  <b><a href="{% url 'photologue:doc-list' %}">Documents</a></b> -
@@ -200,7 +190,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
         <button type="button" class="btn btn-success" >
                 <i class="fa fa-arrow-right"></i> Voir les derniers articles du forum
             </button>
-	</a>&ensp;
+	</a>
 	</div>
 	</div>
 

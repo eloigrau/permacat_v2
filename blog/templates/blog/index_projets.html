@@ -1,5 +1,5 @@
 {% extends 'base_projets.html' %}
-    {% load static %}
+{% load static %}
 {% load blog_filters %}
 {% load app_filters %}
 {% load activity_tags %}
@@ -7,143 +7,165 @@
 
 {% block title %}Projets |{% endblock  %}
 
+{% block subtitle %}
 
-{%block subtitle%}
-<div class="container-fluid">
-
-<div class="row align-items-center">
-<div class="col-sm-12 textcenter">
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-3">
         <a href="{% url 'blog:ajouterNouveauProjet' %}">
-        <button type="button" class="btn btn-success" >
+            <button class="btn btn-success" type="button">
                 <i class="fa fa-plus"></i> Proposer un projet
             </button>
-            </a>
-&nbsp;
-            <a href="{% url 'blog:suivre_projets' %}">
-
+        </a>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h3>Les Projets</h3>
+    </div>
+    <div class="col-sm-12 col-md-3">
+        <a href="{% url 'blog:suivre_projets' %}">
             {% if request.user|is_following:suivis %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
-                 {% fa5_icon 'bell' title='abonnement' %}
+            <button class="btn btn-light btn-sm" data-placement="bottom" data-toggle="tooltip" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article"
+                    type="button">
+                {% fa5_icon 'bell' title='abonnement' %}
             </button>
             {% else %}
-            <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article">
-                 {% fa5_icon 'bell-slash' title='abonnement' %}
+            <button class="btn btn-light btn-sm" data-placement="bottom" data-toggle="tooltip" title="Vous n'êtes pas abonné :Cliquez pour recevoir un mail à chaque nouvel article"
+                    type="button">
+                {% fa5_icon 'bell-slash' title='abonnement' %}
             </button>
             {% endif %}
-                </a>
-</div>
-</div>
-<hr>
-<div class="row align-items-center">
-<div class="col-sm-12 textcenter">
-    <nav class="navbar navbar-expand-lg justify-content-center  navbar-light bg-light">
-        <div class="navbar-header">
-             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarProduit" aria-controls="navbarProduit" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span></button>
-        </div>
-        <div class="collapse navbar-collapse  justify-content-center " id="navbarProduit">
-            <ul class="nav navbar-nav justify-content-center">
-                <li class="nav-item dropdown">
-        <a href="{% url 'blog:index_projets' %}">
-            <button class="btn btn-block {% if typeFiltre == 'aucun' %}btn-primary {%endif%}">Tout </button>
         </a>
-   </li>
-            <li class="nav-item dropdown">
-                 <button type="button" class="btn btn-info btn-block {% if request.GET.auteur %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                   data-target = "#idAuteur">
-                    {% if request.GET.auteur %} Auteur: {{request.GET.auteur}} {%else%}Auteur{%endif%}
-                 </button>
-                <div class="dropdown-menu"  aria-labelledby="menuAuteur"  id=idAuteur">
-                    {% for auteur in auteur_list %}
-                      <a class="dropdown-item" href="?auteur={{auteur}}">{{auteur}}</a>
-                    {% endfor %}
-                </div>
-            </li>
+    </div>
+</div>
 
-            <li class="nav-item dropdown">
-             <button type="button" class="btn btn-info btn-block {% if request.GET.categorie %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               data-target = "#idCategorie">
-                {% if request.GET.categorie %} {{categorie_courante}} {%else%}Catégorie{%endif%}
-                 </button>
-                <div class="dropdown-menu"  aria-labelledby="menuAuteur"  id=idCategorie">
-                {% for categorie_id, cat_nom in categorie_list %}
-                  <a class="dropdown-item" href="?categorie={{categorie_id}}">{{cat_nom}}</a>
-                    {% endfor %}
-                </div>
-            </li>
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-sm-12 textcenter">
+                <nav class="navbar navbar-expand-lg justify-content-center">
+                    <div class="navbar-header">
+                        <button aria-controls="navbarProduit" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+                                data-target="#navbarProduit" data-toggle="collapse" type="button">
+                            <span class="navbar-toggler-icon"></span></button>
+                    </div>
+                    <div class="collapse navbar-collapse  justify-content-center " id="navbarProduit">
+                        <ul class="nav navbar-nav justify-content-center">
+                            <li class="nav-item dropdown">
+                                <a href="{% url 'blog:index_projets' %}">
+                                    <button class="btn btn-block {% if typeFiltre == 'aucun' %}btn-primary {%endif%}">
+                                        Tout
+                                    </button>
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <button aria-expanded="false"
+                                        aria-haspopup="true"
+                                        class="btn btn-info btn-block {% if request.GET.auteur %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-target="#idAuteur" data-toggle="dropdown"
+                                        type="button">
+                                    {% if request.GET.auteur %} Auteur: {{request.GET.auteur}} {%else%}Auteur{%endif%}
+                                </button>
+                                <div aria-labelledby="menuAuteur" class="dropdown-menu" id=idAuteur">
+                                    {% for auteur in auteur_list %}
+                                    <a class="dropdown-item" href="?auteur={{auteur}}">{{auteur}}</a>
+                                    {% endfor %}
+                                </div>
+                            </li>
 
-            <li class="nav-item dropdown">
-             <button type="button" class="btn btn-info btn-block {% if request.GET.statut %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               data-target = "#idStatut">
-                {% if request.GET.statut %} {{statut_courant}} {%else%}Statut{%endif%}
-                 </button>
-                <div class="dropdown-menu"  aria-labelledby="menuAuteur"  id=idStatut">
-                {% for statut_id, cat_nom in statut_list %}
-                  <a class="dropdown-item" href="?statut={{statut_id}}">{{cat_nom}}</a>
-                    {% endfor %}
-                </div>
-            </li>
-        {% if request.user.adherent_pc %}
-                <li class="nav-item dropdown">
-             <button type="button" class="btn btn-info btn-block {% if request.GET.asso %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-               data-target = "#idPermacat">
-                 {% if request.GET.asso %}{{request.session.asso_slug | getNomGroupeFromSlug}}{%else%}Groupe{%endif%}
-                </button>
-            <div class="dropdown-menu"  aria-labelledby="menuStatut"  id=idPermacat">
-                {% for asso in asso_list %}
-                  <a class="dropdown-item" href="?asso={{asso.slug}}">{{asso.nom}}</a>
-                {% endfor %}
+                            <li class="nav-item dropdown">
+                                <button aria-expanded="false"
+                                        aria-haspopup="true"
+                                        class="btn btn-info btn-block {% if request.GET.categorie %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-target="#idCategorie" data-toggle="dropdown"
+                                        type="button">
+                                    {% if request.GET.categorie %} {{categorie_courante}} {%else%}Catégorie{%endif%}
+                                </button>
+                                <div aria-labelledby="menuAuteur" class="dropdown-menu" id=idCategorie">
+                                    {% for categorie_id, cat_nom in categorie_list %}
+                                    <a class="dropdown-item" href="?categorie={{categorie_id}}">{{cat_nom}}</a>
+                                    {% endfor %}
+                                </div>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <button aria-expanded="false"
+                                        aria-haspopup="true"
+                                        class="btn btn-info btn-block {% if request.GET.statut %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-target="#idStatut" data-toggle="dropdown"
+                                        type="button">
+                                    {% if request.GET.statut %} {{statut_courant}} {%else%}Statut{%endif%}
+                                </button>
+                                <div aria-labelledby="menuAuteur" class="dropdown-menu" id=idStatut">
+                                    {% for statut_id, cat_nom in statut_list %}
+                                    <a class="dropdown-item" href="?statut={{statut_id}}">{{cat_nom}}</a>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                            {% if request.user.adherent_pc %}
+                            <li class="nav-item dropdown">
+                                <button aria-expanded="false"
+                                        aria-haspopup="true"
+                                        class="btn btn-info btn-block {% if request.GET.asso %}btn-primary{%endif%}  dropdown-toggle dropdown-toggle-split" data-target="#idPermacat" data-toggle="dropdown"
+                                        type="button">
+                                    {% if request.GET.asso %}{{request.session.asso_slug |
+                                    getNomGroupeFromSlug}}{%else%}Groupe{%endif%}
+                                </button>
+                                <div aria-labelledby="menuStatut" class="dropdown-menu" id=idPermacat">
+                                    {% for asso in asso_list %}
+                                    <a class="dropdown-item" href="?asso={{asso.slug}}">{{asso.nom}}</a>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item dropdown">
+                                <button aria-expanded="false" aria-haspopup="true"
+                                        class="btn dropdown-toggle btn-light  btn-block " data-toggle="dropdown" id="menuOrdreTri"
+                                        type="button">
+                                    trier par...
+                                </button>
+                                <div aria-labelledby="menuOrdreTri" class="dropdown-menu" id="idOrdreTri">
+                                    {% for titre, ordre in ordreTriPossibles.items %}
+                                    <a class="dropdown-item"
+                                       href="?{{ request.GET.urlencode|sansOrdreTri}}&ordreTri={{ordre}}">{{titre}}</a>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
             </div>
-        </li>
-        {% endif %}
-    <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle btn-light  btn-block " type="button" id="menuOrdreTri" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    trier par...
-           </button>
-                <div class="dropdown-menu"  aria-labelledby="menuOrdreTri"  id="idOrdreTri">
-                    {% for titre, ordre in ordreTriPossibles.items %}
-                     <a class="dropdown-item"  href="?{{ request.GET.urlencode|sansOrdreTri}}&ordreTri={{ordre}}">{{titre}}</a>
-                    {% endfor %}
-                </div>
-   </li>
-            </ul>
         </div>
-    </nav>
-</div>
-</div>
-</div>
+    </div>
+
 {%endblock%}
 {% block content %}
 
-{% include 'pagination_new.html' %}
-<div class="infinite-container">
-    <div class="grid-container justify-content-center">
-    {% for projet in projet_list %}
-    <div class="infinite-item my-auto mx-auto">
-            {% include "blog/projet_template.html" with projet=projet %}
-    </div>
-    {% endfor %}
-</div>
-{% include 'pagination_new.html' %}
 
-{% if list_archive %}
-    <div class="textcenter">
-        <button id="btn-archives"  type="button" class="btn btn-light" onclick="toggle_visibility('archives');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher les archives">
-            Afficher les archives
-        </button>
-    </div>
-    <div id="archives" style='display:none;'>
-        <hr>
+    {% include 'pagination_new.html' %}
+    <div class="infinite-container">
+        <div class="grid-container justify-content-center">
+            {% for projet in projet_list %}
+            <div class="infinite-item my-auto mx-auto">
+                {% include "blog/projet_template.html" with projet=projet %}
+            </div>
+            {% endfor %}
+        </div>
+        {% include 'pagination_new.html' %}
+
+        {% if list_archive %}
+        <div class="textcenter">
+            <button class="btn btn-light" data-placement="bottom" data-toggle="tooltip" id="btn-archives"
+                    onclick="toggle_visibility('archives');" title="Cliquez pour afficher les archives" type="button">
+                Afficher les archives
+            </button>
+        </div>
+        <div id="archives" style='display:none;'>
+            <hr>
             {% for projet in list_archive %}
             <div class="infinite-item">
                 {% include "blog/projet_template.html" with projet=projet %}
-            <hr>
+                <hr>
             </div>
-    {% endfor %}
-    </div>
-{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
 
-<script>
+        <script>
     function toggle_visibility(id) {
        var e = document.getElementById(id);
        var btn = document.getElementById("btn-archives");
@@ -156,5 +178,6 @@
           btn.textContent = "Cacher les archives";
       }
    }
-</script>
-{% endblock %}
+
+        </script>
+        {% endblock %}

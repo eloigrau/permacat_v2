@@ -13,15 +13,6 @@
 .col_objets{background-color: {{ couleurs.objet }};}
 </style>
 <div class="row justify-content-center">
-    <div class="col-sm-12 col_cat col_liste textcenter">
-        <a href="{%url 'produit_proposer' type_produit='offresEtDemandes' %}">
-        <div class="panel panel-primary ">
-                <div class="panel-heading textcenter"><h4><i class="fa fa-handshake"></i>  Liste d'offres et de demandes</h4></div>
-            </div>
-        </a>
-    </div>
-</div>
-<div class="row justify-content-center">
     <div class="col-sm-12 col-md-6 col_cat col_aliment">
         <a href="{%url 'produit_proposer' type_produit='aliment' %}">
             <div class="panel-group">
@@ -96,8 +87,15 @@
             </div>
         </a>
     </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col_cat col_liste textcenter">
+        <a href="{%url 'produit_proposer' type_produit='offresEtDemandes' %}">
+        <div class="panel panel-primary ">
+                <div class="panel-heading textcenter"><h4><i class="fa fa-handshake"></i>  Liste d'offres et de demandes</h4></div>
+            </div>
+        </a>
     </div>
 </div>
 {% endblock %}
-
-{% block comment %}{% endblock %}

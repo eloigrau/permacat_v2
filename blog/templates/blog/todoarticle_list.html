@@ -9,13 +9,17 @@
 
 {%block subtitle%}
 
-<div class="row align-items-center atelier_titre_page_index">
-    <div class="col-sm-12 textcenter">
+<div class="row align-items-center justify-content-center">
+    <div class="col-sm-12 col-md-8 offset-md-2 textcenter">
         <h4>Todo</h4>
+        </div>
+    <div class="col-md-2">
         <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
          {% fa5_icon 'question-circle' %}
         </button>
-        <!-- Modal -->
+    </div>
+</div>
+<!-- Modal -->
         <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog textaide" role="document">
             <div class="modal-content">
@@ -35,11 +39,6 @@
             </div>
           </div>
         </div>
-    </div>
-</div>
-
-
-<hr>
 <div class="anchor_blank" id="ref-navbargroupe"></div>
 <div class="row justify-content-center" >
     <nav class="navbar navbar-expand-lg justify-content-center" >
@@ -65,9 +64,9 @@
         </div>
     </nav>
 </div>
-<hr>
 {%endblock%}
 {% block content %}
+
 <div class="row">
 <div class="col-sm-12">
 <table class="table table-condensed table-striped table-middle {% if request.user.css_dark %}table-dark{% endif %} sortable textcenter">

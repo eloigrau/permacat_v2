@@ -352,6 +352,9 @@ class ProjetForm(forms.ModelForm):
         self.fields['contenu'].strip = False
         self.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if request.user.estMembre_str(x.slug)]
 
+        if "asso_slug" in request.session:
+            self.fields["asso"].initial = Asso.objects.get(slug=request.session["asso_slug"]).id
+
     def save(self, userProfile, sendMail=True):
         instance = super(ProjetForm, self).save(commit=False)
 

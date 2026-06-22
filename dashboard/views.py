@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from .web_project import TemplateLayout
 from photologue.models import Document
 from blog.models import Article, Commentaire
-from bourseLibre.views import testIsMembreAsso_bool
+from bourseLibre.utils import testIsMembreAsso_bool
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
 from datetime import datetime, timedelta
@@ -52,7 +52,10 @@ def choisirCollectif(request):
         if "next" in request.GET:
             url_new = request.GET["next"]
             for slug in Choix.slugsAssoEtPublic:
-                url_new = url_new.replace("/"+slug+"/","/"+request.session["asso_slug"] + "/")
+                url_new = url_new.replace(
+                    "/"+slug+"/","/"+request.session["asso_slug"] + "/").replace(
+                    "asso="+slug,"asso="+request.session["asso_slug"]).replace(
+                    "asso_slug="+slug,"asso_slug="+request.session["asso_slug"])
             return redirect(url_new)
         return redirect("dashboard:index")
     return render(request, "choisirCollectif.html", {"form":form})

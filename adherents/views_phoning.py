@@ -15,7 +15,7 @@ from .forms import (Contact_form, Contact_update_form, ContactContact_form,
 
 from .models import Adherent, Contact, ContactContact, ProjetPhoning
 from bourseLibre.models import Adresse, Profil, Asso
-from bourseLibre.views import testIsMembreAsso
+from bourseLibre.utils import testIsMembreAsso_bool
 from .filters import ContactCarteFilter
 from actstream.models import Action
 from datetime import date, timedelta, datetime
@@ -32,19 +32,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from unidecode import unidecode
 
 
-def testIsMembreAsso_bool(request, asso):
-    if asso == "public":
-        return Asso.objects.get(nom="Public")
-
-    assos = Asso.objects.filter(Q(nom=asso) | Q(slug=asso))
-    if assos:
-        assos = assos[0]
-
-        if not assos.is_membre(request.user) and not request.user.is_superuser:
-            return None
-        return assos
-
-    return None
 
 class Contact_ajouter(UserPassesTestMixin, CreateView, ):
     model = Contact

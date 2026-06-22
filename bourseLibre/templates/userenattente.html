@@ -1,13 +1,15 @@
 {% extends 'base_profil.html' %}
 {% block navbar%}
 {% endblock %}
+{% block subtitle %}
+<h4 class="textcenter">Bravo ! Et merci pour votre inscription, votre compte a bien été créé !
+    </h4>
+{% endblock subtitle %}
 {% block content %}
-<h2 class="textcenter">Bravo ! Et merci pour votre inscription, votre compte a bien été créé !
-    </h2>
-              <h3 class="textcenter">Vous pouvez vous <a href="{% url 'login' %}?{{request.GET.urlencode}}">connecter</a> avec votre pseudo : "{{pseudo}}" et découvrir la plateforme</h3>
-<h4 class="textcenter">
+              <p class="textcenter">Vous pouvez vous <a href="{% url 'login' %}?{{request.GET.urlencode}}">connecter</a> avec votre pseudo : "{{pseudo}}" et découvrir la plateforme</p>
+<p class="textcenter">
 Vous pouvez consulter les annonces, le forum, en publier, et discuter avec les autres !
-</h4>
+</p>
 
 <p class="textcenter">
  <a href="{% url 'login' %}?{{request.GET.urlencode}}">

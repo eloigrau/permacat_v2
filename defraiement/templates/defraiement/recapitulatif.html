@@ -2,6 +2,9 @@
 {% load fontawesome_5 %}
 {% load hitcount_tags %}
 
+{% block subtitle %}
+<h4  class="textcenter">Défraiement : Récap' {% if 'annee' in request.GET %} ({{request.GET.annee}}) {% elif not request.GET.annee %} {% now "Y" %} {% else%} (toutes années) {% endif%} </h4>
+{% endblock %}
 {% block content %}
 <div class="anchor_blank" id="ref-annee"></div>
 <p class="textcenter">
@@ -24,10 +27,7 @@
  </form>
 {% endcomment %}
 </p>
-<h4  class="textcenter">Récapitulatif {% if 'annee' in request.GET %} ({{request.GET.annee}}) {% elif not request.GET.annee %} {% now "Y" %} {% else%} (toutes années) {% endif%} </h4>
 
-
-<hr>
 <div class="row justify-content-center">
 <nav class="navbar  navbar-expand-md navbar-light justify-content-center">
     <div class="collapse navbar-collapse" id="navbarType">

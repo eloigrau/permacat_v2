@@ -5327,7 +5327,7 @@ msgid "Date de fin du vote"
 msgstr "Date de fin du vote"
 #: vote/models.py:329 vote/models_simple.py:89
 msgid "Question (oui/non) soumise au vote ?"
-msgstr "Question (OUI / NON) SOUMISE AU VOTE?"
+msgstr "Question (oui/non) soumise au vote ?"
 #: vote/models.py:343
 msgid "Question (jugement majoritaire) soumise au vote :"
 msgstr "Question (Jugment Majoraire) Soumise Au vote:"

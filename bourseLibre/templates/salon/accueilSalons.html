@@ -5,16 +5,13 @@
 
 
 {%block message%}{%endblock%}
-{%block title%}- Salons de discussion {%endblock%}
+{%block title%}Salons de discussion |{%endblock%}
 {% block subtitle %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center align-items-center">
             <div class="col-md-4 offset-md-4">
                 <h3>Salons de discussion</h3>
             </div>
             <div class="col-md-4 ">
-
             <a href="{% url 'suivre_salon' slug_salon='accueil' %}">
                 {% if request.user|is_following:suivis %}
                 <button type="button" class="btn btn-light btn-sm" data-toggle="tooltip" data-placement="bottom" title="Vous êtes abonné :Cliquez pour arreter de recevoir un mail à chaque nouvel article">
@@ -54,8 +51,6 @@
 
 
         </div>
-    </div>
-</div>
 {% endblock %}
 {% block content %}
 

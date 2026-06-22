@@ -16,6 +16,39 @@
     </div>
 {% endblock  %}
 {% block subtitle %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-4 offset-md-4">
+        <h3>L'Agenda</h3>
+    </div>
+    <div class="col-md-4">
+        <a type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+         {% fa5_icon 'question-circle' %}
+        </a>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog textaide" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <div class="row justify-content-center">
+               <h5 > Qu'est ce que l'agenda ?</h5>
+              </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body textleft">
+            <p>L'agenda permet de visualiser les différents événements annoncés sur le site (dans les articles, le jardin, les ateliers, etc) sur un calendrier</p>
+                      <p>Cliquer sur un évènement pour accéder à la page correspondante.</p>
+            <p>Pour ajouter un événement, vous pouvez soit créer un article et lui associer une ou plusieurs dates, soit créer un atelier et y indiquer la date, etc...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
 <div class="row justify-content-center" >
     <nav class="navbar navbar-expand-lg justify-content-center">
         <div class="navbar-header">
@@ -30,43 +63,18 @@
                     </li>
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
-                <a  href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansAsso}}&asso={{asso_ab}}#ref-titre">
+                <a  href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|urlSupprParam:'asso'}}&asso={{asso_ab}}#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>
                 {% endfor %}
-                <a type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
-                 {% fa5_icon 'question-circle' %}
-                </a>
-                <!-- Modal -->
-                <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog textaide" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                          <div class="row justify-content-center">
-                           <h5 > Qu'est ce que l'agenda ?</h5>
-                          </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body textleft">
-            <p>L'agenda permet de visualiser les différents événements annoncés sur le site (dans les articles, le jardin, les ateliers, etc) sur un calendrier</p>
-                          <p>Cliquer sur un évènement pour accéder à la page correspondante.</p>
-            <p>Pour ajouter un événement, vous pouvez soit créer un article et lui associer une ou plusieurs dates, soit créer un atelier et y indiquer la date, etc...</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
             </ul>
         </div>
     </nav>
 </div>
 <hr>
-{% endblock %}
-
-{% block content %}
 
 
 <div class="row moiscal">

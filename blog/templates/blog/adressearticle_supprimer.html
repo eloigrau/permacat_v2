@@ -1,14 +1,12 @@
 {% extends 'blog/base_blog2.html' %}
 {% block title %}Enlever un lieu d'un article |{% endblock %}
 {% block subtitle %}
-<div class="row ">
-<div class="col-sm-12 textcenter">
+<h3>Enlever un lieu de l'article</h3>
+{% endblock %}
+{% block content %}
 <form action="" method="post">{% csrf_token %}
     <p>Etes vous sûr.e de vouloir enlever le lieu "{{ adressearticle }}"?</p>
     <input type="button"  onclick="window.history.back();"  value="Annuler" />
     <input type="submit" value="Confirmer" />
 </form>
-</div>
-</div>
-
 {% endblock %}

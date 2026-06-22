@@ -16,11 +16,11 @@
     </span>
       {% endif %}
         {% if request.user|is_following:projet %}
-        <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant ce projet par mail">
+        <span class="badge badge-light" data-toggle="tooltip" data-placement="bottom" title="Vous recevez des notifications concernant ce projet par mail">
              {% fa5_icon 'bell' title='abonnement' %}
         </span>
         {% else %}
-        <span class="badge btn-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant ce projet par mail">
+        <span class="badge badge-light" data-toggle="tooltip" data-placement="bottom" title="Vous ne recevez pas de notifications concernant ce projet par mail">
              {% fa5_icon 'bell-slash' title='abonnement' %}
         </span>
         {% endif %}

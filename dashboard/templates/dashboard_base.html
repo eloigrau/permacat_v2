@@ -17,7 +17,7 @@
           <div class="col-sm-7">
             <div class="card-body">
               <h5 class="card-title text-primary mb-3">Benvingut <a href="{% url 'profil_courant' %}">{{request.user.username}} </a> !</h5>
-              <p class="mb-6">Bienvenue sur le tableau de bord du Collectif {{request.session.asso_slug | getNomGroupeFromSlug}}. <small><a href="{% url 'dashboard:choisirCollectif' %}">cliquez ici pour changer de Collectif</a></small></small></p>
+              <p class="mb-6">Bienvenue sur le tableau de bord du Collectif <b>{{request.session.asso_slug | getNomGroupeFromSlug}}</b>. </p>
               <p> Vous pouvez accéder à tous les espaces de la plateforme disponibles pour ce collectif. Utilisez le menu à gauche pour naviguer...
               Ou accédez aux actualités ci-dessous.</p>
             </div>

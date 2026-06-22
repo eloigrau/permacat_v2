@@ -59,7 +59,7 @@
 <form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="hidden" name="Nouveau Message" value="{{ message_defaut }}">
-        {% include 'form_template2.html' %}
+        {% include 'form_template2.html' with nolabel_summernote=True %}
       <div class="input-group-btn textcenter">
       <button id="btn-valider" type="submit" class="btn btn-primary">Envoyer le message</button>
       </div>

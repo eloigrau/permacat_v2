@@ -1,11 +1,10 @@
-{% extends 'base_profil.html' %}
+{% extends 'base_site.html' %}
 {% block header%}
 {% load leaflet_tags %}
 {% load static %}
 {% leaflet_js %}
 {% leaflet_css %}
-<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet" />
-<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+<link href="{% static 'css/leaflet-locationpicker.css'%}" rel="stylesheet"/>
 {%endblock%}
 {% load widget_tweaks %}
 
@@ -13,32 +12,32 @@
 {%block message%}
 {%endblock%}
 {% block subtitle %}
-    <div class="row justify-content-sm-center">
-        <h3>Inscription sur le site</h3>
+<div class="row justify-content-sm-center">
+    <h3>Inscription sur le site</h3>
+</div>
+<div class="row justify-content-sm-center">
+    <div class="col-sm-12">
+        <p>Bienvenue sur la plateforme !</p>
+        <h4>Renseignez les informations ci-dessous pour vous inscrire </h4>
+        <p>(les champs avec (*) sont obligatoires, les autres non)</p>
     </div>
-    <div class="row justify-content-sm-center">
-        <div class="col-sm-12">
-        <h4>Renseignez les informations suivantes pour vous inscrire </h4>
-        <p>(les champs avec (*) sont obligatoires)</p>
-            </div>
-    </div>
+</div>
 {% endblock %}
 {% block content %}
-
 <div class="jumbotron">
-    <div class="row justify-content-sm-center">
-        <div class="col-sm-12 col-md-10 col-lg-8 ">
-            <form role="form" action="" method="post" enctype="multipart/form-data" id="myForm">
-          {% csrf_token %}
+    <div class="row justify-content-center">
+        <div class="col-sm-12 col-md-10 col-lg-8 form_class">
+            <form action="" enctype="multipart/form-data" id="myForm" method="post" role="form">
+                {% csrf_token %}
                 {%include 'form_template2.html' with form=form_profil%}
                 <hr>
                 <p>Cliquez sur la carte pour vous situer <small>
-                        (aucune obligation mais ça facilite beaucoup les échanges, vous pouvez être approximatif sur la localisation ;)</small> :</p>
-<p>
-<div class="row carteMiPage">
-  <div class="col-md-12" >
-    <style>.leaflet-container {width:  100%;min-height: 50vh;}</style>
-      <script type="text/javascript">
+                    (aucune obligation mais ça facilite beaucoup les échanges, vous pouvez être approximatif sur la
+                    localisation ;)</small> :</p>
+                <div class="row carteMiPage">
+                    <div class="col-md-12">
+                        <style>.leaflet-container {width:  100%;min-height: 50vh;}</style>
+                        <script type="text/javascript">
 
         function map_init_basic (map, options) {
         map.panTo(new L.LatLng(42.62914, 2.49939));
@@ -76,40 +75,22 @@
             });
         });
 }
-$('.example').leafletLocationPicker({
-  alwaysOpen: false,
-  {% comment %}
-  className: baseClassName,
-  location: yourmap.center,
-  map: yourmap,
-  {% endcomment %}
-  locationFormat: '{lat}{sep}{lng}',
-  locationMarker: true,
-  locationDigits: 6,
-  locationSep: ',',
-  position: 'topright',
-  layer: 'OSM',
-  height: 140,
-  width: 200,
-  event: 'click',
-  cursorSize: '30px',
-  onChangeLocation: $.noop,
-  mapContainer: "#yourmap"
-});
-</script>
-{% leaflet_map "yourmap" callback="window.map_init_basic" %}
-</div>
-</div>
-                </p>
+                        </script>
+                        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+                    </div>
+                </div>
+
                 {%include 'form_template2.html' with form=form_adresse%}
                 <hr>
-<div class="row justify-content-center">
-<div class="col-sm-12 textcenter">
-          <button type="submit" class="btn btn-success" id ="btn-valider" >S'enregistrer et intégrer le réseau !</button>
-</div>
-</div>
+                <div class="row justify-content-center">
+                    <div class="col-sm-12 textcenter">
+                        <button class="btn btn-success" id="btn-valider" type="submit">S'enregistrer et intégrer le
+                            réseau !
+                        </button>
+                    </div>
+                </div>
 
-        </form>
+            </form>
         </div>
     </div>
 </div>
@@ -128,6 +109,11 @@ $(document).ready(function() {
           }, 15000);
     });
 });
-</script>
-    {% endblock %}
 
+</script>
+{% endblock %}
+
+{% block scriptblock %}
+<script src="//code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="{% static 'js/leaflet-locationpicker.js' %}"></script>
+{% endblock %}

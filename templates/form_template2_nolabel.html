@@ -24,29 +24,22 @@
 {% for field in form.visible_fields %}
 <div class="form-group">
 {% with tyype=field|field_type %}
-{% with entete=field|field_entete %}
 {{ field.errors }}
 {% if tyype == 'SummernoteWidget' or tyype == 'CheckboxSelectMultiple' %}
-     {{field.label}} {{field}}
+     {{field}}
 {% elif tyype == 'CheckboxInput' %}
   {{field}} {{field.label}}
 {% else %}
     {%if field.errors %}
         {% render_field field class="form-control is-invalid" placeholder=field.label %}
     {% else %}
-        {% if not entete %}
             {% render_field field class="form-control" placeholder=field.label%}
-        {% else %}
-            {{field.label_tag}}{% if field.field.required %} *{% endif %}
-            {% render_field field class="form-control" placeholder=field.label%}
-        {% endif %}
     {% endif %}
 {% endif %}
 
 {% if field.help_text %}
 <small class="form-text text-muted">{{ field.help_text }}</small>
 {% endif %}
-{%endwith%}
 {%endwith%}
     </div>
   {% endfor %}

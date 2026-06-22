@@ -7,6 +7,9 @@
 {%endblock%}
 
 {% block subtitle %}
+<h3>Dernières Notifications</h3>
+{% endblock %}
+{% block content %}
 
 <p class = "textcenter justify-content-center">
         <a href="{% url 'notif_cejour' %}">
@@ -50,9 +53,6 @@
                 <button class="btn btn-secondary btn-sm " type="submit" data-toggle="tooltip" data-placement="bottom" title="Changer la date"> depuis le {{dateMin|date:"d/m/Y"}} à {{dateMin|date:"G:i"}}</button>
         </a>
 </p>
-
-{% endblock %}
-{% block content %}
 
 {%if type_notif == "dateNotif" %}
     {%if htmlArticles or htmlProjets or dico.listautres or dico.listinscriptions %}

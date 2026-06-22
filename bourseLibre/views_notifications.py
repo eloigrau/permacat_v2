@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
@@ -12,6 +13,7 @@ from datetime import datetime, timedelta
 from pytz import UTC as utc
 from hitcount.models import HitCount, Hit
 import pytz
+from bourseLibre.utils import testIsMembreAsso_bool
 
 @login_required
 def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
@@ -152,13 +154,24 @@ def notificationsParGroupe(request, dateMinimum=None, orderBy="-timestamp"):
     else:
         dateMin = (datetime.now() - timedelta(days=20)).replace(tzinfo=utc)
 
+
     if "asso" in request.GET:
         request.session["asso_slug"] = request.GET["asso"]
-        actions = Action.objects.filter(Q(timestamp__gt=dateMin, verb__contains=request.session["asso_slug"]) & ( \
-             Q(verb__startswith='article')|Q(verb__startswith='projet_')|
-             Q(verb__startswith='atelier')|Q(verb__startswith='jardins_')|
-                Q(verb__startswith='documents_nouveau')|
-             Q(verb__startswith='album_nouveau'))).distinct().order_by(orderBy)[:200]
+        asso_slug = request.GET["asso"]
+    elif "asso_slug" in request.session:
+        asso_slug = request.session["asso_slug"]
+    else:
+        return render(request, 'notifications/notificationsParGroupe.html', {'actions':None,
+                'asso_list':  request.user.getListeSlugsNomsAssoEtPublic()})
+
+    if not testIsMembreAsso_bool(request, asso_slug):
+        return HttpResponseForbidden("Vous n'avez pas l'autorisation, désolé !")
+
+    actions = Action.objects.filter(Q(timestamp__gt=dateMin, verb__contains=asso_slug) & ( \
+         Q(verb__startswith='article')|Q(verb__startswith='projet_')|
+         Q(verb__startswith='atelier')|Q(verb__startswith='jardins_')|
+            Q(verb__startswith='documents_nouveau')|
+         Q(verb__startswith='album_nouveau'))).distinct().order_by(orderBy)[:200]
 
     #actions = [art for i, art in enumerate(actions) if i == 0 or not (art.description == actions[i-1].description and art.actor == actions[i-1].actor ) ]
 

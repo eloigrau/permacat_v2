@@ -4,8 +4,7 @@
 <div class="col-sm-12 col-md-10 col-lg-8 form_class">
 <form method="post" id="myForm">
   {% csrf_token %}
-  {% include 'form_template2.html' %}
-
+  {% include 'form_template2.html' with nolabel_summernote=nolabel_summernote %}
     <div class="form-group textright">
 {% if not boutonAnnuler %}
           <input type="button" class="btn btn-secondary"  onclick="window.history.back();"  value="Annuler" />

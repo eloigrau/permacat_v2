@@ -6,12 +6,10 @@
 {% load static %}
 
 {% block subtitle %}
-
-<div class="row">
-    <div class="col textcenter">
        <h3> Rechercher un document </h3>
-    </div>
-</div>
+{% endblock %}
+
+{% block content %}
 
  <form method="get">
     <div class="well">
@@ -66,8 +64,6 @@ $(function() {
   $('#datePicker').removeAttr('name');
 });
 </script>
-{% block content %}
-
 <hr>
  <p>Documents correspondants ({{filter.qs|length}})</p>
 

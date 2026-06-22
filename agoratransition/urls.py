@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.accueil, name="acceuil"),
     path('listeInscription/', views.listeInscription, name="listeInscription"),
     #re_path(r'^articles/$', login_required(views.ListeArticles.as_view(), login_url='/auth/login/'), name="index"),
-    #path(r'articles/<str:asso>', login_required(views.ListeArticles_asso.as_view(), login_url='/auth/login/'), name="index_asso"),
+    #path(r'articles/<str:asso>/', login_required(views.ListeArticles_asso.as_view(), login_url='/auth/login/'), name="index_asso"),
     ]
 
 from rest_framework import routers

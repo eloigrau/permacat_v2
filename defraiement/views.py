@@ -4,7 +4,7 @@ from django.views.generic import ListView, UpdateView, DeleteView, CreateView, D
 from django.http import HttpResponseForbidden, FileResponse
 from django.urls import reverse_lazy
 from bourseLibre.models import Asso
-from bourseLibre.views import testIsMembreAsso
+from bourseLibre.utils import testIsMembreAsso
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
@@ -557,6 +557,7 @@ class ListeReunions_asso(ListView):
         context['categorie_list'] = [x for x in Choix.type_reunion if x[0] in cat]
         context['ordreTriPossibles'] = Choix.ordre_tri_reunions
         context['type_courant'] = self.params["categorie"] if "categorie" in self.params else ""
+        context['annees'] = [int(datetime.now().year) - n for n in range(5)][::-1]
 
         return context
 

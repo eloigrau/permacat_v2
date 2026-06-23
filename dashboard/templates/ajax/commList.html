@@ -5,14 +5,14 @@
 
 {% if commList %}
 <ul class="p-0 m-0">
-    <li class="d-flex align-items-center mb-5">
+    <li class="d-flex align-items-center">
         <div class="d-flex w-100 align-items-center justify-content-between">
             <div class="me-2"><em>Commentaire</em></div>
             <div><em>Article associé</em></div>
         </div>
     </li>
     {% for comm in commList %}
-        <li class="d-flex align-items-center mb-5">
+        <li class="d-flex align-items-center">
             <div class="d-flex w-100 align-items-center justify-content-between">
                 <div class="me-2">
                 <a href="{{ comm.get_absolute_url }}">

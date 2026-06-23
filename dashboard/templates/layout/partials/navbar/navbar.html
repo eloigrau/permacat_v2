@@ -4,7 +4,7 @@
 {% load avatar_tags %}
 
 
-<nav class="layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
+<nav class="row_banniere_smartphone layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar" style="max-height:40px">
   <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
     <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
       <i class="icon-base bx bx-menu icon-md"></i>
@@ -23,6 +23,7 @@
     <!-- /Search -->
   {% endcomment %}
 
+  {% comment %}
     <div class="navbar-nav align-items-center">
       <div class="nav-item d-flex align-items-center">
         {% block navbar_principal %}
@@ -73,8 +74,11 @@
       </li>
       <!--/ User -->
     </ul>
+
+  {% endcomment %}
   </div>
 </nav>
+  {% comment %}
 <!-- Modal -->
 <div class="modal fade" id="ajouter_favori" role="dialog" aria-labelledby="AjouterFavori" aria-hidden="true">
     <div class="modal-dialog textaide" role="document">
@@ -110,3 +114,5 @@
     </div>
   </div>
 </div>
+
+  {% endcomment %}

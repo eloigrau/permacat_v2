@@ -81,6 +81,11 @@
 
                     </a>
                 </li>
+                <li class="menu-item {% if '/marche/' in request.path %}active{% endif %}">
+                    <a href="{% url 'marche' %}" class="menu-link">
+                        <div class="text-truncate">AlterMarché</div>
+                    </a>
+                </li>
                 <li class="menu-item {% if '/permachat/' in request.path %}active{% endif %}">
                     <a href="{% url 'permachat:chattons' %}" class="menu-link">
                         <div class="text-truncate">Chat en direct</div>
@@ -202,7 +207,6 @@
         <li class="menu-header small text-uppercase" >
             <span class="menu-header-text">Divers</span>
         </li>
-        {% comment %}
         <li class="menu-item {% if '/compte/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
               <div class="text-truncate">
@@ -244,8 +248,8 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item ">
-                    <a href="{% url 'mesFavoris' %}" class="menu-link">
-                        {% translate 'Gérer mes favoris' %}
+                    <a class="menu-link" data-toggle="modal" data-target="#ajouter_favori">
+                        {% translate 'Ajouter la page actuelle' %}
                     </a>
                 </li>
                   {% for fav in favoris_list %}
@@ -255,9 +259,13 @@
                         </a>
                     </li>
                   {% endfor %}
+                <li class="menu-item ">
+                    <a href="{% url 'mesFavoris' %}" class="menu-link">
+                        {% translate 'Gérer mes favoris' %}
+                    </a>
+                </li>
             </ul>
         </li>
-        {% endcomment %}
 
         <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -320,6 +328,42 @@
 
 
     </ul>
+    <!-- Modal -->
+<div class="modal fade" id="ajouter_favori" role="dialog" aria-labelledby="AjouterFavori" aria-hidden="true">
+    <div class="modal-dialog textaide" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row justify-content-center">
+                    <h5>{% translate 'Ajouter la page actuelle à mes favoris' %}</h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body textleft">
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        <p>Lien : {{request.get_full_path}}</p>
+                          <form method="post" action="{% url 'favoris_ajouterPage_modal' %}?url_path={{request.get_full_path|urlencode}}">
+                          {% csrf_token %}
+                              <div class=form-group">
+                                  <p>{% translate 'Choisissez un nom pour ce lien :' %}</p>
+                                  <div style="overflow:hidden;">
+                          <input   type="text" name="nom_favoris" maxlength="50" required="" id="id_nom" value="">
+                         </div>
+                                  <div style="float:right;">
+                                  <input type="submit" class="btn btn-primary" value="Ajouter">
+                                  </div>
+                                  </div>
+                      </form>
+                            </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+  </div>
+</div>
     {% endif %}
 
 

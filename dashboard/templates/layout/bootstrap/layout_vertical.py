@@ -15,7 +15,7 @@ class TemplateBootstrapLayoutVertical:
                 "content_layout": "wide",
                 "is_navbar": True,
                 "is_menu": True,
-                "is_footer": False,
+                "is_footer": True,
             }
         )
 

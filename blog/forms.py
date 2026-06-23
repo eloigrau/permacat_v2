@@ -500,7 +500,9 @@ class SalonArticleForm(forms.ModelForm):
     def save(self, request, article):
         instance = super(SalonArticleForm, self).save(commit=False)
         instance.article = article
-        instance.save()
+        if not instance.asso:
+             instance.asso = article.asso
+        instance.save(request)
         inscrit = InscritSalon(salon=instance, profil=request.user)
         inscrit.save()
         return instance

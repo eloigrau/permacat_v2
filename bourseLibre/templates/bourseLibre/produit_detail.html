@@ -1,6 +1,6 @@
 {% extends 'bourseLibre/base_produits.html' %}
 {% load app_filters %}
-{% block title %} -  {{ produit.nom_produit }} {% endblock %}
+{% block title %} AlterMarché: {{ produit.nom_produit }} | {% endblock %}
 {% block subtitle %}
 
 <div class="row align-items-center">
@@ -37,6 +37,7 @@
     	var quantite = parseInt($('#quantite').val());
      location.href="/panier/ajouter/" + {{produit.id}} + "/" + $('#quantite').val()
   }
+
 
 </script>
 
@@ -154,11 +155,11 @@
     <div class="col-md-4 paddingbase">
         <div class="dropdown show">
             <a aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle btn-success btn-block"
-               data-toggle="dropdown" href="#" id="dropdownMenuLink" role="button">
+               data-toggle="dropdown" href="#" id="dropdownMenuLink2" role="button">
                 Contacter {{produit.user.username}}
             </a>
 
-            <div aria-labelledby="dropdownMenuLink" class="dropdown-menu">
+            <div aria-labelledby="dropdownMenuLink2" class="dropdown-menu">
                 <a class="dropdown-item" class="btn btn-success btn-block "
                    href="{%url 'agora_conversation' produit.user.username %}" type="button">Envoyer un message privé</a>
                 {% if produit.user.accepter_annuaire %}
@@ -220,33 +221,33 @@
 </div>
 {%endif%}
 
-    {% endblock %}
+{% endblock %}
 
-    {% comment %}
-    {% block sidebar_sousmenu %}
-    {% if user.id != produit.user.id %}
+{% comment %}
+{% block sidebar_sousmenu %}
+{% if user.id != produit.user.id %}
 
-    <li class="sidebarli">
-        <a class="btn btn-success btn-block " href="{%url 'agora_conversation' produit.user.username %}" type="button">Envoyer
-            un message privé</a>
-    </li>
+<li class="sidebarli">
+    <a class="btn btn-success btn-block " href="{%url 'agora_conversation' produit.user.username %}" type="button">Envoyer
+        un message privé</a>
+</li>
 
-    {%elif user.id == produit.user.id%}
-    <li class="sidebarli">
-        <a class="btn btn-warning btn-lg btn-block" href="{%url 'produit_modifier' produit.id %}" type="button">
-            Modifier</a>
-        <a class="btn btn-danger btn-lg btn-block" href="{%url 'produit_supprimer' produit.id %}" type="button">
-            Supprimer</a>
-    </li>
-    {%endif%}
+{%elif user.id == produit.user.id%}
+<li class="sidebarli">
+    <a class="btn btn-warning btn-lg btn-block" href="{%url 'produit_modifier' produit.id %}" type="button">
+        Modifier</a>
+    <a class="btn btn-danger btn-lg btn-block" href="{%url 'produit_supprimer' produit.id %}" type="button">
+        Supprimer</a>
+</li>
+{%endif%}
 
-    {% if request.user.is_superuser %}
-    <li class="sidebarli">
-        <a class="btn btn-danger btn-lg btn-block"
-           href="https://www.perma.cat/gestion/bourseLibre/produit/{{produit.id}}/change/" type="button">
-            SU : Admin </a>
-        {% endif %}
-    </li>
+{% if request.user.is_superuser %}
+<li class="sidebarli">
+    <a class="btn btn-danger btn-lg btn-block"
+       href="https://www.perma.cat/gestion/bourseLibre/produit/{{produit.id}}/change/" type="button">
+        SU : Admin </a>
+    {% endif %}
+</li>
 
-    {% endblock %}
-    {% endcomment %}
+{% endblock %}
+{% endcomment %}

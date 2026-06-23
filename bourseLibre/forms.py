@@ -590,6 +590,8 @@ class SalonForm(forms.ModelForm):
     def save(self, request):
         instance = super(SalonForm, self).save(commit=False)
         instance.auteur = request.user.username
+        if not instance.asso and "asso_slug" in request.session:
+             instance.asso = Asso.objects.get(slug=request.session["asso_slug"])
         instance.save()
         inscrit = InscritSalon(salon=instance, profil=request.user)
         inscrit.save()

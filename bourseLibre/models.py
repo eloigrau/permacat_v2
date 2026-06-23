@@ -1326,7 +1326,7 @@ class Salon(models.Model):
     def get_absolute_url_site(self):
         return "https://www.perma.cat" + self.get_absolute_url()
 
-    def save(self, *args, **kwargs):
+    def save(self, request, *args, **kwargs):
         max_length = 99
         if not self.id:
             self.slug = orig = slugify(self.titre)[:max_length]
@@ -1340,6 +1340,9 @@ class Salon(models.Model):
 
             self.date_creation = now()
 
+
+        if not self.asso and "asso_slug" in request.session:
+             self.asso = Asso.objects.get(slug=request.session["asso_slug"])
         super(Salon, self).save(*args, **kwargs)
 
 

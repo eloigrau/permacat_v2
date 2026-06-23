@@ -1,42 +1,39 @@
-   {% load app_filters %}
-<div class="infinite-item">
-    <div class="card-deck offre justify-content-between" onclick="window.location.href='{% url 'produit_detail' produit.id %}'" style="cursor: pointer">
-
-        <div class="card card-block textcenter offre2" style="border-width: 3px; {% if produit.est_perimee %} background-color:grey;{% else %} background-color:{{ produit.get_couleur }}; border-color:{%if produit.estUneOffre == True %} green {%else%}blueviolet{%endif%}{%endif%};">
-            <div class="card-header offreentete justify-content-center">
-                    <div class="col-xs-5 ">
-                         {{produit.user.username|truncatechars:10}} ({% if produit.user.adresse.commune|truncatechars:10%}{{produit.user.adresse.commune|truncatechars:10}}{%else%}{{produit.user.adresse.code_postal}}{%endif%})
-                    </div>
-                    <div class="col-xs-2">
+{% load app_filters %}
+<div class="card card-block textcenter offre2"
+  onclick="window.location.href='{% url 'produit_detail' produit.id %}'"
+     style="border-width: 3px; {% if produit.est_perimee %} background-color:grey;{% else %} background-color:{{ produit.get_couleur }}; border-color:{%if produit.estUneOffre == True %} green {%else%}blueviolet{%endif%}{%endif%};">
+    <div class="card-header offreentete justify-content-center">
+        <div class="col-xs-5 ">
+            {{produit.user.username|truncatechars:10}} (
+            {% if produit.user.adresse.commune|truncatechars:10%}{{produit.user.adresse.commune|truncatechars:10}}{%else%}{{produit.user.adresse.code_postal}}{%endif%})
+        </div>
+        <div class="col-xs-2">
                          <span class="badge {% if produit.estUneOffre%}badge-warning{%else%} badge-info {%endif%}">{% if produit.estUneOffre%}Offre{%else%} Demande {%endif%}
 
 		                </span>
-		{{ produit.asso.get_logo_nomgroupe_html_15|safe }}
-                    </div>
-                    <div class="col-xs-5">
-                        {{produit.get_categorie_icon_html}}{% if  produit.get_souscategorie %} - {{produit.get_souscategorie}}{% endif %}
-                    </div>
-
-            </div>
-            <div class="card-body align-items-center justify-content-center">
-            <h6 class="card-title align-items-center">
-                {{ produit.nom_produit|truncatechars:70 }}
-            </h6>
-                <p>
-            {% if produit.date_debut or produit.date_expiration %}
-                    {% if produit.date_debut and produit.date_expiration %}
-                    du {{ produit.date_debut|date:"j/m" }}{% endif%} {% if produit.date_expiration %} au {{ produit.date_expiration|date:"j/m" }}
-                    {%else%}
-                    {% if produit.date_debut %}à partir du {{ produit.date_debut|date:"j/m" }}{% endif%} {% if produit.date_expiration %} jusqu'au {{ produit.date_expiration|date:"j/m" }}{% endif%}
-                    {%endif%}
-                    <br/>
-            {%endif%}
-                    {{ produit.get_monnaies }}
-
-                </p>
-
-                </p>
-            </div>
+            {{ produit.asso.get_logo_nomgroupe_html_15|safe }}
         </div>
+        <div class="col-xs-5">
+            {{produit.get_categorie_icon_html}}{% if produit.get_souscategorie %} - {{produit.get_souscategorie}}{% endif %}
+        </div>
+
+    </div>
+    <div class="card-body align-items-center justify-content-center">
+        <h6 class="card-title align-items-center">
+            {{ produit.nom_produit|truncatechars:70 }}
+        </h6>
+        <p>
+            {% if produit.date_debut or produit.date_expiration %}
+                {% if produit.date_debut and produit.date_expiration %}
+                du {{ produit.date_debut|date:"j/m" }}{% endif%} {% if produit.date_expiration %} au {{produit.date_expiration|date:"j/m" }}
+            {%else%}
+                    {% if produit.date_debut %}à partir du {{ produit.date_debut|date:"j/m" }}{% endif%}
+                    {% if produit.date_expiration %} jusqu'au {{ produit.date_expiration|date:"j/m" }}{% endif%}
+            {%endif%}
+            <br/>
+            {%endif%}
+            {{ produit.get_monnaies }}
+        </p>
+    </div>
 </div>
-   </div>
+

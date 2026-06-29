@@ -3,42 +3,41 @@
 {% load activity_tags %}
 {% load fontawesome_5 %}
 
-{% block header %}
-<style>
-    @media (min-width: 990px){
-        .rowprincipal{
-            padding-right:190px;
-        }
-    }
-</style>
-{% endblock %}
 {% block title %} AlterMarché | {% endblock %}
 
 {% block clspanel %}claspanel{% endblock %}
- {% block content %}
-{% block sidebar %}
-  <!-- Sidebar -->
-  <nav id="sidebarMenu" class="collapse d-lg-block sidebar ">
-    <div class="position-sticky textcenter">
-        <a href="{% url 'marche' %}?base" >
-            <button type="button" class="btn  btn-info btn-sm" >
-               {% fa5_icon 'home' title='home' %}
-            </button>
-        </a>
-      <div class="">
-        <!-- Collapse 1 -->
 
-        <ul id="sidebar_menu" class="">
-          {% block sidebar_sousmenu %}
-            {% endblock  %}
-        </ul>
-    <!-- Collapsed content -->
-        <!-- Collapse 2 -->
-      </div>
-    </div>
-  </nav>
-  <!-- Sidebar -->
-{% endblock  %}
-{% block contenu %}
-{% endblock  %}
+ {% block content %}
+    {% block contenu %}
+    {% endblock  %}
 {% endblock %}
+
+ {% comment %}
+     {% block content %}
+        {% block sidebar %}
+          <!-- Sidebar -->
+          <nav id="sidebarMenu" class="collapse d-lg-block sidebar ">
+            <div class="position-sticky textcenter">
+                <a href="{% url 'marche' %}?base" >
+                    <button type="button" class="btn  btn-info btn-sm" >
+                       {% fa5_icon 'home' title='home' %}
+                    </button>
+                </a>
+              <div class="">
+                <!-- Collapse 1 -->
+
+                <ul id="sidebar_menu" class="">
+                  {% block sidebar_sousmenu %}
+                    {% endblock  %}
+                </ul>
+            <!-- Collapsed content -->
+                <!-- Collapse 2 -->
+              </div>
+            </div>
+          </nav>
+          <!-- Sidebar -->
+        {% endblock  %}
+        {% block contenu %}
+        {% endblock  %}
+    {% endblock %}
+ {% endcomment %}

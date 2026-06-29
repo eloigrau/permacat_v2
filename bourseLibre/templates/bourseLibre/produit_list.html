@@ -5,14 +5,27 @@
 {% load app_filters %}
 
 {%block subtitle%}
-<div class="row justify-content-center">
-    <div class="col-md-8 offset-md-2 ">
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-3 ">
+        <div class="row no-gutters justify-content-center">
+            <div class="col" >
+        <form action="{% url 'chercher_produits' %}" class="form-inline justify-content-center  navbar-form "
+              method="get" role="search">
+            {% csrf_token %}
+            <input class="form-control" name="id_recherche" placeholder="rechercher..." type="text">
+            <button class="btn btn-info" type="submit">{% fa5_icon 'search' title='chercher' %}</button>
+        </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 ">
         <h3>AlterMarché - Petites Annonces</h3>
         <p>{% if asso_courante %}Annonces du groupe : {{asso_courante.nom }}{% endif %}</p>
-        <h5> {% if typeOffre %} Type : {{typeOffre}} {% endif %} {% if categorie_parent %}{% if typeOffre %} -  {% endif %} {{categorie_parent}} {% endif%}
-            {% if request.GET.monnaie %} Monnaie : {{request.GET.monnaie}} {% endif %}</h5>
+        <p> {% if typeOffre %} Type : {{typeOffre}} {% endif %} {% if categorie_parent %}{% if typeOffre %} -  {% endif %} Catégorie : {{categorie_parent}} {% endif%}
+            {% if request.GET.monnaie %} & Monnaie : {{request.GET.monnaie}} {% endif %} </p>
+        {% if request.GET.producteur %} <p>Annonces de : {{request.GET.producteur}} </p>{% endif %}
     </div>
-    <div class="col-md-2 ">
+    <div class="col-md-3 ">
         <button class="btn btn-light btn-sm" data-target="#help" data-toggle="modal" title="En savoir plus..."
                 type="button">
             {% fa5_icon 'question-circle' %}
@@ -34,19 +47,6 @@
     </div>
 </div>
 
-<div class="row justify-content-center sidebar_toggle">
-    <div class="col-md-4">
-        <div class="row no-gutters justify-content-center">
-            <form action="{% url 'chercher_produits' %}" class="form-inline justify-content-center  navbar-form "
-                  method="get" role="search">
-                {% csrf_token %}
-                <input class="form-control" name="id_recherche" placeholder="rechercher..." type="text">
-                <button class="btn btn-info" type="submit">{% fa5_icon 'search' title='chercher' %}</button>
-
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Modal -->
 <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="help" role="dialog" tabindex="-1">
@@ -73,20 +73,27 @@
         </div>
     </div>
 </div>
-{% comment %}
+
+{%endblock subtitle%}
+
+{% block clspanel %}claspanel{% endblock %}
+
+{% block contenu %}
+<hr>
 <div class="row justify-content-center ">
-    <nav class="navbar navbar-expand-md justify-content-center  navbar-light bg-light  shadow-petit">
+    <nav class="navbar navbar-expand-md justify-content-center">
         <div class="navbar-header">
             <button aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
                     data-target="#navbarProduit" data-toggle="collapse" type="button">
-                <span class="navbar-toggler-icon"></span></button>
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
         <div class="collapse navbar-collapse" id="navbarProduit">
             <ul class="nav navbar-nav">
                 <li class="nav-item dropdown active">
                     <button aria-expanded="false" aria-haspopup="true" class="btn btn-info dropdown-toggle btn-block"
                             data-toggle="dropdown" id="menuOffreOuDemande2" type="button">
-                        {{typeOffre}}
+                       {% if typeOffre %} {{typeOffre}} {% else %} Offre/demande{% endif %}
                     </button>
                     <div aria-labelledby="menuOffreOuDemande2" class="dropdown-menu">
                         <a class="dropdown-item" href="{%url 'marche' %}">Offres et demandes</a>
@@ -98,69 +105,65 @@
                 </li>
                 <li class="nav-item">
                     <a href="?">
-                        <button class="btn btn-block {% if typeFiltre == 'aucun' %}btn-primary {%endif%}">Tout</button>
+                        <button class="btn btn-block {% if typeFiltre == 'aucun' %}btn-primary {%else%}btn-info{%endif%}">Tout</button>
                     </a>
                 </li>
                 <li class="nav-item dropdown active">
                     <button aria-expanded="false"
                             aria-haspopup="true" class="btn dropdown-toggle btn-block
-                {% if categorie_parent == 'aliment' or categorie_parent == 'vegetal' or categorie_parent == 'service' or categorie_parent == 'objet' or categorie_parent == 'offresEtDemandes' %}btn-primary {%endif%}" data-toggle="dropdown" id="menuAliment2"
+                {% if categorie_parent == 'aliment' or categorie_parent == 'vegetal' or categorie_parent == 'service' or categorie_parent == 'objet' or categorie_parent == 'offresEtDemandes' %}btn-primary {%else%}btn-info{%endif%}" data-toggle="dropdown" id="menuAliment2"
                             type="button">
                         {% if categorie_parent %} {{categorie_parent}} {% else %}Type d'annonce{% endif %}
                     </button>
-                    </button>
                     <div aria-labelledby="menuAliment2" class="dropdown-menu">
-                        <a class="dropdown-item" href="?categorie=offresEtDemandes"><i class="fa fa-handshake"></i>Liste
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=offresEtDemandes"><i class="fa fa-handshake"></i>Liste
                             d'offres et demandes</a>
-                        <a class="dropdown-item" href="?categorie=aliment"><i class="fa fa-utensils"></i> Aliments</a>
-                        <a class="dropdown-item" href="?categorie=vegetal"><i class="fa fa-leaf"></i>Végétal</a>
-                        <a class="dropdown-item" href="?categorie=service"><i class="fa fa-sun"></i>Service</a>
-                        <a class="dropdown-item" href="?categorie=objet"><i class="fa fa-life-ring"></i>Objet</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=aliment"><i class="fa fa-utensils"></i> Aliments</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=vegetal"><i class="fa fa-leaf"></i>Végétal</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=service"><i class="fa fa-sun"></i>Service</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=objet"><i class="fa fa-life-ring"></i>Objet</a>
                         <div class="dropdown-divider"></div>
                     </div>
                 </li>
                 <li class="nav-item dropdown active">
                     <button aria-expanded="false"
-                            aria-haspopup="true" class="btn dropdown-toggle btn-block {% if categorie_parent == 'vegetal' %}btn-primary {%endif%}" data-toggle="dropdown" id="menuvegetal2"
+                            aria-haspopup="true" class="btn dropdown-toggle btn-block {% if categorie_parent == 'vegetal' %}btn-primary{%else%}btn-info {%endif%}" data-toggle="dropdown" id="menuvegetal2"
                             type="button">
                         {%if souscategorie and categorie_parent == 'vegetal'%}{{souscategorie}}{%else%}Végétal {%endif%}
                     </button>
-                    </button>
                     <div aria-labelledby="menuvegetal2" class="dropdown-menu">
-                        <a class="dropdown-item" href="?categorie=vegetal">tous les vegetaux</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=vegetal">tous les vegetaux</a>
                         <div class="dropdown-divider"></div>
                         {% for souscat in choixPossibles.vegetal.souscategorie %}
-                        <a class="dropdown-item" href="?souscategorie={{souscat}}">{{souscat}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&souscategorie={{souscat}}">{{souscat}}</a>
                         {% endfor %}
                     </div>
                 </li>
                 <li class="nav-item dropdown active">
                     <button aria-expanded="false"
-                            aria-haspopup="true" class="btn dropdown-toggle btn-block {% if categorie_parent == 'service' %}btn-primary {%endif%}" data-toggle="dropdown" id="menuservice2"
+                            aria-haspopup="true" class="btn dropdown-toggle btn-block {% if categorie_parent == 'service' %}btn-primary{%else%}btn-info {%endif%}" data-toggle="dropdown" id="menuservice2"
                             type="button">
                         {%if souscategorie and categorie_parent == 'service'%}{{souscategorie}}{%else%}Service {%endif%}
                     </button>
-                    </button>
                     <div aria-labelledby="menuservice2" class="dropdown-menu">
-                        <a class="dropdown-item" href="?categorie=service">tous les services</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=service">tous les services</a>
                         <div class="dropdown-divider"></div>
                         {% for souscat in choixPossibles.service.souscategorie %}
-                        <a class="dropdown-item" href="?souscategorie={{souscat}}">{{souscat}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&souscategorie={{souscat}}">{{souscat}}</a>
                         {% endfor %}
                     </div>
                 </li>
                 <li class="nav-item dropdown active">
                     <button aria-expanded="false"
-                            aria-haspopup="true" class="btn dropdown-toggle btn-block {% if categorie_parent == 'objet' %}btn-primary {%endif%}" data-toggle="dropdown" id="menuobjet2"
+                            aria-haspopup="true" class="btn dropdown-toggle btn-block {% if categorie_parent == 'objet' %}btn-primary{%else%}btn-info{%endif%}" data-toggle="dropdown" id="menuobjet2"
                             type="button">
                         {%if souscategorie and categorie_parent == 'objet'%}{{souscategorie}}{%else%}Objet {%endif%}
                     </button>
-                    </button>
                     <div aria-labelledby="menuobjet2" class="dropdown-menu">
-                        <a class="dropdown-item" href="?categorie=objet">tous les objets</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&categorie=objet">tous les objets</a>
                         <div class="dropdown-divider"></div>
                         {% for souscat in choixPossibles.objet.souscategorie %}
-                        <a class="dropdown-item" href="?souscategorie={{souscat}}">{{souscat}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'souscategorie'| urlSupprParam:'categorie'}}&souscategorie={{souscat}}">{{souscat}}</a>
                         {% endfor %}
                     </div>
                 </li>
@@ -174,7 +177,7 @@
                     </button>
                     <div aria-labelledby="menuProducteur" class="dropdown-menu" id="idProducteur2">
                         {% for producteur in producteur_list %}
-                        <a class="dropdown-item" href="?producteur={{producteur}}">{{producteur}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'producteur'}}&producteur={{producteur}}">{{producteur}}</a>
                         {% endfor %}
                     </div>
                 </li>
@@ -184,13 +187,13 @@
                 {%if monnaie_list %}
                 <li class="nav-item dropdown active">
                     <button aria-expanded="false"
-                            aria-haspopup="true" class="btn dropdown-toggle  btn-block {% if request.GET.monnaie %}btn-primary{%endif%}" data-toggle="dropdown" id="menuMonnaie2"
+                            aria-haspopup="true" class="btn dropdown-toggle  btn-block {% if request.GET.monnaie %}btn-primary{%else%}btn-info{%endif%}" data-toggle="dropdown" id="menuMonnaie2"
                             type="button">
                         {% if request.GET.monnaie %} Monnaie: {{request.GET.monnaie}} {%else%}Monnaie{%endif%}
                     </button>
                     <div aria-labelledby="menuMonnaie" class="dropdown-menu" id="idMonnaie2">
                         {% for monnaie in monnaie_list %}
-                        <a class="dropdown-item" href="?monnaie={{monnaie}}">{{monnaie}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode | urlSupprParam:'monnaie'}}&monnaie={{monnaie}}">{{monnaie}}</a>
                         {% endfor %}
                     </div>
                 </li>
@@ -207,7 +210,7 @@
                     <div aria-labelledby="menuStatut" class="dropdown-menu" id=idPermacat2">
                         <a class="dropdown-item" href="{% url 'marche' %}?base">Tous</a>
                         {% for abrev, nom_asso in asso_list %}
-                        <a class="dropdown-item" href="?asso={{abrev}}">{{nom_asso}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode |urlSupprParam:'asso'}}&asso={{abrev}}">{{nom_asso}}</a>
                         {%endfor%}
                     </div>
                 </li>
@@ -220,7 +223,7 @@
                     </button>
                     <div aria-labelledby="menuOrdreTri" class="dropdown-menu" id="idOrdreTri">
                         {% for ordre in ordreTriPossibles %}
-                        <a class="dropdown-item" href="?{{ request.GET.urlencode|sansOrdreTri }}&ordre={{ordre}}">{{ordre}}</a>
+                        <a class="dropdown-item" href="?{{ request.GET.urlencode |urlSupprParam:'ordre'}}&&ordre={{ordre}}">{{ordre}}</a>
                         {% endfor %}
                     </div>
                 </li>
@@ -228,136 +231,7 @@
         </div>
     </nav>
 </div>
-{% endcomment %}
-{%endblock subtitle%}
-
-{% block clspanel %}claspanel{% endblock %}
-{% block sidebar_sousmenu %}
-<!-- Collapsed content -->
-<li class="">
-    <a href="{% url 'produit_proposer_entree' %}">
-        <button class="btn btn-success" type="button">
-            <i class="fa fa-plus"></i>&nbsp;Publier...
-        </button>
-    </a>
-</li>
-<li class="sidebarli">
-    <a href="?producteur={{request.user}}">
-        <button class="btn btn-primary" type="button">
-            <i class="fa fa-user"></i> &nbsp;Mes annonces
-        </button>
-    </a>
-</li>
-<li class="sidebarli2">
-    <button aria-expanded="false"
-            aria-haspopup="true"
-            class="btn btn-block {% if request.GET.asso %}btn-primary{%else%} btn-light{%endif%}  dropdown-toggle dropdown-toggle-split" data-target="#idPermacat" data-toggle="dropdown"
-            type="button">
-        {% if asso_courante %}{{asso_courante.nom}}{%else%}Groupe{%endif%}
-    </button>
-    <div aria-labelledby="menuStatut" class="dropdown-menu" id=idPermacat">
-        <a class="dropdown-item" href="{% url 'marche' %}?base">Tous</a>
-        {% for abrev, nom_asso in asso_list %}
-        <a class="dropdown-item" href="?asso={{abrev}}">{{nom_asso}}</a>
-        {%endfor%}
-    </div>
-</li>
-{% comment %}
-<li class="sidebarli2">
-    <button aria-expanded="false" aria-haspopup="true" class="btn btn-light dropdown-toggle btn-block" data-toggle="dropdown"
-            id="menuOffreOuDemande" type="button">
-        {{typeOffre}}
-    </button>
-    <div aria-labelledby="menuOffreOuDemande" class="dropdown-menu">
-        <a class="dropdown-item" href="{% url 'marche_offres' %}">Offres</a>
-        <a class="dropdown-item" href="{% url 'marche_recherches' %}">Demandes</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{% url 'marche' %}?expire=1">Expirées</a>
-    </div>
-</li>
-{% endcomment %}
-
-{%if producteur_list %}
-<li class="sidebarli2">
-    <button aria-expanded="false"
-            aria-haspopup="true" class="btn dropdown-toggle  btn-block {% if request.GET.producteur %}btn-primary{%else%}btn-light{%endif%}" data-toggle="dropdown" id="menuproducteur" type="button">
-        {% if request.GET.producteur %} Par: {{request.GET.producteur}} {%else%}Auteur{%endif%}
-    </button>
-    <div aria-labelledby="menuProducteur" class="dropdown-menu" id="idProducteur">
-        {% for producteur in producteur_list %}
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&producteur={{producteur}}">{{producteur}}</a>
-        {% endfor %}
-    </div>
-</li>
-{%endif%}
-
-
-{%if monnaie_list %}
-<li class="sidebarli2">
-    <button aria-expanded="false"
-            aria-haspopup="true" class="btn dropdown-toggle  btn-block {% if request.GET.monnaie %}btn-primary{%else%}btn-light{%endif%}" data-toggle="dropdown" id="menuMonnaie" type="button">
-        {% if request.GET.monnaie %} Monnaie: {{request.GET.monnaie}} {%else%}Monnaie{%endif%}
-    </button>
-    <div aria-labelledby="menuMonnaie" class="dropdown-menu" id="idMonnaie">
-        {% for monnaie in monnaie_list %}
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&monnaie={{monnaie}}">{{monnaie}}</a>
-        {% endfor %}
-    </div>
-</li>
-{%endif%}
-
-
-<li class="sidebarli2">
-    <button aria-expanded="false"
-            aria-haspopup="true" class="btn dropdown-toggle btn-block
-                {% if categorie_parent == 'aliment' or categorie_parent == 'vegetal' or categorie_parent == 'service' or categorie_parent == 'objet' or categorie_parent == 'offresEtDemandes' %}btn-primary {%else%}btn-light{%endif%}" data-toggle="dropdown" id="menuAliment" type="button">
-        {% if categorie_parent %} {{categorie_parent}} {% else %}Type d'annonce{% endif %}
-    </button>
-    </button>
-    <div aria-labelledby="menuAliment" class="dropdown-menu">
-        <a class="dropdown-item" href="{% url 'marche' %}?{{ request.GET.urlencode }}&categorie=listeOffresEtDemandes">Liste
-            d'offres/demandes</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&categorie=aliment">Aliments</a>
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&categorie=vegetal">Végétal</a>
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&categorie=service">Services</a>
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&categorie=objet">Objets</a>
-
-    </div>
-</li>
-<li class="sidebarli2">
-    <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle btn-block btn-light" data-toggle="dropdown"
-            id="menuDistance2" type="button">
-        Rayon
-    </button>
-    <div aria-labelledby="menuDistance" class="dropdown-menu" id="idDistance2">
-        {% for distance in distancePossibles %}
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&distance={{distance}}">{{distance}} km</a>
-        {% endfor %}
-    </div>
-</li>
-<li class="sidebarli2">
-    <button aria-expanded="false" aria-haspopup="true" class="btn dropdown-toggle btn-block btn-light" data-toggle="dropdown"
-            id="menuOrdreTri2" type="button">
-        Trier par...
-    </button>
-    <div aria-labelledby="menuOrdreTri" class="dropdown-menu" id="idOrdreTri2">
-        {% for ordre in ordreTriPossibles %}
-        <a class="dropdown-item" href="?{{ request.GET.urlencode }}&ordre={{ordre}}">{{ordre}}</a>
-        {% endfor %}
-    </div>
-</li>
-<li class="" style="width: 90%;  margin-bottom:0px;">
-    <form action="{% url 'chercher_produits' %}" class="form-inline justify-content-center  navbar-form " method="get"
-          role="search">
-        {% csrf_token %}
-        <input class="" name="id_recherche" placeholder="Rechercher..." type="text">
-        <button class="btn btn-info" type="submit">{% fa5_icon 'search' title='chercher' %}</button>
-    </form>
-</li>
-
-{% endblock %}
-{% block contenu %}
+<hr>
 {% include 'pagination_new.html' %}
 <div class="card-deck listOffres infinite-container">
     <div class="card-deck offre justify-content-between" style="cursor: pointer">

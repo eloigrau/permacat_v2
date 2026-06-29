@@ -40,6 +40,7 @@ class DashboardView(UserPassesTestMixin, TemplateView):
         return render(self.request, "erreur.html", {"msg": "Vous n'êtes pas autorisé-e à voir ce contenu, désolé. (%s) " %(str(self.asso))})
 
     def get_template_names(self):
+        print('dddddddddd' +  self.request.session["asso_slug"] )
         return select_template(["dashboard_"+ self.request.session["asso_slug"] + ".html","dashboard_base.html"])
 
 

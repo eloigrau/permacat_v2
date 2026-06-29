@@ -17,7 +17,7 @@
     <link href="{% static 'css/cookielaw.css'%}" rel="stylesheet" />
 {% endblock %}
 
-{% block title %}Tableau de bord {% endblock %}
+{% block title %}Tableau de bord {{request.session.asso_slug | getNomGroupeFromSlug}} | {% endblock %}
 
 {% block content_total %}
 

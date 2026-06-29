@@ -1,4 +1,5 @@
 {% load app_filters %}
+<div class="col-sm-12 col-md-4 col-lg-3 offre justify-content-between hoverable flex-item" >
 <div class="card card-block textcenter offre2"
   onclick="window.location.href='{% url 'produit_detail' produit.id %}'"
      style="border-width: 3px; {% if produit.est_perimee %} background-color:grey;{% else %} background-color:{{ produit.get_couleur }}; border-color:{%if produit.estUneOffre == True %} green {%else%}blueviolet{%endif%}{%endif%};">
@@ -36,4 +37,4 @@
         </p>
     </div>
 </div>
-
+</div>

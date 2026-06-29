@@ -79,15 +79,10 @@
 
 
 <div class="row moiscal">
-
     <div class="col-sm-12 textcenter">
-
-        <a class="btn btn-light calleft btn-sm" href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansMois}}&{{prev_month}}"> <i class="fa fa-arrow-left"></i> </a>
-
+        <a class="btn btn-light calleft btn-sm" href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|urlSupprParam:'mois'}}&{{prev_month}}"> <i class="fa fa-arrow-left"></i> </a>
         {{mois|translate_month}} {{annee}}
-
-        <a class="btn btn-light calright btn-sm" href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|sansMois}}&{{next_month}}">  <i class="fa fa-arrow-right"></i> </a>
-
+        <a class="btn btn-light calright btn-sm" href="{% url 'cal:agenda' %}?{{ request.GET.urlencode|urlSupprParam:'mois'}}&{{next_month}}">  <i class="fa fa-arrow-right"></i> </a>
     </div>
 </div>
 <div class="row justify-content-center">
@@ -95,7 +90,6 @@
         <button id="btn-afficher-calendrier" class="btn btn-light btn-sm ">
             Afficher les jours passés du mois
         </button>
-
         {{ calendar }}
     </div>
 </div>

@@ -69,7 +69,7 @@
     {% endblock %}
     {% block epingles %}
     <!-- Dossiers principaux -->
-    <div class="col-lg-6 col-sm-12 order-1 mb-6">
+    <div class="col-lg-6 col-sm-12 order-2 mb-6">
       <div class="card">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
@@ -91,32 +91,9 @@
     </div>
     {% endblock %}
 
-    {% block derniersArticles %}
-    <!-- Derniers Articles -->
-    <div class="col-lg-6 col-sm-12 order-1 mb-6">
-      <div class="card">
-        <div class="card-header d-flex justify-content-between">
-          <div class="card-title mb-0">
-            <h5 class="mb-1 me-2">Derniers Articles</h5>
-              <p class="card-subtitle">Publiés ou modifiés sur le <a href="{% url 'blog:acceuil' %}">Forum </a></p>
-          </div>
-          <div class="d-block">
-            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#derniers_articles"
-             onclick="get_derniers('{% url 'dashboard:derniersArticles' asso=request.session.asso_slug %}', '#derniers_articles');"
-               role="button" aria-expanded="true" aria-controls="collapseExample">
-              Voir
-            </a>
-          </div>
-        </div>
-        <div class="card-body">
-          <div id="derniers_articles"></div>
-        </div>
-      </div>
-    </div>
-    {% endblock %}
     {% block derniersDocs %}
     <!-- derniers docs -->
-    <div class="col-lg-6 col-sm-12 order-2 mb-6">
+    <div class="col-lg-6 col-sm-12 order-3 mb-6">
       <div class="card">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">
@@ -137,9 +114,32 @@
       </div>
     </div>
     {% endblock %}
+    {% block derniersArticles %}
+    <!-- Derniers Articles -->
+    <div class="col-lg-6 col-sm-12 order-4 mb-6">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="mb-1 me-2">Derniers Articles</h5>
+              <p class="card-subtitle">Publiés ou modifiés sur le <a href="{% url 'blog:acceuil' %}">Forum </a></p>
+          </div>
+          <div class="d-block">
+            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#derniers_articles"
+             onclick="get_derniers('{% url 'dashboard:derniersArticles' asso=request.session.asso_slug %}', '#derniers_articles');"
+               role="button" aria-expanded="true" aria-controls="collapseExample">
+              Voir
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="derniers_articles"></div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
     {% block derniersComm %}
     <!-- derniers Comm -->
-    <div class="col-lg-6 col-sm-12 order-3 mb-6">
+    <div class="col-lg-6 col-sm-12 order-5 mb-6">
       <div class="card ">
         <div class="card-header d-flex justify-content-between">
           <div class="card-title mb-0">

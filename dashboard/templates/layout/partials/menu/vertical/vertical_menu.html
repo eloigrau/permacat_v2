@@ -301,7 +301,77 @@
             </ul>
 
         </li>
+    {% if request.user.is_superuser %}
+        <li class="menu-item ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                 <i class="menu-icon icon-base bx bx-globe-alt"></i>
+                <div class="text-truncate">Admin</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item"> <a class="menu-link" href="{% url 'admin:index' %}">Admin</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'voirEmails' %}"> voir Emails Alertes</a>
+                </li>
+                <li class="menu-item"><a class="menu-link"
+                       href="https://www.perma.cat/gestion/bourseLibre/profil/?o=-3">
+                    Utilisateurs </a></li>
+                <li class="menu-item"><a class="menu-link" href="https://www.perma.cat/gestion/hitcount/hit/">
+                    Hits </a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'voir_articles_a_archiver' %}">Archiver
+                    articles</a></li>
 
+                 <li class="menu-item"><a class="menu-link" href="{% url 'recalculerAdresses' %}">recalculerAdresses</a></li>
+                 <li class="menu-item"><a class="menu-link" href="{% url 'recalculerAdressesConf' %}">recalculerAdressesConf</a></li>
+
+                <li class="menu-item"><a class="menu-link" href="{% url 'blog:voirTousLieux' %}"> Lieux </a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'listeContactsMails' %}"> listeContactsMails </a></li>
+{% comment %}
+                <li class="menu-item"><a class="menu-link" href="{% url 'reabonner_tous_profils' %}">reabonner_tous_profils</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'envoyer_emails_reabonnement' %}">envoyer_emails_reabonnement</a></li>
+{% endcomment %}
+                <li class="menu-item"><a class="menu-link" href="{% url 'vote:index' %}">Liste des suffrages </a></li>
+
+                <li class="menu-item"><a class="menu-link" href="{% url 'supprimervieuxcomptes' %}">
+                    supprimervieuxcomptes</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'envoyerMailVieuxComptes' %}">
+                    envoyerMailVieuxComptes</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'nettoyerActions' %}"> nettoyerActions</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'nettoyerAdresses' %}"> nettoyerAdresses</a>
+                </li>
+
+
+                <li class="menu-item"><a class="menu-link" href="{% url 'nettoyerFollows' %}"> nettoyerFollows</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'nettoyerFollows' %}"> nettoyerFollowsUser</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'supprimerHitsAnciens' %}">
+                    supprimerHitsAnciens</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'supprimerActionsAnciens' %}">
+                    supprimerActionsAnciens</a></li>
+                {% comment %}
+                <li class="menu-item"><a class="menu-link" href="{% url 'movePermagoraInscritsToNewsletter' %}">
+                    movePermagoraInscritsToNewsletter</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'reinitialiserAbonnementsPermAgora' %}">
+                    reinitialiserAbonnementsPermAgora</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'transforBlogJpToForum' %}">
+                    transforBlogJpToForum</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'envoiNewsletter2023' %}">
+                    envoiNewsletter2023</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'voirPbProfils' %}"> voirPbProfils</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'creerAction_articlenouveau' %}">
+                    creerAction_articlenouveau</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'abonnerAdherentsCiteAlt' %}">
+                    abonnerAdherentsCiteAlt</a></li>
+                {% endcomment %}
+                <li class="menu-item"><a class="menu-link" href="{% url 'listeContacts_admin' %}"> listeMails</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'nettoyerHistoriqueAdmin' %}">
+                    nettoyerHistoriqueAdmin</a></li>
+            </ul>
+            
+        </li>
+    {% endif %}
         <li class="menu-item {% if '/contact/' in request.path %}active open{% endif %}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                  <i class="menu-icon icon-base bx bx-support"></i>
@@ -309,8 +379,13 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
-                    <a href="{% url 'faq' %}" class="menu-link" target="_blank">
+                    <a href="{% url 'faq' %}" class="menu-link" >
                         <div class="text-truncate">FAQ du site</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
+                    <a href="{% url 'liens' %}" class="menu-link" >
+                        <div class="text-truncate">Liens</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/contact/contact_admins/' in request.path %}active{% endif %}">
@@ -321,6 +396,11 @@
                 <li class="menu-item {% if '/contact/signaler_bug/' in request.path %}active{% endif %}">
                     <a href="{% url 'signaler_bug' %}" class="menu-link" target="_blank">
                         <div class="text-truncate">Signaler un bug</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
+                    <a href="{% url 'faq' %}" class="menu-link" >
+                        <div class="text-truncate">CGU</div>
                     </a>
                 </li>
             </ul>

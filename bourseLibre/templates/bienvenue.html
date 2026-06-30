@@ -23,6 +23,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 <div class="row align-items-center">
 	<div class="col-md-12">
 		<h4 class = "textcenter rowbienvenue">{% trans "Bon dia " %}  {{request.user.username}} !</h4>
+	<b>Ceci est l'ancienne page d'accueil du site. Pour accéder au Tableau de bord d'un collectif <a href="{% url 'dashboard:index' %}" class="btn btn-success"> Cliquer ici</a></b>
 	</div>
 </div>
 {% endif %}
@@ -116,7 +117,7 @@ style="background-image:url('/static/img/Canigo.jpg');background-size:cover;"
 
 					<div class="row" >
 					  <div class="col-sm-12 textcenter">
-						  <b><a href="{% url 'dashboard:index' %}"> Tableau de bord</a></b> -
+
 						  <b><a href="{% url 'blog:acceuil' %}"> Forum</a></b> -
 						  <b><a href="{% url 'marche' %}">Annonces</a></b> -
 						  <b><a href="{% url 'photologue:doc-list' %}">Documents</a></b> -

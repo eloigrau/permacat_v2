@@ -1,12 +1,26 @@
 {% extends 'base_site.html' %}
 {% load static%}
+{% load fontawesome_5 %}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
-<h4><b>Pourquoi s'inscrire sur www.Perma.Cat ?</b></h4>
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12  col-md-2 textcenter">
+        <a href="{% url 'bienvenue' %}">
+            <button type="button" class="btn btn-info">
+                <i class="fa fa-home"></i>
+            </button>
+        </a>
+    </div>
+    <div class="col-sm-12  col-md-8 textcenter">
+        <h4><b>Pourquoi s'inscrire sur www.Perma.Cat ?</b></h4>
+    </div>
+    <div class="col-sm-12  col-md-2 textcenter">
+    </div>
+</div>
 {% endblock %}
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center align-items-center">
     <div class="col-sm-12 col-md-8 textcenter">
         <h6>Cette plateforme gratuite et sans publicité (et sans GAFAM) a pour but de mettre en lien tous les citoyens, les collectifs et les associations
             qui veulent participer au changement local. </h6>
@@ -84,7 +98,7 @@
 <div class="row">
     <div class="col-sm-12 textcenter">
         <b> <a href="{% url 'senregistrer' %}" class="btn btn-light btn-radius"> <i class="fa fa-arrow-right"></i>
-            Cliquer ici pour s'inscrire sur le site</a>
+            Cliquer ici pour vous inscrire sur le site</a>
         </b>
     </div>
 </div>

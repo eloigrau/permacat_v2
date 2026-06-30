@@ -151,6 +151,7 @@ urlpatterns = [
     re_path(r'^contact/charte/$', views_base.charte, name='charte',),
     re_path(r'^contact/cgu/$', views_base.cgu, name='cgu',),
     re_path(r'^contact/liens/$', views_base.liens, name='liens',),
+    re_path(r'^liste_collectifs/$', views_base.liste_collectifs, name='liste_collectifs',),
     path(r'contact/fairedon/<str:asso>/', views.fairedon_asso, name='faire_don',),
     path(r'adhesion/<str:asso>/', views.adhesion_asso, name='adhesion_asso'),
     path(r'adhesion/', views.adhesion_entree, name='adhesion_entree'),

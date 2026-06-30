@@ -12,6 +12,7 @@ from defraiement.models import Reunion
 from django.templatetags.static import static
 from photologue.models import Album
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 from django.db.models import Q
 import re
 from bourseLibre.utils import slugify_pcat
@@ -673,7 +674,7 @@ class Article_asso_rechercheForm(forms.ModelForm):
             'article': autocomplete.ModelSelect2(url='blog:article-ac-asso')
         }
         help_texts = {
-            'article': 'Chercher dans les titres des articles du groupe',
+            'article':  mark_safe("<p style='color:teal'>(écrire ci dessus une partie du titre de l'article recherché)</p>")
         }
 
     def save(self):

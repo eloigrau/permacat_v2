@@ -83,6 +83,9 @@ def charte(request):
 def cgu(request):
     return render(request, 'cgu.html', )
 
+def liste_collectifs(request):
+    return render(request, 'asso/listeDesCollectifs.html', )
+
 @login_required
 def liens(request):
     liens = {"généraux" :[

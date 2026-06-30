@@ -3,6 +3,23 @@
 {% block title %}Liens |{% endblock %}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
+
+{% block subtitle %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12  col-md-2 textcenter">
+        <a href="{% url 'bienvenue' %}">
+            <button type="button" class="btn btn-info">
+                <i class="fa fa-home"></i>
+            </button>
+        </a>
+    </div>
+    <div class="col-sm-12  col-md-8 textcenter">
+        <h4>Les sites conseillés de nos partenaires et que l'on soutient</h4>
+    </div>
+    <div class="col-sm-12  col-md-2 textcenter">
+    </div>
+</div>
+{% endblock %}
 {% block content %}
 
 <nav class="nav nav-tabs justify-content-center">

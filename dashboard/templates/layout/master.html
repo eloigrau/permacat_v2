@@ -1,7 +1,6 @@
 {% spaceless %}
 {% load static %}
 {% load theme %}
-{% load fontawesome_5 %}
 <!DOCTYPE html>
 <html lang="fr" class="layout-menu-fixed layout-compact layout-menu-collapsed"  data-assets-path="{% static 'dashboard/assets/' %}"  data-framework="django" data-template="vertical-menu"><head>
     <title>{% block title %}{% endblock %} Perma.Cat</title>
@@ -67,10 +66,9 @@
 </body>
 <footer class="content-footer footer bg-footer-theme">
   <div class="container-fluid">
-    <div class="footer-container align-items-center justify-content-center ">
+    <div class="{% block  footerclass %}footer-container {% endblock %} align-items-center justify-content-center ">
       {% block footer_block %} {% endblock footer_block %}
-    <p class="textcenter">
-    <a href="#top" id="scroll-to-top" class="btn"><i class="fa fa-angle-up"></i></a></p>
+    <p class="textcenter"><a href="#top" id="scroll-to-top" class="btn"><i class="fa fa-angle-up"></i></a></p>
     <p class="textcenter textepetit">&copy; PermaCat; {% now 'd/m/Y' %}</p>
     </div>
   </div>

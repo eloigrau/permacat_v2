@@ -138,6 +138,8 @@ def bienvenue_anonyme(request):
 def bienvenue(request):
     if not request.user.is_authenticated:
         return redirect("bienvenue_anonyme")
+    else :
+        return redirect("dashboard:index")
     #return redirect("dashboard:index")
     nums = ['01', '02', '03', '04', '07', '10', '11', '13', '15', '17', '20', '21', '23', ]
     nomImage = 'img/flo/resized0' + choice(nums)+'.png'

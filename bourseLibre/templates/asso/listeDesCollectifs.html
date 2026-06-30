@@ -1,0 +1,89 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block subtitle %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12  col-md-2 textcenter">
+        <a href="{% url 'bienvenue' %}">
+            <button type="button" class="btn btn-info">
+                <i class="fa fa-home"></i>
+            </button>
+        </a>
+    </div>
+    <div class="col-sm-12  col-md-8 textcenter">
+        <h4>Les collectifs qui utilisent le site</h4>
+    </div>
+    <div class="col-sm-12  col-md-2 textcenter">
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-8 textcenter">
+
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-12 textcenter">
+        <div class="card text-center h-100">
+        <div class="card-header nav-align-top">
+          <ul class="nav nav-pills d-flex flex-wrap row-gap-2" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-browser" aria-controls="navs-pills-browser"
+                      aria-selected="false">PermaCat</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-os" aria-controls="navs-pills-os"
+                      aria-selected="false">PermAgora</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-country" aria-controls="navs-pills-country"
+                      aria-selected="false" >SSA 66</button>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content pt-0">
+          <div class="tab-pane fade" id="navs-pills-browser" role="tabpanel">
+            <p>
+            l'Association Permaculture Catalane (PermaCat) est un collectif de personnes intéressées par la Permaculture dans les PO
+            </p>
+          </div>
+          <div class="tab-pane fade " id="navs-pills-os" role="tabpanel">
+              <p>L'association PermAgora Catalane est un collectif engagés dans la Transition du territoire</p>
+            <div class="table-responsive text-start text-nowrap">
+              <table class="table table-borderless">
+                <tbody>
+                <tr>
+                  <td>
+                    Site Web
+                  </td>
+                  <td>
+                    <a href="{% url 'permagorapresentation:accueil' %}">perma.cat/permagora</a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="navs-pills-country" role="tabpanel">
+            <div class="table-responsive text-start text-nowrap">
+              <table class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Country</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

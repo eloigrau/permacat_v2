@@ -7,8 +7,8 @@
 <ul class="p-0 m-0">
     <li class="d-flex align-items-center">
         <div class="d-flex w-100 align-items-center justify-content-between">
-            <div class="me-2"><em>Date</em></div>
-            <div><em>Article associé</em></div>
+            <div class="me-2"><em>Titre de l'évènement</em></div>
+            <div><em>Date</em></div>
         </div>
     </li>
     {% for date  in datesList %}
@@ -16,16 +16,17 @@
             <div class="d-flex w-100 align-items-center justify-content-between">
               <div class="me-2">
                 <a href="{{date.get_absolute_url}}">
-                    <h6 class="mb-0">
-                        <i class="icon-base bx {{date.get_bx_icon}}"></i> {{ date.start_time | date:"l j M" }}
-                    </h6>
+                    <h6><i class="icon-base bx {{date.get_bx_icon}}"></i> {{date.titre|couperTexte:42}}</h6>
                 </a>
               </div>
               <div>
                 <a href="{{date.get_absolute_url}}">
-                    <span class="badge bg-label-primary"><i class="icon-base bx bx-book-alt icon-xs"></i>  {{date.titre|couperTexte:42}}</span></h6>
+                    <h6 class="mb-0">
+                        {{ date.start_time | date:"l j M" }}
+                    </h6>
                 </a>
               </div>
+                </a>
             </div>
         </li>
     {% endfor %}

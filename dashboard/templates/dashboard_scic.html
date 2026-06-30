@@ -3,13 +3,13 @@
 
 {% block raccourcis %}
 <div class="col-sm-12 mb-6 order-0">
-      <div class="card">
+      <div class="card h-100">
         <div class="d-flex align-items-start row">
           <div class="col-sm-7">
             <div class="card-body">
                 <h5 class="card-title text-primary mb-3"><a href="{% url 'profil_courant' %}">{{request.user.username}}, </a>Bienvenue sur Perma.Cat !</h5>
                 <p class="mb-6">Vous êtes sur le tableau de bord de <b>PermAgora</b></p>
-              <p> Utilisez le menu à gauche pour naviguer... ou bien les liens ci-dessous pour un accès rapide ;)
+              <p> Utilisez le menu à gauche pour naviguer... ou bien les liens ci-dessous pour un accès direct ;)
               </p>
             </div>
           </div>
@@ -21,7 +21,7 @@
         </div>
       </div>
 </div>
-<div class=" offset-lg-2 col-lg-8  col-sm-12 order-0 mb-6">
+<div class=" <div class="card h-100"> col-sm-12 order-0 mb-6">
   <div class="card h-100">
     <div class="card-header d-flex justify-content-between">
         <div class="card-title mb-0">

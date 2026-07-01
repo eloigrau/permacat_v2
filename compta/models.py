@@ -49,7 +49,7 @@ class BudgetProjet(models.Model):
         # Recettes classiques + Transferts reçus en tant que destination
         recettes_pures = self.transactions.filter(type_transaction='RECETTE').aggregate(
             total=models.Sum('montant'))['total'] or 0.0
-        transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', projet_destination=self).aggregate(
+        transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', budget_destination=self).aggregate(
             total=models.Sum('montant'))['total'] or 0.0
         return float(recettes_pures) + float(transferts_recus)
 
@@ -57,7 +57,7 @@ class BudgetProjet(models.Model):
         # Dépenses classiques + Transferts émis (l'argent sort du projet)
         transferts_emis = self.transactions.filter(type_transaction='TRANSFERT').aggregate(
             total=models.Sum('montant'))['total'] or 0.0
-        transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', projet_destination=self).aggregate(
+        transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', budget_destination=self).aggregate(
             total=models.Sum('montant'))['total'] or 0.0
         return float(transferts_recus) - float(transferts_emis)
 
@@ -109,13 +109,13 @@ class Transaction(models.Model):
         """Validation personnalisée de la cohérence des transferts."""
         super().clean()
         if self.type_transaction == 'TRANSFERT':
-            if not self.projet_destination:
-                raise ValidationError({'projet_destination': "Un projet de destination est obligatoire pour un transfert."})
-            if self.projet == self.projet_destination:
-                raise ValidationError({'projet_destination': "Le projet de destination doit être différent du projet d'origine."})
-        elif self.projet_destination:
+            if not self.budget_destination:
+                raise ValidationError({'budget_destination': "Un projet de destination est obligatoire pour un transfert."})
+            if self.projet == self.budget_destination:
+                raise ValidationError({'budget_destination': "Le projet de destination doit être différent du projet d'origine."})
+        elif self.budget_destination:
             # Si ce n'est pas un transfert mais qu'un projet a été sélectionné par erreur
-            self.projet_destination = None
+            self.budget_destination = None
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -123,5 +123,5 @@ class Transaction(models.Model):
 
     def __str__(self):
         if self.type_transaction == 'TRANSFERT':
-            return f"TRANSFERT: {self.projet.titre} → {self.projet_destination.titre} ({self.montant}€)"
+            return f"TRANSFERT: {self.projet.titre} → {self.budget_destination.titre} ({self.montant}€)"
         return f"{self.type_transaction} - {self.libelle} ({self.montant}€)"

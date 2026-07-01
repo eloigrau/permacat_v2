@@ -16,7 +16,7 @@
 function updateForm() {
     var type_transaction = $("#id_type_transaction").val(); // get the selected country ID from the HTML input
     if (type_transaction){
-        var select_transaction = document.getElementById("id_projet_destination").parentElement;
+        var select_transaction = document.getElementById("id_budget_destination").parentElement;
 
         if (type_transaction == "TRANSFERT") {
             select_transaction.style.display = 'inline';

@@ -114,7 +114,7 @@
                     </td>
                     <td>
                         {% if t.type_transaction == 'TRANSFERT' %}
-                        <i class="bi bi-arrow-right-short text-warning"></i> Transféré vers : <a href="{{ t.projet_destination.get_absolute_url }}"><span class="badge bg-light text-dark border">{{ t.projet_destination.titre }}</span></a>
+                        <i class="bi bi-arrow-right-short text-warning"></i> Transféré vers : <a href="{{ t.budget_destination.get_absolute_url }}"><span class="badge bg-light text-dark border">{{ t.budget_destination.titre }}</span></a>
                         {% else %}
                             <span class="text-muted small">-</span>
                         {% endif %}

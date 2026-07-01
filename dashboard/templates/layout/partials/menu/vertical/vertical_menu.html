@@ -5,24 +5,25 @@
 {% load i18n %}
 
 
-  {% if request.user.is_authenticated %}
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" data-bs-theme="dark">
+{% if request.user.is_authenticated %}
+<aside class="layout-menu menu-vertical menu bg-menu-theme" data-bs-theme="dark" id="layout-menu">
     <!-- ! Hide app brand if navbar-full -->
     {% if not navbar_full %}
     <div class="app-brand demo">
-        <a href="{% url 'dashboard:choisirCollectif' %}?next={{ request.get_full_path|urlencode  }}" class="app-brand-link">
+        <a class="app-brand-link"
+           href="{% url 'dashboard:choisirCollectif' %}?next={{ request.get_full_path|urlencode  }}">
 <span class="app-brand-logo demo">
-                    <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="acceuil"/>
+                    <img alt="acceuil" height="30" src="{% static 'favicon.ico' %}" width="30"/>
 </span>
-  {% if "asso_slug" in request.session %}
+            {% if "asso_slug" in request.session %}
             <span class="app-brand-text demo menu-text fw-bold ms-2">{{request.session.asso_slug| getNomGroupeFromSlug}}</span>
 
-  {% else %}
+            {% else %}
             <span class="app-brand-text demo menu-text fw-bold ms-2">Choisir un collectif</span>
-  {% endif %}
+            {% endif %}
         </a>
 
-        <a href="{% url 'bienvenue' %}" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+        <a class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none" href="{% url 'bienvenue' %}">
             <i class="icon-base bx bx-chevron-left icon-sm d-flex align-items-center justify-content-center"></i>
         </a>
     </div>
@@ -31,23 +32,23 @@
 
     <div class="menu-inner-shadow"></div>
 
-  {% if "asso_slug" in request.session %}
+    {% if "asso_slug" in request.session %}
     <ul class="menu-inner py-1">
         <li class="menu-item {% if '/dashboard/' in request.path %}active{% endif %}">
-            <a href="{% url 'dashboard:index'  %}" class="menu-link" >
+            <a class="menu-link" href="{% url 'dashboard:index'  %}">
                 <i class="menu-icon icon-base bx bx-home"></i>
                 <div class="text-truncate">Tableau de bord</div>
             </a>
         </li>
         <li class="menu-item {% if '/notifications/' in request.path %}active{% endif %}">
-            <a href="{% url 'notifications_news'  %}" class="menu-link" >
+            <a class="menu-link" href="{% url 'notifications_news'  %}">
                 <i class="menu-icon icon-base bx bx-bell"></i>
                 <div class="text-truncate">Notifications</div>
                 <span class="badge bg-info rounded-pill ms-auto" id="nbnotifs-badge"></span>
             </a>
         </li>
         <li class="menu-item {% if '/agenda/' in request.path %}active{% endif %}">
-            <a href="{% url 'cal:agenda' %}" class="menu-link">
+            <a class="menu-link" href="{% url 'cal:agenda' %}">
                 <i class="menu-icon icon-base bx bx-calendar"></i>
                 <div class="text-truncate">Agenda</div>
             </a>
@@ -59,35 +60,35 @@
         <!-- Layouts -->
 
         <li class="menu-item {% if '/forum/' in request.path  or '/salon/' in request.path  or '/conversations/' in request.path  or  '/permachat/' in request.path %}active open{% endif %}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-chat"></i>
                 <div class="text-truncate">Echanger</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/forum/' in request.path %}active{% endif %}">
-                    <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}">
                         <div class="text-truncate">Forum</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/salon/' in request.path %}active{% endif %}">
-                    <a href="{% url 'salon_accueil' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'salon_accueil' %}">
                         <div class="text-truncate">Salons de discussion</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/conversations/' in request.path %}active{% endif %}">
-                    <a href="{% url 'conversations' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'conversations' %}">
                         <div class="text-truncate">Messagerie</div>
                         <span class="badge bg-info rounded-pill ms-auto" id="nbmessage-badge"></span>
 
                     </a>
                 </li>
                 <li class="menu-item {% if '/marche/' in request.path %}active{% endif %}">
-                    <a href="{% url 'marche' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'marche' %}">
                         <div class="text-truncate">AlterMarché</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/permachat/' in request.path %}active{% endif %}">
-                    <a href="{% url 'permachat:chattons' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'permachat:chattons' %}">
                         <div class="text-truncate">Chat en direct</div>
                     </a>
                 </li>
@@ -96,23 +97,23 @@
 
 
         <li class="menu-item {% if '/photolog/' in request.path or '/docPtgArticleList/' in request.path %}active open{% endif %}">
-            <a href="#" class="menu-link menu-toggle">
+            <a class="menu-link menu-toggle" href="#">
                 <i class="menu-icon icon-base bx bx-file"></i>
                 <div class="text-truncate">Documents</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/photolog/docs/' in request.path %}active{% endif %}">
-                    <a href="{% url 'photologue:doc-list' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'photologue:doc-list' %}">
                         <div class="text-truncate">Fichiers</div>
                     </a>
                 </li>
                 <li class="menu-item {% if  '/docPtgArticleList/' in request.path %}active{% endif %}">
-                    <a href="{% url 'docptg_list' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'docptg_list' %}">
                         <div class="text-truncate">Documents partagés</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/photolog/album/' in request.path %}active{% endif %}">
-                    <a href="{% url 'photologue:album-list' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'photologue:album-list' %}">
                         <div class="text-truncate">Albums photo</div>
                     </a>
                 </li>
@@ -120,56 +121,57 @@
         </li>
 
         <li class="menu-item {% if '/compta/' in request.path or  '/ateliers/' in request.path or  '/cooperateurs/carte/' in request.path or '/adherents/' in request.path or '/defraiement/' in request.path or '/vote/' in request.path or '/forum/todoArticleList/' in request.path or '/listesDiffusion/' in request.path %}active open{% endif %}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-cube"></i>
                 <div class="text-truncate">Modules</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/ateliers/' in request.path %}active{% endif %}">
-                    <a href="{% url 'ateliers:index_ateliers' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'ateliers:index_ateliers' %}">
                         <div class="text-truncate">Ateliers</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/cooperateurs/carte/' in request.path %}active{% endif %}">
-                    <a href="{% url 'carte'  asso='ssa' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'carte'  asso='ssa' %}">
                         <div class="text-truncate">Annuaire</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/adherents/' in request.path %}active{% endif %}">
-                    <a href="{% url 'adherents:adherent_liste' asso_slug=request.session.asso_slug %}" class="menu-link">
+                    <a class="menu-link"
+                       href="{% url 'adherents:adherent_liste' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Adhérents</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/defraiement/' in request.path %}active{% endif %}">
-                    <a href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}"
-                       class="menu-link">
+                    <a class="menu-link"
+                       href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Défraiements</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/forum/projets/' in request.path %}active{% endif %}">
-                    <a href="{% url 'blog:index_projets' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'blog:index_projets' %}">
                         <div class="text-truncate">Projets</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/vote/' in request.path %}active{% endif %}">
-                    <a href="{% url 'vote:index' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'vote:index' %}">
                         <div class="text-truncate">Votes</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/forum/todoArticleList/' in request.path %}active{% endif %}">
-                    <a href="{% url 'blog:todoarticle_list' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'blog:todoarticle_list' %}">
                         <div class="text-truncate">Yapluka</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/listesDiffusion/' in request.path %}active{% endif %} ">
-                    <a href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}"
-                       class="menu-link">
+                    <a class="menu-link"
+                       href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Listes de diffusion</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/compta/' in request.path %}active{% endif %} ">
-                    <a href="{% url 'compta:tableau_de_bord' %}"
-                       class="menu-link">
+                    <a class="menu-link"
+                       href="{% url 'compta:tableau_de_bord' %}">
                         <div class="text-truncate">Comptabilité</div>
                     </a>
                 </li>
@@ -177,63 +179,63 @@
         </li>
 
 
-        <li class="menu-header small text-uppercase" >
+        <li class="menu-header small text-uppercase">
             <span class="menu-header-text"></span>
         </li>
 
         <li class="menu-item ">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-plus"></i>
                 <div class="text-truncate">Publier...</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item ">
-                    <a href="{% url 'blog:ajouterNouvelArticle' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'blog:ajouterNouvelArticle' %}">
                         <div class="text-truncate">Un Article</div>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a href="{% url 'photologue:ajouterDocument' article_slug='None' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'photologue:ajouterDocument' article_slug='None' %}">
                         <div class="text-truncate">Un Document</div>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a href="{% url 'produit_proposer_entree' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'produit_proposer_entree' %}">
                         <div class="text-truncate">Une petite annonce</div>
                     </a>
                 </li>
             </ul>
         </li>
-        <li class="menu-header small text-uppercase" >
+        <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Divers</span>
         </li>
         <li class="menu-item {% if '/compte/' in request.path %}active open{% endif %}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-              <div class="text-truncate">
-                {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} {{request.user.username}}
-              </div>
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
+                <div class="text-truncate">
+                    {% avatar request.user 25 class="img-circle-profil" id="user_avatar" %} {{request.user.username}}
+                </div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/compte/profile/' in request.path %}active{% endif %}">
-                    <a href="{% url 'profil_courant' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'profil_courant' %}">
                         <i class="menu-icon icon-base bx bx-user"></i>
                         <div class="text-truncate">Mon profil</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/compte/mesSuivis/' in request.path %}active{% endif %}">
-                    <a href="{% url 'mesSuivis' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'mesSuivis' %}">
                         <i class="menu-icon icon-base bx bx-bell"></i>
                         <div class="text-truncate">Mes abonnements / suivis</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/compte/mesActions/' in request.path %}active{% endif %}">
-                    <a href="{% url 'mesActions' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'mesActions' %}">
                         <i class="menu-icon icon-base bx bx-history"></i>
                         <div class="text-truncate">Mon historique</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{% url 'logout' %}" class="menu-link">
+                    <a class="menu-link" href="{% url 'logout' %}">
                         <i class="menu-icon icon-base bx bx-log-out"></i>
                         <div class="text-truncate">Se déconnecter</div>
                     </a>
@@ -242,25 +244,25 @@
         </li>
 
         <li class="menu-item ">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-bookmark-heart"></i>
-                 <div class="text-truncate">Favoris </div>
+                <div class="text-truncate">Favoris</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item ">
-                    <a class="menu-link" data-toggle="modal" data-target="#ajouter_favori">
+                    <a class="menu-link" data-target="#ajouter_favori" data-toggle="modal">
                         {% translate 'Ajouter la page actuelle' %}
                     </a>
                 </li>
-                  {% for fav in favoris_list %}
-                    <li class="menu-item ">
-                        <a href="{{fav.url}}" class="menu-link">
-                             {{fav.nom}}
-                        </a>
-                    </li>
-                  {% endfor %}
+                {% for fav in favoris_list %}
                 <li class="menu-item ">
-                    <a href="{% url 'mesFavoris' %}" class="menu-link">
+                    <a class="menu-link" href="{{fav.url}}">
+                        {{fav.nom}}
+                    </a>
+                </li>
+                {% endfor %}
+                <li class="menu-item ">
+                    <a class="menu-link" href="{% url 'mesFavoris' %}">
                         {% translate 'Gérer mes favoris' %}
                     </a>
                 </li>
@@ -268,66 +270,71 @@
         </li>
 
         <li class="menu-item {% if '/account_settings/' in request.path %}active open{% endif %}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-dock-top"></i>
                 <div class="text-truncate">Outils externes</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item ">
-                    <a href="https://meet.jit.si/permacat_visio_public" class="menu-link">
+                    <a class="menu-link" href="https://meet.jit.si/permacat_visio_public">
                         <div class="text-truncate">Visioconférence (Jitsi)</div>
                     </a>
                 </li>
                 <li class="menu-item {">
-                    <a href="https://framadate.org/create_poll.php?type=date&lang=fr" class="menu-link">
+                    <a class="menu-link" href="https://framadate.org/create_poll.php?type=date&lang=fr">
                         <div class="text-truncate">Sondage date (Framadate)</div>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1" class="menu-link">
+                    <a class="menu-link" href="https://www.togetzer.com/index.php?view=evenement&creer_evenement=1">
                         <div class="text-truncate">Covoiturage (Togetzer)</div>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a href="https://html-cleaner.com/" class="menu-link">
+                    <a class="menu-link" href="https://html-cleaner.com/">
                         <div class="text-truncate">Html Cleaner</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/connections/' in request.path %}active{% endif %}">
-                    <a href="https://pdf2png.com/fr/" class="menu-link">
+                    <a class="menu-link" href="https://pdf2png.com/fr/">
                         <div class="text-truncate">Pdf -> image</div>
                     </a>
                 </li>
             </ul>
 
         </li>
-    {% if request.user.is_superuser %}
+        {% if request.user.is_superuser %}
         <li class="menu-item ">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                 <i class="menu-icon icon-base bx bx-globe-alt"></i>
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
+                <i class="menu-icon icon-base bx bx-globe-alt"></i>
                 <div class="text-truncate">Admin</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item"> <a class="menu-link" href="{% url 'admin:index' %}">Admin</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'admin:index' %}">Admin</a></li>
                 <li class="menu-item"><a class="menu-link" href="{% url 'voirEmails' %}"> voir Emails Alertes</a>
                 </li>
                 <li class="menu-item"><a class="menu-link"
-                       href="https://www.perma.cat/gestion/bourseLibre/profil/?o=-3">
+                                         href="https://www.perma.cat/gestion/bourseLibre/profil/?o=-3">
                     Utilisateurs </a></li>
                 <li class="menu-item"><a class="menu-link" href="https://www.perma.cat/gestion/hitcount/hit/">
                     Hits </a></li>
                 <li class="menu-item"><a class="menu-link" href="{% url 'voir_articles_a_archiver' %}">Archiver
                     articles</a></li>
 
-                 <li class="menu-item"><a class="menu-link" href="{% url 'recalculerAdresses' %}">recalculerAdresses</a></li>
-                 <li class="menu-item"><a class="menu-link" href="{% url 'recalculerAdressesConf' %}">recalculerAdressesConf</a></li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'recalculerAdresses' %}">recalculerAdresses</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'recalculerAdressesConf' %}">recalculerAdressesConf</a>
+                </li>
 
                 <li class="menu-item"><a class="menu-link" href="{% url 'blog:voirTousLieux' %}"> Lieux </a></li>
-                <li class="menu-item"><a class="menu-link" href="{% url 'listeContactsMails' %}"> listeContactsMails </a></li>
-{% comment %}
-                <li class="menu-item"><a class="menu-link" href="{% url 'reabonner_tous_profils' %}">reabonner_tous_profils</a></li>
-                <li class="menu-item"><a class="menu-link" href="{% url 'envoyer_emails_reabonnement' %}">envoyer_emails_reabonnement</a></li>
-{% endcomment %}
+                <li class="menu-item"><a class="menu-link" href="{% url 'listeContactsMails' %}">
+                    listeContactsMails </a></li>
+                {% comment %}
+                <li class="menu-item"><a class="menu-link" href="{% url 'reabonner_tous_profils' %}">reabonner_tous_profils</a>
+                </li>
+                <li class="menu-item"><a class="menu-link" href="{% url 'envoyer_emails_reabonnement' %}">envoyer_emails_reabonnement</a>
+                </li>
+                {% endcomment %}
                 <li class="menu-item"><a class="menu-link" href="{% url 'vote:index' %}">Liste des suffrages </a></li>
 
                 <li class="menu-item"><a class="menu-link" href="{% url 'supprimervieuxcomptes' %}">
@@ -369,42 +376,42 @@
                 <li class="menu-item"><a class="menu-link" href="{% url 'nettoyerHistoriqueAdmin' %}">
                     nettoyerHistoriqueAdmin</a></li>
             </ul>
-            
+
         </li>
-    {% endif %}
+        {% endif %}
         <li class="menu-item {% if '/contact/' in request.path %}active open{% endif %}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                 <i class="menu-icon icon-base bx bx-support"></i>
+            <a class="menu-link menu-toggle" href="javascript:void(0);">
+                <i class="menu-icon icon-base bx bx-support"></i>
                 <div class="text-truncate">Perma.Cat</div>
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
-                    <a href="{% url 'faq' %}" class="menu-link" >
+                    <a class="menu-link" href="{% url 'faq' %}">
                         <div class="text-truncate">FAQ du site</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
-                    <a href="{% url 'liens' %}" class="menu-link" >
+                    <a class="menu-link" href="{% url 'liens' %}">
                         <div class="text-truncate">Liens</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
-                    <a href="{% url 'liste_collectifs' %}" class="menu-link" >
+                    <a class="menu-link" href="{% url 'liste_collectifs' %}">
                         <div class="text-truncate">Les Collectifs</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/contact/contact_admins/' in request.path %}active{% endif %}">
-                    <a href="{% url 'contact_admins' %}" class="menu-link" target="_blank">
+                    <a class="menu-link" href="{% url 'contact_admins' %}" target="_blank">
                         <div class="text-truncate">Contacter admins</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/contact/signaler_bug/' in request.path %}active{% endif %}">
-                    <a href="{% url 'signaler_bug' %}" class="menu-link" target="_blank">
+                    <a class="menu-link" href="{% url 'signaler_bug' %}" target="_blank">
                         <div class="text-truncate">Signaler un bug</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
-                    <a href="{% url 'faq' %}" class="menu-link" >
+                    <a class="menu-link" href="{% url 'faq' %}">
                         <div class="text-truncate">CGU</div>
                     </a>
                 </li>
@@ -414,41 +421,43 @@
 
     </ul>
     <!-- Modal -->
-<div class="modal fade" id="ajouter_favori" role="dialog" aria-labelledby="AjouterFavori" aria-hidden="true">
-    <div class="modal-dialog textaide" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="row justify-content-center">
-                    <h5>{% translate 'Ajouter la page actuelle à mes favoris' %}</h5>
-                </div>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body textleft">
-                <div class="row">
-                    <div class="form-group col-sm-12">
-                        <p>Lien : {{request.get_full_path}}</p>
-                          <form method="post" action="{% url 'favoris_ajouterPage_modal' %}?url_path={{request.get_full_path|urlencode}}">
-                          {% csrf_token %}
-                              <div class=form-group">
-                                  <p>{% translate 'Choisissez un nom pour ce lien :' %}</p>
-                                  <div style="overflow:hidden;">
-                          <input   type="text" name="nom_favoris" maxlength="50" required="" id="id_nom" value="">
-                         </div>
-                                  <div style="float:right;">
-                                  <input type="submit" class="btn btn-primary" value="Ajouter">
-                                  </div>
-                                  </div>
-                      </form>
-                            </div>
+    <div aria-hidden="true" aria-labelledby="AjouterFavori" class="modal fade" id="ajouter_favori" role="dialog">
+        <div class="modal-dialog textaide" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row justify-content-center">
+                        <h5>{% translate 'Ajouter la page actuelle à mes favoris' %}</h5>
                     </div>
-                </form>
+                    <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body textleft">
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <p>Lien : {{request.get_full_path}}</p>
+                            <form action="{% url 'favoris_ajouterPage_modal' %}?url_path={{request.get_full_path|urlencode}}"
+                                  method="post">
+                                {% csrf_token %}
+                                <div class=form-group">
+                                    <p>{% translate 'Choisissez un nom pour ce lien :' %}</p>
+                                    <div style="overflow:hidden;">
+                                        <input id="id_nom" maxlength="50" name="nom_favoris" required="" type="text"
+                                               value="">
+                                    </div>
+                                    <div style="float:right;">
+                                        <input class="btn btn-primary" type="submit" value="Ajouter">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-  </div>
-</div>
     {% endif %}
 
 

@@ -7,7 +7,6 @@ from blog.models import (Article, Projet, FicheProjet, Commentaire, Discussion, 
                          )
 #from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
-from ateliers.models import Atelier, CommentaireAtelier, InscriptionAtelier
 from agoratransition.models import InscriptionExposant, Proposition, Message_agora
 from django.contrib.admin.models import LogEntry
 from django.contrib import admin
@@ -36,15 +35,6 @@ class CustomUserAdmin(UserAdmin):
         )
 
 
-@admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('id', 'titre', 'asso', 'categorie', 'estArchive', 'get_partagesAssotxt' )
-    search_fields = ('titre', )
-
-@admin.register(Projet)
-class ProjetAdmin(admin.ModelAdmin):
-    list_display = ('id', 'titre', 'estArchive', 'ficheprojet')
-    search_fields = ('titre', )
 
 @admin.register(Produit)
 class ProduitAdmin(admin.ModelAdmin):
@@ -145,15 +135,6 @@ admin.site.register(CommentaireFiche)
 admin.site.register(atelier_fiche)
 
 admin.site.register(LogEntry)
-
-@admin.register(Atelier)
-class Atelier_Admin(admin.ModelAdmin):
-    list_display  = ('titre', 'auteur','asso',)
-    search_fields = ('titre', 'article__titre', 'auteur__username')
-    autocomplete_fields = ('article',)
-
-admin.site.register(CommentaireAtelier)
-admin.site.register(InscriptionAtelier)
 
 admin.site.register(InscriptionExposant)
 admin.site.register(Proposition)

@@ -7,7 +7,7 @@ from django.urls import reverse
 class BudgetCercle(models.Model):
     titre = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
-    cercle = models.OneToOneField(Cercle, on_delete=models.CASCADE, null=True, related_name='budget_cercle')
+    cercle = models.ForeignKey(Cercle, on_delete=models.CASCADE, null=True, related_name='budget_cercle')
     slug = models.SlugField(max_length=100)
 
     def __str__(self):
@@ -32,13 +32,14 @@ class BudgetCercle(models.Model):
 
 class BudgetProjet(models.Model):
     budget_cercle = models.ForeignKey(BudgetCercle, on_delete=models.CASCADE, related_name='budgetprojets')
-    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='projet_budget', null=True)
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='projet_budget', null=False)
     titre = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     actif = models.BooleanField(default=True)
+    slug = models.SlugField(max_length=100)
 
     def __str__(self):
-        return f"{self.budget_cercle.titre} - {self.projet.titre} - {self.titre}"
+        return f"Projet : {self.projet.titre} - {self.titre}"
 
     @property
     def get_absolute_url(self):
@@ -71,6 +72,7 @@ class BudgetProjet(models.Model):
 
     def solde(self):
         return self.total_recettes() - self.total_depenses()
+
 
     #def ecart_previsionnel(self):
     #    """Différence entre le prévisionnel et les dépenses réelles totales."""

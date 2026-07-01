@@ -10,18 +10,42 @@
 
 <div class="row-sm-12 row-lg-6 mx-auto">
     <form id="myForm" class="form-horizontal" role="form" action="" method="post"
-        enctype="multipart/form-data">
+        enctype="multipart/form-data"  ajax_cercles-url="{% url 'blog:ajax_cercles' %}">
             {% include 'form_template.html'%}
     </form>
 </div>
 
-
-<script>
-    $(function() {
-    // Enable on all forms
-    $('form').areYouSure();
-    });
-</script>
 {% endblock %}
 
-{% block comment %}{% endblock %}
+{% block scriptblock %}
+<script>
+
+function updateForm() {
+    var url = $("#myForm").attr("ajax_cercles-url"); // get the url of the `load_cities` view
+    var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
+
+    if (asso){
+		$.ajax({ // initialize an AJAX request
+		  url: url, // set the url of the request
+		  data: {
+			'asso': asso,
+			{% if form.instance.cercle %}
+			    'cercle_courant_id': '{{form.instance.cercle.id}}'
+			{% endif %}
+		  },
+		  success: function(data) { // `data` is the return of the `load_cities` view function
+			$("#id_cercle").html(data); // replace the contents of the city input with the data that came from the server
+		  }
+		});
+    }
+};
+
+
+$(document).ready(function() {
+    updateForm();
+    $("#id_asso").change(updateForm);
+    $('form').areYouSure();
+ });
+
+</script>
+{% endblock %}

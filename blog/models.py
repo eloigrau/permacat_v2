@@ -20,7 +20,7 @@ from bourseLibre.constantes import get_bx_icon
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ), #("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
-    type_projet = ('Part','Participation à un évènement'), ('AGO',"Organisation d'une AGO"), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
+    type_projet = ('Part','Participation à un évènement'), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
     type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
                    ('Documentation','Documentation'),  \
                     ('Point', 'Idée / Point de vue'),  ('Recette', 'Recette'), ('BonPlan','Bon Plan / achat groupé'), \
@@ -685,11 +685,11 @@ class Commentaire(models.Model):
 
 class Cercle(models.Model):
     titre = models.CharField(max_length=250)
-    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, null=True)
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, null=False)
     slug = models.SlugField(max_length=100)
 
     def __str__(self):
-        return  "[" + str(self.asso)+ "] " + self.titre
+        return self.titre
 
 class Projet(models.Model):
     categorie = models.CharField(max_length=10,

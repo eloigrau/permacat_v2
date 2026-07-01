@@ -4,27 +4,48 @@
 <h3>Proposer un projet</h3>
 {% endblock %}
 {% block content %}
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
 <div class="row">
-	<div class="col-sm-12">
-<form class="form-horizontal" role="form" action="" method="post"
-	enctype="multipart/form-data">
-	{% csrf_token %} <input type="hidden" name="Projet"
-		value="{{ projet }}"> {% include 'form_template.html'%}
-</form>
+    <div class="col-sm-12">
+        <form action="" ajax_cercles-url="{% url 'blog:ajax_cercles' %}" class="form-horizontal" enctype="multipart/form-data" id="myForm"
+              method="post" role="form">
+            {% csrf_token %} <input name="Projet" type="hidden"
+                                    value="{{ projet }}"> {% include 'form_template.html'%}
+        </form>
 
-</div>
     </div>
+</div>
+
+{% endblock %}
 
 
+{% block scriptblock %}
 <script>
-    $(function() {
-    // Enable on all forms
+
+function updateForm() {
+    var url = $("#myForm").attr("ajax_cercles-url"); // get the url of the `load_cities` view
+    var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
+
+    if (asso){
+		$.ajax({ // initialize an AJAX request
+		  url: url, // set the url of the request
+		  data: {
+			'asso': asso,
+			'cercle_courant': '{{form.instance.cercle}}'
+		  },
+		  success: function(data) { // `data` is the return of the `load_cities` view function
+			$("#id_cercle").html(data); // replace the contents of the city input with the data that came from the server
+		  }
+		});
+    }
+};
+
+
+$(document).ready(function() {
+    updateForm();
+    $("#id_asso").change(updateForm);
     $('form').areYouSure();
-    });
+ });
+
+
 </script>
 {% endblock %}

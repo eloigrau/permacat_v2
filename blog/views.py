@@ -7,7 +7,7 @@ from django.views.generic.edit import FormMixin
 
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, \
-    ArticleLienProjet
+    ArticleLienProjet, Cercle
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, \
     ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, \
@@ -767,6 +767,8 @@ class ModifierProjet(UpdateView):
         form = super(ModifierProjet, self).get_form(*args, **kwargs)
         form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if
                                        self.request.user.estMembre_str(x.slug)]
+        #form.fields["cercle"].choices = [(x.id, '(' + x.asso.nom +') ' + x.titre) for x in Cercle.objects.all().order_by("id") if self.request.user.estMembre_str(x.asso.slug)]
+
         return form
 
 
@@ -1516,6 +1518,22 @@ def ajax_categories(request):
     except:
         return render(request, 'blog/ajax/categories_dropdown_list_options.html',
                       {'categories': Choix.get_type_annonce_asso("defaut")})
+
+
+@login_required
+def ajax_cercles(request):
+    try:
+        asso_id = request.GET.get('asso')
+        if "cercle_courant_id" in request.GET:
+            cercle_id = request.GET["cercle_courant_id"]
+        else:
+            cercle_id = None
+
+        return render(request, 'blog/ajax/cercles_dropdown_list_options.html',
+                      {'cercles': Cercle.objects.filter(asso__id=asso_id), "cercle_courant_id":cercle_id})
+    except:
+        return render(request, 'blog/ajax/cercles_dropdown_list_options.html',
+                      {'cercles': Cercle.objects.none()})
 
 
 @login_required

@@ -1,0 +1,3 @@
+{% for cercle in cercles %}
+<option value="{{ cercle.id }}" {% if cercle_courant_id == id %} selected{% endif%} >{{ cercle.titre }}</option>
+{% endfor %}

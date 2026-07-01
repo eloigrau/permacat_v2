@@ -5,7 +5,7 @@
 {% load fontawesome_5 %}
 {% load activity_tags %}
 {% block subtitle %}
-
+<div class="col-sm-12 offset-md-2 col-md-8 textcenter">
 <div class="row titre_fiche titre-article-forum justify-content-center">
     <div class="col-sm-12 textcenter">
         <h3>{{ projet.titre }}
@@ -17,6 +17,7 @@
             {%endif%}
         </h3>
     </div>
+</div>
 </div>
 <div class="row justify-content-center">
     <div class="col textcenter">
@@ -197,6 +198,17 @@
                     </tr>
                     {% endif %}
 
+                    {% if projet.cercle%}
+                    <tr>
+                        <td class="nomProprieteProduit">
+                            Cercle :
+                        </td>
+                        <td class="proprieteProduit">
+                            {{ projet.cercle}}
+                            ajouter_budgetProjet
+                        </td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <td class="nomProprieteProduit">
                             Statut :

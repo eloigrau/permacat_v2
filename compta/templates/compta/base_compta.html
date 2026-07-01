@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% load app_filters %}
 
-{% block navbar_principal %}
-    <a class="navbar-brand" href="{% url 'compta:tableau_de_bord' %}">
-        <i class="bi bi-calculator-fill me-2"></i>
-    </a>
-    {% block navcompta %}
-    {% endblock navcompta %}
-{% endblock navbar_principal %}
 
 {% block subtitle %}
 <h3>Compta {{ request.session.asso_slug | getNomGroupeFromSlug }}</h3>
 {% endblock %}
+
+{% block content %}
+    {% block navcompta %}
+    {% endblock navcompta %}
+{% endblock content %}

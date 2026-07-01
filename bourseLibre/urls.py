@@ -16,12 +16,13 @@ Including another URLconf
 """
 from django.urls import path, include, re_path
 from . import views, views_base, views_notifications, views_admin, views_ajax, views_inscriptions
+from .forms import UserLoginForm
 from .helloasso import apiHA_pcat
 from django.views.generic import TemplateView
 
 # On import les vues de Django, avec un nom spécifique
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import PasswordResetView, LoginView
 from django.urls import reverse_lazy
 from django.contrib import admin
 from .settings import MEDIA_ROOT, MEDIA_URL, LOCALL
@@ -67,6 +68,9 @@ urlpatterns = [
     re_path(r'^$', views.bienvenue, name='bienvenue'),
     re_path(r'^bienvenue/$', views.bienvenue, name='bienvenue'),
     re_path(r'^benvingut/$', views.bienvenue_anonyme, name='bienvenue_anonyme'),
+    path('auth/login/', LoginView.as_view(template_name="registration/login.html",
+                authentication_form=UserLoginForm), name='login'),
+
     re_path(r'^faq/$', views_base.faq, name='faq'),
     re_path(r'^gallerie/$', views_base.gallerie, name='gallerie'),
     path(r'admin_asso/<str:asso>/', views.admin_asso, name='admin_asso'),

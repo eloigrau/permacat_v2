@@ -173,3 +173,6 @@ class DeleteAccess:
                 return HttpResponseForbidden("Vous n'avez pas l'autorisation de supprimer cet item")
 
 
+
+
+

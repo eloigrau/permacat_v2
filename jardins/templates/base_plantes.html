@@ -3,14 +3,15 @@
 {% block header %}
 <link rel="stylesheet" href="{% static 'jardins/garelick/css/style_jardins.css' %}">
 {% endblock %}
- {% block panel-heading %}{%endblock%}
-{% block div-container-global %} style="padding-top:0;"{% endblock%}
-{% block surtitle %}
-Jardinothèque Catalane
+{% block title %}
+Jardinothèque Catalane |
 {% endblock %}
 
-{% block navbar %}
-{% endblock %}
+
+{% block titreBlog %}
+<h1>Jardinothèque de Perma.Cat</h1>
+{% endblock  %}
+
 {% block submenu %}
 <div class="sticky-top">
     <nav class="navbar {%if request.user.css_dark %} navbar-dark bg-primary {% else %}  navbar-light bs-dark {% endif %} navbar-expand-xl  shadow-petit">
@@ -33,7 +34,7 @@ Jardinothèque Catalane
             <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'blog:index_asso' asso='jp'%}#ref-titre"> Forum </a></li>
             <li class="nav-item nav-jardin"><a class="dropdown-item"   href="{% url 'marche' %}?asso=jp#ref-titre"> Annonces </a></li>
         {% endif %}
-		<li class="nav-item "><a href="{% url 'bienvenue' %}"><img  src="{% static 'favicon.ico' %}"  height="44" alt="Retour sur perma.cat"/></a>
+		<li class="nav-item "><a href="{% url 'dashboard:index' %}?asso_slug=jp"><img  src="{% static 'favicon.ico' %}"  height="44" alt="Retour sur perma.cat"/></a>
         </li>
                 {% comment %}
         <li class="nav-item dropdown">

@@ -4,7 +4,7 @@
 
 {% include 'notifications/entete.html' %}
 {%if actions%}
-<p class = "textcenter "> depuis la dernière fois que vous avez "marqué comme vu" (le {{request.user.date_notifications|date:"d/m/Y"}} à {{request.user.date_notifications|date:"G:i"}})</p>
+<p class = "textcenter "> depuis la dernière fois que vous avez regardé les notifications (le {{request.user.date_notifications|date:"d/m/Y"}} à {{request.user.date_notifications|date:"G:i"}})</p>
 {% endif %}
 {% endblock %}
 {% block content %}

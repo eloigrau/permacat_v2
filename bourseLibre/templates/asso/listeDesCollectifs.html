@@ -24,64 +24,94 @@
     </div>
 </div>
 <div class="row justify-content-center">
-    <div class="col-sm-12 col-md-12 textcenter">
+    <div class="col-sm-12 col-md-9 textcenter">
         <div class="card text-center h-100">
         <div class="card-header nav-align-top">
           <ul class="nav nav-pills d-flex flex-wrap row-gap-2" role="tablist">
             <li class="nav-item" role="presentation">
               <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                      data-bs-target="#navs-pills-browser" aria-controls="navs-pills-browser"
-                      aria-selected="false">PermaCat</button>
+                      data-bs-target="#navs-pills-public" aria-controls="navs-pills-public"
+                      aria-selected="false">Public</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
-                      data-bs-target="#navs-pills-os" aria-controls="navs-pills-os"
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-permagora" aria-controls="navs-pills-permagora"
                       aria-selected="false">PermAgora</button>
             </li>
             <li class="nav-item" role="presentation">
               <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
-                      data-bs-target="#navs-pills-country" aria-controls="navs-pills-country"
-                      aria-selected="false" >SSA 66</button>
+                      data-bs-target="#navs-pills-jardins" aria-controls="navs-pills-jardins"
+                      aria-selected="false">Jardins Partagés</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-ssa66" aria-controls="navs-pills-ssa66"
+                      aria-selected="false" >Collectif SSA 66</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-pcat" aria-controls="navs-pills-pcat"
+                      aria-selected="false">PermaCat</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                      data-bs-target="#navs-pills-autres" aria-controls="navs-pills-autres"
+                      aria-selected="false" >+ ...</button>
             </li>
           </ul>
         </div>
-        <div class="tab-content pt-0">
-          <div class="tab-pane fade" id="navs-pills-browser" role="tabpanel">
-            <p>
-            l'Association Permaculture Catalane (PermaCat) est un collectif de personnes intéressées par la Permaculture dans les PO
-            </p>
-          </div>
-          <div class="tab-pane fade " id="navs-pills-os" role="tabpanel">
-              <p>L'association PermAgora Catalane est un collectif engagés dans la Transition du territoire</p>
-            <div class="table-responsive text-start text-nowrap">
-              <table class="table table-borderless">
-                <tbody>
-                <tr>
-                  <td>
-                    Site Web
-                  </td>
-                  <td>
-                    <a href="{% url 'permagorapresentation:accueil' %}">perma.cat/permagora</a>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+        <div class="card-body">
+            <div class="tab-content pt-0">
+              <div class="tab-pane fade" id="navs-pills-public" role="tabpanel">
+                <p>
+                Le groupe "Public" sur perma.cat est le groupe qui réunit tous les inscrits sur la plateforme.
+                    Il est l'espace numérique de rencontre possible entre différents réseaux.
+                </p>
+                  <p>
+                    Les espaces du groupe "Public" (tels que : le forum, l'annuaire et carte, ou encore les petites annonces, etc) sont accessibles à tous-tes : c'est notre "place publique" où chacun-e peut s'exprimer librement, faire des propositions, élaborer des projets, etc... dans le respect mutuel et à égalité avec les autres.
+                    </p>
+                    <p>
+                    C'est votre média citoyen collaboratif, libre et gratuit ! Venez participer, échanger, ou simplement vous tenir informé-e ;)
+                </p>
+              </div>
+              <div class="tab-pane fade" id="navs-pills-pcat" role="tabpanel">
+                <p>
+                L'Association Permaculture Catalane (PermaCat) est un collectif de personnes intéressées par la Permaculture dans les PO.
+                    Cette association a été à l'initiative des "Altermarchés" (marchés en monnaies alternatives exclusivement, en 2018) et du site perma.cat.
+                    Actuellement chacun est pris par ses engagements et l'association est en dormance, mais le collectif est toujours là
+                    et vous pouvez nous aider à relancer une dynamique, peut-être ?
+                </p>
+              </div>
+              <div class="tab-pane fade " id="navs-pills-permagora" role="tabpanel">
+                  <p>L'association PermAgora Catalane est un collectif engagés dans la Transition du territoire</p>
+                  <p>Site web :  <a href="{% url 'permagorapresentation:accueil' %}">perma.cat/permagora</a></p>
+                  <p>Plateforme de l'Agora :  <a href="{% url 'permagora:bienvenue' %}">perma.cat/plateforme</a></p>
+                  <p>Projet Du Cep Au Jus : <a href="{% url 'ducepaujus:accueil_ducepaujus' %}">perma.cat/ducepaujus</a></p>
+              </div>
+              <div class="tab-pane fade" id="navs-pills-ssa66" role="tabpanel">
+                 <p> Le collectif SSA 66 oeuvre pour une expérimentation d'une Sécurité Sociale de l'Alimentation dans les Pyrénées-Orientales
+                  </p>
+                  <p>Site officiel : <a href="{% url 'collectifssa:accueil_collectifssa' %}">perma.cat/collectifssa</a></p>
+              </div>
+              <div class="tab-pane fade" id="navs-pills-jardins" role="tabpanel">
+                 <p> La plateforme perma.cat accueille toustes les jardinier-es voulant participer à un réseau des jardins au Pays Catalan.
+                     Ce réseau prend la forme d'une plateforme dédiée : la <a href="{% url 'jardins:accueil' %}">Jardinothèque</a>
+                     et de la mise à disposition des outils perma.cat (Forum, Agenda, etc.)
+                  </p>
+              </div>
+              <div class="tab-pane fade" id="navs-pills-autres" role="tabpanel">
+                  <p>Il y a d'autres collectifs présents sur la plateforme, inscrivez-vous et venez les découvrir et participer à leurs activités !</p>
+                  <p>Vous pouvez aussi demander à avoir un espace dédiée pour votre propre collectif, et ainsi participer au réseau de réseaux de perma.Cat !</p>
+              </div>
+              <div class="tab-pane fade" id="navs-pills-viure" role="tabpanel">
+                 <p>La coordination Viure a pour vocation de réunir les acteurs engagés du territoire pour la préservation des
+                     terres agricoles et des espaces naturels des Pyrénées Orientales.
+                 </p>
+                  <p>Site officiel : <a href="www.viure.fr">Viure.fr</a></p>
+
+              </div>
             </div>
-          </div>
-          <div class="tab-pane fade" id="navs-pills-country" role="tabpanel">
-            <div class="table-responsive text-start text-nowrap">
-              <table class="table table-borderless">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Country</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
             </div>
-          </div>
         </div>
       </div>
     </div>

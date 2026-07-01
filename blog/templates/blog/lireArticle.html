@@ -23,25 +23,27 @@
 <meta property="og:image" content="{% static 'android-chrome-256x256.png' %}" />
 {%endblock%}
 
-{% block title %}Forum - {{article.titre|couperTexte:50}}{% endblock %}
+{% block title %}Forum - {{article.titre|couperTexte:50}} |{% endblock %}
 
 {% block subtitle %}
+    <div class="col-sm-12 offset-md-2 col-md-8 textcenter">
 <div class="row titre_fiche titre-article-forum">
-                <div class="col textcenter">
-                    <h3>
-                        {% if article.estArchive%}
-                        <span class="badge badge-light" title="Article archivé">archivé </span>
-                        {%endif%}
-                        {% if article.estEpingle%}
-                        <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
-                        {%endif%}
-                        {% if article.estModifiable%}
-                        <span class="fa fa-edit" title="Article modifiable">    </span>
-                        {%endif%}
-                        {{ article.titre }}
-                    </h3>
-                </div>
-            </div>
+    <div class="col textcenter">
+        <h3>
+            {% if article.estArchive%}
+            <span class="badge badge-light" title="Article archivé">archivé </span>
+            {%endif%}
+            {% if article.estEpingle%}
+            <span class="fa fa-thumb-tack" title="Article épinglé"> </span>
+            {%endif%}
+            {% if article.estModifiable%}
+            <span class="fa fa-edit" title="Article modifiable">    </span>
+            {%endif%}
+            {{ article.titre }}
+        </h3>
+    </div>
+</div>
+</div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 textcenter">

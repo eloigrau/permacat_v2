@@ -2,7 +2,7 @@ import json
 
 from django.contrib import admin
 
-from .models import PushInformation
+from .models import PushInformation, SubscriptionInfo
 from .utils import _send_notification
 
 
@@ -21,3 +21,4 @@ class PushInfoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PushInformation, PushInfoAdmin)
+admin.site.register(SubscriptionInfo)

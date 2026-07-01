@@ -5,7 +5,7 @@
 {% load i18n %}
 
 {% block panel-heading %} {%endblock%}
-{% block title %}{% trans "All galleries" %}{% endblock %}
+{% block title %}{% trans "All galleries" %} |{% endblock %}
 
 {% block subtitle %}
 <div class="row align-items-center">
@@ -122,7 +122,11 @@
 <hr>
         {% endfor %}
     {% else %}
-        <div class="row col-lg-12">{% trans "No galleries were found" %}.</div>
+        <div class="row">
+            <div class="col-sm-12 textcenter">
+            {% trans "No galleries were found" %}
+            </div>
+        </div>
     {% endif %}
 
 {% include 'pagination_new.html' %}

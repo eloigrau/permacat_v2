@@ -2,10 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% load fontawesome_5 %}
-{% load cookielaw_tags %}
-{% block header %}
-<script src="{% static 'js/cookielaw.js'%}" type="text/javascript"></script>
-{% endblock%}
+{% load app_filters %}
 
 {% block content %}
 <div class="row">
@@ -19,14 +16,19 @@
         <hr>
         <div class="row-sm-12 justify-content-center">
             <div class="col-sm-12 textcenter">
-                <button class="btn btn-lg btn-primary" type="button"><a href="{% url 'presentation_site_pkoi'  %}">
+                <button class="btn btn-primary" type="button"><a href="{% url 'presentation_site_pkoi'  %}">
                     Pourquoi s'inscrire sur Perma.Cat ?</a></button>
+            </div>
+            <div class="col-sm-12 textcenter">
+                <button class="btn btn-primary" type="button"><a href="{% url 'liste_collectifs'  %}">
+                    Les Collectifs</a></button>
             </div>
         </div>
         <hr>
+        {% if not request.user.is_authenticated %}
         <div class="row">
             <div class="col-sm-12 textcenter">
-                <b> <a class="btn btn-light btn-radius" href="{% url 'login' %}"> <i class="fa fa-user"></i> Se
+                <b> <a class="btn btn-light " href="{% url 'login' %}"> <i class="fa fa-user"></i> Se
                     connecter</a>
 
                 </b>
@@ -35,23 +37,41 @@
         <hr>
         <div class="row">
             <div class="col-sm-12 textcenter">
-                <b> <a class="btn btn-light btn-radius" href="{% url 'senregistrer' %}"> <i class="fa fa-user"></i>
+                <b> <a class="btn btn-light " href="{% url 'senregistrer' %}"> <i class="fa fa-user"></i>
                     S'inscrire sur le site</a>
-
                 </b>
             </div>
         </div>
-        <hr>
+        {% else %}
         <div class="row">
             <div class="col-sm-12 textcenter">
-                <b> <a class="btn btn-light btn-radius" href="{% url 'contact_admins' %}"><i
-                        class='fa fa-envelope iconleft '></i> Nous contacter</a>
+                <b> Bonjour {{request.user.username}}, vous pouvez accéder au <a href="{% url 'dashboard:index' %}">
+                    Tableau de bord </a> {% if request.session.asso_slug %} ({{request.session.asso_slug|getNomGroupeFromSlug}}){% endif %}
                 </b>
+
             </div>
         </div>
-
+        {% endif %}
     </div>
 </div>
 
 
+<hr>
+<div class="row  justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-9">
+        <div class="row  justify-content-around align-items-center textcenter">
+            <div class="col-sm-12 col-md-6">
+                <a href="{% url 'cgu'  %}">
+                    Conditions Générales d'Utilisation
+                </a>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <a href="{% url 'contact_admins' %}">
+                   <i class='fa fa-envelope iconleft '></i> Nous contacter
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
 {% endblock %}

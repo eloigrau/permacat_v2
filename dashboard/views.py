@@ -28,6 +28,8 @@ class DashboardView(UserPassesTestMixin, TemplateView):
         return context
 
     def test_func(self):
+        if self.request.GET.get("asso_slug", None):
+            self.request.session["asso_slug"] = self.request.GET.get("asso_slug")
         if not self.request.session.get("asso_slug", None):
             return False
         self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])

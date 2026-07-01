@@ -1,6 +1,8 @@
 {% spaceless %}
 {% load static %}
 {% load theme %}
+{% load cookielaw_tags %}
+
 <!DOCTYPE html>
 <html lang="fr" class="layout-menu-fixed layout-compact layout-menu-collapsed"  data-assets-path="{% static 'dashboard/assets/' %}"  data-framework="django" data-template="vertical-menu"><head>
     <title>{% block title %}{% endblock %} Perma.Cat</title>
@@ -60,6 +62,8 @@
 
   <!--Page Javascript-->
   {% block page_js %} {% endblock page_js %}
+
+  {% cookielaw_banner %}
 
   {% block script %} {% endblock script %}
   {% block scriptblock %} {% endblock %}

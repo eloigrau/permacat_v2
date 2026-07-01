@@ -12,6 +12,7 @@ from dal import autocomplete
 from local_captcha.fields import CaptchaField
 from adherents.models import Adherent
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.forms import AuthenticationForm, UsernameField
 
 #from .constantes import Choix
 #from emoji_picker.widgets import EmojiPickerTextInput, EmojiPickerTextarea
@@ -20,6 +21,18 @@ from django.utils.translation import gettext_lazy as _
 fieldsCommunsProduits = ['souscategorie', 'nom_produit', 'description', 'estUneOffre', 'asso',
                          'monnaies', 'prix', 'date_debut', 'date_expiration', ]
 
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
+    username = UsernameField(label="Votre identifiant (pas votre email)", widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Identifiant', 'id': 'identifiant'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': '',
+            'id': 'motdepasse',
+        }))
 
 class ProduitCreationForm(forms.ModelForm):
     estUneOffre = forms.ChoiceField(choices=((1, "Offre"), (0, "Demande")), label="L'annonce est une offre (vous donnez..) ou une demande (vous cherchez...) ?", required=True)

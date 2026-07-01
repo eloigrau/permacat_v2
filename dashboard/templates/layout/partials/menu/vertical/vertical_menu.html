@@ -388,6 +388,11 @@
                         <div class="text-truncate">Liens</div>
                     </a>
                 </li>
+                <li class="menu-item {% if '/contact/faq/' in request.path %}active{% endif %}">
+                    <a href="{% url 'liste_collectifs' %}" class="menu-link" >
+                        <div class="text-truncate">Les Collectifs</div>
+                    </a>
+                </li>
                 <li class="menu-item {% if '/contact/contact_admins/' in request.path %}active{% endif %}">
                     <a href="{% url 'contact_admins' %}" class="menu-link" target="_blank">
                         <div class="text-truncate">Contacter admins</div>

@@ -71,12 +71,6 @@
 	    </tr>
         {% endif %}
 
-    {%if request.user.adherent_fer or request.user == user %}
-	    <tr>
-		<td style="width:250px">Adhérent Fermille *:</td>
-		<td>{{user.adherent_fer|translateOuiNon}}</td>
-	    </tr>
-    {% endif %}
     {%if request.user.adherent_ssa or request.user == user %}
 	    <tr>
 		<td style="width:250px">Adhérent SSA66 *:</td>
@@ -111,12 +105,6 @@
         </a>
     {% endif %}
         </td>
-	    </tr>
-    {% endif %}
-    {%if request.user.adherent_citealt or request.user == user %}
-	    <tr>
-		<td style="width:250px">Adhérent Cité Altruiste *:</td>
-		<td>{{user.adherent_citealt|translateOuiNon}}</td>
 	    </tr>
     {% endif %}
     {%if request.user.adherent_viure or request.user == user %}
@@ -173,28 +161,6 @@
         </tr>
     {% endif %}
 
-       {% if request.user.adherent_conf66 or request.user == user %}
-	    <tr>
-		<td style="width:250px">Adhérent Confédération Paysanne *:</td>
-		<td>{{user.adherent_conf66|translateOuiNon}}
-
-                   {% if request.user.is_superuser %}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='conf66' %}">
-            <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrire Au Groupe
-            </button>
-        </a>
-        <a href="{% url 'associerProfil_adherent' profil_pk=user.pk asso_slug='conf66'%}">
-            <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>Associer adhérent
-            </button>
-        </a>
-        {% endif %}
-            {%if user.adherent_conf66 %}, cotisation à jour : {% if user.isCotisationAJour_conf66 %} oui {% else %}
-      non {% endif %}{% endif %}
-        </td>
-	    </tr>
-        {% endif %}
         <tr>
             <td style="width:200px">Apparait dans l'annuaire et coordonnées sont visibles : </td>
             <td>{{user.accepter_annuaire|translateOuiNon }}</td>

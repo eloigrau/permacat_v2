@@ -42,6 +42,10 @@ class BudgetProjet(models.Model):
         return f"{self.titre} (Projet : {self.projet.titre})"
 
     @property
+    def get_titre(self):
+        return self.titre
+
+    @property
     def get_absolute_url(self):
         return reverse('compta:detail_projet', kwargs={'projet_id':self.id})
 

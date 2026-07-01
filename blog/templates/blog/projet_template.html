@@ -1,10 +1,12 @@
 {% load activity_tags %}
 {% load fontawesome_5 %}
 
+<a href="{% url 'blog:lireProjet' slug=projet.slug %}">
 <div class="card textcenter h-100" style="background-color:{{projet.get_couleur}}">
-    <a href="{% url 'blog:lireProjet' slug=projet.slug %}">
-        <div class="article-card-header smallcaps_h ">{{ projet.get_categorie_display }}</div>
         <div class="card-body"  {%if projet.estArchive %} style="background-color:#e0e0d1;" {% endif  %} >
+        {% if projet.cercle %}
+            <div class="smallcaps_h ">{{ projet.cercle }}</div>
+        {% endif %}
             <h5 class="titreArticle"> {{ projet.titre }}</h5>
             {{ projet.get_logo_nomgroupe_html|safe }} /
             <span class="badge badge-primary" data-placement="bottom"
@@ -29,9 +31,11 @@
              {% fa5_icon 'bell-slash' title='abonnement' %}
         </span>
             {% endif %}
+
             <p class="text-muted textsmall">Proposé le {{ projet.date_creation|date:"DATE_FORMAT" }}
                 {%if projet.date_creation != projet.date_modification %} (dernière modif le
-                {{ projet.date_modification|date:"DATE_FORMAT" }}) {%endif%}</p>
+                {{ projet.date_modification|date:"DATE_FORMAT" }}) {%endif%}
+            </p>
         </div>
-    </a>
 </div>
+    </a>

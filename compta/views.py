@@ -22,16 +22,20 @@ def tableau_de_bord(request):
 
 @login_required
 def detail_projet(request, projet_id):
-    projet = get_object_or_404(BudgetProjet, pk=projet_id)
+    budget = get_object_or_404(BudgetProjet, pk=projet_id)
+    if not testIsMembreAsso_bool(request, budget.projet.asso.slug):
+        return HttpResponseForbidden("Désolé, vous n'avez pas l'autorisation ")
+
+    request.session["asso_slug"] = budget.projet.asso.slug
 
     # On récupère toutes les transactions liées au projet (débits, crédits, transferts sortants)
-    transactions_importantes = projet.transactions.all()
+    transactions_importantes = budget.transactions.all()
 
     # On récupère aussi les transferts d'argent arrivés sur ce projet
-    transferts_recus = projet.transferts_recus.all()
+    transferts_recus = budget.transferts_recus.all()
 
-    return render(request, 'compta/detail_projet.html', {
-        'projet': projet,
+    return render(request, 'compta/detail_budget.html', {
+        'budget': budget,
         'transactions': transactions_importantes,
         'transferts_recus': transferts_recus
     })
@@ -49,19 +53,18 @@ def ajouter_transaction(request, projet_id):
 
 @login_required
 def ajouter_budgetProjet(request):
-
     if "projet_slug" in request.GET:
         projet = Projet.objects.get(slug=request.GET["projet_slug"])
         asso_slug = projet.asso.slug
-        if not testIsMembreAsso_bool(request, asso_slug):
-            return HttpResponseForbidden("Désolé, vous n'avez pas l'autorisation ")
-        form = BudgetProjetForm(asso_slug, request.GET["projet_slug"], request.POST or None)
     else:
         projet = None
         if "asso_slug" in request.session:
             asso_slug = request.session["asso_slug"]
         else:
             asso_slug = 'public'
+
+    if not testIsMembreAsso_bool(request, projet.asso.slug):
+        return HttpResponseForbidden("Désolé, vous n'avez pas l'autorisation ")
 
     form = BudgetProjetForm(asso_slug, projet, request.POST or None)
 

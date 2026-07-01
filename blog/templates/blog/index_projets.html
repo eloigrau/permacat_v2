@@ -136,17 +136,19 @@
 <hr>
 
     {% include 'pagination_new.html' %}
-    <div class="infinite-container">
-        <div class="grid-container justify-content-center">
+    <div class="row justify-content-between align-items-center">
             {% for projet in projet_list %}
-            <div class="infinite-item my-auto mx-auto">
+                <div class="col-sm-12 col-md-6 col-lg-4 ">
                 {% include "blog/projet_template.html" with projet=projet %}
-            </div>
+                </div>
             {% endfor %}
-        </div>
-        {% include 'pagination_new.html' %}
+    </div>
+    {% include 'pagination_new.html' %}
+
 
         {% if list_archive %}
+            <hr>
+    <div class="row justify-content-between align-items-center">
         <div class="textcenter">
             <button class="btn btn-light" data-placement="bottom" data-toggle="tooltip" id="btn-archives"
                     onclick="toggle_visibility('archives');" title="Cliquez pour afficher les archives" type="button">
@@ -154,15 +156,15 @@
             </button>
         </div>
         <div id="archives" style='display:none;'>
-            <hr>
-            {% for projet in list_archive %}
-            <div class="infinite-item">
-                {% include "blog/projet_template.html" with projet=projet %}
-                <hr>
+            <div class="row justify-content-between align-items-center">
+                {% for projet in list_archive %}
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        {% include "blog/projet_template.html" with projet=projet %}
+                    </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-        </div>
+    </div>
         {% endif %}
 
         <script>

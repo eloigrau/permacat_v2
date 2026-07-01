@@ -1,6 +1,6 @@
 {% extends 'compta/base_compta.html' %}
 
-{% block title %}Projet - {{ projet.titre }}{% endblock %}
+{% block title %}Projet - {{ budget.titre }}{% endblock %}
 
 {% block subtitle %}
 <div class="row justify-content-between align-items-center">
@@ -14,7 +14,7 @@
         <h3>Détail du projet</h3>
     </div>
     <div class="col-sm-12 col-md-2 mb-3">
-        <a class="nav-link btn btn-success btn-sm text-white px-3" href="{% url 'compta:ajouter_transaction' projet.id %}">
+        <a class="nav-link btn btn-success btn-sm text-white px-3" href="{% url 'compta:ajouter_transaction' budget.id %}">
             <i class="fa fa-plus"></i> Nouvelle Opération
         </a>
     </div>
@@ -25,14 +25,17 @@
 <div class="bg-white p-4 rounded shadow-sm mb-4">
     <div class="d-flex justify-content-between align-items-start flex-wrap">
         <div>
-            <a href="{{projet.budget_cercle.get_absolute_url}}"><span class="badge bg-primary mb-2">Cercle: {{ projet.budget_cercle.titre }}</span></a>
-            <h1 class="h2 mb-1">Projet: <a href="{{projet.projet.get_absolute_url}}">{{ projet.projet.titre }}</a> - {{ projet.titre }}</h1>
-            <p class="text-muted">{{ projet.description|default:"Pas de description disponible." }}</p>
+            <a href="{{budget.budget_cercle.get_absolute_url}}">
+                <span class="badge bg-primary mb-2">Cercle: {{ budget.budget_cercle.titre }}</span>
+            </a>
+            Projet: <a href="{{budget.projet.get_absolute_url}}">{{ budget.projet.titre }}</a>
+            <h1 class="h2 mb-1">{{ budget.titre }}</h1>
+            <p class="text-muted">{{ budget.description|default:"Pas de description disponible." }}</p>
         </div>
         <div class="text-end">
-            <small class="text-muted d-block">Solde Projet</small>
-            <h2 class="{% if projet.solde >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
-                {{ projet.solde|floatformat:2 }} €
+            <small class="text-muted d-block">Solde</small>
+            <h2 class="{% if budget.solde >= 0 %}text-success{% else %}text-danger{% endif %} fw-bold">
+                {{ budget.solde|floatformat:2 }} €
             </h2>
         </div>
     </div>
@@ -47,15 +50,15 @@
                 <hr>
                 <div class="d-flex justify-content-between mb-2">
                     <span>Total Recettes :</span>
-                    <span class="text-success fw-bold">+{{ projet.total_recettes|floatformat:2 }} €</span>
+                    <span class="text-success fw-bold">+{{ budget.total_recettes|floatformat:2 }} €</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span>Total Dépenses :</span>
-                    <span class="text-danger fw-bold">-{{ projet.total_depenses|floatformat:2 }} €</span>
+                    <span class="text-danger fw-bold">-{{ budget.total_depenses|floatformat:2 }} €</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span>Total Transferts (reçus - émis):</span>
-                    <span class="text-danger fw-bold">{{ projet.total_transfert|floatformat:2 }} €</span>
+                    <span class="text-danger fw-bold">{{ budget.total_transfert|floatformat:2 }} €</span>
                 </div>
             </div>
         </div>
@@ -68,12 +71,12 @@
                 <hr>
                 <div class="d-flex justify-content-between align-items-center">
                     <span>Écart budgétaire :</span>
-                    <span class="badge {% if projet.ecart_previsionnel >= 0 %}bg-success{% else %}bg-danger{% endif %} fs-6">
-                        {{ projet.ecart_previsionnel|floatformat:2 }} €
+                    <span class="badge {% if budget.ecart_previsionnel >= 0 %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                        {{ budget.ecart_previsionnel|floatformat:2 }} €
                     </span>
                 </div>
             </div>
-            {% if projet.ecart_previsionnel < 0 %}
+            {% if budget.ecart_previsionnel < 0 %}
                 <div class="card-footer bg-danger-subtle text-danger border-0 small py-2">
                     <i class="bi bi-exclamation-triangle-fill me-1"></i> Attention : Les dépenses réelles dépassent le prévisionnel !
                 </div>
@@ -131,7 +134,7 @@
                     <td><strong>{{ t.libelle }} <small class="text-muted">(Reçu)</small></strong></td>
                     <td><span class="badge bg-success">Transfert Reçu</span></td>
                     <td>
-                        <i class="bi bi-arrow-left-short text-success"></i> Provenance : <a href="{{t.projet.get_absolute_url}}"><span class="badge bg-light text-dark border">{{ t.projet.titre }}</span></a>
+                        <i class="bi bi-arrow-left-short text-success"></i> Provenance : <a href="{{t.budget.get_absolute_url}}"><span class="badge bg-light text-dark border">{{ t.budget.titre }}</span></a>
                     </td>
                     <td class="text-end fw-bold text-success">
                         +{{ t.montant|floatformat:2 }} €
@@ -141,7 +144,7 @@
 
                 {% if not transactions and not transferts_recus %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted py-4">Aucun mouvement financier sur ce projet.</td>
+                    <td colspan="5" class="text-center text-muted py-4">Aucun mouvement financier sur ce budget.</td>
                 </tr>
                 {% endif %}
             </tbody>

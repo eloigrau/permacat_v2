@@ -61,30 +61,6 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-sm-12 textcenter">
-        {%if projet.auteur == request.user or request.user.is_superuser%}
-        <div class="btn-group">
-
-            <a href="{% url 'blog:modifierProjet' slug=projet.slug %}">
-                <button class="btn btn-sm btn-warning" type="button">
-                    &nbsp;Modifier
-                </button>
-            </a>
-            <a href="{% url 'blog:supprimerProjet' slug=projet.slug %}">
-                <button class="btn btn-sm btn-danger" type="button">
-                    &nbsp;Supprimer
-                </button>
-            </a>
-        </div>
-        {%endif%}
-    </div>
-</div>
-
-{% endblock %}
-{% block content %}
-
-
 <div class="row" id="contenu_projet">
     <div class="col-sm-12 textcenter">
         {{projet.asso.get_logo_nomgroupe_html|safe }}
@@ -116,6 +92,30 @@
 
     </div>
 </div>
+
+<div class="row">
+    <div class="col-sm-12 textcenter">
+        {%if projet.auteur == request.user or request.user.is_superuser%}
+        <div class="btn-group">
+
+            <a href="{% url 'blog:modifierProjet' slug=projet.slug %}">
+                <button class="btn btn-sm btn-warning" type="button">
+                    &nbsp;Modifier
+                </button>
+            </a>
+            <a href="{% url 'blog:supprimerProjet' slug=projet.slug %}">
+                <button class="btn btn-sm btn-danger" type="button">
+                    &nbsp;Supprimer
+                </button>
+            </a>
+        </div>
+        {%endif%}
+    </div>
+</div>
+
+{% endblock %}
+{% block content %}
+
 
 
 <div class="row contenu fiche">
@@ -201,11 +201,20 @@
                     {% if projet.cercle%}
                     <tr>
                         <td class="nomProprieteProduit">
-                            Cercle :
+                            Cercle et budgets :
                         </td>
                         <td class="proprieteProduit">
-                            <a class="btn btn-primary" href="{%url 'compta:tableau_de_bord' %}#id_{{projet.cercle.slug}}">{{ projet.cercle}}</a>
-                            <a class="btn btn-success" href="{%url 'compta:ajouter_budgetProjet' %}?projet_slug={{projet.slug}}"><i class="fa fa-plus"></i> Ajouter un budget</a>
+                            <a class="btn btn-primary" href="{%url 'compta:tableau_de_bord' %}#id_{{projet.cercle.slug}}">Cercle {{ projet.cercle}}</a>
+
+                            <ul>
+                                {% for p in projet.projet_budget.all %}
+                                <li>
+                                    <a href="{{p.get_absolute_url}}">{{p.get_titre}}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+<a class="btn btn-success btn-sm" href="{%url 'compta:ajouter_budgetProjet' %}?projet_slug={{projet.slug}}"><i class="fa fa-plus"></i> Ajouter un budget</a>
+
                         </td>
                     </tr>
                     {% endif %}

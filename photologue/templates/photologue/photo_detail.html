@@ -4,7 +4,7 @@
 {% block title %}Photo : {{ object.title }} |{% endblock %}
 
 {% block subtitle %}
-<div class="row ">
+<div class="row align-items-center justify-content-center">
     <div class="col-sm-12 col-md-3 textcenter">
         <a class="btn btn-success" href="{{album.get_absolute_url}}">
             <i class="fa fa-arrow-left"></i> Album : {{album.title}}
@@ -44,7 +44,6 @@
         {% endif %}
     </div>
 </div>
-<hr>
 {% endblock %}
 {% block content %}
 

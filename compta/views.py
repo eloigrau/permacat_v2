@@ -38,11 +38,13 @@ def detail_projet(request, projet_id):
 
 @login_required
 def ajouter_transaction(request, projet_id):
-    form = TransactionForm(projet_id, request.POST or None)
+    budgetprojet = BudgetProjet.objects.get(id=projet_id)
+    form = TransactionForm(budgetprojet, request.POST or None)
+
     if form.is_valid():
         transaction = form.save()
         return redirect('compta:detail_projet', projet_id=transaction.projet.id)
-    return render(request, 'compta/ajouter_transaction.html', {'form': form})
+    return render(request, 'compta/ajouter_transaction.html', {'form': form, "budgetprojet":budgetprojet})
 
 
 @login_required

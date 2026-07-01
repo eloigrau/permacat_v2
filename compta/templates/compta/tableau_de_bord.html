@@ -30,7 +30,7 @@ Tableau de Bord - Compta {{request.session.asso_slug | getNomGroupeFromSlug}} |
 </div>
 
 {% for cercle in cercles %}
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-4" id="id_{{cercle.slug}}">
         <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
             <h3><i class="bi bi-diagram-3-fill me-2"></i>Cercle : {{ cercle.titre }}</h3>
             <span class="badge {% if cercle.solde >= 0 %}bg-success{% else %}bg-danger{% endif %} fs-6">

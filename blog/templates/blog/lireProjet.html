@@ -204,8 +204,7 @@
                             Cercle :
                         </td>
                         <td class="proprieteProduit">
-                            {{ projet.cercle}}
-                            ajouter_budgetProjet
+                            <a href="{%url 'compta:tableau_de_bord' %}#id_{{projet.cercle.slug}}">{{ projet.cercle}}</a>
                         </td>
                     </tr>
                     {% endif %}

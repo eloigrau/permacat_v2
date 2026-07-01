@@ -31,8 +31,8 @@ class TransactionForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
 
-    def __init__(self, projet_id, *args, **kwargs):
+    def __init__(self, budgetprojet, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
         self.fields['projet_destination'].required = False
-        self.fields['projet'].initial = BudgetProjet.objects.get(id=projet_id)
+        self.fields['projet'].initial = budgetprojet

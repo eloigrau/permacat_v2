@@ -39,7 +39,7 @@ class BudgetProjet(models.Model):
     slug = models.SlugField(max_length=100)
 
     def __str__(self):
-        return f"Projet : {self.projet.titre} - {self.titre}"
+        return f"{self.titre} (Projet : {self.projet.titre})"
 
     @property
     def get_absolute_url(self):

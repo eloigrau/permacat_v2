@@ -87,10 +87,10 @@ class Transaction(models.Model):
     ]
 
     # Le projet principal est le projet d'origine (celui qui paie ou encaisse)
-    projet = models.ForeignKey(BudgetProjet, on_delete=models.CASCADE, related_name='transactions')
+    budget = models.ForeignKey(BudgetProjet, on_delete=models.CASCADE, related_name='transactions')
 
     # Champ requis uniquement en cas de TRANSFERT
-    projet_destination = models.ForeignKey(
+    budget_destination = models.ForeignKey(
         BudgetProjet,
         on_delete=models.SET_NULL,
         related_name='transferts_recus',

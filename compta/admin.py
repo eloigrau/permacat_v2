@@ -9,7 +9,7 @@ class BudgetProjet_Admin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class Transaction_Admin(admin.ModelAdmin):
-    list_display  = ('libelle', 'projet', 'type_transaction', 'montant')
+    list_display  = ('libelle', 'budget', 'budget_destination', 'type_transaction', 'montant')
     search_fields = ('libelle',)
 
 @admin.register(BudgetCercle)

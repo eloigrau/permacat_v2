@@ -6,7 +6,7 @@
 {% block header %}
 
 <script src="{% static 'dashboard/assets/vendor/libs/swiper/swiper.js' %}"></script>
-<link rel="stylesheet" href="{% static 'dashboard/assets/vendor/css/ui-carousel.css' %}" />
+<link href="{% static 'dashboard/assets/vendor/css/ui-carousel.css' %}" rel="stylesheet"/>
 {% endblock header %}
 
 {% block subtitle %}
@@ -95,70 +95,123 @@
 <hr>
 {% endif %}
 
-
 {% comment %}
-<div class="row g-6">
-  <!-- Bootstrap carousel -->
-  <div class="col-md">
-    <h5 class="mb-6">Bootstrap carousel</h5>
-
-    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-        {% for photo in album.public %}
-        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="{{forloop.counter0}}" {% if forloop.first %}class="active"{% endif %}
-                aria-current="true" aria-label="{{photo.title}}"></button>
-        {% endfor %}
-      </div>
-      <div class="carousel-inner">
-        {% for photo in album.public %}
-        <div class="carousel-item  {% if forloop.first %}active {% endif %}">
-          <img class="d-block w-100" src="{% static 'img/elements/3.png' %}" alt="{{photo.title}}" />
-          <div class="carousel-caption d-none d-md-block">
-                <h3><a href="{{photo.get_absolute_url}}">{{photo.title}}</a></h3>
-                <p>{{photo.caption}}</p>
-          </div>
+<div class="container margin-top">
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 gallery-spacer">
+                {% for photo in album.public %}
+            <li data-target="#myModal" data-toggle="modal"><a data-slide-to="{{forloop0.counter}}" href="#myGallery"><img
+                    alt="Placeholder image" class="img-responsive gallery" src="images/gallery/000.jpg"></a></li>
+            {%endfor%}
         </div>
-        {% endfor %}
-      </div>
     </div>
-  </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 gallery-spacer">
+                {% for photo in album.public %}
+            <li data-target="#myModal" data-toggle="modal"><a data-slide-to="{{forloop0.counter}}" href="#myGallery"><img
+                    alt="Placeholder image" class="img-responsive gallery" src="{{photo.get_absolute_url}}"></a>
+            </li>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+<!--begin modal window-->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" title="Close" type="button"><span
+                        class="glyphicon glyphicon-remove"></span></button>
+            </div>
+            <div class="modal-body">
+                <!--begin carousel-->
+                <div class="carousel slide" data-interval="false" id="myGallery">
+                    <div class="carousel-inner">
+
+                    {% for photo in album.public %}
+                        <div class="item {% if forloop.first %}active {% endif %} gallery-modal">
+                            <img alt="{{photo.title}}" class="d-block w-100" src="{{get_display_url}}"/>
+                        </div>
+                    {%endfor%}
+
+                    </div>
+                    <!--Begin Previous and Next buttons-->
+                    <a class="left carousel-control" data-slide="prev" href="#myGallery" role="button"> <span
+                            class="glyphicon glyphicon-chevron-left"></span></a> <a class="right carousel-control"
+                                                                                    data-slide="next" href="#myGallery"
+                                                                                    role="button"> <span
+                        class="glyphicon glyphicon-chevron-right"></span></a>
+                    <!--end carousel--></div>
+                <!--end modal-body--></div>
+            <div class="modal-footer">
+                <button class="btn-sm close" data-dismiss="modal" type="button">Close</button>
+</div>
+</div>
+</div>
+</div>
+<div class="row g-6">
+    <!-- Bootstrap carousel -->
+    <div class="col-md">
+        <h5 class="mb-6">Bootstrap carousel</h5>
+
+        <div class="carousel slide" data-bs-ride="carousel" id="carouselExample">
+            <div class="carousel-indicators">
+                {% for photo in album.public %}
+                <button aria-current="true" aria-label="{{photo.title}}" data-bs-slide-to="{{forloop.counter0}}"
+                        data-bs-target="#carouselExample" {%if forloop.first %} class="active" {% endif %}  type="button">
+                </button>
+                {% endfor %}
+            </div>
+            <div class="carousel-inner">
+                {% for photo in album.public %}
+                <div class="carousel-item  {% if forloop.first %}active {% endif %}">
+                    <img alt="{{photo.title}}" class="d-block w-100" src="{{get_display_url}}"/>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h3><a href="{{photo.get_absolute_url}}">{{photo.title}}</a></h3>
+                        <p>{{photo.caption}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 
 
-
 <div class="row g-6">
-  <!-- Bootstrap carousel -->
-  <div class="col-md col-sm-12 textcenter">
-    <div id="carouselExample2" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-        {% for photo in album.public %}
-        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="{{forloop.counter0}}" {% if forloop.first %}class="active"{% endif %}
-                aria-current="true" aria-label="{{photo.title}}"></button>
-        {% endfor %}
-      </div>
-      <div class="carousel-inner">
-        {% for photo in album.public %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <img class="d-block w-100" src="{{photo.get_absolute_url}}" alt="{{photo.title}}" />
-          <div class="carousel-caption d-none d-md-block">
-            <a href="{{photo.get_absolute_url}}">
-                <h3>{{photo.title}}</h3>
-                <p>{{photo.caption}}</p>
-            </a>
-          </div>
+    <!-- Bootstrap carousel -->
+    <div class="col-md col-sm-12 textcenter">
+        <div class="carousel slide" data-bs-ride="carousel" id="carouselExample2">
+            <div class="carousel-indicators">
+                {% for photo in album.public %}
+                <button %} %}class="active" aria-current="true" aria-label="{{photo.title}}" data-bs-slide-to="{{forloop.counter0}}"
+                        data-bs-target="#carouselExample" endif forloop.first if type="button"
+                        {% {%></button>
+                {% endfor %}
+            </div>
+            <div class="carousel-inner">
+                {% for photo in album.public %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img alt="{{photo.title}}" class="d-block w-100" src="{{photo.get_absolute_url}}"/>
+                    <div class="carousel-caption d-none d-md-block">
+                        <a href="{{photo.get_absolute_url}}">
+                            <h3>{{photo.title}}</h3>
+                            <p>{{photo.caption}}</p>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+                <a class="carousel-control-prev" data-bs-slide="prev" href="#carouselExample" role="button">
+                    <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Previous</span>
+                </a>
+                <a class="carousel-control-next" data-bs-slide="next" href="#carouselExample" role="button">
+                    <span aria-hidden="true" class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Next</span>
+                </a>
+            </div>
         </div>
-        {% endfor %}
-      <a class="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </a>
-      <a class="carousel-control-next" href="#carouselExample" role="button" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </a>
     </div>
-  </div>
-  </div>
 </div>
 
 <!-- Swiper -->
@@ -171,19 +224,23 @@
                     <div aria-live="polite" class="swiper-wrapper" id="swiper-wrapper-c8c60d596f55589a"
                          style="transition-duration: 0ms; transform: translate3d(-5096px, 0px, 0px); transition-delay: 0ms;">
 
-	                    {% for photo in album.public %}
+                        {% for photo in album.public %}
                         <div aria-label="1 / 5"
                              class="swiper-slide"
-                             role="group" style="background-image: {{photo.get_absolute_url}}; width: 1264px; margin-right: 10px;">Slide 1
+                             role="group"
+                             style="background-image: {{photo.get_absolute_url}}; width: 1264px; margin-right: 10px;">
+                            Slide 1
                         </div>
                         {% endfor %}
 
                     </div>
                     <!-- Add Arrows -->
                     <div aria-controls="swiper-wrapper-c8c60d596f55589a" aria-disabled="true"
-                         aria-label="Next slide" class="swiper-button-next swiper-button-white swiper-button-disabled" role="button"
+                         aria-label="Next slide" class="swiper-button-next swiper-button-white swiper-button-disabled"
+                         role="button"
                          tabindex="-1"></div>
-                    <div aria-controls="swiper-wrapper-c8c60d596f55589a" aria-disabled="false" aria-label="Previous slide"
+                    <div aria-controls="swiper-wrapper-c8c60d596f55589a" aria-disabled="false"
+                         aria-label="Previous slide"
                          class="swiper-button-prev swiper-button-white" role="button"
                          tabindex="0"></div>
                     <span aria-atomic="true" aria-live="assertive" class="swiper-notification"></span></div>
@@ -191,10 +248,11 @@
                     <div aria-live="polite" class="swiper-wrapper" id="swiper-wrapper-f410756410c28758fd"
                          style="transform: translate3d(-318.5px, 0px, 0px); transition-duration: 0ms; transition-delay: 0ms;">
 
-	                    {% for photo in album.public %}
+                        {% for photo in album.public %}
                         <div aria-label="1 / 5"
                              class="swiper-slide swiper-slide-prev"
-                             role="group" style="background-image: {{photo.get_display_url}}; width: 308.5px; margin-right: 10px;">
+                             role="group"
+                             style="background-image: {{photo.get_display_url}}; width: 308.5px; margin-right: 10px;">
                             {{photo.title}}
                         </div>
                         {% endfor %}
@@ -207,20 +265,22 @@
 <!-- endSwiper -->
 {% endcomment %}
 <div class="anchor_blank" id="ref-titre"></div>
-<div class="row justify-content-center" style="height:90vh;">
-    <div class="col-sm-11 col-md-8 col-lg-5 textcenter">
+<div class="row justify-content-center align-items-center" style="height:90vh;">
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
         <div class="carousel slide" data-ride="carousel" id="carouselExampleIndicators">
             <ol class="carousel-indicators">
-	    {% for photo in album.public %}
-            <li data-target="#carouselExampleIndicators" data-slide-to="{{forloop.counter}}" {% if forloop.first %} class="active"{% endif %}></li>
-	    {% endfor %}
+                {% for photo in album.public %}
+                <li {%if forloop.first %} class="active" {% endif %} data-slide-to="{{forloop.counter}}" data-target="#carouselExampleIndicators"
+                       ></li>
+                {% endfor %}
             </ol>
             <div class="carousel-inner">
                 {% for photo in album.public %}
                 <div class="carousel-item textcenter {% if forloop.first %} active {% endif %} ">
                     <a href="{{ photo.get_absolute_url }}">
                         <img alt="{{ photo.title }}"
-                             class="thumbnail" class="d-block w-100 {% if forloop.first %} active {% endif %} " src="{{ photo.get_display_url }}">
+                             class="thumbnail" class="d-block w-100 {% if forloop.first %} active {% endif %} "
+                             src="{{ photo.get_display_url }}">
                     </a>
                 </div>
                 {% endfor %}
@@ -241,7 +301,6 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
         <p>{{ album.description|safe }}</p>
-
     </div>
 </div>
 {% endif %}
@@ -274,6 +333,7 @@ function copyToClipboard() {
     document.execCommand('copy');
     document.body.removeChild(dummy);
 }
+
 
 </script>
 

@@ -166,12 +166,9 @@
 {% endblock %}
 
   {% block script %}
-  <script src="{% static 'dashboard/assets/js/ui-popover.js' %}"></script>
 <script>
-$( document ).ready(function() {
-});
 function get_derniers(url_tag, id_html) {
-
+    $(id_html).html('<div class="row justify-content-center"><div class="spinner-border text-success" role="status"></div></div>');
     $.ajax({
         url: url_tag,
         type: "GET",

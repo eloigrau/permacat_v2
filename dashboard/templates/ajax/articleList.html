@@ -32,9 +32,11 @@
     <div class="row col-sm-12">Pas d'article</div>
 {% endif %}
 
+{% if voir_derniers %}
 <div class="row align-items-center justify-content-between">
     <div class="col-sm-12  w-100 textcenter">
         <a href="{% url  'blog:acceuil'  %}?base"
             class="btn btn-success mt-2">Voir tous les derniers articles</a>
     </div>
 </div>
+{% endif %}

@@ -84,7 +84,7 @@ def derniersArticles(request, asso):
         articleList = Article.objects.filter(asso=asso, estEpingle=False, estArchive=False).annotate(
                 latest=Greatest('date_modification', 'date_creation', 'date_dernierMessage')
             ).order_by('-latest')[:5]
-    return render(request, 'ajax/articleList.html', {'articleList': articleList, 'asso': asso})
+    return render(request, 'ajax/articleList.html', {'articleList': articleList, 'asso': asso, "voir_derniers":True})
 
 @login_required
 def articlesEpingles(request, asso):

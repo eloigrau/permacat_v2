@@ -47,7 +47,7 @@ class BudgetProjet(models.Model):
 
     @property
     def get_absolute_url(self):
-        return reverse('compta:detail_projet', kwargs={'projet_id':self.id})
+        return reverse('compta:detail_budget', kwargs={'budget_id':self.id})
 
     def total_recettes(self):
         # Recettes classiques + Transferts reçus en tant que destination

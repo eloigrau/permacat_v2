@@ -21,8 +21,8 @@ def tableau_de_bord(request):
 
 
 @login_required
-def detail_projet(request, projet_id):
-    budget = get_object_or_404(BudgetProjet, pk=projet_id)
+def detail_budget(request, budget_id):
+    budget = get_object_or_404(BudgetProjet, id=budget_id)
     if not testIsMembreAsso_bool(request, budget.projet.asso.slug):
         return HttpResponseForbidden("Désolé, vous n'avez pas l'autorisation ")
 
@@ -70,7 +70,7 @@ def ajouter_budgetProjet(request):
 
     if form.is_valid():
         budget_projet = form.save()
-        return redirect('compta:detail_projet', projet_id=budget_projet.id)
+        return redirect('compta:detail_budget', budget_id=budget_projet.id)
 
     return render(request, 'compta/ajouter_budget.html', {'form': form})
 

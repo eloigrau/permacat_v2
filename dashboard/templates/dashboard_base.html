@@ -77,7 +77,7 @@
               <p class="card-subtitle">Sur le <a href="{% url 'blog:index_asso' asso=request.session.asso_slug %}">Forum du groupe</a></p>
           </div>
           <div class="d-block">
-            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#derniers_articles"
+            <a class="btn btn-primary me-1 dropdown-toggle" data-bs-toggle="collapse" href="#articles_epingles"
              onclick="get_derniers('{% url 'dashboard:articlesEpingles' asso=request.session.asso_slug %}', '#articles_epingles');"
                role="button" aria-expanded="true" aria-controls="collapseExample">
               Voir

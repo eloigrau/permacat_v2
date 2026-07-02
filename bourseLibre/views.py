@@ -1433,7 +1433,8 @@ def salon(request, slug):
         message.auteur = request.user
         message.salon = salon
         salon.date_dernierMessage = timezone.now()
-        salon.save()
+        if "asso_slug" in request.session:
+            salon.save(request.session["asso_slug"])
         message.save()
         group, created = Group.objects.get_or_create(name='salon_' + salon.slug)
         url = message.get_absolute_url()

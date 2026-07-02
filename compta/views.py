@@ -47,7 +47,7 @@ def ajouter_transaction(request, projet_id):
 
     if form.is_valid():
         transaction = form.save()
-        return redirect('compta:detail_projet', projet_id=transaction.projet.id)
+        return redirect('compta:detail_budget', budget_id=transaction.budget.id)
     return render(request, 'compta/ajouter_transaction.html', {'form': form, "budgetprojet":budgetprojet})
 
 

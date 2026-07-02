@@ -16,7 +16,7 @@
             <div class="d-flex w-100 align-items-center justify-content-between">
                 <div class="me-2">
                     <a href="{{article.get_absolute_url}}">
-                     <h6 class="mb-0"><i class="icon-base bx bx-book-alt icon-xs"></i> {{article.titre|couperTexte:66}}</h6>
+                     <h6 class="mb-0"><i class="icon-base bx bx-book-alt icon-xs"></i> {{article.titre|couperTexte:80}}</h6>
                     </a>
                 </div>
                 <div>
@@ -28,7 +28,13 @@
         </li>
     {% endfor %}
 </ul>
-
 {% else %}
     <div class="row col-sm-12">Pas d'article</div>
 {% endif %}
+
+<div class="row align-items-center justify-content-between">
+    <div class="col-sm-12  w-100 textcenter">
+        <a href="{% url  'blog:acceuil'  %}?base"
+            class="btn btn-success mt-2">Voir tous les derniers articles</a>
+    </div>
+</div>

@@ -37,10 +37,10 @@
     <div class="row col-sm-12">Pas de documents ({{ request.session.asso_slug }})</div>
 {% endif %}
 
-{% if request.session.asso_slug %}
-{% include 'pagination_new_asso.html' %}
-{% else %}
-{% include 'pagination_new.html' %}
-{% endif %}
-
+<div class="row align-items-center justify-content-between">
+    <div class="col-sm-12  w-100 textcenter">
+        <a href="{% url  'photologue:doc-list'  %}?base"
+            class="btn btn-success mt-2">Voir tous les documents</a>
+    </div>
+</div>
 

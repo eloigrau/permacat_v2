@@ -33,7 +33,10 @@
         <div class="row anchor_blank {% if comment.pascetteannee %} pascetteannee invisible {% endif %}" id="comm_{{comment.id}}"></div>
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
-            {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">{{comment.auteur}}</a>{% endifchanged %}
+            {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">
+            {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %}
+            {{comment.auteur}}</a>
+            {% endifchanged %}
             <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}{% else %}{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}{% endif %}
                 {% if request.user == comment.auteur or request.user.is_superuser %}
                 <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>

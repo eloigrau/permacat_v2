@@ -28,7 +28,7 @@ class Choix:
     type_annonce_viure = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('coordination', "Coordination"), ('reunion', "Réunions"), \
                          ('manifestations', 'Manifestations'), ('projets', 'Projets écocides')
     type_annonce_ssa = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('documentation', "Documentation"), ('organisation', "Organisation du groupe"), ('Chantier','Atelier/Chantier participatif'),\
-                        ('groupeW','Groupe de travail'),
+                        ('groupeW','Groupe de travail'),('CLA',"Comité Local de l'Alimentation")
 
 
     type_annonce_citealt_orga = ('orga1', "Cercle Organisation"), ('orga2', "Cercle Informatique"), ('orga3', "Cercle Communication"), ('orga4', "Cercle Animation"),  ('orga5', "Cercle Médiation")

@@ -1366,7 +1366,7 @@ def salon_accueil(request):
     salons_groupes = [s for s in Salon.objects.filter(type_salon=2).order_by("titre") if s.est_autorise(request.user)]
 
     dateMin = (datetime.now() - timedelta(days=15)).replace(tzinfo=pytz.UTC)
-    salons_recents = [s.salon for s in salons_inscrit.filter(Q(salon__date_dernierMessage__gte=dateMin) | Q(salon__date_creation__gte=dateMin)).order_by(Lower("salon__titre"))]
+    salons_recents = [s.salon for s in InscritSalon.objects.filter(Q(profil=request.user) & (Q(salon__date_dernierMessage__gte=dateMin) | Q(salon__date_creation__gte=dateMin))).order_by(Lower("salon__titre"))]
     suivis, created = Suivis.objects.get_or_create(nom_suivi="salon_accueil")
     invit = InvitationDansSalon.objects.filter(profil_invite=request.user).order_by("-date_creation")
     inner_qs = list(set(list(salons_inscrit.values_list('salon__tags', flat=True)) +

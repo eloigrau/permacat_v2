@@ -133,7 +133,6 @@
         $("#navtab_{{ancre}}").trigger('click')
     {% endif %}
 
-
     {% if request.GET.ancre %}
         $("#navtab_{{request.GET.ancre}}").trigger('click')
     {% endif %}
@@ -142,6 +141,16 @@
     messageBody.scrollTop = contenucommentaires.scrollHeight - contenucommentaires.clientHeight;
 
 
+    $('#myForm').one('submit', function() {
+        var btn = $("#btn-valider");
+        btn.prop("disabled", true);
+        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+        setTimeout(function () {
+             btn.removeAttr("disabled")
+             btn.html( `veuillez patientez...` );
+          }, 60000);
+    });
 });
 
 
@@ -152,5 +161,6 @@ function toggle_visibility_class(id_class) {
        }
        $('.btn-detail-comments').removeClass('visible').addClass('invisible');
 }
+
 
 </script>

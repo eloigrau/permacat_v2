@@ -296,11 +296,17 @@ def escapeETUrl(url):
 
 @register.filter(is_safe=True)
 def getLogoGroupeFromSlug(slug):
-    return mark_safe(Asso.objects.get(slug=slug).get_logo_nomgroupe_html)
+    try:
+        return mark_safe(Asso.objects.get(slug=slug).get_logo_nomgroupe_html)
+    except:
+        return slug
 
 @register.filter(is_safe=True)
 def getNomGroupeFromSlug(slug):
-    return mark_safe(Asso.objects.get(slug=slug).nom)
+    try:
+        return mark_safe(Asso.objects.get(slug=slug).nom)
+    except:
+        return slug
 
 
 @register.filter(is_safe=True)

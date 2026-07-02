@@ -387,7 +387,7 @@ LANGUAGES = (
 )
 LANGUAGE_CODE = 'fr'
 
-SUMMERNOTE_THEME = 'bs4'
+#SUMMERNOTE_THEME = 'bs4'
 
 SUMMERNOTE_CONFIG = {
     # Using SummernoteWidget - iframe mode, default

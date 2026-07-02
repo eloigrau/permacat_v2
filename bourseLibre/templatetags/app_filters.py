@@ -290,6 +290,7 @@ def phonenumber(value):
         return value
     return phone
 
+
 @register.filter(is_safe=True)
 def escapeETUrl(url):
     return url.replace('&', "%26")

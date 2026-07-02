@@ -4,7 +4,7 @@
 {% load activity_tags %}
 
 {% if articleList %}
-<ul class="p-0 m-0">
+<ul class="p-0 m-0 mb-2">
     <li class="d-flex align-items-center">
         <div class="d-flex w-100 align-items-center justify-content-between">
             <div class="me-2"><em>Article</em></div>
@@ -29,7 +29,7 @@
     {% endfor %}
 </ul>
 {% else %}
-    <div class="row col-sm-12">Pas d'article</div>
+    <div class="row col-sm-12 textcenter">Pas d'article</div>
 {% endif %}
 
 {% if voir_derniers %}

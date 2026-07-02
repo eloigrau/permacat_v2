@@ -34,7 +34,7 @@
         <div class="message {% if request.user == comment.auteur %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
             {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur %}">
-            {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %}
+            {% avatar comment.auteur 40 class="img-circle-profil" id="user_avatar" %}
             {{comment.auteur}}</a>
             {% endifchanged %}
             <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}{% else %}{% ifchanged %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}{% endif %}

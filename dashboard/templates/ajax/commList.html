@@ -2,6 +2,7 @@
 {% load app_filters %}
 {% load static %}
 {% load activity_tags %}
+{% load avatar_tags %}
 
 {% if commList %}
 <ul class="p-0 m-0">
@@ -20,7 +21,6 @@
                         <span class="badge bg-label-secondary"> {{ comm.date_creation|date:"d/m" }}</span>
                         <em>({{comm.auteur_comm}})</em> {{comm.commentaire|htmlClean|safe|sansp|couperTexte:160}}
                     </h6>
-
                 </a>
                 </div>
                 <div>

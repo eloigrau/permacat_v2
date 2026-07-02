@@ -63,7 +63,7 @@ def ajouter_budgetProjet(request):
         else:
             asso_slug = 'public'
 
-    if not testIsMembreAsso_bool(request, projet.asso.slug):
+    if not testIsMembreAsso_bool(request, asso_slug):
         return HttpResponseForbidden("Désolé, vous n'avez pas l'autorisation ")
 
     form = BudgetProjetForm(asso_slug, projet, request.POST or None)

@@ -19,8 +19,8 @@ $(document).ready(function() {
         location.href="/search/?"+recherche;
     });*/
 
-    /*fetchNotifications();
-    setInterval(fetchNotifications, 60000);*/
+    fetchNotifications();
+    setInterval(fetchNotifications, 60000);
 });
 
 document.onreadystatechange = function() {
@@ -221,7 +221,7 @@ $( function()
     });
 });
 
-/*
+
 function fetchNotifications() {
     fetch('/ajax/nbmessages/')
         .then(response => response.json())
@@ -273,4 +273,3 @@ function fetchNotifications() {
         })
         .catch(error => console.error('Erreur lors de la récupération des notifications:', error));
 }
-*/

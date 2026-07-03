@@ -73,9 +73,10 @@
     <tr >
         <td ><a href="{{conversation.get_absolute_url}}">
             {% if conversation.profil1 == request.user %}
-            {% avatar conversation.auteur_2 40 class="img-circle-profil" id="user_avatar" %} {{ conversation.auteur_2}}
+            {% avatar conversation.auteur_2 40 class="img-circle-profil" id="user_avatar" %}
+            {{ conversation.auteur_2}}
             {%else%}
-            {% avatar conversation.auteur_1 40 class="img-circle-profil" id="user_avatar" %} {{ conversation.auteur_2}}
+            {% avatar conversation.auteur_1 40 class="img-circle-profil" id="user_avatar" %}
             {{ conversation.auteur_1}}
             {%endif%}    </a></td>
         <td><a href="{{conversation.get_absolute_url}}">{%if conversation.dernierMessage%} {% if date_dernieresnotifs < conversation.date_dernierMessage %} <badge class="badge badge-warning">Nouveau message</badge> {% endif %}{{ conversation.dernierMessage|truncatechars:100}}{%endif%}    </a></td>

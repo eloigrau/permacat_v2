@@ -146,7 +146,7 @@ function get_derniers_commentaires(url_tag) {
             </button>
         </div>
         <div class="navbar-collapse collapse justify-content-center" id="navbar_asso">
-            <ul class="navbar-nav subnavbar2 align-items-center">
+            <ul class="navbar-nav subnavbar2 align-items-center btn-block">
                 {% for asso_id, asso_nom in asso_list %}
                 <a href="{% url 'blog:index_asso' asso=asso_id%}#ref-titre">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit btn-info">

@@ -9926,6 +9926,7 @@ li:not(:first-child) .dropdown-item, .dropdown-menu .dropdown-item:not(:first-ch
 ******************************************************************************* */
 .layout-navbar {
   background-color: var(--bs-paper-bg);
+  max-height:40px;
 }
 
 /* IE fix */
@@ -22839,7 +22840,7 @@ html:not(.layout-footer-fixed) .content-wrapper {
     position: fixed;
     z-index: 1036;
     block-size: 100%;
-    inline-size: 40px;
+    inline-size: 10px;
     inset-block-start: 0;
     inset-inline-start: 0;
   }

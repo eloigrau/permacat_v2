@@ -55,7 +55,7 @@
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
                 <a  href="{% url 'blog:todoarticle_list' asso=asso_ab %}#ref-titre">
-                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                    <li class="nav-item btn-choixgroupe btn btn-block shadow-trespetit {%if request.session.asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
                 </a>

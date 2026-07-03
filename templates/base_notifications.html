@@ -5,9 +5,9 @@
 {% block submenu %}
 
 <div class="sticky-top">
-    <nav class="navbar {%if request.user.css_dark %}navbar-dark bg-primary {% else %} navbar-light bg-light {% endif %} navbar-expand-xl shadow-petit">
+    <nav class="navbar {%if request.user.css_dark %}navbar-dark bg-primary {% else %} navbar-light bg-light bg-navbar-theme {% endif %} navbar-expand-xl shadow-petit">
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span></button>
+                <i class="icon-base bx bx-menu icon-md"></i></button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar">
 		<li class="nav-item nav-notif {% if 'notifications/activite/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notifications_news'  %}">Dernières Notifications</a></li>

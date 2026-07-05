@@ -10,7 +10,9 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter">
 {% for action in stream %}
-    {% include "notifications/notifications_template.html" with action=action %}
+    {% if action.data.titre != 'Message Privé' %}
+        {% include "notifications/notifications_template.html" with action=action %}
+    {% endif %}
 {% endfor %}
     </div>
 </div>

@@ -21,6 +21,7 @@
     <style>.leaflet-container {width:  100%;min-height: 70vh;}</style>
       <script type="text/javascript">
         function map_init_basic (map, options) {
+        L.TileLayer.prototype.options.referrerPolicy = 'strict-origin-when-cross-origin';
         var markers = L.markerClusterGroup({ maxClusterRadius: 20 });
 
         {% for lieu in lieux %}

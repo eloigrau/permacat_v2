@@ -126,14 +126,14 @@
                 <div class="text-truncate">Modules</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item {% if '/ateliers/' in request.path %}active{% endif %}">
-                    <a class="menu-link" href="{% url 'ateliers:index_ateliers' %}">
-                        <div class="text-truncate">Ateliers</div>
-                    </a>
-                </li>
                 <li class="menu-item {% if '/cooperateurs/carte/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'carte'  asso='ssa' %}">
                         <div class="text-truncate">Annuaire</div>
+                    </a>
+                </li>
+                <li class="menu-item {% if '/ateliers/' in request.path %}active{% endif %}">
+                    <a class="menu-link" href="{% url 'ateliers:index_ateliers' %}">
+                        <div class="text-truncate">Ateliers</div>
                     </a>
                 </li>
                 <li class="menu-item {% if '/adherents/' in request.path %}active{% endif %}">

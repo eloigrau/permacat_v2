@@ -447,18 +447,23 @@ class CommentaireProjetChangeForm(forms.ModelForm):
 
 
 class EvenementForm(forms.ModelForm):
-    qs = Article.objects.filter(estArchive=False)
-    article = forms.ModelChoiceField(queryset=qs.order_by('titre')) #forms.ChoiceField(choices=Article.objects.all())
 
     class Meta:
         model = Evenement
-        fields = ['start_time', 'titre_even', 'article', ]
+        fields = ['start_time', 'article', 'titre_even', ]
         widgets = {
             'start_time': forms.DateInput(
                 format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
                        }),
+            'article': autocomplete.ModelSelect2(url='blog:article-ac-asso')
+        }
+        help_texts = {
+            'article':  mark_safe("<p style='color:teal'>(écrire ci dessus au moins 2 lettres consécutives du titre de l'article du collectif)</p>")
+        }
+        labels = {
+            'article':  mark_safe("Article lié")
         }
 
     def save(self, request):

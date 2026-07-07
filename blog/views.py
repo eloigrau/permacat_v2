@@ -1731,6 +1731,25 @@ class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
         return qs
 
 
+class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        calc = len(self.q) > 0
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated or not calc:
+            return Article.objects.none()
+
+        if calc:
+            if "asso_slug" in self.request.session:
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                             estArchive=True).filter(Q(asso__slug=self.request.session["asso_slug"]) & (
+                            Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
+            else:
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                             estArchive=True).filter(
+                    Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+
+        return qs
+
 class ProjetAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         calc = len(self.q) > 1

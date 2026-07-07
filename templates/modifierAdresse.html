@@ -14,6 +14,7 @@
       <script type="text/javascript">
 
         function map_init_basic (map, options) {
+        L.TileLayer.prototype.options.referrerPolicy = 'strict-origin-when-cross-origin';
 
         map.panTo(new L.LatLng(42.62914, 2.49939));
           var leafIcon = L.icon({

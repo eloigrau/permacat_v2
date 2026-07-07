@@ -36,6 +36,7 @@
         <script type="text/javascript">
 
         function map_init_basic (map, options) {
+        L.TileLayer.prototype.options.referrerPolicy = 'strict-origin-when-cross-origin';
           var blueIcon = L.icon({
               iconUrl: '{% static 'img/marker-icon-blue.png' %}',
               shadowUrl: '{% static 'img/marker-shadow.png' %}',

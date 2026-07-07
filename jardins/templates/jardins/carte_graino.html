@@ -48,6 +48,7 @@
       <script type="text/javascript">
 
         function map_init_basic (map, options) {
+        L.TileLayer.prototype.options.referrerPolicy = 'strict-origin-when-cross-origin';
           var leafIcon = L.icon({
             iconUrl: '{% static 'img/leafgreen.png' %}',
             shadowUrl: '{% static 'img/leafshadow.png' %}',

@@ -1584,15 +1584,10 @@ table.greenTable tfoot .links a{
 }
 
 .titre_fiche{
-    padding: 12px;
     margin: 12px;
-
-    /*font-family: Georgia, serif;*/
-    font-size: 28px;
     letter-spacing: 1px;
     word-spacing: 1px;
     color: #000000;
-    font-weight: 700;
     text-decoration: none;
     font-style: normal;
     font-variant: small-caps;
@@ -2742,7 +2737,7 @@ min-height:40px;
 }
 
 .titre-article-forum{
-    box-shadow: 0 1px 6px 0px grey;
+    box-shadow: 0 1px 3px 0px grey;
     background-image: radial-gradient(#f7f7f7, #f4fff7)
     /*
     background-image: radial-gradient(#f5ffd6, #ebf2d3);

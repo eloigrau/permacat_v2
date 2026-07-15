@@ -32,7 +32,10 @@ class DashboardView(UserPassesTestMixin, TemplateView):
             self.request.session["asso_slug"] = self.request.GET.get("asso_slug")
         if not self.request.session.get("asso_slug", None):
             return False
-        self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
+        try:
+            self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
+        except:
+            return False
         return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
 
     def handle_no_permission(self):

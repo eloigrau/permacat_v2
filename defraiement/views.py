@@ -762,5 +762,6 @@ class ListeNdf_asso(UserPassesTestMixin, ListView):
         context['categorie_list'] = [x for x in ChoixMoyenPaiement.choices if x[0] in cat]
         context['ordreTriPossibles'] = Choix.ordre_tri_ndf
         context['type_courant'] = self.params["categorie"] if "categorie" in self.params else ""
+        context['annees'] = [int(datetime.now().year) - n for n in range(5)][::-1]
 
         return context

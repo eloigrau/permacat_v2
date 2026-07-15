@@ -36,3 +36,11 @@ class TransactionForm(forms.ModelForm):
         # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
         self.fields['budget_destination'].required = False
         self.fields['budget'].initial = budgetprojet
+
+class TransationChangeForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['type_transaction', 'budget_destination', 'libelle', 'montant', 'date', 'description']
+        widgets = {
+            'date': forms.DateInput(attrs={'class':'datepicker form-control', })
+        }

@@ -10,18 +10,18 @@
 {% endblock %}
 
 {% block subtitle %}
-<div class="row titre_adherents">
-    <div class="col textcenter">
-        <h3>Les Listes de Contacts </h3>
+    <div class="row titre_adherents">
+        <div class="col textcenter">
+            <h3>Les Listes de Contacts </h3>
+        </div>
     </div>
-</div>
-{% if is_membre_bureau %}
-<div class="row ">
-    <div class="col textcenter">
-        <a class="btn btn-danger"   href="{% url 'adherents:phoning_projet_ajouter' asso_slug=request.session.asso_slug %}">Ajouter un projet</a>
+    {% if is_membre_bureau %}
+    <div class="row ">
+        <div class="col textcenter">
+            <a class="btn btn-danger"   href="{% url 'adherents:phoning_projet_ajouter' asso_slug=request.session.asso_slug %}">Ajouter un projet</a>
+        </div>
     </div>
-</div>
-{% endif %}
+    {% endif %}
 {% endblock %}
 
 

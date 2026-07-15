@@ -120,7 +120,7 @@
             </ul>
         </li>
 
-        <li class="menu-item {% if '/compta/' in request.path or  '/ateliers/' in request.path or  '/cooperateurs/carte/' in request.path or '/adherents/' in request.path or '/defraiement/' in request.path or '/vote/' in request.path or '/forum/todoArticleList/' in request.path or '/listesDiffusion/' in request.path %}active open{% endif %}">
+        <li class="menu-item {% if '/compta/' in request.path or  '/ateliers/' in request.path or  '/cooperateurs/carte/' in request.path or '/adherents/' in request.path or '/defraiement/' in request.path or '/vote/' in request.path or '/forum/todoArticleList/' in request.path or '/listesDiffusion/' in request.path or '/phoning/' in request.path %}active open{% endif %}">
             <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-cube"></i>
                 <div class="text-truncate">Modules</div>
@@ -136,18 +136,22 @@
                         <div class="text-truncate">Ateliers</div>
                     </a>
                 </li>
+                {% if request.session.asso_slug|is_adhesions %}
                 <li class="menu-item {% if '/adherents/' in request.path %}active{% endif %}">
                     <a class="menu-link"
                        href="{% url 'adherents:adherent_liste' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Adhérents</div>
                     </a>
                 </li>
+                {% endif %}
+                {% if request.session.asso_slug|is_defraiement %}
                 <li class="menu-item {% if '/defraiement/' in request.path %}active{% endif %}">
                     <a class="menu-link"
                        href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Défraiements</div>
                     </a>
                 </li>
+                {% endif %}
                 <li class="menu-item {% if '/forum/projets/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'blog:index_projets' %}">
                         <div class="text-truncate">Projets</div>
@@ -163,12 +167,22 @@
                         <div class="text-truncate">Yapluka</div>
                     </a>
                 </li>
+                {% if request.session.asso_slug|is_listeDiffusion %}
                 <li class="menu-item {% if '/listesDiffusion/' in request.path %}active{% endif %} ">
                     <a class="menu-link"
                        href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Listes de diffusion</div>
                     </a>
                 </li>
+                {% endif %}
+                {% if request.session.asso_slug|is_listeContacts %}
+                <li class="menu-item {% if '/phoning/' in request.path %}active{% endif %} ">
+                    <a class="menu-link"
+                       href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}">
+                        <div class="text-truncate">Listes de contacts</div>
+                    </a>
+                </li>
+                {% endif %}
                 <li class="menu-item {% if '/compta/' in request.path %}active{% endif %} ">
                     <a class="menu-link"
                        href="{% url 'compta:tableau_de_bord' %}">

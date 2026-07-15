@@ -148,7 +148,7 @@ class Adhesion(models.Model):
 class ListeDiffusion(models.Model):
     nom = models.CharField(max_length=30, blank=False, unique=True)
     date_creation = models.DateTimeField(verbose_name=_("Date de création"), editable=False, auto_now=True)
-    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, verbose_name=_("Groupe associé"), null=True,)
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name=_("Groupe associé"), null=True,)
     #from blog.models import Article
     #article = models.ForeignKey(Article, on_delete=models.SET_NULL, verbose_name=_("Article associé", null=True,)
 
@@ -157,8 +157,10 @@ class ListeDiffusion(models.Model):
 
     def get_absolute_url(self):
         return reverse('adherents:listeDiffusion_detail', kwargs={'pk': self.pk, 'asso_slug':self.asso.slug})
+
     def get_update_url(self):
         return reverse('adherents:listeDiffusion_modifier', kwargs={'pk': self.pk, 'asso_slug':self.asso.slug})
+
     def get_delete_url(self):
         return reverse('adherents:listeDiffusion_supprimer', kwargs={'pk': self.pk, 'asso_slug':self.asso.slug})
 

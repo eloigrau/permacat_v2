@@ -191,7 +191,8 @@ INSTALLED_APPS = [
     #'wiki.plugins.links.apps.LinksConfig',
     #'wiki.plugins.macros.apps.MacrosConfig',
     #'wiki.plugins.notifications.apps.NotificationsConfig',
-
+    #'schema_graph',
+    #'puml_generator',
 ]
 #if LOCALL:
 #    INSTALLED_APPS.append('debug_toolbar',)

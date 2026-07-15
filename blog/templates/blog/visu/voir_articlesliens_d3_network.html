@@ -1,5 +1,21 @@
 {% extends 'blog/visu/visu_template.html' %}
 
+
+{% block subtitle %}
+<h4 class="textcenter">Visualisation des articles du Forum</h4>
+<p class="textcenter"><small>(Cliquer sur un cercle, zoomez avec la mollette)</small></p>
+{% endblock %}
+
+
+{% block content2 %}
+<h6 class="textcenter">Noeud cliqué : </h6>
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+      <div id="lien" class="textcenter"><a href=""></a></div>
+  </div>
+</div>
+{% endblock content2 %}
+
  {% block jscript %}
 
 d3.json("{% url 'blog:get_articles_asso_d3_network' asso_slug=request.session.asso_slug %}")

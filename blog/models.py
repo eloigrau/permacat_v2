@@ -395,11 +395,11 @@ class Article(models.Model):
 
     @property
     def get_categorie_display2(self):
-        if self.asso.slug == 'jp':
-            try:
-                return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
-            except:
-                pass
+        try:
+            if self.asso.slug == 'jp':
+                    return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
+        except:
+            pass
 
         return self.get_categorie_display
 

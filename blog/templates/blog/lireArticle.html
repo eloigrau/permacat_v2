@@ -210,6 +210,7 @@
         <a class="nav-item nav-link" href="#suffrages" data-toggle="tab" title="Sondages / suffrages"><i class="fa fa-paper-plane"></i>
             <i class="fa fa-paper-plane-top"></i></a>
         {% endif %}
+        <a class="nav-item nav-link" href="#articles_lies" data-toggle="tab" title="Articles liés"> <i class="fa fa-link icon-left"></i></a>
         <a class="nav-item nav-link" href="#partager" data-toggle="tab" title="Partager l'article"> <i class="fa fa-share icon-left"></i></a>
         <a class="nav-item nav-link" href="#plus" data-toggle="tab" title="Ajouter à l'article..."> <i class="fa fa-plus icon-left"></i></a>
     </nav>
@@ -650,6 +651,71 @@
             </div>
         </div>
 
+        <div class="tab-pane fade mt-0" id="articles_lies">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            <div class="row justify-content-center">
+                                <div class="col-sm-6 textcenter">
+                                     <em>Articles liés </em>
+                                </div>
+                                <div class="col-sm-6 textcenter">
+                                    <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
+                                        class="fa fa-plus"></i> Lier à un autre article  </a>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                            {% if articles_liens %}
+                            <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
+<thead><th>Date</th><th>Type de lien</th><th>Article</th>
+{%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+             <th>Modifier/Supprimer</th>
+{% endif %}
+
+</thead>
+<tbody>
+                {% for lien in articles_liens %}
+                <tr><td>
+                    {{ lien.date_creation|date:"d/m/Y" }}
+                </td>
+                    <td>{{lien.get_type_lien_display}}
+                    </td>
+                    <td>
+                        {% if lien.article == article %}
+                             <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
+                        {% else %}
+                             <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
+                        {% endif %}
+                    {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                    <td>
+            <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
+            <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"  onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')" ><i class="fa fa-times"></i> </a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor%}
+</tbody>
+</table>
+                            {% endif %}
+                            </div>
+
+                        {% if article.tags.names %}
+                        <hr>
+                        <div class="row-sm-12 justify-content-center">
+                            <div class="col-sm-12 ">
+                                <em> Mots-clés: </em>{% for tag in article.tags.names %}
+                                <span class="badge badge-info"> {{tag}}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
         <div class="tab-pane fade mt-0" id="partager">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">
@@ -662,7 +728,9 @@
                     <table class="table textcenter" style="border:none;">
                         <tr>
                             <td><span> <i class="fa fa-copy iconleft"></i>
-                                {% copy_to_clipboard article "Copier le lien" %}</span></td>
+                                {% copy_to_clipboard article "Copier le lien" %}
+                            </span>
+                            </td>
                         </tr>
                         <tr>
                             <td>
@@ -706,16 +774,6 @@
                         {% get_hit_count for article as nbvues %}
                         {{ nbvues }} vue{{nbvues|pluralize:"s"}}
                     </p>
-                    {% if article.tags.names %}
-                    <hr>
-                    <div class="row-sm-12 justify-content-center">
-                        <div class="col-sm-12 ">
-                            <em> Mots-clés: </em>{% for tag in article.tags.names %}
-                            <span class="badge badge-info"> {{tag}}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
                     <p>
                         {% if article.get_partagesAsso %}
                         <em>Article {{article.get_logo_nomgroupe_html|safe}}, partagé avec</em>
@@ -744,55 +802,6 @@
                         <em>Zone géographique : </em> {{article.zonegeo}}
                     </p>
                     {% endif %}
-                    <hr>
-                    <div class="row justify-content-center">
-                        <div class="col-sm-12 textcenter">
-                            <div class="row">
-                                <div class="col-sm-3 textcenter">
-                                     <em>Articles liés </em>
-                                </div>
-                                <div class="col-sm-9 textcenter">
-                                    <a class="btn btn-sm btn-success textleft" href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
-                                        class="fa fa-plus"></i> Lier à un autre article  </a>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                            {% if articles_liens %}
-                            <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
-<thead><th>Date</th><th>Type de lien</th><th>Article</th>
-{%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-             <th>Modifier/Supprimer</th>
-{% endif %}
-
-</thead>
-<tbody>
-                {% for lien in articles_liens %}
-
-                <tr><td>
-                    {{ lien.date_creation|date:"d/m/Y" }}
-                </td>
-                    <td>{{lien.get_type_lien_display}}
-                    </td>
-                    <td>
-                        {% if lien.article == article %}
-                             <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
-                        {% else %}
-                             <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
-                        {% endif %}
-                    {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <td>
-            <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-            <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"  onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')" ><i class="fa fa-times"></i> </a>
-                    </td>
-                    {% endif %}
-                </tr>
-                {% endfor%}
-</tbody>
-</table>
-                            {% endif %}
-                            </div>
-                        </div>
-                    </div>
                     <hr>
                     <div class="row justify-content-center">
                         <div class="col-sm-12 textcenter">
@@ -921,6 +930,7 @@ function get_resultatSondage(url_tag, div_name) {
     </div>
 </div>
 {% endif %}
+
 {% if suffrages %}
             <hr>
         <div class="row justify-content-center" >

@@ -29,6 +29,7 @@ from .settings import MEDIA_ROOT, MEDIA_URL, LOCALL
 from django.conf.urls.static import static
 from django.conf.urls.i18n import path
 from django.views.static import serve
+from schema_graph.views import Schema
 
 admin.sites.site_header ="Admin"
 admin.sites.site_title ="Admin Permacat"
@@ -52,6 +53,7 @@ urlpatterns = [
     path(r'adherents/', include('adherents.urls', namespace='adherents')),
     path(r'photolog/', include('photologue.urls', namespace='photologue')),
     path(r'permachat/', include("permachat.urls", namespace="permachat")),
+    #path("django-schema/", Schema.as_view()),
     #path(r'chatrooms/', include("chatrooms.urls", namespace="chatrooms")),
     #path(r'chat/', include("chat_old.urls", namespace="permachat")),
     #path(r'permapaint/', include("permapaint.urls", namespace="permapaint")),

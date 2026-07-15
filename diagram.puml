@@ -1,0 +1,850 @@
+@startuml 
+class "bourseLibre.Adresse <Bourselibre>" as bourseLibre.Adresse #dad6f4 {
+    adresse
+    --
+    - id (AutoField)
+    + rue (CharField)
+    + code_postal (CharField)
+    + commune (CharField)
+    + latitude (FloatField)
+    + longitude (FloatField)
+    + pays (CharField)
+    + telephone (CharField)
+    --
+}
+
+
+class "bourseLibre.Asso <Bourselibre>" as bourseLibre.Asso #dad6f4 {
+    asso
+    --
+    - id (AutoField)
+    + nom (CharField)
+    + slug (CharField)
+    + email (EmailField)
+    + date_inscription (DateTimeField)
+    + is_bureau (BooleanField)
+    + is_defraiement (BooleanField)
+    + is_adhesions (BooleanField)
+    + is_listeContacts (BooleanField)
+    + is_listeDiffusion (BooleanField)
+    --
+}
+
+
+class "bourseLibre.Profil <Bourselibre>" as bourseLibre.Profil #dad6f4 {
+    utilisateur
+    --
+    - id (AutoField)
+    + password (CharField)
+    + last_login (DateTimeField)
+    + is_superuser (BooleanField)
+    + username (CharField)
+    + first_name (CharField)
+    + last_name (CharField)
+    + email (EmailField)
+    + is_staff (BooleanField)
+    + is_active (BooleanField)
+    + date_joined (DateTimeField)
+    + site_web (URLField)
+    + description (TextField)
+    + competences (TextField)
+    ~ adresse (OneToOneField)
+    + date_registration (DateTimeField)
+    + pseudo_june (CharField)
+    + inscrit_newsletter (BooleanField)
+    + adherent_pc (BooleanField)
+    + adherent_rtg (BooleanField)
+    + adherent_fer (BooleanField)
+    + adherent_scic (BooleanField)
+    + adherent_citealt (BooleanField)
+    + adherent_viure (BooleanField)
+    + adherent_bzz2022 (BooleanField)
+    + adherent_conf66 (BooleanField)
+    + adherent_jp (BooleanField)
+    + adherent_ssa (BooleanField)
+    + adherent_ducepaj (BooleanField)
+    + accepter_conditions (BooleanField)
+    + accepter_annuaire (BooleanField)
+    + date_notifications (DateTimeField)
+    + date_messages (DateTimeField)
+    + css_dark (BooleanField)
+    + language (CharField)
+    # groups (ManyToManyField)
+    # user_permissions (ManyToManyField)
+    --
+}
+bourseLibre.Profil -up- bourseLibre.Adresse
+
+
+class "bourseLibre.Profil_recherche <Bourselibre>" as bourseLibre.Profil_recherche #dad6f4 {
+    profil_recherche
+    --
+    - id (AutoField)
+    ~ profil (ForeignKey)
+    --
+}
+bourseLibre.Profil_recherche -up- bourseLibre.Profil
+
+
+class "bourseLibre.Adhesion_permacat <Bourselibre>" as bourseLibre.Adhesion_permacat #dad6f4 {
+    adhesion_permacat
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_cotisation (DateField)
+    + montant (CharField)
+    + moyen (CharField)
+    + detail (TextField)
+    --
+}
+bourseLibre.Adhesion_permacat -up- bourseLibre.Profil
+
+
+class "bourseLibre.Adhesion_asso <Bourselibre>" as bourseLibre.Adhesion_asso #dad6f4 {
+    adhesion_asso
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_cotisation (DateField)
+    + montant (CharField)
+    + moyen (CharField)
+    ~ asso (ForeignKey)
+    + detail (TextField)
+    --
+}
+bourseLibre.Adhesion_asso -up- bourseLibre.Profil
+bourseLibre.Adhesion_asso -up- bourseLibre.Asso
+
+
+class "bourseLibre.Monnaie <Bourselibre>" as bourseLibre.Monnaie #dad6f4 {
+    monnaie
+    --
+    - id (AutoField)
+    + nom (CharField)
+    + slug (SlugField)
+    + estQuantifiable (BooleanField)
+    --
+}
+
+
+class "bourseLibre.Produit <Bourselibre>" as bourseLibre.Produit #dad6f4 {
+    produit
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_creation (DateTimeField)
+    + date_debut (DateField)
+    + date_expiration (DateField)
+    + nom_produit (CharField)
+    + description (TextField)
+    + stock_initial (FloatField)
+    + stock_courant (FloatField)
+    + prix (CharField)
+    + unite_prix (CharField)
+    + categorie (CharField)
+    + estUneOffre (BooleanField)
+    ~ asso (ForeignKey)
+    # monnaies (ManyToManyField)
+    --
+}
+bourseLibre.Produit -up- bourseLibre.Profil
+bourseLibre.Produit -up- bourseLibre.Asso
+bourseLibre.Produit *-up-* bourseLibre.Monnaie
+
+
+class "bourseLibre.Produit_aliment <Bourselibre>" as bourseLibre.Produit_aliment #dad6f4 {
+    produit_aliment
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_creation (DateTimeField)
+    + date_debut (DateField)
+    + date_expiration (DateField)
+    + nom_produit (CharField)
+    + description (TextField)
+    + stock_initial (FloatField)
+    + stock_courant (FloatField)
+    + prix (CharField)
+    + unite_prix (CharField)
+    + categorie (CharField)
+    + estUneOffre (BooleanField)
+    ~ asso (ForeignKey)
+    ~ produit_ptr (OneToOneField)
+    + souscategorie (CharField)
+    # monnaies (ManyToManyField)
+    --
+}
+bourseLibre.Produit_aliment -up- bourseLibre.Profil
+bourseLibre.Produit_aliment -up- bourseLibre.Asso
+bourseLibre.Produit_aliment -up- bourseLibre.Produit
+bourseLibre.Produit_aliment *-up-* bourseLibre.Monnaie
+
+
+class "bourseLibre.Produit_vegetal <Bourselibre>" as bourseLibre.Produit_vegetal #dad6f4 {
+    produit_vegetal
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_creation (DateTimeField)
+    + date_debut (DateField)
+    + date_expiration (DateField)
+    + nom_produit (CharField)
+    + description (TextField)
+    + stock_initial (FloatField)
+    + stock_courant (FloatField)
+    + prix (CharField)
+    + unite_prix (CharField)
+    + categorie (CharField)
+    + estUneOffre (BooleanField)
+    ~ asso (ForeignKey)
+    ~ produit_ptr (OneToOneField)
+    + souscategorie (CharField)
+    # monnaies (ManyToManyField)
+    --
+}
+bourseLibre.Produit_vegetal -up- bourseLibre.Profil
+bourseLibre.Produit_vegetal -up- bourseLibre.Asso
+bourseLibre.Produit_vegetal -up- bourseLibre.Produit
+bourseLibre.Produit_vegetal *-up-* bourseLibre.Monnaie
+
+
+class "bourseLibre.Produit_service <Bourselibre>" as bourseLibre.Produit_service #dad6f4 {
+    produit_service
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_creation (DateTimeField)
+    + date_debut (DateField)
+    + date_expiration (DateField)
+    + nom_produit (CharField)
+    + description (TextField)
+    + stock_initial (FloatField)
+    + stock_courant (FloatField)
+    + prix (CharField)
+    + unite_prix (CharField)
+    + categorie (CharField)
+    + estUneOffre (BooleanField)
+    ~ asso (ForeignKey)
+    ~ produit_ptr (OneToOneField)
+    + souscategorie (CharField)
+    # monnaies (ManyToManyField)
+    --
+}
+bourseLibre.Produit_service -up- bourseLibre.Profil
+bourseLibre.Produit_service -up- bourseLibre.Asso
+bourseLibre.Produit_service -up- bourseLibre.Produit
+bourseLibre.Produit_service *-up-* bourseLibre.Monnaie
+
+
+class "bourseLibre.Produit_objet <Bourselibre>" as bourseLibre.Produit_objet #dad6f4 {
+    produit_objet
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_creation (DateTimeField)
+    + date_debut (DateField)
+    + date_expiration (DateField)
+    + nom_produit (CharField)
+    + description (TextField)
+    + stock_initial (FloatField)
+    + stock_courant (FloatField)
+    + prix (CharField)
+    + unite_prix (CharField)
+    + categorie (CharField)
+    + estUneOffre (BooleanField)
+    ~ asso (ForeignKey)
+    ~ produit_ptr (OneToOneField)
+    + souscategorie (CharField)
+    # monnaies (ManyToManyField)
+    --
+}
+bourseLibre.Produit_objet -up- bourseLibre.Profil
+bourseLibre.Produit_objet -up- bourseLibre.Asso
+bourseLibre.Produit_objet -up- bourseLibre.Produit
+bourseLibre.Produit_objet *-up-* bourseLibre.Monnaie
+
+
+class "bourseLibre.Produit_offresEtDemandes <Bourselibre>" as bourseLibre.Produit_offresEtDemandes #dad6f4 {
+    produit_offres et demandes
+    --
+    - id (AutoField)
+    ~ user (ForeignKey)
+    + date_creation (DateTimeField)
+    + date_debut (DateField)
+    + date_expiration (DateField)
+    + nom_produit (CharField)
+    + description (TextField)
+    + stock_initial (FloatField)
+    + stock_courant (FloatField)
+    + prix (CharField)
+    + unite_prix (CharField)
+    + categorie (CharField)
+    + estUneOffre (BooleanField)
+    ~ asso (ForeignKey)
+    ~ produit_ptr (OneToOneField)
+    + souscategorie (CharField)
+    # monnaies (ManyToManyField)
+    --
+}
+bourseLibre.Produit_offresEtDemandes -up- bourseLibre.Profil
+bourseLibre.Produit_offresEtDemandes -up- bourseLibre.Asso
+bourseLibre.Produit_offresEtDemandes -up- bourseLibre.Produit
+bourseLibre.Produit_offresEtDemandes *-up-* bourseLibre.Monnaie
+
+
+class "bourseLibre.Panier <Bourselibre>" as bourseLibre.Panier #dad6f4 {
+    panier
+    --
+    - id (AutoField)
+    + date_creation (DateTimeField)
+    ~ user (ForeignKey)
+    + checked_out (BooleanField)
+    + etat (CharField)
+    --
+}
+bourseLibre.Panier -up- bourseLibre.Profil
+
+
+class "bourseLibre.Item <Bourselibre>" as bourseLibre.Item #dad6f4 {
+    article
+    --
+    - id (AutoField)
+    ~ panier (ForeignKey)
+    + quantite (DecimalField)
+    ~ produit (ForeignKey)
+    --
+}
+bourseLibre.Item -up- bourseLibre.Panier
+bourseLibre.Item -up- bourseLibre.Produit
+
+
+class "bourseLibre.Conversation <Bourselibre>" as bourseLibre.Conversation #dad6f4 {
+    conversation
+    --
+    - id (AutoField)
+    ~ profil1 (ForeignKey)
+    ~ profil2 (ForeignKey)
+    + slug (CharField)
+    + date_creation (DateTimeField)
+    + date_dernierMessage (DateTimeField)
+    + dernierMessage (CharField)
+    --
+}
+bourseLibre.Conversation -up- bourseLibre.Profil
+bourseLibre.Conversation -up- bourseLibre.Profil
+
+
+class "bourseLibre.Salon <Bourselibre>" as bourseLibre.Salon #dad6f4 {
+    salon
+    --
+    - id (AutoField)
+    + titre (CharField)
+    + auteur (CharField)
+    + slug (CharField)
+    + description (TextField)
+    + date_creation (DateTimeField)
+    + date_dernierMessage (DateTimeField)
+    + dernierMessage (CharField)
+    + type_salon (IntegerField)
+    ~ article (ForeignKey)
+    ~ jardin (ForeignKey)
+    ~ asso (ForeignKey)
+    # membres (ManyToManyField)
+    + tags (TaggableManager)
+    --
+}
+bourseLibre.Salon -up- blog.Article
+bourseLibre.Salon -up- bourseLibre.Asso
+bourseLibre.Salon *-up-* bourseLibre.Profil
+
+
+class "bourseLibre.InscritSalon <Bourselibre>" as bourseLibre.InscritSalon #dad6f4 {
+    inscrit salon
+    --
+    - id (AutoField)
+    ~ salon (ForeignKey)
+    ~ profil (ForeignKey)
+    + date_creation (DateTimeField)
+    --
+}
+bourseLibre.InscritSalon -up- bourseLibre.Salon
+bourseLibre.InscritSalon -up- bourseLibre.Profil
+
+
+class "bourseLibre.InvitationDansSalon <Bourselibre>" as bourseLibre.InvitationDansSalon #dad6f4 {
+    invitation dans salon
+    --
+    - id (AutoField)
+    ~ salon (ForeignKey)
+    ~ profil_invitant (ForeignKey)
+    ~ profil_invite (ForeignKey)
+    + date_creation (DateTimeField)
+    --
+}
+bourseLibre.InvitationDansSalon -up- bourseLibre.Salon
+bourseLibre.InvitationDansSalon -up- bourseLibre.Profil
+bourseLibre.InvitationDansSalon -up- bourseLibre.Profil
+
+
+class "bourseLibre.Message_salon <Bourselibre>" as bourseLibre.Message_salon #dad6f4 {
+    message_salon
+    --
+    - id (AutoField)
+    ~ salon (ForeignKey)
+    + message (TextField)
+    ~ auteur (ForeignKey)
+    + date_creation (DateTimeField)
+    --
+}
+bourseLibre.Message_salon -up- bourseLibre.Salon
+bourseLibre.Message_salon -up- bourseLibre.Profil
+
+
+class "bourseLibre.EvenementSalon <Bourselibre>" as bourseLibre.EvenementSalon #dad6f4 {
+    evenement salon
+    --
+    - id (AutoField)
+    + titre_even (CharField)
+    ~ salon (ForeignKey)
+    + start_time (DateField)
+    + end_time (DateField)
+    ~ auteur (ForeignKey)
+    --
+}
+bourseLibre.EvenementSalon -up- bourseLibre.Salon
+bourseLibre.EvenementSalon -up- bourseLibre.Profil
+
+
+class "bourseLibre.Message <Bourselibre>" as bourseLibre.Message #dad6f4 {
+    message
+    --
+    - id (AutoField)
+    ~ conversation (ForeignKey)
+    + message (TextField)
+    ~ auteur (ForeignKey)
+    + date_creation (DateTimeField)
+    --
+}
+bourseLibre.Message -up- bourseLibre.Conversation
+bourseLibre.Message -up- bourseLibre.Profil
+
+
+class "bourseLibre.MessageGeneral <Bourselibre>" as bourseLibre.MessageGeneral #dad6f4 {
+    message general
+    --
+    - id (AutoField)
+    + message (TextField)
+    ~ auteur (ForeignKey)
+    + date_creation (DateTimeField)
+    ~ asso (ForeignKey)
+    --
+}
+bourseLibre.MessageGeneral -up- bourseLibre.Profil
+bourseLibre.MessageGeneral -up- bourseLibre.Asso
+
+
+class "bourseLibre.Suivis <Bourselibre>" as bourseLibre.Suivis #dad6f4 {
+    suivis
+    --
+    - id (AutoField)
+    + nom_suivi (TextField)
+    --
+}
+
+
+class "bourseLibre.InscriptionNewsletter <Bourselibre>" as bourseLibre.InscriptionNewsletter #dad6f4 {
+    inscription newsletter
+    --
+    - id (AutoField)
+    + email (EmailField)
+    + date_inscription (DateTimeField)
+    --
+}
+
+
+class "bourseLibre.InscriptionNewsletterGenerique <Bourselibre>" as bourseLibre.InscriptionNewsletterGenerique #dad6f4 {
+    inscription newsletter generique
+    --
+    - id (AutoField)
+    + nom_newsletter (CharField)
+    + email (EmailField)
+    + date_inscription (DateTimeField)
+    ~ profil (ForeignKey)
+    --
+}
+bourseLibre.InscriptionNewsletterGenerique -up- bourseLibre.Profil
+
+
+class "bourseLibre.InscriptionNewsletterAsso <Bourselibre>" as bourseLibre.InscriptionNewsletterAsso #dad6f4 {
+    inscription newsletter asso
+    --
+    - id (AutoField)
+    + nom_newsletter (CharField)
+    + email (EmailField)
+    + date_inscription (DateTimeField)
+    ~ profil (ForeignKey)
+    ~ inscriptionnewslettergenerique_ptr (OneToOneField)
+    ~ asso (ForeignKey)
+    --
+}
+bourseLibre.InscriptionNewsletterAsso -up- bourseLibre.Profil
+bourseLibre.InscriptionNewsletterAsso -up- bourseLibre.InscriptionNewsletterGenerique
+bourseLibre.InscriptionNewsletterAsso -up- bourseLibre.Asso
+
+
+class "bourseLibre.ListeDiffusion <Bourselibre>" as bourseLibre.ListeDiffusion #dad6f4 {
+    liste diffusion
+    --
+    - id (AutoField)
+    + nom (CharField)
+    --
+}
+
+
+class "bourseLibre.InscriptionListeDiffusion <Bourselibre>" as bourseLibre.InscriptionListeDiffusion #dad6f4 {
+    inscription liste diffusion
+    --
+    - id (AutoField)
+    ~ liste_diffusion (ForeignKey)
+    + email (EmailField)
+    + date_inscription (DateTimeField)
+    ~ profil (ForeignKey)
+    + commentaire (CharField)
+    ~ asso (ForeignKey)
+    --
+}
+bourseLibre.InscriptionListeDiffusion -up- bourseLibre.ListeDiffusion
+bourseLibre.InscriptionListeDiffusion -up- bourseLibre.Profil
+bourseLibre.InscriptionListeDiffusion -up- bourseLibre.Asso
+
+
+class "bourseLibre.MessageAdmin <Bourselibre>" as bourseLibre.MessageAdmin #dad6f4 {
+    message admin
+    --
+    - id (AutoField)
+    + email (EmailField)
+    + date (DateTimeField)
+    + message (TextField)
+    + sujet (CharField)
+    --
+}
+
+
+class "bourseLibre.Favoris <Bourselibre>" as bourseLibre.Favoris #dad6f4 {
+    favoris
+    --
+    - id (AutoField)
+    + nom (CharField)
+    + url (CharField)
+    ~ profil (ForeignKey)
+    --
+}
+bourseLibre.Favoris -up- bourseLibre.Profil
+
+
+class "bourseLibre.Lien_AssoSalon <Bourselibre>" as bourseLibre.Lien_AssoSalon #dad6f4 {
+    lien_ asso salon
+    --
+    - id (AutoField)
+    ~ asso (ForeignKey)
+    ~ salon (ForeignKey)
+    + date (DateTimeField)
+    + slug_type (SlugField)
+    --
+}
+bourseLibre.Lien_AssoSalon -up- bourseLibre.Asso
+bourseLibre.Lien_AssoSalon -up- bourseLibre.Salon
+
+
+class "blog.Theme <Blog>" as blog.Theme #d6f4d7 {
+    theme
+    --
+    - id (AutoField)
+    + nom (CharField)
+    --
+}
+
+
+class "blog.ZoneGeo <Blog>" as blog.ZoneGeo #d6f4d7 {
+    zone geo
+    --
+    - id (AutoField)
+    + titre (CharField)
+    --
+}
+
+
+class "blog.Article <Blog>" as blog.Article #d6f4d7 {
+    article
+    --
+    - id (AutoField)
+    + categorie (CharField)
+    + titre (CharField)
+    ~ auteur (ForeignKey)
+    + slug (SlugField)
+    + contenu (TextField)
+    + date_creation (DateTimeField)
+    + date_modification (DateTimeField)
+    + estModifiable (BooleanField)
+    + estEpingle (BooleanField)
+    ~ asso (ForeignKey)
+    + date_dernierMessage (DateTimeField)
+    + dernierMessage (CharField)
+    + estArchive (BooleanField)
+    + start_time (DateField)
+    + end_time (DateField)
+    ~ album (ForeignKey)
+    ~ zonegeo (ForeignKey)
+    + tags (TaggableManager)
+    # partagesAsso (ManyToManyField)
+    # themes (ManyToManyField)
+    --
+}
+blog.Article -up- bourseLibre.Profil
+blog.Article -up- bourseLibre.Asso
+blog.Article -up- blog.ZoneGeo
+blog.Article *-up-* bourseLibre.Asso
+blog.Article *-up-* blog.Theme
+
+
+class "blog.AssociationSalonArticle <Blog>" as blog.AssociationSalonArticle #d6f4d7 {
+    association salon article
+    --
+    - id (AutoField)
+    ~ article (ForeignKey)
+    ~ salon (ForeignKey)
+    --
+}
+blog.AssociationSalonArticle -up- blog.Article
+blog.AssociationSalonArticle -up- bourseLibre.Salon
+
+
+class "blog.DocumentPartage <Blog>" as blog.DocumentPartage #d6f4d7 {
+    document partage
+    --
+    - id (AutoField)
+    + nom (CharField)
+    ~ article (ForeignKey)
+    + slug (SlugField)
+    + date_creation (DateTimeField)
+    + duree (CharField)
+    --
+}
+blog.DocumentPartage -up- blog.Article
+
+
+class "blog.Evenement <Blog>" as blog.Evenement #d6f4d7 {
+    evenement
+    --
+    - id (AutoField)
+    + titre_even (CharField)
+    ~ article (ForeignKey)
+    + start_time (DateField)
+    + end_time (DateField)
+    ~ auteur (ForeignKey)
+    --
+}
+blog.Evenement -up- blog.Article
+blog.Evenement -up- bourseLibre.Profil
+
+
+class "blog.Discussion <Blog>" as blog.Discussion #d6f4d7 {
+    discussion
+    --
+    - id (AutoField)
+    ~ article (ForeignKey)
+    + titre (CharField)
+    + slug (SlugField)
+    --
+}
+blog.Discussion -up- blog.Article
+
+
+class "blog.Commentaire <Blog>" as blog.Commentaire #d6f4d7 {
+    commentaire
+    --
+    - id (AutoField)
+    ~ auteur_comm (ForeignKey)
+    + commentaire (TextField)
+    ~ article (ForeignKey)
+    ~ discussion (ForeignKey)
+    + date_creation (DateTimeField)
+    --
+}
+blog.Commentaire -up- bourseLibre.Profil
+blog.Commentaire -up- blog.Article
+blog.Commentaire -up- blog.Discussion
+
+
+class "blog.Cercle <Blog>" as blog.Cercle #d6f4d7 {
+    cercle
+    --
+    - id (AutoField)
+    + titre (CharField)
+    ~ asso (ForeignKey)
+    + slug (SlugField)
+    --
+}
+blog.Cercle -up- bourseLibre.Asso
+
+
+class "blog.Projet <Blog>" as blog.Projet #d6f4d7 {
+    projet
+    --
+    - id (AutoField)
+    + categorie (CharField)
+    + statut (CharField)
+    + titre (CharField)
+    ~ auteur (ForeignKey)
+    + slug (SlugField)
+    + contenu (TextField)
+    + date_creation (DateTimeField)
+    + date_modification (DateTimeField)
+    + coresponsable (CharField)
+    + lien_vote (URLField)
+    + lien_document (URLField)
+    + fichier_projet (FileField)
+    + date_fichier (DateTimeField)
+    + date_dernierMessage (DateTimeField)
+    + dernierMessage (CharField)
+    + start_time (DateField)
+    + end_time (DateField)
+    + estArchive (BooleanField)
+    ~ asso (ForeignKey)
+    ~ cercle (ForeignKey)
+    + tags (TaggableManager)
+    --
+}
+blog.Projet -up- bourseLibre.Profil
+blog.Projet -up- bourseLibre.Asso
+blog.Projet -up- blog.Cercle
+
+
+class "blog.FicheProjet <Blog>" as blog.FicheProjet #d6f4d7 {
+    fiche projet
+    --
+    ~ projet (OneToOneField)
+    + date_creation (DateTimeField)
+    + date_modification (DateTimeField)
+    + raison (TextField)
+    + pourquoi_contexte (TextField)
+    + pourquoi_motivation (TextField)
+    + pourquoi_objectifs (TextField)
+    + pour_qui (TextField)
+    + par_qui (TextField)
+    + avec_qui (TextField)
+    + ou (TextField)
+    + quand (TextField)
+    + comment (TextField)
+    + combien (TextField)
+    --
+}
+blog.FicheProjet -up- blog.Projet
+
+
+class "blog.CommentaireProjet <Blog>" as blog.CommentaireProjet #d6f4d7 {
+    commentaire projet
+    --
+    - id (AutoField)
+    ~ auteur_comm (ForeignKey)
+    + commentaire (TextField)
+    ~ projet (ForeignKey)
+    + date_creation (DateTimeField)
+    --
+}
+blog.CommentaireProjet -up- bourseLibre.Profil
+blog.CommentaireProjet -up- blog.Projet
+
+
+class "blog.EvenementAcceuil <Blog>" as blog.EvenementAcceuil #d6f4d7 {
+    evenement acceuil
+    --
+    - id (AutoField)
+    + titre_even (CharField)
+    ~ article (ForeignKey)
+    + date (DateTimeField)
+    --
+}
+blog.EvenementAcceuil -up- blog.Article
+
+
+class "blog.AdresseArticle <Blog>" as blog.AdresseArticle #d6f4d7 {
+    adresse article
+    --
+    - id (AutoField)
+    + titre (CharField)
+    ~ adresse (ForeignKey)
+    ~ article (ForeignKey)
+    + infos (TextField)
+    + type_marqueur (CharField)
+    --
+}
+blog.AdresseArticle -up- bourseLibre.Adresse
+blog.AdresseArticle -up- blog.Article
+
+
+class "blog.TodoArticle <Blog>" as blog.TodoArticle #d6f4d7 {
+    todo article
+    --
+    - id (AutoField)
+    + titre (CharField)
+    + slug (SlugField)
+    + description (CharField)
+    + date_creation (DateTimeField)
+    + date_modification (DateTimeField)
+    + estFait (BooleanField)
+    ~ article (ForeignKey)
+    --
+}
+blog.TodoArticle -up- blog.Article
+
+
+class "blog.ArticleLiens <Blog>" as blog.ArticleLiens #d6f4d7 {
+    article liens
+    --
+    - id (AutoField)
+    + date_creation (DateTimeField)
+    ~ article (ForeignKey)
+    ~ article_lie (ForeignKey)
+    + type_lien (CharField)
+    --
+}
+blog.ArticleLiens -up- blog.Article
+blog.ArticleLiens -up- blog.Article
+
+
+class "blog.ArticleLienProjet <Blog>" as blog.ArticleLienProjet #d6f4d7 {
+    article lien projet
+    --
+    - id (AutoField)
+    + date_creation (DateTimeField)
+    ~ article (ForeignKey)
+    ~ projet_lie (ForeignKey)
+    + type_lien (CharField)
+    --
+}
+blog.ArticleLienProjet -up- blog.Article
+blog.ArticleLienProjet -up- blog.Projet
+
+
+class "blog.Article_recherche <Blog>" as blog.Article_recherche #d6f4d7 {
+    article_recherche
+    --
+    - id (AutoField)
+    ~ article (ForeignKey)
+    --
+}
+blog.Article_recherche -up- blog.Article
+
+
+class "blog.Projet_recherche <Blog>" as blog.Projet_recherche #d6f4d7 {
+    projet_recherche
+    --
+    - id (AutoField)
+    ~ projet (ForeignKey)
+    --
+}
+blog.Projet_recherche -up- blog.Projet
+
+
+@enduml

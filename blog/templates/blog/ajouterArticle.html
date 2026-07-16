@@ -13,7 +13,7 @@
 {% endif %}
 <div class="row">
 	<div class="col-sm-12">
-<form id="articleForm" class="form-horizontal" role="form" action="" method="post"
+<form id="myForm" class="form-horizontal" role="form" action="" method="post"
 	enctype="multipart/form-data" ajax_categories-url="{% url 'blog:ajax_categories' %}">
 	{% csrf_token %} <input type="hidden" name="Article"
 		value="{{ article }}"> {% include 'form_template.html'%}
@@ -28,7 +28,7 @@ $(function() {
 });
 
 function updateForm() {
-    var url = $("#articleForm").attr("ajax_categories-url"); // get the url of the `load_cities` view
+    var url = $("#myForm").attr("ajax_categories-url"); // get the url of the `load_cities` view
     var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
 
     if (asso){

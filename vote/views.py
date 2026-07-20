@@ -316,11 +316,11 @@ class ListeSuffrages(ListView):
             qs = qs.filter(type_vote=params['type_vote'])
         if "statut" in params:
             if params['statut'] == '0':
-                qs = qs.filter(start_time__date__lte=now(), end_time__date__gte=now() )
+                qs = qs.filter(start_time__lte=now(), end_time__gte=now() )
             if params['statut'] == '1':
-                qs = qs.filter(end_time__date__lte=now() )
+                qs = qs.filter(end_time__lte=now() )
             if params['statut'] == '2':
-                qs = qs.filter(Q(start_time__date__gte=now()))
+                qs = qs.filter(Q(start_time__gte=now()))
 
         if "ordreTri" in params:
             qs = qs.order_by(params['ordreTri'])

@@ -1,14 +1,15 @@
 {% extends 'vote/baseVote.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
 
+{% block subtitle %}
 <div class="row">
 	<div class="col col-md-12 textcenter"><h3>Ajouter un suffrage</h3>
     <h4>Etape 1 : Donnez ici les renseignements généraux du vote</h4>
     </div>
 </div>
-<hr>
+{% endblock subtitle %}
 
+{% block content %}
 {% include 'form_template.html' %}
 
 {% endblock %}

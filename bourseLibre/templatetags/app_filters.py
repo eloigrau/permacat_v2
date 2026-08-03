@@ -341,8 +341,10 @@ def sansp(html):
 def urlSupprParam(param_url, nomParam):
     if nomParam in param_url:
         params = parse.parse_qs(param_url, keep_blank_values=True)
-        del params[nomParam]
-        return "&".join([str(k)+"="+ str(v[0]) for k, v in params.items() ])
+        if nomParam in params:
+            del params[nomParam]
+            return "&".join([str(k)+"="+ str(v[0]) for k, v in params.items() ])
+        return param_url
     return param_url
 
 @register.filter(is_safe=True)

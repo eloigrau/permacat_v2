@@ -37,7 +37,7 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),  # Language switching
     re_path(r'^summernote/', include('local_summernote.urls')),
     # path('tinymce/', include('tinymce.urls')),
-    # re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
+    re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
     # path('newsletter/', include('newsletter.urls')),
     # re_path(r'^chat/', include('chat.urls')),
     path(r'agenda/', include('cal.urls')),

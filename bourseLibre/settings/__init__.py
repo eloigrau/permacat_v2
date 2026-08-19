@@ -136,6 +136,7 @@ INSTALLED_APPS = [
     'defraiement',
     'agoratransition',
     #'acme_challenge',
+    'letsencrypt',
     'rest_framework',
     'permagora',
     'jardins',

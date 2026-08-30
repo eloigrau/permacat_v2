@@ -22,14 +22,32 @@
 </div>
 
 
-{% comment%}
-
-<p class="textcenter textepetit">(* les personnes qui ont accepté d'apparaitre dans l'annuaire sont indiquées par une feuille ; les marqueurs gris concernent les colibris qui se sont inscrit sur "<a href="{% url 'carto:carte' %}" >presdecheznous.fr</a>" )</p>
-
-
-{% include "asso/presentation_asso_template.html" with adherent=request.user|adherent_asso:asso assos=asso.slug%}
-{% endcomment %}
-
+<hr>
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center" >
+        <div class="navbar-header">
+             <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug}} {% else %} Choisir un groupe {% endif %} </p> </button>
+        </div>
+        <div class="navbar-collapse collapse justify-content-center" id="navbar_asso">
+            <ul class="navbar-nav subnavbar2 align-items-center">
+                <a  href="{% url 'photologue:doc-list' %}?base=true#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug%} btn-success{% else %}btn-primary{% endif %}">
+                          <h6>Tous</h6>
+                    </li>
+                </a>
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'photologue:doc-list' %}?asso={{asso_ab}}#ref-titre">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+<hr>
 {% endblock %}
 {% block content %}
 

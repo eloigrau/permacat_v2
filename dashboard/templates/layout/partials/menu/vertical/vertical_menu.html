@@ -127,7 +127,7 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/cooperateurs/carte/' in request.path %}active{% endif %}">
-                    <a class="menu-link" href="{% url 'carte'  asso='ssa' %}">
+                    <a class="menu-link" href="{% url 'carte'  asso=request.session.asso_slug %}">
                         <div class="text-truncate">Annuaire</div>
                     </a>
                 </li>

@@ -324,7 +324,8 @@ def annuaire(request, asso):
     prof = asso.getProfils()
     nb_profils = len(prof)
     prof = prof.filter(accepter_annuaire=True)
-    return render(request, 'annuaire.html', {'profils':prof, "nb_profils":nb_profils, "asso":asso} )
+    asso_list = [(x.slug, x.nom) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)]
+    return render(request, 'annuaire.html', {'profils':prof, "nb_profils":nb_profils, "asso":asso, "asso_list":asso_list} )
 
 
 @login_required
@@ -552,8 +553,9 @@ def carte(request, asso):
     # except:
     #     ev = []
     ev = []
+    asso_list = [(x.slug, x.nom) for x in Asso.objects.all().order_by("id") if request.user.est_autorise(x.slug)]
 
-    return render(request, 'carte_cooperateurs.html', {'filter':profils_filtres, 'page_obj':page_obj,'titre': titre, 'data':ev, "asso":asso} )
+    return render(request, 'carte_cooperateurs.html', {'filter':profils_filtres, 'page_obj':page_obj,'titre': titre, 'data':ev, "asso":asso, "asso_list":asso_list} )
 
 
 # @login_required

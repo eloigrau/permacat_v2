@@ -6,7 +6,14 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-sm-12 my-auto">
+    <div class="col-sm-12 my-auto textcenter">
+        <h1>Perma.Cat</h1>
+        <p><em>Rendre Possible ce qui est Nécessaire</em></p>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-sm-12 my-auto textcenter">
         <div class="row textcenter">
             <div class="col">
                 <a href="{% url 'gallerie' %}"><img alt="gallerie" class="imgbienvenue"
@@ -57,17 +64,18 @@
 
 
 <hr>
-<div class="row  justify-content-center">
-    <div class="col-sm-12 col-md-10 col-lg-9">
-        <div class="row  justify-content-around align-items-center textcenter">
-            <div class="col-sm-12 col-md-6">
-                <a href="{% url 'cgu'  %}">
-                    Conditions Générales d'Utilisation
-                </a>
-            </div>
-            <div class="col-sm-12 col-md-6">
+<div class="row  justify-content-center align-items-center textcenter">
+    <div class="col-sm-12 ">
                 <a href="{% url 'contact_admins' %}">
                    <i class='fa fa-envelope iconleft '></i> Nous contacter
+                </a>
+    </div>
+</div>
+<hr>
+<div class="row  justify-content-center align-items-center textcenter">
+    <div class="col-sm-12">
+                <a href="{% url 'cgu'  %}">
+                    Conditions Générales d'Utilisation
                 </a>
             </div>
         </div>

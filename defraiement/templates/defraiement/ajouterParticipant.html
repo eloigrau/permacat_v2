@@ -46,7 +46,13 @@
       <script type="text/javascript">
 
         function map_init_basic (map, options) {
-        L.TileLayer.prototype.options.referrerPolicy = 'strict-origin-when-cross-origin';
+             const accessToken = 'lpCzV2qi87UdZoteQ9PEOvPSlF2XEN4CeRRVU0BOKrXUvJ9etIMUeclQj6xl0r9e';
+      L.tileLayer(
+      `https://tile.jawg.io/jawg-sunny/{z}/{x}/{y}.png?access-token=${accessToken}`, {
+        attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank" class="jawg-attrib">&copy; <b>Jawg</b>Maps</a> | <a href="https://www.openstreetmap.org/copyright" title="OpenStreetMap is open data licensed under ODbL" target="_blank" class="osm-attrib">&copy; OpenStreetMap</a>',
+        maxZoom: 22
+      }
+    ).addTo(map);
         map.panTo(new L.LatLng(42.62914, 2.49939));
 
         map.on('click', function(ev) {

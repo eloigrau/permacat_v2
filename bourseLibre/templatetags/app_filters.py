@@ -312,23 +312,38 @@ def getNomGroupeFromSlug(slug):
 
 @register.filter(is_safe=True)
 def estMembreAsso(slug, user):
-    return Asso.objects.get(slug=slug).est_autorise(user)
+    try:
+        return Asso.objects.get(slug=slug).est_autorise(user)
+    except:
+        return False
 
 @register.filter(is_safe=True)
 def is_adhesions(slug):
-    return Asso.objects.get(slug=slug).is_adhesions
+    try:
+        return Asso.objects.get(slug=slug).is_adhesions
+    except:
+        return False
 
 @register.filter(is_safe=True)
 def is_defraiement(slug):
-    return Asso.objects.get(slug=slug).is_defraiement
+    try:
+        return Asso.objects.get(slug=slug).is_defraiement
+    except:
+        return False
 
 @register.filter(is_safe=True)
 def is_listeContacts(slug):
-    return Asso.objects.get(slug=slug).is_listeContacts
+    try:
+        return Asso.objects.get(slug=slug).is_listeContacts
+    except:
+        return False
 
 @register.filter(is_safe=True)
 def is_listeDiffusion(slug):
-    return Asso.objects.get(slug=slug).is_listeDiffusion
+    try:
+        return Asso.objects.get(slug=slug).is_listeDiffusion
+    except:
+        return False
 
 
 @register.filter(is_safe=True)

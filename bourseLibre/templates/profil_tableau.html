@@ -138,13 +138,42 @@
         <tr>
             <td style="width:200px">Inscrit au collectif Du Cep Au Jus *: </td>
             <td>{{user.adherent_ducepaj|translateOuiNon }}
-       {% if request.user.is_superuser %}
-        <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='ducepaj' %}">
-            <button type="button" class="btn btn-sm btn-warning">
-                <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
-            </button>
-        </a>
-        {% endif %}</td>
+           {% if request.user.is_superuser %}
+            <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='ducepaj' %}">
+                <button type="button" class="btn btn-sm btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+                </button>
+            </a>
+            {% endif %}
+            </td>
+        </tr>
+    {% endif %}
+    {%if request.user.adherent_irri66 or request.user == user  or request.user.is_superuser%}
+        <tr>
+            <td style="width:200px">Inscrit au collectif Irrigants 66 *: </td>
+            <td>{{user.adherent_irri66|translateOuiNon }}
+           {% if request.user.is_superuser %}
+            <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='irri66' %}">
+                <button type="button" class="btn btn-sm btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+                </button>
+            </a>
+            {% endif %}
+            </td>
+        </tr>
+    {% endif %}
+    {%if request.user.adherent_jppb or request.user == user  or request.user.is_superuser%}
+        <tr>
+            <td style="width:200px">Inscrit au collectif Du Jardin Partagé du Poisson Bêche *: </td>
+            <td>{{user.adherent_jppb|translateOuiNon }}
+           {% if request.user.is_superuser %}
+            <a href="{% url 'inscrireProfilAuGroupe' id_profil=user.id asso_slug='jppb' %}">
+                <button type="button" class="btn btn-sm btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;inscrireProfilAuGroupe
+                </button>
+            </a>
+            {% endif %}
+            </td>
         </tr>
     {% endif %}
     {%if request.user.adherent_jp or request.user == user  or request.user.is_superuser%}

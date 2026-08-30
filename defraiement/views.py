@@ -359,7 +359,7 @@ def ajouterParticipant(request, asso_slug):
         try:
             return redirect(request.session.get('reunion_courante_url'))
         except:
-            return redirect('defraiement:participants', asso_slug=asso_slug)
+            return redirect(part.get_absolute_url())
 
 
     return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2 }) # 'form_adresse':form_adresse,

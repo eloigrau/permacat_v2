@@ -897,7 +897,7 @@ class InscriptionMailUpdateView(TestMembreAssoMixin, UpdateView):
     template_name_suffix = '_modifier'
 
     def get_form(self):
-        return InscriptionMail_complet_Form(asso_slug=self.asso.slug, **self.get_form_kwargs())
+        return InscriptionMail_complet_Form(asso_slug=self.asso.slug, liste_diffusion=self.object.liste_diffusion, **self.get_form_kwargs())
 
     def get_success_url(self):
         return self.object.liste_diffusion.get_absolute_url()
@@ -1154,8 +1154,8 @@ def ajouterAdherentAListeDiffusion(request, asso_slug, listeDiffusion_pk):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
-    form = InscriptionMailForm(asso_slug, request.POST or None)
     listeDiffusion = get_object_or_404(ListeDiffusion, pk=listeDiffusion_pk)
+    form = InscriptionMailForm(asso_slug, listeDiffusion, request.POST or None)
 
     if form.is_valid():
         adhesion = form.save(commit=False)
@@ -1175,8 +1175,8 @@ def ajouterMailAListeDiffusion(request, asso_slug, listeDiffusion_pk):
     if not is_membre_bureau(request.user, asso_slug):
         return HttpResponseForbidden()
 
-    form = InscriptionMail_Mail_Form(request.POST or None)
     listeDiffusion = get_object_or_404(ListeDiffusion, pk=listeDiffusion_pk)
+    form = InscriptionMail_Mail_Form(listeDiffusion.get_liste_mails, request.POST or None)
 
     if form.is_valid():
         adhesion = form.save(commit=False)

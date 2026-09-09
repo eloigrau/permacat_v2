@@ -30,19 +30,22 @@ class DashboardView(UserPassesTestMixin, TemplateView):
     def test_func(self):
         if self.request.GET.get("asso_slug", None):
             self.request.session["asso_slug"] = self.request.GET.get("asso_slug")
+
         if not self.request.session.get("asso_slug", None):
-            return False
+            self.request.session["asso_slug"] = "public"
+
         try:
             self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
         except:
             return False
+
         return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
 
     def handle_no_permission(self):
         if not self.request.session.get("asso_slug", None):
             return redirect("dashboard:choisirCollectif")
 
-        return render(self.request, "erreur.html", {"msg": "Vous n'êtes pas autorisé-e à voir ce contenu, désolé. (%s) " %(str(self.asso))})
+        return render(self.request, "erreur.html", {"msg": "Vous n'êtes pas autorisé-e à voir ce contenu, désolé. "})
 
     def get_template_names(self):
         return select_template(["dashboard_"+ self.request.session["asso_slug"] + ".html","dashboard_base.html"])

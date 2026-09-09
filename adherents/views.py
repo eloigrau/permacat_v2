@@ -50,15 +50,21 @@ def set_projet_phoning(request, asso_slug, url_redirect):
 
 class TestMembreAssoMixin(UserPassesTestMixin):
     def test_func(self):
-        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-        self.request.session["asso_slug"] = self.asso.slug
-        return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
+        try:
+            self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+            self.request.session["asso_slug"] = self.asso.slug
+            return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
+        except:
+            return False
 
 class TestBureauAssoMixin(UserPassesTestMixin):
     def test_func(self):
-        self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-        self.request.session["asso_slug"] = self.asso.slug
-        return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user.is_superuser
+        try:
+            self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+            self.request.session["asso_slug"] = self.asso.slug
+            return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user.is_superuser
+        except:
+            return False
 
 class ListeAdherents(TestMembreAssoMixin, ListView):
     model = Adherent

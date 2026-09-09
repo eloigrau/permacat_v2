@@ -1417,7 +1417,7 @@ def salon(request, slug):
     salon = testIsMembreSalon(request, slug)
     if not isinstance(salon, Salon):
         raise PermissionDenied
-    dates = EvenementSalon.objects.filter(salon=salon)
+    dates = EvenementSalon.objects.filter(salon=salon).order_by("-start_time")
     suivis = salon.getSuivi()
     inscrits = salon.getInscrits()
     invites = salon.getInvites()

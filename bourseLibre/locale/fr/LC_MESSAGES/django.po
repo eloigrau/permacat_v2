@@ -5491,7 +5491,7 @@ msgid ""
 "Titre de l'événement (si laissé vide, ce sera le titre du salon de "
 "discussion)"
 msgstr ""
-"Titre de l'Événiement (Si Laissé Vide, Ce Sera le Titre du Salon de "
+"Titre de l'événement (si laissé vide, ce sera le titre du salon de  "
 "Discussion)"
 #: bourseLibre/models.py:1571 bourseLibre/models.py:1595
 msgid "Profil du membre (si inscrit)"

@@ -254,7 +254,7 @@ class Choix:
         return Choix.type_atelier[int(num)][1]
 
     def get_couleur_cat(cat):
-            return Choix.couleurs_ateliers[cat]
+        return Choix.couleurs_ateliers[cat]
 
 class Theme(models.Model):
     nom = models.CharField(max_length=20)
@@ -475,6 +475,8 @@ class Article(models.Model):
         else:
             return derniere_date
 
+    def get_ateliers_visibles(self, request):
+        return [a for a in self.atelier_set.all() if a.est_autorise(request.user)]
 # class ModificationArticle(models.Model):
 #     description = models.CharField(verbose_name=_("Explication de la modification"), max_length=500, null=True, blank=True)
 #     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))

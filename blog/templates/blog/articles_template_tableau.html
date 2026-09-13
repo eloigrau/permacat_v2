@@ -1,8 +1,9 @@
 {% load activity_tags %}
 {% load fontawesome_5 %}
 {% load static %}
+{% load blog_filters %}
 
-{%block header %}
+{% block header %}
 
 {% if request.user.css_dark %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/style_forum_dark.css' %}"/>
@@ -30,7 +31,7 @@
 
                     <p class="">
                         <a href="{% url 'blog:index_asso' asso=article.asso.slug %}?categorie={{article.categorie}}&ancre_navtab=dossier#ref-navbargroupe">
-                            <span class="badge badge-primary">{% if article.get_logo_categorie %}
+                            <span class="badge badge-primary" style="background-color:{{article.get_couleur}}; color : #666666;">{% if article.get_logo_categorie %}
                                 <img src="{% static article.get_logo_categorie %}" height="16px"/>  {% endif %}{{ article.get_categorie_display2 }} </span>
                         </a>
                     </p>
@@ -54,7 +55,7 @@
                         </span>
                     </p>
             </td>
-            <td data-title="" class="shrink" style="width:70%;">
+            <td data-title="" class="" style="width:70%;">
                 <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
                     <p class="titre_forum">{{article.titre}}
                         {%if article.estModifiable %}
@@ -93,6 +94,13 @@
             </td>
 
         </tr>
+        {% get_ateliers_visibles article request as listeAteliers %}
+        {% for atelier in listeAteliers %}
+            <tr>
+                <td> </td>
+            <td colspan="3">{% include "ateliers/listAtelier_template_item.html" %}</td>
+            </tr>
+        {% endfor %}
         {% endfor %}
         </tbody>
     </table>

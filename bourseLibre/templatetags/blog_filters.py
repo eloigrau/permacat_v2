@@ -59,3 +59,8 @@ def date_annee(date):
     if date.year == now.year:
         return format(date, 'F j')
     return format(date, 'l d F Y')
+
+@register.simple_tag
+def get_ateliers_visibles(article, request):
+    return article.get_ateliers_visibles(request)
+

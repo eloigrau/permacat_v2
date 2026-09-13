@@ -6,7 +6,7 @@
 {% load static %}
 
 {% block title %} Forum |{% endblock  %}
-{% block content %}
+{% block subtitle %}
 
 <script>
 function get_derniers_commentaires(url_tag) {
@@ -28,7 +28,11 @@ function get_derniers_commentaires(url_tag) {
 
 </script>
 <div class="row justify-content-center">
-
+    <div class="col-sm-12 ">
+        <div class="justify-content-center">
+            <h5>Bienvenue sur le Forum</h5>
+        </div>
+    </div>
     <div class="col-sm-12 col-md-12 col-lg-4">
         <div class="justify-content-center">
             <a href="{% url 'blog:filtrer_articles' %}">
@@ -135,6 +139,9 @@ function get_derniers_commentaires(url_tag) {
         </div>
     </div>
 </div>
+{% endblock subtitle %}
+
+{% block content %}
 <hr>
 <div class="row justify-content-center">
     <nav class="navbar navbar-expand-lg justify-content-center">

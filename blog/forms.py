@@ -663,7 +663,7 @@ class Article_rechercheForm(forms.ModelForm):
             'article': autocomplete.ModelSelect2(url='blog:article-ac')
         }
         help_texts = {
-            'article': 'Chercher dans les titres des articles',
+            'article': "Chercher un titre d'article",
         }
 
     def save(self):

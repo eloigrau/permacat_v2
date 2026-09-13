@@ -16,7 +16,7 @@
                     <img alt="acceuil" height="30" src="{% static 'favicon.ico' %}" width="30"/>
 </span>
             {% if "asso_slug" in request.session %}
-            <span class="app-brand-text demo menu-text fw-bold ms-2">{{request.session.asso_slug| getNomGroupeFromSlug}}</span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">{{request.session.asso_slug| getNomGroupeFromSlug|couperTexte:25}}</span>
 
             {% else %}
             <span class="app-brand-text demo menu-text fw-bold ms-2">Choisir un collectif</span>

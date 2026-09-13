@@ -98,7 +98,32 @@
         {% for atelier in listeAteliers %}
             <tr>
                 <td> </td>
-            <td colspan="3">{% include "ateliers/listAtelier_template_item.html" %}</td>
+            <td colspan="3">
+
+<a class="boutonAtelier" href="{% url 'ateliers:lireAtelier' slug=atelier.slug %}">
+    <div style="font-variant: small-caps;">
+        <div class="row textcenter">
+            <div class="col-sm-1">
+                <span class="">{{ atelier.get_logo_nomgroupe_html|safe }}</span>
+            </div>
+            <div class="col-sm-2">
+                <span class="badge " data-placement="bottom"
+                      data-toggle="tooltip" style="background-color:{{atelier.get_couleur}}; color : #666666;" title="Categorie">
+                    {{ atelier.get_categorie_display }}
+                </span>
+            </div>
+            <div class="col-sm-6">
+               Atelier : {{ atelier.titre }}
+            </div>
+            <div class="col-sm-3">
+                {% if atelier.start_time %}
+                <span class="textepetit">le {{ atelier.start_time|date:"DATE_FORMAT" }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</a>
+            </td>
             </tr>
         {% endfor %}
         {% endfor %}

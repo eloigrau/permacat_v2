@@ -476,7 +476,7 @@ class Article(models.Model):
             return derniere_date
 
     def get_ateliers_visibles(self, request):
-        return [a for a in self.atelier_set.all() if a.est_autorise(request.user)]
+        return [a for a in self.atelier_set.all().order_by("-start_time") if a.est_autorise(request.user)]
 # class ModificationArticle(models.Model):
 #     description = models.CharField(verbose_name=_("Explication de la modification"), max_length=500, null=True, blank=True)
 #     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))

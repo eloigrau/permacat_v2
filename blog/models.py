@@ -320,9 +320,9 @@ class Article(models.Model):
         suiveurs = []
         url = self.get_absolute_url_site + "#ref-titre"
         if creation or forcerCreationMails:
-            titre = "Nouvel article"
-            message = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
-            message_notif = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : "+ self.titre
+            titre = "Nouvel article (" + str(self.asso.nom)+")"
+            message = "Nouvel Article [" + str(self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
+            message_notif = "Nouvel Article [" + str(self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
             emails = [suiv.email for suiv in suiveurs]
@@ -333,8 +333,8 @@ class Article(models.Model):
         else:
             temps_depuiscreation = timezone.now() - self.date_creation
             titre = "Article actualisé"
-            message = "L'article [" + str( self.asso.nom) + "] '<a href='" + url + "'>" + self.titre + "</a>' a été modifié"
-            message_notif = "L'article [" + str(self.asso.nom) + "] " + self.titre + " a été modifié"
+            message = "Article modifié [" + str( self.asso.nom) + "] '<a href='" + url + "'>" + self.titre + "</a>' a été modifié"
+            message_notif = "Article modifié [" + str(self.asso.nom) + "] " + self.titre
 
             if temps_depuiscreation > timedelta(minutes=10):
                 suiveurs = [suiv for suiv in followers(self) if self.est_autorise(suiv) and self.auteur != suiv]

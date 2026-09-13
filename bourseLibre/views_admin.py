@@ -51,9 +51,8 @@ def getListeMailsAlerte():
                 if not mail in messagesParMails:
                     messagesParMails[mail] = [message, ]
                 else:
-                    for x in messagesParMails[mail]:
-                        if not message in messagesParMails[mail]:
-                            messagesParMails[mail].append(message)
+                    if not message in messagesParMails[mail]:
+                        messagesParMails[mail].append(message)
 
     listeMails = []
     for mail, messages in messagesParMails.items():
@@ -62,8 +61,8 @@ def getListeMailsAlerte():
             pseudo = Profil.objects.get(email=mail).username
         except:
             pseudo = ""
-        messagetxt = "Bonjour / Bon dia, Voici les dernières nouvelles des pages auxquelles vous êtes abonné.e :\n"
-        message = "<p>Bonjour / Bon dia,</p><p>Voici les dernières nouvelles des pages auxquelles vous êtes abonné.e :</p><ul>"
+        messagetxt = "Bonjour / Bon dia "+ pseudo +", Voici les dernières nouvelles des pages auxquelles tu es abonné-e :\n"
+        message = "<p>Bonjour / Bon dia "+ pseudo +",</p><p>Voici les dernières nouvelles des pages auxquelles tu es abonné-e :</p><ul>"
         liste_messages = []
         for m in messages:
             liste_messages.append("<li>" + m + "</li>")
@@ -73,6 +72,8 @@ def getListeMailsAlerte():
             except:
                 messagetxt += re.sub('<[^>]+>', '', m) + "\n"
         liste_messages.sort()
+
+
         message += "".join(liste_messages)
 
         messagetxt += "\nFins Aviat !\n---------------\nPour voir toute l'activité sur le site, consultez les Notifications : https://www.perma.cat/notifications/activite/ \n" + \

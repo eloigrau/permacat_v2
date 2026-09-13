@@ -59,7 +59,7 @@
                     </li>
                 </a>
                 {% for  asso_ab, asso_nom in asso_list %}
-                <a  href="{% url 'docptg_list' asso=asso_ab %}#ref-titre">
+                <a  href="{% url 'docptg_list' asso=asso_ab %}#ref-titre" >
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>
@@ -98,7 +98,7 @@
             </button>
         </td>
         <td>
-            <a href="{{ doc.article.get_absolute_url }}"> {{ doc.article.titre|couperTexte:35 }} </a>
+            <a href="{{ doc.article.get_absolute_url }}" target="_blank"> {{ doc.article.titre|couperTexte:35 }} </a>
         </td>
         <td>
             {{ doc.date_creation|date:"d/m/Y" }}

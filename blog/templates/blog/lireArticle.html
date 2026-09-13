@@ -309,7 +309,7 @@
                             <div class="col-sm-12 col-md-4 textcenter">
                                 <h4>
                                     <a class="btn btn-sm btn-success textleft"
-                               href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}"><i
+                               href="{% url 'blog:ajouterDocumentPartage' slug_article=article.slug %}" ><i
                                     class="fa fa-plus"></i> Ajouter un Document partagé</a>
                                 </h4>
                             </div>
@@ -330,7 +330,7 @@
                                     {{ doc.date_creation|date:"d/m/Y" }}
                                 </td>
                                 <td>
-                                    <a href="{{ doc.get_absolute_url }}" style="width:100%;">{{ doc.nom }}</a>
+                                    <a href="{{ doc.get_absolute_url }}" style="width:100%;" target="_blank">{{ doc.nom }}</a>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-light btn-sm"

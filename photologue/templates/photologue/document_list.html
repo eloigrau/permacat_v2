@@ -99,7 +99,7 @@
         <div class="navbar-collapse collapse justify-content-center" id="navbar_asso">
             <ul class="navbar-nav subnavbar2 align-items-center">
                 {% for  asso_ab, asso_nom in asso_list %}
-                <a  href="{% url 'photologue:doc-list' asso=asso_ab %}">
+                <a  href="{% url 'photologue:doc-list' %}?asso={{asso_ab}}">
                     <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if request.session.asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
                           <h6>{{asso_nom}}</h6>
                     </li>

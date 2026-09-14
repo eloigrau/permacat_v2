@@ -289,7 +289,7 @@ class Album(models.Model):
 class Document(models.Model):
     doc = models.FileField('Document',
                             max_length=IMAGE_FIELD_MAX_LENGTH,
-                            upload_to='documents/%Y/%m/%d', )
+                            upload_to='documents/%Y/%m', )
 
     titre = models.CharField(_('titre'),
                              max_length=250,

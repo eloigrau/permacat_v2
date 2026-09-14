@@ -23,6 +23,8 @@ sudo supervisorctl status
 # avec redis
 sudo systemctl start permacat-daphne
 sudo supervisorctl start permacat_supervisor
+
+sudo nano /etc/systemd/system/redis.service
 sudo systemctl restart redis
 redis-server
 
@@ -54,6 +56,8 @@ sudo su postgres
 cp -P 32768 eloi@82.64.236.35:/root/backups/site/pg_dump_site_2021-11-25_02-50-01.backup /home/tchenrezi/
 cp -P 32768 eloi@82.64.236.35:/root/backups/site/pg_dump_site_2021-09-07_02-50-01.backup /home/tchenrezi/backups_site/
 cp -P 32768 eloi@82.64.236.35:/mnt/permacat/backups/site/pg_dump_site_2025-09-30_02-50-01.backup /home/tchenrezi/backups_site/
+
+cp -P 32768 eloi@82.64.236.35:/home/udjango/permacat/bourseLibre/static_files/documents /mnt/partage/documents_pcat_save
 scp -P 32768 /home/tchenrezi/XX.csv  udjango@82.64.236.35:/home/udjango/permacat/
 
 cd /home/udjango/permacat

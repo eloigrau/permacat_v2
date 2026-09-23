@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- En-tête de la proposition -->
+    <div class="card mb-4 border-primary">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">{{ proposal.title }}</h3>
+            <span class="badge bg-light text-dark fs-6">{{ proposal.get_status_display }}</span>
+        </div>
+        <div class="card-body">
+            <h6>Contexte</h6>
+            <p>{{ proposal.context|linebreaks }}</p>
+            <hr>
+            <h6>Proposition</h6>
+            <p class="fs-5 bg-light p-3 rounded">{{ proposal.content|linebreaks }}</p>
+        </div>
+    </div>
+
+    <!-- PHASE 1 : CLARIFICATION SEULEMENT -->
+    {% if proposal.status == 'CLARIFICATION' %}
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white">Étape 1 : Demandes de clarification</div>
+            <div class="card-body">
+                <div class="list-group mb-3">
+                    {% for q in proposal.clarifications.all %}
+                        <div class="list-group-item">
+                            <p class="mb-1"><strong>{{ q.author.username }} :</strong> {{ q.question }}</p>
+                            {% if q.answer %}
+                                <div class="p-2 bg-light border-start border-3 border-success ms-3">
+                                    <strong>Auteur :</strong> {{ q.answer }}
+                                </div>
+                            {% elif user == proposal.author %}
+                                <form method="post" action="{% url 'gpc:answer_clarification' q.id %}" class="mt-2 ms-3">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" name="answer" class="form-control" placeholder="Répondre..." required>
+                                        <button class="btn btn-success" type="submit">Valider</button>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Aucune question posée.</p>
+                    {% endfor %}
+                </div>
+
+                <form method="post" action="{% url 'gpc:add_clarification' proposal.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea class="form-control" name="question" rows="2" placeholder="Une zone d'ombre ?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Poser la question</button>
+                </form>
+
+                {% if user == proposal.author %}
+                    <form method="post" action="{% url 'gpc:close_clarifications' proposal.id %}" class="mt-4 border-top pt-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100">Clôturer les clarifications $\rightarrow$ Passer aux Objections</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+    <!-- PHASE 2 : OBJECTIONS SEULEMENT -->
+    {% elif proposal.status == 'OBJECTION_ROUND' %}
+        <div class="card mb-4 border-warning">
+            <div class="card-header bg-warning text-dark">Étape 2 : Recueil des objections</div>
+            <div class="card-body">
+                <p class="small text-muted">Avez-vous une objection de sécurité ou un risque majeur à signaler ?</p>
+
+                <div class="list-group mb-3">
+                    {% for obj in proposal.objections.all %}
+                        <div class="list-group-item list-group-item-danger">
+                            <strong>{{ obj.author.username }} :</strong> {{ obj.description }}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Aucune objection exprimée pour le moment.</p>
+                    {% endfor %}
+                </div>
+
+                <form method="post" action="{% url 'gpc:add_objection' proposal.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea class="form-control" name="description" rows="3" placeholder="Description de l'objection..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Émettre une objection</button>
+                </form>
+
+                <form method="post" action="{% url 'gpc:close_objections' proposal.id %}" class="mt-4 border-top pt-3">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning w-100">Clôturer le recueil des objections $\rightarrow$ Passer à la Délibération</button>
+                </form>
+            </div>
+        </div>
+
+    <!-- PHASE 3 : DÉLIBÉRATION (Uniquement accessible après la clôture des objections) -->
+    {% elif proposal.status == 'DELIBERATION' %}
+        <div class="card mb-4 border-dark">
+            <div class="card-header bg-dark text-white">Étape 3 : Délibération & Traitement des objections</div>
+            <div class="card-body">
+                {% for objection in proposal.objections.all %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="text-danger">Objection de {{ objection.author.username }}</h6>
+                            <p>{{ objection.description }}</p>
+
+                            <!-- Réponses & Bonifications -->
+                            <div class="ms-3">
+                                <h6>Propositions d'amendement :</h6>
+                                {% for resp in objection.responses.all %}
+                                    <div class="bg-light p-2 mb-1 rounded">
+                                        <small><strong>{{ resp.author.username }} :</strong> {{ resp.content }}</small>
+                                    </div>
+                                {% endfor %}
+
+                                <form method="post" action="{% url 'gpc:add_objection_response' objection.id %}" class="mt-2">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" name="content" class="form-control" placeholder="Piste d'amendement..." required>
+                                        <button class="btn btn-outline-secondary" type="submit">Proposer</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% if user == proposal.author %}
+                    <div class="d-flex gap-2 mt-4 border-top pt-3">
+                        <a href="{% url 'gpc:reformulate_proposal' proposal.id %}" class="btn btn-success flex-fill">Reformuler la proposition</a>
+                        <form method="post" action="{% url 'gpc:reject_proposal' proposal.id %}" class="flex-fill">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger w-100">Abandonner la proposition</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    <!-- PHASES FINALES -->
+    {% elif proposal.status == 'ACCEPTED' %}
+        <div class="alert alert-success">
+            <h4><i class="bi bi-check-circle-fill"></i> Adoptée par Consentement</h4>
+            <p>La proposition a passé le filtre des objections avec succès.</p>
+        </div>
+    {% elif proposal.status == 'REJECTED' %}
+        <div class="alert alert-danger">
+            <h4><i class="bi bi-x-circle-fill"></i> Proposition Rejetée</h4>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

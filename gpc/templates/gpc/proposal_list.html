@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Liste des Propositions — GPC{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Propositions en cours</h2>
+    <a href="{% url 'gpc:proposal_create' %}" class="btn btn-success">
+        <i class="bi bi-plus-lg me-1"></i>Nouvelle Proposition
+    </a>
+</div>
+
+{% if proposals %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for proposal in proposals %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">
+                                <a href="{% url 'gpc:proposal_detail' proposal.id %}" class="text-decoration-none">
+                                    {{ proposal.title }}
+                                </a>
+                            </h5>
+                            <span class="badge
+                                {% if proposal.status == 'ACCEPTED' %}bg-success
+                                {% elif proposal.status == 'REJECTED' %}bg-danger
+                                {% elif proposal.status == 'CLARIFICATION' %}bg-info text-dark
+                                {% elif proposal.status == 'OBJECTION_ROUND' %}bg-warning text-dark
+                                {% else %}bg-secondary{% endif %}">
+                                {{ proposal.get_status_display }}
+                            </span>
+                        </div>
+                        <p class="card-text text-muted small">
+                            {{ proposal.context|truncatewords:20 }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent text-muted d-flex justify-content-between align-items-center small">
+                        <span><i class="bi bi-person me-1"></i>{{ proposal.author.username }}</span>
+                        <span><i class="bi bi-calendar me-1"></i>{{ proposal.created_at|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-light text-center border p-5">
+        <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+        <p class="mb-3">Aucune proposition n'a été soumise pour le moment.</p>
+        <a href="{% url 'gpc:proposal_create' %}" class="btn btn-primary">Créer la première proposition</a>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- En-tête de la proposition -->
+    <div class="card mb-4 border-primary">
+        <div class="card-header bg-primary text-white d-flex justify-between align-items-center">
+            <h2 class="mb-0">{{ proposal.title }}</h2>
+            <span class="badge bg-light text-dark fs-6">{{ proposal.get_status_display }}</span>
+        </div>
+        <div class="card-body">
+            <h5>Contexte</h5>
+            <p class="card-text text-muted">{{ proposal.context|linebreaks }}</p>
+            <hr>
+            <h5>Proposition actuelle</h5>
+            <p class="card-text fs-5">{{ proposal.content|linebreaks }}</p>
+            <small class="text-muted">Proposé par {{ proposal.author.username }} le {{ proposal.created_at|date:"d/m/Y H:i" }}</small>
+        </div>
+    </div>
+
+    <!-- Phase 1: Clarification -->
+    {% if proposal.status == 'CLARIFICATION' %}
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">Phase 1 : Demandes de clarification</div>
+            <div class="card-body">
+                <!-- Liste des questions existantes -->
+                <div class="list-group mb-3">
+                    {% for q in proposal.clarifications.all %}
+                        <div class="list-group-item">
+                            <p class="mb-1"><strong>{{ q.author.username }} :</strong> {{ q.question }}</p>
+                            {% if q.answer %}
+                                <div class="p-2 bg-light border-start border-3 border-success ms-3 mt-2">
+                                    <strong>Réponse de l'auteur :</strong> {{ q.answer }}
+                                </div>
+                            {% else %}
+                                {% if user == proposal.author %}
+                                    <form method="post" action="{% url 'gpc:answer_clarification' q.id %}" class="mt-2 ms-3">
+                                        {% csrf_token %}
+                                        <div class="input-group">
+                                            <input type="text" name="answer" class="form-control" placeholder="Répondre..." required>
+                                            <button class="btn btn-outline-success" type="submit">Valider la réponse</button>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark ms-3">En attente de réponse</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Aucune demande de clarification pour le moment.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Formulaire pour poser une question -->
+                <form method="post" action="{% url 'gpc:add_clarification' proposal.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="question" class="form-label">Une zone d'ombre ? Poser une question :</label>
+                        <textarea class="form-control" id="question" name="question" rows="2" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Envoyer la question</button>
+                </form>
+
+                <!-- Bouton pour passer à la phase suivante (réservé à l'auteur) -->
+                {% if user == proposal.author %}
+                    <form method="post" action="{% url 'gpc:advance_to_objections' proposal.id %}" class="mt-4 border-top pt-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary w-100">Clôturer les clarifications & Passer aux Objections</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+
+    <!-- Phase 2: Tour d'Objections -->
+    {% elif proposal.status == 'OBJECTION_ROUND' %}
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">Phase 2 : Levée des Objections</div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Rappel :</strong> Une objection exprime un risque majeur pour le groupe ou un frein de sécurité, pas une simple préférence personnelle.
+                </div>
+
+                <!-- Liste des objections déjà émises -->
+                <div class="list-group mb-3">
+                    {% for objection in proposal.objections.all %}
+                        <div class="list-group-item list-group-item-danger">
+                            <p class="mb-1"><strong>Objection par {{ objection.author.username }} :</strong></p>
+                            <p class="mb-0">{{ objection.description }}</p>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Aucune objection n'a été levée pour ce tour.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Formulaire d'ajout d'objection -->
+                <form method="post" action="{% url 'gpc:add_objection' proposal.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Déclarer une objection :</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="En quoi cette proposition nuit-elle à notre projet ?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Soumettre une objection</button>
+                </form>
+
+                <!-- Bouton de transition vers l'analyse des objections -->
+                <form method="post" action="{% url 'gpc:process_objections' proposal.id %}" class="mt-4 border-top pt-3">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning w-100">Terminer le tour d'objections</button>
+                </form>
+            </div>
+        </div>
+
+    <!-- Phase 3: Réponses aux objections & Échanges -->
+    {% elif proposal.status == 'OBJECTION_RESPONSE' %}
+        <div class="card mb-4">
+            <div class="card-header bg-dark text-white">Phase 3 : Traitement des objections</div>
+            <div class="card-body">
+                {% for objection in proposal.objections.all %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-danger">Objection de {{ objection.author.username }}</h6>
+                            <p class="card-text">{{ objection.description }}</p>
+
+                            <!-- Réponses à cette objection -->
+                            <div class="ms-4">
+                                <h6>Propositions de bonification / Réponses :</h6>
+                                {% for resp in objection.responses.all %}
+                                    <div class="bg-light p-2 mb-2 rounded">
+                                        <small><strong>{{ resp.author.username }} :</strong></small>
+                                        <p class="mb-0">{{ resp.content }}</p>
+                                    </div>
+                                {% empty %}
+                                    <p class="text-muted small">Aucune proposition de résolution ajoutée.</p>
+                                {% endfor %}
+
+                                <form method="post" action="{% url 'gpc:add_objection_response' objection.id %}" class="mt-2">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" name="content" class="form-control" placeholder="Proposer une amélioration..." required>
+                                        <button class="btn btn-outline-secondary" type="submit">Répondre</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% if user == proposal.author %}
+                    <div class="d-flex gap-2 mt-4 border-top pt-3">
+                        <a href="{% url 'gpc:reformulate_proposal' proposal.id %}" class="btn btn-success flex-fill">Reformuler la proposition</a>
+                        <form method="post" action="{% url 'gpc:reject_proposal' proposal.id %}" class="flex-fill">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Confirmer le rejet définitif ?');">Abandonner la proposition</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    <!-- Phase finale : Acceptée ou Refusée -->
+    {% elif proposal.status == 'ACCEPTED' %}
+        <div class="alert alert-success mt-4">
+            <h4><i class="bi bi-check-circle-fill"></i> Proposition adoptée par Consentement</h4>
+            <p class="mb-0">Toutes les objections ont été levées ou aucune n'a été émise.</p>
+        </div>
+    {% elif proposal.status == 'REJECTED' %}
+        <div class="alert alert-danger mt-4">
+            <h4><i class="bi bi-x-circle-fill"></i> Proposition rejetée</h4>
+            <p class="mb-0">Une objection bloquante n'a pas pu être intégrée.</p>
+        </div>
+    {% endif %}
+
+    <!-- Historique des reformulations (S'il y en a) -->
+    {% if proposal.history.all %}
+        <div class="mt-5">
+            <h6>Historique des versions de la proposition</h6>
+            <ul class="list-group list-group-flush">
+                {% for item in proposal.history.all %}
+                    <li class="list-group-item bg-light">
+                        <small class="text-muted">Version du {{ item.reformulated_at|date:"d/m/Y H:i" }} :</small>
+                        <p class="mb-0 text-secondary">{{ item.content }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

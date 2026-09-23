@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     'ateliers',
     'permachat',
     'dashboard',
+    "gpc",
     #'chat_old',
     #'django_extensions',
     #'django_filters',

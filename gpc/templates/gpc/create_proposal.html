@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Nouvelle proposition (GPC)</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Titre de la proposition</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="context" class="form-label">Contexte & Problème</label>
+            <textarea class="form-control" id="context" name="context" rows="3" placeholder="Quel problème cette proposition cherche-t-elle à résoudre ?" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Proposition initiale</label>
+            <textarea class="form-control" id="content" name="content" rows="4" placeholder="La solution concrète soumise au groupe..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Soumettre pour clarification</button>
+    </form>
+</div>
+{% endblock %}

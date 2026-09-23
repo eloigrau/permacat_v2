@@ -64,6 +64,7 @@ urlpatterns = [
     re_path('avatar/', include('avatar.urls')),
     #path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
     path('compta/', include('compta.urls', namespace='compta')),
+    path('gpc/', include('gpc.urls', namespace='gpc')),
     path('captcha/', include('local_captcha.urls')),
     #path("r/", include("urlshortner.urls")),
     path(r'webpush/', include('webpush.urls')),

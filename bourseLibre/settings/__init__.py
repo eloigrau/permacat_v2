@@ -115,6 +115,7 @@ INSTALLED_APPS = [
     'ateliers',
     'permachat',
     'dashboard',
+    "gpc",
     #'chat_old',
     #'django_extensions',
     #'django_filters',
@@ -136,6 +137,7 @@ INSTALLED_APPS = [
     'defraiement',
     'agoratransition',
     #'acme_challenge',
+    'letsencrypt',
     'rest_framework',
     'permagora',
     'jardins',
@@ -191,7 +193,8 @@ INSTALLED_APPS = [
     #'wiki.plugins.links.apps.LinksConfig',
     #'wiki.plugins.macros.apps.MacrosConfig',
     #'wiki.plugins.notifications.apps.NotificationsConfig',
-
+    #'schema_graph',
+    #'puml_generator',
 ]
 #if LOCALL:
 #    INSTALLED_APPS.append('debug_toolbar',)
@@ -396,7 +399,7 @@ SUMMERNOTE_CONFIG = {
     # Or, you can set it as False to use SummernoteInplaceWidget by default - no iframe mode
     # In this case, you have to load Bootstrap/jQuery stuff by manually.
     # Use this when you're already using Bootstraip/jQuery based themes.
-    'iframe': False,
+    'iframe': True,
 
     # You can put custom Summernote settings
     'summernote': {
@@ -448,7 +451,7 @@ SUMMERNOTE_CONFIG = {
     'attachment_require_authentication': True,
 
     # You can disable attachment feature.
-    'disable_attachment': False,
+    'disable_attachment': True,
 
     # Set `True` to return attachment paths in absolute URIs.
     'attachment_absolute_uri': False,

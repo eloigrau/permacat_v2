@@ -289,7 +289,7 @@ class Album(models.Model):
 class Document(models.Model):
     doc = models.FileField('Document',
                             max_length=IMAGE_FIELD_MAX_LENGTH,
-                            upload_to='documents/%Y/%m/%d', )
+                            upload_to='documents/%Y/%m', )
 
     titre = models.CharField(_('titre'),
                              max_length=250,
@@ -327,7 +327,7 @@ class Document(models.Model):
 
         if emails:
             titre = "Nouveau document"
-            message = "Un document a été ajouté : [" + self.asso.nom + "] '<a href='https://www.perma.cat" + self.doc.url + "'>" + self.titre + "</a>'"
+            message = "Nouveau document : [" + self.asso.nom + "] '<a href='https://www.perma.cat" + self.doc.url + "'>" + self.titre + "</a>'"
             action.send(self, verb='emails', url=self.get_absolute_url(), titre=titre, message=message, emails=emails)
 
         return retour

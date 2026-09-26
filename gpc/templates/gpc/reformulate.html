@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Reformulation de la proposition</h2>
+    <p class="text-muted">Prenez en compte les retours et objections soulevées pour amender votre texte.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="content" class="form-label">Nouvelle mouture de la proposition :</label>
+            <textarea class="form-control" id="content" name="content" rows="6" required>{{ proposal.content }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Soumettre la nouvelle version et relancer un tour d'objection</button>
+        <a href="{% url 'gpc:proposal_detail' proposal.id %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

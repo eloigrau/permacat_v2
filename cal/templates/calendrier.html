@@ -17,10 +17,13 @@
 {% endblock  %}
 {% block subtitle %}
 <div class="row justify-content-center align-items-center">
-    <div class="col-sm-12 col-md-4 offset-md-4">
+    <div class="col-sm-12 col-md-3 ">
+        <a class="btn btn-warning" href="{% url 'blog:ajouterEvenement' %}"><i class="fa fa-plus"></i> Ajouter un evenement</a>
+    </div>
+    <div class="col-sm-12 col-md-6">
         <h3>L'Agenda</h3>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <a type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
          {% fa5_icon 'question-circle' %}
         </a>

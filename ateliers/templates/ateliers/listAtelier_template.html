@@ -1,33 +1,11 @@
 <div class="infinite-container ">
     {% for atelier in atelier_list %}
-<div class="infinite-item ">
-   <div class="row justify-content-center ">
-    <div class="col-sm-12 col-md-10 textcenter " >
-        <a  href="{% url 'ateliers:lireAtelier' slug=atelier.slug %}" class="boutonAtelier" >
-            <div style="font-variant: small-caps;" >
-   <div class="row textcenter">
-    <div class="col-sm-1" >
-        <span class="">{{ atelier.get_logo_nomgroupe_html|safe }}</span>
-    </div>
-    <div class="col-sm-2" >
-            <span class="badge " style="background-color:{{atelier.get_couleur}}; color : #666666;" data-toggle="tooltip" data-placement="bottom" title="Categorie">
-                {{ atelier.get_categorie_display }}
-            </span>
-    </div>
-    <div class="col-sm-6" >
-        {{ atelier.titre }}
+    <div class="infinite-item ">
+    <div class="row justify-content-center ">
+        <div class="col-sm-12 col-md-10 textcenter ">
+    {% include "ateliers/listAtelier_template_item.html" %}
         </div>
-    <div class="col-sm-3" >
-            {% if atelier.start_time %}
-        <span class="textepetit">le {{ atelier.start_time|date:"DATE_FORMAT" }}</span>
-        {% endif %}
     </div>
-    </div>
-    </div>
-    </a>
-
-    </div>
-   </div>
 </div>
     {% endfor %}
 {% include 'pagination_new.html' %}

@@ -98,7 +98,8 @@
                     <th>Libellé</th>
                     <th>Type</th>
                     <th>Détails analytiques</th>
-                    <th class="text-end">Montant</th>
+                    <th class="text-center">Montant</th>
+                    <th class="text-end">Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -122,8 +123,12 @@
                             <span class="text-muted small">-</span>
                         {% endif %}
                     </td>
-                    <td class="text-end fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
+                    <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
                         {% if t.type_transaction == 'RECETTE' %}+{% else %}-{% endif %}{{ t.montant|floatformat:2 }} €
+                    </td>
+                    <td class="text-end ">
+                        <a class="btn btn-warning btn-sm" href="{{ t.get_update_url }}"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm" href="{{ t.get_delete_url }}"><i class="fa fa-times"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -136,15 +141,19 @@
                     <td>
                         <i class="bi bi-arrow-left-short text-success"></i> Provenance : <a href="{{t.budget.get_absolute_url}}"><span class="badge bg-light text-dark border">{{ t.budget.titre }}</span></a>
                     </td>
-                    <td class="text-end fw-bold text-success">
+                    <td class="textcenter fw-bold text-success">
                         +{{ t.montant|floatformat:2 }} €
+                    </td>
+                    <td class="text-end ">
+                        <a class="btn btn-warning btn-sm" href="{{ t.get_update_url }}"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm" href="{{ t.get_delete_url }}"><i class="fa fa-times"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
 
                 {% if not transactions and not transferts_recus %}
                 <tr>
-                    <td colspan="5" class="text-center text-muted py-4">Aucun mouvement financier sur ce budget.</td>
+                    <td colspan="6" class="text-center text-muted py-4">Aucun mouvement financier sur ce budget.</td>
                 </tr>
                 {% endif %}
             </tbody>

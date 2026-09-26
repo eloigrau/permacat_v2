@@ -228,7 +228,7 @@ class Atelier_rechercheForm(forms.ModelForm):
             'atelier': autocomplete.ModelSelect2(url='ateliers:atelier-ac')
         }
         help_texts = {
-            'atelier': 'Chercher dans les titres des ateliers',
+            'atelier': "Chercher un titre d'ateliers",
         }
 
     def save(self):

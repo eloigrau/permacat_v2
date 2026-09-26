@@ -37,6 +37,7 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),  # Language switching
     re_path(r'^summernote/', include('local_summernote.urls')),
     # path('tinymce/', include('tinymce.urls')),
+    path('.well-known/', include('letsencrypt.urls')),
     # re_path(r'^.well-known/acme-challenge/', include('acme_challenge.urls')),
     # path('newsletter/', include('newsletter.urls')),
     # re_path(r'^chat/', include('chat.urls')),
@@ -52,6 +53,7 @@ urlpatterns = [
     path(r'adherents/', include('adherents.urls', namespace='adherents')),
     path(r'photolog/', include('photologue.urls', namespace='photologue')),
     path(r'permachat/', include("permachat.urls", namespace="permachat")),
+    #path("django-schema/", Schema.as_view()),
     #path(r'chatrooms/', include("chatrooms.urls", namespace="chatrooms")),
     #path(r'chat/', include("chat_old.urls", namespace="permachat")),
     #path(r'permapaint/', include("permapaint.urls", namespace="permapaint")),
@@ -62,6 +64,7 @@ urlpatterns = [
     re_path('avatar/', include('avatar.urls')),
     #path('ledger/', include('django_ledger.urls', namespace='django_ledger')),
     path('compta/', include('compta.urls', namespace='compta')),
+    path('gpc/', include('gpc.urls', namespace='gpc')),
     path('captcha/', include('local_captcha.urls')),
     #path("r/", include("urlshortner.urls")),
     path(r'webpush/', include('webpush.urls')),

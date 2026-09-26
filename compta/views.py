@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from .models import BudgetCercle, BudgetProjet, Transaction
-from .forms import TransactionForm, BudgetProjetForm
+from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm
 from django.contrib.auth.decorators import login_required
 from bourseLibre.utils import testIsMembreAsso_bool
 from blog.models import Projet
 from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.views.generic import UpdateView, DeleteView
 
 @login_required
 def tableau_de_bord(request):
@@ -50,6 +51,40 @@ def ajouter_transaction(request, projet_id):
         return redirect('compta:detail_budget', budget_id=transaction.budget.id)
     return render(request, 'compta/ajouter_transaction.html', {'form': form, "budgetprojet":budgetprojet})
 
+
+
+class ModifierTransaction(UpdateView):
+    model = Transaction
+    form_class = TransationChangeForm
+    template_name_suffix = '_modifier'
+
+    # fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+
+    #def get_object(self):
+    #    return Transaction.objects.get(pk=self.kwargs['transaction_pk'])
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_form(self, *args, **kwargs):
+        form = super(ModifierTransaction, self).get_form(*args, **kwargs)
+        #form.fields["asso"].choices = [(x.id, x.nom) for x in Asso.objects.all().order_by("id") if
+        #                               self.request.user.estMembre_str(x.slug)]
+        #form.fields["cercle"].choices = [(x.id, '(' + x.asso.nom +') ' + x.titre) for x in Cercle.objects.all().order_by("id") if self.request.user.estMembre_str(x.asso.slug)]
+
+        return form
+
+
+class SupprimerTransaction(DeleteView): #DeleteAccess,
+    model = Transaction
+    template_name_suffix = '_supprimer'
+
+    #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
+    def form_valid(self, form):
+        success_url = self.object.budget.get_absolute_url
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 @login_required
 def ajouter_budgetProjet(request):

@@ -15,5 +15,6 @@ dossier = "/home/tchenrezi/Téléchargements/wetrnsfer/"
 dossier = "/home/eloi/workspace/pythonProject/permacat_v2/bourseLibre/static/ducepaujus/images/"
 dossier = "/home/eloi/Téléchargements/2116_blugoon/"
 dossier = "/home/eloi/tmp/img2/ff/"
+dossier = "/mnt/partage/img3/"
 
 resizeImgesDossier(dossier)

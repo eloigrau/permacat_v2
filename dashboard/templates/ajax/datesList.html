@@ -3,8 +3,20 @@
 {% load static %}
 {% load activity_tags %}
 
-{% if datesList %}
-<ul class="p-0 m-0">
+  <ul class="nav nav-pills flex-wrap row-gap-2" role="tablist">
+    <li class="nav-item">
+      <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-tabs-groupe" aria-controls="navs-tabs-groupe" aria-selected="true">Du Collectif</button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" role="tab"  data-bs-toggle="tab" data-bs-target="#navs-tabs-pcat" aria-controls="navs-tabs-pcat">Public</button>
+    </li>
+  </ul>
+  <div class="tab-content p-0">
+    <div class="tab-pane fade show active" id="navs-tabs-groupe" role="tabpanel">
+      <div class="justify-content-between ">
+
+        {% if datesList %}
+        <ul class="">
     <li class="d-flex align-items-center">
         <div class="d-flex w-100 align-items-center justify-content-between">
             <div class="me-2"><em>Titre de l'évènement</em></div>
@@ -31,10 +43,48 @@
         </li>
     {% endfor %}
 </ul>
-
+        {% else %}
+            <div class="row col-sm-12">Pas de dates prévues prochainement</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="tab-pane fade" id="navs-tabs-pcat" role="tabpanel">
+      <div class="justify-content-between ">
+        {% if datesList_public %}
+        <ul class="p-0 m-0">
+            <li class="d-flex align-items-center">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                    <div class="me-2"><em>Titre de l'évènement</em></div>
+                    <div><em>Date</em></div>
+                </div>
+            </li>
+            {% for date in datesList_public %}
+                <li class="d-flex align-items-center">
+                    <div class="d-flex w-100 align-items-center justify-content-between">
+                      <div class="me-2">
+                        <a href="{{date.get_absolute_url}}">
+                            <h6><i class="icon-base bx {{date.get_bx_icon}}"></i> {{date.titre|couperTexte:80}}</h6>
+                        </a>
+                      </div>
+                      <div>
+                        <a href="{{date.get_absolute_url}}">
+                            <h6 class="mb-0">
+                                {{ date.start_time | date:"l j M" }}
+                            </h6>
+                        </a>
+                      </div>
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
 {% else %}
     <div class="row col-sm-12">Pas de dates prévues prochainement</div>
-{% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+        </div>
 
 {% if request.session.asso_slug %}
 {% include 'pagination_new_asso.html' %}

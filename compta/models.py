@@ -129,3 +129,13 @@ class Transaction(models.Model):
         if self.type_transaction == 'TRANSFERT':
             return f"TRANSFERT: {self.projet.titre} → {self.budget_destination.titre} ({self.montant}€)"
         return f"{self.type_transaction} - {self.libelle} ({self.montant}€)"
+
+
+    def get_absolute_url(self):
+        return self.budget.get_absolute_url
+
+    def get_update_url(self):
+        return reverse('compta:modifier_transaction', kwargs={'pk':self.pk})
+
+    def get_delete_url(self):
+        return reverse('compta:supprimer_transaction', kwargs={'pk':self.pk})

@@ -8,5 +8,5 @@ class ChoisirCollectifForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         super(ChoisirCollectifForm, self).__init__(*args, **kwargs)
         self.fields["asso"].choices = [('', '---'), ] + [(x.id, x.nom) for x in
-                                                                         Asso.objects.all().order_by("nom") if
+                                                                         Asso.objects.all().order_by("id") if
                                                                          request.user.estMembre_str(x.slug)]

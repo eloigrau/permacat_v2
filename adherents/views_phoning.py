@@ -15,7 +15,7 @@ from .forms import (Contact_form, Contact_update_form, ContactContact_form,
 
 from .models import Adherent, Contact, ContactContact, ProjetPhoning
 from bourseLibre.models import Adresse, Profil, Asso
-from bourseLibre.utils import testIsMembreAsso_bool
+from bourseLibre.utils import testIsMembreAsso_bool, testIsMembreAsso
 from .filters import ContactCarteFilter
 from actstream.models import Action
 from datetime import date, timedelta, datetime

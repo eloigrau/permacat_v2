@@ -29,7 +29,6 @@ def handler500(request, *args, **kwargs):   #erreur du serveur
 def handler403(request, *args, **kwargs):   #non autorisé
     response = render(request, "403.html")
     response.status_code = 403
-    action.send(request.user, verb='interdit', description=str(request))
     return response
 
 def handler400(request, *args, **kwargs):   #requete invalide

@@ -1,8 +1,10 @@
 {% extends 'blog/base_blog2.html' %}
+{% load app_filters %}
 
 {% block subtitle %}
-<h3>Ajouter un événement à l'agenda</h3>
-<p>L'événement doit être associé à un article du forum. Si l'article qui décrit l'évènement n'existe pas encore, alors <a href="{% url 'blog:ajouterNouvelArticle' %}" >ajoutez un article</a> et spécifiez-y la date directement</p>
+<h3>Ajouter un événement à l'agenda du collectif {{request.session.asso_slug | getNomGroupeFromSlug}}</h3>
+<p>L'événement doit être associé à un article du forum qui décrit l'évènement (ou alors ajouté à un <a href="{% url 'salon_accueil' %}" >salon de discussion</a> ou un <a href="{% url 'ateliers:index_ateliers' %}" >atelier</a>). </p>
+<p>Si l'article n'existe pas encore, alors <a class="btn btn-light" href="{% url 'blog:ajouterNouvelArticle' %}" >ajoutez un article</a> et spécifiez-y la date directement (ainsi que le texte, l'affiche, le covoiturage, ou toute info complémentaire...)</p>
 {% endblock  %}
 {% block content %}
 {% if error_message %}

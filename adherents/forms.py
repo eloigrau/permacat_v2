@@ -142,10 +142,10 @@ class InscriptionMailForm(forms.ModelForm):
         model = InscriptionMail
         fields = ["adherent", 'commentaire',]
 
-
-    def __init__(self, asso_slug, *args, **kwargs):
+    def __init__(self, asso_slug, listeDiffusion, *args, **kwargs):
         super(InscriptionMailForm, self).__init__(*args, **kwargs)
-        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
+        listeAdherents = listeDiffusion.get_liste_adherents(avecMail=False)
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") if x not in listeAdherents ]
 
 class InscriptionMail_complet_Form(forms.ModelForm):
     adherent = forms.ModelChoiceField(queryset=Adherent.objects.all(), required=True, label="Adhérent", )
@@ -155,15 +155,26 @@ class InscriptionMail_complet_Form(forms.ModelForm):
         model = InscriptionMail
         fields = ["adherent", 'commentaire',"email_pasadherent"]
 
-    def __init__(self, asso_slug, *args, **kwargs):
+    def __init__(self, asso_slug, liste_adherents, *args, **kwargs):
         super(InscriptionMail_complet_Form, self).__init__(*args, **kwargs)
-        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") ]
+        self.fields["adherent"].choices = [('', '(Choisir un adhérent)'), ] + [(x.id, x.nom + " " + x.prenom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by("nom", "prenom") if not x in liste_adherents]
 
 class InscriptionMail_Mail_Form(forms.ModelForm):
 
     class Meta:
         model = InscriptionMail
         fields = [ "email_pasadherent", 'commentaire',]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        mail  = cleaned_data.get("email_pasadherent")
+        if mail in self.listeMails:
+            raise ValidationError(
+                "Email déjà présent dans la liste"
+            )
+    def __init__(self, listeMails, *args, **kwargs):
+        super(InscriptionMail_Mail_Form, self).__init__(*args, **kwargs)
+        self.listeMails = listeMails
 
 
 class InscriptionMailAdherentALsteForm(forms.ModelForm):

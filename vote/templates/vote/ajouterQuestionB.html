@@ -1,11 +1,12 @@
 {% extends 'vote/baseVote.html' %}
 {% load crispy_forms_tags %}
-{% block content %}
-
+{% block subtitle %}
 <div class="row">
 	<div class="col col-md-12 textcenter"><h3>Ajouter une question binaire au suffrage : {{suffrage}}</h3></div>
 </div>
-	<hr>
+{% endblock subtitle %}
+
+{% block content %}
 {% if error_message %}
 <p>
 	<strong>{{ error_message }}</strong>

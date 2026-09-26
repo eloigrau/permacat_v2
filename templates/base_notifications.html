@@ -15,9 +15,12 @@
         <li class="nav-item nav-notif {% if 'notifications/parType/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notifications'  %}"> Par type</a></li>
         <li class="nav-item nav-notif {% if 'notifications/parGroupe/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'notificationsParGroupe'  %}"> Par groupe</a></li>
         <li class="nav-item nav-notif {% if 'notifications/visites/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'articles_visites'  %}"> Dernières Visites</a></li>
-        {% if request.user.is_superuser %}
-        <li class="nav-item nav4"> <a class="dropdown-item" href="https://www.perma.cat/gestion/hitcount/hit/"> Hits </a></li>
-        {% endif %}
+
+        {% comment %}
+                {% if request.user.is_superuser %}
+            <li class="nav-item nav4"> <a class="dropdown-item" href="https://www.perma.cat/gestion/hitcount/hit/"> Hits </a></li>
+            {% endif %}
+        {% endcomment %}
 
             </ul>
         </div>

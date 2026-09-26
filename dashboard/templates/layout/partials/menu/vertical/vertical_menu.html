@@ -16,7 +16,7 @@
                     <img alt="acceuil" height="30" src="{% static 'favicon.ico' %}" width="30"/>
 </span>
             {% if "asso_slug" in request.session %}
-            <span class="app-brand-text demo menu-text fw-bold ms-2">{{request.session.asso_slug| getNomGroupeFromSlug}}</span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">{{request.session.asso_slug| getNomGroupeFromSlug|couperTexte:25}}</span>
 
             {% else %}
             <span class="app-brand-text demo menu-text fw-bold ms-2">Choisir un collectif</span>
@@ -66,7 +66,7 @@
             </a>
             <ul class="menu-sub">
                 <li class="menu-item {% if '/forum/' in request.path %}active{% endif %}">
-                    <a class="menu-link" href="{% url 'blog:index_asso' asso=request.session.asso_slug %}">
+                    <a class="menu-link" href="{% url 'blog:acceuil' %}?base#ref-titre"><!--{% url 'blog:index_asso' asso=request.session.asso_slug %}"-->
                         <div class="text-truncate">Forum</div>
                     </a>
                 </li>
@@ -120,34 +120,38 @@
             </ul>
         </li>
 
-        <li class="menu-item {% if '/compta/' in request.path or  '/ateliers/' in request.path or  '/cooperateurs/carte/' in request.path or '/adherents/' in request.path or '/defraiement/' in request.path or '/vote/' in request.path or '/forum/todoArticleList/' in request.path or '/listesDiffusion/' in request.path %}active open{% endif %}">
+        <li class="menu-item {% if '/compta/' in request.path or  '/ateliers/' in request.path or  '/cooperateurs/carte/' in request.path or '/adherents/' in request.path or '/defraiement/' in request.path or '/vote/' in request.path or '/forum/todoArticleList/' in request.path or '/listesDiffusion/' in request.path or '/phoning/' in request.path %}active open{% endif %}">
             <a class="menu-link menu-toggle" href="javascript:void(0);">
                 <i class="menu-icon icon-base bx bx-cube"></i>
                 <div class="text-truncate">Modules</div>
             </a>
             <ul class="menu-sub">
+                <li class="menu-item {% if '/cooperateurs/carte/' in request.path %}active{% endif %}">
+                    <a class="menu-link" href="{% url 'carte'  asso=request.session.asso_slug %}">
+                        <div class="text-truncate">Annuaire</div>
+                    </a>
+                </li>
                 <li class="menu-item {% if '/ateliers/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'ateliers:index_ateliers' %}">
                         <div class="text-truncate">Ateliers</div>
                     </a>
                 </li>
-                <li class="menu-item {% if '/cooperateurs/carte/' in request.path %}active{% endif %}">
-                    <a class="menu-link" href="{% url 'carte'  asso='ssa' %}">
-                        <div class="text-truncate">Annuaire</div>
-                    </a>
-                </li>
+                {% if request.session.asso_slug|is_adhesions %}
                 <li class="menu-item {% if '/adherents/' in request.path %}active{% endif %}">
                     <a class="menu-link"
                        href="{% url 'adherents:adherent_liste' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Adhérents</div>
                     </a>
                 </li>
+                {% endif %}
+                {% if request.session.asso_slug|is_defraiement %}
                 <li class="menu-item {% if '/defraiement/' in request.path %}active{% endif %}">
                     <a class="menu-link"
                        href="{% url 'defraiement:reunions_asso' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Défraiements</div>
                     </a>
                 </li>
+                {% endif %}
                 <li class="menu-item {% if '/forum/projets/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'blog:index_projets' %}">
                         <div class="text-truncate">Projets</div>
@@ -158,17 +162,32 @@
                         <div class="text-truncate">Votes</div>
                     </a>
                 </li>
+                <li class="menu-item {% if '/gpc/' in request.path %}active{% endif %}">
+                    <a class="menu-link" href="{% url 'gpc:proposal_list' %}">
+                        <div class="text-truncate">GPC</div>
+                    </a>
+                </li>
                 <li class="menu-item {% if '/forum/todoArticleList/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'blog:todoarticle_list' %}">
                         <div class="text-truncate">Yapluka</div>
                     </a>
                 </li>
+                {% if request.session.asso_slug|is_listeDiffusion %}
                 <li class="menu-item {% if '/listesDiffusion/' in request.path %}active{% endif %} ">
                     <a class="menu-link"
                        href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}">
                         <div class="text-truncate">Listes de diffusion</div>
                     </a>
                 </li>
+                {% endif %}
+                {% if request.session.asso_slug|is_listeContacts %}
+                <li class="menu-item {% if '/phoning/' in request.path %}active{% endif %} ">
+                    <a class="menu-link"
+                       href="{% url 'adherents:phoning_projet_liste' asso_slug=request.session.asso_slug %}">
+                        <div class="text-truncate">Listes de contacts</div>
+                    </a>
+                </li>
+                {% endif %}
                 <li class="menu-item {% if '/compta/' in request.path %}active{% endif %} ">
                     <a class="menu-link"
                        href="{% url 'compta:tableau_de_bord' %}">
@@ -177,7 +196,6 @@
                 </li>
             </ul>
         </li>
-
 
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text"></span>
@@ -200,8 +218,13 @@
                     </a>
                 </li>
                 <li class="menu-item ">
+                    <a class="menu-link" href="{% url 'blog:ajouterEvenement' %}">
+                        <div class="text-truncate">Un Évènement</div>
+                    </a>
+                </li>
+                <li class="menu-item ">
                     <a class="menu-link" href="{% url 'produit_proposer_entree' %}">
-                        <div class="text-truncate">Une petite annonce</div>
+                        <div class="text-truncate">Une Petite Annonce</div>
                     </a>
                 </li>
             </ul>

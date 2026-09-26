@@ -116,11 +116,16 @@ def ajouterArticle(request):
             "msg": "Vous avez déjà posté %s articles depuis 24h, veuillez patienter un peu avant de poster un nouvel article, merci !" % NBMAX_ARTICLES})
 
     if form.is_valid():
-        time_threshold = datetime.now() - timedelta(minutes=1)
-        dernier = Article.objects.filter(auteur=request.user, date_creation__gt=time_threshold).exists()
-        if dernier:
+        time_threshold = datetime.now() - timedelta(minutes=2)
+        dernier = Article.objects.filter(auteur=request.user, date_creation__gt=time_threshold)
+
+        if dernier.exists():
+            timezone = pytz.timezone("Europe/Paris")
+            temps_attente = timezone.localize(datetime.now()) - dernier[0].date_creation
             return render(request, 'erreur2.html', {
-                "msg": "Vous avez déjà posté un article il y a moins de 1 minute, veuillez vous assurer que vous n'essayez pas de poster pas le meme article plusieurs fois (ça peut arriver si vous appuyez plusieurs fois sur le bouton OK lors de la création de l'article)"})
+                "msg": "Vous avez déjà posté un article il y a moins de 2 minute, veuillez vous assurer que vous n'essayez \
+                pas de poster pas le meme article plusieurs fois (ça peut arriver si vous appuyez plusieurs fois \
+                sur le bouton OK lors de la création de l'article), et patientez encore %d secondes avant de recharger la page...." % (120-temps_attente.seconds)})
 
         article = form.save(request.user, sendMail=False)
         for asso in form.cleaned_data["partagesAsso"]:
@@ -1730,6 +1735,25 @@ class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
 
         return qs
 
+
+class ArticleAutocomplete_asso(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        calc = len(self.q) > 0
+        # Don't forget to filter out results depending on the visitor !
+        if not self.request.user.is_authenticated or not calc:
+            return Article.objects.none()
+
+        if calc:
+            if "asso_slug" in self.request.session:
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                             estArchive=True).filter(Q(asso__slug=self.request.session["asso_slug"]) & (
+                            Q(titre__icontains=self.q) | Q(titre__istartswith=self.q))).order_by("titre")
+            else:
+                qs = Article.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
+                                             estArchive=True).filter(
+                    Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+
+        return qs
 
 class ProjetAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

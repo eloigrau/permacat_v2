@@ -29,7 +29,10 @@ class Choix:
                          ('manifestations', 'Manifestations'), ('projets', 'Projets écocides')
     type_annonce_ssa = ('Info', 'Annonce / Information'), ('Agenda', 'Agenda'), ('documentation', "Documentation"), ('organisation', "Organisation du groupe"), ('Chantier','Atelier/Chantier participatif'),\
                         ('groupeW','Groupe de travail'),('CLA',"Comité Local de l'Alimentation")
-
+    type_annonce_jppb = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
+                   ('Documentation','Documentation')
+    type_annonce_irri66 = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
+                   ('Documentation','Documentation')
 
     type_annonce_citealt_orga = ('orga1', "Cercle Organisation"), ('orga2', "Cercle Informatique"), ('orga3', "Cercle Communication"), ('orga4', "Cercle Animation"),  ('orga5', "Cercle Médiation")
     type_annonce_citealt_themes = ('theme1', "Cercle Education"), ('theme2', "Cercle Ecolieux"), ('theme3', "Cercle Santé"), ('theme4', "Cercle Echanges"),  ('theme5', "Cercle Agriculture"),  ('theme6', "Cercle Célébration")
@@ -68,10 +71,13 @@ class Choix:
         "bzz2022": type_annonce_bzz2022,
         "jp": type_annonce_jp,
         "conf66":type_annonce_conf66,
-        "ssa":type_annonce_ssa
+        "ssa":type_annonce_ssa,
+        "jppb":type_annonce_jppb,
+        "irri66":type_annonce_irri66,
     }
 
-    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + type_annonce_conf66 + type_annonce_ssa + type_annonce_ducepaj
+    type_annonce = type_annonce_public + type_annonce_citealt + type_annonce_viure + type_annonce_bzz2022 + type_annonce_jp + type_annonce_scic + \
+                   type_annonce_conf66 + type_annonce_ssa + type_annonce_ducepaj + type_annonce_jppb + type_annonce_irri66
     couleurs_annonces = {
        # 'Annonce':"#e0f7de", 'Administratif':"#dcc0de", 'Agenda':"#d4d1de", 'Entraide':"#cebacf",
        # 'Chantier':"#d1ecdc",'Jardinage':"#fcf6bd", 'Recette':"#d0f4de", 'Bricolage':"#fff2a0",
@@ -151,6 +157,8 @@ class Choix:
         "conf66":"nom_conf66.png",
         "ssa":"nom_ssa.png",
         "ducepaj":"logo_ducepaj.png",
+        "irri66":"logo_irri66.png",
+        "jppb":"logo_jppb.png",
     }
 
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
@@ -247,7 +255,7 @@ class Choix:
         return Choix.type_atelier[int(num)][1]
 
     def get_couleur_cat(cat):
-            return Choix.couleurs_ateliers[cat]
+        return Choix.couleurs_ateliers[cat]
 
 class Theme(models.Model):
     nom = models.CharField(max_length=20)
@@ -313,9 +321,9 @@ class Article(models.Model):
         suiveurs = []
         url = self.get_absolute_url_site + "#ref-titre"
         if creation or forcerCreationMails:
-            titre = "Nouvel article"
-            message = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
-            message_notif = "Un article a été posté dans le forum [" + str(self.asso.nom) + "] : "+ self.titre
+            titre = "Nouvel article (" + str(self.asso.nom)+")"
+            message = "Nouvel Article [" + str(self.asso.nom) + "] : '<a href='" + url + "'>" + self.titre + "</a>'"
+            message_notif = "Nouvel Article [" + str(self.asso.nom) + "] : "+ self.titre
             suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
             suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
             emails = [suiv.email for suiv in suiveurs]
@@ -326,8 +334,8 @@ class Article(models.Model):
         else:
             temps_depuiscreation = timezone.now() - self.date_creation
             titre = "Article actualisé"
-            message = "L'article [" + str( self.asso.nom) + "] '<a href='" + url + "'>" + self.titre + "</a>' a été modifié"
-            message_notif = "L'article [" + str(self.asso.nom) + "] " + self.titre + " a été modifié"
+            message = "Article modifié [" + str( self.asso.nom) + "] '<a href='" + url + "'>" + self.titre + "</a>' a été modifié"
+            message_notif = "Article modifié [" + str(self.asso.nom) + "] " + self.titre
 
             if temps_depuiscreation > timedelta(minutes=10):
                 suiveurs = [suiv for suiv in followers(self) if self.est_autorise(suiv) and self.auteur != suiv]
@@ -396,11 +404,11 @@ class Article(models.Model):
 
     @property
     def get_categorie_display2(self):
-        if self.asso.slug == 'jp':
-            try:
-                return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
-            except:
-                pass
+        try:
+            if self.asso.slug == 'jp':
+                    return Jardin.objects.get(id=str(self.categorie).split("jardin_")[1]).titre
+        except:
+            pass
 
         return self.get_categorie_display
 
@@ -468,6 +476,8 @@ class Article(models.Model):
         else:
             return derniere_date
 
+    def get_ateliers_visibles(self, request):
+        return [a for a in self.atelier_set.all().order_by("-start_time") if a.est_autorise(request.user)]
 # class ModificationArticle(models.Model):
 #     description = models.CharField(verbose_name=_("Explication de la modification"), max_length=500, null=True, blank=True)
 #     article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ))

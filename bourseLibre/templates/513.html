@@ -1,2 +1,15 @@
 {% extends 'base_site.html' %}
-{% block subtitle %}Erreur 513 : désolé, la taille du fichier image que vous essayez d'envoyer est trop grosse, veuillez la réduire (moins de 1Mo) et réessayez.{% endblock %}
+{% block subtitle %}
+<p>Erreur 513 : désolé, la taille du fichier image que vous essayez d'envoyer est trop grosse, veuillez la réduire (moins de 1Mo) et réessayez.</p>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <p class="textcenter">
+            <a href="{% url 'bienvenue' %}">
+                <button class="btn btn-primary" type="button">Retourner à la page d'acceuil</button>
+            </a>
+        </p>
+    </div>
+</div>
+<p class="textcenter">Merci de votre compréhension</p>
+{% endblock %}

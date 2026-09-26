@@ -256,8 +256,13 @@
             <div class="contenu atelier">
 
                 <div class="row justify-content-center">
-                    <div class="col-sm-12 textcenter">
+                    <div class="col-sm-12 col-md-6 textcenter">
                         <h4>Dates : </h4>
+                    </div>
+                    <div class="col-sm-12 col-md-6 textcenter">
+                        <a class="btn btn-sm btn-success textleft"
+                      href="{% url 'ajouterEvenementSalon' slug_salon=salon.slug %}"><i class="fa fa-plus"></i> Ajouter
+                    un événement sur l'agenda</a>
                     </div>
                 </div>
                 {%for date in dates %}
@@ -268,9 +273,6 @@
                 </p>
                 {%endfor%}
                 <hr>
-                <p><a class="btn btn-sm btn-success textleft"
-                      href="{% url 'ajouterEvenementSalon' slug_salon=salon.slug %}"><i class="fa fa-plus"></i> Ajouter
-                    un événement sur l'agenda</a></p>
             </div>
         </div>
     </div>

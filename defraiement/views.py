@@ -359,7 +359,7 @@ def ajouterParticipant(request, asso_slug):
         try:
             return redirect(request.session.get('reunion_courante_url'))
         except:
-            return redirect('defraiement:participants', asso_slug=asso_slug)
+            return redirect(part.get_absolute_url())
 
 
     return render(request, 'defraiement/ajouterParticipant.html', {'form': form,'form_adresse2':form_adresse2 }) # 'form_adresse':form_adresse,
@@ -762,5 +762,6 @@ class ListeNdf_asso(UserPassesTestMixin, ListView):
         context['categorie_list'] = [x for x in ChoixMoyenPaiement.choices if x[0] in cat]
         context['ordreTriPossibles'] = Choix.ordre_tri_ndf
         context['type_courant'] = self.params["categorie"] if "categorie" in self.params else ""
+        context['annees'] = [int(datetime.now().year) - n for n in range(5)][::-1]
 
         return context

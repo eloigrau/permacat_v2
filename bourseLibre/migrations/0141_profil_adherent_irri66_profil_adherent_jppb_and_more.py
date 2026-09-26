@@ -12,16 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='profil',
-            name='adherent_irri66',
-            field=models.BooleanField(default=False, verbose_name='Je fais parti du collectif Irrigants 66'),
-        ),
-        migrations.AddField(
-            model_name='profil',
-            name='adherent_jppb',
-            field=models.BooleanField(default=False, verbose_name='Je fais parti du collectif du Jardin du Poisson Bêche'),
-        ),
-        migrations.AddField(
-            model_name='profil',
             name='adherent_permolives',
             field=models.BooleanField(default=False, verbose_name='Je fais parti-e du collectif Récolte Olives'),
         ),

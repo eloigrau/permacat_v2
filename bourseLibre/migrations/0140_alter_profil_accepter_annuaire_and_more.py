@@ -65,4 +65,14 @@ class Migration(migrations.Migration):
             name='adherent_viure',
             field=models.BooleanField(default=False, verbose_name="Je fais parti-e du collectif 'Viure'"),
         ),
+        migrations.AddField(
+            model_name='profil',
+            name='adherent_irri66',
+            field=models.BooleanField(default=False, verbose_name='Je fais parti du collectif Irrigants 66'),
+        ),
+        migrations.AddField(
+            model_name='profil',
+            name='adherent_jppb',
+            field=models.BooleanField(default=False, verbose_name='Je fais parti du collectif du Jardin du Poisson Bêche'),
+        ),
     ]

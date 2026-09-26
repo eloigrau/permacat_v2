@@ -364,6 +364,7 @@ class Profil(AbstractUser):
     adherent_irri66 = models.BooleanField(verbose_name=_("Je fais parti du collectif Irrigants 66"), default=False)
     adherent_ssa = models.BooleanField(verbose_name=_("Je  fais parti-e du collectif SSA66"), default=False)
     adherent_ducepaj = models.BooleanField(verbose_name=_("Je fais parti-e du collectif Du Cep au Jus"), default=False)
+    adherent_permolives = models.BooleanField(verbose_name=_("Je fais parti-e du collectif Récolte Olives"), default=False)
 
     accepter_conditions = models.BooleanField(verbose_name=_("J'ai lu et j'accepte les conditions d'utilisation du site"), default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name=_("J'accepte d'apparaître dans l'annuaire du site et la carte et rend mon profil visible par tous"), default=True)
@@ -512,35 +513,55 @@ class Profil(AbstractUser):
                 return "participant au collectif Du Cep au Jus"
             else:
                 return "Non participant au collectif Du Cep au Jus"
+        elif asso == "jppb":
+            if self.adherent_jppb:
+                return "participant au collectif Du JPPB"
+            else:
+                return "Non participant au collectif Du JPPB"
+        elif asso == "irri66":
+            if self.adherent_irri66:
+                return "participant au collectif Irrigants 66"
+            else:
+                return "Non participant au collectif Irrigants 66"
+        elif asso == "permolives":
+            if self.adherent_permolives:
+                return "participant au collectif Récolte Olives"
+            else:
+                return "Non participant au collectif Récolte Olives"
 
 
     def estMembre_str(self, nom_asso):
         if nom_asso == "Public" or nom_asso == "public":
             return True
-        elif self.adherent_pc and(nom_asso == "Permacat" or nom_asso == "pc") :
-            return True
-        elif self.adherent_rtg and (nom_asso == "Ramène Ta Graine" or nom_asso == "rtg") :
-            return True
-        elif self.adherent_fer and (nom_asso == "Fermille" or nom_asso == "fer") :
-            return True
-        elif self.adherent_scic and (nom_asso == "PermAgora" or nom_asso == "scic") :
-            return True
-        elif self.adherent_citealt and (nom_asso == "Cité Altruiste" or nom_asso == "citealt") :
-            return True
-        elif self.adherent_viure and (nom_asso == "Viure" or nom_asso == "viure") :
-            return True
-        elif self.adherent_bzz2022 and (nom_asso == "bzz2022" or nom_asso == "bzz2022") :
-            return True
-        elif self.adherent_jp and (nom_asso == "jp" or nom_asso == "Jardins Partagés") :
-            return True
-        elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
-            return True
-        elif self.adherent_ssa and (nom_asso == "ssa" or nom_asso == "Sécurité Sociale Alimentaire 66") :
-            return True
-        elif self.adherent_ducepaj and (nom_asso == "ducepaj" or nom_asso == "Du Cep au Jus") :
-            return True
-        else:
-            return False
+        return getattr(self, "adherent"+nom_asso, False)
+        # elif self.adherent_pc and(nom_asso == "Permacat" or nom_asso == "pc") :
+        #     return True
+        # elif self.adherent_rtg and (nom_asso == "Ramène Ta Graine" or nom_asso == "rtg") :
+        #     return True
+        # elif self.adherent_fer and (nom_asso == "Fermille" or nom_asso == "fer") :
+        #     return True
+        # elif self.adherent_scic and (nom_asso == "PermAgora" or nom_asso == "scic") :
+        #     return True
+        # elif self.adherent_citealt and (nom_asso == "Cité Altruiste" or nom_asso == "citealt") :
+        #     return True
+        # elif self.adherent_viure and (nom_asso == "Viure" or nom_asso == "viure") :
+        #     return True
+        # elif self.adherent_bzz2022 and (nom_asso == "bzz2022" or nom_asso == "bzz2022") :
+        #     return True
+        # elif self.adherent_jp and (nom_asso == "jp" or nom_asso == "Jardins Partagés") :
+        #     return True
+        # elif self.adherent_conf66 and (nom_asso == "conf66" or nom_asso == "Confédération Paysanne 66") :
+        #     return True
+        # elif self.adherent_ssa and (nom_asso == "ssa" or nom_asso == "Sécurité Sociale Alimentaire 66") :
+        #     return True
+        # elif self.adherent_ducepaj and (nom_asso == "ducepaj" or nom_asso == "Du Cep au Jus") :
+        #     return True
+        # elif self.adherent_irri66 and nom_asso == "irri66"  :
+        #     return True
+        # elif self.adherent_permolives and nom_asso == "permolives" :
+        #     return True
+        # else:
+        #     return False
 
     def estmembre_bureau(self, asso_slug):
         if not asso_slug:

@@ -533,7 +533,7 @@ class Profil(AbstractUser):
     def estMembre_str(self, nom_asso):
         if nom_asso == "Public" or nom_asso == "public":
             return True
-        return getattr(self, "adherent"+nom_asso, False)
+        return getattr(self, "adherent_"+nom_asso, False)
         # elif self.adherent_pc and(nom_asso == "Permacat" or nom_asso == "pc") :
         #     return True
         # elif self.adherent_rtg and (nom_asso == "Ramène Ta Graine" or nom_asso == "rtg") :

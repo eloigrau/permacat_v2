@@ -362,6 +362,8 @@ class Profil(AbstractUser):
     adherent_jp = models.BooleanField(verbose_name=_("Je suis intéressé-e par les jardins partagés"), default=False)
     adherent_ssa = models.BooleanField(verbose_name=_("Je  fais parti-e du collectif SSA66"), default=False)
     adherent_ducepaj = models.BooleanField(verbose_name=_("Je fais parti-e du collectif Du Cep au Jus"), default=False)
+    adherent_irri66 = models.BooleanField(verbose_name=_("Je fais parti-e du collectif Irrigants66"), default=False)
+    adherent_permolives = models.BooleanField(verbose_name=_("Je fais parti-e du collectif Récolte Olives"), default=False)
 
     accepter_conditions = models.BooleanField(verbose_name=_("J'ai lu et j'accepte les conditions d'utilisation du site"), default=True, null=False)
     accepter_annuaire = models.BooleanField(verbose_name=_("J'accepte d'apparaître dans l'annuaire du site et la carte et rend mon profil visible par tous"), default=True)
@@ -510,6 +512,16 @@ class Profil(AbstractUser):
                 return "participant au collectif Du Cep au Jus"
             else:
                 return "Non participant au collectif Du Cep au Jus"
+        elif asso == "irri66":
+            if self.adherent_irri66:
+                return "participant au collectif Irrigants 66"
+            else:
+                return "Non participant au collectif Irrigants 66"
+        elif asso == "permolives":
+            if self.adherent_permolives:
+                return "participant au collectif Récolte Olives"
+            else:
+                return "Non participant au collectif Récolte Olives"
 
 
     def estMembre_str(self, nom_asso):
@@ -536,6 +548,10 @@ class Profil(AbstractUser):
         elif self.adherent_ssa and (nom_asso == "ssa" or nom_asso == "Sécurité Sociale Alimentaire 66") :
             return True
         elif self.adherent_ducepaj and (nom_asso == "ducepaj" or nom_asso == "Du Cep au Jus") :
+            return True
+        elif self.adherent_irri66 and nom_asso == "irri66"  :
+            return True
+        elif self.adherent_permolives and nom_asso == "permolives" :
             return True
         else:
             return False

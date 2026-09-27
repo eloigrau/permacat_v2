@@ -23,6 +23,7 @@ from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
 from dal import autocomplete
 from django.db.models import Q
+from django.contrib import messages
 
 from django.utils.text import slugify
 import itertools
@@ -339,6 +340,7 @@ def ajouterDocument(request, article_slug=None):
         else:
             action.send(request.user, verb='document_nouveau' + "_" + doc.asso.slug, action_object=doc, url=doc.get_absolute_url(),
                             description="a ajouté le document: '%s'" % doc.titre)
+        messages.success(request, "Votre document a bien été mis en ligne :p")
 
         # Redirect to the document list after POST
         if article:

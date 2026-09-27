@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden, HttpResponseBadRequest, JsonRespo
 from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormMixin
+from django.contrib import messages
 
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, \
@@ -122,6 +123,7 @@ def ajouterArticle(request):
         if dernier.exists():
             timezone = pytz.timezone("Europe/Paris")
             temps_attente = timezone.localize(datetime.now()) - dernier[0].date_creation
+            messages.error(request, "Il faut attendre un peu avant de pouvoir reposter un Article")
             return render(request, 'erreur2.html', {
                 "msg": "Vous avez déjà posté un article il y a moins de 2 minute, veuillez vous assurer que vous n'essayez \
                 pas de poster pas le meme article plusieurs fois (ça peut arriver si vous appuyez plusieurs fois \
@@ -133,6 +135,7 @@ def ajouterArticle(request):
         article.save(sendMail=True, forcerCreationMails=True)
         form.save_m2m()
         suivre_article(request, article.slug)
+        messages.success(request, "L'article a bien été publié, merci de votre contribution !")
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),
@@ -310,6 +313,7 @@ def lireArticle(request, slug):
                        "documents_partages": documents_partages, "reunions": reunions, "todos": todos,
                        "ancre": discu.slug, "projets_liens": projets_liens, "articles_liens": articles_liens}
 
+            messages.success(request, "Vous avez ajouté une discussion à l'article : " + str(article.titre) +", merci :)")
     elif form.is_valid() and 'message_discu' in request.POST:
         discu = Discussion.objects.get(article=article, slug=request.POST['message_discu'].replace("#", ""))
         comment = form.save(commit=False)
@@ -342,6 +346,7 @@ def lireArticle(request, slug):
                 desc = "a réagi à l'article: (%s) '%s'" % (discu.titre, article.titre)
                 action.send(request.user, verb='article_message' + suffix, action_object=article, url=url,
                             description=desc, discussion=discu.titre)
+            messages.success(request, "Votre commentaire a bien été publié \o/")
 
             # envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion,
@@ -739,6 +744,7 @@ def ajouterNouveauProjet(request):
             suffix = "_" + projet.asso.slug
             action.send(request.user, verb='projet_nouveau' + suffix, action_object=projet, url=url,
                         description="a ajouté un projet : '%s'" % projet.titre)
+            messages.success(request, "Félicitations ! Le projet a bien été lancé !")
             return redirect(url)
 
     else:
@@ -1129,6 +1135,7 @@ def ajouterEvenement(request, date=None):
         form.save(request)
         return redirect('cal:agenda')
 
+    messages.success(request, "L'évenement a bien été ajouté à l'agenda")
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })
 
 
@@ -1144,6 +1151,7 @@ def ajouterEvenementArticle(request, slug_article):
                     url=article.get_absolute_url(),
                     verb="article_modifier_" + article.asso.slug,
                     description="a ajouté une date à l'article '%s'" % article.titre)
+        messages.success(request, "L'évenement a bien été ajouté à l'agenda et à l'article")
         return redirect(ev.article)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, })

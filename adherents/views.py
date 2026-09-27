@@ -19,7 +19,7 @@ from .forms import (AdhesionForm, AdherentForm, AdherentChangeForm,  AdherentFor
 from .models import (Adherent, Adhesion, InscriptionMail, Contact, ContactContact,
                      ListeDiffusion, Comm_adherent, ProjetPhoning)
 from bourseLibre.models import Adresse, Profil, Asso, Adhesion_asso, LATITUDE_DEFAUT, LONGITUDE_DEFAUT
-from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool
+from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
 from .filters import AdherentsCarteFilter, ContactCarteFilter
 from .constantes import dict_ape
 from django.utils.timezone import now
@@ -32,7 +32,6 @@ from django.template import loader
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 #from bourseLibre.models import Salon, InscritSalon
-from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 
 def is_membre_bureau(user, asso_slug="conf66"):
@@ -47,24 +46,6 @@ def set_projet_phoning(request, asso_slug, url_redirect):
     projet = get_object_or_404(ProjetPhoning, slug=asso_slug)
     request.session['projet_courant'] = projet
     return redirect(url_redirect)
-
-class TestMembreAssoMixin(UserPassesTestMixin):
-    def test_func(self):
-        try:
-            self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-            self.request.session["asso_slug"] = self.asso.slug
-            return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
-        except:
-            return False
-
-class TestBureauAssoMixin(UserPassesTestMixin):
-    def test_func(self):
-        try:
-            self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
-            self.request.session["asso_slug"] = self.asso.slug
-            return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user.is_superuser
-        except:
-            return False
 
 class ListeAdherents(TestMembreAssoMixin, ListView):
     model = Adherent

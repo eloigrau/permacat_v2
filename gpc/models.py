@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from bourseLibre.models import Asso
+from django.utils.translation import gettext_lazy as _
 
 
 class Proposal(models.Model):
@@ -18,6 +20,8 @@ class Proposal(models.Model):
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.DRAFT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name=_("Groupe"), null=False,)
+
 
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"

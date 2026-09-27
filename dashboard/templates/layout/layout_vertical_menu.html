@@ -20,6 +20,15 @@
       <div class="content-wrapper">
         <!-- Content: Start -->
           <div class="container-fluid flex-grow-1 container-p-y">
+            {% block messages %}
+              {% if messages %}
+                <ul class="messagelist">{% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endblock messages %}
+
             {% block content_total %}
             {% endblock content_total %}
           </div>

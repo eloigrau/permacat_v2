@@ -1,29 +1,48 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.urls import reverse
 
 from .models import Proposal, ClarificationQuestion, Objection, ObjectionResponse
 from . import services
+from bourseLibre.utils import TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
 
 
-class ProposalListView(LoginRequiredMixin, ListView):
+class ProposalListView(TestMembreAssoMixin, ListView):
     model = Proposal
     template_name = 'gpc/proposal_list.html'
     context_object_name = 'proposals'
     ordering = ['-created_at']
 
 
-class ProposalDetailView(LoginRequiredMixin, DetailView):
+    def get_queryset(self):
+        if "asso" in self.request.GET and not "base" in self.request.GET:
+            self.request.session["asso_slug"] = self.request.GET["asso"]
+            qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.GET["asso"]).order_by("-updated_at")
+        elif "asso_slug" in self.request.session and not "base" in self.request.GET:
+            qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.session["asso_slug"]).order_by("-updated_at")
+        else:
+            qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-updated_at")
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.slug
+        context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()
+        return context
+
+
+class ProposalDetailView(TestMembreAssoMixin, DetailView):
     model = Proposal
     template_name = 'gpc/proposal_detail.html'
     context_object_name = 'proposal'
 
 
-class ProposalCreateView(LoginRequiredMixin, CreateView):
+class ProposalCreateView(TestMembreAssoMixin, CreateView):
     model = Proposal
     fields = ['title', 'context', 'content']
     template_name = 'gpc/create_proposal.html'
@@ -31,6 +50,7 @@ class ProposalCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         response = super().form_valid(form)
+        self.object.asso = self.asso
         services.submit_proposal(self.object)
         messages.success(self.request, "Proposition créée et soumise pour clarification.")
         return response
@@ -39,7 +59,11 @@ class ProposalCreateView(LoginRequiredMixin, CreateView):
         return reverse('gpc:proposal_detail', kwargs={'pk': self.object.pk})
 
 
-class AddClarificationView(LoginRequiredMixin, View):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['asso_slug'] = self.asso.slug
+
+class AddClarificationView(TestMembreAssoMixin, View):
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
         question_text = request.POST.get('question', '').strip()
@@ -53,10 +77,10 @@ class AddClarificationView(LoginRequiredMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-class AnswerClarificationView(LoginRequiredMixin, UserPassesTestMixin, View):
-    def test_func(self):
-        question = get_object_or_404(ClarificationQuestion, pk=self.kwargs['question_id'])
-        return self.request.user == question.proposal.author
+class AnswerClarificationView(TestMembreAssoMixin, View):
+    #def test_func(self):
+    #    question = get_object_or_404(ClarificationQuestion, pk=self.kwargs['question_id'])
+     #   return self.request.user == question.proposal.author
 
     def post(self, request, question_id):
         question = get_object_or_404(ClarificationQuestion, pk=question_id)
@@ -68,10 +92,10 @@ class AnswerClarificationView(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect('gpc:proposal_detail', pk=question.proposal.pk)
 
 
-class CloseClarificationsView(LoginRequiredMixin, UserPassesTestMixin, View):
-    def test_func(self):
-        proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
-        return self.request.user == proposal.author
+class CloseClarificationsView(LoginRequiredMixin, View):
+    #def test_func(self):
+    #    proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+    #    return self.request.user == proposal.author
 
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
@@ -83,7 +107,7 @@ class CloseClarificationsView(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-class AddObjectionView(LoginRequiredMixin, View):
+class AddObjectionView(TestMembreAssoMixin, View):
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
         description = request.POST.get('description', '').strip()
@@ -97,7 +121,7 @@ class AddObjectionView(LoginRequiredMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-class CloseObjectionsView(LoginRequiredMixin, View):
+class CloseObjectionsView(TestMembreAssoMixin, View):
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
         try:
@@ -111,7 +135,7 @@ class CloseObjectionsView(LoginRequiredMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-class AddObjectionResponseView(LoginRequiredMixin, View):
+class AddObjectionResponseView(TestMembreAssoMixin, View):
     def post(self, request, objection_id):
         objection = get_object_or_404(Objection, pk=objection_id)
         content = request.POST.get('content', '').strip()
@@ -125,7 +149,7 @@ class AddObjectionResponseView(LoginRequiredMixin, View):
         return redirect('gpc:proposal_detail', pk=objection.proposal.pk)
 
 
-class ResolveObjectionView(LoginRequiredMixin, UserPassesTestMixin, View):
+class ResolveObjectionView(TestMembreAssoMixin, UserPassesTestMixin, View):
     """Permet à l'auteur de l'objection ou à l'auteur de la proposition de lever l'objection."""
     def test_func(self):
         objection = get_object_or_404(Objection, pk=self.kwargs['objection_id'])
@@ -138,7 +162,7 @@ class ResolveObjectionView(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect('gpc:proposal_detail', pk=objection.proposal.pk)
 
 
-class CloseDeliberationView(LoginRequiredMixin, UserPassesTestMixin, View):
+class CloseDeliberationView(TestMembreAssoMixin, UserPassesTestMixin, View):
     """Clôture la délibération et valide la proposition si toutes les objections sont levées."""
     def test_func(self):
         proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
@@ -154,7 +178,7 @@ class CloseDeliberationView(LoginRequiredMixin, UserPassesTestMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-class ReformulateProposalView(LoginRequiredMixin, UserPassesTestMixin, View):
+class ReformulateProposalView(TestMembreAssoMixin, UserPassesTestMixin, View):
     def test_func(self):
         proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
         return self.request.user == proposal.author
@@ -175,7 +199,7 @@ class ReformulateProposalView(LoginRequiredMixin, UserPassesTestMixin, View):
             return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-class RejectProposalView(LoginRequiredMixin, UserPassesTestMixin, View):
+class RejectProposalView(TestMembreAssoMixin, UserPassesTestMixin, View):
     def test_func(self):
         proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
         return self.request.user == proposal.author

@@ -47,12 +47,13 @@ class Choix():
      #               (2, _("Je suis déjà membre de l'association Permacat")))
 
 
-    slugsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "ssa", "ducepaj", "irri66", "permolives"]
+    slugsAsso = ["pc", "rtg", "scic", "citealt", "viure", "bzz2022", "jp", "ssa", "ducepaj", "jppb", "irri66", "permolives"]
     slugsAsso_accesParCotisation = ["conf66", ]
     slugsAssoEtPublic = slugsAsso + ["public", ]
-    slugsNomsAsso = [("pc", 'PermaCat'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"), \
-                     ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"), \
-                     ("ssa", "SSA 66"), ("ducepaj", "Du Cep au Jus"), ("irri66", "Irrigants 66"), ("permolives", "Collectif Olives")
+    slugsNomsAsso = [("pc", 'PermaCat'), ("scic", "PermAgora"), ("citealt", "Cité Altruiste"),
+                     ("viure", "Viure"), ("bzz2022", "Bzzz 2022"), ("jp", "Jardins Partagés"),
+                     ("ssa", "SSA 66"), ("ducepaj", "Du Cep au Jus"), ("irri66", "Irrigants 66"),
+                     ("jppb", "Jardin Partagé du Poisson Bêche"), ("permolives", "Collectif Olives")
                      ]
     slugsNomsAssoEtPublic = [('public', "Public"), ] + slugsNomsAsso
 

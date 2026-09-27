@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from .web_project import TemplateLayout
 from photologue.models import Document
 from blog.models import Article, Commentaire
@@ -12,19 +13,28 @@ from django.db.models import Q
 from django.db.models.functions import Greatest
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.template.loader import select_template
-from blog.models import Article, Projet, Evenement
+from blog.models import Article, Projet, Evenement, DocumentPartage
 from bourseLibre.models import EvenementSalon, InscritSalon, Salon, Asso, Choix
 from ateliers.models import Atelier
 from django.http import HttpResponseForbidden
 from .forms import ChoisirCollectifForm
 from itertools import chain
+from dal import autocomplete
+from dal_select2_queryset_sequence.views import Select2QuerySetSequenceView
+from queryset_sequence import QuerySetSequence
+from .forms import GroupeForm
+from django.views.generic.edit import FormMixin
+
 
 class DashboardView(UserPassesTestMixin, TemplateView):
+
     # Predefined function
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in web_project/__init__.py file
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
-
+        context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()
+        self.form = GroupeForm(self.request.POST or None)
+        context['form'] = self.form
         return context
 
     def test_func(self):
@@ -50,7 +60,27 @@ class DashboardView(UserPassesTestMixin, TemplateView):
     def get_template_names(self):
         return select_template(["dashboard_"+ self.request.session["asso_slug"] + ".html","dashboard_base.html"])
 
+    # def post(self, request):
+    #     form = self.get_form()
+    #     if form.is_valid():
+    #         # Récupère l'objet sélectionné (Article ou Video) sans pour autant le sauvegarder en BDD
+    #         selected_object = form.cleaned_data['target_object']
+    #
+    #         if selected_object and hasattr(selected_object, 'get_absolute_url'):
+    #             #Redirection magique vers l'URL spécifique du modèle
+    #             return redirect(selected_object.get_absolute_url())
+    #     return
 
+    def post(self, request, **kwargs):
+        if self.form.is_valid():
+            # Récupère l'objet sélectionné  sans pour autant le sauvegarder en BDD
+            selected_object = self.form.cleaned_data['target_object']
+
+            if selected_object and hasattr(selected_object, 'get_absolute_url'):
+                return redirect(selected_object.get_absolute_url())
+
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
 @login_required
 def choisirCollectif(request):
@@ -61,9 +91,9 @@ def choisirCollectif(request):
             url_new = request.GET["next"]
             for slug in Choix.slugsAssoEtPublic:
                 url_new = url_new.replace(
-                    "/"+slug+"/","/"+request.session["asso_slug"] + "/").replace(
-                    "asso="+slug,"asso="+request.session["asso_slug"]).replace(
-                    "asso_slug="+slug,"asso_slug="+request.session["asso_slug"])
+                    "/"+slug+"/", "/"+request.session["asso_slug"] + "/").replace(
+                    "asso="+slug, "asso="+request.session["asso_slug"]).replace(
+                    "asso_slug="+slug, "asso_slug="+request.session["asso_slug"])
             return redirect(url_new)
         return redirect("dashboard:index")
     return render(request, "choisirCollectif.html", {"form":form})
@@ -165,3 +195,78 @@ def prochainesDates(request, asso):
     )
 
     return render(request, 'ajax/datesList.html', {'datesList': queryset, 'datesList_public': queryset_public, 'asso': asso})
+
+
+
+
+
+class GroupeSearchAutocomplete(Select2QuerySetSequenceView):
+    def get_queryset(self):
+        # Récupération de tous les objets des modèles cibles
+        calc = len(self.q) > 1
+
+        if not self.request.user.is_authenticated or not calc:
+            return QuerySetSequence(Article.objects.none(), )
+
+        user_slugs = self.request.user.getListeSlugsAssos_nonmembre()
+        if "asso_slug" in self.request.session:
+            qs_art = Article.objects.filter((self.request.user.getQObjectsAssoArticles() & Q(asso__slug=self.request.session["asso_slug"])) & Q(estArchive=False) &
+                    Q(titre__icontains=self.q)).order_by("titre")
+            qs_doc = Document.objects.filter(Q(asso__slug=self.request.session["asso_slug"]) &
+                         Q(titre__icontains=self.q)).order_by("titre")
+            qs_docptg = DocumentPartage.objects.filter(Q(article__asso__slug=self.request.session["asso_slug"]) &
+                         Q(nom__icontains=self.q)).order_by("-date_creation")
+            qs_projet = Projet.objects.filter(Q(asso__slug=self.request.session["asso_slug"], estArchive=False)&
+                      Q(titre__icontains=self.q)).order_by("titre")
+        else:
+            qs_art = Article.objects.exclude(asso__slug__in=user_slugs, estArchive=True).filter(Q(titre__icontains=self.q)).order_by("titre")
+            qs_doc = Document.objects.exclude(asso__slug__in=user_slugs).filter(Q(titre__icontains=self.q)).order_by("titre")
+            qs_docptg = DocumentPartage.objects.exclude(asso__slug__in=user_slugs).filter(Q(nom__icontains=self.q)).order_by("-date_creation")
+            qs_projet = Projet.objects.exclude(asso__slug__in=user_slugs, estArchive=True).filter(Q(titre__icontains=self.q)).order_by("titre")
+
+
+        # On combine les QuerySets à l'aide de QuerySetSequence
+        return QuerySetSequence(qs_art, qs_doc, qs_projet, qs_docptg)
+
+
+class GFKAutocompleteView(Select2QuerySetSequenceView):
+    def get_queryset(self):
+        calc = len(self.q) > 1
+
+        if not self.request.user.is_authenticated or not calc:
+            return QuerySetSequence(Article.objects.none(), )
+
+        user_slugs = self.request.user.getListeSlugsAssos_nonmembre()
+        if "asso_slug" in self.request.session:
+            qs_art = Article.objects.filter((self.request.user.getQObjectsAssoArticles() & Q(asso__slug=self.request.session["asso_slug"])) & Q(estArchive=False) &
+                    Q(titre__icontains=self.q)).order_by("titre")
+            qs_doc = Document.objects.filter(Q(asso__slug=self.request.session["asso_slug"]) &
+                         Q(titre__icontains=self.q)).order_by("titre")
+            qs_docptg = DocumentPartage.objects.filter(Q(article__asso__slug=self.request.session["asso_slug"]) &
+                         Q(nom__icontains=self.q)).order_by("-date_creation")
+            qs_projet = Projet.objects.filter(Q(asso__slug=self.request.session["asso_slug"], estArchive=False)&
+                      Q(titre__icontains=self.q)).order_by("titre")
+        else:
+            qs_art = Article.objects.exclude(asso__slug__in=user_slugs, estArchive=True).filter(Q(titre__icontains=self.q)).order_by("titre")
+            qs_doc = Document.objects.exclude(asso__slug__in=user_slugs).filter(Q(titre__icontains=self.q)).order_by("titre")
+            qs_docptg = DocumentPartage.objects.exclude(asso__slug__in=user_slugs).filter(Q(nom__icontains=self.q)).order_by("-date_creation")
+            qs_projet = Projet.objects.exclude(asso__slug__in=user_slugs, estArchive=True).filter(Q(titre__icontains=self.q)).order_by("titre")
+
+
+        # On combine les QuerySets à l'aide de QuerySetSequence
+        return QuerySetSequence(qs_art, qs_doc, qs_projet, qs_docptg)
+
+    def get_results(self, context):
+        """
+        Cette méthode construit la liste JSON envoyée à Select2.
+        On y injecte l'URL absolue de chaque objet.
+        """
+        results = []
+        for result in context['object_list']:
+            results.append({
+                'id': self.get_result_value(result),
+                'text': self.get_result_label(result),
+                # 🚀 On ajoute l'URL ici pour la récupérer en JavaScript
+                'url': result.get_absolute_url() if hasattr(result, 'get_absolute_url') else '#'
+            })
+        return results

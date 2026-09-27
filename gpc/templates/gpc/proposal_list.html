@@ -1,14 +1,45 @@
 {% extends 'base.html' %}
+{% load app_filters %}
 
 {% block title %}Liste des Propositions — GPC{% endblock %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+
+{% block subtitle %}
+<div class="d-flex justify-content-around align-items-center">
+    <div>{{asso_slug|getLogoGroupeFromSlug}}</div>
     <h2>Propositions en cours</h2>
     <a href="{% url 'gpc:proposal_create' %}" class="btn btn-success">
         <i class="bi bi-plus-lg me-1"></i>Nouvelle Proposition
     </a>
 </div>
+{% endblock subtitle %}
+
+{% block content %}
+
+
+<hr>
+<div class="row justify-content-center" >
+    <nav class="navbar navbar-expand-lg justify-content-center" >
+        <div class="navbar-header">
+             <button class="btn btn-lg navbar-toggler dropdown-toggle btn-groupe" type="button" data-toggle="collapse" data-target="#navbar_asso" aria-controls="navbarProduitContent" aria-expanded="false" aria-label="Toggle navigation">
+             <p>{% if request.session.asso_slug %} Groupe : {{request.session.asso_slug | getNomGroupeFromSlug}} {% else %} Choisir un groupe {% endif %} </p> </button>
+        </div>
+        <div class="navbar-collapse collapse justify-content-center" id="navbar_asso">
+            <ul class="navbar-nav subnavbar2 align-items-center">
+                {% for  asso_ab, asso_nom in asso_list %}
+                <a  href="{% url 'gpc:proposal_list' %}?asso_slug={{asso_ab}}">
+                    <li class="nav-item btn-choixgroupe btn shadow-trespetit {%if asso_slug == asso_ab %} btn-warning{% else %}btn-info{% endif %}">
+                          <h6>{{asso_nom}}</h6>
+                    </li>
+                </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</div>
+<hr>
+
+
 
 {% if proposals %}
     <div class="row row-cols-1 row-cols-md-2 g-4">

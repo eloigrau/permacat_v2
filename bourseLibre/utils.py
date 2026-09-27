@@ -5,6 +5,7 @@ import uuid
 from django.utils.text import slugify
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 def reabonnerProfil_base(profil):
     for suiv in Choix.suivisPossibles:
@@ -100,3 +101,26 @@ def testIsMembreAsso(request, asso):
 
     return Asso.objects.get(nom="Public")
 
+
+class TestMembreAssoMixin(UserPassesTestMixin):
+    def test_func(self):
+        if not self.request.user.is_authenticated:
+            return False
+        try:
+            if "asso_slug" in self.request.GET:
+                self.asso = Asso.objects.get(slug=self.request.GET["asso_slug"])
+                self.request.session["asso_slug"] = self.asso.slug
+            elif "asso_slug" in self.request.session:
+                self.asso = Asso.objects.get(slug=self.request.session["asso_slug"])
+            return self.asso.est_autorise(self.request.user) or self.request.user.is_superuser
+        except:
+            return False
+
+class TestBureauAssoMixin(UserPassesTestMixin):
+    def test_func(self):
+        try:
+            self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
+            self.request.session["asso_slug"] = self.asso.slug
+            return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user.is_superuser
+        except:
+            return False

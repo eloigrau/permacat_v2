@@ -163,14 +163,11 @@
                     </a>
                 </li>
 
-{% if request.user.is_superuser %}
                 <li class="menu-item {% if '/gpc/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'gpc:proposal_list' %}">
-                        <div class="text-truncate">SU : GPC</div>
+                        <div class="text-truncate">GPC</div>
                     </a>
                 </li>
-
-            {% endif %}
                 <li class="menu-item {% if '/forum/todoArticleList/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'blog:todoarticle_list' %}">
                         <div class="text-truncate">Yapluka</div>

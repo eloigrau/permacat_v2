@@ -3,11 +3,10 @@
 
 {% block title %}Liste des Propositions — GPC{% endblock %}
 
-
 {% block subtitle %}
 <div class="d-flex justify-content-around align-items-center">
     <div>{{asso_slug|getLogoGroupeFromSlug}}</div>
-    <h2>Propositions en cours</h2>
+    <h2>Prises de décision avec la GPC</h2>
     <a href="{% url 'gpc:proposal_create' %}" class="btn btn-success">
         <i class="bi bi-plus-lg me-1"></i>Nouvelle Proposition
     </a>

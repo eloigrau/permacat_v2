@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from .models import Proposal, Objection
+from .models import Proposal, Objection, ObjectionResolutionVote
 
 
 def submit_proposal(proposal: Proposal) -> None:
@@ -39,11 +39,27 @@ def close_objections(proposal: Proposal) -> None:
 
     proposal.save()
 
+def vote_to_resolve_objection(objection: Objection, voter, approve: bool = True) -> bool:
+    """
+    Enregistre le vote d'un membre pour lever ou conserver une objection.
+    Si au moins N votes distincts (définis dans la proposition) favorables sont enregistrés, l'objection est automatiquement marquée comme levée.
+    """
+    if objection.is_resolved:
+        raise ValidationError("Cette objection est déjà levée.")
 
-def resolve_objection(objection: Objection) -> None:
-    """Marque une objection comme levée suite aux réponses/échanges."""
-    objection.is_resolved = True
-    objection.save()
+    ObjectionResolutionVote.objects.update_or_create(
+        objection=objection,
+        voter=voter,
+        defaults={'approve_resolution': approve}
+    )
+
+    # Vérification du seuil minimal de 3 votes distincts
+    if objection.positive_votes_count >= objection.proposal.nbMinVote:
+        objection.is_resolved = True
+        objection.save()
+        return True  # Objection levée !
+
+    return False
 
 
 def close_deliberation(proposal: Proposal) -> None:

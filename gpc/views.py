@@ -49,8 +49,8 @@ class ProposalCreateView(TestMembreAssoMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.asso = self.asso
         response = super().form_valid(form)
-        self.object.asso = self.asso
         services.submit_proposal(self.object)
         messages.success(self.request, "Proposition créée et soumise pour clarification.")
         return response
@@ -78,9 +78,12 @@ class AddClarificationView(TestMembreAssoMixin, View):
 
 
 class AnswerClarificationView(TestMembreAssoMixin, View):
-    #def test_func(self):
-    #    question = get_object_or_404(ClarificationQuestion, pk=self.kwargs['question_id'])
-     #   return self.request.user == question.proposal.author
+    def test_func(self):
+        res = super().test_func()
+        if res:
+            question = get_object_or_404(ClarificationQuestion, pk=self.kwargs['question_id'])
+            return self.request.user == question.proposal.author
+        return False
 
     def post(self, request, question_id):
         question = get_object_or_404(ClarificationQuestion, pk=question_id)
@@ -92,10 +95,13 @@ class AnswerClarificationView(TestMembreAssoMixin, View):
         return redirect('gpc:proposal_detail', pk=question.proposal.pk)
 
 
-class CloseClarificationsView(LoginRequiredMixin, View):
-    #def test_func(self):
-    #    proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
-    #    return self.request.user == proposal.author
+class CloseClarificationsView(TestMembreAssoMixin, View):
+    def test_func(self):
+        res = super().test_func()
+        if res:
+            proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+            return self.request.user == proposal.author
+        return False
 
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
@@ -120,6 +126,22 @@ class AddObjectionView(TestMembreAssoMixin, View):
             messages.warning(request, "Objection enregistrée.")
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
+class VoteResolveObjectionView(LoginRequiredMixin, View):
+    """Enregistre le vote d'un membre pour la levée d'une objection."""
+    def post(self, request, objection_id):
+        objection = get_object_or_404(Objection, pk=objection_id)
+        approve = request.POST.get('approve') == 'true'
+
+        try:
+            is_now_resolved = services.vote_to_resolve_objection(objection, request.user, approve=approve)
+            if is_now_resolved:
+                messages.success(request, "Vote enregistré ! Le seuil de votes est atteint : l'objection est désormais levée.")
+            else:
+                messages.info(request, f"Vote enregistré. ({objection.positive_votes_count}/3 votes requis pour lever l'objection).")
+        except ValidationError as e:
+            messages.error(request, e.message)
+
+        return redirect('gpc:proposal_detail', pk=objection.proposal.pk)
 
 class CloseObjectionsView(TestMembreAssoMixin, View):
     def post(self, request, pk):

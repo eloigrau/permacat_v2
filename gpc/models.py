@@ -21,6 +21,7 @@ class Proposal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     asso = models.ForeignKey(Asso, on_delete=models.CASCADE, verbose_name=_("Groupe"), null=False,)
+    nbMinVote = models.IntegerField(verbose_name=_("Nombre minimum de participants (pour valider)"), help_text="Nombre minimum de personnes qui doivent participer pour valider ", blank=False, null=False, default="1")
 
 
     def __str__(self):
@@ -43,6 +44,25 @@ class Objection(models.Model):
     is_resolved = models.BooleanField(default=False, help_text="Marqué comme vraie si l'objection a été levée")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def positive_votes_count(self):
+        """Nombre de votes distincts favorables à la levée."""
+        return self.resolution_votes.filter(approve_resolution=True).values('voter').distinct().count()
+
+    @property
+    def votes_needed_to_resolve(self):
+        """Nombre de votes positifs manquants pour atteindre le seuil de 3."""
+        return max(0, 3 - self.positive_votes_count)
+
+class ObjectionResolutionVote(models.Model):
+    """Vote d'un membre pour accepter/valider la levée d'une objection."""
+    objection = models.ForeignKey(Objection, on_delete=models.CASCADE, related_name='resolution_votes')
+    voter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    approve_resolution = models.BooleanField(default=True, help_text="Vrai = Pour lever l'objection, Faux = Contre")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('objection', 'voter')
 
 class ObjectionResponse(models.Model):
     objection = models.ForeignKey(Objection, on_delete=models.CASCADE, related_name='responses')

@@ -175,12 +175,9 @@ class Choix:
 
     LIENS_ARTICLES = (
         ("0", "Thème commun ou similaire"),
-        ("1", "Collectif/projet commun ou similaire"),
-        ("2", "L'article englobe/contient (choisir l'article qui est contenu)"),
-        ("3", "L'article est inclu dans l'autre (choisir l'article qui le contient)"),
-        ("4", "info mère (choisir l'article qui hérite)"),
-        ("5", "info fille (choisir l'article qui lègue)"),
-        ("6", "info soeur"),
+        ("1", "Drageon : Collectif/projet commun ou similaire"),
+        ("2", "Charpentière : info mère (choisir l'article 'fils')"),
+        ("3", "Branche : info fille (choisir l'article 'père')"),
     )
 
     LIENS_PROJET = (

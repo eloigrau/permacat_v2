@@ -11,7 +11,7 @@
 <div class="card mb-4 shadow border-2 {% if proposal.status == 'ACCEPTED' %}border-success{% elif proposal.status == 'REJECTED' %}border-danger{% else %}border-primary{% endif %}">
     <div class="card-header {% if proposal.status == 'ACCEPTED' %}bg-success{% elif proposal.status == 'REJECTED' %}bg-danger{% else %}bg-primary{% endif %} text-white d-flex justify-content-between align-items-center">
         <h3 class="mb-0 fs-4">{{ proposal.title }}</h3>
-        <span class="badge bg-light text-dark fs-6">{{ proposal.get_status_display }}</span>
+        <span class="badge bg-light text-dark fs-6">Statut: {{ proposal.get_status_display }}</span>
     </div>
     <div class="card-body">
         <h6 class="text-uppercase text-muted fw-bold">
@@ -22,7 +22,7 @@
             {% endif %}
         </h6>
         <p class="card-text fs-4 bg-light p-3 rounded border-start border-4 border-primary">
-            {{ proposal.content|linebreaks }}
+            {{ proposal.content }}
         </p>
 
         <hr>
@@ -34,7 +34,65 @@
         </div>
     </div>
 </div>
+{% if proposal.clarifications.all and proposal.status != 'CLARIFICATION' %}
+<div class="card mb-4 border-info">
+    <div class="card-header bg-info text-dark fw-bold">Demandes de clarification</div>
+        <div class="card-body">
+            <div class="list-group mb-3">
+                {% for q in proposal.clarifications.all %}
+                    <div class="list-group-item">
+                        <p class="mb-1"><strong>{{ q.author.username }} :</strong> {{ q.question }}</p>
+                        {% if q.answer %}
+                            <div class="p-2 bg-light border-start border-3 border-success ms-3">
+                                <strong class="text-success">Réponse :</strong> {{ q.answer }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted">Aucune question de clarification posée pour le moment.</p>
+                {% endfor %}
+            </div>
+    </div>
+</div>
+{% endif %}
 
+{% if proposal.objections.all and proposal.status != 'OBJECTION_ROUND' and proposal.status != 'DELIBERATION' %}
+    <div class="card mb-4 border-dark shadow-sm">
+        <div class="card-header bg-dark text-white fw-bold">Objections</div>
+        <div class="card-body">
+            {% for objection in proposal.objections.all %}
+                <div class="card mb-3 border-2 {% if objection.is_resolved %}border-success bg-light{% else %}border-danger{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 fw-bold {% if objection.is_resolved %}text-success{% else %}text-danger{% endif %}">
+                                Objection de {{ objection.author.username }}
+                            </h6>
+                            {% if objection.is_resolved %}
+                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Objection Levée</span>
+                            {% else %}
+                                <span class="badge bg-danger">Active</span>
+                            {% endif %}
+                        </div>
+
+                        <p class="card-text">{{ objection.description }}</p>
+
+                        <!-- Pistes de solution / Réponses -->
+                        <div class="ms-3 border-start border-2 ps-3 mt-3">
+                            <h6 class="small fw-bold text-muted">Échanges & Pistes d'amendement :</h6>
+                            {% for resp in objection.responses.all %}
+                                <div class="bg-white p-2 mb-2 rounded border">
+                                    <small><strong>{{ resp.author.username }} :</strong> {{ resp.content }}</small>
+                                </div>
+                            {% empty %}
+                                <p class="text-muted small">Aucune réponse pour l'instant.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
 <!-- PHASE 1 : CLARIFICATIONS -->
 {% if proposal.status == 'CLARIFICATION' %}
     <div class="card mb-4 border-info">
@@ -114,57 +172,92 @@
         </div>
     </div>
 
-<!-- PHASE 3 : DÉLIBÉRATION & LEVÉE DES OBJECTIONS -->
+<!-- PHASE 3 : DÉLIBÉRATION & VOTE DES MEMBRES POUR LA LEVÉE -->
 {% elif proposal.status == 'DELIBERATION' %}
     <div class="card mb-4 border-dark shadow-sm">
-        <div class="card-header bg-dark text-white fw-bold">Phase 3 : Délibération & Traitement des objections</div>
+        <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+            <span>Phase 3 : Traitement des objections</span>
+            <span class="badge bg-warning text-dark">Au moins {{proposal.nbMinVote}} votes membres requis par objection</span>
+        </div>
         <div class="card-body">
             {% for objection in proposal.objections.all %}
-                <div class="card mb-3 border-2 {% if objection.is_resolved %}border-success bg-light{% else %}border-danger{% endif %}">
+                <div class="card mb-4 border-2 {% if objection.is_resolved %}border-success bg-light{% else %}border-danger{% endif %}">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0 fw-bold {% if objection.is_resolved %}text-success{% else %}text-danger{% endif %}">
-                                Objection de {{ objection.author.username }}
+                                Objection soulevée par {{ objection.author.username }}
                             </h6>
                             {% if objection.is_resolved %}
-                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Objection Levée</span>
+                                <span class="badge bg-success fs-6"><i class="bi bi-check-circle-fill"></i> Objection Levée par les membres</span>
                             {% else %}
-                                <span class="badge bg-danger">Active</span>
+                                <span class="badge bg-warning text-dark fs-6">
+                                    {{ objection.positive_votes_count }}/3 votes reçus pour la levée
+                                </span>
                             {% endif %}
                         </div>
 
-                        <p class="card-text">{{ objection.description }}</p>
+                        <p class="card-text fs-5">{{ objection.description }}</p>
 
                         <!-- Pistes de solution / Réponses -->
-                        <div class="ms-3 border-start border-2 ps-3 mt-3">
-                            <h6 class="small fw-bold text-muted">Échanges & Pistes d'amendement :</h6>
+                        <div class="ms-3 border-start border-3 ps-3 my-3">
+                            <h6 class="small fw-bold text-muted">Échanges & Pistes de résolution :</h6>
                             {% for resp in objection.responses.all %}
                                 <div class="bg-white p-2 mb-2 rounded border">
                                     <small><strong>{{ resp.author.username }} :</strong> {{ resp.content }}</small>
                                 </div>
                             {% empty %}
-                                <p class="text-muted small">Aucune réponse pour l'instant.</p>
+                                <p class="text-muted small">Aucune réponse ou piste proposée pour l'instant.</p>
                             {% endfor %}
 
-                            <!-- Formulaire de réponse -->
+                            <!-- Formulaire d'ajout de réponse -->
                             <form method="post" action="{% url 'gpc:add_objection_response' objection.id %}" class="mt-2 mb-3">
                                 {% csrf_token %}
                                 <div class="input-group input-group-sm">
                                     <input type="text" name="content" class="form-control" placeholder="Apporter un argument ou une piste de solution..." required>
-                                    <button class="btn btn-outline-secondary" type="submit">Proposer</button>
+                                    <button class="btn btn-outline-secondary" type="submit">Publier une piste</button>
                                 </div>
                             </form>
-
-                            <!-- BOUTON : LEVER L'OBJECTION (Si pas encore résolue) -->
-                            {% if not objection.is_resolved and user == objection.author or user == proposal.author %}
-                                <form method="post" action="{% url 'gpc:resolve_objection' objection.id %}" class="text-end">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-success">
-                                        <i class="bi bi-check-circle me-1"></i> Accepter et lever cette objection
-                                    </button>
-                                </form>
-                            {% endif %}
                         </div>
+
+                        <!-- SECTION DE VOTE PAR LES MEMBRES POUR LEVER L'OBJECTION -->
+                        {% if not objection.is_resolved %}
+                            <div class="p-3 bg-white rounded border border-warning mt-3">
+                                <h6 class="fw-bold mb-2">Vote des membres : Valider la réponse & lever l'objection</h6>
+                                <p class="small text-muted mb-2">
+                                    Il faut <strong>au moins 3 votes favorables</strong> de membres différents pour valider la levée de cette objection.
+                                </p>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <form method="post" action="{% url 'gpc:vote_resolve_objection' objection.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="approve" value="true">
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-hand-thumbs-up me-1"></i> Voter POUR la levée de l'objection
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="{% url 'gpc:vote_resolve_objection' objection.id %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="approve" value="false">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-hand-thumbs-down me-1"></i> Conserver l'objection
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Liste des membres ayant déjà voté -->
+                                <div class="mt-2 small text-muted">
+                                    Votants actuels :
+                                    {% for v in objection.resolution_votes.all %}
+                                        <span class="badge {% if v.approve_resolution %}bg-success{% else %}bg-secondary{% endif %} me-1">
+                                            {{ v.voter.username }} ({% if v.approve_resolution %}Pour{% else %}Contre{% endif %})
+                                        </span>
+                                    {% empty %}
+                                        <em>Aucun vote enregistré pour l'instant.</em>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -172,8 +265,8 @@
             <!-- BOUTON FINAL : CLÔTURER LA DÉLIBÉRATION -->
             {% if user == proposal.author %}
                 <div class="p-3 bg-light rounded border mt-4">
-                    <h6 class="fw-bold">Actions de fin de délibération</h6>
-                    <p class="small text-muted mb-3">Si toutes les objections sont levées, vous pouvez clôturer la délibération pour adopter la proposition.</p>
+                    <h6 class="fw-bold">Actions de l'auteur de la proposition</h6>
+                    <p class="small text-muted mb-3">Vous pourrez adopter définitivement la proposition une fois que toutes les objections auront recueilli au moins 3 votes de levée.</p>
 
                     <div class="d-flex flex-column gap-2">
                         <form method="post" action="{% url 'gpc:close_deliberation' proposal.id %}">

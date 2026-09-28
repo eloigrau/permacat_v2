@@ -338,7 +338,14 @@ class Asso(models.Model):
         return self.get_logo_nomgroupe_html_taille(18)
 
     def get_logo_nomgroupe_html_taille(self, taille=18):
-        return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px' alt='"+self.nom+"'/>"
+        from blog.models import Choix as Choix_groupes
+        if self.slug in Choix_groupes.logo_asso:
+            return "<span class='badge rounded-pill bg-label-primary' style='height =" + str(taille) + "px'>" + \
+                   Choix_groupes.logo_asso[self.slug] + "</span>"
+        return "<span class='badge rounded-pill bg-label-primary' style='height =" + str(taille) + "px'>" + \
+               self.slug + "</span>"
+
+        #return "<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px' alt='"+self.nom+"'/>"
 
 class Profil(AbstractUser):
     username_validator = ASCIIUsernameValidator()

@@ -21,7 +21,7 @@
         <tbody>
         {% for article in article_list %}
         <tr>
-            <td data-title="" class="text-center shrink">
+            <td data-title="" class="text-center shrink ">
                 <a href="{% url 'blog:index_asso' asso=article.asso.slug %}#ref-titre">
                             {{article.get_logo_nomgroupe_html|safe }}</a>
                         {% if article.partagesAsso %} <span>{% for p in article.get_logo_nomgroupespartages_html %}{{ p|safe }}{% endfor %}</span>
@@ -36,6 +36,7 @@
                         </a>
                     </p>
 
+                {% comment %}
                     <p class="">
                         <span class="badge badge-light" >
                         {% if request.user|is_following:article %}
@@ -54,14 +55,15 @@
                         {% endif %}
                         </span>
                     </p>
+                {% endcomment %}
             </td>
             <td data-title="" class="" style="width:70%;">
                 <a href="{% url 'blog:lireArticle' slug=article.slug %}#ref-titre">
-                    <p class="titre_forum">{{article.titre}}
+                    <h4 class="titre_forum">{{article.titre}}
                         {%if article.estModifiable %}
                         <span class="fa fa-edit" title="Article modifiable">    </span>
                         {% endif %}
-                    </p>
+                    </h4>
 
                     <p class="">
                         {% include 'listeTags_view_template.html' with tags=article.tags.names %}
@@ -73,6 +75,7 @@
                     </p>
                 </a>
             </td>
+            {% if article.start_time or article.getInfosHtml %}
             <td data-title="" class="text-center shrink">
             {% if article.start_time %}
                     <p class="">
@@ -87,11 +90,15 @@
             {% endif %}
                     <p class="">
                         <span class="badge badge-light" >
-                {{article.getInfosHtml}}
+                                {{article.getInfosHtml}}
                         </span>
             </p>
 
             </td>
+            {%else%}
+            <td style="padding:0 0 0 0;">
+            </td>
+            {% endif %}
 
         </tr>
         {% get_ateliers_visibles article request as listeAteliers %}

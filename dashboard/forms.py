@@ -52,6 +52,10 @@ class GroupeForm(forms.ModelForm):
         model = Notification
         fields = ['target_object']
 
+        help_texts = {
+            'target_object':  mark_safe("<p style='color:teal'>(écrire ci-dessus au moins 3 lettres)</p>")
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Si on édite un objet existant, on pré-remplit le champ du formulaire

@@ -231,7 +231,7 @@ class GroupeSearchAutocomplete(Select2QuerySetSequenceView):
 
 class GFKAutocompleteView(Select2QuerySetSequenceView):
     def get_queryset(self):
-        calc = len(self.q) > 1
+        calc = len(self.q) > 2
 
         if not self.request.user.is_authenticated or not calc:
             return QuerySetSequence(Article.objects.none(), )

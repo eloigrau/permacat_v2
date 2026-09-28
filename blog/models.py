@@ -17,6 +17,7 @@ from django.core.validators import MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 import uuid
 from bourseLibre.constantes import get_bx_icon
+from django.contrib import messages
 
 class Choix:
     statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ), #("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
@@ -145,20 +146,34 @@ class Choix:
                          "Type de projet":'categorie', "statut du projet":"statut",
                          'auteur':'auteur', 'titre':'titre'}
     logo_asso = {
-        "public": "nom_public.webp",
-        "pc": "nom_pc.png",
-        "scic": "nom_scic.png",
+        # "public": "nom_public.webp",
+        # "pc": "nom_pc.png",
+        # "scic": "nom_scic.png",
+        # "fer": "nom_fer.png",
+        # "rtg": "nom_rtg.png",
+        # "viure": "nom_viure.webp",
+        # "citealt": "nom_citealt.webp",
+        # "bzz2022": "nom_bzz2022.webp",
+        # "jp": "nom_jp.webp",
+        # "conf66":"nom_conf66.png",
+        # "ssa":"nom_ssa.png",
+        # "ducepaj":"logo_ducepaj.png",
+
+        "public": "Public",
+        "pc": "PermaCat",
+        "scic": "PermAgorA",
         "fer": "nom_fer.png",
         "rtg": "nom_rtg.png",
-        "viure": "nom_viure.webp",
+        "viure": "Viure",
         "citealt": "nom_citealt.webp",
-        "bzz2022": "nom_bzz2022.webp",
-        "jp": "nom_jp.webp",
+        "bzz2022": "Bzzz",
+        "jp": "Jardins",
         "conf66":"nom_conf66.png",
-        "ssa":"nom_ssa.png",
-        "ducepaj":"logo_ducepaj.png",
-        "irri66":"logo_irri66.png",
-        "jppb":"logo_jppb.png",
+        "ssa":"SSA66",
+        "ducepaj":"DuCepAJ",
+        "irri66":"Irri66",
+        "jppb":"JPPB",
+        "permolives":"COllives",
     }
 
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
@@ -201,10 +216,15 @@ class Choix:
         #return 'img/logos/nom_'+slug+'.png'
 
     def get_logo_nomgroupe_html(slug, taille=18):
-        try:
-            return "<img src='/static/" + Choix.get_logo_nomgroupe(slug) + "' height ='"+str(taille)+"px' alt='"+ str(slug)+"'/>"
-        except Exception as e:
-            return slug
+    #    try:
+     #       return "<img src='/static/" + Choix.get_logo_nomgroupe(slug) + "' height ='"+str(taille)+"px' alt='"+ str(slug)+"'/>"
+      #  except Exception as e:
+            try:
+                return "<span class='badge rounded-pill bg-label-primary' style='height ="+str(taille)+"px'>"+ Choix.logo_asso[slug]+"</span>"
+            except Exception as e:
+                return "<span class='badge rounded-pill bg-label-primary' style='height ="+str(taille)+"px'>"+ str(slug)+"</span>"
+
+      #      return slug
 
     def get_type_annonce_asso(asso):
         try:

@@ -3,6 +3,9 @@ from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from blog.models import Cercle, Projet
 from django.urls import reverse
+from decimal import Decimal
+from django.db import models
+
 
 class BudgetCercle(models.Model):
     titre = models.CharField(max_length=100, unique=True)
@@ -139,3 +142,119 @@ class Transaction(models.Model):
 
     def get_delete_url(self):
         return reverse('compta:supprimer_transaction', kwargs={'pk':self.pk})
+
+
+class DocumentType(models.TextChoices):
+    QUOTE = 'QUOTE', 'Devis'
+    INVOICE = 'INVOICE', 'Facture'
+
+class DocumentStatus(models.TextChoices):
+    DRAFT = 'DRAFT', 'Brouillon'
+    SENT = 'SENT', 'Envoyé'
+    ACCEPTED = 'ACCEPTED', 'Accepté'
+    REJECTED = 'REJECTED', 'Refusé'
+    PAID = 'PAID', 'Payé'
+    ARCHIVED = 'ARCHIVED', 'Archivé'
+
+# Sur ton modèle Facture (ou un modèle générique Document) :
+
+class Client(models.Model):
+    code_client = models.CharField(max_length=20, unique=True, verbose_name="Code Client")
+    name = models.CharField(max_length=255, verbose_name="Nom ou Raison sociale")
+    address = models.TextField(verbose_name="Adresse")
+    siret = models.CharField(max_length=14, blank=True, null=True, verbose_name="SIRET")
+
+    class Meta:
+        verbose_name = "Client"
+        verbose_name_plural = "Clients"
+
+    def __str__(self):
+        return f"[{self.code_client}] {self.name}"
+
+
+class Product(models.Model):
+    code_product = models.CharField(max_length=20, unique=True, verbose_name="Code Produit")
+    name = models.CharField(max_length=255, verbose_name="Nom du produit")
+    description = models.TextField(blank=True, verbose_name="Description")
+    unit_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.00'))],
+        verbose_name="Prix unitaire HT (€)"
+    )
+
+    class Meta:
+        verbose_name = "Produit"
+        verbose_name_plural = "Produits"
+
+    def __str__(self):
+        return f"[{self.code_product}] {self.name} - {self.unit_price} €"
+
+class Seller(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Nom / Raison sociale")
+    project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
+    siret = models.CharField(max_length=14, verbose_name="SIRET")
+    iban = models.CharField(max_length=34, verbose_name="IBAN")
+    bic = models.CharField(max_length=11, verbose_name="BIC")
+    is_default = models.BooleanField(default=False, verbose_name="Vendeur par défaut")
+
+    class Meta:
+        verbose_name = "Vendeur"
+        verbose_name_plural = "Vendeurs"
+
+    def __str__(self):
+        return f"{self.name} ({self.siret})"
+
+class Facture(models.Model):
+    number = models.CharField(max_length=50, unique=True, verbose_name="Numéro de facture")
+    client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="factures", verbose_name="Client")
+    created_at = models.DateField(auto_now_add=True, verbose_name="Date d'émission")
+
+    # Informations du Vendeur (mémorisées par facture)
+    # Association au modèle Seller
+    seller = models.ForeignKey(Seller, on_delete=models.PROTECT, related_name="documents", verbose_name="Vendeur")
+
+    document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.INVOICE)
+    status = models.CharField(max_length=10, choices=DocumentStatus.choices, default=DocumentStatus.DRAFT)
+    is_archived = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Facture"
+        verbose_name_plural = "Factures"
+
+    def __str__(self):
+        return f"Facture {self.number} - {self.client.name}"
+
+    @property
+    def total_ht(self):
+        return sum(item.total_ht for item in self.items.all())
+
+    @property
+    def total_ttc(self):
+        # Franchise en base de TVA : HT == TTC
+        return self.total_ht
+
+
+class FactureItem(models.Model):
+    facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Produit")
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)], verbose_name="Quantité")
+    unit_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Prix unitaire HT appliqué"
+    )
+
+    class Meta:
+        verbose_name = "Ligne de facture"
+        verbose_name_plural = "Lignes de facture"
+
+    def save(self, *args, **kwargs):
+        # Utiliser automatiquement le prix actuel du produit si non spécifié
+        if not self.unit_price:
+            self.unit_price = self.product.unit_price
+        super().save(*args, **kwargs)
+
+    @property
+    def total_ht(self):
+        return self.unit_price * self.quantity

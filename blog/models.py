@@ -446,7 +446,7 @@ class Article(models.Model):
         return self.get_logo_nomgroupes_partages_html_taille(14)
 
     def get_logo_nomgroupes_partages_html_taille(self, taille=14):
-        return [asso.slug.get_logo_nomgroupe_html(taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        return [asso.get_logo_nomgroupe_html(taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
     @property
     def getInfosHtml(self):

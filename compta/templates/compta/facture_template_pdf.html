@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture {{ facture.number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #333;
+            margin: 20px;
+        }
+        .header {
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        .seller-info, .client-info {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .client-info {
+            float: right;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .facture-title {
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .totals {
+            width: 40%;
+            float: right;
+            margin-bottom: 30px;
+        }
+        .legal-notice {
+            clear: both;
+            margin-top: 50px;
+            font-size: 11px;
+            font-style: italic;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="seller-info">
+            <strong>{{ facture.seller_name }}</strong><br>
+            {% if facture.seller_project %}Projet : {{ facture.seller_project }}<br>{% endif %}
+            SIRET : {{ facture.seller_siret }}<br>
+            IBAN : {{ facture.seller_iban }}<br>
+            BIC : {{ facture.seller_bic }}
+        </div>
+
+        <div class="client-info">
+            <strong>CLIENT</strong><br>
+            <strong>{{ facture.client.name }}</strong><br>
+            Code Client : {{ facture.client.code_client }}<br>
+            {{ facture.client.address|linebreaksbr }}<br>
+            {% if facture.client.siret %}SIRET : {{ facture.client.siret }}{% endif %}
+        </div>
+    </div>
+
+    <div class="facture-title">
+        <h2>FACTURE N° {{ facture.number }}</h2>
+        <p><strong>Date d'émission :</strong> {{ facture.created_at|date:"d/m/Y" }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Désignation</th>
+                <th class="text-right">Prix Unitaire HT</th>
+                <th class="text-right">Quantité</th>
+                <th class="text-right">Total HT</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in facture.items.all %}
+            <tr>
+                <td>{{ item.product.code_product }}</td>
+                <td>
+                    <strong>{{ item.product.name }}</strong><br>
+                    <small>{{ item.product.description }}</small>
+                </td>
+                <td class="text-right">{{ item.unit_price }} €</td>
+                <td class="text-right">{{ item.quantity }}</td>
+                <td class="text-right">{{ item.total_ht }} €</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <table>
+            <tr>
+                <td><strong>Total HT</strong></td>
+                <td class="text-right"><strong>{{ facture.total_ht }} €</strong></td>
+            </tr>
+            <tr>
+                <td>TVA (0%)</td>
+                <td class="text-right">0,00 €</td>
+            </tr>
+            <tr>
+                <td><strong>Total TTC à payer</strong></td>
+                <td class="text-right"><strong>{{ facture.total_ttc }} €</strong></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="legal-notice">
+        <p><strong>TVA non applicable, art. 293 B du CGI</strong></p>
+    </div>
+
+</body>
+</html>

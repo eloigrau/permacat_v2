@@ -1,0 +1,95 @@
+{% extends 'compta/factures_base.html' %}
+
+{% block title %}Document {{ document.number }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{% url 'compta:facture_list' %}" class="btn btn-outline-secondary"><i class="fa fas fa-arrow-left me-1"></i>Retour</a>
+            <div class="btn-group">
+                {% if document.document_type == 'QUOTE' %}
+                    <a href="{% url 'compta:quote_convert' document.pk %}" class="btn btn-success" onclick="return confirm('Convertir ce devis en facture ?');"><i class="fa fas fa-rotate me-1"></i>Convertir en Facture</a>
+                {% endif %}
+                <a href="{% url 'compta:document_update' document.pk %}" class="btn btn-primary"><i class="fa fas fa-pen me-1"></i>Éditer</a>
+                <a href="{% url 'compta:facture_pdf' document.pk %}" class="btn btn-danger" target="_blank"><i class="fa fas fa-file-pdf me-1"></i>Télécharger PDF</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm p-4">
+            <div class="row mb-4">
+                <div class="col-6">
+                    <h5 class="fw-bold text-dark">{{ document.seller_name }}</h5>
+                    {% if document.seller_project %}<p class="mb-1 text-muted">{{ document.seller_project }}</p>{% endif %}
+                    <p class="mb-0 small">SIRET : {{ document.seller_siret }}</p>
+                    <p class="mb-0 small">IBAN : {{ document.seller_iban }}</p>
+                    <p class="mb-0 small">BIC : {{ document.seller_bic }}</p>
+                </div>
+                <div class="col-6 text-end">
+                    <div class="p-3 bg-light rounded text-start d-inline-block border" style="min-width: 250px;">
+                        <h6 class="fw-bold mb-1">CLIENT</h6>
+                        <div class="fw-bold text-primary">{{ document.client.name }}</div>
+                        <div class="small text-muted">{{ document.client.address|linebreaksbr }}</div>
+                        {% if document.client.siret %}<div class="small">SIRET: {{ document.client.siret }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-top border-bottom py-2 my-3">
+                <h3 class="fw-bold text-uppercase mb-0">
+                    {{ document.get_document_type_display }} N° {{ document.number }}
+                </h3>
+                <small class="text-muted">Émis le : {{ document.created_at|date:"d/m/Y" }}</small>
+            </div>
+
+            <table class="table table-striped my-3">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Désignation</th>
+                        <th class="text-end">Prix U. HT</th>
+                        <th class="text-center">Qté</th>
+                        <th class="text-end">Total HT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in document.items.all %}
+                    <tr>
+                        <td><code>{{ item.product.code_product }}</code></td>
+                        <td>{{ item.product.name }}</td>
+                        <td class="text-end">{{ item.unit_price|floatformat:2 }} €</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-end">{{ item.total_ht|floatformat:2 }} €</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="row justify-content-end">
+                <div class="col-md-5">
+                    <table class="table table-bordered bg-light">
+                        <tr>
+                            <th>Total HT</th>
+                            <td class="text-end fw-bold">{{ document.total_ht|floatformat:2 }} €</td>
+                        </tr>
+                        <tr>
+                            <th>TVA (0%)</th>
+                            <td class="text-end">0,00 €</td>
+                        </tr>
+                        <tr class="table-primary">
+                            <th>Total TTC</th>
+                            <td class="text-end fw-bold fs-5">{{ document.total_ttc|floatformat:2 }} €</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-top text-center text-muted fs-7">
+                <em>TVA non applicable, art. 293 B du CGI</em>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'compta/factures_base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h4 class="mb-0 fw-bold text-primary">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Raison Sociale / Nom</label>
+                        {{ form.name }}
+                        {{ form.name.errors }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Projet / Marque Commerciale</label>
+                        {{ form.project }}
+                        {{ form.project.errors }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">SIRET</label>
+                        {{ form.siret }}
+                        {{ form.siret.errors }}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold">IBAN</label>
+                            {{ form.iban }}
+                            {{ form.iban.errors }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">BIC</label>
+                            {{ form.bic }}
+                            {{ form.bic.errors }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        {{ form.is_default }}
+                        <label class="form-check-label" for="{{ form.is_default.id_for_label }}">
+                            Définir comme vendeur par défaut
+                        </label>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'compta:seller_list' %}" class="btn btn-light border">Annuler</a>
+                        <button type="submit" class="btn btn-success px-4">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

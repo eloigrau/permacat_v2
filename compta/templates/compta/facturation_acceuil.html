@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Acceuil{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fa fas fa-file-facture text-primary me-2"></i>Factures</h2>
+    <a href="{% url 'compta:facture_list' %}" class="btn btn-primary">Factures</a>
+
+    <a href="{% url 'compta:client_list' %}" class="btn btn-primary">Clients</a>
+
+    <a href="{% url 'compta:product_list' %}" class="btn btn-primary">Produits</a>
+    {% if request.user.is_superuser %}
+     <a href="{% url 'compta:seller_list' %}" class="btn btn-primary">SU : Vendeurs</a>
+    {% endif %}
+</div>
+{% endblock %}

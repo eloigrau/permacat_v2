@@ -1,11 +1,15 @@
 from .models import BudgetCercle, BudgetProjet, Transaction
-from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm
+from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, SellerForm, ProductForm, ClientForm
 from django.contrib.auth.decorators import login_required
 from bourseLibre.utils import testIsMembreAsso_bool
 from blog.models import Projet
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.views.generic import UpdateView, DeleteView
+from .models import Client, Product, Facture, FactureItem, Seller
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 @login_required
 def tableau_de_bord(request):
@@ -109,3 +113,267 @@ def ajouter_budgetProjet(request):
 
     return render(request, 'compta/ajouter_budget.html', {'form': form})
 
+
+def generate_facture_pdf(request, facture_id):
+    facture = get_object_or_404(Facture, pk=facture_id)
+
+    context = {
+        'facture': facture,
+    }
+
+    # Rendu du template HTML
+    html_string = render_to_string('compta/facture_template_pdf.html', context)
+
+    # Conversion en PDF via WeasyPrint
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="Facture_{facture.number}.pdf"'
+    return response
+
+
+from .forms import FactureForm, FactureItemFormSet
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib import messages
+from django.db import transaction
+
+from .models import Facture, FactureItem, DocumentType
+
+# -------------------------------------------------------------------
+# LISTES & DÉTAILS (FACTURES & DEVIS)
+# -------------------------------------------------------------------
+
+class FactureListView(ListView):
+    model = Facture
+    template_name = 'compta/facture_list.html'
+    context_object_name = 'factures'
+
+    def get_queryset(self):
+        # Filtre les factures non archivées
+        return Facture.objects.filter(is_archived=False, document_type=DocumentType.INVOICE)
+
+
+class QuoteListView(ListView):
+    model = Facture
+    template_name = 'compta/quote_list.html'
+    context_object_name = 'quotes'
+
+    def get_queryset(self):
+        # Filtre les devis non archivés
+        return Facture.objects.filter(is_archived=False, document_type=DocumentType.QUOTE)
+
+
+class ArchivedDocumentListView(ListView):
+    model = Facture
+    template_name = 'compta/archived_list.html'
+    context_object_name = 'documents'
+
+    def get_queryset(self):
+        return Facture.objects.filter(is_archived=True)
+
+
+class DocumentDetailView(DetailView):
+    model = Facture
+    template_name = 'compta/document_detail.html'
+    context_object_name = 'document'
+
+
+# -------------------------------------------------------------------
+# CRÉATION & ÉDITION
+# -------------------------------------------------------------------
+
+def create_document(request, doc_type=DocumentType.INVOICE):
+    """Vue générique pour créer une facture ou un devis avec ses lignes."""
+    if request.method == 'POST':
+        form = FactureForm(request.POST)
+        formset = FactureItemFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                document = form.save(commit=False)
+                document.document_type = doc_type
+                document.save()
+
+                formset.instance = document
+                formset.save()
+
+            messages.success(request,
+                             f"{'Facture' if doc_type == DocumentType.INVOICE else 'Devis'} créé(e) avec succès.")
+            return redirect('compta:document_detail', pk=document.pk)
+    else:
+        form = FactureForm()
+        formset = FactureItemFormSet()
+
+    return render(request, 'compta/document_form.html', {
+        'form': form,
+        'formset': formset,
+        'doc_type': doc_type,
+        'title': f"Créer un {'devis' if doc_type == DocumentType.QUOTE else 'facture'}"
+    })
+
+
+def update_document(request, pk):
+    """Vue pour éditer un devis ou une facture existante."""
+    document = get_object_or_404(Facture, pk=pk)
+
+    if document.is_archived:
+        messages.error(request, "Un document archivé ne peut pas être modifié.")
+        return redirect('compta:document_detail', pk=document.pk)
+
+    if request.method == 'POST':
+        form = FactureForm(request.POST, instance=document)
+        formset = FactureItemFormSet(request.POST, instance=document)
+
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                form.save()
+                formset.save()
+            messages.success(request, "Document mis à jour avec succès.")
+            return redirect('compta:document_detail', pk=document.pk)
+    else:
+        form = FactureForm(instance=document)
+        formset = FactureItemFormSet(instance=document)
+
+    return render(request, 'compta/document_form.html', {
+        'form': form,
+        'formset': formset,
+        'document': document,
+        'title': f"Éditer le document {document.number}"
+    })
+
+
+# -------------------------------------------------------------------
+# ARCHIVAGE & ACTIONS
+# -------------------------------------------------------------------
+
+def archive_document(request, pk):
+    """Archive un document (soft delete)."""
+    document = get_object_or_404(Facture, pk=pk)
+    document.is_archived = True
+    document.save()
+    messages.info(request, f"Le document {document.number} a été archivé.")
+    return redirect('compta:archived_list')
+
+
+def unarchive_document(request, pk):
+    """Restaure un document archivé."""
+    document = get_object_or_404(Facture, pk=pk)
+    document.is_archived = False
+    document.save()
+    messages.success(request, f"Le document {document.number} a été restauré.")
+    return redirect('compta:document_detail', pk=document.pk)
+
+
+def convert_quote_to_facture(request, pk):
+    """Transforme un devis en facture."""
+    quote = get_object_or_404(Facture, pk=pk, document_type=DocumentType.QUOTE)
+
+    with transaction.atomic():
+        quote.document_type = DocumentType.INVOICE
+        quote.number = f"FAC-{quote.number}"  # Adapte la numérotation selon ton besoin
+        quote.save()
+
+    messages.success(request, f"Le devis a été converti en facture {quote.number}.")
+    return redirect('compta:document_detail', pk=quote.pk)
+
+
+# ==========================================
+# VUES GESTION VENDEURS (SELLER)
+# ==========================================
+
+class SellerListView(ListView):
+    model = Seller
+    template_name = 'compta/seller_list.html'
+    context_object_name = 'sellers'
+
+class SellerCreateView(CreateView):
+    model = Seller
+    form_class = SellerForm
+    template_name = 'compta/seller_form.html'
+    success_url = reverse_lazy('compta:seller_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Nouveau Vendeur"
+        return context
+
+class SellerUpdateView(UpdateView):
+    model = Seller
+    form_class = SellerForm
+    template_name = 'compta/seller_form.html'
+    success_url = reverse_lazy('compta:seller_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Modifier le Vendeur"
+        return context
+
+
+# ==========================================
+# VUES GESTION PRODUITS (PRODUCT)
+# ==========================================
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'compta/product_list.html'
+    context_object_name = 'products'
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'compta/product_form.html'
+    success_url = reverse_lazy('compta:product_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Nouveau Produit"
+        return context
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'compta/product_form.html'
+    success_url = reverse_lazy('compta:product_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Modifier le Produit"
+        return context
+
+
+# ==========================================
+# VUES GESTION CLIENTS (CLIENT)
+# ==========================================
+
+class ClientListView(ListView):
+    model = Client
+    template_name = 'compta/client_list.html'
+    context_object_name = 'clients'
+
+class ClientCreateView(CreateView):
+    model = Client
+    form_class = ClientForm
+    template_name = 'compta/client_form.html'
+    success_url = reverse_lazy('compta:client_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Nouveau Client"
+        return context
+
+class ClientUpdateView(UpdateView):
+    model = Client
+    form_class = ClientForm
+    template_name = 'compta/client_form.html'
+    success_url = reverse_lazy('compta:client_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Modifier le Client"
+        return context
+
+
+def acceuil(request):
+    return render(request, "compta/facturation_acceuil.html")

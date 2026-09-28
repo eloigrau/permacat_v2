@@ -56,7 +56,8 @@ class Calendar(LocaleTextCalendar):
                 pass
             try:
                 if event.get_logo_nomgroupe:
-                    ajout +=  event.get_logo_nomgroupe
+                    #ajout += "<img src='/static/" + event.get_logo_nomgroupe_html + "' height ='13px' alt='"+ event.get_logo_nomgroupe +"'/> "
+                    ajout += event.get_logo_nomgroupe_html
             except:
                 pass
             return ajout

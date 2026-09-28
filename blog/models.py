@@ -146,34 +146,29 @@ class Choix:
                          "Type de projet":'categorie', "statut du projet":"statut",
                          'auteur':'auteur', 'titre':'titre'}
     logo_asso = {
-        # "public": "nom_public.webp",
-        # "pc": "nom_pc.png",
-        # "scic": "nom_scic.png",
-        # "fer": "nom_fer.png",
-        # "rtg": "nom_rtg.png",
-        # "viure": "nom_viure.webp",
-        # "citealt": "nom_citealt.webp",
-        # "bzz2022": "nom_bzz2022.webp",
-        # "jp": "nom_jp.webp",
-        # "conf66":"nom_conf66.png",
-        # "ssa":"nom_ssa.png",
-        # "ducepaj":"logo_ducepaj.png",
-
-        "public": "Public",
-        "pc": "PermaCat",
-        "scic": "PermAgorA",
+        "public": "nom_public.webp",
+        "pc": "nom_pc.png",
+        "scic": "nom_scic.png",
         "fer": "nom_fer.png",
         "rtg": "nom_rtg.png",
-        "viure": "Viure",
+        "viure": "nom_viure.webp",
         "citealt": "nom_citealt.webp",
-        "bzz2022": "Bzzz",
-        "jp": "Jardins",
+        "bzz2022": "nom_bzz2022.webp",
+        "jp": "nom_jp.webp",
         "conf66":"nom_conf66.png",
+        "ssa":"nom_ssa.png",
+        "ducepaj":"logo_ducepaj.png",
+    }
+    nom_asso = {
+        #"pc": "PermaCat",
+        #"scic": "PermAgorA",
+        #"fer": "nom_fer.png",
+        #"rtg": "nom_rtg.png",
         "ssa":"SSA66",
         "ducepaj":"DuCepAJ",
         "irri66":"Irri66",
         "jppb":"JPPB",
-        "permolives":"COllives",
+        "permolives":"Olives",
     }
 
     type_marqueur = ('0','Vert (défaut)'), ('1','Bleu'), ('2','Rouge'), ('3','Jaune'),  ('4','Orange'),  ('5','Violet'), ('6','Or'), ('7','Noir'), ('8','Gris')
@@ -212,24 +207,24 @@ class Choix:
             return ""
 
     def get_logo_nomgroupe(slug):
-        #return 'img/logos/'+ Choix.logo_asso[slug]
-            try:
-                return "<span class='badge rounded-pill bg-label-primary' >"+ Choix.logo_asso[slug]+"</span>"
-            except Exception as e:
-                return "<span class='badge rounded-pill bg-label-primary' >"+ str(slug)+"</span>"
+        if slug in Choix.logo_asso:
+            return 'img/logos/'+ Choix.logo_asso[slug]
+        try:
+            return "<span class='badge rounded-pill bg-label-primary' >"+ Choix.nom_asso[slug]+"</span>"
+        except Exception as e:
+            return "<span class='badge rounded-pill bg-label-primary' >"+ str(slug)+"</span>"
 
         #return 'img/logos/nom_'+slug+'.png'
 
     def get_logo_nomgroupe_html(slug, taille=18):
-    #    try:
-     #       return "<img src='/static/" + Choix.get_logo_nomgroupe(slug) + "' height ='"+str(taille)+"px' alt='"+ str(slug)+"'/>"
-      #  except Exception as e:
-            try:
-                return "<span class='badge rounded-pill bg-label-primary' style='height ="+str(taille)+"px'>"+ Choix.logo_asso[slug]+"</span>"
-            except Exception as e:
-                return "<span class='badge rounded-pill bg-label-primary' style='height ="+str(taille)+"px'>"+ str(slug)+"</span>"
+        if slug in Choix.logo_asso:
+            return "<img src='/static/" + Choix.get_logo_nomgroupe(slug) + "' height ='"+str(taille)+"px' alt='"+ str(slug)+"'/>"
 
-      #      return slug
+        try:
+            return "<span class='badge rounded-pill bg-label-primary' style='height ="+str(taille)+"px'>"+ Choix.nom_asso[slug]+"</span>"
+        except Exception as e:
+            return "<span class='badge rounded-pill bg-label-primary' style='height ="+str(taille)+"px'>"+ str(slug)+"</span>"
+
 
     def get_type_annonce_asso(asso):
         try:
@@ -446,18 +441,15 @@ class Article(models.Model):
         return self.get_logo_nomgroupe_html_taille(20)
 
     def get_logo_nomgroupe_html_taille(self, taille=20):
-        try:
-            return Choix.get_logo_nomgroupe_html(self.asso.slug, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
-        except Exception as e:
-            action.send(self, verb='bug', description=str(e) + " ; " + self.titre)
-            return None
+        return Choix.get_logo_nomgroupe_html(self.asso.slug, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+
 
     @property
     def get_logo_nomgroupespartages_html(self):
         return self.get_logo_nomgroupes_partages_html_taille(14)
 
     def get_logo_nomgroupes_partages_html_taille(self, taille=14):
-        return [Choix.get_logo_nomgroupe_html(asso.slug, taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        return [asso.slug.get_logo_nomgroupe_html(taille) for asso in self.get_partagesAsso]#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
 
     @property
     def getInfosHtml(self):

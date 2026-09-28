@@ -66,11 +66,11 @@
 
     <div class="header">
         <div class="seller-info">
-            <strong>{{ facture.seller_name }}</strong><br>
-            {% if facture.seller_project %}Projet : {{ facture.seller_project }}<br>{% endif %}
-            SIRET : {{ facture.seller_siret }}<br>
-            IBAN : {{ facture.seller_iban }}<br>
-            BIC : {{ facture.seller_bic }}
+            <strong>{{ facture.seller.name }}</strong><br>
+            {% if facture.project %}Projet : {{ facture.project }}<br>{% endif %}
+            SIRET : {{ facture.seller.siret }}<br>
+            IBAN : {{ facture.seller.iban }}<br>
+            BIC : {{ facture.seller.bic }}
         </div>
 
         <div class="client-info">

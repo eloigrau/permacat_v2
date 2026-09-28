@@ -10,6 +10,7 @@ from .models import Client, Product, Facture, FactureItem, Seller
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
 
 @login_required
 def tableau_de_bord(request):
@@ -145,7 +146,7 @@ from .models import Facture, FactureItem, DocumentType
 # LISTES & DÉTAILS (FACTURES & DEVIS)
 # -------------------------------------------------------------------
 
-class FactureListView(ListView):
+class FactureListView(TestMembreAssoMixin, ListView):
     model = Facture
     template_name = 'compta/facture_list.html'
     context_object_name = 'factures'
@@ -155,7 +156,7 @@ class FactureListView(ListView):
         return Facture.objects.filter(is_archived=False, document_type=DocumentType.INVOICE)
 
 
-class QuoteListView(ListView):
+class QuoteListView(TestMembreAssoMixin, ListView):
     model = Facture
     template_name = 'compta/quote_list.html'
     context_object_name = 'quotes'
@@ -165,7 +166,7 @@ class QuoteListView(ListView):
         return Facture.objects.filter(is_archived=False, document_type=DocumentType.QUOTE)
 
 
-class ArchivedDocumentListView(ListView):
+class ArchivedDocumentListView(TestMembreAssoMixin, ListView):
     model = Facture
     template_name = 'compta/archived_list.html'
     context_object_name = 'documents'
@@ -174,7 +175,7 @@ class ArchivedDocumentListView(ListView):
         return Facture.objects.filter(is_archived=True)
 
 
-class DocumentDetailView(DetailView):
+class DocumentDetailView(TestMembreAssoMixin, DetailView):
     model = Facture
     template_name = 'compta/document_detail.html'
     context_object_name = 'document'
@@ -283,12 +284,12 @@ def convert_quote_to_facture(request, pk):
 # VUES GESTION VENDEURS (SELLER)
 # ==========================================
 
-class SellerListView(ListView):
+class SellerListView(TestMembreAssoMixin, ListView):
     model = Seller
     template_name = 'compta/seller_list.html'
     context_object_name = 'sellers'
 
-class SellerCreateView(CreateView):
+class SellerCreateView(TestMembreAssoMixin, CreateView):
     model = Seller
     form_class = SellerForm
     template_name = 'compta/seller_form.html'
@@ -299,7 +300,7 @@ class SellerCreateView(CreateView):
         context['title'] = "Nouveau Vendeur"
         return context
 
-class SellerUpdateView(UpdateView):
+class SellerUpdateView(TestMembreAssoMixin, UpdateView):
     model = Seller
     form_class = SellerForm
     template_name = 'compta/seller_form.html'
@@ -315,12 +316,12 @@ class SellerUpdateView(UpdateView):
 # VUES GESTION PRODUITS (PRODUCT)
 # ==========================================
 
-class ProductListView(ListView):
+class ProductListView(TestMembreAssoMixin, ListView):
     model = Product
     template_name = 'compta/product_list.html'
     context_object_name = 'products'
 
-class ProductCreateView(CreateView):
+class ProductCreateView(TestMembreAssoMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'compta/product_form.html'
@@ -331,7 +332,7 @@ class ProductCreateView(CreateView):
         context['title'] = "Nouveau Produit"
         return context
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(TestMembreAssoMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'compta/product_form.html'
@@ -347,12 +348,12 @@ class ProductUpdateView(UpdateView):
 # VUES GESTION CLIENTS (CLIENT)
 # ==========================================
 
-class ClientListView(ListView):
+class ClientListView(TestMembreAssoMixin, ListView):
     model = Client
     template_name = 'compta/client_list.html'
     context_object_name = 'clients'
 
-class ClientCreateView(CreateView):
+class ClientCreateView(TestMembreAssoMixin, CreateView):
     model = Client
     form_class = ClientForm
     template_name = 'compta/client_form.html'
@@ -363,7 +364,7 @@ class ClientCreateView(CreateView):
         context['title'] = "Nouveau Client"
         return context
 
-class ClientUpdateView(UpdateView):
+class ClientUpdateView(TestMembreAssoMixin, UpdateView):
     model = Client
     form_class = ClientForm
     template_name = 'compta/client_form.html'

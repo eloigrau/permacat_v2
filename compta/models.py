@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 from blog.models import Cercle, Projet
+from bourseLibre.models import Asso
 from django.urls import reverse
 from decimal import Decimal
 from django.db import models
@@ -163,6 +164,7 @@ class Client(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nom ou Raison sociale")
     address = models.TextField(verbose_name="Adresse")
     siret = models.CharField(max_length=14, blank=True, null=True, verbose_name="SIRET")
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "Client"
@@ -182,6 +184,7 @@ class Product(models.Model):
         validators=[MinValueValidator(Decimal('0.00'))],
         verbose_name="Prix unitaire HT (€)"
     )
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "Produit"
@@ -192,11 +195,11 @@ class Product(models.Model):
 
 class Seller(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nom / Raison sociale")
-    project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
     siret = models.CharField(max_length=14, verbose_name="SIRET")
     iban = models.CharField(max_length=34, verbose_name="IBAN")
     bic = models.CharField(max_length=11, verbose_name="BIC")
     is_default = models.BooleanField(default=False, verbose_name="Vendeur par défaut")
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "Vendeur"
@@ -213,10 +216,13 @@ class Facture(models.Model):
     # Informations du Vendeur (mémorisées par facture)
     # Association au modèle Seller
     seller = models.ForeignKey(Seller, on_delete=models.PROTECT, related_name="documents", verbose_name="Vendeur")
+    project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
 
     document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.INVOICE)
     status = models.CharField(max_length=10, choices=DocumentStatus.choices, default=DocumentStatus.DRAFT)
     is_archived = models.BooleanField(default=False)
+
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = "Facture"

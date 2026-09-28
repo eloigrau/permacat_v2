@@ -89,7 +89,7 @@ FactureItemFormSet = inlineformset_factory(
 class SellerForm(forms.ModelForm):
     class Meta:
         model = Seller
-        fields = ['name', 'project', 'siret', 'iban', 'bic', 'is_default']
+        fields = ['name', 'siret', 'iban', 'bic', 'is_default']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Mon Entreprise SAS'}),
             'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Service Client'}),
@@ -120,27 +120,26 @@ class FactureForm(forms.ModelForm):
 
     class Meta:
         model = Facture
-        fields = ['number', 'client', 'seller']
+        fields = ['number', 'client', 'project', ]
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Laissez vide pour générer automatiquement'
             }),
             'client': forms.Select(attrs={'class': 'form-select'}),
-            'seller': forms.Select(attrs={'class': 'form-select'}),
+            #'seller': forms.Select(attrs={'class': 'form-select'}),
         }
 
 FactureItemFormSet = inlineformset_factory(
     Facture,
     FactureItem,
-    fields=['product', 'quantity', 'unit_price'],
+    fields=['product', 'quantity'],
     extra=1,
     can_delete=True,
     widgets={
         'product': forms.Select(attrs={'class': 'form-select'}),
         'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
-        'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Auto'}),
-    }
+     }
 )
 
 

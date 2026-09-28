@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 {% load app_filters %}
 
+{% block submenu %}
+
+<div class="sticky-top">
+    <nav class="navbar {%if request.user.css_dark %}navbar-dark bg-primary {% else %} navbar-light bg-light bg-navbar-theme {% endif %} navbar-expand-xl shadow-petit">
+         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="icon-base bx bx-menu icon-md"></i></button>
+        <div class="navbar-collapse collapse mx-auto" id="navbar2">
+            <ul class="navbar-nav mx-auto subnavbar">
+                <li class="nav-item nav-notif {% if 'compta/budget' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:tableau_de_bord'  %}">Budgets</a></li>
+                <li class="nav-item nav-notif {% if 'compta/facturation/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:facture_list'  %}"> Factures </a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+{% endblock %}
 
 {% block subtitle %}
 <h3>Compta {{ request.session.asso_slug | getNomGroupeFromSlug }}</h3>

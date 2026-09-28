@@ -20,11 +20,11 @@
         <div class="card shadow-sm p-4">
             <div class="row mb-4">
                 <div class="col-6">
-                    <h5 class="fw-bold text-dark">{{ document.seller_name }}</h5>
-                    {% if document.seller_project %}<p class="mb-1 text-muted">{{ document.seller_project }}</p>{% endif %}
-                    <p class="mb-0 small">SIRET : {{ document.seller_siret }}</p>
-                    <p class="mb-0 small">IBAN : {{ document.seller_iban }}</p>
-                    <p class="mb-0 small">BIC : {{ document.seller_bic }}</p>
+                    <h5 class="fw-bold text-dark">{{ document.seller.name }}</h5>
+                    {% if document.project %}<p class="mb-1 text-muted">{{ document.project }}</p>{% endif %}
+                    <p class="mb-0 small">SIRET : {{ document.seller.siret }}</p>
+                    <p class="mb-0 small">IBAN : {{ document.seller.iban }}</p>
+                    <p class="mb-0 small">BIC : {{ document.seller.bic }}</p>
                 </div>
                 <div class="col-6 text-end">
                     <div class="p-3 bg-light rounded text-start d-inline-block border" style="min-width: 250px;">

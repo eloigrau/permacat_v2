@@ -21,10 +21,12 @@
                             {{ form.number }}
                             <div class="form-text">Généré automatiquement si vide.</div>
                         </div>
+                        {% comment %}
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Vendeur</label>
                             {{ form.seller }}
                         </div>
+                        {% endcomment %}
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Client</label>
                             {{ form.client }}
@@ -40,7 +42,6 @@
                             <tr>
                                 <th style="width: 45%;">Produit</th>
                                 <th style="width: 20%;">Quantité</th>
-                                <th style="width: 25%;">Prix Unitaire HT (€)</th>
                                 <th style="width: 10%;" class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -50,7 +51,6 @@
                                 {{ item_form.id }}
                                 <td>{{ item_form.product }}</td>
                                 <td>{{ item_form.quantity }}</td>
-                                <td>{{ item_form.unit_price }}</td>
                                 <td class="text-center">
                                     {% if formset.can_delete %}
                                         <div class="d-none">{{ item_form.DELETE }}</div>

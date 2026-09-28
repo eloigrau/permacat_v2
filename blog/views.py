@@ -136,6 +136,7 @@ def ajouterArticle(request):
         form.save_m2m()
         suivre_article(request, article.slug)
         messages.success(request, "L'article a bien été publié, merci de votre contribution !")
+
         action.send(request.user,
                     action_object=article,
                     url=article.get_absolute_url(),

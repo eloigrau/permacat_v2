@@ -212,7 +212,12 @@ class Choix:
             return ""
 
     def get_logo_nomgroupe(slug):
-        return 'img/logos/'+ Choix.logo_asso[slug]
+        #return 'img/logos/'+ Choix.logo_asso[slug]
+            try:
+                return "<span class='badge rounded-pill bg-label-primary' >"+ Choix.logo_asso[slug]+"</span>"
+            except Exception as e:
+                return "<span class='badge rounded-pill bg-label-primary' >"+ str(slug)+"</span>"
+
         #return 'img/logos/nom_'+slug+'.png'
 
     def get_logo_nomgroupe_html(slug, taille=18):

@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('bourseLibre', '0141_profil_adherent_irri66_profil_adherent_jppb_and_more'),
-        ('compta', '0011_assoinfo_facture_client_asso_product_asso_recufiscal_and_more'),
+        ('compta', '0011_assoinfo_remove_facture_seller_bic_and_more'),
     ]
 
     operations = [

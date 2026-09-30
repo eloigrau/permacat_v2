@@ -30,24 +30,24 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Vendeurs',
             },
         ),
-        migrations.CreateModel(
-            name='Facture',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.CharField(max_length=50, unique=True, verbose_name='Numéro de facture')),
-                ('created_at', models.DateField(auto_now_add=True, verbose_name="Date d'émission")),
-                ('project', models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale')),
-                ('document_type', models.CharField(choices=[('QUOTE', 'Devis'), ('INVOICE', 'Facture')], default='INVOICE', max_length=10)),
-                ('status', models.CharField(choices=[('DRAFT', 'Brouillon'), ('SENT', 'Envoyé'), ('ACCEPTED', 'Accepté'), ('REJECTED', 'Refusé'), ('PAID', 'Payé'), ('ARCHIVED', 'Archivé')], default='DRAFT', max_length=10)),
-                ('is_archived', models.BooleanField(default=False)),
-                ('asso', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bourseLibre.asso')),
-                ('asso_info', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='documents', to='compta.assoinfo', verbose_name='AssoInfo')),
-            ],
-            options={
-                'verbose_name': 'Facture',
-                'verbose_name_plural': 'Factures',
-            },
-        ),
+        # migrations.CreateModel(
+        #     name='Facture',
+        #     fields=[
+        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('number', models.CharField(max_length=50, unique=True, verbose_name='Numéro de facture')),
+        #         ('created_at', models.DateField(auto_now_add=True, verbose_name="Date d'émission")),
+        #         ('project', models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale')),
+        #         ('document_type', models.CharField(choices=[('QUOTE', 'Devis'), ('INVOICE', 'Facture')], default='INVOICE', max_length=10)),
+        #         ('status', models.CharField(choices=[('DRAFT', 'Brouillon'), ('SENT', 'Envoyé'), ('ACCEPTED', 'Accepté'), ('REJECTED', 'Refusé'), ('PAID', 'Payé'), ('ARCHIVED', 'Archivé')], default='DRAFT', max_length=10)),
+        #         ('is_archived', models.BooleanField(default=False)),
+        #         ('asso', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bourseLibre.asso')),
+        #         ('asso_info', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='documents', to='compta.assoinfo', verbose_name='AssoInfo')),
+        #     ],
+        #     options={
+        #         'verbose_name': 'Facture',
+        #         'verbose_name_plural': 'Factures',
+        #     },
+        # ),
         migrations.AddField(
             model_name='client',
             name='asso',

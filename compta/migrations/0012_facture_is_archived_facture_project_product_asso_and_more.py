@@ -12,11 +12,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='facture',
-            name='is_archived',
-            field=models.BooleanField(default=False),
-        ),
+        # migrations.AddField(
+        #     model_name='facture',
+        #     name='is_archived',
+        #     field=models.BooleanField(default=False),
+        # ),
         migrations.AddField(
             model_name='facture',
             name='project',

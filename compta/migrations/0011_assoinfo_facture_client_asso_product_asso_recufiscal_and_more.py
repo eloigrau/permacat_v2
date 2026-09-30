@@ -30,9 +30,6 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Vendeurs',
             },
         ),
-        migrations.DeleteModel(
-            name='Facture',
-        ),
         # migrations.CreateModel(
         #     name='Facture',
         #     fields=[
@@ -89,9 +86,6 @@ class Migration(migrations.Migration):
         #         'verbose_name_plural': 'Lignes de facture',
         #     },
         # ),
-        migrations.DeleteModel(
-            name='FactureItem',
-        ),
         migrations.AddField(
             model_name='facture',
             name='client',

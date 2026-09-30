@@ -30,6 +30,9 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Vendeurs',
             },
         ),
+        migrations.DeleteModel(
+            name='Facture',
+        ),
         # migrations.CreateModel(
         #     name='Facture',
         #     fields=[
@@ -72,19 +75,22 @@ class Migration(migrations.Migration):
                 ('asso_info', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='compta.assoinfo')),
             ],
         ),
-        migrations.CreateModel(
+        # migrations.CreateModel(
+        #     name='FactureItem',
+        #     fields=[
+        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('quantity', models.PositiveIntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)], verbose_name='Quantité')),
+        #         ('unit_price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Prix unitaire HT appliqué')),
+        #         ('facture', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='compta.facture')),
+        #         ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='compta.product', verbose_name='Produit')),
+        #     ],
+        #     options={
+        #         'verbose_name': 'Ligne de facture',
+        #         'verbose_name_plural': 'Lignes de facture',
+        #     },
+        # ),
+        migrations.DeleteModel(
             name='FactureItem',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)], verbose_name='Quantité')),
-                ('unit_price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Prix unitaire HT appliqué')),
-                ('facture', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='compta.facture')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='compta.product', verbose_name='Produit')),
-            ],
-            options={
-                'verbose_name': 'Ligne de facture',
-                'verbose_name_plural': 'Lignes de facture',
-            },
         ),
         migrations.AddField(
             model_name='facture',

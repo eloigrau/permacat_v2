@@ -22,11 +22,11 @@ class Migration(migrations.Migration):
         #     name='project',
         #     field=models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale'),
         # ),
-        migrations.AddField(
-            model_name='product',
-            name='asso',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bourseLibre.asso'),
-        ),
+        # migrations.AddField(
+        #     model_name='product',
+        #     name='asso',
+        #     field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bourseLibre.asso'),
+        # ),
         migrations.AddField(
             model_name='recufiscal',
             name='asso',

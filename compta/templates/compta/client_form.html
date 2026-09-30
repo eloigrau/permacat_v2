@@ -14,12 +14,6 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Code Client</label>
-                        {{ form.code_client }}
-                        {{ form.code_client.errors }}
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label fw-semibold">Nom / Raison Sociale</label>
                         {{ form.name }}
                         {{ form.name.errors }}

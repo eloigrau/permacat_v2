@@ -123,14 +123,14 @@ class FactureForm(forms.ModelForm):
 
     class Meta:
         model = Facture
-        fields = ['number', 'client', 'project', ]
+        fields = ['number', 'client', 'project', 'asso_info']
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Laissez vide pour générer automatiquement'
             }),
             'client': forms.Select(attrs={'class': 'form-select'}),
-            #'asso_info': forms.Select(attrs={'class': 'form-select'}),
+            'asso_info': forms.Select(attrs={'class': 'form-select'}),
         }
 
 FactureItemFormSet = inlineformset_factory(

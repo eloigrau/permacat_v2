@@ -161,7 +161,7 @@ class DocumentStatus(models.TextChoices):
 # Sur ton modèle Facture (ou un modèle générique Document) :
 
 class Client(models.Model):
-    code_client = models.CharField(max_length=20, unique=True, verbose_name="Code Client")
+    code_client = models.CharField(max_length=20, unique=True, verbose_name="Code Client", blank=True)
     name = models.CharField(max_length=255, verbose_name="Nom ou Raison sociale")
     address = models.TextField(verbose_name="Adresse")
     siret = models.CharField(max_length=14, blank=True, null=True, verbose_name="SIRET")
@@ -174,6 +174,29 @@ class Client(models.Model):
     def __str__(self):
         return f"[{self.code_client}] {self.name}"
 
+
+    def save(self, *args, **kwargs):
+        if not self.code_client:
+            annee_en_cours = timezone.now().year
+            prefixe = f"CLI-{annee_en_cours}-"
+
+            # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
+            with transaction.atomic():
+                derniere = Client.objects.select_for_update().filter(
+                    code_client__startswith=prefixe
+                ).order_by('id').last()
+
+                if derniere:
+                    # Extraction du dernier numéro séquentiel
+                    dernier_numero = int(derniere.code_client.split('-')[-1])
+                    nouveau_numero = dernier_numero + 1
+                else:
+                    nouveau_numero = 1
+
+                # Formatage du numéro sur 5 chiffres (ex: 00001)
+                self.code_client = f"{prefixe}{nouveau_numero:05d}"
+
+        super().save(*args, **kwargs)
 
 class Product(models.Model):
     code_product = models.CharField(max_length=20, unique=True, verbose_name="Code Produit")
@@ -197,7 +220,7 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.code_product:
             annee_en_cours = timezone.now().year
-            prefixe = f"RF-{annee_en_cours}-"
+            prefixe = f"P-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
@@ -207,13 +230,13 @@ class Product(models.Model):
 
                 if derniere:
                     # Extraction du dernier numéro séquentiel
-                    dernier_numero = int(derniere.number.split('-')[-1])
+                    dernier_numero = int(derniere.code_product.split('-')[-1])
                     nouveau_numero = dernier_numero + 1
                 else:
                     nouveau_numero = 1
 
                 # Formatage du numéro sur 5 chiffres (ex: 00001)
-                self.numero_recu = f"{prefixe}{nouveau_numero:05d}"
+                self.code_product = f"{prefixe}{nouveau_numero:05d}"
 
         super().save(*args, **kwargs)
 
@@ -269,7 +292,7 @@ class Facture(models.Model):
     def save(self, *args, **kwargs):
         if not self.number:
             annee_en_cours = timezone.now().year
-            prefixe = f"RF-{annee_en_cours}-"
+            prefixe = f"FA-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
@@ -285,7 +308,7 @@ class Facture(models.Model):
                     nouveau_numero = 1
 
                 # Formatage du numéro sur 5 chiffres (ex: 00001)
-                self.numero_recu = f"{prefixe}{nouveau_numero:05d}"
+                self.number = f"{prefixe}{nouveau_numero:05d}"
 
         super().save(*args, **kwargs)
 

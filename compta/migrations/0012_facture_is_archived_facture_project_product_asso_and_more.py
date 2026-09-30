@@ -12,21 +12,21 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.AddField(
-        #     model_name='facture',
-        #     name='is_archived',
-        #     field=models.BooleanField(default=False),
-        # ),
-        # migrations.AddField(
-        #     model_name='facture',
-        #     name='project',
-        #     field=models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale'),
-        # ),
-        # migrations.AddField(
-        #     model_name='product',
-        #     name='asso',
-        #     field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bourseLibre.asso'),
-        # ),
+        migrations.AddField(
+            model_name='facture',
+            name='is_archived',
+            field=models.BooleanField(default=False),
+        ),
+        migrations.AddField(
+            model_name='facture',
+            name='project',
+            field=models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale'),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='asso',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='bourseLibre.asso'),
+        ),
         migrations.AddField(
             model_name='recufiscal',
             name='asso',

@@ -16,12 +16,12 @@
                     <!-- Section Vendeur, Client & Numéro -->
                     <h5 class="border-bottom pb-2 mb-3 text-secondary">Informations Générales</h5>
                     <div class="row g-3 mb-4">
+                        {% comment %}
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Numéro de document</label>
                             {{ form.number }}
                             <div class="form-text">Généré automatiquement si vide.</div>
                         </div>
-                        {% comment %}
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Vendeur</label>
                             {{ form.asso_info }}
@@ -83,7 +83,7 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
+{% block scriptblock %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tableBody = document.getElementById('items-body');

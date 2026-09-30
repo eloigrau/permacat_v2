@@ -16,6 +16,7 @@ from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distanc
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 from datetime import datetime
 from django.contrib.auth.mixins import UserPassesTestMixin
+from blog.models import Projet
 import itertools
 import csv
 from django.http import HttpResponse
@@ -60,6 +61,7 @@ def getRecapitulatif_km(request, reunions, asso, export=False):
     lignes = []
     lignes.append(["date"] + [r.start_time for r in reunions] + ["", ])
     lignes.append(["Catégorie"] + [r.get_categorie_display() for r in reunions] + ["", ])
+    lignes.append(["Projet"] + [r.get_projet_display() for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
         if sum(distances) > 0:
@@ -81,6 +83,7 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, 
     lignes = []
     lignes.append(["date"] + [r.start_time for r in reunions] + ["", ])
     lignes.append(["Catégorie"] + [r.get_categorie_display() for r in reunions] + ["Total", ])
+    lignes.append(["Projet"] + [r.get_projet_display() for r in reunions] + ["", ])
     distancesTotales = [r.getDistanceTotale for r in reunions]
     prixTotal = sum(distancesTotales) * float(tarifKilometrique)
     if prixTotal < float(prixMax):
@@ -230,6 +233,9 @@ def dupliquerReunion(request, reunion_slug):
     if form.is_valid():
         reu = form.save(request.user, reunion, )
         reu.save()
+        for p in reunion.participants.all():
+            reu.participants.add(p)
+        reu.recalculerDistance()
         return redirect(reverse('defraiement:lireReunion', kwargs={"slug": reu.slug}))
 
     return render(request, 'defraiement/ajouterReunion.html', { "form": form})
@@ -771,3 +777,18 @@ class ListeNdf_asso(UserPassesTestMixin, ListView):
         context['annees'] = [int(datetime.now().year) - n for n in range(5)][::-1]
 
         return context
+
+
+
+@login_required
+def ajax_projets(request):
+    asso_id = request.GET.get('asso')
+    projets = Projet.objects.filter(asso__id=asso_id)
+    return render(request, 'defraiement/projets_dropdown_list_options.html',
+                  {'projets': projets})
+
+@login_required
+def ajax_categories(request):
+    asso_id = request.GET.get('asso')
+    return render(request, 'defraiement/categories_dropdown_list_options.html',
+                  {'categories': get_typereunion(Asso.objects.get(id=asso_id).slug)})

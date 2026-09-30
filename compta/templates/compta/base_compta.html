@@ -11,6 +11,7 @@
             <ul class="navbar-nav mx-auto subnavbar">
                 <li class="nav-item nav-notif {% if 'compta/budget' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:tableau_de_bord'  %}">Budgets</a></li>
                 <li class="nav-item nav-notif {% if 'compta/facturation/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:facture_list'  %}"> Factures </a></li>
+                <li class="nav-item nav-notif {% if 'compta/recus/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:recu_list'  %}"> Reçus Fiscaux </a></li>
             </ul>
         </div>
     </nav>
@@ -18,7 +19,7 @@
 {% endblock %}
 
 {% block subtitle %}
-<h3>Compta {{ request.session.asso_slug | getNomGroupeFromSlug }}</h3>
+<h3>Compta du Groupe {{ request.session.asso_slug | getNomGroupeFromSlug }}</h3>
 {% endblock %}
 
 {% block content %}

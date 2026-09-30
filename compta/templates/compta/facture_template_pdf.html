@@ -14,7 +14,7 @@
             width: 100%;
             margin-bottom: 40px;
         }
-        .seller-info, .client-info {
+        .asso_info-info, .client-info {
             width: 48%;
             display: inline-block;
             vertical-align: top;
@@ -65,12 +65,12 @@
 <body>
 
     <div class="header">
-        <div class="seller-info">
-            <strong>{{ facture.seller.name }}</strong><br>
+        <div class="asso_info-info">
+            <strong>{{ facture.asso_info.name }}</strong><br>
             {% if facture.project %}Projet : {{ facture.project }}<br>{% endif %}
-            SIRET : {{ facture.seller.siret }}<br>
-            IBAN : {{ facture.seller.iban }}<br>
-            BIC : {{ facture.seller.bic }}
+            SIRET : {{ facture.asso_info.siret }}<br>
+            IBAN : {{ facture.asso_info.iban }}<br>
+            BIC : {{ facture.asso_info.bic }}
         </div>
 
         <div class="client-info">

@@ -11,7 +11,7 @@
 
     <a href="{% url 'compta:product_list' %}" class="btn btn-primary">Produits</a>
     {% if request.user.is_superuser %}
-     <a href="{% url 'compta:seller_list' %}" class="btn btn-primary">SU : Vendeurs</a>
+     <a href="{% url 'compta:asso_info_list' %}" class="btn btn-primary">SU : Vendeurs</a>
     {% endif %}
 </div>
 {% endblock %}

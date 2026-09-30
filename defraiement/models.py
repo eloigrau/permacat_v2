@@ -1,6 +1,6 @@
 from django.db import models
 from bourseLibre.models import Profil, Adresse
-from blog.models import Article
+from blog.models import Article, Projet
 import simplejson
 from django.urls import reverse
 from django.utils import timezone
@@ -139,6 +139,7 @@ class Reunion(models.Model):
     categorie = models.CharField(max_length=30,
                                  choices=(Choix.type_reunion),
                                  default='0', verbose_name=_("Dossier"))
+    projet = models.ForeignKey(Projet, on_delete=models.SET_NULL, blank=True, null=True)
     titre = models.CharField(verbose_name=_("Titre de la rencontre"), max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
     description = models.TextField(null=True, blank=True, verbose_name=_("Description / compte rendu"))

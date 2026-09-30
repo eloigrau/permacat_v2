@@ -1,0 +1,22 @@
+{% extends 'compta/base_compta.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Confirmation de suppression</h4>
+            </div>
+            <div class="card-body text-center">
+                <p class="fs-5">Êtes-vous sûr de vouloir supprimer définitivement le reçu fiscal n° <strong>{{ object.numero_recu }}</strong> ?</p>
+                <p class="text-muted">Donateur : {{ object.prenom_donateur }} {{ object.nom_donateur }} ({{ object.montant }} €)</p>
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <a href="{% url 'compta:recu_list' %}" class="btn btn-secondary me-2">Annuler</a>
+                    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

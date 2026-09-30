@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import BudgetCercle, BudgetProjet, Transaction
-from .models import Client, Product, Facture, FactureItem, Seller
+from .models import Client, Product, Facture, FactureItem, AssoInfo, RecuFiscal
 
 @admin.register(BudgetProjet)
 class BudgetProjet_Admin(admin.ModelAdmin):
@@ -35,9 +35,9 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('code_product', 'name', 'unit_price')
     search_fields = ('code_product', 'name')
 
-@admin.register(Seller)
-class SellerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'siret', 'is_default')
+@admin.register(AssoInfo)
+class AssoInfoAdmin(admin.ModelAdmin):
+    list_display = ('name', 'siret', 'bic', 'iban', 'adresse', 'is_default')
     list_editable = ('is_default',)
 
 @admin.register(Facture)
@@ -49,3 +49,9 @@ class FactureAdmin(admin.ModelAdmin):
     def get_total_ht(self, obj):
         return f"{obj.total_ht:.2f} €"
     get_total_ht.short_description = "Total HT / TTC"
+
+
+@admin.register(RecuFiscal)
+class RecuAdmin(admin.ModelAdmin):
+    list_display = ('asso_info', 'nom_donateur', 'montant')
+    search_fields = ('montant', 'nom_donateur')

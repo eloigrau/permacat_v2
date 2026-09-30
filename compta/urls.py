@@ -43,9 +43,9 @@ urlpatterns = [
     path('devis/<int:pk>/convertir/', views.convert_quote_to_facture, name='quote_convert'),
 
     # Routes Vendeurs
-    path('facturation/sellers/', views.SellerListView.as_view(), name='seller_list'),
-    path('facturation/sellers/add/', views.SellerCreateView.as_view(), name='seller_create'),
-    path('facturation/sellers/<int:pk>/edit/', views.SellerUpdateView.as_view(), name='seller_update'),
+    path('facturation/asso_infos/', views.AssoInfoListView.as_view(), name='asso_info_list'),
+    path('facturation/asso_infos/add/', views.AssoInfoCreateView.as_view(), name='asso_info_create'),
+    path('facturation/asso_infos/<int:pk>/edit/', views.AssoInfoUpdateView.as_view(), name='asso_info_update'),
 
     # Routes Produits
     path('facturation/products/', views.ProductListView.as_view(), name='product_list'),
@@ -55,4 +55,11 @@ urlpatterns = [
     path('facturation/clients/', views.ClientListView.as_view(), name='client_list'),
     path('facturation/clients/add/', views.ClientCreateView.as_view(), name='client_create'),
     path('facturation/clients/<int:pk>/edit/', views.ClientUpdateView.as_view(), name='client_update'),
+
+    path('recus/', views.RecuListView.as_view(), name='recu_list'),
+    path('recu/nouveau/', views.RecuCreateView.as_view(), name='recu_create'),
+    path('recu/<int:pk>/', views.RecuDetailView.as_view(), name='recu_detail'),
+    path('recu/<int:pk>/modifier/', views.RecuUpdateView.as_view(), name='recu_update'),
+    path('recu/<int:pk>/supprimer/', views.RecuDeleteView.as_view(), name='recu_delete'),
+    path('recu/<int:pk>/pdf/', views.telecharger_recu_pdf, name='recu_pdf'),
 ]

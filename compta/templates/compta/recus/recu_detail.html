@@ -1,0 +1,49 @@
+{% extends 'compta/base_compta.html' %}
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'compta:recu_list' %}" class="btn btn-outline-secondary btn-sm">&larr; Retour à la liste</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Reçu fiscal n° {{ recu.numero_recu }}</h4>
+        <a href="{% url 'compta:recu_pdf' recu.pk %}" class="btn btn-light btn-sm">Télécharger en PDF</a>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5 class="border-bottom pb-2 text-muted">Association</h5>
+                <p><strong>Raison sociale :</strong> {{ recu.asso_info.name }}</p>
+                <p><strong>SIRET :</strong> {{ recu.asso_info.siret }}</p>
+                <p><strong>Adresse :</strong><br>{{ recu.asso_info.adresse|linebreaksbr }}</p>
+            </div>
+            <div class="col-md-6">
+                <h5 class="border-bottom pb-2 text-muted">Donateur</h5>
+                <p><strong>Nom :</strong> {{ recu.prenom_donateur }} {{ recu.nom_donateur }}</p>
+                <p><strong>Adresse :</strong><br>{{ recu.adresse_donateur|linebreaksbr }}</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="border-bottom pb-2 text-muted">Détails du paiement</h5>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <p><strong>Type de versement :</strong> {{ recu.get_type_versement_display }}</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p><strong>Date :</strong> {{ recu.date|date:"d/m/Y" }}</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p><strong>Montant total :</strong> <span class="fs-5 text-success fw-bold">{{ recu.montant }} €</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer text-end">
+        <a href="{% url 'compta:recu_update' recu.pk %}" class="btn btn-warning">Modifier</a>
+        <a href="{% url 'compta:recu_delete' recu.pk %}" class="btn btn-danger">Supprimer</a>
+    </div>
+</div>
+{% endblock %}

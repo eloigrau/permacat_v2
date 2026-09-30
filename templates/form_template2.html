@@ -32,6 +32,7 @@
   {{field}} {{field.label}}
 {% else %}
     {%if field.errors %}
+        {{field.label_tag}}{% if field.field.required %} *{% endif %}
         {% render_field field class="form-control is-invalid" placeholder=field.label %}
     {% else %}
         {% if not entete %}

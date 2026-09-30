@@ -3,6 +3,7 @@ from django import forms
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso, Adresse
+from blog.models import Projet
 from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais, get_typereunion
 from bourseLibre.utils import slugify_pcat
 from adherents.models import Adherent
@@ -15,7 +16,7 @@ class ReunionForm(forms.ModelForm):
 
     class Meta:
         model = Reunion
-        fields = ['categorie', 'titre', 'description', 'start_time']
+        fields = ['categorie', 'projet', 'titre', 'description', 'start_time']
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time':  forms.DateInput(
@@ -28,6 +29,15 @@ class ReunionForm(forms.ModelForm):
     def __init__(self, asso_slug, *args, **kwargs):
         super(ReunionForm, self).__init__(*args, **kwargs)
         self.fields['categorie'].choices = get_typereunion(asso_slug)
+
+        #self.fields["projet"].choices = [('', "(Choisir d'abord un Dossier ci-dessus)"), ] #+ list(Choix.get_type_annonce_asso(""))
+
+        projets = Projet.objects.filter(asso__slug = asso_slug)
+        self.fields["projet"].choices = [(p.pk, p.titre) for p in projets]
+
+        #elif self.instance.pk:
+        #    self.fields["projet"].choices = ("0", "Global")
+
 
     def save(self, userProfile):
         instance = super(ReunionForm, self).save(commit=False)
@@ -53,7 +63,7 @@ class ReunionDupliquerForm(forms.ModelForm):
 
     class Meta:
         model = Reunion
-        fields = ['categorie', 'titre', 'description', 'start_time']
+        fields = ['categorie', 'projet', 'titre', 'description', 'start_time']
         widgets = {
             'contenu': SummernoteWidget(),
              'start_time':  forms.DateInput(),
@@ -63,6 +73,7 @@ class ReunionDupliquerForm(forms.ModelForm):
         super(ReunionDupliquerForm, self).__init__(*args, **kwargs)
         self.fields['categorie'].choices = [x for x in Choix.type_reunion if x[1] in Choix.type_reunion_asso[reunion.asso.slug]]
         self.fields['categorie'].initial = reunion.categorie
+        self.fields['projet'].initial = reunion.projet
         self.fields['titre'].initial = reunion.titre
         self.fields['description'].initial = reunion.description
         self.fields['start_time'].initial = reunion.start_time
@@ -88,6 +99,8 @@ class ReunionDupliquerForm(forms.ModelForm):
             code_postal=reunion.adresse.code_postal,
             commune=reunion.adresse.commune,
             telephone=reunion.adresse.telephone,
+            latitude=reunion.adresse.latitude,
+            longitude=reunion.adresse.longitude,
         )
         instance.adresse = adresse
         instance.asso = reunion.asso
@@ -99,7 +112,7 @@ class ReunionChangeForm(forms.ModelForm):
 
     class Meta:
         model = Reunion
-        fields = ['asso', 'categorie', 'titre', 'description', 'start_time', 'estArchive']
+        fields = ['asso', 'categorie', 'projet', 'titre', 'description', 'start_time', 'estArchive']
         widgets = {
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(

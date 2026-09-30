@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Reçu Fiscal n°{{ recu.numero_recu }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            color: #2c3e50;
+            text-transform: uppercase;
+        }
+        .section {
+            margin-bottom: 25px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .grid {
+            display: table;
+            width: 100%;
+        }
+        .row {
+            display: table-row;
+        }
+        .cell {
+            display: table-cell;
+            padding: 4px 0;
+        }
+        .label {
+            font-weight: bold;
+            width: 30%;
+        }
+        .montant-box {
+            background-color: #f8f9fa;
+            border: 2px dashed #2c3e50;
+            text-align: center;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Reçu Fiscal pour Don ou Cotisation</h1>
+        <p>Reçu n° <strong>{{ recu.numero_recu }}</strong></p>
+    </div>
+
+    <!-- Organisme bénéficiaire -->
+    <div class="section">
+        <div class="section-title">1. Beneficiaire (Association)</div>
+        <div class="grid">
+            <div class="row">
+                <div class="cell label">Raison sociale :</div>
+                <div class="cell">{{ recu.asso_info.name }}</div>
+            </div>
+            <div class="row">
+                <div class="cell label">N° SIRET :</div>
+                <div class="cell">{{ recu.asso_info.siret }}</div>
+            </div>
+            <div class="row">
+                <div class="cell label">Adresse :</div>
+                <div class="cell">{{ recu.asso_info.adresse|linebreaksbr }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donateur -->
+    <div class="section">
+        <div class="section-title">2. Donateur</div>
+        <div class="grid">
+            <div class="row">
+                <div class="cell label">Nom et Prénom :</div>
+                <div class="cell">{{ recu.prenom_donateur }} {{ recu.nom_donateur }}</div>
+            </div>
+            <div class="row">
+                <div class="cell label">Adresse :</div>
+                <div class="cell">{{ recu.adresse_donateur|linebreaksbr }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Versement -->
+    <div class="section">
+        <div class="section-title">3. Détails du Versement</div>
+        <div class="grid">
+            <div class="row">
+                <div class="cell label">Type de versement :</div>
+                <div class="cell">{{ recu.get_type_versement_display }}</div>
+            </div>
+            <div class="row">
+                <div class="cell label">Date du versement :</div>
+                <div class="cell">{{ recu.date|date:"d/m/Y" }}</div>
+            </div>
+        </div>
+
+        <div class="montant-box">
+            Montant total versé : {{ recu.montant }} €
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Fait à Elne, le {{ recu.date|date:"d/m/Y" }}</p>
+        <p><em>Cachet et signature de l'association</em></p>
+    </div>
+
+</body>
+</html>

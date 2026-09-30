@@ -48,8 +48,6 @@
         </div>
     </div>
 </div>
-<hr>
-
 {%endblock%}
 {% block content %}
 <div class="anchor_blank" id="ref-annee"></div>
@@ -68,7 +66,7 @@
 <div class="row justify-content-center">
         <div class="collapse navbar-collapse" id="navbarType">
             <ul class="nav navbar-nav justify-content-center ">
-            <li class="nav-item  subnavbar2 align-items-center">
+            <li class="nav-item">
                   <a  href="{% url 'defraiement:ndf_liste' asso_slug=request.session.asso_slug %}?{% if request.GET.annee %}annee={{ request.GET.annee }}{% endif%}">
                       <button type="button" class="btn  btn-block {%if categorie_courante == '999' %} btn-warning{% else %}btn-info{% endif %}" >
                           <h6>Tout</h6>
@@ -84,8 +82,6 @@
                 </a>
             </li>
         {% endfor %}
-
-
         </ul>
     </div>
 </div>

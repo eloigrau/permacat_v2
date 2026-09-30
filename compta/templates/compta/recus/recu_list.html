@@ -1,0 +1,112 @@
+{% extends 'compta/base_compta.html' %}
+{% load fontawesome_5 %}
+
+{% block title %}Recus fiscaux |{% endblock %}
+
+{% block subtitle %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-4">
+        <a href="{% url 'compta:recu_create' %}">
+            <button class="btn btn-success" type="button">
+                <i class="fa fa-plus"></i> Créer un reçu
+            </button>
+        </a>
+    </div>
+    <div class="col-md-4 ">
+        <h3>Reçus fiscaux du groupe </h3>
+    </div>
+    <div class="col-md-4 ">
+        <button class="btn btn-light btn-sm" data-target="#help" data-toggle="modal" title="En savoir plus..."
+                type="button">
+            {% fa5_icon 'question-circle' %}
+        </button>
+        <!-- Modal -->
+        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="help" role="dialog"
+             tabindex="-1">
+            <div class="modal-dialog textaide" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row justify-content-center">
+                            <h5> Qu'est ce qu'un reçu fiscal</h5>
+                        </div>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body textleft">
+                        <p>Un reçu fiscal permet de donner une preuve à celui ou celle qui a cotisé ou fait un don à l'association</p>
+                        <p>Avec ce module vous pouvez crérr un reçu fiscal en indiquant la personne, la date, etc, et obtenir le pdf directement</p>
+                        <p>Evidemment un reçu doit correspondre à une ligne du budget (faut tenir à jour la compta ! =)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Liste des reçus fiscaux</h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>N° Reçu</th>
+                <th>Donateur</th>
+                <th>Type</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for recu in recus %}
+            <tr>
+                <td><strong>{{ recu.numero_recu }}</strong></td>
+                <td>{{ recu.prenom_donateur }} {{ recu.nom_donateur }}</td>
+                <td>
+                        <span class="badge {% if recu.type_versement == 'DON' %}bg-success{% else %}bg-info{% endif %}">
+                            {{ recu.get_type_versement_display }}
+                        </span>
+                </td>
+                <td>{{ recu.montant }} €</td>
+                <td>{{ recu.date|date:"d/m/Y" }}</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary me-1" href="{% url 'compta:recu_detail' recu.pk %}">Détails</a>
+                    <a class="btn btn-sm btn-outline-secondary me-1" href="{% url 'compta:recu_update' recu.pk %}">Modifier</a>
+                    <a class="btn btn-sm btn-outline-success me-1" href="{% url 'compta:recu_pdf' recu.pk %}">PDF</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'compta:recu_delete' recu.pk %}">Supprimer</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td class="text-center py-4 text-muted" colspan="6">Aucun reçu fiscal trouvé.</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if is_paginated %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+        </li>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

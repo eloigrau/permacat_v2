@@ -1,8 +1,10 @@
 from django import forms
-from .models import BudgetProjet, Transaction, BudgetCercle, Seller, Product, Client
+from .models import BudgetProjet, Transaction, BudgetCercle, Product, Client, RecuFiscal, AssoInfo
 from blog.models import Projet, Cercle
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
+from django.forms import inlineformset_factory
+from .models import Facture, FactureItem
 
 class BudgetProjetForm(forms.ModelForm):
     class Meta:
@@ -56,20 +58,20 @@ class FactureForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Sélectionne le vendeur par défaut si on crée un nouveau document
         if not self.instance.pk:
-            default_seller = Seller.objects.filter(is_default=True).first()
-            if default_seller:
-                self.fields['seller'].initial = default_seller.pk
+            default_asso_info = AssoInfo.objects.filter(is_default=True).first()
+            if default_asso_info:
+                self.fields['asso_info'].initial = default_asso_info.pk
 
     class Meta:
         model = Facture
-        fields = ['number', 'client', 'seller']
+        fields = ['number', 'client', 'asso_info']
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Laissez vide pour générer automatiquement'
             }),
             'client': forms.Select(attrs={'class': 'form-select'}),
-            'seller': forms.Select(attrs={'class': 'form-select'}),
+            'asso_info': forms.Select(attrs={'class': 'form-select'}),
         }
 
 FactureItemFormSet = inlineformset_factory(
@@ -86,16 +88,17 @@ FactureItemFormSet = inlineformset_factory(
 )
 
 
-class SellerForm(forms.ModelForm):
+class AssoInfoForm(forms.ModelForm):
     class Meta:
-        model = Seller
-        fields = ['name', 'siret', 'iban', 'bic', 'is_default']
+        model = AssoInfo
+        fields = ['name', 'siret', 'adresse','iban', 'bic', 'is_default']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Mon Entreprise SAS'}),
             'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Service Client'}),
             'siret': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '14 chiffres'}),
             'iban': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'FR76 ...'}),
             'bic': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'XXXXXXXXXXX'}),
+            'adresse': forms.TextInput(attrs={'class': 'form-control', 'placeholder': ''}),
             'is_default': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -114,9 +117,9 @@ class FactureForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:
-            default_seller = Seller.objects.filter(is_default=True).first()
-            if default_seller:
-                self.fields['seller'].initial = default_seller.pk
+            default_asso_info = AssoInfo.objects.filter(is_default=True).first()
+            if default_asso_info:
+                self.fields['asso_info'].initial = default_asso_info.pk
 
     class Meta:
         model = Facture
@@ -127,7 +130,7 @@ class FactureForm(forms.ModelForm):
                 'placeholder': 'Laissez vide pour générer automatiquement'
             }),
             'client': forms.Select(attrs={'class': 'form-select'}),
-            #'seller': forms.Select(attrs={'class': 'form-select'}),
+            #'asso_info': forms.Select(attrs={'class': 'form-select'}),
         }
 
 FactureItemFormSet = inlineformset_factory(
@@ -147,27 +150,27 @@ FactureItemFormSet = inlineformset_factory(
 # VUES GESTION VENDEURS (SELLER)
 # ==========================================
 
-class SellerListView(ListView):
-    model = Seller
-    template_name = 'compta/seller_list.html'
-    context_object_name = 'sellers'
+class AssoInfoListView(ListView):
+    model = AssoInfo
+    template_name = 'compta/asso_info_list.html'
+    context_object_name = 'asso_infos'
 
-class SellerCreateView(CreateView):
-    model = Seller
-    form_class = SellerForm
-    template_name = 'compta/seller_form.html'
-    success_url = reverse_lazy('compta:seller_list')
+class AssoInfoCreateView(CreateView):
+    model = AssoInfo
+    form_class = AssoInfoForm
+    template_name = 'compta/asso_info_form.html'
+    success_url = reverse_lazy('compta:asso_info_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Nouveau Vendeur"
         return context
 
-class SellerUpdateView(UpdateView):
-    model = Seller
-    form_class = SellerForm
-    template_name = 'compta/seller_form.html'
-    success_url = reverse_lazy('compta:seller_list')
+class AssoInfoUpdateView(UpdateView):
+    model = AssoInfo
+    form_class = AssoInfoForm
+    template_name = 'compta/asso_info_form.html'
+    success_url = reverse_lazy('compta:asso_info_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -216,4 +219,27 @@ class ClientForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom ou Raison Sociale'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Adresse complète'}),
             'siret': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '14 chiffres (optionnel)'}),
+        }
+
+
+class RecuFiscalForm(forms.ModelForm):
+    class Meta:
+        model = RecuFiscal
+        fields = [
+            'asso_info',
+            'nom_donateur',
+            'prenom_donateur',
+            'adresse_donateur',
+            'montant',
+            'date',
+            'type_versement',
+        ]
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'asso_info': forms.Select(attrs={'class': 'form-control'}),
+            'nom_donateur': forms.TextInput(attrs={'class': 'form-control'}),
+            'prenom_donateur': forms.TextInput(attrs={'class': 'form-control'}),
+            'adresse_donateur': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'montant': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'type_versement': forms.Select(attrs={'class': 'form-control'}),
         }

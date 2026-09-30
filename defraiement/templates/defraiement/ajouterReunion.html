@@ -14,20 +14,49 @@
 {% endif %}
 <div class="row">
 	<div class="col-sm-12">
-	<form id="reunionForm" class="form-horizontal" role="form" action="" method="post"
-		enctype="multipart/form-data">
-		{% csrf_token %} <input type="hidden" name="Reunion"
-			value="{{ reunion }}"> {% include 'form_template.html'%}
+	<form id="reunionForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data" >
+		{% csrf_token %}
+		{% include 'form_template.html'%}
 	</form>
 	</div>
 </div>
 
-
+{% endblock %}
+{% block scriptblock %}
 <script>
-    $(function() {
-    // Enable on all forms
-    $('form').areYouSure();
-    });
-</script>
+function updateChoix() {
+	var url = "{% url 'defraiement:ajax_categories' %}";
+    var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
 
+    if (asso){
+		$.ajax({ // initialize an AJAX request
+		  url: url,
+		  data: {
+			'asso': asso,
+		  },
+		  success: function(data) { // `data` is the return of the `load_cities` view function
+			$("#id_categorie").html(data); // replace the contents of the city input with the data that came from the server
+		  }
+		});
+
+
+		var url2 = "{% url 'defraiement:ajax_projets' %}";
+		$.ajax({ // initialize an AJAX request
+		  url: url2,
+		  data: {
+			'asso': asso,
+		  },
+		  success: function(data) { // `data` is the return of the `load_cities` view function
+			$("#id_projet").html(data); // replace the contents of the city input with the data that came from the server
+		  }
+		});
+    }
+};
+
+$(document).ready(function() {
+    $("#id_asso").change(updateChoix);
+    $('reunionForm').areYouSure();
+  });
+
+</script>
 {% endblock %}

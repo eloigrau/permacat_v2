@@ -68,4 +68,6 @@ urlpatterns = [
     path(r'modifier_ndf/<int:pk>',login_required(views.NoteDeFrais_modifier.as_view(), login_url='/auth/login/'), name='ndf_modifier'),
     path(r'supprimer_ndf/<int:pk>',login_required(views.NoteDeFrais_supprimer.as_view(), login_url='/auth/login/'), name='ndf_supprimer'),
 
+    path(r'reunion/ajax/projets/', views.ajax_projets, name='ajax_projets'),
+    path(r'reunion/ajax/categories/', views.ajax_categories, name='ajax_categories'),
 ]

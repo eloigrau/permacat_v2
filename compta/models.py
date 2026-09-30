@@ -6,7 +6,8 @@ from bourseLibre.models import Asso
 from django.urls import reverse
 from decimal import Decimal
 from django.db import models
-
+from django.db import models, transaction
+from django.utils import timezone
 
 class BudgetCercle(models.Model):
     titre = models.CharField(max_length=100, unique=True)
@@ -193,13 +194,14 @@ class Product(models.Model):
     def __str__(self):
         return f"[{self.code_product}] {self.name} - {self.unit_price} €"
 
-class Seller(models.Model):
+class AssoInfo(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nom / Raison sociale")
     siret = models.CharField(max_length=14, verbose_name="SIRET")
     iban = models.CharField(max_length=34, verbose_name="IBAN")
     bic = models.CharField(max_length=11, verbose_name="BIC")
     is_default = models.BooleanField(default=False, verbose_name="Vendeur par défaut")
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    adresse = models.TextField(max_length=255, null=True,)
 
     class Meta:
         verbose_name = "Vendeur"
@@ -214,8 +216,8 @@ class Facture(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name="Date d'émission")
 
     # Informations du Vendeur (mémorisées par facture)
-    # Association au modèle Seller
-    seller = models.ForeignKey(Seller, on_delete=models.PROTECT, related_name="documents", verbose_name="Vendeur")
+    # Association au modèle AssoInfo
+    asso_info = models.ForeignKey(AssoInfo, on_delete=models.PROTECT, related_name="documents", verbose_name="AssoInfo", null=False, )
     project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
 
     document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.INVOICE)
@@ -264,3 +266,45 @@ class FactureItem(models.Model):
     @property
     def total_ht(self):
         return self.unit_price * self.quantity
+
+
+class RecuFiscal(models.Model):
+    TYPE_CHOICES = [
+        ('DON', 'Don'),
+        ('COTISATION', 'Cotisation'),
+    ]
+
+    asso_info = models.ForeignKey(AssoInfo, on_delete=models.CASCADE)
+    nom_donateur = models.CharField(max_length=100)
+    prenom_donateur = models.CharField(max_length=100)
+    adresse_donateur = models.TextField()
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    type_versement = models.CharField(max_length=10, choices=TYPE_CHOICES, default='DON')
+    numero_recu = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return f"Reçu n°{self.numero_recu} - {self.nom_donateur}"
+
+    def save(self, *args, **kwargs):
+        if not self.numero_recu:
+            annee_en_cours = timezone.now().year
+            prefixe = f"RF-{annee_en_cours}-"
+
+            # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
+            with transaction.atomic():
+                dernier_recu = RecuFiscal.objects.select_for_update().filter(
+                    numero_recu__startswith=prefixe
+                ).order_by('id').last()
+
+                if dernier_recu:
+                    # Extraction du dernier numéro séquentiel
+                    dernier_numero = int(dernier_recu.numero_recu.split('-')[-1])
+                    nouveau_numero = dernier_numero + 1
+                else:
+                    nouveau_numero = 1
+
+                # Formatage du numéro sur 5 chiffres (ex: 00001)
+                self.numero_recu = f"{prefixe}{nouveau_numero:05d}"
+
+        super().save(*args, **kwargs)

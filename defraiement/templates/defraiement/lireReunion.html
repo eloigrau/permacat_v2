@@ -55,7 +55,7 @@
         <div class="row">
             <div class="col-md-12 textcenter">
                 <p>
-                    {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }}
+                    {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }}{% if reunion.projet %} - <a href="{{reunion.projet.get_absolute_url}}">Projet : {{ reunion.projet.titre }}</a>{% endif %}
                 </p>
                 <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a
                         href="{% url 'profil_nom' reunion.auteur.username %}">{{reunion.auteur.username}}</a>, dernière
@@ -156,6 +156,7 @@
                         </button>
                     </a>
                 </p>
+                {% if request.user.is_superuser %}
                 <p class="textcenter">
                     <a href="{% url 'defraiement:recalculerDistanceReunion' slug_reunion=reunion.slug %}">
                         <button type="button" class="btn btn-primary ">
@@ -163,6 +164,7 @@
                         </button>
                     </a>
                 </p>
+                {% endif %}
             </div>
         </div>
         <hr>

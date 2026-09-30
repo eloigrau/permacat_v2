@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Liste des Vendeurs</h2>
-    <a href="{% url 'compta:seller_create' %}" class="btn btn-primary">
+    <a href="{% url 'compta:asso_info_create' %}" class="btn btn-primary">
         <i class="fa fas fa-plus me-1"></i>Ajouter un vendeur
     </a>
 </div>
@@ -24,21 +24,21 @@
                 </tr>
             </thead>
             <tbody>
-                {% for seller in sellers %}
+                {% for asso_info in asso_infos %}
                 <tr>
-                    <td class="fw-bold">{{ seller.name }}</td>
-                    <td>{{ seller.project|default:"-" }}</td>
-                    <td>{{ seller.siret }}</td>
-                    <td><code>{{ seller.iban }}</code></td>
+                    <td class="fw-bold">{{ asso_info.name }}</td>
+                    <td>{{ asso_info.project|default:"-" }}</td>
+                    <td>{{ asso_info.siret }}</td>
+                    <td><code>{{ asso_info.iban }}</code></td>
                     <td class="text-center">
-                        {% if seller.is_default %}
+                        {% if asso_info.is_default %}
                             <span class="badge bg-success">Oui</span>
                         {% else %}
                             <span class="badge bg-secondary">Non</span>
                         {% endif %}
                     </td>
                     <td class="text-end">
-                        <a href="{% url 'compta:seller_update' seller.pk %}" class="btn btn-sm btn-outline-primary">
+                        <a href="{% url 'compta:asso_info_update' asso_info.pk %}" class="btn btn-sm btn-outline-primary">
                             <i class="fa fas fa-pen"></i> Modifier
                         </a>
                     </td>

@@ -1,17 +1,28 @@
 from .models import BudgetCercle, BudgetProjet, Transaction
-from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, SellerForm, ProductForm, ClientForm
+from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, ClientForm, AssoInfoForm, ProductForm
 from django.contrib.auth.decorators import login_required
-from bourseLibre.utils import testIsMembreAsso_bool
 from blog.models import Projet
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.views.generic import UpdateView, DeleteView
-from .models import Client, Product, Facture, FactureItem, Seller
+from .models import Client, Product, Facture, FactureItem, AssoInfo
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
-from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
+from bourseLibre.utils import testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
+from .models import RecuFiscal
+from .forms import RecuFiscalForm
 
+from .forms import FactureForm, FactureItemFormSet
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib import messages
+from django.db import transaction
+
+from .models import Facture, FactureItem, DocumentType
+
+# -----------------------
 @login_required
 def tableau_de_bord(request):
     if not "asso_slug" in request.session:
@@ -133,15 +144,6 @@ def generate_facture_pdf(request, facture_id):
     return response
 
 
-from .forms import FactureForm, FactureItemFormSet
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.contrib import messages
-from django.db import transaction
-
-from .models import Facture, FactureItem, DocumentType
-
 # -------------------------------------------------------------------
 # LISTES & DÉTAILS (FACTURES & DEVIS)
 # -------------------------------------------------------------------
@@ -184,7 +186,7 @@ class DocumentDetailView(TestMembreAssoMixin, DetailView):
 # -------------------------------------------------------------------
 # CRÉATION & ÉDITION
 # -------------------------------------------------------------------
-
+#
 def create_document(request, doc_type=DocumentType.INVOICE):
     """Vue générique pour créer une facture ou un devis avec ses lignes."""
     if request.method == 'POST':
@@ -284,27 +286,27 @@ def convert_quote_to_facture(request, pk):
 # VUES GESTION VENDEURS (SELLER)
 # ==========================================
 
-class SellerListView(TestMembreAssoMixin, ListView):
-    model = Seller
-    template_name = 'compta/seller_list.html'
-    context_object_name = 'sellers'
+class AssoInfoListView(TestMembreAssoMixin, ListView):
+    model = AssoInfo
+    template_name = 'compta/asso_info_list.html'
+    context_object_name = 'asso_infos'
 
-class SellerCreateView(TestMembreAssoMixin, CreateView):
-    model = Seller
-    form_class = SellerForm
-    template_name = 'compta/seller_form.html'
-    success_url = reverse_lazy('compta:seller_list')
+class AssoInfoCreateView(TestMembreAssoMixin, CreateView):
+    model = AssoInfo
+    form_class = AssoInfoForm
+    template_name = 'compta/asso_info_form.html'
+    success_url = reverse_lazy('compta:asso_info_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = "Nouveau Vendeur"
         return context
 
-class SellerUpdateView(TestMembreAssoMixin, UpdateView):
-    model = Seller
-    form_class = SellerForm
-    template_name = 'compta/seller_form.html'
-    success_url = reverse_lazy('compta:seller_list')
+class AssoInfoUpdateView(TestMembreAssoMixin, UpdateView):
+    model = AssoInfo
+    form_class = AssoInfoForm
+    template_name = 'compta/asso_info_form.html'
+    success_url = reverse_lazy('compta:asso_info_list')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -378,3 +380,63 @@ class ClientUpdateView(TestMembreAssoMixin, UpdateView):
 
 def acceuil(request):
     return render(request, "compta/facturation_acceuil.html")
+
+
+
+# --- Liste des reçus ---
+class RecuListView(ListView):
+    model = RecuFiscal
+    template_name = 'compta/recus/recu_list.html'
+    context_object_name = 'recus'
+    ordering = ['-date']
+    paginate_by = 10
+
+
+# --- Détail d'un reçu ---
+class RecuDetailView(DetailView):
+    model = RecuFiscal
+    template_name = 'compta/recus/recu_detail.html'
+    context_object_name = 'recu'
+
+
+# --- Modification d'un reçu ---
+class RecuUpdateView(UpdateView):
+    model = RecuFiscal
+    form_class = RecuFiscalForm
+    template_name = 'compta/recus/recu_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('compta:recu_detail', kwargs={'pk': self.object.pk})
+
+
+# --- Suppression d'un reçu ---
+class RecuDeleteView(DeleteView):
+    model = RecuFiscal
+    template_name = 'compta/recus/recu_confirm_delete.html'
+    success_url = reverse_lazy('compta:recu_list')
+
+
+# --- Téléchargement PDF ---
+def telecharger_recu_pdf(request, pk):
+    recu = get_object_or_404(RecuFiscal, pk=pk)
+    html_string = render_to_string('compta/recus/recu_fiscal_pdf.html', {'recu': recu})
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="recu_fiscal_{recu.numero_recu}.pdf"'
+    return response
+
+# --- Création d'un nouveau reçu ---
+class RecuCreateView(CreateView):
+    model = RecuFiscal
+    form_class = RecuFiscalForm
+    template_name = 'compta/recus/recu_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Nouveau reçu fiscal"
+        context['button_text'] = "Créer le reçu"
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('compta:recu_detail', kwargs={'pk': self.object.pk})

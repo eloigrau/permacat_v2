@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Projet / Marque Commerciale</label>
+                        <label class="form-label fw-semibold">Projet</label>
                         {{ form.project }}
                         {{ form.project.errors }}
                     </div>
@@ -44,10 +44,16 @@
                         </div>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Adresse</label>
+                        {{ form.adresse }}
+                        {{ form.adresse.errors }}
+                    </div>
+
                     <div class="mb-4 form-check">
                         {{ form.is_default }}
                         <label class="form-check-label" for="{{ form.is_default.id_for_label }}">
-                            Définir comme vendeur par défaut
+                            Utiliser par défaut pour les factures
                         </label>
                     </div>
 

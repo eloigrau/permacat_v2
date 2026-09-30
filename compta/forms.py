@@ -67,20 +67,25 @@ class AssoInfoForm(forms.ModelForm):
             'is_default': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'unit_price']
         widgets = {
-            'code_product': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: PRD-001'}),
+            #'code_product': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: PRD-001'}),
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du produit ou service'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Description optionnelle'}),
             'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': '0.00'}),
         }
 
+    def save(self, asso):
+        self.instance.save(asso=asso)
+        return super(ProductForm, self)
+
 class FactureForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    #def __init__(self, *args, **kwargs):
+        #super().__init__(*args, **kwargs)
         #if not self.instance.pk and "asso_slug" in request.session:
         #self.default_asso_info, created = AssoInfo.objects.get_or_create(asso__slug=Asso.objects.get(slug=request.session["asso_slug"]), is_default=True)
             # if self.default_asso_info:
@@ -94,81 +99,55 @@ class FactureForm(forms.ModelForm):
             'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
         }
 
+
+
+    def save(self, asso_info, doc_type):
+        self.instance.save(asso_info=asso_info, doc_type=doc_type)
+        super(FactureForm, self)
+        return self.instance
+
+
+class LigneFactureForm(forms.ModelForm):
+    class Meta:
+        model = FactureItem
+        fields = ['product', 'quantity']
+
+    def __init__(self, *args, **kwargs):
+        # On extrait le paramètre personnalisé 'association' s'il est fourni
+        asso_slug = kwargs.pop('asso_slug', None)
+        super().__init__(*args, **kwargs)
+
+        if asso_slug:
+            # Filtrage du QuerySet du champ produit
+            self.fields['product'].queryset = Product.objects.filter(asso__slug=asso_slug).order_by("-code_product")
+
+
+class BaseLigneFactureFormSet(forms.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        # On récupère 'association' transmis depuis la vue
+        self.asso_slug = kwargs.pop('asso_slug', None)
+        super().__init__(*args, **kwargs)
+
+    def _construct_form(self, i, **kwargs):
+        # On injecte 'association' dans chaque formulaire enfant
+        kwargs['asso_slug'] = self.asso_slug
+        return super()._construct_form(i, **kwargs)
+
 FactureItemFormSet = inlineformset_factory(
     Facture,
     FactureItem,
-    fields=['product', 'quantity'],
+    form=LigneFactureForm,
+    formset=BaseLigneFactureFormSet,
     extra=1,
     can_delete=True,
+    can_order=True,
     widgets={
         'product': forms.Select(attrs={'class': 'form-select'}),
         'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
-     }
+     },
+   # formset=BaseInlineFilteredFormSet(asso_slug=request.session["asso_slug"]),
 )
 
-
-# ==========================================
-# VUES GESTION VENDEURS (SELLER)
-# ==========================================
-
-class AssoInfoListView(ListView):
-    model = AssoInfo
-    template_name = 'compta/asso_info_list.html'
-    context_object_name = 'asso_infos'
-
-class AssoInfoCreateView(CreateView):
-    model = AssoInfo
-    form_class = AssoInfoForm
-    template_name = 'compta/asso_info_form.html'
-    success_url = reverse_lazy('compta:asso_info_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "Nouveau Vendeur"
-        return context
-
-class AssoInfoUpdateView(UpdateView):
-    model = AssoInfo
-    form_class = AssoInfoForm
-    template_name = 'compta/asso_info_form.html'
-    success_url = reverse_lazy('compta:asso_info_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "Modifier le Vendeur"
-        return context
-
-
-# ==========================================
-# VUES GESTION PRODUITS (PRODUCT)
-# ==========================================
-
-class ProductListView(ListView):
-    model = Product
-    template_name = 'compta/product_list.html'
-    context_object_name = 'products'
-
-class ProductCreateView(CreateView):
-    model = Product
-    form_class = ProductForm
-    template_name = 'compta/product_form.html'
-    success_url = reverse_lazy('compta:product_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "Nouveau Produit"
-        return context
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    form_class = ProductForm
-    template_name = 'compta/product_form.html'
-    success_url = reverse_lazy('compta:product_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "Modifier le Produit"
-        return context
 
 
 class ClientForm(forms.ModelForm):
@@ -182,6 +161,10 @@ class ClientForm(forms.ModelForm):
             'siret': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '14 chiffres (optionnel)'}),
         }
 
+
+    def save(self, asso):
+        self.instance.save(asso=asso)
+        return super(ClientForm, self)
 
 class RecuFiscalForm(forms.ModelForm):
     class Meta:
@@ -206,3 +189,7 @@ class RecuFiscalForm(forms.ModelForm):
             'type_versement': forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Infos complémentaires (option)'})
         }
+
+    def save(self, asso):
+        self.instance.save(asso=asso)
+        return super(RecuFiscalForm, self)

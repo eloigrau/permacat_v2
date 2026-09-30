@@ -30,7 +30,7 @@ urlpatterns = [
 
     # Création
     path('facturation/factures/creer/', views.create_document, {'doc_type': DocumentType.INVOICE}, name='facture_create'),
-    path('facturation/devis/creer/', views.create_document, {'doc_type': DocumentType.QUOTE}, name='quote_create'),
+    path('facturation/devis/creer/', views.create_document, {'doc_type': DocumentType.QUOTE}, name='devis_create'),
 
     # Édition
     path('facturation/document/<int:pk>/editer/', views.update_document, name='document_update'),

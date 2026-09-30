@@ -8,6 +8,7 @@ from decimal import Decimal
 from django.db import models
 from django.db import models, transaction
 from django.utils import timezone
+from bourseLibre.utils import slugify_pcat_mini
 
 class BudgetCercle(models.Model):
     titre = models.CharField(max_length=100, unique=True)
@@ -175,14 +176,15 @@ class Client(models.Model):
         return f"[{self.code_client}] {self.name}"
 
 
-    def save(self, *args, **kwargs):
+    def save(self, asso, *args, **kwargs):
         if not self.code_client:
+            self.asso=asso
             annee_en_cours = timezone.now().year
-            prefixe = f"CLI-{annee_en_cours}-"
+            prefixe = f"CLI-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
-                derniere = Client.objects.select_for_update().filter(
+                derniere = Client.objects.select_for_update().filter(asso=self.asso,
                     code_client__startswith=prefixe
                 ).order_by('id').last()
 
@@ -217,14 +219,15 @@ class Product(models.Model):
     def __str__(self):
         return f"[{self.code_product}] {self.name} - {self.unit_price} €"
 
-    def save(self, *args, **kwargs):
+    def save(self, asso, *args, **kwargs):
         if not self.code_product:
+            self.asso = asso
             annee_en_cours = timezone.now().year
-            prefixe = f"P-{annee_en_cours}-"
+            prefixe = f"P-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
-                derniere = Product.objects.select_for_update().filter(
+                derniere = Product.objects.select_for_update().filter(asso=self.asso,
                     code_product__startswith=prefixe
                 ).order_by('id').last()
 
@@ -243,6 +246,7 @@ class Product(models.Model):
 
 class AssoInfo(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nom / Raison sociale")
+    #abreviation = models.CharField(max_length=3, verbose_name="Abreviation (3 lettres sans espaces)")
     siret = models.CharField(max_length=14, verbose_name="SIRET")
     iban = models.CharField(max_length=34, verbose_name="IBAN")
     bic = models.CharField(max_length=11, verbose_name="BIC")
@@ -289,16 +293,18 @@ class Facture(models.Model):
         # Franchise en base de TVA : HT == TTC
         return self.total_ht
 
-    def save(self, *args, **kwargs):
+    def save(self, asso_info, doc_type):
         if not self.number:
+            self.asso_info = asso_info
+            self.asso = asso_info.asso
+            self.doc_type = doc_type
             annee_en_cours = timezone.now().year
-            prefixe = f"FA-{annee_en_cours}-"
+            prefixe = f"FA-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
-                derniere = Facture.objects.select_for_update().filter(
-                    number__startswith=prefixe
-                ).order_by('id').last()
+                derniere = Facture.objects.select_for_update().filter(asso=self.asso,
+                    number__startswith=prefixe).order_by('id').last()
 
                 if derniere:
                     # Extraction du dernier numéro séquentiel
@@ -310,7 +316,7 @@ class Facture(models.Model):
                 # Formatage du numéro sur 5 chiffres (ex: 00001)
                 self.number = f"{prefixe}{nouveau_numero:05d}"
 
-        super().save(*args, **kwargs)
+        super().save()
 
 class FactureItem(models.Model):
     facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name="items")
@@ -357,14 +363,15 @@ class RecuFiscal(models.Model):
     def __str__(self):
         return f"Reçu n°{self.numero_recu} - {self.nom_donateur}"
 
-    def save(self, *args, **kwargs):
+    def save(self, asso, *args, **kwargs):
         if not self.numero_recu:
+            self.asso = asso
             annee_en_cours = timezone.now().year
-            prefixe = f"RF-{annee_en_cours}-"
+            prefixe = f"RF-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
-                dernier_recu = RecuFiscal.objects.select_for_update().filter(
+                dernier_recu = RecuFiscal.objects.select_for_update().filter(asso=self.asso,
                     numero_recu__startswith=prefixe
                 ).order_by('id').last()
 

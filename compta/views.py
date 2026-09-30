@@ -20,6 +20,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib import messages
 from django.db import transaction
+from django.utils import timezone
+from bourseLibre.utils import slugify_pcat_mini
 
 from .models import Facture, FactureItem, DocumentType
 
@@ -191,27 +193,25 @@ class DocumentDetailView(TestMembreAssoMixin, DetailView):
 @login_required
 def create_document(request, doc_type=DocumentType.INVOICE):
     """Vue générique pour créer une facture ou un devis avec ses lignes."""
-    if request.method == 'POST':
-        form = FactureForm(request.POST)
-        formset = FactureItemFormSet(request.POST)
+    form = FactureForm(request.POST or None)
+    formset = FactureItemFormSet(request.POST or None, asso_slug=request.session["asso_slug"])
 
-        if form.is_valid() and formset.is_valid():
-            with transaction.atomic():
-                document = form.save(commit=False)
-                document.document_type = doc_type
-                asso_info, created = AssoInfo.objects.get_or_create(asso__slug=Asso.objects.get(slug=request.session["asso_slug"]), is_default=True)
-                document.asso_info = asso_info
-                document.asso = asso_info.asso
-                document.save()
+    if form.is_valid() and formset.is_valid():
+        with transaction.atomic():
+            asso = Asso.objects.get(slug=request.session["asso_slug"])
+            asso_info, created = AssoInfo.objects.get_or_create(asso__slug=request.session["asso_slug"],
+                                                                asso=asso,
+                                                                is_default=True)
+            if created:
+                asso_info.name = asso.nom
+                asso_info.save()
+            document = form.save(asso_info, doc_type)
 
-                formset.instance = document
-                formset.save()
+            formset.instance = document
+            formset.save()
 
-            messages.success(request, f"{'Facture' if doc_type == DocumentType.INVOICE else 'Devis'} créé(e) avec succès.")
-            return redirect('compta:document_detail', pk=document.pk)
-    else:
-        form = FactureForm(request)
-        formset = FactureItemFormSet()
+        messages.success(request, f"{'Facture' if doc_type == DocumentType.INVOICE else 'Devis'} créé(e) avec succès.")
+        return redirect('compta:document_detail', pk=document.pk)
 
     return render(request, 'compta/document_form.html', {
         'form': form,
@@ -229,19 +229,19 @@ def update_document(request, pk):
         messages.error(request, "Un document archivé ne peut pas être modifié.")
         return redirect('compta:document_detail', pk=document.pk)
 
-    if request.method == 'POST':
-        form = FactureForm(request.POST, instance=document)
-        formset = FactureItemFormSet(request.POST, instance=document)
+    form = FactureForm(request.POST or None, instance=document)
+    formset = FactureItemFormSet(request.POST or None, instance=document)
 
-        if form.is_valid() and formset.is_valid():
-            with transaction.atomic():
-                form.save()
-                formset.save()
-            messages.success(request, "Document mis à jour avec succès.")
-            return redirect('compta:document_detail', pk=document.pk)
-    else:
-        form = FactureForm(instance=document)
-        formset = FactureItemFormSet(instance=document)
+    if form.is_valid() and formset.is_valid():
+        with transaction.atomic():
+            asso = Asso.objects.get(slug=request.session["asso_slug"])
+            asso_info, created = AssoInfo.objects.get_or_create(asso__slug=request.session["asso_slug"],
+                                                                asso=asso,
+                                                                is_default=True)
+            form.save(asso_info, document.document_type)
+            formset.save()
+        messages.success(request, "Document mis à jour avec succès.")
+        return redirect('compta:document_detail', pk=document.pk)
 
     return render(request, 'compta/document_form.html', {
         'form': form,
@@ -259,7 +259,7 @@ def archive_document(request, pk):
     """Archive un document (soft delete)."""
     document = get_object_or_404(Facture, pk=pk)
     document.is_archived = True
-    document.save()
+    document.save(document.asso_info, document.document_type)
     messages.info(request, f"Le document {document.number} a été archivé.")
     return redirect('compta:archived_list')
 
@@ -280,6 +280,25 @@ def convert_quote_to_facture(request, pk):
     with transaction.atomic():
         quote.document_type = DocumentType.INVOICE
         quote.number = f"FAC-{quote.number}"  # Adapte la numérotation selon ton besoin
+
+        annee_en_cours = timezone.now().year
+        prefixe = f"FA-{slugify_pcat_mini(quote.asso.nom[:5])}-{annee_en_cours}-"
+
+        # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
+        with transaction.atomic():
+            derniere = Facture.objects.select_for_update().filter(asso=quote.asso,
+                                                                  number__startswith=prefixe
+                                                                  ).order_by('id').last()
+
+            if derniere:
+                # Extraction du dernier numéro séquentiel
+                dernier_numero = int(derniere.number.split('-')[-1])
+                nouveau_numero = dernier_numero + 1
+            else:
+                nouveau_numero = 1
+
+            # Formatage du numéro sur 5 chiffres (ex: 00001)
+            quote.number = f"{prefixe}{nouveau_numero:05d}"
         quote.save()
 
     messages.success(request, f"Le devis a été converti en facture {quote.number}.")
@@ -295,6 +314,9 @@ class AssoInfoListView(TestMembreAssoMixin, ListView):
     template_name = 'compta/asso_info_list.html'
     context_object_name = 'asso_infos'
 
+    def get_queryset(self):
+        return AssoInfo.objects.filter(asso=self.asso).order_by("asso__nom", "name")
+
 class AssoInfoCreateView(TestMembreAssoMixin, CreateView):
     model = AssoInfo
     form_class = AssoInfoForm
@@ -305,6 +327,10 @@ class AssoInfoCreateView(TestMembreAssoMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = "Nouveau Vendeur"
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(asso=self.asso)
+        return HttpResponseRedirect(self.get_success_url())
 
 class AssoInfoUpdateView(TestMembreAssoMixin, UpdateView):
     model = AssoInfo
@@ -327,6 +353,10 @@ class ProductListView(TestMembreAssoMixin, ListView):
     template_name = 'compta/product_list.html'
     context_object_name = 'products'
 
+    def get_queryset(self):
+        return Product.objects.filter(asso=self.asso).order_by("-code_product")
+
+
 class ProductCreateView(TestMembreAssoMixin, CreateView):
     model = Product
     form_class = ProductForm
@@ -337,6 +367,10 @@ class ProductCreateView(TestMembreAssoMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = "Nouveau Produit"
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(asso=self.asso)
+        return HttpResponseRedirect(self.get_success_url())
 
 class ProductUpdateView(TestMembreAssoMixin, UpdateView):
     model = Product
@@ -359,6 +393,10 @@ class ClientListView(TestMembreAssoMixin, ListView):
     template_name = 'compta/client_list.html'
     context_object_name = 'clients'
 
+    def get_queryset(self):
+        return Client.objects.filter(asso=self.asso).order_by("-code_client")
+
+
 class ClientCreateView(TestMembreAssoMixin, CreateView):
     model = Client
     form_class = ClientForm
@@ -369,6 +407,11 @@ class ClientCreateView(TestMembreAssoMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = "Nouveau Client"
         return context
+
+
+    def form_valid(self, form):
+        self.object = form.save(asso=self.asso)
+        return HttpResponseRedirect(self.get_success_url())
 
 class ClientUpdateView(TestMembreAssoMixin, UpdateView):
     model = Client
@@ -445,3 +488,7 @@ class RecuCreateView(TestMembreAssoMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('compta:recu_detail', kwargs={'pk': self.object.pk})
+
+    def form_valid(self, form):
+        self.object = form.save(asso=self.asso)
+        return HttpResponseRedirect(self.get_success_url())

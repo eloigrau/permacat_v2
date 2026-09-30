@@ -14,12 +14,6 @@
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Code Produit</label>
-                        {{ form.code_product }}
-                        {{ form.code_product.errors }}
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label fw-semibold">Nom du Produit / Service</label>
                         {{ form.name }}
                         {{ form.name.errors }}

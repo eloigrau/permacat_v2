@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Facture {{ facture.number }}</title>
+    <title>{% if facture.document_type == 'INVCOICE' %}Facture{%else%}Devis{%endif%} {{ facture.number }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;

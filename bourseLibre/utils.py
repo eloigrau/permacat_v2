@@ -58,13 +58,14 @@ def reabonnerProfil_salons(profil):
     for salon in profil.get_salons():
         actions.follow(profil, salon.getSuivi(), send_action=False)
 
-def slugify_pcat(titre, max_length):
+def slugify_pcat(titre, max_length=50):
     slug = slugify(titre)[:max_length]
     if slug == '':
         slug = uuid.uuid4()
     return slug
 
-
+def slugify_pcat_mini(titre):
+    return slugify_pcat(titre, 3).replace('-','').upper()
 
 def testIsMembreSalon(request, slug):
     salon = get_object_or_404(Salon, slug=slug)

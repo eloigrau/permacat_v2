@@ -1,4 +1,3 @@
-
 from django.db import models
 from bourseLibre.models import Profil, Adresse, Asso, LONGITUDE_DEFAUT
 from django.urls import reverse
@@ -34,8 +33,6 @@ class Adherent(models.Model):
 
     def get_adresse_str(self):
         return self.adresse.get_adresse_str
-# Create your models here.
-
 
     @property
     def get_latitude(self):

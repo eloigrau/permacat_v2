@@ -64,7 +64,7 @@ class FactureForm(forms.ModelForm):
 
     class Meta:
         model = Facture
-        fields = ['number', 'client', 'asso_info']
+        fields = ['client', 'asso_info']
         widgets = {
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -105,7 +105,7 @@ class AssoInfoForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['code_product', 'name', 'description', 'unit_price']
+        fields = ['name', 'description', 'unit_price']
         widgets = {
             'code_product': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: PRD-001'}),
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du produit ou service'}),
@@ -233,6 +233,7 @@ class RecuFiscalForm(forms.ModelForm):
             'montant',
             'date',
             'type_versement',
+            'description',
         ]
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -242,4 +243,5 @@ class RecuFiscalForm(forms.ModelForm):
             'adresse_donateur': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'montant': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'type_versement': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Infos complémentaires (option)'})
         }

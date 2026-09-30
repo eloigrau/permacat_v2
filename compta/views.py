@@ -384,7 +384,7 @@ def acceuil(request):
 
 
 # --- Liste des reçus ---
-class RecuListView(ListView):
+class RecuListView(TestMembreAssoMixin,ListView):
     model = RecuFiscal
     template_name = 'compta/recus/recu_list.html'
     context_object_name = 'recus'
@@ -393,14 +393,14 @@ class RecuListView(ListView):
 
 
 # --- Détail d'un reçu ---
-class RecuDetailView(DetailView):
+class RecuDetailView(TestMembreAssoMixin,DetailView):
     model = RecuFiscal
     template_name = 'compta/recus/recu_detail.html'
     context_object_name = 'recu'
 
 
 # --- Modification d'un reçu ---
-class RecuUpdateView(UpdateView):
+class RecuUpdateView(TestMembreAssoMixin, UpdateView):
     model = RecuFiscal
     form_class = RecuFiscalForm
     template_name = 'compta/recus/recu_form.html'
@@ -410,13 +410,14 @@ class RecuUpdateView(UpdateView):
 
 
 # --- Suppression d'un reçu ---
-class RecuDeleteView(DeleteView):
+class RecuDeleteView(TestMembreAssoMixin,DeleteView):
     model = RecuFiscal
     template_name = 'compta/recus/recu_confirm_delete.html'
     success_url = reverse_lazy('compta:recu_list')
 
 
 # --- Téléchargement PDF ---
+@login_required
 def telecharger_recu_pdf(request, pk):
     recu = get_object_or_404(RecuFiscal, pk=pk)
     html_string = render_to_string('compta/recus/recu_fiscal_pdf.html', {'recu': recu})
@@ -427,7 +428,7 @@ def telecharger_recu_pdf(request, pk):
     return response
 
 # --- Création d'un nouveau reçu ---
-class RecuCreateView(CreateView):
+class RecuCreateView(TestMembreAssoMixin, CreateView):
     model = RecuFiscal
     form_class = RecuFiscalForm
     template_name = 'compta/recus/recu_form.html'

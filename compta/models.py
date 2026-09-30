@@ -194,6 +194,30 @@ class Product(models.Model):
     def __str__(self):
         return f"[{self.code_product}] {self.name} - {self.unit_price} €"
 
+    def save(self, *args, **kwargs):
+        if not self.code_product:
+            annee_en_cours = timezone.now().year
+            prefixe = f"RF-{annee_en_cours}-"
+
+            # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
+            with transaction.atomic():
+                derniere = Product.objects.select_for_update().filter(
+                    code_product__startswith=prefixe
+                ).order_by('id').last()
+
+                if derniere:
+                    # Extraction du dernier numéro séquentiel
+                    dernier_numero = int(derniere.number.split('-')[-1])
+                    nouveau_numero = dernier_numero + 1
+                else:
+                    nouveau_numero = 1
+
+                # Formatage du numéro sur 5 chiffres (ex: 00001)
+                self.numero_recu = f"{prefixe}{nouveau_numero:05d}"
+
+        super().save(*args, **kwargs)
+
+
 class AssoInfo(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nom / Raison sociale")
     siret = models.CharField(max_length=14, verbose_name="SIRET")
@@ -242,6 +266,28 @@ class Facture(models.Model):
         # Franchise en base de TVA : HT == TTC
         return self.total_ht
 
+    def save(self, *args, **kwargs):
+        if not self.number:
+            annee_en_cours = timezone.now().year
+            prefixe = f"RF-{annee_en_cours}-"
+
+            # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
+            with transaction.atomic():
+                derniere = Facture.objects.select_for_update().filter(
+                    number__startswith=prefixe
+                ).order_by('id').last()
+
+                if derniere:
+                    # Extraction du dernier numéro séquentiel
+                    dernier_numero = int(derniere.number.split('-')[-1])
+                    nouveau_numero = dernier_numero + 1
+                else:
+                    nouveau_numero = 1
+
+                # Formatage du numéro sur 5 chiffres (ex: 00001)
+                self.numero_recu = f"{prefixe}{nouveau_numero:05d}"
+
+        super().save(*args, **kwargs)
 
 class FactureItem(models.Model):
     facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name="items")
@@ -274,6 +320,7 @@ class RecuFiscal(models.Model):
         ('COTISATION', 'Cotisation'),
     ]
 
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     asso_info = models.ForeignKey(AssoInfo, on_delete=models.CASCADE)
     nom_donateur = models.CharField(max_length=100)
     prenom_donateur = models.CharField(max_length=100)
@@ -282,6 +329,7 @@ class RecuFiscal(models.Model):
     date = models.DateField()
     type_versement = models.CharField(max_length=10, choices=TYPE_CHOICES, default='DON')
     numero_recu = models.CharField(max_length=20, unique=True)
+    description = models.TextField(blank=True, verbose_name="Description")
 
     def __str__(self):
         return f"Reçu n°{self.numero_recu} - {self.nom_donateur}"

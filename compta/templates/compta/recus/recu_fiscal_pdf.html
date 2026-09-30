@@ -79,7 +79,7 @@
 
     <!-- Organisme bénéficiaire -->
     <div class="section">
-        <div class="section-title">1. Beneficiaire (Association)</div>
+        <div class="section-title">1. Bénéficiaire (Association)</div>
         <div class="grid">
             <div class="row">
                 <div class="cell label">Raison sociale :</div>
@@ -118,6 +118,7 @@
             <div class="row">
                 <div class="cell label">Type de versement :</div>
                 <div class="cell">{{ recu.get_type_versement_display }}</div>
+                {% if recu.description %} <div class="cell">{{recu.description}}</div>{% endif %}
             </div>
             <div class="row">
                 <div class="cell label">Date du versement :</div>

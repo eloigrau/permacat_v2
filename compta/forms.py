@@ -1,6 +1,7 @@
 from django import forms
 from .models import BudgetProjet, Transaction, BudgetCercle, Product, Client, RecuFiscal, AssoInfo
 from blog.models import Projet, Cercle
+from bourseLibre.models import Asso
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from django.forms import inlineformset_factory
@@ -50,42 +51,6 @@ class TransationChangeForm(forms.ModelForm):
         }
 
 
-from django.forms import inlineformset_factory
-from .models import Facture, FactureItem
-
-class FactureForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Sélectionne le vendeur par défaut si on crée un nouveau document
-        if not self.instance.pk:
-            default_asso_info = AssoInfo.objects.filter(is_default=True).first()
-            if default_asso_info:
-                self.fields['asso_info'].initial = default_asso_info.pk
-
-    class Meta:
-        model = Facture
-        fields = ['client', 'asso_info']
-        widgets = {
-            'number': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Laissez vide pour générer automatiquement'
-            }),
-            'client': forms.Select(attrs={'class': 'form-select'}),
-            'asso_info': forms.Select(attrs={'class': 'form-select'}),
-        }
-
-FactureItemFormSet = inlineformset_factory(
-    Facture,
-    FactureItem,
-    fields=['product', 'quantity', 'unit_price'],
-    extra=1,
-    can_delete=True,
-    widgets={
-        'product': forms.Select(attrs={'class': 'form-select'}),
-        'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
-        'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Auto'}),
-    }
-)
 
 
 class AssoInfoForm(forms.ModelForm):
@@ -116,21 +81,17 @@ class ProductForm(forms.ModelForm):
 class FactureForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not self.instance.pk:
-            default_asso_info = AssoInfo.objects.filter(is_default=True).first()
-            if default_asso_info:
-                self.fields['asso_info'].initial = default_asso_info.pk
+        #if not self.instance.pk and "asso_slug" in request.session:
+        #self.default_asso_info, created = AssoInfo.objects.get_or_create(asso__slug=Asso.objects.get(slug=request.session["asso_slug"]), is_default=True)
+            # if self.default_asso_info:
+            #     self.fields['asso_info'].initial = self.default_asso_info.pk
 
     class Meta:
         model = Facture
-        fields = ['number', 'client', 'project', 'asso_info']
+        fields = ['client', 'project']
         widgets = {
-            'number': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Laissez vide pour générer automatiquement'
-            }),
             'client': forms.Select(attrs={'class': 'form-select'}),
-            'asso_info': forms.Select(attrs={'class': 'form-select'}),
+            'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
         }
 
 FactureItemFormSet = inlineformset_factory(

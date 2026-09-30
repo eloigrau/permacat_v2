@@ -3,14 +3,15 @@ from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, Clie
 from django.contrib.auth.decorators import login_required
 from blog.models import Projet
 from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect
 from django.views.generic import UpdateView, DeleteView
-from .models import Client, Product, Facture, FactureItem, AssoInfo
+from .models import Client, Product, AssoInfo
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from bourseLibre.utils import testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
 from .models import RecuFiscal
+from bourseLibre.models import Asso
 from .forms import RecuFiscalForm
 
 from .forms import FactureForm, FactureItemFormSet
@@ -187,6 +188,7 @@ class DocumentDetailView(TestMembreAssoMixin, DetailView):
 # CRÉATION & ÉDITION
 # -------------------------------------------------------------------
 #
+@login_required
 def create_document(request, doc_type=DocumentType.INVOICE):
     """Vue générique pour créer une facture ou un devis avec ses lignes."""
     if request.method == 'POST':
@@ -197,16 +199,18 @@ def create_document(request, doc_type=DocumentType.INVOICE):
             with transaction.atomic():
                 document = form.save(commit=False)
                 document.document_type = doc_type
+                asso_info, created = AssoInfo.objects.get_or_create(asso__slug=Asso.objects.get(slug=request.session["asso_slug"]), is_default=True)
+                document.asso_info = asso_info
+                document.asso = asso_info.asso
                 document.save()
 
                 formset.instance = document
                 formset.save()
 
-            messages.success(request,
-                             f"{'Facture' if doc_type == DocumentType.INVOICE else 'Devis'} créé(e) avec succès.")
+            messages.success(request, f"{'Facture' if doc_type == DocumentType.INVOICE else 'Devis'} créé(e) avec succès.")
             return redirect('compta:document_detail', pk=document.pk)
     else:
-        form = FactureForm()
+        form = FactureForm(request)
         formset = FactureItemFormSet()
 
     return render(request, 'compta/document_form.html', {

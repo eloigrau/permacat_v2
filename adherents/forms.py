@@ -219,11 +219,11 @@ class Contact_form(forms.ModelForm):
     code_postal = forms.CharField(label="Code postal*", required=False)
     commune = forms.CharField(label="Commune",  required=False)
     rue = forms.CharField(label="Rue", required=False)
-    adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
-                              label="Adhérent lié ?", )
+    #adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,
+    #                          label="Adhérent lié ?", )
     class Meta:
         model = Contact
-        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', 'adherent']
+        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', ]#'adherent']
 
 
 class Contact_update_form(forms.ModelForm):

@@ -199,7 +199,7 @@ class Client(models.Model):
         super().save(*args, **kwargs)
 
 class Product(models.Model):
-    code_product = models.CharField(max_length=20, unique=True, verbose_name="Code Produit")
+    code_product = models.CharField(max_length=20, unique=True, verbose_name="Code Produit", blank=True)
     name = models.CharField(max_length=255, verbose_name="Nom du produit")
     description = models.TextField(blank=True, verbose_name="Description")
     unit_price = models.DecimalField(

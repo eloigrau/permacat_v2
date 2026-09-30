@@ -286,31 +286,34 @@ class Asso(models.Model):
     def getProfils(self):
         if self.slug == "public":
             return Profil.objects.filter(is_active=True).order_by("username")
-        elif self.slug == "pc":
-            return Profil.objects.filter(adherent_pc=True).order_by("username")
-        elif self.slug == "rtg":
-            return Profil.objects.filter(adherent_rtg=True).order_by("username")
-        elif self.slug == "fer":
-            return Profil.objects.filter(adherent_fer=True).order_by("username")
-        #elif self.slug == "gt":
-        #    return Profil.objects.filter(adherent_gt=True).order_by("username")
-        elif self.slug == "scic":
-            return Profil.objects.filter(adherent_scic=True).order_by("username")
-        elif self.slug == "citealt":
-            return Profil.objects.filter(adherent_citealt=True).order_by("username")
-        elif self.slug == "bzz2022":
-            return Profil.objects.filter(adherent_bzz2022=True).order_by("username")
-        elif self.slug == "viure":
-            return Profil.objects.filter(adherent_viure=True).order_by("username")
-        elif self.slug == "jp":
-            return Profil.objects.filter(adherent_jp=True).order_by("username")
-        elif self.slug == "conf66":
-            return Profil.objects.filter(adherent_conf66=True).order_by("username")
-        elif self.slug == "ssa":
-            return Profil.objects.filter(adherent_ssa=True).order_by("username")
-        elif self.slug == "ducepaj":
-            return Profil.objects.filter(adherent_ducepaj=True).order_by("username")
-        return Profil.objects.none()
+        else:
+            nom = "adherent_" + self.slug
+            return Profil.objects.filter(**{nom:True, "is_active":True}).order_by("username")
+        # elif self.slug == "pc":
+        #     return Profil.objects.filter(adherent_pc=True).order_by("username")
+        # elif self.slug == "rtg":
+        #     return Profil.objects.filter(adherent_rtg=True).order_by("username")
+        # elif self.slug == "fer":
+        #     return Profil.objects.filter(adherent_fer=True).order_by("username")
+        # #elif self.slug == "gt":
+        # #    return Profil.objects.filter(adherent_gt=True).order_by("username")
+        # elif self.slug == "scic":
+        #     return Profil.objects.filter(adherent_scic=True).order_by("username")
+        # elif self.slug == "citealt":
+        #     return Profil.objects.filter(adherent_citealt=True).order_by("username")
+        # elif self.slug == "bzz2022":
+        #     return Profil.objects.filter(adherent_bzz2022=True).order_by("username")
+        # elif self.slug == "viure":
+        #     return Profil.objects.filter(adherent_viure=True).order_by("username")
+        # elif self.slug == "jp":
+        #     return Profil.objects.filter(adherent_jp=True).order_by("username")
+        # elif self.slug == "conf66":
+        #     return Profil.objects.filter(adherent_conf66=True).order_by("username")
+        # elif self.slug == "ssa":
+        #     return Profil.objects.filter(adherent_ssa=True).order_by("username")
+        # elif self.slug == "ducepaj":
+        #     return Profil.objects.filter(adherent_ducepaj=True).order_by("username")
+        # return Profil.objects.none()
 
     def getProfils_Annuaire(self):
         return self.getProfils().filter(accepter_annuaire=True)

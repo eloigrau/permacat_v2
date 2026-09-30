@@ -107,7 +107,7 @@ class ParticipantReunion(models.Model):
 
     def getDistance_route(self, reunion, recalculer=False):
         distanceObject, created = Distance_ParticipantReunion.objects.get_or_create(reunion=reunion, participant=self)
-        if not recalculer:
+        if not recalculer or distanceObject.km_manuel:
             return float(distanceObject.getDistance())
         else:
             return float(distanceObject.calculerDistance())
@@ -195,11 +195,12 @@ class Reunion(models.Model):
 class Distance_ParticipantReunion(models.Model):
     reunion = models.ForeignKey(Reunion, on_delete=models.CASCADE, null=True, blank=True, )
     participant = models.ForeignKey(ParticipantReunion, on_delete=models.CASCADE, null=True, blank=True, )
-    distance = models.FloatField(blank=True, null=True, verbose_name=_("Distance aller (en km)"), help_text="Mettre juste le nombre de kilomètres (sans ajouter 'km')")
+    distance = models.FloatField(blank=True, null=True, verbose_name=_("Distance aller (en km)"), help_text="Mettre juste le nombre de kilomètres Aller (sans ajouter 'km', le nombre sera doublé pour le calcul du total))")
     contexte_distance = models.TextField(blank=True, null=True, verbose_name=_("Description du contexte"))
     type_trajet = models.CharField(max_length=30,
                                  choices=(Choix.type_trajet),
                                  default='0', verbose_name=_("Type de trajet"))
+    km_manuel = models.BooleanField(default=False, verbose_name=_("Les km ont été spécifiés manuellement"))
 
     class Meta:
         unique_together = (('reunion', 'participant',), )
@@ -210,7 +211,7 @@ class Distance_ParticipantReunion(models.Model):
     def save(self, calculerDistance=False, *args, **kwargs):
         ''' On save, update timestamps '''
         retour = super(Distance_ParticipantReunion, self).save(*args, **kwargs)
-        if calculerDistance or not self.distance:
+        if (calculerDistance and not self.km_manuel) or not self.distance:
             self.distance = self.calculerDistance()
         return retour
 

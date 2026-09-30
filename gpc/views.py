@@ -44,7 +44,7 @@ class ProposalDetailView(TestMembreAssoMixin, DetailView):
 
 class ProposalCreateView(TestMembreAssoMixin, CreateView):
     model = Proposal
-    fields = ['title', 'context', 'content']
+    fields = ['title', 'context', 'content', 'nbMinVote']
     template_name = 'gpc/create_proposal.html'
 
     def form_valid(self, form):

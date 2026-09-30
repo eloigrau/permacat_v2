@@ -609,6 +609,12 @@ class ModifierDistance_ParticipantReunion(UpdateView):
     fields = ['type_trajet', 'distance', 'contexte_distance',]
 
 
+    def save(self):
+        instance = super(ModifierDistance_ParticipantReunion, self).save(commit=False)
+        instance.km_manuel = True
+        instance.save()
+        return instance
+
 import csv
 
 

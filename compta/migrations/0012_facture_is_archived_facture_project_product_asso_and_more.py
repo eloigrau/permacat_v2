@@ -17,11 +17,11 @@ class Migration(migrations.Migration):
         #     name='is_archived',
         #     field=models.BooleanField(default=False),
         # ),
-        migrations.AddField(
-            model_name='facture',
-            name='project',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale'),
-        ),
+        # migrations.AddField(
+        #     model_name='facture',
+        #     name='project',
+        #     field=models.CharField(blank=True, max_length=255, verbose_name='Projet / Marque commerciale'),
+        # ),
         migrations.AddField(
             model_name='product',
             name='asso',

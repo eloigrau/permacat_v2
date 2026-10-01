@@ -17,8 +17,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .models import Facture, DocumentStatus, DocumentType, FactureItem
 import csv
 from django import forms
-import pandas as pd
+try:
+    import pandas as pd
+except:
+    pass
 import datetime
+import io
 from bourseLibre.settings import LOCALL
 
 class csvFile_form(forms.Form):
@@ -153,8 +157,8 @@ def lire_csv_factures(request, filename):
 
 @login_required
 def import_csv_factures(request):
-    def lire_clients(request, csv_reader):
-        with open(fichier_csv_clients, 'r', newline='\n') as data:
+    def lire_clients(request, fichier_csv_clients):
+        with io.TextIOWrapper(fichier_csv_clients, encoding="utf-8") as data:
             csv_reader = csv.DictReader(data, delimiter=',')
             if not "nom" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
                 m = "Erreur : Le fichier '" + str(fichier_csv_clients) + "'" +" n'a pas de colonne 'nom' ni 'email' (sans espace)"
@@ -166,7 +170,7 @@ def import_csv_factures(request):
         return m
 
     def lire_produits(request, fichier_csv_produits):
-        with open(fichier_csv_produits, 'r', newline='\n') as data:
+        with io.TextIOWrapper(fichier_csv_produits, encoding="utf-8") as data:
             csv_reader = csv.DictReader(data, delimiter=',')
             if not "nom" in csv_reader.fieldnames and not "code" in csv_reader.fieldnames:
                 m = "Erreur : Le fichier '" + str(
@@ -184,22 +188,22 @@ def import_csv_factures(request):
         form = csvFile_form(request.POST, request.FILES)
         if form.is_valid():
             m = ""
-            try:
-                if LOCALL:
-                    fichier_csv_clients = "/home/eloi/PA_clients.csv"
-                    fichier_csv_produits = "/home/eloi/PA_produits.csv"
-                    fichier_csv_factures = "/home/eloi/PA_factures.csv"
-                else:
-                    fichier_csv_clients = request.POST['fichier_csv_clients']
-                    fichier_csv_produits = request.POST['fichier_csv_produits']
-                    fichier_csv_factures = request.POST['fichier_csv_factures']
+            #try:
+            # if LOCALL:
+            #     fichier_csv_clients = "/home/eloi/PA_clients.csv"
+            #     fichier_csv_produits = "/home/eloi/PA_produits.csv"
+            #     fichier_csv_factures = "/home/eloi/PA_factures.csv"
+            # else:
+            fichier_csv_clients = form.cleaned_data['fichier_csv_clients']
+            fichier_csv_produits = form.cleaned_data['fichier_csv_produits']
+            fichier_csv_factures = form.cleaned_data['fichier_csv_factures']
 
 
-                m += lire_clients(request, fichier_csv_produits)
-                m += lire_produits(request, fichier_csv_produits)
-                m += lire_csv_factures(request, fichier_csv_factures)
-            except Exception as e:
-                m+= "<p>ERR " + str(e) + "</p>"
+            m += lire_clients(request, fichier_csv_clients)
+            m += lire_produits(request, fichier_csv_produits)
+            m += lire_csv_factures(request, fichier_csv_factures)
+            #except Exception as e:
+            #    m+= "<p>ERR " + str(e) + "</p>"
 
             return render(request, 'compta/admin_utils.html', {"message": m, "title": "Resultat imports factures"})
     else:

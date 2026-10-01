@@ -5,12 +5,6 @@
 <h3>{% translate 'Publier un Article dans le Forum' %}</h3>
 {% endblock %}
 {% block content %}
-
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
 {% include 'form_template.html'%}
 {% endblock %}
 {% block scriptblock %}

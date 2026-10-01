@@ -13,7 +13,7 @@ from bourseLibre.utils import testIsMembreAsso_bool, TestMembreAssoMixin, TestBu
 from .models import RecuFiscal
 from bourseLibre.models import Asso
 from .forms import RecuFiscalForm
-
+from django.db import IntegrityError
 from .forms import FactureForm, FactureItemFormSet, FactureStatutForm
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -346,9 +346,14 @@ class AssoInfoCreateView(TestMembreAssoMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        self.object = form.save()
-        self.object.asso = self.asso
-        self.object.save()
+        try:
+            self.object = form.save()
+            self.object.asso = self.asso
+            self.object.save()
+        except IntegrityError as e:
+            messages.error(self.request, "Erreur : impossible de créer cet AssoInfo, peut etre qu'il existe deja une AssoInfo par defaut "
+                                         "(enlever la par defaut, avant d'en ajouter une par defaut?")
+
         return HttpResponseRedirect(self.get_success_url())
 
 class AssoInfoUpdateView(TestMembreAssoMixin, UpdateView):
@@ -362,6 +367,15 @@ class AssoInfoUpdateView(TestMembreAssoMixin, UpdateView):
         context['title'] = "Modifier le Vendeur"
         return context
 
+
+    def form_valid(self, form):
+        try:
+            self.object = form.save()
+        except IntegrityError as e:
+            messages.error(self.request, "Erreur : impossible de créer cet AssoInfo, peut etre qu'il existe deja une AssoInfo par defaut "
+                                         "(enlever la par defaut, avant d'en ajouter une par defaut?")
+
+        return HttpResponseRedirect(self.get_success_url())
 
 # ==========================================
 # VUES GESTION PRODUITS (PRODUCT)

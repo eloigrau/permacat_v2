@@ -153,53 +153,54 @@ def lire_csv_factures(request, filename):
 
 @login_required
 def import_csv_factures(request):
+    def lire_clients(request, csv_reader):
+        m = ""
+        with open(fichier_csv_clients, 'r', newline='\n') as data:
+            csv_reader = csv.DictReader(data, delimiter=',')
+            if not "nom" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
+                m = "Erreur : Le fichier '" + str(fichier_csv_clients) + "'" +" n'a pas de colonne 'nom' ni 'email' (sans espace)"
+                return render(request, '', {"liste_tel": str(csv_reader.fieldnames), "message": m})
+            m = str(csv_reader.fieldnames)
+            m += lire_csv_clients(request, csv_reader)
+
+        m += "Fichier client lu\n"
+        return m
+
+    def lire_produits(request, fichier_csv_produits):
+        m = ""
+        with open(fichier_csv_produits, 'r', newline='\n') as data:
+            csv_reader = csv.DictReader(data, delimiter=',')
+            if not "nom" in csv_reader.fieldnames and not "code" in csv_reader.fieldnames:
+                m += "Erreur : Le fichier '" + str(
+                    fichier_csv_produits) + "'" + " n'a pas de colonne 'com' ni 'code' "
+                return render(request, 'compta/admin_utils.html',
+                              {"liste_tel": str(csv_reader.fieldnames), "message": m})
+            m += str(csv_reader.fieldnames)
+            m += lire_csv_produits(request, csv_reader)
+
+        m += "Fichier produits lu\n"
+        return m
+
     testIsMembreAsso(request, request.session["asso_slug"])
     form = csvFile_form(request.POST or None, request.FILES or None)
     if form.is_valid():
-        if LOCALL:
-            fichier_csv_clients = "/home/eloi/PA_clients.csv"
-            fichier_csv_produits = "/home/eloi/PA_produits.csv"
-            fichier_csv_factures = "/home/eloi/PA_factures.csv"
-        else:
-            fichier_csv_clients = request.POST['fichier_csv_clients']
-            fichier_csv_produits = request.POST['fichier_csv_produits']
-            fichier_csv_factures = request.POST['fichier_csv_factures']
+        try:
+            if LOCALL:
+                fichier_csv_clients = "/home/eloi/PA_clients.csv"
+                fichier_csv_produits = "/home/eloi/PA_produits.csv"
+                fichier_csv_factures = "/home/eloi/PA_factures.csv"
+            else:
+                fichier_csv_clients = request.POST['fichier_csv_clients']
+                fichier_csv_produits = request.POST['fichier_csv_produits']
+                fichier_csv_factures = request.POST['fichier_csv_factures']
 
-        m = ""
-
-        def lire_clients(request, csv_reader):
             m = ""
-            with open(fichier_csv_clients, 'r', newline='\n') as data:
-                csv_reader = csv.DictReader(data, delimiter=',')
-                if not "nom" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
-                    m = "Erreur : Le fichier '" + str(fichier_csv_clients) + "'" +" n'a pas de colonne 'nom' ni 'email' (sans espace)"
-                    return render(request, '', {"liste_tel": str(csv_reader.fieldnames), "message": m})
-                m = str(csv_reader.fieldnames)
-                m += lire_csv_clients(request, csv_reader)
 
-            m += "Fichier client lu\n"
-            return m
-
-        def lire_produits(request, fichier_csv_produits):
-            m = ""
-            with open(fichier_csv_produits, 'r', newline='\n') as data:
-                csv_reader = csv.DictReader(data, delimiter=',')
-                if not "nom" in csv_reader.fieldnames and not "code" in csv_reader.fieldnames:
-                    m += "Erreur : Le fichier '" + str(
-                        fichier_csv_produits) + "'" + " n'a pas de colonne 'com' ni 'code' "
-                    return render(request, 'compta/admin_utils.html',
-                                  {"liste_tel": str(csv_reader.fieldnames), "message": m})
-                m += str(csv_reader.fieldnames)
-                m += lire_csv_produits(request, csv_reader)
-
-            m += "Fichier produits lu\n"
-            return m
-
-        #m += lire_clients(request, fichier_csv_produits)
-
-        m += lire_produits(request, fichier_csv_produits)
-
-        m += lire_csv_factures(request, fichier_csv_factures)
+            m += lire_clients(request, fichier_csv_produits)
+            m += lire_produits(request, fichier_csv_produits)
+            m += lire_csv_factures(request, fichier_csv_factures)
+        except Exception as e:
+            m+= "<p>ERR " + str(e) + "</p>"
 
         return render(request, 'compta/admin_utils.html', {"message": m, "title": "Resultat imports factures"})
 

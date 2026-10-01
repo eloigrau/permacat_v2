@@ -124,6 +124,7 @@ def lire_csv_factures(request, filename):
             asso_info=asso_info,
             asso=asso,
             status=DocumentStatus.PAID,
+            is_archived=True,
         )
 
         if created:
@@ -133,7 +134,6 @@ def lire_csv_factures(request, filename):
 
         for i, val in enumerate(d[6:]):
             quantite = float(str(val).replace(',','.'))
-            msg += "<p>VAL-" + str(val)+ " oo " + str(i) + " - " + str(math.isnan(quantite))+"</p>"
             if not math.isnan(quantite):
                 #try:
                     product = Product.objects.get(code_product=f"P{i+1:04d}")

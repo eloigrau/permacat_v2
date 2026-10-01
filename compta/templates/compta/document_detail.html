@@ -56,7 +56,7 @@
                         <span class="badge badge-light" style="align-content: center;">{{ document.get_status_display }}</span>
                     </a>
                 </div>
-                <small class="text-muted">Émis{%if document.document_type == 'FACTURE'%}e{%endif%} le : {{ document.created_at|date:"d/m/Y" }}</small>
+                <small class="text-muted">Émis{%if document.document_type == 'FACTURE'%}e{%endif%} le : {{ document.created_at|date:"d/m/Y" }}, échéance : {{ document.date_echeance|date:"d/m/Y" }}</small>
             </div>
 
             <table class="table table-striped my-3">

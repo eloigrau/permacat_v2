@@ -54,7 +54,7 @@
                         <th>N° Document</th>
                         <th>Client</th>
                         <th>Projet</th>
-                        <th>Date d'émission</th>
+                        <th>Date d'échéance</th>
                         <th class="text-end">Total HT</th>
                         <th>Statut</th>
                         <th class="text-center">Actions</th>
@@ -66,7 +66,7 @@
                         <td class="fw-bold"><a href="{% url 'compta:document_detail' doc.pk %}" class="text-decoration-none">{{ doc.number }}</a></td>
                         <td>{{ doc.client.name }}</td>
                         <td>{{ doc.project }}</td>
-                        <td>{{ doc.created_at|date:"d/m/Y" }}</td>
+                        <td>{{ doc.date_echeance|date:"d/m/Y" }}</td>
                         <td class="text-end fw-bold">{{ doc.total_ht|floatformat:2 }} €</td>
                         <td>{%if doc.is_archived %} Archivé - {% endif %}{{ doc.get_status_display }} </td>
                         <td class="text-center">

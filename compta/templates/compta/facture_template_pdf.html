@@ -84,7 +84,7 @@
 
     <div class="facture-title">
         <h2>{{ document.get_document_type_display }} N° {{ facture.number }}</h2>
-        <p><strong>Date d'émission :</strong> {{ facture.created_at|date:"d/m/Y" }}</p>
+        <p><strong>Date d'émission :</strong> {{ facture.created_at|date:"d/m/Y" }} - <strong>date d'échéance : </strong>{{ document.date_echeance|date:"d/m/Y" }}</p>
     </div>
 
     <table>

@@ -180,26 +180,29 @@ def import_csv_factures(request):
         return m
 
     testIsMembreAsso(request, request.session["asso_slug"])
-    form = csvFile_form(request.POST or None, request.FILES or None)
-    if form.is_valid():
-        m = ""
-        try:
-            if LOCALL:
-                fichier_csv_clients = "/home/eloi/PA_clients.csv"
-                fichier_csv_produits = "/home/eloi/PA_produits.csv"
-                fichier_csv_factures = "/home/eloi/PA_factures.csv"
-            else:
-                fichier_csv_clients = request.POST['fichier_csv_clients']
-                fichier_csv_produits = request.POST['fichier_csv_produits']
-                fichier_csv_factures = request.POST['fichier_csv_factures']
+    if request.POST:
+        form = csvFile_form(request.POST, request.FILES)
+        if form.is_valid():
+            m = ""
+            try:
+                if LOCALL:
+                    fichier_csv_clients = "/home/eloi/PA_clients.csv"
+                    fichier_csv_produits = "/home/eloi/PA_produits.csv"
+                    fichier_csv_factures = "/home/eloi/PA_factures.csv"
+                else:
+                    fichier_csv_clients = request.POST['fichier_csv_clients']
+                    fichier_csv_produits = request.POST['fichier_csv_produits']
+                    fichier_csv_factures = request.POST['fichier_csv_factures']
 
 
-            m += lire_clients(request, fichier_csv_produits)
-            m += lire_produits(request, fichier_csv_produits)
-            m += lire_csv_factures(request, fichier_csv_factures)
-        except Exception as e:
-            m+= "<p>ERR " + str(e) + "</p>"
+                m += lire_clients(request, fichier_csv_produits)
+                m += lire_produits(request, fichier_csv_produits)
+                m += lire_csv_factures(request, fichier_csv_factures)
+            except Exception as e:
+                m+= "<p>ERR " + str(e) + "</p>"
 
-        return render(request, 'compta/admin_utils.html', {"message": m, "title": "Resultat imports factures"})
+            return render(request, 'compta/admin_utils.html', {"message": m, "title": "Resultat imports factures"})
+    else:
+        form = csvFile_form()
 
     return render(request, 'compta/admin_utils.html', {"form": form, "title": "Lancer imports factures"})

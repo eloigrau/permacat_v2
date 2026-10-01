@@ -5,19 +5,6 @@
 	<p>Vous pouvez choisir le salon de discussion qui sera associé à l'article {{article}}</p>
 {% endblock  %}
 {% block content %}
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
-<div class="row">
-	<div class="col-sm-12">
-<form class="form-horizontal" role="form" action="" method="post"
-	enctype="multipart/form-data">
-	{% csrf_token %} <input type="hidden" name="Evenement" value="{{ article }}"> {% include 'form_template.html'%}
-</form>
-</div>
-    </div>
 
-
+ {% include 'form_template.html'%}
 {% endblock %}

@@ -627,7 +627,7 @@ def phoning_contact_ajouter_csv_editNonVotants(request, asso_slug,):
         texte_csv = form.cleaned_data['texte_csv']
         msg = "import texte_csv : "
         csv_reader = csv.DictReader(StringIO(texte_csv))
-        j =0
+        j = 0
         for i, line in enumerate(csv_reader):
             try:
                 if line["NOM_PATRONYMIQUE"]:

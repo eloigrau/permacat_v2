@@ -133,16 +133,16 @@
     });
 
     {% if ancre %}
-        $("#navtab_{{ancre}}").trigger('click');
-        $('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
-        $('#idConversation').scrollTop = $('#idConversation').scrollHeight - $('#idConversation').clientHeight;
+    $("#navtab_{{ancre}}").trigger('click');
+    $('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
+    $('#idConversation').scrollTop = $('#idConversation').scrollHeight - $('#idConversation').clientHeight;
     {% endif %}
 
-    {% if request.GET.ancre %}
-        $("#navtab_{{request.GET.ancre}}").trigger('click');
-        $('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
-        $('#idConversation').scrollTop = $('#idConversation').scrollHeight - $('#idConversation').clientHeight;
-     {% endif %}
+{% if request.GET.ancre %}
+$("#navtab_{{request.GET.ancre}}").trigger('click');
+$('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
+$('#idConversation').scrollTop = $('#idConversation').scrollHeight - $('#idConversation').clientHeight;
+ {% endif %}
 
     var messageBody = document.querySelector('#contenucommentaires');
     messageBody.scrollTop = contenucommentaires.scrollHeight - contenucommentaires.clientHeight;

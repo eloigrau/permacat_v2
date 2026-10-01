@@ -17,6 +17,7 @@
                 <li class="nav-item nav-notif {% if 'compta/facturation/products/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:product_list'  %}"> Produits</a></li>
                 {% if request.user.is_superuser %}
                 <li class="nav-item nav-notif {% if 'facturation/asso_infos/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:asso_info_list'  %}"> SU : AssoList</a></li>
+                <li class="nav-item nav-notif {% if 'facturation/asso_infos/' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:import_csv_factures'  %}"> SU : import_csv_factures</a></li>
                 {%endif%}
             </ul>
         </div>

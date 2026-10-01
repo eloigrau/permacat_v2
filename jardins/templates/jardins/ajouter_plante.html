@@ -8,15 +8,7 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col textcenter">
-<form class="form-horizontal" role="form" action="" method="post"
-	enctype="multipart/form-data">
-	{% csrf_token %} <input type="hidden" name="Plante"
-		value="{{ plante }}"> {% include 'form_template.html'%}
-</form>
-    </div></div>
-
+{% include 'form_template.html'%}
 
 {% endblock %}
 {% block content %}

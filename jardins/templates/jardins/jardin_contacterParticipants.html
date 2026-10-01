@@ -20,11 +20,7 @@
 {% if not  inscrits %}
          <p class="textcenter"> Personne n'est inscrit à ce jour pour suivre ce jardin. Accompagnez-les pour qu'ils s'inscrivent !
  {% else %}
-
-    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
-        enctype="multipart/form-data">
             {% include 'form_template.html'%}
-    </form>
 {% endif %}
 {% endblock %}
 

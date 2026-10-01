@@ -4,14 +4,7 @@
 <h3>Modifier la réunion</h3>
 {% endblock %}
 {% block content %}
-
-<div class="row-sm-12 row-lg-6 mx-auto">
-    <form id="reunionForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data" >
-	{% csrf_token %}
-		{% include 'form_template.html'%}
-	</form>
-</div>
-
+{% include 'form_template.html'%}
 {% endblock %}
 
 {% block scriptblock %}

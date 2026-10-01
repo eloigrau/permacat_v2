@@ -26,16 +26,7 @@
             </div>
 </div>
 <hr>
-<div class="row">
-	<div class="col-sm-12">
-        <form id="myForm"  class="form-horizontal" role="form" action="" method="post"
-            enctype="multipart/form-data">
-            {% csrf_token %} <input type="hidden" name="Atelier"
-                value="{{ salon }}"> {% include 'form_template.html'%}
-        </form>
-    </div>
-</div>
-
+{% include 'form_template.html'%}
 {% endblock %}
 
 

@@ -18,6 +18,11 @@ class BudgetCercle_Admin(admin.ModelAdmin):
     search_fields = ('titre',)
 
 
+@admin.register(FactureItem)
+class FactureItemAdmin(admin.ModelAdmin):
+    model = FactureItem
+    fields = ('product', 'quantity', 'unit_price')
+
 class FactureItemInline(admin.TabularInline):
     model = FactureItem
     extra = 1
@@ -42,7 +47,7 @@ class AssoInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Facture)
 class FactureAdmin(admin.ModelAdmin):
-    list_display = ('number', 'client', 'created_at', 'get_total_ht', "is_archived")
+    list_display = ('number', 'client', 'created_at', 'get_total_ht', "is_archived", "status")
     search_fields = ('number', 'client__name')
     inlines = [FactureItemInline]
 

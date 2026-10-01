@@ -14,7 +14,7 @@ from .models import RecuFiscal
 from bourseLibre.models import Asso
 from .forms import RecuFiscalForm
 
-from .forms import FactureForm, FactureItemFormSet
+from .forms import FactureForm, FactureItemFormSet, FactureStatutForm
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -249,6 +249,22 @@ def update_document(request, pk):
     })
 
 
+def document_update_statut(request, pk):
+    """Vue pour éditer un devis ou une facture existante."""
+    document = get_object_or_404(Facture, pk=pk)
+
+    form = FactureStatutForm(request.POST or None, instance=document)
+
+    if form.is_valid() :
+        form.save()
+        messages.success(request, "Document mis à jour avec succès.")
+        return redirect('compta:document_detail', pk=document.pk)
+
+    return render(request, 'compta/document_statut_form.html', {
+        'form': form,
+        'document': document,
+        'title': f"Changer le statut du document {document.number}"
+    })
 # -------------------------------------------------------------------
 # ARCHIVAGE & ACTIONS
 # -------------------------------------------------------------------
@@ -301,7 +317,6 @@ def dupliquer_document(request, pk):
     new_facture.save(asso_info=devis.asso_info, doc_type=devis.document_type)
     for p in devis.items.all():
         item = FactureItem.objects.create(facture=p.facture, product=p.product,quantity=p.quantity, unit_price=p.unit_price )
-        new_facture.items.add(item)
     new_facture.save()
 
     messages.success(request, f"Le <a href='"+ devis.get_absolute_url() + f"'>document {devis.number} </a> a été dupliqué {new_facture.number}</a>.")

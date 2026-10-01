@@ -106,6 +106,10 @@ class FactureForm(forms.ModelForm):
         super(FactureForm, self)
         return self.instance
 
+class FactureStatutForm(forms.ModelForm):
+    class Meta:
+        model = Facture
+        fields = ['status']
 
 class LigneFactureForm(forms.ModelForm):
     class Meta:
@@ -153,10 +157,13 @@ FactureItemFormSet = inlineformset_factory(
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['code_client', 'name', 'address', 'siret']
+        fields = ['code_client', 'name', 'address', 'siret', 'telephone', 'email', 'infos']
         widgets = {
             'code_client': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: CLT-001'}),
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom ou Raison Sociale'}),
+            'telephone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Téléphone'}),
+            'email': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'infos': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Infos complémentaires'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Adresse complète'}),
             'siret': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '14 chiffres (optionnel)'}),
         }

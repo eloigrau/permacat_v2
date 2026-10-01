@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, utils
 from .models import DocumentType
 from django.contrib.auth.decorators import login_required
 
@@ -34,6 +34,7 @@ urlpatterns = [
 
     # Édition
     path('facturation/document/<int:pk>/editer/', views.update_document, name='document_update'),
+    path('facturation/document/<int:pk>/statut/', views.document_update_statut, name='document_update_statut'),
 
     # Archivage & Restauration
     path('facturation/document/<int:pk>/archiver/', views.archive_document, name='document_archive'),
@@ -56,6 +57,8 @@ urlpatterns = [
     path('facturation/clients/', views.ClientListView.as_view(), name='client_list'),
     path('facturation/clients/add/', views.ClientCreateView.as_view(), name='client_create'),
     path('facturation/clients/<int:pk>/edit/', views.ClientUpdateView.as_view(), name='client_update'),
+    path('facturation/import_csv_factures/', utils.import_csv_factures, name='import_csv_factures'),
+
 
     path('recus/', views.RecuListView.as_view(), name='recu_list'),
     path('recu/nouveau/', views.RecuCreateView.as_view(), name='recu_create'),

@@ -8,13 +8,7 @@
 {% endblock %}
 {% block content %}
 
-<div class="row-sm-12 row-lg-6 mx-auto">
-    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
-        enctype="multipart/form-data"  ajax_cercles-url="{% url 'blog:ajax_cercles' %}">
             {% include 'form_template.html'%}
-    </form>
-</div>
-
 {% endblock %}
 
 {% block scriptblock %}

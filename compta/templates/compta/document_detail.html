@@ -48,10 +48,15 @@
             </div>
 
             <div class="border-top border-bottom py-2 my-3">
-                <h3 class="fw-bold text-uppercase mb-0">
+                <div class="d-flex justify-content-between">
+                    <h3 class="fw-bold text-uppercase mb-0">
                     {{ document.get_document_type_display }} N° {{ document.number }}
-                </h3>
-                <small class="text-muted">Émis le : {{ document.created_at|date:"d/m/Y" }}</small>
+                    </h3>
+                    <a href="{% url 'compta:document_update_statut' document.pk %}" >
+                        <span class="badge badge-light" style="align-content: center;">{{ document.get_status_display }}</span>
+                    </a>
+                </div>
+                <small class="text-muted">Émis{%if document.document_type == 'FACTURE'%}e{%endif%} le : {{ document.created_at|date:"d/m/Y" }}</small>
             </div>
 
             <table class="table table-striped my-3">

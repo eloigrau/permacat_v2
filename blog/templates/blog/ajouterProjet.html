@@ -4,17 +4,7 @@
 <h3>Proposer un projet</h3>
 {% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-sm-12">
-        <form action="" ajax_cercles-url="{% url 'blog:ajax_cercles' %}" class="form-horizontal" enctype="multipart/form-data" id="myForm"
-              method="post" role="form">
-            {% csrf_token %} <input name="Projet" type="hidden"
-                                    value="{{ projet }}"> {% include 'form_template.html'%}
-        </form>
-
-    </div>
-</div>
-
+{% include 'form_template.html'%}
 {% endblock %}
 
 

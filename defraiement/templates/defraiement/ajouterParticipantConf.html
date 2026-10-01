@@ -17,11 +17,7 @@
 </div>
 {% endblock  %}
 {% block content %}
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
+
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
 {% if request.session.asso_slug == "conf66" %}

@@ -1,0 +1,34 @@
+{% extends 'compta/factures_base.html' %}
+{% load app_filters %}
+{% load fontawesome_5 %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block subtitle %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-3 ">
+        <input type="button"  onclick="window.history.back();"  class="btn btn-outline-secondary" value="Retour" >
+    <div class="col-sm-12 col-md-6">
+        <h3>{{ request.session.asso_slug | getNomGroupeFromSlug }} - Admin </h3>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+{% if form %}
+{% include 'form_template.html' %}
+{% endif %}
+
+<div class="row">
+    <div class="col textcenter">
+       <h3> Ajouter une liste de factures </h3>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-8 col-lg-6">
+
+            <h5>Message :</h5>
+        <p>{{message|safe}}</p>
+    </div>
+</div>
+{% endblock %}

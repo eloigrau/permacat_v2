@@ -165,6 +165,9 @@ class Client(models.Model):
     address = models.TextField(verbose_name="Adresse")
     siret = models.CharField(max_length=14, blank=True, null=True, verbose_name="SIRET")
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    email = models.CharField(max_length=14, blank=True, null=True, verbose_name="Email")
+    telephone = models.CharField(max_length=14, blank=True, null=True, verbose_name="Telephone")
+    infos = models.CharField(max_length=255, blank=True, null=True, verbose_name="Infos complémentaires")
 
     class Meta:
         verbose_name = "Client"
@@ -176,7 +179,7 @@ class Client(models.Model):
 
     def save(self, asso, *args, **kwargs):
         if not self.code_client:
-            self.asso=asso
+            self.asso = asso
             annee_en_cours = timezone.now().year
             prefixe = f"CLI-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
@@ -255,6 +258,9 @@ class AssoInfo(models.Model):
     class Meta:
         verbose_name = "Vendeur"
         verbose_name_plural = "Vendeurs"
+        constraints = [
+            models.UniqueConstraint(fields=['asso', 'is_default'], name='unique defaut par Groupe')
+        ]
 
     def __str__(self):
         return f"{self.name} ({self.siret})"
@@ -332,6 +338,9 @@ class FactureItem(models.Model):
         verbose_name="Prix unitaire HT appliqué"
     )
 
+    def __str__(self):
+        return f"Facture {self.facture.number} - {self.product.name} - {self.quantity} - {self.total_ht} euros"
+
     class Meta:
         verbose_name = "Ligne de facture"
         verbose_name_plural = "Lignes de facture"
@@ -339,12 +348,12 @@ class FactureItem(models.Model):
     def save(self, *args, **kwargs):
         # Utiliser automatiquement le prix actuel du produit si non spécifié
         if not self.unit_price:
-            self.unit_price = self.product.unit_price
+            self.unit_price = float(self.product.unit_price)
         super().save(*args, **kwargs)
 
     @property
     def total_ht(self):
-        return self.unit_price * self.quantity
+        return float(self.unit_price) * float(self.quantity)
 
 
 class RecuFiscal(models.Model):

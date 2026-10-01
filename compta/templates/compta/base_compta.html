@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% load app_filters %}
+{% load fontawesome_5 %}
 
 {% block submenu %}
-
 <div class="sticky-top">
     <nav class="navbar {%if request.user.css_dark %}navbar-dark bg-primary {% else %} navbar-light bg-light bg-navbar-theme {% endif %} navbar-expand-xl shadow-petit">
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar2" aria-controls="navbar2" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="icon-base bx bx-menu icon-md"></i></button>
+                <i class="icon-base bx bx-menu icon-md"></i>
+         </button>
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar">
                 <li class="nav-item nav-notif {% if 'compta/budget' in request.path %}actif{% endif %}"><a class="dropdown-item"  href="{% url 'compta:tableau_de_bord'  %}">Budgets</a></li>
@@ -19,7 +20,38 @@
 {% endblock %}
 
 {% block subtitle %}
-<h3>Compta du Groupe {{ request.session.asso_slug | getNomGroupeFromSlug }}</h3>
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-3 ">
+
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h3>{{ request.session.asso_slug | getNomGroupeFromSlug }} - Comptabilité </h3>
+    </div>
+    <div class="col-md-3">
+        <a type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+         {% fa5_icon 'question-circle' %}
+        </a>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog textaide" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <div class="row justify-content-center">
+               <h5 > A quoi sert ce module ?</h5>
+              </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body textleft">
+            <p>Le module de comptabilité permet d'associer des budgets à des projets, pour gérer les recettes et dépense.</p>
+            <p>On peut aussi générer les reçus fiscaux et les factures et devis</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}

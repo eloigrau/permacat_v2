@@ -1,49 +1,42 @@
 {% extends 'compta/factures_base.html' %}
+{% load app_filters %}
+{% load fontawesome_5 %}
 
 {% block title %}{{ title }}{% endblock %}
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white py-3">
-                <h4 class="mb-0 fw-bold text-primary">{{ title }}</h4>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.non_field_errors}}
-
-                    {% for error in form.errors %}
-                    <div class="invalid-feedback">
-                      {{ error }}
-                    </div>
-                    {% endfor %}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nom / Raison Sociale</label>
-                        {{ form.name }}
-                        {{ form.name.errors }}
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">SIRET (Optionnel)</label>
-                        {{ form.siret }}
-                        {{ form.siret.errors }}
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Adresse</label>
-                        {{ form.address }}
-                        {{ form.address.errors }}
-                    </div>
-
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{% url 'compta:client_list' %}" class="btn btn-light border">Annuler</a>
-                        <button type="submit" class="btn btn-success px-4">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
+{% block subtitle %}
+<div class="row justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-3 ">
+            <a href="{% url 'compta:client_list' %}" class="btn btn-outline-secondary"><i class="fa fas fa-arrow-left me-1"></i>Retour</a>
+    </div>
+    <div class="col-sm-12 col-md-6">
+        <h3>{{ request.session.asso_slug | getNomGroupeFromSlug }} - {{ title }} </h3>
+    </div>
+    <div class="col-md-3">
+        <a type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help" title="En savoir plus...">
+         {% fa5_icon 'question-circle' %}
+        </a>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog textaide" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+              <div class="row justify-content-center">
+               <h5 > Les Clients ?</h5>
+              </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body textleft">
+            <p>Cela permet d'enregistrer les données des personnes (morales ou physiques) à qui on envoie les factures</p>
+          </div>
         </div>
+      </div>
+    </div>
     </div>
 </div>
+{% endblock %}
+{% block content %}
+{% include 'form_template.html' %}
 {% endblock %}

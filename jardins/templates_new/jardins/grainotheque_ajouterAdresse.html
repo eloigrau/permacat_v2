@@ -87,12 +87,6 @@ $('.example').leafletLocationPicker({
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>
 </div>
-
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
 <form method="post">
@@ -105,11 +99,7 @@ $('.example').leafletLocationPicker({
 </div>
 </div>
 {% comment %}
-{% if error_message %}
-<p>
-	<strong>{{ error_message }}</strong>
-</p>
-{% endif %}
+
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
 <form method="post">

@@ -377,6 +377,7 @@ class AssoInfoUpdateView(TestMembreAssoMixin, UpdateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
+
 # ==========================================
 # VUES GESTION PRODUITS (PRODUCT)
 # ==========================================

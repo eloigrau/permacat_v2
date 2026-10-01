@@ -23,8 +23,8 @@ from bourseLibre.settings import LOCALL
 
 class csvFile_form(forms.Form):
     fichier_csv_clients = forms.FileField(label="Selectionner CSV Clients", required=False, )
-    #fichier_csv_produits = forms.FileField(label="Selectionner CSV Produits", required=False, )
-    #fichier_csv_factures = forms.FileField(label="Selectionner CSV Factures)", required=False, )
+    fichier_csv_produits = forms.FileField(label="Selectionner CSV Produits", required=False, )
+    fichier_csv_factures = forms.FileField(label="Selectionner CSV Factures)", required=False, )
 
 @login_required
 def lire_csv_clients(request, csv_reader):

@@ -22,7 +22,7 @@ import datetime
 from bourseLibre.settings import LOCALL
 
 class csvFile_form(forms.Form):
-    fichier_csv_clients = forms.FileField(label="Selectionner CSV Clients", required=False, )
+    fichier_csv_clients = forms.FileField(label="Selectionner CSV Clients", required=True, )
     fichier_csv_produits = forms.FileField(label="Selectionner CSV Produits", required=False, )
     fichier_csv_factures = forms.FileField(label="Selectionner CSV Factures)", required=False, )
 
@@ -154,7 +154,6 @@ def lire_csv_factures(request, filename):
 @login_required
 def import_csv_factures(request):
     def lire_clients(request, csv_reader):
-        m = ""
         with open(fichier_csv_clients, 'r', newline='\n') as data:
             csv_reader = csv.DictReader(data, delimiter=',')
             if not "nom" in csv_reader.fieldnames and not "email" in csv_reader.fieldnames:
@@ -167,15 +166,14 @@ def import_csv_factures(request):
         return m
 
     def lire_produits(request, fichier_csv_produits):
-        m = ""
         with open(fichier_csv_produits, 'r', newline='\n') as data:
             csv_reader = csv.DictReader(data, delimiter=',')
             if not "nom" in csv_reader.fieldnames and not "code" in csv_reader.fieldnames:
-                m += "Erreur : Le fichier '" + str(
+                m = "Erreur : Le fichier '" + str(
                     fichier_csv_produits) + "'" + " n'a pas de colonne 'com' ni 'code' "
                 return render(request, 'compta/admin_utils.html',
                               {"liste_tel": str(csv_reader.fieldnames), "message": m})
-            m += str(csv_reader.fieldnames)
+            m = str(csv_reader.fieldnames)
             m += lire_csv_produits(request, csv_reader)
 
         m += "Fichier produits lu\n"
@@ -184,6 +182,7 @@ def import_csv_factures(request):
     testIsMembreAsso(request, request.session["asso_slug"])
     form = csvFile_form(request.POST or None, request.FILES or None)
     if form.is_valid():
+        m = ""
         try:
             if LOCALL:
                 fichier_csv_clients = "/home/eloi/PA_clients.csv"
@@ -194,7 +193,6 @@ def import_csv_factures(request):
                 fichier_csv_produits = request.POST['fichier_csv_produits']
                 fichier_csv_factures = request.POST['fichier_csv_factures']
 
-            m = ""
 
             m += lire_clients(request, fichier_csv_produits)
             m += lire_produits(request, fichier_csv_produits)

@@ -42,7 +42,7 @@ class AssoInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Facture)
 class FactureAdmin(admin.ModelAdmin):
-    list_display = ('number', 'client', 'created_at', 'get_total_ht')
+    list_display = ('number', 'client', 'created_at', 'get_total_ht', "is_archived")
     search_fields = ('number', 'client__name')
     inlines = [FactureItemInline]
 

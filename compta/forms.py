@@ -51,8 +51,6 @@ class TransationChangeForm(forms.ModelForm):
         }
 
 
-
-
 class AssoInfoForm(forms.ModelForm):
     class Meta:
         model = AssoInfo
@@ -93,10 +91,12 @@ class FactureForm(forms.ModelForm):
 
     class Meta:
         model = Facture
-        fields = ['client', 'project']
+        fields = ['client', 'project', 'date_echeance']
         widgets = {
             'client': forms.Select(attrs={'class': 'form-select'}),
             'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
+            'date_echeance': forms.DateInput(format=('%d-%m-%Y'),
+                                            attrs={'class': 'form-control', 'type': 'date'}),
         }
 
 

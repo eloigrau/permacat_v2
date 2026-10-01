@@ -148,8 +148,8 @@ class Transaction(models.Model):
 
 
 class DocumentType(models.TextChoices):
-    QUOTE = 'QUOTE', 'Devis'
-    INVOICE = 'INVOICE', 'Facture'
+    DEVIS = 'DEVIS', 'Devis'
+    FACTURE = 'FACTURE', 'Facture'
 
 class DocumentStatus(models.TextChoices):
     DRAFT = 'DRAFT', 'Brouillon'
@@ -157,10 +157,8 @@ class DocumentStatus(models.TextChoices):
     ACCEPTED = 'ACCEPTED', 'Accepté'
     REJECTED = 'REJECTED', 'Refusé'
     PAID = 'PAID', 'Payé'
-    ARCHIVED = 'ARCHIVED', 'Archivé'
 
 # Sur ton modèle Facture (ou un modèle générique Document) :
-
 class Client(models.Model):
     code_client = models.CharField(max_length=20, unique=True, verbose_name="Code Client", blank=True)
     name = models.CharField(max_length=255, verbose_name="Nom ou Raison sociale")
@@ -265,15 +263,17 @@ class Facture(models.Model):
     number = models.CharField(max_length=50, unique=True, verbose_name="Numéro de facture")
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="factures", verbose_name="Client")
     created_at = models.DateField(auto_now_add=True, verbose_name="Date d'émission")
+    date_echeance = models.DateField(verbose_name="Date d'échéance")
 
     # Informations du Vendeur (mémorisées par facture)
     # Association au modèle AssoInfo
     asso_info = models.ForeignKey(AssoInfo, on_delete=models.PROTECT, related_name="documents", verbose_name="AssoInfo", null=False, )
     project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
 
-    document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.INVOICE)
+    document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.FACTURE)
     status = models.CharField(max_length=10, choices=DocumentStatus.choices, default=DocumentStatus.DRAFT)
     is_archived = models.BooleanField(default=False)
+    facture_link = models.CharField(max_length=100, blank=True)
 
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
 
@@ -284,6 +284,9 @@ class Facture(models.Model):
     def __str__(self):
         return f"Facture {self.number} - {self.client.name}"
 
+    def get_absolute_url(self):
+        return reverse('compta:document_detail', kwargs={'pk':self.pk})
+
     @property
     def total_ht(self):
         return sum(item.total_ht for item in self.items.all())
@@ -293,13 +296,14 @@ class Facture(models.Model):
         # Franchise en base de TVA : HT == TTC
         return self.total_ht
 
-    def save(self, asso_info, doc_type):
-        if not self.number:
+    def save(self, asso_info=None, doc_type=None, *args, **kwargs):
+        if not self.number and asso_info and doc_type:
             self.asso_info = asso_info
             self.asso = asso_info.asso
-            self.doc_type = doc_type
+            self.document_type = doc_type
+            pre_prefixe = "FA" if doc_type == DocumentType.FACTURE else "DEV"
             annee_en_cours = timezone.now().year
-            prefixe = f"FA-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
+            prefixe = f"{pre_prefixe}-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
             # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
             with transaction.atomic():
@@ -316,7 +320,7 @@ class Facture(models.Model):
                 # Formatage du numéro sur 5 chiffres (ex: 00001)
                 self.number = f"{prefixe}{nouveau_numero:05d}"
 
-        super().save()
+        super().save(*args, **kwargs)
 
 class FactureItem(models.Model):
     facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name="items")
@@ -362,6 +366,9 @@ class RecuFiscal(models.Model):
 
     def __str__(self):
         return f"Reçu n°{self.numero_recu} - {self.nom_donateur}"
+
+    def get_absolute_url(self):
+        return reverse('compta:recu_detail', kwargs={'pk':self.pk})
 
     def save(self, asso, *args, **kwargs):
         if not self.numero_recu:

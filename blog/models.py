@@ -638,14 +638,14 @@ class Commentaire(models.Model):
         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.article)
 
     def get_absolute_url(self):
-        return self.article.get_absolute_url() + "#comm_" + str(self.id)
+        return self.article.get_absolute_url()  +"?ancre="+ self.discussion.slug + "#comm_" + str(self.id)
 
     @property
     def get_absolute_url_site(self):
         return self.article.get_absolute_url_site + "#idConversation"
 
     def get_absolute_url_discussion(self):
-        return self.article.get_absolute_url() + "#idConversation"
+        return self.article.get_absolute_url() +"?ancre="+ self.discussion.slug + "#comm_" + str(self.id)
 
     @property
     def get_edit_url(self):
@@ -858,7 +858,7 @@ class CommentaireProjet(models.Model):
         return "(" + str(self.id) + ") "+ str(self.auteur_comm) + ": " + str(self.projet)
 
     def get_absolute_url(self):
-        return self.projet.get_absolute_url()
+        return self.projet.get_absolute_url() + "#comm_" + str(self.id)
 
     @property
     def get_absolute_url_site(self):

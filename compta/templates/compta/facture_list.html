@@ -1,4 +1,5 @@
 {% extends 'compta/factures_base.html' %}
+{% load app_filters %}
 
 {% block title %}Liste des Factures{% endblock %}
 
@@ -16,7 +17,9 @@
                 <thead class="table-light">
                     <tr>
                         <th>N° Document</th>
+                        <th>Archivé</th>
                         <th>Client</th>
+                        <th>Projet</th>
                         <th>Date d'émission</th>
                         <th class="text-end">Total HT</th>
                         <th class="text-center">Actions</th>
@@ -26,7 +29,9 @@
                     {% for doc in factures %}
                     <tr>
                         <td class="fw-bold"><a href="{% url 'compta:document_detail' doc.pk %}" class="text-decoration-none">{{ doc.number }}</a></td>
+                        <td>{{ doc.is_archived | translateOuiNon }}</td>
                         <td>{{ doc.client.name }}</td>
+                        <td>{{ doc.project }}</td>
                         <td>{{ doc.created_at|date:"d/m/Y" }}</td>
                         <td class="text-end fw-bold">{{ doc.total_ht|floatformat:2 }} €</td>
                         <td class="text-center">

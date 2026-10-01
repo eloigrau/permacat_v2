@@ -9,8 +9,12 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <a href="{% url 'compta:facture_list' %}" class="btn btn-outline-secondary"><i class="fa fas fa-arrow-left me-1"></i>Retour</a>
             <div class="btn-group">
-                {% if document.document_type == 'QUOTE' %}
-                    <a href="{% url 'compta:quote_convert' document.pk %}" class="btn btn-success" onclick="return confirm('Convertir ce devis en facture ?');"><i class="fa fas fa-rotate me-1"></i>Convertir en Facture</a>
+                {% if document.document_type == 'DEVIS' %}
+                    {% if not document.is_archived %}
+                        <a href="{% url 'compta:devis_convert' document.pk %}" class="btn btn-success" onclick="return confirm('Convertir ce devis en facture ?');"><i class="fa fas fa-rotate me-1"></i>Convertir en Facture</a>
+                    {% else %}
+                        <a href="{% if document.facture_link %}{{document.facture_link}} {% endif %}" class="btn btn-info"><i class="fa fas fa-rotate me-1"></i>Devis Facturé</a>
+                    {% endif %}
                 {% endif %}
                 <a href="{% url 'compta:document_update' document.pk %}" class="btn btn-primary"><i class="fa fas fa-pen me-1"></i>Éditer</a>
                 <a href="{% url 'compta:facture_pdf' document.pk %}" class="btn btn-danger" target="_blank"><i class="fa fas fa-file-pdf me-1"></i>Télécharger PDF</a>

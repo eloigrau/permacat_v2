@@ -22,15 +22,15 @@ urlpatterns = [
     path('facturation/facture/<int:facture_id>/pdf/', views.generate_facture_pdf, name='facture_pdf'),
 
     path('facturation/factures/', views.FactureListView.as_view(), name='facture_list'),
-    path('facturation/devis/', views.QuoteListView.as_view(), name='quote_list'),
+    path('facturation/devis/', views.DevisListView.as_view(), name='devis_list'),
     path('facturation/archives/', views.ArchivedDocumentListView.as_view(), name='archived_list'),
 
     # Détail
     path('facturation/document/<int:pk>/', views.DocumentDetailView.as_view(), name='document_detail'),
 
     # Création
-    path('facturation/factures/creer/', views.create_document, {'doc_type': DocumentType.INVOICE}, name='facture_create'),
-    path('facturation/devis/creer/', views.create_document, {'doc_type': DocumentType.QUOTE}, name='devis_create'),
+    path('facturation/factures/creer/', views.create_document, {'doc_type': DocumentType.FACTURE}, name='facture_create'),
+    path('facturation/devis/creer/', views.create_document, {'doc_type': DocumentType.DEVIS}, name='devis_create'),
 
     # Édition
     path('facturation/document/<int:pk>/editer/', views.update_document, name='document_update'),
@@ -40,7 +40,8 @@ urlpatterns = [
     path('facturation/document/<int:pk>/restaurer/', views.unarchive_document, name='document_unarchive'),
 
     # Conversion Devis -> Facture
-    path('devis/<int:pk>/convertir/', views.convert_quote_to_facture, name='quote_convert'),
+    path('facturation/devis/<int:pk>/convertir/', views.convert_devis_to_facture, name='devis_convert'),
+    path('facturation/doc/<int:pk>/dupliquer/', views.dupliquer_document, name='dupliquer_doc'),
 
     # Routes Vendeurs
     path('facturation/asso_infos/', views.AssoInfoListView.as_view(), name='asso_info_list'),

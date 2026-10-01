@@ -349,6 +349,8 @@ def lireArticle(request, slug):
                             description=desc, discussion=discu.titre)
             messages.success(request, "Votre commentaire a bien été publié \o/")
 
+            return redirect(comment.get_absolute_url())
+
             # envoi_emails_articleouprojet_modifie(article, request.user.username + " a réagit au projet: " +  article.titre, True)
         context = {'article': article, 'form': CommentaireArticleForm(None), 'form_discussion': form_discussion,
                    'commentaires': commentaires,
@@ -877,7 +879,7 @@ def lireProjet(request, slug):
         action.send(request.user, verb='projet_message' + suffix, action_object=projet, url=url,
                     description="a réagit au projet: '%s'" % projet.titre)
         # envoi_emails_articleouprojet_modifie(projet, request.user.username + " a réagit au projet: " +  projet.titre, False)
-        return redirect(request.path)
+        return redirect(comment.get_absolute_url())
 
     return render(request, 'blog/lireProjet.html',
                   {'projet': projet, 'form': form, 'commentaires': commentaires, 'actions': actions,
@@ -1104,7 +1106,7 @@ class ModifierCommentaireArticle(UpdateView):
             self.object.save()
         else:
             self.object.delete()
-        return HttpResponseRedirect(self.object.article.get_absolute_url())
+        return HttpResponseRedirect(self.object.get_absolute_url())
 
 
 class ModifierCommentaireProjet(UpdateView):
@@ -1122,7 +1124,7 @@ class ModifierCommentaireProjet(UpdateView):
             self.object.save()
         else:
             self.object.delete()
-        return HttpResponseRedirect(self.object.projet.get_absolute_url())
+        return HttpResponseRedirect(self.object.get_absolute_url())
 
 
 @login_required

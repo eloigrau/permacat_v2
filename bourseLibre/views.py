@@ -1128,7 +1128,7 @@ def lireConversation(request, destinataire):
             # except Exception as inst:
             #     mail_admins("erreur mails",
             #             sujet + "\n" + message + "\n xxx \n" + str(profil_destinataire.email) + "\n erreur : " + str(inst))
-        return redirect(request.path)
+        return redirect(message.get_absolute_url())
 
     return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':profil_destinataire})
 
@@ -1461,7 +1461,7 @@ def salon(request, slug):
                     send_user_notification(suiv, payload=payload, ttl=7200)
                 except:
                     pass
-        return redirect(request.path)
+        return redirect(message.get_absolute_url())
 
     return render(request, 'salon/lireSalon.html', {'form': form, 'messages_echanges': messages, 'salon':salon, 'suivis':suivis, "inscrits":inscrits, "invites":invites, "jointure_articles":jointure_articles, "dates":dates, "page_obj":page_obj})
 

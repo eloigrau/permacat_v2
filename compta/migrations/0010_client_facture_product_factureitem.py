@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('seller_siret', models.CharField(max_length=14, verbose_name='SIRET du vendeur')),
                 ('seller_iban', models.CharField(max_length=34, verbose_name='IBAN')),
                 ('seller_bic', models.CharField(max_length=11, verbose_name='BIC')),
-                ('document_type', models.CharField(choices=[('QUOTE', 'Devis'), ('INVOICE', 'Facture')], default='INVOICE', max_length=10)),
+                ('document_type', models.CharField(choices=[('DEVIS', 'Devis'), ('FACTURE', 'Facture')], default='FACTURE', max_length=10)),
                 ('status', models.CharField(choices=[('DRAFT', 'Brouillon'), ('SENT', 'Envoyé'), ('ACCEPTED', 'Accepté'), ('REJECTED', 'Refusé'), ('PAID', 'Payé'), ('ARCHIVED', 'Archivé')], default='DRAFT', max_length=10)),
                 ('client', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='factures', to='compta.client', verbose_name='Client')),
             ],

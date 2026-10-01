@@ -20,10 +20,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib import messages
 from django.db import transaction
-from django.utils import timezone
-from bourseLibre.utils import slugify_pcat_mini
 
-from .models import Facture, FactureItem, DocumentType
+from .models import Facture, DocumentStatus, DocumentType, FactureItem
 
 # -----------------------
 @login_required
@@ -158,17 +156,17 @@ class FactureListView(TestMembreAssoMixin, ListView):
 
     def get_queryset(self):
         # Filtre les factures non archivées
-        return Facture.objects.filter(is_archived=False, document_type=DocumentType.INVOICE)
+        return Facture.objects.filter(asso=self.asso).order_by("-document_type", "-created_at")
 
 
-class QuoteListView(TestMembreAssoMixin, ListView):
+class DevisListView(TestMembreAssoMixin, ListView):
     model = Facture
-    template_name = 'compta/quote_list.html'
-    context_object_name = 'quotes'
+    template_name = 'compta/devis_list.html'
+    context_object_name = 'deviss'
 
     def get_queryset(self):
         # Filtre les devis non archivés
-        return Facture.objects.filter(is_archived=False, document_type=DocumentType.QUOTE)
+        return Facture.objects.filter(is_archived=False, document_type=DocumentType.DEVIS)
 
 
 class ArchivedDocumentListView(TestMembreAssoMixin, ListView):
@@ -191,7 +189,7 @@ class DocumentDetailView(TestMembreAssoMixin, DetailView):
 # -------------------------------------------------------------------
 #
 @login_required
-def create_document(request, doc_type=DocumentType.INVOICE):
+def create_document(request, doc_type=DocumentType.FACTURE):
     """Vue générique pour créer une facture ou un devis avec ses lignes."""
     form = FactureForm(request.POST or None)
     formset = FactureItemFormSet(request.POST or None, asso_slug=request.session["asso_slug"])
@@ -210,14 +208,14 @@ def create_document(request, doc_type=DocumentType.INVOICE):
             formset.instance = document
             formset.save()
 
-        messages.success(request, f"{'Facture' if doc_type == DocumentType.INVOICE else 'Devis'} créé(e) avec succès.")
+        messages.success(request, f"{'Facture' if doc_type == DocumentType.FACTURE else 'Devis'} créé(e) avec succès.")
         return redirect('compta:document_detail', pk=document.pk)
 
     return render(request, 'compta/document_form.html', {
         'form': form,
         'formset': formset,
         'doc_type': doc_type,
-        'title': f"Créer un {'devis' if doc_type == DocumentType.QUOTE else 'facture'}"
+        'title': f"Créer un {'devis' if doc_type == DocumentType.DEVIS else 'facture'}"
     })
 
 
@@ -273,40 +271,44 @@ def unarchive_document(request, pk):
     return redirect('compta:document_detail', pk=document.pk)
 
 
-def convert_quote_to_facture(request, pk):
+def convert_devis_to_facture(request, pk):
     """Transforme un devis en facture."""
-    quote = get_object_or_404(Facture, pk=pk, document_type=DocumentType.QUOTE)
+    devis = get_object_or_404(Facture, pk=pk, document_type=DocumentType.DEVIS)
+    new_facture = Facture(client=devis.client, project=devis.project,
+                          status=DocumentStatus.DRAFT, date_echeance=devis.date_echeance,
+                          is_archived=True
+                          )
+    new_facture.save(asso_info=devis.asso_info, doc_type=DocumentType.FACTURE,)
+    for p in devis.items.all():
+        item = FactureItem.objects.create(facture=p.facture, product=p.product,quantity=p.quantity, unit_price=p.unit_price )
+        new_facture.items.add(item)
+    new_facture.save()
+    devis.is_archived = True
+    devis.facture_link = new_facture.get_absolute_url()
+    devis.save()
 
-    with transaction.atomic():
-        quote.document_type = DocumentType.INVOICE
-        quote.number = f"FAC-{quote.number}"  # Adapte la numérotation selon ton besoin
+    messages.success(request, f"Le devis a été converti en facture {devis.number} -> {new_facture.number} et archivé.")
+    return redirect('compta:document_detail', pk=new_facture.pk)
 
-        annee_en_cours = timezone.now().year
-        prefixe = f"FA-{slugify_pcat_mini(quote.asso.nom[:5])}-{annee_en_cours}-"
 
-        # Utilisation d'une transaction atomique pour éviter deux reçus avec le même numéro
-        with transaction.atomic():
-            derniere = Facture.objects.select_for_update().filter(asso=quote.asso,
-                                                                  number__startswith=prefixe
-                                                                  ).order_by('id').last()
+def dupliquer_document(request, pk):
+    """Transforme un devis en facture."""
+    devis = get_object_or_404(Facture, pk=pk)
+    new_facture = Facture(client=devis.client, project=devis.project,
+                          status=DocumentStatus.DRAFT, date_echeance=devis.date_echeance,
+                          is_archived=False
+                          )
+    new_facture.save(asso_info=devis.asso_info, doc_type=devis.document_type)
+    for p in devis.items.all():
+        item = FactureItem.objects.create(facture=p.facture, product=p.product,quantity=p.quantity, unit_price=p.unit_price )
+        new_facture.items.add(item)
+    new_facture.save()
 
-            if derniere:
-                # Extraction du dernier numéro séquentiel
-                dernier_numero = int(derniere.number.split('-')[-1])
-                nouveau_numero = dernier_numero + 1
-            else:
-                nouveau_numero = 1
-
-            # Formatage du numéro sur 5 chiffres (ex: 00001)
-            quote.number = f"{prefixe}{nouveau_numero:05d}"
-        quote.save()
-
-    messages.success(request, f"Le devis a été converti en facture {quote.number}.")
-    return redirect('compta:document_detail', pk=quote.pk)
-
+    messages.success(request, f"Le <a href='"+ devis.get_absolute_url() + f"'>document {devis.number} </a> a été dupliqué {new_facture.number}</a>.")
+    return redirect('compta:document_detail', pk=new_facture.pk)
 
 # ==========================================
-# VUES GESTION VENDEURS (SELLER)
+# VUES GESTION VENDEURS (ASSO)
 # ==========================================
 
 class AssoInfoListView(TestMembreAssoMixin, ListView):

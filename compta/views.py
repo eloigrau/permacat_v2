@@ -347,6 +347,7 @@ class AssoInfoCreateView(TestMembreAssoMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        self.object.asso = self.asso
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 

@@ -163,10 +163,10 @@ class Client(models.Model):
     code_client = models.CharField(max_length=20, unique=True, verbose_name="Code Client", blank=True)
     name = models.CharField(max_length=255, verbose_name="Nom ou Raison sociale")
     address = models.TextField(verbose_name="Adresse")
-    siret = models.CharField(max_length=14, blank=True, null=True, verbose_name="SIRET")
+    siret = models.CharField(max_length=20, blank=True, null=True, verbose_name="SIRET")
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
-    email = models.CharField(max_length=14, blank=True, null=True, verbose_name="Email")
-    telephone = models.CharField(max_length=14, blank=True, null=True, verbose_name="Telephone")
+    email = models.CharField(max_length=100, blank=True, null=True, verbose_name="Email")
+    telephone = models.CharField(max_length=15, blank=True, null=True, verbose_name="Telephone")
     infos = models.CharField(max_length=255, blank=True, null=True, verbose_name="Infos complémentaires")
 
     class Meta:
@@ -248,8 +248,8 @@ class Product(models.Model):
 class AssoInfo(models.Model):
     name = models.CharField(max_length=255, verbose_name="Nom / Raison sociale")
     #abreviation = models.CharField(max_length=3, verbose_name="Abreviation (3 lettres sans espaces)")
-    siret = models.CharField(max_length=14, verbose_name="SIRET")
-    iban = models.CharField(max_length=34, verbose_name="IBAN")
+    siret = models.CharField(max_length=20, verbose_name="SIRET")
+    iban = models.CharField(max_length=38, verbose_name="IBAN")
     bic = models.CharField(max_length=11, verbose_name="BIC")
     is_default = models.BooleanField(default=False, verbose_name="Vendeur par défaut")
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)

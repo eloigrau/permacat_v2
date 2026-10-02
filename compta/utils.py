@@ -49,7 +49,7 @@ def lire_csv_clients(request, csv_reader):
                 code_client=line["code"] if 'code' in cles else "",
                 address=line["ad1"]+" "+line["ad2"]+" "+line["ad3"],
                 email=line["email"] if 'email' in cles else "",
-                telephone=line["telephone"] if 'telephone' in cles else "",
+                telephone=line["telephone"][:15] if 'telephone' in cles else "",
                 infos=line["remarque1"] if 'remarque1' in cles else "",
                 asso=asso
             )

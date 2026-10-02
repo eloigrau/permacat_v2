@@ -7,15 +7,14 @@
 <h3>Modifier un projet</h3>
 {% endblock %}
 {% block content %}
-
-            {% include 'form_template.html'%}
+{% include 'form_template.html'%}
 {% endblock %}
 
 {% block scriptblock %}
 <script>
 
 function updateForm() {
-    var url = $("#myForm").attr("ajax_cercles-url"); // get the url of the `load_cities` view
+    var url = "{% url 'blog:ajax_cercles' %}"; // get the url of the `load_cities` view
     var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
 
     if (asso){

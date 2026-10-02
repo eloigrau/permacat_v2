@@ -27,7 +27,7 @@ $(function() {
 });
 
 function updateForm() {
-    var url = $("#articleForm").attr("ajax_categories-url"); // get the url of the `load_cities` view
+    var url = "{% url 'blog:ajax_categories' %}"; // get the url of the `load_cities` view
     var asso = $("#id_asso").val(); // get the selected country ID from the HTML input
 
     $.ajax({ // initialize an AJAX request
@@ -51,7 +51,6 @@ function updateForm() {
         $("#id_partagesAsso").children().each((index, element) => {
           if (index > 0) {
             element.style.visibility = "hidden";
-            $(element).children().children('input').prop("checked", false);
           }
         });
         $("#id_estEpingle").prop('disabled', true);
@@ -61,7 +60,6 @@ function updateForm() {
          select_partages.style.visibility = "visible";
         $("#id_estEpingle").prop('disabled', false);
         $("#id_partagesAsso").children().each((index, element) => {
-            $(element).children().children('input').prop("checked", false);
             element.style.visibility = "visible";
         });
     }

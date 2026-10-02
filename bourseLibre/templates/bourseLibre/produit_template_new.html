@@ -13,11 +13,9 @@
             <i class="bi bi-arrow-down-left-circle me-1"></i>Demande
             </span>
         {% endif %}
-        <span class="fw-medium text-truncate me-2" title="{{ annonce.asso }}">
           {{ annonce.asso.get_logo_nomgroupe_html_15|safe }}
-        </span>
-        <span class="badge text-bg-light border text-muted fw-normal">
-            {{annonce.get_categorie_icon_html}}{% if annonce.get_souscategorie %} - {{annonce.get_souscategorie}}{% endif %}
+        <span class="badge bg-label-info border text-muted fw-normal px-3 py-2 fs-6">
+            {{annonce.get_categorie_icon_html}}
         </span>
     </div>
 

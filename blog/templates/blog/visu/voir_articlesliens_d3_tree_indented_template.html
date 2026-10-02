@@ -8,9 +8,12 @@
         <button type="button" class="btn btn-light" name="cb_2" id="docs" visibilite="false">Documents</button>
         <button type="button" class="btn btn-light"  name="cb_3" id="ats" visibilite="false">Ateliers</button>
         <button type="button" class="btn btn-light"  name="cb_4" id="pads" visibilite="false">Pads</button>
+        <button type="button" class="btn btn-light"  name="cb_4" id="salons" visibilite="false">Salon</button>
     </div>
 </div>
+
 {% endcomment %}
+
 {% block jscript %}
 
 {% block json_source %}
@@ -118,6 +121,16 @@ function updateLinks(){
 <!--    }else{-->
 <!--        d3.selectAll(".atelier").style("visibility", "hidden");-->
 <!--        d3.select("#ats").attr("visibilite", true);-->
+<!--    }-->
+<!--updateLinks()-->
+<!-- });-->
+<!--d3.select("#salons").on("click", function () {-->
+<!--    if (d3.select("#salons").attr("visibilite") == "true"){-->
+<!--        d3.selectAll(".salon").style("visibility", "visible");-->
+<!--        d3.select("#salons").attr("visibilite", false);-->
+<!--    }else{-->
+<!--        d3.selectAll(".salon").style("visibility", "hidden");-->
+<!--        d3.select("#salons").attr("visibilite", true);-->
 <!--    }-->
 <!--updateLinks()-->
 <!-- });-->

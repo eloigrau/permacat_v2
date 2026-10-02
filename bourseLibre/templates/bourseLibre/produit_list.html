@@ -8,16 +8,24 @@
 <div class="row justify-content-center align-items-center">
     <div class="col-md-3 ">
         <div class="row no-gutters justify-content-center">
-            <div class="col" >
-        <form action="{% url 'chercher_produits' %}" class="form-inline justify-content-center  navbar-form "
-              method="get" role="search">
-            {% csrf_token %}
-            <div class="input-group input-group-sm">
-            <input class="form-control" name="id_recherche" placeholder="rechercher..." type="text">
-            <button class="btn btn-info text-nowrap" type="submit">{% fa5_icon 'search' title='chercher' %}</button>
+            <div class="col-sm-12">
+                <form action="{% url 'chercher_produits' %}" class="form-inline justify-content-center  navbar-form "
+                      method="get" role="search">
+                    {% csrf_token %}
+                    <div class="input-group input-group-sm">
+                        <input class="form-control" name="id_recherche" placeholder="rechercher..." type="text">
+                        <button class="btn btn-info text-nowrap" type="submit">{% fa5_icon 'search' title='chercher' %}
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
+            <div class="col-sm-12">
             </div>
+            <a href="{% url 'produit_proposer_entree' %}">
+                <button class="btn btn-success" type="button">
+                    <i class="fa fa-plus"></i> &nbsp;Ajouter une annonce
+                </button>
+            </a>
         </div>
     </div>
     <div class="col-md-6 ">

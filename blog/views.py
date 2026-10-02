@@ -5,10 +5,11 @@ from django.utils.html import strip_tags
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormMixin
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
     Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, \
-    ArticleLienProjet, Cercle
+    ArticleLienProjet, Cercle, ReactionCommentaire
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, \
     ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, \
@@ -39,7 +40,7 @@ from defraiement.models import Reunion
 from django.views.decorators.csrf import csrf_exempt
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
-from django.db.models import Q, F
+from django.db.models import Q, Count
 from datetime import datetime, timedelta
 import pytz
 from django.utils.text import slugify
@@ -287,7 +288,10 @@ def lireArticle(request, slug):
     reunions = Reunion.objects.filter(article=article)
 
     discussions = article.discussion_set.all().order_by('id')
-    commentaires = {discu: Commentaire.objects.filter(discussion=discu).order_by("date_creation") for discu in
+    commentaires = {discu: Commentaire.objects.filter(discussion=discu).order_by("date_creation").annotate(
+        like_count=Count('reactions', filter=Q(reactions__reaction='like')),
+        dislike_count=Count('reactions', filter=Q(reactions__reaction='dislike')),
+        heart_count=Count('reactions', filter=Q(reactions__reaction='heart'))) for discu in
                     discussions}
     dates = Evenement.objects.filter(article=article).order_by("-start_time")
 
@@ -1776,3 +1780,41 @@ class ProjetAutocomplete(autocomplete.Select2QuerySetView):
         return Projet.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre(),
                                       estArchive=True).filter(
             Q(titre__icontains=self.q) | Q(titre__istartswith=self.q)).order_by("titre")
+
+
+
+@login_required
+@require_POST
+def react_commentaire(request, comment_id):
+    commentaire = get_object_or_404(Commentaire, id=comment_id)
+    type_reaction = request.POST.get('reaction')
+
+    if type_reaction in dict(ReactionCommentaire.TYPES_REACTION):
+        reaction_obj, created = ReactionCommentaire.objects.get_or_create(
+            commentaire=commentaire,
+            utilisateur=request.user,
+            defaults={'reaction': type_reaction}
+        )
+
+        if not created:
+            if reaction_obj.reaction == type_reaction:
+                # Annule la réaction si identique
+                reaction_obj.delete()
+            else:
+                # Met à jour la réaction
+                reaction_obj.reaction = type_reaction
+                reaction_obj.save()
+
+    # On réévalue les compteurs pour le commentaire
+    commentaire_annote = Commentaire.objects.filter(id=comment_id).annotate(
+        like_count=Count('reactions', filter=Q(reactions__reaction='like')),
+        dislike_count=Count('reactions', filter=Q(reactions__reaction='dislike')),
+        heart_count=Count('reactions', filter=Q(reactions__reaction='heart')),
+    ).first()
+
+    # Détermine la réaction courante de l'utilisateur
+    user_react = commentaire.reactions.filter(utilisateur=request.user).first()
+    commentaire_annote.user_reaction = user_react.reaction if user_react else None
+
+    # Renvoie le composant HTML mis à jour
+    return render(request, 'reaction_buttons.html', {'comment': commentaire_annote})

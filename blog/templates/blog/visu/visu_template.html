@@ -12,13 +12,13 @@
         <div class="navbar-collapse collapse mx-auto" id="navbar2">
             <ul class="navbar-nav mx-auto subnavbar align-items-center">
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">
-                        Arbre
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_slug=request.session.asso_slug %}">
+                        Arborescence
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_slug=request.session.asso_slug %}">
-                        Docs Par Dossier
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}">
+                        Arbre
                     </a>
                 </li>
                 {% if request.session.asso_slug == 'scic' or request.session.asso_slug == "public" %}
@@ -47,6 +47,11 @@
                 <li class="nav-item nav-jardin">
                     <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_slug=request.session.asso_slug %}">
                         liens Projet
+                    </a>
+                </li>
+                <li class="nav-item nav-jardin">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens' asso=request.session.asso_slug %}">
+                        liens ArticleLIen
                     </a>
                 </li>
                 {% endif %}

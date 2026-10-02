@@ -1,0 +1,67 @@
+<div class="reaction-dropdown position-absolute" id="reactions-comment-{{ comment.id }}" style="bottom: 8px; right: 8px;">
+    <div class="dropdown">
+        <!-- Bouton principal en haut à droite -->
+        <button class="btn btn-xs btn-light border-0 dropdown-toggle btn-reaction-main"
+                type="button"
+                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            {% if comment.user_reaction == 'like' %}
+                <i class="fas fa-thumbs-up text-success"></i>
+            {% elif comment.user_reaction == 'dislike' %}
+                <i class="fas fa-thumbs-down text-danger"></i>
+            {% elif comment.user_reaction == 'heart' %}
+                <i class="fas fa-heart text-primary"></i>
+            {% else %}
+                <i class="far fa-smile text-muted"></i>
+            {% endif %}
+
+            {% with total=comment.like_count|default:0|add:comment.dislike_count|default:0|add:comment.heart_count|default:0 %}
+                {% if total > 0 %}
+                    <span class="badge bg-secondary text-dark ms-1">{{ total }}</span>
+                {% endif %}
+            {% endwith %}
+        </button>
+
+        <!-- Menu des choix au clic -->
+        <div class="dropdown-menu dropdown-menu-end p-1 shadow-sm">
+            <div class="d-flex gap-1 align-items-center">
+                <!-- Pouce haut -->
+                <button type="button"
+                        class="btn btn-xs btn-react {% if comment.user_reaction == 'like' %}btn-success text-white{% else %}btn-outline-secondary{% endif %}"
+                        hx-post="{% url 'blog:react_commentaire' comment.id %}"
+                        hx-vals='{"reaction": "like"}'
+                        hx-target="#reactions-comment-{{ comment.id }}"
+                        hx-swap="outerHTML"
+                        title="J'aime">
+                    <i class="fas fa-thumbs-up"></i>
+                    <small>{{ comment.like_count|default:0 }}</small>
+                </button>
+
+                <!-- Pouce bas -->
+                <button type="button"
+                        class="btn btn-xs btn-react {% if comment.user_reaction == 'dislike' %}btn-danger text-white{% else %}btn-outline-secondary{% endif %}"
+                        hx-post="{% url 'blog:react_commentaire' comment.id %}"
+                        hx-vals='{"reaction": "dislike"}'
+                        hx-target="#reactions-comment-{{ comment.id }}"
+                        hx-swap="outerHTML"
+                        title="Je n'aime pas">
+                    <i class="fas fa-thumbs-down"></i>
+                    <small>{{ comment.dislike_count|default:0 }}</small>
+                </button>
+
+                <!-- Cœur -->
+                <button type="button"
+                        class="btn btn-xs btn-react {% if comment.user_reaction == 'heart' %}btn-primary text-white{% else %}btn-outline-secondary{% endif %}"
+                        hx-post="{% url 'blog:react_commentaire' comment.id %}"
+                        hx-vals='{"reaction": "heart"}'
+                        hx-target="#reactions-comment-{{ comment.id }}"
+                        hx-swap="outerHTML"
+                        title="J'adore">
+                    <i class="fas fa-heart"></i>
+                    <small>{{ comment.heart_count|default:0 }}</small>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

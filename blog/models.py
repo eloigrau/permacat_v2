@@ -132,7 +132,10 @@ class Choix:
     }
 
 
-    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818', 'document':'#ffcc99', 'projet':'#365BEC','categorie':"#f47a3f", 'tags':"#d98cd9", "pad":"#666699"}
+    couleurs_lien ={'article':'#058265', 'atelier':'#fbd818',
+                    'document':'#ffcc99', 'projet':'#365BEC',
+                    'categorie':"#f47a3f", 'tags':"#d98cd9",
+                    "pad":"#666699", "salon":"#d98cd9"}
 
 
     ordre_tri_articles = {
@@ -642,7 +645,7 @@ class Commentaire(models.Model):
 
     @property
     def get_absolute_url_site(self):
-        return self.article.get_absolute_url_site + "#idConversation"
+        return self.article.get_absolute_url_site +"?ancre="+ self.discussion.slug + "#comm_" + str(self.id)
 
     def get_absolute_url_discussion(self):
         return self.article.get_absolute_url() +"?ancre="+ self.discussion.slug + "#comm_" + str(self.id)
@@ -707,6 +710,27 @@ class Commentaire(models.Model):
 
     def est_autorise(self, user):
         return self.projet.est_autorise(user)
+
+    # Raccourcis pour compter les réactions
+    @property
+    def likes_count(self):
+        return self.reactions.filter(reaction='like').count()
+
+    @property
+    def dislikes_count(self):
+        return self.reactions.filter(reaction='dislike').count()
+
+    @property
+    def hearts_count(self):
+        return self.reactions.filter(reaction='heart').count()
+
+    # Récupérer la réaction d'un utilisateur spécifique
+    @property
+    def get_user_reaction(self, user):
+        if user.is_authenticated:
+            reaction = self.reactions.filter(utilisateur=user).first()
+            return reaction.reaction if reaction else None
+        return None
 
 class Cercle(models.Model):
     titre = models.CharField(max_length=250)
@@ -1044,6 +1068,25 @@ class ArticleLienProjet(models.Model):
 
     def get_update_url(self):
         return reverse("blog:modifierArticleLienProjet", kwargs={"slug_article":self.article.slug,"pk":self.pk})
+
+class ReactionCommentaire(models.Model):
+    TYPES_REACTION = [
+        ('like', "J'approuve"),
+        ('dislike', "Je désapprouve"),
+        ('heart', 'Heart'),
+    ]
+
+    commentaire = models.ForeignKey(Commentaire, on_delete=models.CASCADE, related_name='reactions')
+    utilisateur = models.ForeignKey(Profil, on_delete=models.CASCADE)
+    reaction = models.CharField(max_length=10, choices=TYPES_REACTION)
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # Un utilisateur ne peut réagir qu'une seule fois par commentaire
+        unique_together = ('commentaire', 'utilisateur')
+
+    def __str__(self):
+        return f"{self.utilisateur} - {self.reaction} sur #{self.commentaire_id}"
 
 
 class Article_recherche(models.Model):

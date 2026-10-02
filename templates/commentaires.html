@@ -3,46 +3,55 @@
 {% load avatar_tags %}
 
 <div class="anchor_blank" id="idConversation"></div>
-<div class=" commentaires"  id="idConversation_2">
+<div class=" commentaires" id="idConversation_2">
 
-{% if commentaires %}
-<div class="conversation">
-              <div class="conversation-container">
-    {% for comment in commentaires %}
-      {% ifchanged comment.pascetteannee %}
-      {% if not forloop.first %}
-                  <div class="row justify-content-center textcenter">
-        <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
-                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
-                title="Cliquez pour afficher les archives">
-                            Afficher les message archivés
-        </button></div>
-    {% endif %}
-    {% endifchanged %}
-	<div class="row anchor_blank {% if pascetteannee %} pascetteannee invisible {% endif %}" id="comm_{{comment.id}}"></div>
-        <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
+    {% if commentaires %}
+    <div class="conversation">
+        <div class="conversation-container">
+            {% for comment in commentaires %}
+            {% ifchanged comment.pascetteannee %}
+            {% if not forloop.first %}
+            <div class="row justify-content-center textcenter">
+                <button class="btn btn-sm btn-light visible btn-detail-comments" data-placement="bottom"
+                        data-toggle="tooltip" onclick="toggle_visibility_class();" title="Cliquez pour afficher les archives"
+                        type="button">
+                    Afficher les message archivés
+                </button>
+            </div>
+            {% endif %}
+            {% endifchanged %}
+            <div class="row anchor_blank {% if pascetteannee %} pascetteannee invisible {% endif %}"
+                 id="comm_{{comment.id}}"></div>
+            <div class="message {% if request.user == comment.auteur_comm %} sent {% else %} received {% endif %} {% if comment.pascetteannee %}pascetteannee invisible {% endif %}">
 
-                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}"> {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>{% endifchanged %}
-                <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}{% else %}{% ifchanged comment.date_creation|date:"l d F" %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}{{ comment.date_creation|date:"G:i" }}{% endif %}
-
+                {% ifchanged %}<a href="{% url 'profil_nom' comment.auteur_comm %}">
+                {% avatar comment.auteur_comm 40 class="img-circle-profil" id="user_avatar" %} {{comment.auteur_comm}}</a>{% endifchanged %}
+                <span class="metadata">{% if comment.pascetteannee %}{{ comment.date_creation|date:"d/m - Y" }}
+                    {% else %}{% ifchanged comment.date_creation|date:"l d F" %}{{ comment.date_creation|date:"l d F" }}, {% endifchanged %}
+                    {{ comment.date_creation|date:"G:i" }}
+                    {% endif %}
                 {% if request.user == comment.auteur_comm or request.user.is_superuser %}
-                <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i class="fa fa-edit"></i></a>
+                <a class="boutonediter" help_text="éditer" href="{{ comment.get_edit_url  }}" role="button"><i
+                        class="fa fa-edit"></i></a>
                 {% endif %}
                    </span>
                 <p>{{ comment.commentaire|safe|usermention}}</p>
+                <!-- SECTION DES RÉACTIONS (HTMX) -->
+                {% include "reaction_buttons.html" with comment=comment %}
+            </div>
+            {% if forloop.last and comment.pascetteannee %}
+            <div class="row justify-content-center textcenter">
+                <button class="btn btn-sm btn-light visible btn-detail-comments" data-placement="bottom"
+                        data-toggle="tooltip" onclick="toggle_visibility_class();" title="Cliquez pour afficher les archives"
+                        type="button">
+                    Afficher les message archivés
+                </button>
+            </div>
+            {% endif %}
+            {% endfor %}
         </div>
-      {% if forloop.last and comment.pascetteannee %}
-                  <div class="row justify-content-center textcenter">
-        <button type="button" class="btn btn-sm btn-light visible btn-detail-comments"
-                onclick="toggle_visibility_class();" data-toggle="tooltip" data-placement="bottom"
-                title="Cliquez pour afficher les archives">
-                            Afficher les message archivés
-        </button></div>
-    {% endif %}
-{% endfor %}
     </div>
-</div>
-{% endif %}
+    {% endif %}
 
 </div>
 {% if commentaires %}
@@ -56,21 +65,21 @@
 {%endif%}
 
 <div class="anchor_blank" id="idComenter"></div>
-<form id="myForm" class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+<form action="" class="form-horizontal" enctype="multipart/form-data" id="myForm" method="post" role="form">
     {% csrf_token %}
-    <input type="hidden" name="Nouveau Message" value="{{ message_defaut }}">
-        {% include 'form_template2.html' with nolabel_summernote=True %}
-      <div class="input-group-btn textcenter">
-      <button id="btn-valider" type="submit" class="btn btn-primary">Envoyer le message</button>
-      </div>
+    <input name="Nouveau Message" type="hidden" value="{{ message_defaut }}">
+    {% include 'form_template2.html' with nolabel_summernote=True %}
+    <div class="input-group-btn textcenter">
+        <button class="btn btn-primary" id="btn-valider" type="submit">Envoyer le message</button>
+    </div>
 
 </form>
- {% else %}
+{% else %}
 <p><small>Vous devez vous <a href="/auth/login/">authentifier</a> pour laisser un message.</small></p>
- {% endif %}
+{% endif %}
 
 
-    <script>
+<script>
 
     var messageBody = document.querySelector('#idConversation_2');
     messageBody.scrollTop = idConversation_2.scrollHeight - idConversation_2.clientHeight;
@@ -88,4 +97,5 @@ function toggle_visibility_class(id_class) {
        }
        $('.btn-detail-comments').removeClass('visible').addClass('invisible');
 }
+
 </script>

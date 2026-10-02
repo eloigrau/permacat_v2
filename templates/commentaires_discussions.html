@@ -48,8 +48,10 @@
                 <a class="boutonediter" href="{{ comment.get_edit_url  }}" role="button" help_text="éditer"><i
                         class="fa fa-edit"></i></a>
                 {% endif %}
+                    <a class="boutonediter" onclick="copyToClipboard('{{comment.get_absolute_url_site}}')"><i class="fa fa-link" aria-hidden="true"></i></a>
                    </span>
                         <p>{{ comment.commentaire|safe|usermention}}</p>
+                        {% include "reaction_buttons.html" with comment=comment %}
                     </div>
                     {% if forloop.last and comment.pascetteannee %}
                     <div class="row justify-content-center textcenter">
@@ -170,4 +172,11 @@ function toggle_visibility_class(id_class) {
 }
 
 
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+}
 </script>

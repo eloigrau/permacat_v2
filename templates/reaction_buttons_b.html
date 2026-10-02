@@ -1,0 +1,31 @@
+<div class="reactions-container mt-2 pt-1 border-top d-flex gap-2 align-items-center" id="reactions-comment-{{ comment.id }}">
+    <!-- Réaction Pouce Haut -->
+    <button type="button"
+            class="btn btn-xs btn-react {% if comment.user_reaction == 'like' %}active btn-pink text-white{% else %}btn-outline-secondary{% endif %}"hx-post="{% url 'blog:react_commentaire' comment.id %}"
+            hx-vals='{"reaction": "like"}'
+            hx-target="#reactions-comment-{{ comment.id }}"
+            hx-swap="outerHTML">
+        <i class="fas fa-thumbs-up"></i>
+        <span class="count-like">{{ comment.like_count|default:0 }}</span>
+    </button>
+
+    <!-- Réaction Pouce Bas -->
+    <button type="button"
+            class="btn btn-xs btn-react {% if comment.user_reaction == 'dislike' %}active btn-pink text-white{% else %}btn-outline-secondary{% endif %}"hx-post="{% url 'blog:react_commentaire' comment.id %}"
+            hx-vals='{"reaction": "dislike"}'
+            hx-target="#reactions-comment-{{ comment.id }}"
+            hx-swap="outerHTML">
+        <i class="fas fa-thumbs-down"></i>
+        <span class="count-dislike">{{ comment.dislike_count|default:0 }}</span>
+    </button>
+
+    <!-- Réaction Coeur -->
+    <button type="button"
+            class="btn btn-xs btn-react {% if comment.user_reaction == 'heart' %}active btn-pink text-white{% else %}btn-outline-secondary{% endif %}"hx-post="{% url 'blog:react_commentaire' comment.id %}"
+            hx-vals='{"reaction": "heart"}'
+            hx-target="#reactions-comment-{{ comment.id }}"
+            hx-swap="outerHTML">
+        <i class="fas fa-heart"></i>
+        <span class="count-heart">{{ comment.heart_count|default:0 }}</span>
+    </button>
+</div>

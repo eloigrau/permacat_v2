@@ -202,4 +202,6 @@ path(r'voir_articles_liens_d3_tree_indented_tags/<str:asso_slug>/',
          views_d3.get_articles_asso_d3_hierar_tags,
         name='get_articles_asso_d3_hierar_tags'),
 
+
+path('commentaire/<int:comment_id>/react/', views.react_commentaire, name='react_commentaire'),
 ]

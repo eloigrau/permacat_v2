@@ -2975,3 +2975,42 @@ td ul.errorlist + input, td ul.errorlist + select, td ul.errorlist + textarea {
     font-size: 0.75rem;
     padding: 5px 0 0 12px;
 }
+
+/* Assure le positionnement relatif du message */
+.message {
+    position: relative;
+    padding-bottom: 2rem; /* Réserve l'espace en bas pour le bouton de réaction */
+}
+
+/* Style du bouton principal */
+.btn-reaction-main {
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(2px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease;
+}
+
+.btn-reaction-main:hover {
+    background-color: rgba(240, 240, 240, 0.95);
+}
+
+/* Supprime la flèche par défaut de Bootstrap */
+.btn-reaction-main::after {
+    display: none !important;
+}
+
+/* Menu popup déroulant compact */
+.reaction-dropdown .dropdown-menu {
+    min-width: auto;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+.reaction-dropdown .btn-react {
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    border-radius: 12px;
+}

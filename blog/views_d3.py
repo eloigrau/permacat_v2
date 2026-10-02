@@ -3,7 +3,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponseForbidden, JsonResponse
 from django.urls import  reverse
 from .forms import Article_rechercheForm
-from .models import Article, Commentaire, Projet, DocumentPartage, CommentaireProjet, Choix, ArticleLiens, ArticleLienProjet
+from .models import Article, Salon, Projet, DocumentPartage, CommentaireProjet, Choix, ArticleLiens, ArticleLienProjet
 from .views import get_tags_asso, get_articlesParTag
 from django.contrib.auth.decorators import login_required
 from bourseLibre.utils import testIsMembreAsso
@@ -288,8 +288,6 @@ def get_articles_asso_d3_hierar_dossier(request, asso_slug):
 
     categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=lambda x:str.lower(x[1]))
 
-
-
     dico = {"name":asso.nom, "children":[]}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
@@ -308,16 +306,22 @@ def get_articles_asso_d3_hierar_dossier(request, asso_slug):
                        # "nb_comm":CommentaireAtelier.objects.filter(atelier__article=art).count()
                        # if isinstance(atelier, Atelier) else 0,
                         "name":"Atelier : " + formatTitre(item.titre) if isinstance(item, Atelier) else
-                            "Pad : " + formatTitre(item.nom)  if isinstance(item, DocumentPartage) else
-                            "Document : " + formatTitre(item.titre),
+                            "Pad : " + formatTitre(item.nom) if isinstance(item, DocumentPartage) else
+                            "Document : " + formatTitre(item.titre)if isinstance(item, Document) else
+                            "Salon : "+ formatTitre(item.titre),
                         "couleur": Choix.couleurs_lien["atelier"] if isinstance(item, Atelier) else
-                            Choix.couleurs_lien["pad"]  if isinstance(item, DocumentPartage) else
-                            Choix.couleurs_lien["document"],
+                            Choix.couleurs_lien["pad"] if isinstance(item, DocumentPartage) else
+                            Choix.couleurs_lien["document"] if isinstance(item, Document) else
+                            Choix.couleurs_lien["salon"] if isinstance(item, Salon) else
+                            "black"
+                        ,
                         "url":item.get_absolute_url(),
                         "type": "atelier" if isinstance(item, Atelier) else
                                 "pad" if isinstance(item, DocumentPartage) else
-                                "document",
-                        }for item in itertools.chain(Atelier.objects.filter(article=art), Document.objects.filter(article=art), DocumentPartage.objects.filter(article=art),) ]
+                                "document" if isinstance(item, Document) else
+                                "salon",
+                        }for item in itertools.chain(Atelier.objects.filter(article=art), Document.objects.filter(article=art),
+                                                     DocumentPartage.objects.filter(article=art), Salon.objects.filter(article=art),) ]
                     }for art in articles.filter(categorie=cat).order_by("-estEpingle", "titre")]
             })
 

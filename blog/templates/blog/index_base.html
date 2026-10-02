@@ -471,7 +471,7 @@ function get_tags_articles(url_tag) {
        id="navtab_archives" title="Voir les articles 'archivés' "> Archivés</a>
 
     {% if user_membreAsso and request.session.asso_slug %}
-    <a class="nav-item nav-link" href="{% url 'blog:voir_articles_liens_d3_tree' asso_slug=request.session.asso_slug %}"
+    <a class="nav-item nav-link" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_slug=request.session.asso_slug %}"
 
        id="navtab_visu" title="Visualiser l'arborescence de tous les articles du groupe"> Carte </a>
     {% endif %}

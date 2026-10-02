@@ -18,7 +18,7 @@
 
             {% with total=comment.like_count|default:0|add:comment.dislike_count|default:0|add:comment.heart_count|default:0 %}
                 {% if total > 0 %}
-                    <span class="badge bg-secondary text-dark ms-1">{{ total }}</span>
+                    <span class="badge bg-secondary ms-1">{{ total }}</span>
                 {% endif %}
             {% endwith %}
         </button>

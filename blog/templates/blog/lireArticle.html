@@ -926,7 +926,7 @@ function get_resultatSondage(url_tag, div_name) {
 
                 {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                 <td style="text-align: center; vertical-align: middle;"><a class="btn btn-sm btn-primary textleft" href="{% url 'vote:modifierSondageB' pk=sondage.pk %}" ><i class="fa fa-edit"></i></a>
-               <a class="btn btn-sm btn-danger textleft" href="{% url 'vote:supprimerSondageB' pk=sondage.pk %}" ><i class="fa fa-close"></i></a></td>
+               <a class="btn btn-sm btn-danger textleft" href="{% url 'vote:supprimerSondageB' pk=sondage.pk %}" ><i class="fa fa-delete"></i></a></td>
                 {% endif %}
                 </tr>
               <tr> {%if sondage.auteur == request.user or article.estModifiable or request.user.is_superuser %}<td colspan="4">{%else%}<td colspan="3">{%endif%}<div id="resSondage_{{forloop.counter}}"></div></td></tr>

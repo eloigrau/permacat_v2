@@ -1,6 +1,6 @@
 {% extends 'blog/base_blog2.html' %}
 {% load static %}
-{% block title %} - Visualisation Forum{% endblock %}
+{% block title %} Arborescence du Forum du Groupe {{request.session.asso_slug | getNomGroupeFromSlug}} | {% endblock %}
 
 {% block submenu %}
 <div class="sticky-top">
@@ -62,8 +62,8 @@
 
 {% endblock %}
 {% block subtitle %}
-<h4 class="textcenter">Visualisation des articles du Forum</h4>
-<p>(Groupe -> Dossier -> Articles)</p>
+<h4 class="textcenter">Arborescence du Forum du Groupe {{request.session.asso_slug | getNomGroupeFromSlug}}</h4>
+<p>(Groupe -> Dossier -> Articles > Fichiers, documents partagés, ateliers, salons)</p>
 {% endblock %}
 {% block content %}
 

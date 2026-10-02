@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8"/>
     <title>{{ facture.get_document_type_display }} {{ facture.number }}</title>
-    <style>
+ <style>
+    /* --- CONFIGURATION DU DOCUMENT PDF --- */
     @page {
       size: A4 portrait;
       margin: 15mm 20mm 25mm 20mm;
@@ -41,21 +42,22 @@
       table-layout: fixed;
     }
 
-    /* HARMONISATION : Tous les conteneurs principaux sont alignés au milieu pour équilibrer la page */
     .page-layout > tbody > tr > td {
       vertical-align: middle;
       padding: 10px 0;
     }
 
-    /* En-tête : poussé vers le haut dans sa propre zone */
+    /* En-tête : poussé vers le haut avec un espace généreux sous les adresses */
     .page-layout > tbody > tr.layout-header > td {
       vertical-align: top;
-      padding-bottom: 20px;
+      padding-bottom: 35px; /* Augmenté pour pousser la liste des items vers le bas */
     }
 
     /* Section centrale (Tableau d'items) */
     .page-layout > tbody > tr.layout-middle > td {
       vertical-align: middle;
+      padding-top: 20px;    /* Espace supplémentaire au-dessus du tableau d'items */
+      padding-bottom: 20px;
     }
 
     /* Section basse (Totaux & Accords) */
@@ -72,7 +74,7 @@
     }
 
     .header-table td {
-      vertical-align: middle; /* Harmonisé */
+      vertical-align: middle;
     }
 
     .company-logo {
@@ -116,10 +118,11 @@
       border-spacing: 15px 0;
       margin-left: -15px;
       margin-right: -15px;
+      margin-bottom: 25px; /* ESPACE DÉDIÉ SOUS LE BLOC CLIENT/ÉMETTEUR */
     }
 
     .address-box {
-      vertical-align: top; /* Gardé en top pour aligner les textes courts/longs */
+      vertical-align: top;
       width: 50%;
       background-color: #f4f7f4;
       border-radius: 6px;
@@ -150,8 +153,9 @@
 
     /* --- TABLEAU DES ARTICLES (CENTRÉ AU MILIEU) --- */
     .items-wrapper {
-      width: 100%; /* Défini à 100% pour occuper tout le centre, ajustable à 90% si besoin */
+      width: 100%;
       margin: 0 auto;
+      margin-top: 15px; /* ESPACE NAF NATIVE SOUS LE CLIENT */
     }
 
     .items-table {
@@ -168,7 +172,7 @@
       letter-spacing: 0.5px;
       padding: 8px 10px;
       text-align: left;
-      vertical-align: middle; /* Harmonisé */
+      vertical-align: middle;
     }
 
     .items-table th.align-right,
@@ -185,7 +189,7 @@
       padding: 10px;
       border-bottom: 1px solid #e2e8f0;
       font-size: 9pt;
-      vertical-align: middle; /* Harmonisé pour aligner les contenus de lignes proprement */
+      vertical-align: middle;
     }
 
     .items-table tr:nth-child(even) td {
@@ -239,7 +243,7 @@
       padding: 5px 8px;
       text-align: right;
       font-size: 9pt;
-      vertical-align: middle; /* Harmonisé */
+      vertical-align: middle;
     }
 
     .totals-table td.label {
@@ -285,9 +289,10 @@
       vertical-align: middle;
     }
 
-    /* --- MESSAGE DE REMERCIEMENT --- */
+    /* --- MESSAGE DE REMERCIEMENT SANS BOOTSTRAP --- */
     .thank-you-box {
       text-align: center;
+      margin-top: 25px; /* Espacement en CSS natif */
       margin-bottom: 10px;
       font-size: 8.5pt;
       color: #2e5a44;
@@ -457,7 +462,7 @@
                 Nous vous remercions pour l'intérêt porté à nos services et restons à votre disposition pour toute
                 question.
                 {% else %}
-                Merci pour votre confiance !
+                Merci ! Gràcies !
                 {% endif %}
             </div>
         </td>

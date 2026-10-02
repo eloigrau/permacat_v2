@@ -1,5 +1,6 @@
 {% extends 'blog/base_blog2.html' %}
 {% load static %}
+{% load app_filters %}
 {% block title %} Arborescence du Forum du Groupe {{request.session.asso_slug | getNomGroupeFromSlug}} | {% endblock %}
 
 {% block submenu %}
@@ -73,9 +74,6 @@
     </div>
 </div>
 
-{% block content2 %}
-{% endblock %}
-
 {% comment %}
 <hr>
 <h6 class="textcenter">Trouver un article :</h6>
@@ -97,6 +95,8 @@
   </div>
 </div>
 {% endcomment %}
+{% block content2 %}
+{% endblock %}
 
 <style>
 .article_epingle{font-weight: bold;}

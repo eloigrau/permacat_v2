@@ -35,7 +35,7 @@
                       <ul class="dropdown-menu" aria-labelledby="menuGroupe"  role="menu">
                         {% for  asso_ab, asso_nom in asso_list %}
                         <li><a class="dropdown-item" href="{% url 'dashboard:index' %}?asso_slug={{asso_ab}}">{{asso_nom}}</a>
-                            </li>
+                        </li>
                         {% endfor %}
                       </ul>
                   </div>

@@ -581,7 +581,7 @@ def voir_articles_liens_d3_tree_indented_projet(request, asso_slug):
 @login_required
 def voir_articles_liens_d3_tree_indented_tags(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
-
+    request.session["asso_slug"] = asso.slug
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())

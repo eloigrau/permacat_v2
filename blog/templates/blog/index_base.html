@@ -459,7 +459,7 @@ function get_tags_articles(url_tag) {
     {% if categorie_list %}
     <a class="nav-item nav-link" href="#art_dossier" data-toggle="tab" id="navtab_dossier" title="Parcourir le forum par Dossier thématique"> Par dossier</a>
     {% endif%}
-    {% if request.session.asso_slug %}
+    {% if request.session.asso_slug and 'admin' in request.GET  %}
     <a class="nav-item nav-link" href="#art_motscles"
        onclick="get_tags_articles('{% url 'blog:get_tags_articles' %}?asso={{request.session.asso_slug}}')" data-toggle="tab" title="Parcourir le forum par Mot-clé"
        id="navtab_tags"> Par mot clé</a>
@@ -470,12 +470,11 @@ function get_tags_articles(url_tag) {
        onclick="get_articles_archives('{% url 'blog:articlesArchives' asso=request.session.asso_slug %}')" data-toggle="tab"
        id="navtab_archives" title="Voir les articles 'archivés' "> Archivés</a>
 
-    {% if user_membreAsso and request.session.asso_slug %}
-    <a class="nav-item nav-link" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_slug=request.session.asso_slug %}"
-
-       id="navtab_visu" title="Visualiser l'arborescence de tous les articles du groupe"> Carte </a>
-    {% endif %}
     {% endif%}
+        {% if user_membreAsso and request.session.asso_slug %}
+        <a class="nav-item nav-link" href="{% url 'blog:voir_articles_liens_d3_tree_indented_dossier' asso_slug=request.session.asso_slug %}"
+           id="navtab_visu" title="Visualiser l'arborescence de tous les articles du groupe"> Arborescence </a>
+        {% endif %}
 </nav>
 {% endif%}
 

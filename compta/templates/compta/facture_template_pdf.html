@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>{{ facture.get_document_type_display }} {{ facture.number }}</title>
-  <style>
-    /* --- CONFIGURATION DU DOCUMENT PDF --- */
+    <meta charset="UTF-8"/>
+    <title>{{ facture.get_document_type_display }} {{ facture.number }}</title>
+    <style>
     @page {
       size: A4 portrait;
-      margin: 15mm 20mm 20mm 20mm;
+      margin: 15mm 20mm 25mm 20mm;
       @bottom-right {
         content: "Page " counter(page) " / " counter(pages);
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -22,6 +21,10 @@
       padding: 0;
     }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 9.5pt;
@@ -30,15 +33,46 @@
       background-color: #ffffff;
     }
 
+    /* --- CONTENEUR DE LAYOUT PAGE COMPLÈTE HARMONISÉ --- */
+    .page-layout {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    /* HARMONISATION : Tous les conteneurs principaux sont alignés au milieu pour équilibrer la page */
+    .page-layout > tbody > tr > td {
+      vertical-align: middle;
+      padding: 10px 0;
+    }
+
+    /* En-tête : poussé vers le haut dans sa propre zone */
+    .page-layout > tbody > tr.layout-header > td {
+      vertical-align: top;
+      padding-bottom: 20px;
+    }
+
+    /* Section centrale (Tableau d'items) */
+    .page-layout > tbody > tr.layout-middle > td {
+      vertical-align: middle;
+    }
+
+    /* Section basse (Totaux & Accords) */
+    .page-layout > tbody > tr.layout-bottom > td {
+      vertical-align: bottom;
+      padding-top: 20px;
+    }
+
     /* --- EN-TÊTE ET LOGO --- */
     .header-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .header-table td {
-      vertical-align: top;
+      vertical-align: middle; /* Harmonisé */
     }
 
     .company-logo {
@@ -60,7 +94,7 @@
     .invoice-title {
       font-size: 22pt;
       font-weight: 700;
-      color: #1e3a2b; /* Vert Forêt */
+      color: #1e3a2b;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
@@ -82,13 +116,12 @@
       border-spacing: 15px 0;
       margin-left: -15px;
       margin-right: -15px;
-      margin-bottom: 30px;
     }
 
     .address-box {
-      vertical-align: top;
+      vertical-align: top; /* Gardé en top pour aligner les textes courts/longs */
       width: 50%;
-      background-color: #f4f7f4; /* Vert très clair/Sauge douce */
+      background-color: #f4f7f4;
       border-radius: 6px;
       padding: 12px 15px;
       border: 1px solid #d1e0d5;
@@ -99,7 +132,7 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       font-weight: 700;
-      color: #2e5a44; /* Vert Sauge foncé */
+      color: #2e5a44;
       margin-bottom: 6px;
       border-bottom: 1px solid #d1e0d5;
       padding-bottom: 4px;
@@ -115,15 +148,19 @@
       font-size: 10pt;
     }
 
-    /* --- TABLEAU DES ARTICLES --- */
+    /* --- TABLEAU DES ARTICLES (CENTRÉ AU MILIEU) --- */
+    .items-wrapper {
+      width: 100%; /* Défini à 100% pour occuper tout le centre, ajustable à 90% si besoin */
+      margin: 0 auto;
+    }
+
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 25px;
     }
 
     .items-table th {
-      background-color: #1e3a2b; /* Vert Forêt principal */
+      background-color: #1e3a2b;
       color: #ffffff;
       font-size: 8.5pt;
       font-weight: 600;
@@ -131,6 +168,7 @@
       letter-spacing: 0.5px;
       padding: 8px 10px;
       text-align: left;
+      vertical-align: middle; /* Harmonisé */
     }
 
     .items-table th.align-right,
@@ -147,7 +185,7 @@
       padding: 10px;
       border-bottom: 1px solid #e2e8f0;
       font-size: 9pt;
-      vertical-align: top;
+      vertical-align: middle; /* Harmonisé pour aligner les contenus de lignes proprement */
     }
 
     .items-table tr:nth-child(even) td {
@@ -164,7 +202,7 @@
     .summary-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
       page-break-inside: avoid;
     }
 
@@ -201,6 +239,7 @@
       padding: 5px 8px;
       text-align: right;
       font-size: 9pt;
+      vertical-align: middle; /* Harmonisé */
     }
 
     .totals-table td.label {
@@ -217,14 +256,13 @@
       background-color: #f4f7f4;
     }
 
-    /* --- BON POUR ACCORD (SPÉCIFIQUE DEVIS) --- */
+    /* --- BON POUR ACCORD (DEVIS) --- */
     .approval-box {
-      margin-top: 20px;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
       border: 1px dashed #a3bfab;
       background-color: #fbfdfb;
       border-radius: 6px;
-      padding: 15px;
+      padding: 12px 15px;
       page-break-inside: avoid;
     }
 
@@ -237,190 +275,212 @@
     }
 
     .approval-fields {
-      margin-top: 40px;
+      margin-top: 35px;
       width: 100%;
     }
 
     .approval-fields td {
       font-size: 8pt;
       color: #4a5568;
+      vertical-align: middle;
     }
 
-    /* --- MESSAGE DE REMERCIEMENT ECO --- */
+    /* --- MESSAGE DE REMERCIEMENT --- */
     .thank-you-box {
       text-align: center;
-      margin-top: 20px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       font-size: 8.5pt;
       color: #2e5a44;
       font-style: italic;
       page-break-inside: avoid;
     }
 
-    /* --- PIED DE PAGE ET CONDITIONS --- */
+    /* --- PIED DE PAGE FIXÉ EN BAS --- */
     .invoice-footer {
-      margin-top: auto;
-      padding-top: 15px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding-top: 10px;
       border-top: 1px solid #d1e0d5;
       font-size: 7.5pt;
       color: #718096;
       text-align: center;
       line-height: 1.4;
-      page-break-inside: avoid;
+      background-color: #ffffff;
     }
 
     .legal-notice {
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
   </style>
 </head>
 <body>
-
-  <!-- EN-TÊTE : LOGO & INFOS DOCUMENT -->
-  <table class="header-table">
-    <tr>
-      <td>
-        {% if facture.asso_info.company_logo %}
-          <img src="{{ facture.asso_info.company_logo }}" alt="Logo" class="company-logo" />
-        {% else %}
-          <div style="font-size: 16pt; font-weight: bold; color: #1a365d; margin-bottom: 5px;">
-            {{ facture.asso_info.name }}
-          </div>
-        {% endif %}
-        <div class="company-details">
-          {{ facture.asso_info.adresse|linebreaksbr }}<br />
-          SIRET : {{ facture.asso_info.siret }}
-        </div>
-      </td>
-      <td class="invoice-title-block">
-        <div class="invoice-title">{{ facture.get_document_type_display }}</div>
-        <div class="invoice-meta">
-          <strong>N° :</strong> {{ facture.number }}<br />
-          <strong>Date :</strong> {{ facture.created_at |date:"d/m/Y" }}<br />
-          {% if document_type == "DEVIS" %}
-            <strong>Validité :</strong> {{ facture.date_echeance|date:"d/m/Y"  }}
-          {% else %}
-            <strong>Échéance :</strong> {{ facture.date_echeance|date:"d/m/Y"  }}
-          {% endif %}
-        </div>
-      </td>
-    </tr>
-  </table>
-
-  <!-- BLOCS ADRESSES -->
-  <table class="addresses-table">
-    <tr>
-      <td class="address-box">
-        <div class="address-title">Adressé{% if document_type == "FACTURE" %}e{%endif%} à</div>
-        <div class="address-content">
-          <strong>{{ facture.client.code_client }} - {{ facture.client.name }}</strong><br />
-          {{ facture.client.address |linebreaksbr }}<br />
-          {% if facture.client.email %}Email : {{ facture.client.email }}{% endif %}
-          {% if facture.client.telephone %}Téléphone : {{ facture.client.telephone }}{% endif %}
-        </div>
-      </td>
-    </tr>
-  </table>
-
-  <!-- TABLEAU DES PRESTATIONS / PRODUITS -->
-  <table class="items-table">
-    <thead>
-      <tr>
-        <th style="width: 45%;">Désignation</th>
-        <th class="align-center" style="width: 12%;">Qté</th>
-        <th class="align-right" style="width: 18%;">Prix U. HT</th>
-        <th class="align-right" style="width: 15%;">Total HT</th>
-      </tr>
-    </thead>
+<!-- STRUCTURE GLOBALE DE LAYOUT COMPATIBLE PDF -->
+<table class="page-layout">
     <tbody>
-      {% for item in facture.items.all %}
-      <tr>
+    <!-- SECTION HAUTE : LOGO, ADRESSES -->
+    <tr class="layout-header">
         <td>
-          <strong>{{ item.product.code_product }} - {{ item.product.name }}</strong>
-          {% if item.description %}
-            <div class="item-description">{{ item.description }}</div>
-          {% endif %}
+            <!-- EN-TÊTE : LOGO & INFOS DOCUMENT -->
+            <table class="header-table">
+                <tr>
+                    <td>
+                        {% if facture.asso_info.company_logo %}
+                        <img alt="Logo" class="company-logo" src="{{ facture.asso_info.company_logo }}"/>
+                        {% else %}
+                        <div style="font-size: 16pt; font-weight: bold; color: #1a365d; margin-bottom: 5px;">
+                            {{ facture.asso_info.name }}
+                        </div>
+                        {% endif %}
+                        <div class="company-details">
+                            {{ facture.asso_info.adresse|linebreaksbr }}<br/>
+                            SIRET : {{ facture.asso_info.siret }}
+                        </div>
+                    </td>
+                    <td class="invoice-title-block">
+                        <div class="invoice-title">{{ facture.get_document_type_display }}</div>
+                        <div class="invoice-meta">
+                            <strong>N° :</strong> {{ facture.number }}<br/>
+                            <strong>Date :</strong> {{ facture.created_at |date:"d/m/Y" }}<br/>
+                            {% if document_type == "DEVIS" %}
+                            <strong>Validité :</strong> {{ facture.date_echeance|date:"d/m/Y" }}
+                            {% else %}
+                            <strong>Échéance :</strong> {{ facture.date_echeance|date:"d/m/Y" }}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- BLOCS ADRESSES -->
+            <table class="addresses-table">
+                <tr>
+                    <td class="address-box">
+                        <div class="address-title">Adressé{% if document_type == "FACTURE" %}e{%endif%} à</div>
+                        <div class="address-content">
+                            <strong>{{ facture.client.code_client }} - {{ facture.client.name }}</strong><br/>
+                            {{ facture.client.address |linebreaksbr }}<br/>
+                            {% if facture.client.email %}Email : {{ facture.client.email }}{% endif %}
+                            {% if facture.client.telephone %}Téléphone : {{ facture.client.telephone }}{% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
         </td>
-        <td class="align-center">{{ item.quantity }}</td>
-        <td class="align-right">{{ item.unit_price|floatformat:2 }} €</td>
-        <td class="align-right">{{ item.total_ht|floatformat:2 }} €</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  <!-- PAIEMENT ET TOTAUX -->
-  <table class="summary-table">
-    <tr>
-      <td class="payment-info">
-        <div class="payment-info-title">
-          {% if document_type == "DEVIS" %}
-            Modalités de règlement
-          {% else %}
-            Règlement
-          {% endif %}
-        </div>
-        <div>
-          Modalités : Virement <br />
-          IBAN : <strong>{{ facture.asso_info.iban }}</strong><br />
-          BIC : {{ facture.asso_info.bic }}
-        </div>
-      </td>
-      <td class="totals-box">
-        <table class="totals-table">
-          <tr>
-            <td class="label">Total HT :</td>
-            <td><strong>{{ facture.total_ht|floatformat:2 }} €</strong></td>
-          </tr>
-          <tr class="total-row">
-            <td class="label">Total TTC :</td>
-            <td>{{ facture.total_ttc|floatformat:2 }} €</td>
-          </tr>
-        </table>
-      </td>
     </tr>
-  </table>
+    <tr class="layout-middle">
+        <td>
+            <div class="items-wrapper">
+                <!-- TABLEAU DES PRESTATIONS / PRODUITS -->
+                <table class="items-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 45%;">Désignation</th>
+                        <th class="align-center" style="width: 12%;">Qté</th>
+                        <th class="align-right" style="width: 18%;">Prix U. HT</th>
+                        <th class="align-right" style="width: 15%;">Total HT</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in facture.items.all %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.product.code_product }} - {{ item.product.name }}</strong>
+                            {% if item.description %}
+                            <div class="item-description">{{ item.description }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="align-center">{{ item.quantity }}</td>
+                        <td class="align-right">{{ item.unit_price|floatformat:2 }} €</td>
+                        <td class="align-right">{{ item.total_ht|floatformat:2 }} €</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr class="layout-bottom">
+            <td>
+            <!-- PAIEMENT ET TOTAUX -->
+            <table class="summary-table">
+                <tr>
+                    <td class="payment-info">
+                        <div class="payment-info-title">
+                            {% if document_type == "DEVIS" %}
+                            Modalités de règlement
+                            {% else %}
+                            Règlement
+                            {% endif %}
+                        </div>
+                        <div>
+                            Modalités : Virement <br/>
+                            IBAN : <strong>{{ facture.asso_info.iban }}</strong><br/>
+                            BIC : {{ facture.asso_info.bic }}
+                        </div>
+                    </td>
+                    <td class="totals-box">
+                        <table class="totals-table">
+                            <tr>
+                                <td class="label">Total HT :</td>
+                                <td><strong>{{ facture.total_ht|floatformat:2 }} €</strong></td>
+                            </tr>
+                            <tr class="total-row">
+                                <td class="label">Total TTC :</td>
+                                <td>{{ facture.total_ttc|floatformat:2 }} €</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
 
-  <!-- BLOC "BON POUR ACCORD" POUR LES DEVIS -->
-  {% if document_type == "DEVIS" %}
-  <div class="approval-box">
-    <div class="approval-title">Bon pour accord</div>
-    <p style="font-size: 8pt; color: #4a5568;">
-      Mention manuscrite <em>« Bon pour accord »</em>, date et signature du client :
-    </p>
-    <table class="approval-fields">
-      <tr>
-        <td style="width: 50%;">Date : _____ / _____ / 20___</td>
-        <td style="width: 50%;">Signature :</td>
-      </tr>
-    </table>
-  </div>
-  {% endif %}
+            <!-- BLOC "BON POUR ACCORD" POUR LES DEVIS -->
+            {% if document_type == "DEVIS" %}
+            <div class="approval-box">
+                <div class="approval-title">Bon pour accord</div>
+                <p style="font-size: 8pt; color: #4a5568;">
+                    Mention manuscrite <em>« Bon pour accord »</em>, date et signature du client :
+                </p>
+                <table class="approval-fields">
+                    <tr>
+                        <td style="width: 50%;">Date : _____ / _____ / 20___</td>
+                        <td style="width: 50%;">Signature :</td>
+                    </tr>
+                </table>
+            </div>
+            {% endif %}
 
-<div style="text-align: center; margin-top: 25px; margin-bottom: 20px; font-size: 8.5pt; color: #4a5568; font-style: italic;">
-    {% if document_type == "DEVIS" %}
-      Nous vous remercions pour l'intérêt porté à nos services et restons à votre disposition pour toute question.
-    {% else %}
-      Merci pour votre confiance !
-    {% endif %}
-  </div>
-
-  <!-- PIED DE PAGE DÉCLARATIF -->
-  <div class="invoice-footer">
+            <div class="thank-you-box">
+                {% if document_type == "DEVIS" %}
+                Nous vous remercions pour l'intérêt porté à nos services et restons à votre disposition pour toute
+                question.
+                {% else %}
+                Merci pour votre confiance !
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<!-- PIED DE PAGE DÉCLARATIF -->
+<div class="invoice-footer">
     <div class="legal-notice">
-      <p>TVA non applicable, art. 293 B du CGI</p>
-      {% if document_type == "DEVIS" %}
+        <p>TVA non applicable, art. 293 B du CGI</p>
+        {% if document_type == "DEVIS" %}
         Devis valable 30 jours à compter de sa date d'émission sauf mention contraire.
-      {% else %}
-       {% comment %}
-      En cas de retard de paiement, une indemnité forfaitaire de 40 € pour frais de recouvrement sera exigée (Art. L441-6 du Code de commerce), augmentée des pénalités de retard au taux légal en vigueur.
-       {% endcomment %}
-      {% endif %}
+        {% else %}
+        {% comment %}
+        En cas de retard de paiement, une indemnité forfaitaire de 40 € pour frais de recouvrement sera exigée (Art.
+        L441-6 du Code de commerce), augmentée des pénalités de retard au taux légal en vigueur.
+        {% endcomment %}
+        {% endif %}
     </div>
     <div>
-      {{ facture.asso_info.name }}
+        {{ facture.asso_info.name }}
     </div>
-  </div>
+</div>
 
 </body>
 </html>

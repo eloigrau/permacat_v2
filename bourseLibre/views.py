@@ -30,7 +30,7 @@ from django.http import Http404
 from django.utils import timezone
 from taggit.models import Tag
 
-from blog.models import Article, Projet, EvenementAcceuil, Evenement, AssociationSalonArticle, DocumentPartage
+from blog.models import Article, Projet, EvenementAccueil, Evenement, AssociationSalonArticle, DocumentPartage
 from ateliers.models import Atelier
 from vote.models import Suffrage, Vote
 #from jardinpartage.models import Article as Article_jardin
@@ -147,7 +147,7 @@ def bienvenue(request):
     nbExpires = 0
     utc = pytz.UTC
     yesterday = (datetime.now() - timedelta(hours=12)).replace(tzinfo=utc)
-    evenements = EvenementAcceuil.objects.filter(date__gt=yesterday).order_by('date')
+    evenements = EvenementAccueil.objects.filter(date__gt=yesterday).order_by('date')
     evenements_passes, evenements_semaine = getEvenementsSemaine(request)
     derniers, articles, votes = [], [], []
     invit_salons = 0

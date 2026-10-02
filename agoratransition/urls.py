@@ -6,7 +6,7 @@ from django.urls import path, include
 app_name = 'agora'
 
 urlpatterns = [
-    path('', views.accueil, name="acceuil"),
+    path('', views.accueil, name="accueil"),
     path('listeInscription/', views.listeInscription, name="listeInscription"),
     #re_path(r'^articles/$', login_required(views.ListeArticles.as_view(), login_url='/auth/login/'), name="index"),
     #path(r'articles/<str:asso>/', login_required(views.ListeArticles_asso.as_view(), login_url='/auth/login/'), name="index_asso"),

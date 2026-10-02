@@ -199,7 +199,7 @@ def archiverArticleAdmin(request, slug):
     action.send(request.user, verb='article_modifier_archiver' + suffix, action_object=article, url=url,
                 description="a archivé l'article")
 
-    return redirect('blog:acceuil')
+    return redirect('blog:accueil')
 
 
 # @login_required
@@ -246,7 +246,7 @@ def articleSupprimerAlbum(request, slug):
 
 class SupprimerArticle(DeleteAccess, DeleteView):
     model = Article
-    success_url = reverse_lazy('blog:acceuil')
+    success_url = reverse_lazy('blog:accueil')
     template_name_suffix = '_supprimer'
 
     #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
@@ -1075,7 +1075,7 @@ def suivre_articles(request, asso_slug='public', actor_only=True):
         actions.unfollow(request.user, suivi, send_action=False)
     else:
         actions.follow(request.user, suivi, actor_only=actor_only, send_action=False)
-    return redirect('blog:acceuil')
+    return redirect('blog:accueil')
 
 
 @login_required

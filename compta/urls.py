@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 app_name = 'compta'
 
 urlpatterns = [
-    path('', views.tableau_de_bord, name='acceuil'),
+    path('', views.tableau_de_bord, name='accueil'),
     path('budget/', views.tableau_de_bord, name='tableau_de_bord'),
     path('budget/detail/<int:budget_id>/', views.detail_budget, name='detail_budget'),
     path('budget/transaction/ajouter/<int:projet_id>/', views.ajouter_transaction, name='ajouter_transaction'),
@@ -17,7 +17,7 @@ urlpatterns = [
     path('budget/ajouter/', views.ajouter_budgetProjet, name='ajouter_budgetProjet'),
     #path('compta/projet/ajouter/', views.ajouter_projet, name='ajouter_projet'),
 
-    path('facturation/', views.acceuil, name='facturation_acceuil'),
+    path('facturation/', views.accueil, name='facturation_accueil'),
 
     path('facturation/facture/<int:facture_id>/pdf/', views.generate_facture_pdf, name='facture_pdf'),
 

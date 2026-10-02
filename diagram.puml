@@ -756,8 +756,8 @@ blog.CommentaireProjet -up- bourseLibre.Profil
 blog.CommentaireProjet -up- blog.Projet
 
 
-class "blog.EvenementAcceuil <Blog>" as blog.EvenementAcceuil #d6f4d7 {
-    evenement acceuil
+class "blog.EvenementAccueil <Blog>" as blog.EvenementAccueil #d6f4d7 {
+    evenement accueil
     --
     - id (AutoField)
     + titre_even (CharField)
@@ -765,7 +765,7 @@ class "blog.EvenementAcceuil <Blog>" as blog.EvenementAcceuil #d6f4d7 {
     + date (DateTimeField)
     --
 }
-blog.EvenementAcceuil -up- blog.Article
+blog.EvenementAccueil -up- blog.Article
 
 
 class "blog.AdresseArticle <Blog>" as blog.AdresseArticle #d6f4d7 {

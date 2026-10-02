@@ -459,8 +459,8 @@ class ClientUpdateView(TestMembreAssoMixin, UpdateView):
         return context
 
 
-def acceuil(request):
-    return render(request, "compta/facturation_acceuil.html")
+def accueil(request):
+    return render(request, "compta/facturation_accueil.html")
 
 
 

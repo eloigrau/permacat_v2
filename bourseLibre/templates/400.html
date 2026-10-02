@@ -1,12 +1,13 @@
-% extends 'base_site.html' %}
+{% extends 'base_site.html' %}
 {% block subtitle %}
 <p>Erreur 400 : Requete incorrecte, désolé</p>
 
 <div class="row justify-content-center">
     <div class="col-sm-12 col-md-10 col-lg-8">
         <p class="textcenter">
+            <input type="button"  onclick="window.history.back();"  class="btn btn-outline-secondary" value="Retour" >
             <a href="{% url 'bienvenue' %}">
-                <button class="btn btn-primary" type="button">Retourner à la page d'acceuil</button>
+                <button class="btn btn-primary" type="button">Retourner à la page d'accueil</button>
             </a>
         </p>
     </div>

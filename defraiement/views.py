@@ -61,7 +61,7 @@ def getRecapitulatif_km(request, reunions, asso, export=False):
     lignes = []
     lignes.append(["date"] + [r.start_time for r in reunions] + ["", ])
     lignes.append(["Catégorie"] + [r.get_categorie_display() for r in reunions] + ["", ])
-    lignes.append(["Projet"] + [r.get_projet_display() for r in reunions] + ["", ])
+    lignes.append(["Projet"] + [str(r.projet) if r.projet else "" for r in reunions] + ["", ])
     for p in participants:
         distances = [round(p.getDistance_route_allerretour(r), 2) if p in r.participants.all() else 0 for r in reunions ]
         if sum(distances) > 0:
@@ -83,7 +83,7 @@ def getRecapitulatif_euros(request, reunions, asso, prixMax, tarifKilometrique, 
     lignes = []
     lignes.append(["date"] + [r.start_time for r in reunions] + ["", ])
     lignes.append(["Catégorie"] + [r.get_categorie_display() for r in reunions] + ["Total", ])
-    lignes.append(["Projet"] + [r.get_projet_display() for r in reunions] + ["", ])
+    lignes.append(["Projet"] + [str(r.projet) if r.projet else "" for r in reunions] + ["", ])
     distancesTotales = [r.getDistanceTotale for r in reunions]
     prixTotal = sum(distancesTotales) * float(tarifKilometrique)
     if prixTotal < float(prixMax):
@@ -183,12 +183,12 @@ def export_participants(request, asso):
 
     participants = ParticipantReunion.objects.filter(asso=asso).order_by("nom")
 
-    csv_data = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
+    csv_data = [["nom", "date", "catégorie", "projet", "réunion", "code postal", "commune", "km(total)"], ]
 
     annee = request.GET.get('annee', now().year)
     for p in participants:
         for r in p.reunion_set.filter(start_time__year=annee).order_by('start_time'):
-            csv_data.append([p.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, p.getDistance_route_allerretour(r)])
+            csv_data.append([p.nom, r.start_time, r.get_categorie_display(), str(r.projet) if r.projet else "", r.titre, r.adresse.code_postal, r.adresse.commune, p.getDistance_route_allerretour(r)])
 
     filename = "Defraiement - " + asso.nom + " - " + str(annee) + " - participants.csv"
     return ecrire_csv(request, csv_data, filename)
@@ -202,11 +202,11 @@ def export_UnParticipant(request, asso, participant_id):
 
     participant = ParticipantReunion.objects.get(id=participant_id, asso=asso)
 
-    csv_data = [["nom", "date", "catégorie", "réunion", "code postal", "commune", "km(total)"], ]
+    csv_data = [["nom", "date", "catégorie", "projet", "réunion", "code postal", "commune", "km(total)"], ]
 
     annee = request.GET.get('annee', now().year)
     for r in participant.reunion_set.filter(start_time__year=annee).order_by('start_time'):
-        csv_data.append([participant.nom, r.start_time, r.get_categorie_display(), r.titre, r.adresse.code_postal, r.adresse.commune, participant.getDistance_route_allerretour(r)])
+        csv_data.append([participant.nom, r.start_time, r.get_categorie_display(), str(r.projet) if r.projet else "", r.titre, r.adresse.code_postal, r.adresse.commune, participant.getDistance_route_allerretour(r)])
 
     filename = "Defraiement - " + asso.nom + " - " + str(annee) + " - " + participant.nom + ".csv"
     return ecrire_csv(request, csv_data, filename)

@@ -261,7 +261,7 @@ def contactContact_ajouter(request, asso_slug, contact_pk):
 @login_required
 def contact_ajouter_accueil(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
-    return render(request, 'adherents/contact_ajouter_acceuil.html', {"asso_slug": asso_slug})
+    return render(request, 'adherents/contact_ajouter_accueil.html', {"asso_slug": asso_slug})
 
 
 @login_required

@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 app_name = 'blog'
 
 urlpatterns = [
-    path('accueil/', views.accueil, name="acceuil"),
+    path('accueil/', views.accueil, name="accueil"),
     path('articles/', login_required(views.ListeArticles.as_view(), login_url='/auth/login/'), name="index"),
     path(r'articles/<str:asso>/', login_required(views.ListeArticles_asso.as_view(), login_url='/auth/login/'), name="index_asso"),
     # re_path(r'^newPost/', views.ajouterArticle, name='ajouterArticle'),

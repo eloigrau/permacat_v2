@@ -1,2 +1,17 @@
 {% extends 'base_site.html' %}
-{% block subtitle %}Erreur 403 : requête non autorisée, désolé. Peut-être n'êtes vous pas inscrit dans le groupe, ou bien vous n'êtes à jour de votre cotisation, ou bien cette partie est réservée aux membres du bureau. Veuillez vous adresser à l'administrateur, merci !{% endblock %}
+{% block subtitle %}
+Erreur 403 : requête non autorisée, désolé. Peut-être n'êtes vous pas inscrit dans le groupe, ou bien vous n'êtes à jour de votre cotisation, ou bien cette partie est réservée aux membres du bureau. Veuillez vous adresser à l'administrateur, merci !
+
+<div class="row justify-content-center">
+    <div class="col-sm-12 col-md-10 col-lg-8">
+        <p class="textcenter">
+            <input type="button"  onclick="window.history.back();"  class="btn btn-outline-secondary" value="Retour" >
+            <a href="{% url 'bienvenue' %}">
+                <button class="btn btn-primary" type="button">Retourner à la page d'accueil</button>
+            </a>
+        </p>
+    </div>
+</div>
+<p class="textcenter">Merci de votre compréhension</p>
+
+{% endblock %}

@@ -3,7 +3,7 @@ from .models import (Adresse, Produit, Panier, MessageAdmin, Item, Adhesion_asso
                      Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso,
                      InvitationDansSalon, InscritSalon, Monnaie, Lien_AssoSalon)
 from blog.models import (Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement,
-                         EvenementAcceuil, AdresseArticle
+                         EvenementAccueil, AdresseArticle
                          )
 #from jardinpartage.models import Article as Art_jardin, Commentaire as Comm_jardin
 from fiches.models import Fiche, Atelier as atelier_fiche, CommentaireFiche
@@ -98,7 +98,7 @@ class Evenement_Admin(admin.ModelAdmin):
 
 #admin.site.register(Art_jardin, Article_jardinAdmin)
 admin.site.register(MessageAdmin)
-admin.site.register(EvenementAcceuil)
+admin.site.register(EvenementAccueil)
 admin.site.register(FicheProjet)
 admin.site.register(Panier)
 admin.site.register(Item)

@@ -21,7 +21,7 @@ from django.contrib.auth.decorators import login_required
 app_name = 'fiches'
 
 urlpatterns = [
-    re_path(r'^accueil-fiches/$', login_required(views.accueil), name="acceuil"),
+    re_path(r'^accueil-fiches/$', login_required(views.accueil), name="accueil"),
     re_path(r'^fiches/$', login_required(views.ListeFiches.as_view(), login_url='/auth/login/'), name="index"),
     re_path(r'^ateliers/$', login_required(views.ListeAteliers.as_view(), login_url='/auth/login/'), name="index_ateliers"),
     re_path(r'^fiche/(?P<slug>[-\w]+)$', views.lireFiche, name='lireFiche'),

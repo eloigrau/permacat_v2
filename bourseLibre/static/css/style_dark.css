@@ -566,12 +566,12 @@ border: 1px inset rgba(28,110,164,0.65);
 }
 */
 
-.cardAcceuil{
+.cardAccueil{
     min-width:500px;
     padding-bottom: 10px !important;
 }
 @media screen and (max-width: 800px) {
-    .cardAcceuil{
+    .cardAccueil{
     min-width:160px;
         padding-bottom: 10px !important;
 

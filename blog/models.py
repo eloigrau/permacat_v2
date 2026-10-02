@@ -913,7 +913,7 @@ class CommentaireProjet(models.Model):
 
 
 
-class EvenementAcceuil(models.Model):
+class EvenementAccueil(models.Model):
     titre_even = models.CharField(verbose_name=_("Titre de l'événement (si laissé vide, ce sera le titre de l'article)"),
                              max_length=100, null=True, blank=True, default="")
     article = models.ForeignKey(Article, on_delete=models.CASCADE,

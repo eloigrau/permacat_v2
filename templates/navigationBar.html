@@ -15,11 +15,11 @@
             </button>
             {% if user.is_authenticated %}
                 <a class="navbar-brand" href="{% url 'dashboard:index' %}">
-                    <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="acceuil"/>
+                    <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="accueil"/>
                 </a>
             {% else %}
             <a class="navbar-brand" href="{% url 'bienvenue' %}">
-                <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="acceuil"/>
+                <img src="{% static 'favicon.ico' %}" width="30" height="30" alt="accueil"/>
             </a>
             {% endif %}
             <div class="navbar-collapse collapse justify-content-between  align-items-center w-100" id="navbarsActuel">
@@ -40,7 +40,7 @@
 
                                     <li><a class="dropdown-item" href="{% url 'carte'  asso='public' %}"><i
                                             class='fa fa-compass'></i> {% translate 'Carte / Annuaire de tous les inscrits'  %}</a></li>
-                                    <li><a class="dropdown-item" href="{% url  'blog:acceuil'  %}?base"><i
+                                    <li><a class="dropdown-item" href="{% url  'blog:accueil'  %}?base"><i
                                             class='fa fa-comments'></i> {% translate 'Accueil du Forum'  %}</a></li>
                                 </ul>
                             </li>
@@ -69,7 +69,7 @@
 
                                     {% endif %}
 
-                                    <li><a class="dropdown-item" href="{% url 'fiches:acceuil' %}"><i
+                                    <li><a class="dropdown-item" href="{% url 'fiches:accueil' %}"><i
                                             class="fa fa-book iconleft"></i> {% translate 'Kit PermaEcole'  %} </a></li>
 
                                     {% if request.user.adherent_pc %}
@@ -203,7 +203,7 @@
                                             class='fa fa-compass iconleft'></i> Du Cep au Jus </a></li>
                                     <li><a class="dropdown-item" href="{% url 'permagora:bienvenue' %}"><i
                                             class='fa fa-compass iconleft'></i> Plateforme de l'Agora </a></li>
-                                    <li><a class="dropdown-item" href="{% url 'agora:acceuil' %}"><i
+                                    <li><a class="dropdown-item" href="{% url 'agora:accueil' %}"><i
                                             class='fa fa-compass iconleft'></i> Journée Agora de la Transition </a></li>
 
                                     <li><hr class="dropdown-divider"></li>
@@ -338,7 +338,7 @@
                     </li>
                     {% if request.session.asso_slug and request.session.asso_slug|estMembreAsso:request.user %}
                     <li class="nav-item dropdown nav5">
-                        <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'blog:acceuil' %}"
+                        <a class="nav-link dropdown-toggle navbar-menu " href="{% url 'blog:accueil' %}"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% if request.session.asso_slug %}
                             {{ request.session.asso_slug | getLogoGroupeFromSlug }}
@@ -349,7 +349,7 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu1 nav5-dropdown" aria-labelledby="navbarDropdownMenuLink">
-                        <li><a class="dropdown-item" href="{% url  'blog:acceuil'  %}">
+                        <li><a class="dropdown-item" href="{% url  'blog:accueil'  %}">
                         {% fa5_icon 'comments' class='iconleft' %}{% translate 'Forum du groupe' %}</a></li>
 
 
@@ -401,7 +401,7 @@
 
                     <li class="nav-item nav3"><a class="nav-link" href="{% url 'salon_accueil' %}">
                         <i class='fa fa-users iconleft'></i> {% translate 'Salons' %}</a></li>
-                    <li class="nav-item nav2"><a class="nav-link" href="{% url  'blog:acceuil'  %}?base">
+                    <li class="nav-item nav2"><a class="nav-link" href="{% url  'blog:accueil'  %}?base">
                         {% fa5_icon 'comments' class='iconleft' %}{% translate 'Forum' %}</a></li>
                     <li class="nav-item nav3"><a class="nav-link" href="{% url 'cal:agenda' %}"> <i
                             class='fa fa-calendar iconleft'></i>{% translate 'Agenda' %}</a></li>

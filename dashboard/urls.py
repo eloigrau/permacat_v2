@@ -6,7 +6,7 @@ app_name = 'dashboard'
 
 
 urlpatterns = [
-    path("acceuil/", login_required(views.DashboardView.as_view(), login_url='/auth/login/'), name="index",),
+    path("accueil/", login_required(views.DashboardView.as_view(), login_url='/auth/login/'), name="index",),
     path("choisirCollectif/", login_required(views.choisirCollectif, login_url='/auth/login/'), name="choisirCollectif",),
     path('derniersDocs/<str:asso>/', login_required(views.derniersDocs, login_url='/auth/login/'), name='derniersDocs'),
     path('derniersArticles/<str:asso>/', login_required(views.derniersArticles, login_url='/auth/login/'), name='derniersArticles'),

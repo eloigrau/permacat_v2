@@ -22,7 +22,7 @@ from django.contrib.auth.decorators import login_required
 app_name = 'ateliers'
 
 urlpatterns = [
-    path('accueil-ateliers/', views.accueil, name="acceuil"),
+    path('accueil-ateliers/', views.accueil, name="accueil"),
     path('liste/', login_required(views.ListeAteliers.as_view()), name="index_ateliers"),
     re_path(r'^atelier/(?P<slug>[-\w]+)$', views.lireAtelier_slug, name='lireAtelier'),
     re_path(r'^atelier/id/(?P<id>[-\w]+)$', views.lireAtelier_id, name='lireAtelier_id'),

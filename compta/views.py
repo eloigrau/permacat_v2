@@ -156,7 +156,7 @@ class FactureListView(TestMembreAssoMixin, ListView):
 
     def get_queryset(self):
         # Filtre les factures non archivées
-        return Facture.objects.filter(asso=self.asso).order_by("-document_type", "-created_at")
+        return Facture.objects.filter(asso=self.asso).order_by("-document_type", "-number")
 
 
 class DevisListView(TestMembreAssoMixin, ListView):

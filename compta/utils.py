@@ -32,6 +32,8 @@ class csvFile_form(forms.Form):
 
 @login_required
 def lire_csv_clients(request, csv_reader):
+    if not request.user.isèsuperuser:
+        return "Déso, Vous n'etes pas autorisé a utiliser cette fonctionnalité"
     asso = Asso.objects.get(slug=request.session["asso_slug"])
     msg = ""
     for i, line in enumerate(csv_reader):
@@ -62,6 +64,8 @@ def lire_csv_clients(request, csv_reader):
 
 @login_required
 def lire_csv_produits(request, csv_reader):
+    if not request.user.isèsuperuser:
+        return "Déso, Vous n'etes pas autorisé a utiliser cette fonctionnalité"
     asso = Asso.objects.get(slug=request.session["asso_slug"])
     msg = ""
     for i, line in enumerate(csv_reader):
@@ -96,6 +100,8 @@ def lire_csv_produits(request, csv_reader):
 
 @login_required
 def lire_csv_factures(request, filename):
+    if not request.user.isèsuperuser:
+        return "Déso, Vous n'etes pas autorisé a utiliser cette fonctionnalité"
     asso = Asso.objects.get(slug=request.session["asso_slug"])
     asso_info = AssoInfo.objects.get(asso=asso, is_default=True)
     msg = ""
@@ -183,6 +189,8 @@ def import_csv_factures(request):
         m += "Fichier produits lu\n"
         return m
 
+    if not request.user.isèsuperuser:
+        return "Déso, Vous n'etes pas autorisé a utiliser cette fonctionnalité"
     testIsMembreAsso(request, request.session["asso_slug"])
     if request.POST:
         form = csvFile_form(request.POST, request.FILES)

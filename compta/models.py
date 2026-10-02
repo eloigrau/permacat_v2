@@ -293,6 +293,11 @@ class Facture(models.Model):
     def get_absolute_url(self):
         return reverse('compta:document_detail', kwargs={'pk':self.pk})
 
+
+    @property
+    def get_document_typedisplay(self):
+        return "tititit" #self.get_document_type_display
+
     @property
     def total_ht(self):
         return sum(item.total_ht for item in self.items.all())

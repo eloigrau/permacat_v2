@@ -167,7 +167,7 @@ class Client(models.Model):
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     email = models.CharField(max_length=100, blank=True, null=True, verbose_name="Email")
     telephone = models.CharField(max_length=15, blank=True, null=True, verbose_name="Telephone")
-    infos = models.CharField(max_length=255, blank=True, null=True, verbose_name="Infos complémentaires")
+    infos = models.TextField(blank=True, null=True, verbose_name="Infos complémentaires")
 
     class Meta:
         verbose_name = "Client"

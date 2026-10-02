@@ -547,6 +547,35 @@ class DocumentPartage(models.Model):
     def get_absolute_url(self):
         return self.url
 
+
+class LienArticle(models.Model):
+    nom = models.CharField(verbose_name=_("Nom"), help_text="Minimum 4 lettres", max_length=100, null=True, blank=True, default="", validators=[MinLengthValidator(4)])
+    url_dest = models.CharField(verbose_name=_("Lien (http...)"), help_text="Url du lien", max_length=200, null=True, blank=False, default="",)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name=_("article lié" ), related_name="liens_lies")
+    slug = models.SlugField(max_length=100)
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.nom:
+            return "(" + str(self.nom) + ") " + str(self.url_dest)
+        return str(self.url_dest)
+
+    @property
+    def get_absolute_url(self):
+        return self.article.get_absolute_url()
+
+    @property
+    def get_update_url(self):
+        return reverse('blog:modifierLienArticle',  kwargs={'slug_lien':self.article.slug,})
+
+    @property
+    def get_delete_url(self):
+        return reverse('blog:supprimerLienArticle',  kwargs={'slug_lien':self.article.slug,})
+    #
+    # @property
+    # def get_absolute_url(self):
+    #     return self.article.get_absolute_url()
+
 class Evenement(models.Model):
     titre_even = models.CharField(verbose_name=_("Titre de l'événement (si laissé vide, ce sera le titre de l'article)"),
                              max_length=100, null=True, blank=True, default="")

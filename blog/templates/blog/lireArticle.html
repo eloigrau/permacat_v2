@@ -640,139 +640,201 @@
                         </div>
                     </div>
                     <div class="row justify-content-center">
-                        <div class="col-sm-12">
-                    {%for salon in salons %}
-                    <p><a href="{{salon.get_absolute_url}}"> {{salon.titre}}</a></p>
-                    {%endfor%}
+                        <div class="col-sm-12 textcenter">
+                        <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
+                            <thead>
+                            <th>Type</th>
+                            <th>Nom du Salon</th>
+                            </thead>
+                            <tbody>
+                            {%for salon in salons %}
+                            <tr>
+                                <td>
+                                    {{ salon.get_type_salon_display }}
+                                </td>
+                                <td style="width:75%;">
+                                    <a href="{{salon.get_absolute_url}}"> {{salon.titre}}</a>
+                                </td>
+                            </tr>
+                            {% endfor%}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-                </div>
-            </div>
         </div>
 
-<div class="tab-pane fade mt-0" id="articles_lies">
-    <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
-        <div class="contenu atelier">
-            <div class="row justify-content-center">
-                <div class="col-sm-3 textcenter">
-                    <em>Articles liés </em>
-                </div>
-                <div class="col-sm-9 textcenter">
-                    <a class="btn btn-sm btn-success textleft"
-                       href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
-                            class="fa fa-plus"></i> Lier à un autre article </a>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-sm-12 textcenter">
-                {% if articles_liens %}
-                <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
-                    <thead>
-                    <th>Date</th>
-                    <th>Type de lien</th>
-                    <th>Article</th>
-                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                    <th>Modifier/Supprimer</th>
-                    {% endif %}
-
-                    </thead>
-                    <tbody>
-                    {% for lien in articles_liens %}
-                    <tr>
-                        <td>
-                            {{ lien.date_creation|date:"d/m/Y" }}
-                        </td>
-                        <td>{{lien.get_type_lien_display}}
-                        </td>
-                        <td>
-                            {% if lien.article == article %}
-                            <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
-                            {% else %}
-                            <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
-                            {% endif %}
-                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                        <td>
-                            <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}"><i
-                                    class="fa fa-edit"></i> </a>
-                            <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"
-                               onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')"><i
-                                    class="fa fa-times"></i> </a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor%}
-                    </tbody>
-                </table>
-                {% endif %}
-                </div>
-            </div>
-            <hr>
-
-            <div class="row justify-content-center">
-                <div class="col-sm-3 textcenter">
-                    <em>Projets liés </em>
-                </div>
-                <div class="col-sm-9 textcenter">
-                    <a class="btn btn-sm btn-success textleft"
-                       href="{% url 'blog:ajouterArticleLienProjet' slug_article=article.slug %}"><i
-                            class="fa fa-plus"></i> Lier à un projet </a>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-sm-12 textcenter">
-                    {% if projets_liens %}
-
-                    <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
-                        <thead>
-                        <th>Date</th>
-                        <th>Type de lien</th>
-                        <th>Projet</th>
-                        {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                        <th>Modifier/Supprimer</th>
-                        {% endif %}
-
-                        </thead>
-                        <tbody>
-                        {% for lien in projets_liens %}
-
-                        <tr>
-                            <td>
-                                {{ lien.date_creation|date:"d/m/Y" }}
-                            </td>
-                            <td>{{lien.get_type_lien_display}}
-                            </td>
-                            <td><a href="{{lien.projet_lie.get_absolute_url}}">{{lien.projet_lie}}</a></td>
+        <div class="tab-pane fade mt-0" id="articles_lies">
+            <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
+                <div class="contenu atelier">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-5 textcenter">
+                            <em>Articles liés </em>
+                        </div>
+                        <div class="col-sm-5 textright">
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Lier à un autre article </a>
+                        </div>
+                    </div>
+                    {% if articles_liens %}
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                        <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
+                            <thead>
+                            <th>Date</th>
+                            <th>Type de lien</th>
+                            <th>Article</th>
                             {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-                            <td>
-                                <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}"><i
-                                        class="fa fa-edit"></i> </a>
-                                <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"
-                                   onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')"><i
-                                        class="fa fa-times"></i> </a>
-                            </td>
+                            <th>Modifier/Supprimer</th>
                             {% endif %}
-                        </tr>
-                        {% endfor%}
-                        </tbody>
-                    </table>
+
+                            </thead>
+                            <tbody>
+                            {% for lien in articles_liens %}
+                            <tr>
+                                <td>
+                                    {{ lien.date_creation|date:"d/m/Y" }}
+                                </td>
+                                <td>{{lien.get_type_lien_display}}
+                                </td>
+                                <td>
+                                    {% if lien.article == article %}
+                                    <a href="{{lien.article_lie.get_absolute_url}}">{{lien.article_lie}}</a>
+                                    {% else %}
+                                    <a href="{{lien.article.get_absolute_url}}">{{lien.article}}</a>
+                                    {% endif %}
+                                </td>
+                                    {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                                <td>
+                                    <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}"><i
+                                            class="fa fa-edit"></i> </a>
+                                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"
+                                       onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')"><i
+                                            class="fa fa-times"></i> </a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor%}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="row justify-content-center">
+                        <div class="col-sm-5 textcenter">
+                            <em>Projets liés </em>
+                        </div>
+                        <div class="col-sm-5 textright">
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterArticleLienProjet' slug_article=article.slug %}"><i
+                                    class="fa fa-plus"></i> Lier à un projet </a>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                            {% if projets_liens %}
+
+                            <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
+                                <thead>
+                                <th>Date</th>
+                                <th>Type de lien</th>
+                                <th>Projet</th>
+                                {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                                <th>Modifier/Supprimer</th>
+                                {% endif %}
+
+                                </thead>
+                                <tbody>
+                                {% for lien in projets_liens %}
+
+                                <tr>
+                                    <td>
+                                        {{ lien.date_creation|date:"d/m/Y" }}
+                                    </td>
+                                    <td>{{lien.get_type_lien_display}}
+                                    </td>
+                                    <td><a href="{{lien.projet_lie.get_absolute_url}}">{{lien.projet_lie}}</a></td>
+                                    {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                                    <td>
+                                        <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}"><i
+                                                class="fa fa-edit"></i> </a>
+                                        <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"
+                                           onclick="return confirm('Voulez vous vraiment Supprimer ce lien ?')"><i
+                                                class="fa fa-times"></i> </a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor%}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-5 textcenter">
+                            <em>Autres Liens </em>
+                        </div>
+                        <div class="col-sm-5 textright">
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:ajouterLienArticle' slug_article=article.slug %}"><i class="fa fa-plus"></i> Ajouter un lien </a>
+                        </div>
+                    </div>
+                    {% if article.liens_lies.all %}
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 textcenter">
+                        <table class="table table-condensed  {% if request.user.css_dark %} table-dark{% endif %} sortable">
+                            <thead>
+                            <th>Date</th>
+                            <th>Lien</th>
+                            {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                            <th>Modifier/Supprimer</th>
+                            {% endif %}
+
+                            </thead>
+                            <tbody>
+                            {% for lien in article.liens_lies.all %}
+                            <tr>
+                                <td>
+                                    {{ lien.date_creation|date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    <a href="{{lien.get_absolute_url}}">{{lien.nom}}</a>
+                                </td>
+                                    {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
+                                <td>
+                                    <a class="btn btn-sm btn-warning textleft" href="{{lien.get_update_url}}"><i
+                                            class="fa fa-edit"></i> </a>
+                                    <a class="btn btn-sm btn-danger textleft" href="{{lien.get_delete_url}}"><i
+                                            class="fa fa-times"></i> </a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor%}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if article.tags.names %}
+                    <hr>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 ">
+                            <em> Mots-clés: </em>{% for tag in article.tags.names %}
+                            <span class="badge badge-info"> {{tag}}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>
-
-            {% if article.tags.names %}
-            <hr>
-            <div class="row justify-content-center">
-                <div class="col-sm-12 ">
-                    <em> Mots-clés: </em>{% for tag in article.tags.names %}
-                    <span class="badge badge-info"> {{tag}}</span>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
         </div>
-    </div>
-</div>
         <div class="tab-pane fade mt-0" id="partager">
             <div class="col-sm-12 col-md-10 col-lg-8 offset-md-1 offset-lg-2 textcenter">
                 <div class="contenu atelier">

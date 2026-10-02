@@ -8,14 +8,14 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 
 from .models import Article, Commentaire, Discussion, Projet, CommentaireProjet, Choix, \
-    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, AssociationSalonArticle, TodoArticle, ArticleLiens, \
+    Evenement, Asso, AdresseArticle, FicheProjet, DocumentPartage, LienArticle, AssociationSalonArticle, TodoArticle, ArticleLiens, \
     ArticleLienProjet, Cercle, ReactionCommentaire
 from .forms import ArticleForm, ArticleAddAlbum, CommentaireArticleForm, CommentaireArticleChangeForm, \
     ArticleChangeForm, ProjetForm, \
     ProjetChangeForm, CommentProjetForm, CommentaireProjetChangeForm, EvenementForm, EvenementArticleForm, \
     AdresseArticleForm, \
     DiscussionForm, SalonArticleForm, FicheProjetForm, FicheProjetChangeForm, DocumentPartageArticleForm, \
-    ReunionArticleForm, \
+    ReunionArticleForm, LienArticleForm, LienArticleModifierForm, \
     AssocierReunionArticleForm, AssociationSalonArticleForm, TodoArticleForm, TodoArticleChangeForm, \
     DocumentPartageArticleModifierForm, \
     AdresseArticleChangeForm, ArticleLiensForm, ArticleLienProjetForm, Article_asso_rechercheForm, \
@@ -362,7 +362,8 @@ def lireArticle(request, slug):
                    'lieux': lieux, 'documents': documents, "salons": salons, "ancre": discu.slug,
                    "suffrages": suffrages, "sondages": sondages, "documents_partages": documents_partages,
                    "todos": todos, "reunions": reunions, "projets_liens": projets_liens,
-                   "articles_liens": articles_liens}
+                   "articles_liens": articles_liens
+                    }
 
     else:
         context = {'article': article, 'form': form, 'form_discussion': form_discussion, 'commentaires': commentaires,
@@ -1206,6 +1207,43 @@ def modifierDocumentPartage(request, slug_docpartage):
 
     return render(request, 'blog/modifierDocumentPartage.html', {'form': form, "article": article})
 
+@login_required
+def ajouterLienArticle(request, slug_article):
+    form = LienArticleForm(request.POST or None)
+    article = Article.objects.get(slug=slug_article)
+
+    if form.is_valid():
+        form.save(article)
+        action.send(request.user,
+                    action_object=article,
+                    url=article.get_absolute_url(),
+                    verb="article_modifier_" + article.asso.slug,
+                    description="a ajouté un lien à l'article '%s'" % article.titre)
+        return redirect(article)
+
+    return render(request, 'blog/ajouterLienArticle.html', {'form': form, "article": article})
+
+
+@login_required
+def supprimerLienArticle(request, slug_lien):
+    doc = LienArticle.objects.get(slug=slug_lien)
+    article = doc.article
+    doc.delete()
+    return redirect(article.get_absolute_url())
+
+
+@login_required
+def modifierLienArticle(request, slug_lien):
+    doc = LienArticle.objects.get(slug=slug_lien)
+    article = doc.article
+    form = LienArticleModifierForm(request.POST or None, instance=doc)
+
+    if form.is_valid():
+        form.save()
+        return redirect(article)
+
+    return render(request, 'blog/modifierLienArticle.html', {'form': form, "article": article})
+
 
 @login_required
 def ajouterReunionArticle(request, slug_article):
@@ -1716,7 +1754,7 @@ class SupprimerArticleLienProjet(DeleteView):
 
 class ArticleAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        calc = len(self.q) > 1
+        calc = len(self.q) > 0
         # Don't forget to filter out results depending on the visitor !
         if not self.request.user.is_authenticated or not calc:
             return Article.objects.none()

@@ -40,7 +40,7 @@
                 <div class="col-6 text-end">
                     <div class="p-3 bg-light rounded text-start d-inline-block border" style="min-width: 250px;">
                         <h6 class="fw-bold mb-1">CLIENT</h6>
-                        <div class="fw-bold text-primary">{{ document.client.name }}</div>
+                        <div class="fw-bold text-primary"><a href="{{ document.client.get_absolute_url }}">{{ document.client.name }}</a></div>
                         <div class="small text-muted">{{ document.client.address|linebreaksbr }}</div>
                         {% if document.client.siret %}<div class="small">SIRET: {{ document.client.siret }}</div>{% endif %}
                     </div>

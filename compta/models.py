@@ -176,6 +176,9 @@ class Client(models.Model):
     def __str__(self):
         return f"[{self.code_client}] {self.name}"
 
+    @property
+    def get_absolute_url(self):
+        return reverse('compta:client_update', kwargs={'pk':self.pk})
 
     def save(self, asso, *args, **kwargs):
         if not self.code_client:
@@ -219,6 +222,9 @@ class Product(models.Model):
 
     def __str__(self):
         return f"[{self.code_product}] {self.name} - {self.unit_price} €"
+
+    def get_absolute_url(self):
+        return reverse('compta:product_update', kwargs={'pk':self.pk})
 
     def save(self, asso, *args, **kwargs):
         if not self.code_product:
@@ -265,6 +271,9 @@ class AssoInfo(models.Model):
     def __str__(self):
         return f"{self.name} ({self.siret})"
 
+    def get_absolute_url(self):
+        return reverse('compta:asso_info_update', kwargs={'pk':self.pk})
+
 class Facture(models.Model):
     number = models.CharField(max_length=50, unique=True, verbose_name="Numéro de facture")
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="factures", verbose_name="Client")
@@ -294,9 +303,9 @@ class Facture(models.Model):
         return reverse('compta:document_detail', kwargs={'pk':self.pk})
 
 
-    @property
-    def get_document_typedisplay(self):
-        return "tititit" #self.get_document_type_display
+    # @property
+    # def get_document_typedisplay(self):
+    #     return "tititit" #self.get_document_type_display
 
     @property
     def total_ht(self):

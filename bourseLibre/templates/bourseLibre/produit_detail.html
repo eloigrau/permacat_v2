@@ -25,14 +25,14 @@
     {% if produit.categorie %}
       <li class="breadcrumb-item">
         <a href="/marche/lister/?categorie={{produit.get_categorie}}" class="text-decoration-none text-secondary" title="Filtrer par cette catégorie">
-          <i class="fas fa-tag-fill me-1"></i>{{ produit.get_categorie }}
+          {{produit.get_categorie_icon_html}}{{ produit.get_categorie }}
         </a>
       </li>
     {% endif %}
     <!-- Profil Auteur -->
     <li class="breadcrumb-item">
       <a href="/marche/lister/?producteur={{produit.user.username}}" class="text-decoration-none text-secondary" title="Voir le profil de l'auteur">
-        <i class="fas fa-user-circle"></i>{{ produit.user.username }}
+        {{ produit.user.username }}
       </a>
     </li>
 
@@ -219,6 +219,12 @@
                 Modifier</a>
             <a class="btn btn-danger btn-lg btn-block" href="{%url 'produit_supprimer' produit.id %}" type="button">
                 Supprimer</a>
+        </div>
+      {%endif%}
+      {%if request.user.is_superuser %}
+        <div>
+            <a class="btn btn-danger btn-lg btn-block" href="https://www.perma.cat/gestion/bourseLibre/produit/{{produit.pk}}/change/" type="button">
+                Admin</a>
         </div>
       {%endif%}
 

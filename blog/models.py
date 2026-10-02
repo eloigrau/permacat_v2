@@ -441,8 +441,10 @@ class Article(models.Model):
         return self.get_logo_nomgroupe_html_taille(20)
 
     def get_logo_nomgroupe_html_taille(self, taille=20):
-        return Choix.get_logo_nomgroupe_html(self.asso.slug, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
-
+        try:
+            return Choix.get_logo_nomgroupe_html(self.asso.slug, taille)#"<img src='/static/" + self.get_logo_nomgroupe + "' height ='"+str(taille)+"px'/>"
+        except:
+            return Choix.get_logo_nomgroupe_html(self.slug[:10], taille)
 
     @property
     def get_logo_nomgroupespartages_html(self):

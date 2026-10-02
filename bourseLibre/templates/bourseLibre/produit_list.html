@@ -12,8 +12,10 @@
         <form action="{% url 'chercher_produits' %}" class="form-inline justify-content-center  navbar-form "
               method="get" role="search">
             {% csrf_token %}
+            <div class="input-group input-group-sm">
             <input class="form-control" name="id_recherche" placeholder="rechercher..." type="text">
-            <button class="btn btn-info" type="submit">{% fa5_icon 'search' title='chercher' %}</button>
+            <button class="btn btn-info text-nowrap" type="submit">{% fa5_icon 'search' title='chercher' %}</button>
+            </div>
         </form>
             </div>
         </div>
@@ -79,7 +81,6 @@
 {% block clspanel %}claspanel{% endblock %}
 
 {% block contenu %}
-<hr>
 <div class="row justify-content-center ">
     <nav class="navbar navbar-expand-md justify-content-center navbar-light">
         <div class="navbar-header">
@@ -230,14 +231,30 @@
     </nav>
 </div>
 <hr>
-{% include 'pagination_new.html' %}
+<div class="container my-4 ">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for annonce in produits_list %}
+      <div class="col hoverable" style="cursor: pointer">
+        {% include "bourseLibre/produit_template_new.html" %}
+      </div>
+    {% empty %}
+      <div class="col-12 text-center py-5 text-muted">
+        Aucune annonce disponible pour le moment.
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% comment %}
 <div class="card-deck listOffres infinite-container">
     <div class="card-deck offre justify-content-between" style="cursor: pointer">
     {% for produit in produits_list %}
     {% include "bourseLibre/produit_template3.html" with produit=produit %}
     {% endfor %}
+    </div>
 </div>
-</div>
+{% endcomment %}
+
 {% include 'pagination_new.html' %}
 
 {% endblock %}

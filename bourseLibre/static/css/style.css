@@ -197,12 +197,7 @@ width:auto; max-width:
 max-height: 50vh;
   border-radius: 5%;
 }
-/*
-.breadcrumb span, .breadcrumb div {display:inline-block!important; float:right!important}*/
 
-.breadcrumbs{
-    text-align:center;
-}
 
 p {
     margin: .5em 0;
@@ -988,6 +983,53 @@ border: 1px inset rgba(28,110,164,0.65);
     padding:10px;
 }
 
+/* Animation douce au survol */
+.annonce-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 0.75rem;
+}
+
+.annonce-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Limite la description pour éviter les cartes trop longues si le texte s'allonge */
+.annonce-description p {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Style du breadcrumb personnalise */
+.breadcrumb {
+  --bs-breadcrumb-divider: '›'; /* Utilisation d'une flèche élégante */
+  --bs-breadcrumb-divider-color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.breadcrumb-item a {
+  transition: color 0.15s ease-in-out;
+}
+
+.breadcrumb-item a:hover {
+  color: #0d6efd !important;
+  text-decoration: underline !important;
+}
+
+/* Gestion du retour à la ligne propre sur écran mobile */
+@media (max-width: 576px) {
+  .breadcrumb {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem !important;
+  }
+}
+/* Style de la description détaillée */
+.annonce-detail-description {
+  white-space: pre-line;
+  word-break: break-word;
+}
 .detailProduit{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -1338,10 +1380,6 @@ td.nomProprieteSalon{
     font-size:0.8em;
     color:grey;
     font-style: italic;
-}
-.breadcrumb{
-    padding: 0;
-    margin-bottom: 0;
 }
 
 .topnav {

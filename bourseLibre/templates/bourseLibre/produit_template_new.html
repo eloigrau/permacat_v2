@@ -1,0 +1,82 @@
+<div class="card h-100 shadow-sm border-0 annonce-card offre2 hoverable"
+     onclick="window.location.href='{% url 'produit_detail' annonce.id %}'"
+    style="border-width: 3px; {% if produit.est_perimee %} background-color:grey;{% else %} background-color:{{ produit.get_couleur }}; border-color:{%if produit.estUneOffre == True %} green {%else%}blueviolet{%endif%}{%endif%};"
+>
+    <!-- En-tête : Offre/Demande + Catégorie -->
+    <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-3 pb-0">
+        {% if annonce.estUneOffre %}
+        <span class="badge bg-success-subtle text-success border border-success-subtle fw-semibold px-2 py-1">
+        <i class="bi bi-arrow-up-right-circle me-1"></i>Offre
+      </span>
+        {% else %}
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-semibold px-2 py-1">
+        <i class="bi bi-arrow-down-left-circle me-1"></i>Demande
+      </span>
+        {% endif %}
+
+        <span class="badge text-bg-light border text-muted fw-normal">
+      {{annonce.get_categorie_icon_html}}{% if annonce.get_souscategorie %} - {{annonce.get_souscategorie}}{% endif %}
+    </span>
+
+    </div>
+
+    <div class="card-body d-flex flex-column pt-2">
+        <!-- Titre de l'annonce -->
+        <h5 class="card-title fw-bold text-dark mb-2 text-truncate" title="{{ annonce.titre }}">
+            {{ annonce.nom_produit|truncatechars:70 }}
+        </h5>
+
+        <!-- Description principale -->
+        <div class="annonce-description mb-3 flex-grow-1">
+            <p class="card-text text-secondary fs-6 lh-base mb-0">
+                {{ annonce.description | safe}}
+            </p>
+        </div>
+
+        <!-- Prix et Monnaie (si disponible) -->
+        {% if annonce.prix %}
+        <div class="d-flex align-items-center mb-3 fs-4 fw-bold text-dark justify-content-around">
+            <span>{{ annonce.prix }}</span>
+            <span class="ms-1 fs-6 text-muted">{{ annonce.get_monnaies }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Informations Association, Utilisateur & Commune -->
+        <div class="pt-2 border-top mt-auto text-secondary small">
+            <!-- Ligne Association & Date -->
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-medium text-truncate me-2" title="{{ annonce.asso }}">
+                  {{ annonce.asso.get_logo_nomgroupe_html_15|safe }}
+                </span>
+
+                {% if annonce.date_debut or annonce.date_expiration %}
+                    <span class="text-muted text-nowrap" style="font-size: 0.8rem;">
+                    {% if annonce.date_debut and annonce.date_expiration %} du {{ annonce.date_debut|date:"j/m" }}{% endif%}
+                    {% if annonce.date_expiration %} au {{annonce.date_expiration|date:"j/m" }}
+                        {%else%}
+                            {% if annonce.date_debut %}à partir du {{ annonce.date_debut|date:"j/m" }}{% endif%}
+                            {% if annonce.date_expiration %} jusqu'au {{ annonce.date_expiration|date:"j/m" }}{% endif%}
+                    {%endif%}
+                     </span>
+                {% endif %}
+            </div>
+
+            <!-- Ligne Utilisateur & Commune -->
+            <div class="d-flex justify-content-between align-items-center text-muted">
+                <span class="text-truncate me-2">
+                  <i class="bi bi-person me-1"></i>{{ annonce.user.username|truncatechars:10 }}
+                </span>
+                {% if annonce.user.adresse.commune or annonce.user.adresse.commune %}
+                <span class="text-nowrap" title="Commune">
+                <i class="bi bi-geo-alt me-1 text-danger"></i>
+                    {% if annonce.user.adresse.commune%}
+                      {{annonce.user.adresse.commune|truncatechars:10}}
+                    {%else%}
+                      {{annonce.user.adresse.code_postal}}
+                    {%endif%}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

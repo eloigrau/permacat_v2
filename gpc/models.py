@@ -14,8 +14,8 @@ class Proposal(models.Model):
         REJECTED = 'REJECTED', 'Refusée'
 
     title = models.CharField(max_length=255)
-    context = models.TextField(help_text="Contexte et problème à résoudre")
-    content = models.TextField(help_text="La proposition concrète / Formulation actuelle")
+    context = models.TextField(verbose_name="Contexte et problème à résoudre", help_text="De quoi parle-t-on ? Liens utiles ?")
+    content = models.TextField(verbose_name="La proposition concrète / Formulation actuelle", help_text="Une ou deux phrases pour prendre une décision claire")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='proposals')
     status = models.CharField(max_length=30, choices=Status.choices, default=Status.DRAFT)
     created_at = models.DateTimeField(auto_now_add=True)

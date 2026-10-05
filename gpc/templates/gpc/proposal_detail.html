@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load fontawesome_5 %}
 
 {% block title %}{{ proposal.title }} — GPC{% endblock %}
 
@@ -112,7 +113,7 @@
                         {{ edit_form.title }}
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Contexte (Summernote)</label>
+                        <label class="form-label fw-bold">Contexte</label>
                         {{ edit_form.context }}
                     </div>
                     <div class="mb-3">
@@ -168,6 +169,7 @@
         </div>
     </div>
 
+
 <!-- PHASE 2 : RECUEIL DES OBJECTIONS -->
 {% elif proposal.status == 'OBJECTION_ROUND' %}
     <div class="card mb-4 border-warning">
@@ -192,7 +194,7 @@
                 <div class="mb-3">
                     <textarea class="form-control" name="description" rows="3" placeholder="Décrire l'objection et le risque majeur..." required></textarea>
                 </div>
-                <button type="submit" class="btn btn-danger">Lever une objection</button>
+                <button type="submit" class="btn btn-danger">Poser une objection</button>
             </form>
 
             <form method="post" action="{% url 'gpc:close_objections' proposal.id %}" class="mt-4 border-top pt-3">
@@ -254,7 +256,16 @@
 
             <!-- SECTION DES VOTES MEMBRES -->
             <div class="p-3 bg-light rounded border mb-4">
-                <h6 class="fw-bold">Validation des membres (Minimum {{ proposal.nbMinVote }} votes)</h6>
+                <div class="row justify-content-between">
+                    <div class="col">
+                        <h6 class="fw-bold">Validation des membres (Minimum {{ proposal.nbMinVote }} votes)</h6>
+                    </div>
+                    <div class="col progress-bar {% if votes_count >= proposal.nbMinVote %}bg-success{% else %}bg-warning text-dark{% endif %}"
+                         role="progressbar"
+                         style="width: {% if votes_count >= proposal.nbMinVote %}100{% else %}{{ votes_count|stringformat:'d' }}0{% endif %}%;">
+                        {{ votes_count }} / {{ proposal.nbMinVote }} votes
+                    </div>
+                </div>
                 <div class="mt-3">
                     <h6 class="small text-uppercase text-muted fw-bold mb-2">Liste des votants :</h6>
                     {% if proposal.resolution_votes %}
@@ -289,13 +300,6 @@
                         <p class="text-muted small italic mb-0">Aucun vote enregistré pour le moment.</p>
                     {% endif %}
                 </div>
-                <div class="progress mb-3" style="height: 20px;">
-                    <div class="progress-bar {% if votes_count >= proposal.nbMinVote %}bg-success{% else %}bg-warning text-dark{% endif %}"
-                         role="progressbar"
-                         style="width: {% if votes_count >= proposal.nbMinVote %}100{% else %}{{ votes_count|stringformat:'d' }}0{% endif %}%;">
-                        {{ votes_count }} / {{ proposal.nbMinVote }} votes
-                    </div>
-                </div>
 
                 {% if not user_has_voted %}
                     <form method="post" action="{% url 'gpc:vote_deliberation' proposal.id %}">
@@ -325,7 +329,7 @@
                         </form>
 
                         <div class="d-flex gap-2 mt-2">
-                            <a href="{% url 'gpc:reformulate_proposal' proposal.id %}" class="btn btn-outline-primary flex-fill">Reformuler le texte</a>
+                            <a href="{% url 'gpc:reformulate_proposal' proposal.id %}" class="btn btn-outline-primary flex-fill">Reformuler le texte et refaire un tour d'objections</a>
                             <form method="post" action="{% url 'gpc:reject_proposal' proposal.id %}" class="flex-fill">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Abandonner ?');">Abandonner</button>

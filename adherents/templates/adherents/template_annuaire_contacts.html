@@ -22,8 +22,11 @@
             <tr>
                 <th>Nom Prénom</th>
                 <th>email</th>
+                <th>Structure</th>
+                <th>Type</th>
                 <th>Telephone______</th>
                 <th>Contacts</th>
+                <th>Referent-e</th>
                 <th>Code postal</th>
                 <th>Commune</th>
                 <th>Commentaire</th>
@@ -40,10 +43,15 @@
                 {% endif %}
             </td>
             <td>
+                {% if contact.nom_structure %}{{contact.nom_structure }}{%endif%}
+            </td>
+            <td>
+                {% if contact.type_structure %}{{contact.type_structure }}{%endif%}
+            </td>
+            <td>
             {% if contact.email %}
                     {{ contact.email }}
                 {% endif %}
-
             </td>
             <td>{% if contact.adresse.telephone %}<a href="tel:{{ contact.adresse.telephone }}">{{ contact.adresse.telephone|phonenumber }}
                <i class="fa fa-phone"></i> </a>
@@ -101,6 +109,9 @@
                          <i class="fa fa-plus"></i> Ajouter un contact</a>
                  {% endif %}
              </td>
+            <td>
+                {% if contact.referent %}{{contact.referent }}{%endif%}
+            </td>
            <td>{%if contact.adresse.code_postal %}{{ contact.adresse.code_postal }}{% else %}-{% endif %}</td>
             <td>{%if contact.adresse.commune %}{{ contact.adresse.commune }} {% else %}-{% endif %}</td>
             <td>{% if contact.commentaire %}{{ contact.commentaire }}{% else %}-{% endif %}</td>

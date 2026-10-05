@@ -268,6 +268,10 @@ class Contact(models.Model):
     date_creation = models.DateTimeField(verbose_name=_("Date de parution"), default=timezone.now)
     projet = models.ForeignKey(ProjetPhoning, on_delete=models.SET_NULL, verbose_name=_("Projet associé"),  blank=True, null=True,)
 
+    type_structure = models.CharField(verbose_name=_("Type"), max_length=150, blank=True, null=True, )
+    nom_structure = models.CharField(verbose_name=_("Structure"), max_length=150, blank=True, null=True, )
+    referent = models.CharField(verbose_name=_("Référent-e"), max_length=150, blank=True, null=True, )
+
     def __str__(self):
         if self.adresse:
             return str(self.nom) + " " + str(self.prenom) + " (" +str(self.adresse.telephone) +  " - " + str(self.email) + ")"

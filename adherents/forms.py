@@ -224,7 +224,7 @@ class Contact_form(forms.ModelForm):
     #                          label="Adhérent lié ?", )
     class Meta:
         model = Contact
-        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire', ]#'adherent']
+        fields = ['nom', 'prenom', 'nom_structure', 'type_structure', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'referent', 'commentaire', ]#'adherent']
 
 
 class Contact_update_form(forms.ModelForm):
@@ -235,7 +235,7 @@ class Contact_update_form(forms.ModelForm):
 
     class Meta:
         model = Contact
-        fields = ['nom', 'prenom', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'commentaire']
+        fields = ['nom', 'prenom', 'nom_structure', 'type_structure', 'telephone', 'email', 'rue', 'commune', 'code_postal', 'referent', 'commentaire']
 
 
 class ContactContact_form(forms.ModelForm):

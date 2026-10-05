@@ -494,6 +494,7 @@ def lireTableauContact(request, asso_slug, csv_reader):
     projet_courant = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
     #if not request.user.has_perm('add_contact'):
    #     return HttpResponseForbidden()
+
     msg = ""
     for i, line in enumerate(csv_reader):
         #if i == 0:

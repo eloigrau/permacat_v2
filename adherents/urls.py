@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  re_path(r'^blog__/', include(blog_urls))
 """
 from django.urls import path, include
-from . import views, views_phoning
+from . import views, views_phoning, utils_ssa
 from django.contrib.auth.decorators import login_required
 
 app_name = 'adherents'
@@ -116,4 +116,8 @@ urlpatterns = [
     path(r'<str:projet_pk>/infos_contacts/<str:type_info>', views.get_infos_contacts, name="get_infos_contacts"),
 
     path(r'<str:asso_slug>/admin_restaurerAdherents', views.admin_restaurerAdherents, name="admin_restaurerAdherents"),
+
+
+    path(r'<str:asso_slug>/phoning/import_csv_orga_ssa', utils_ssa.import_csv_orga_ssa, name="import_csv_orga_ssa"),
+
 ]

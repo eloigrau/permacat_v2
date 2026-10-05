@@ -1,18 +1,7 @@
 {% extends 'base_phoning.html' %}
-
+{% block subtitle %}
+<h3> Ajouter une personne (morale ou physique) </h3>
+{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col textcenter">
-       <h3> Ajouter un contact </h3>
-    </div>
-</div>
-
-<div class="row justify-content-center">
-    <div class="col-sm-12 col-md-8 col-lg-6">
-    <form id="myForm" class="form-horizontal" role="form" action="" method="post"
-        enctype="multipart/form-data">
-            {% include 'form_template.html'%}
-    </form>
-        </div>
-</div>
+{% include 'form_template.html'%}
 {% endblock %}

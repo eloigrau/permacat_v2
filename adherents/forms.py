@@ -5,6 +5,7 @@ from local_summernote.widgets import SummernoteWidget
 from .models import ProjetPhoning
 from bourseLibre.models import Asso
 
+from local_summernote.widgets import SummernoteWidget
 from django.core.exceptions import ValidationError
 
 class AdhesionForm(forms.ModelForm):
@@ -241,6 +242,11 @@ class ContactContact_form(forms.ModelForm):
     class Meta:
         model = ContactContact
         fields = [ 'statut', 'commentaire',]
+        widgets = {
+            'commentaire': SummernoteWidget(),
+        }
+
+
 
 
 class ListeTel_form(forms.Form):

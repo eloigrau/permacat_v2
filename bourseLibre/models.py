@@ -10,6 +10,8 @@ from datetime import datetime
 import django_filters
 import requests
 import simplejson
+from django.utils.html import format_html
+import hashlib
 from actstream import action
 from actstream.models import followers
 from django.contrib.auth.models import AbstractUser
@@ -34,7 +36,7 @@ from taggit.managers import TaggableManager
 from webpush import send_user_notification
 from .constantes import Choix, DEGTORAD, get_bx_icon
 from .settings.production import SERVER_EMAIL
-from .settings import LANGUAGES, LANGUAGE_CODE
+from .settings import LANGUAGES, LANGUAGE_CODE, AVATAR_GRAVATAR_DEFAULT
 
 username_re = re.compile(r"(?:(?<=^)|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
 #username_re = re.compile(r"(?<=^|(?<=[^a-zA-Z0-9-_\.]))@(\w+)")
@@ -410,6 +412,23 @@ class Profil(AbstractUser):
        else:
           nb = len(self.username)
           return self.username[:3] + "".join(['*' for i in range(nb-3)])
+
+    def get_gravatar_url(self, size=40, default="mp"):
+        """Génère l'URL brute de l'avatar Gravatar."""
+        email_hash = hashlib.md5(self.email.strip().lower().encode("utf-8")).hexdigest()
+        return f"https://www.gravatar.com/avatar/{email_hash}?s={size}&d={default}"
+
+
+    def get_gravatar_icon(self, size=40, default=AVATAR_GRAVATAR_DEFAULT, css_class="img-circle-profil"):
+        """Renvoie la balise HTML <img> sécurisée pour l'affichage."""
+        url = self.get_gravatar_url(size=size, default=default)
+        return format_html(
+            '<img src="{}" class="{}" width="{}" height="{}" alt="Avatar">',
+            url,
+            css_class,
+            size,
+            size,
+        )
 
     @property
     def get_latitude(self):

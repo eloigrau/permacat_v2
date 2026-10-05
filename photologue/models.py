@@ -319,7 +319,7 @@ class Document(models.Model):
         if not self.id:
             self.date_creation = timezone.now()
             if sendMail:
-                suivi, created = Suivis.objects.get_or_create(nom_suivi='albums')
+                suivi, created = Suivis.objects.get_or_create(nom_suivi='documents')
                 emails = [suiv.email for suiv in followers(suivi) if self.auteur != suiv and self.est_autorise(suiv)]
 
 

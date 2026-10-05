@@ -40,16 +40,56 @@
                 {% else %} - {% endif %}
                 {% if contact.commentaire %}[{{ contact.commentaire }}]{% endif %}
                    - <a class="btn btn-sm btn-warning textleft" href="{{contact.get_update_url}}" ><i class="fa fa-edit"></i> </a>
-                 <a class="btn btn-sm btn-danger textleft" href="{{contact.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment Supprimer cette ligne ?')" ><i class="fa fa-times"></i> </a>
+                 <a class="btn btn-sm btn-danger textleft" href="{{contact.get_delete_url2}}" onclick="return confirm('Voulez vous vraiment supprimer cette personne ? cela supprimera tous les contacts et commentaires à son sujet...')" ><i class="fa fa-times"></i> </a>
             </td>
              <td>
                  {%if contact.get_contacts_html %}
-                     <ol>
                      {{ contact.get_contacts_html|safe }}
-                        <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
-                     </ol>
+                     <button type="button"
+                            class="btn btn-sm btn-primary btn-load-comments"
+                            data-url="{% url 'adherents:contact_commentaires_ajax' asso_slug contact.id %}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#commentsModal">
+                        <i class="fa fa-eye"></i> Voir Contacts
+                    </button>
+                    <!-- Modale Bootstrap 5 -->
+                    <div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="commentsModalLabel">
+                    <i class="bi bi-chat-square-dots me-2"></i>Commentaires — <span id="modalContactNom" class="fw-bold"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <!-- Zone de chargement / Spinner -->
+                <div id="commentsLoading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+
+                <!-- Conteneur des commentaires -->
+                <div id="commentsContainer" class="d-none">
+                    <!-- Généré dynamiquement en JS -->
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+                     <a class="btn btn-sm btn-warning textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" >
+                         <i class="fa fa-plus"></i> Ajouter un contact</a>
+
                  {% else %}
-                 <a class="btn btn-sm btn-primary textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" ><i class="fa fa-plus"></i> </a>
+                     <a class="btn btn-sm btn-warning textleft" href="{{contact.get_ajoutContact_url}}?next='{{request.get_full_path|urlencode}}'#contact_{{contact.pk}}" >
+                         <i class="fa fa-plus"></i> Ajouter un contact</a>
                  {% endif %}
              </td>
         </tr>
@@ -93,5 +133,91 @@
 {% endcomment %}
 </div>
 {% include 'pagination_new.html' %}
-<p class="textcenter textepetit">({{contacts|length}} contacts)</p>
+<p class="textcenter textepetit">({{contacts|length}} personnes)</p>
 
+
+<!-- Script Vanilla JS (Bootstrap 5) -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalElement = document.getElementById('commentsModal');
+    const container = document.getElementById('commentsContainer');
+    const loading = document.getElementById('commentsLoading');
+    const modalTitleNom = document.getElementById('modalContactNom');
+
+    modalElement.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const url = button.getAttribute('data-url');
+
+        // Réinitialisation de l'affichage
+        loading.classList.remove('d-none');
+        container.classList.add('d-none');
+        container.innerHTML = '';
+        modalTitleNom.textContent = '';
+
+        console.log(url);
+        // Requête Ajax
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Erreur réseau');
+            return response.json();
+        })
+        .then(data => {
+            modalTitleNom.textContent = data.contact_nom;
+
+            if (data.commentaires.length === 0) {
+                container.innerHTML = `<div class="alert alert-info mb-0">Aucun commentaire enregistré pour ce contact.</div>`;
+            } else {
+                data.commentaires.forEach(item => {
+                    const commentCard = `
+                        <div class="card mb-3 border-0 shadow-sm bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="col">
+                                       <a href="${escapeHtml(item.auteur_url)}">
+                                          ${item.avatar}
+                                        <strong>${escapeHtml(item.auteur)}</strong>
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <span class="badge bg-primary ms-2">${escapeHtml(item.type)}</span>
+                                    </div>
+                                    <div class="col">
+                                        <small class="text-muted">${escapeHtml(item.date_contact)}</small>
+                                         <a class="btn btn-sm btn-warning" href="${item.edit_url}">
+                                         <i class="fa fa-edit"></i>
+                                         </a>
+                                    </div>
+                                </div>
+                                <div class="row text-dark mb-0 style-description textleft">${item.description}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += commentCard;
+                });
+            }
+        })
+        .catch(error => {
+            container.innerHTML = `<div class="alert alert-danger mb-0">Erreur lors du chargement des commentaires.</div>`;
+        })
+        .finally(() => {
+            loading.classList.add('d-none');
+            container.classList.remove('d-none');
+        });
+    });
+
+    // Fonction de protection contre les failles XSS
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+});
+</script>

@@ -3,7 +3,16 @@
 {% load app_filters %}
 {% load widget_tweaks %}
 {% load static %}
-{% block title %} Liste de Contacts |{% endblock %}
+{% block header%}
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+<link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.css' %}" />
+<link rel="stylesheet" href="{% static 'leaflet/MarkerCluster.Default.css' %}" />
+<script src="{% static 'js/leaflet.markercluster.js' %}"></script>
+<script src="{% static 'js/bourseLibre_maps.js' %}"></script>
+{%endblock%}
+{% block title %} Carte des Contacts |{% endblock %}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
@@ -17,19 +26,23 @@
                  <i class="fa fa-info"></i>
             </button>
         </a>
+
         <div id="info_contacts"></div>
     </div>
 </div>
 <div class="row textcenter justify-content-center">
-    <div class="col-sm-12 col-md-10 col-lg-8 textcenter">
+    <div class="col-sm-12 col-md-10 col-lg-8 textcenter ">
        {% if projet.description %}
         <p>{{projet.description|safe}}</p>
        {% endif %}
     </div>
 </div>
+
 {% endblock %}
 
 {% block content %}
+
+
 <div class="row">
     <div class="col-sm-12 textcenter">
         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#help" title="Filtrer">
@@ -71,12 +84,12 @@
                                             {{ filter.form.production_ape.label_tag }}
                                             <label class="checkbox-inline">{% render_field filter.form.production_ape %}</label>
                                         </div>
-
                                         {% endif %}
                                         <div>
                                             {{ filter.form.dejacontacte.label_tag }}
                                             <label class="checkbox-inline">{% render_field filter.form.dejacontacte %}</label>
                                         </div>
+
                                         <div>
                                             {{ filter.form.mescontacts.label_tag }}
                                             <label class="checkbox-inline">{% render_field filter.form.mescontacts %}</label>
@@ -97,17 +110,119 @@
                 </div>
             </div>
         </div>
+
+        <a href="{% url 'adherents:phoning_contact_ajouter' asso_slug=request.session.asso_slug %}">
+            <button type="button" class="btn btn-success">
+                Ajouter Un Contact à la liste
+            </button>
+        </a>
     </div>
 </div>
 <hr>
-{% if request.session.asso_slug == "conf66" %}
-{% include "adherents/template_annuaire_contacts_simple_conf66.html" with profils=filter.qs %}
-{% else %}
-{% include "adherents/template_annuaire_contacts_simple.html" with profils=filter.qs %}
-{% endif %}
+<div class="row cartePleinePage" id="carte_contacts">
+    <div class="col-md-12">
+        <style>.leaflet-container {width:  100%;min-height: 80vh;}</style>
+        <script type="text/javascript">
 
+        function map_init_basic (map, options) {
+             const accessToken = 'lpCzV2qi87UdZoteQ9PEOvPSlF2XEN4CeRRVU0BOKrXUvJ9etIMUeclQj6xl0r9e';
+      L.tileLayer(
+      `https://tile.jawg.io/jawg-sunny/{z}/{x}/{y}.png?access-token=${accessToken}`, {
+        attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank" class="jawg-attrib">&copy; <b>Jawg</b>Maps</a> | <a href="https://www.openstreetmap.org/copyright" title="OpenStreetMap is open data licensed under ODbL" target="_blank" class="osm-attrib">&copy; OpenStreetMap</a>',
+        maxZoom: 22
+      }
+    ).addTo(map);
+          var leafIcon = L.icon({
+            iconUrl: '{% static 'img/leafgreen.png' %}',
+            shadowUrl: '{% static 'img/leafshadow.png' %}',
 
-<hr>
+            iconSize:     [38, 95], // size of the icon
+            shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+          var greenIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-green.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var blueIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-blue.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var blackIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-black.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var greyIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-black.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var yellowIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-yellow.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+          var orangeIcon = L.icon({
+              iconUrl: '{% static 'img/marker-icon-orange.png' %}',
+              shadowUrl: '{% static 'img/marker-shadow.png' %}',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+        });
+
+        var markers = L.markerClusterGroup({ maxClusterRadius: 10 });
+        {% for profil in contacts %}
+            var lat = {{profil.get_latitude}};
+            var lon = {{profil.get_longitude}};
+            {% if profil.get_contacts_nb == 0 %}
+            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            {% elif profil.get_contacts_nb == 1 %}
+            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            {% elif profil.get_contacts_nb == 2 %}
+            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            {% elif profil.get_contacts_nb == 3 %}
+            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            {% elif profil.get_contacts_nb == 4 %}
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            {% else %}
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            {% endif %}
+            markers.addLayer(marker);
+        {%endfor%}
+        map.addLayer(markers);
+        {% if filter.qs|length == 1 %}
+        map.panTo(new L.LatLng(lat, lon));
+        {%else%}
+        map.panTo(new L.LatLng(42.62914, 2.49939));
+        {%endif%}
+    }
+
+        </script>
+        {% leaflet_map "yourmap" callback="window.map_init_basic" %}
+    </div>
+</div>
 
 <div id="listeMails" class="textcenter"></div>
 <div class="row justify-content-center textcenter">
@@ -131,30 +246,9 @@
     </a>
 </div>
 </div>
-{% comment %}
-<div class="row justify-content-center">
-<div class="col-sm-12 col-md-10 col-lg-8">
-    <div id="historique" style='display:none;'>
-    <div class="card carte-notif-news notif3 d-md-flex">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item textcenter"  style="background-color:#ffc34d">Historique</li>
-            {% for action in historique %}
-            <li class="list-group-item"  style="{% if request.user.date_notifications > action.timestamp %}background-color:#ffffe6{%endif%}">
-                <a href="{%if action.data.url %}{{ action.data.url }}{%endif%} ">{{action.actor}}
-                    {%if action.description %}{{action.description|truncatechars:180|filtrerNotifSalon}}{% endif %} {%if action.verb == 'started following' %} suit la {{action.target}}{% endif %} &nbsp; <small>(il y a {{action.timesince|raccourcirTempsStr}})</small>
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    </div>
-    </div>
-</div>
-{% endcomment %}
+
 
 <script>
-
-
     function toggle_visibility(id) {
        var e = document.getElementById(id);
        var btn = document.getElementById("btn-archives");
@@ -167,6 +261,7 @@
           btn.textContent = "Cacher la carte";
       }
    }
+
 function get_infos(url_tag) {
     $.ajax({
         url: url_tag,
@@ -184,7 +279,8 @@ function get_infos(url_tag) {
     });
 }
 
-function get_infocontact(url_tag) {
+
+function get_infocontact() {
     $.ajax({
         url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk asso_slug=request.session.asso_slug %}",
         type: "GET",
@@ -199,6 +295,8 @@ function get_infocontact(url_tag) {
         }
     });
 }
+
+
 </script>
 
 {% endblock %}

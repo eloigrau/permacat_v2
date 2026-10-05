@@ -53,8 +53,15 @@ def get_salon_particulier(asso_slug, slug_type="bureau"):
 
 
 
-CHOIX_CONTACTS = ("", "--------"), ("0", "Réponse OK"), ("1", "Pas de réponse"), ("2", "A répondu mais à rappeler"), ("3", "A répondu mais HOSTILE"), ("4", "Mauvais numéro"), ("6", "autre: "), ("5", "Je l'appellerai")
+CHOIX_CONTACTS = ("", "--------"), \
+                 ("0", "Réponse OK"), \
+                 ("1", "Pas de réponse"), \
+                 ("2", "A répondu mais à rappeler"), \
+                 ("3", "A répondu mais 'hostile'"), \
+                 ("4", "Mauvais numéro ou mail"), \
+                 ("5", "RDV pris"), \
+                 ("6", "Autre"),
 
-red = Color("#ffffcc")
-NB_COLORS_RANGE = 5
-RANGE_COLORS_PHONING = list(red.range_to(Color("#f9f06b"), NB_COLORS_RANGE))
+red = Color("#ddeeee")
+NB_COLORS_RANGE = 10
+RANGE_COLORS_PHONING = list(red.range_to(Color("#cccce5"), NB_COLORS_RANGE))

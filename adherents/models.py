@@ -2,6 +2,7 @@ from django.db import models
 from bourseLibre.models import Profil, Adresse, Asso, LONGITUDE_DEFAUT
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils.safestring import mark_safe
 
 from permagora.models import LATITUDE_DEFAUT
 from .constantes import dict_ape, CHOIX_STATUTS, CHOIX_MOYEN, CHOIX_CONTACTS, NB_COLORS_RANGE, RANGE_COLORS_PHONING
@@ -269,7 +270,7 @@ class Contact(models.Model):
 
     def __str__(self):
         if self.adresse:
-            return str(self.adresse.telephone) + " (" + str(self.nom) + " " + str(self.prenom) +")"
+            return str(self.nom) + " " + str(self.prenom) + " (" +str(self.adresse.telephone) +  " - " + str(self.email) + ")"
         else:
             return str(self.nom) + " " + str(self.prenom) + " " + str(self.email)
 
@@ -281,6 +282,7 @@ class Contact(models.Model):
         if self.adherent:
             return self.adherent.get_absolute_url()
         return self.get_absolute_url()
+
     def get_update_url(self):
         return reverse('adherents:phoning_contact_modifier', kwargs={'pk': self.pk, 'asso_slug':self.projet.asso.slug})
     def get_delete_url(self):
@@ -290,12 +292,15 @@ class Contact(models.Model):
     def get_ajoutContact_url(self):
         return reverse('adherents:phoning_contact_contact_ajout', kwargs={'contact_pk': self.pk, 'asso_slug':self.projet.asso.slug})
 
-    def get_contacts(self):
-        return self.contactcontact_set.all().order_by('-date_contact')
+    def get_contacts(self, limit=True):
+        if limit:
+            return self.commentaires.all().order_by('-date_contact')[:4]
+        else:
+            return self.commentaires.all().order_by('-date_contact')
 
     @property
     def get_contacts_nb(self):
-        return len(self.contactcontact_set.all())
+        return len(self.commentaires.all())
 
     def get_profil_username(self):
         if hasattr(self, 'profil'):
@@ -309,14 +314,21 @@ class Contact(models.Model):
         if length < NB_COLORS_RANGE:
             return RANGE_COLORS_PHONING[length]
         else:
-            return  RANGE_COLORS_PHONING[-1]
+            return RANGE_COLORS_PHONING[-1]
 
     @property
     def get_contacts_html(self):
-        html = ""
-        for c in self.get_contacts():
-            html += "<li>" +str(c) + "</li> "
-        return html
+        contacts = self.get_contacts()
+        if not contacts:
+            return ""
+
+        html = "<ul class='textleft'>"
+        for c in contacts[:3]:
+            html += "<li>" + c.get_commentaire_html() + "</li> "
+        if len(contacts) > 3:
+            html += "<li>...</li> "
+        html += "</ul>"
+        return mark_safe(html)
 
 
     @property
@@ -332,8 +344,8 @@ class Contact(models.Model):
         return LONGITUDE_DEFAUT
 
 class ContactContact(models.Model):
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name=_("Contact"))
-    commentaire = models.CharField(verbose_name=_("commentaire"), max_length=200, blank=True)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, verbose_name=_("Contact"), related_name="commentaires")
+    commentaire = models.TextField(verbose_name=_("commentaire"), blank=True)
     date_contact = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
     statut = models.CharField(verbose_name=_("Statut"), max_length=2,
                               choices=CHOIX_CONTACTS, default='',)
@@ -344,3 +356,18 @@ class ContactContact(models.Model):
         if self.profil:
             return "[" + str(self.date_contact.strftime('%d/%m')) + ", " + str(self.profil) +"] " + str(self.get_statut_display()) + " " + str(self.commentaire)
         return "[" + str(self.date_contact.strftime('%d/%m')) + "] " + str(self.get_statut_display()) + " " + str(self.commentaire)
+
+    def get_absolute_url(self):
+        return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug':self.contact.projet.asso.slug})
+
+    def get_update_url(self):
+        return reverse('adherents:phoning_contact_contact_modifier', kwargs={'pk': self.pk, "asso_slug":self.contact.projet.asso.slug})
+
+    def get_commentaire_html(self):
+        if self.profil:
+            return "<a href='" + str(self.profil.get_absolute_url()) + "'>"+ self.profil.username + "</a> - " \
+                   + self.date_contact.strftime('%d/%m') + "<span class='badge bg-primary ms-2'>" \
+                   + self.get_statut_display() + "</span>"
+        else:
+            return self.date_contact.strftime('%d/%m') + "<span class='badge bg-primary ms-2'>" \
+                   + self.get_statut_display() + "</span>"

@@ -12,8 +12,7 @@
 <script src="{% static 'js/leaflet.markercluster.js' %}"></script>
 <script src="{% static 'js/bourseLibre_maps.js' %}"></script>
 {%endblock%}
-{% block title %} Contacts |
-{% endblock %}
+{% block title %} Listes de Contacts |{% endblock %}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
@@ -27,12 +26,6 @@
                  <i class="fa fa-info"></i>
             </button>
         </a>
-        <a href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}">
-            <button type="button" class="btn btn-sm btn-primary">
-                Version Telephone
-            </button>
-        </a>
-
         <div id="info_contacts"></div>
     </div>
 </div>
@@ -133,6 +126,7 @@
 
 <hr>
 
+{% comment %}
     <div class="textcenter">
         <button id="btn-archives"  type="button" class="btn btn-info btn-lg" onclick="toggle_visibility('carte_contacts');" data-toggle="tooltip" data-placement="bottom" title="Cliquez pour afficher la carte">
             Cacher la carte
@@ -245,6 +239,7 @@
 
 <hr>
 
+{% endcomment %}
 
 <div id="listeMails" class="textcenter"></div>
 <div class="row justify-content-center textcenter">

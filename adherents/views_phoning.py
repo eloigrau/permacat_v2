@@ -1,14 +1,11 @@
 
 from django.shortcuts import render, redirect, reverse
-from django.views.generic import ListView, UpdateView, DeleteView, CreateView, DetailView
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
-from django.core.exceptions import MultipleObjectsReturned
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 import csv
-from django.db.models import BooleanField, ExpressionWrapper, Q
+from django.db.models import Q
 from urllib import parse
-from blog.models import Projet
 from .forms import (Contact_form, Contact_update_form, ContactContact_form,
                     ListeTel_form, csvFile_form, csvText_form, ProjetPhoning_form,
                     ProjetPhoning_UpdateForm)
@@ -18,9 +15,7 @@ from bourseLibre.models import Adresse, Profil, Asso
 from bourseLibre.utils import testIsMembreAsso_bool, testIsMembreAsso
 from .filters import ContactCarteFilter
 from actstream.models import Action
-from datetime import date, timedelta, datetime
 
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
 from actstream import actions, action
 from io import StringIO
@@ -28,6 +23,8 @@ from django.db.models import Count, Max, Min
 import re
 from.views import write_csv_data, is_membre_bureau
 from django.contrib.auth.decorators import login_required, permission_required
+
+from django.contrib import messages
 
 from unidecode import unidecode
 
@@ -212,6 +209,11 @@ class Contact_liste(UserPassesTestMixin, ListView):
             return [self.template_name_simple]  # Return a list that contains "a.html" template name
         return [self.template_name_complet]  # else return "b.html" template name
 
+class Carte(Contact_liste):
+
+    def get_template_names(self, *args, **kwargs):
+        return "adherents/carte.html"
+
 @login_required
 def phoning_projet_courant(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
@@ -235,6 +237,17 @@ def contactContact_supprimer(request, asso_slug, contact_contact_pk):
     c = get_object_or_404(ContactContact, pk=contact_contact_pk)
     c.delete()
     return redirect('adherents:phoning_projet_courant', asso_slug=asso_slug)
+
+class contactContact_modifier(UserPassesTestMixin, UpdateView):
+    model = ContactContact
+    template_name_suffix = '_modifier'
+    form_class = ContactContact_form
+
+    def test_func(self):
+        self.asso = testIsMembreAsso_bool(self.request, self.kwargs['asso_slug'])
+        if not self.asso:
+            return False
+        return is_membre_bureau(self.request.user, self.asso.slug) or self.request.user == self.object.profil
 
 
 @login_required
@@ -863,8 +876,8 @@ def ajax_infocontact(request, asso_slug, pk):
     contact_contacts = ContactContact.objects.filter(contact__in=contacts)
     nb_total = contacts.count()
     nb_contacts_total = contact_contacts.count()
-    nb_contactes = contacts.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0).count()
-    nb_contactes_ok = contacts.filter(contactcontact__statut="0").annotate(num_b=Count('contactcontact')).filter(num_b__gt=0).count()
+    nb_contactes = contacts.annotate(num_b=Count('commentaires')).filter(num_b__gt=0).count()
+    nb_contactes_ok = contacts.filter(contactcontact__statut="0").annotate(num_b=Count('commentaires')).filter(num_b__gt=0).count()
     nb_contactes_pasok  = contacts.filter(Q(contactcontact__statut="0") | Q(contactcontact__statut="1")| Q(contactcontact__statut="2")| Q(contactcontact__statut="3")| Q(contactcontact__statut="4")).annotate(num_b=Count('contactcontact')).filter(num_b__gt=0).count()
     return render(request, 'adherents/ajax/nb_contacts.html',
                   {
@@ -874,4 +887,30 @@ def ajax_infocontact(request, asso_slug, pk):
                       'nb_contactes_ok':nb_contactes_ok,
                       'nb_contactes_pasok':nb_contactes_pasok
                   })
+
+
+@login_required
+def contact_commentaires_ajax(request, asso_slug,  pk_contact):
+    """
+    Renvoie les commentaires d'un contact au format JSON.
+    """
+    testIsMembreAsso(request, asso_slug)
+    contact = Contact.objects.get(projet__asso__slug=asso_slug, pk=pk_contact)
+    commentaires = contact.commentaires.order_by('-date_contact')
+
+    data = [
+        {
+            'id': c.id,
+            'auteur': request.user.username,
+            'auteur_url': request.user.get_absolute_url(),
+            'edit_url': c.get_update_url()if (request.user == c.profil or request.user.is_superuser)else "",
+            'avatar': request.user.get_gravatar_icon(),
+            'type': c.get_statut_display(),
+            'description': c.commentaire,
+            'date_contact': c.date_contact.strftime('%d/%m/%Y à %H:%M'),
+        }
+        for c in commentaires
+    ]
+
+    return JsonResponse({'contact_nom': str(contact), 'commentaires': data})
 

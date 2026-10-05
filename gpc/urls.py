@@ -21,11 +21,10 @@ urlpatterns = [
     path('<int:pk>/cloturer-objections/', views.CloseObjectionsView.as_view(), name='close_objections'),
 
     # Phase Délibération & Levée
-    path('objection/<int:objection_id>/repondre/', views.AddObjectionResponseView.as_view(),
-         name='add_objection_response'),
-    path('objection/<int:objection_id>/voter-levee/', views.VoteResolveObjectionView.as_view(),
-         name='vote_resolve_objection'),
-    path('<int:pk>/cloturer-deliberation/', views.CloseDeliberationView.as_view(), name='close_deliberation'),
+    path('objection/<int:objection_id>/respond/', views.AddObjectionResponseView.as_view(), name='add_objection_response'),
+    path('objection/<int:objection_id>/resolve/', views.ResolveObjectionView.as_view(), name='resolve_objection'),
+    path('<int:pk>/vote-deliberation/', views.VoteDeliberationView.as_view(), name='vote_deliberation'),
+    path('<int:pk>/close-deliberation/', views.CloseDeliberationView.as_view(), name='close_deliberation'),
 
     # Actions Auteur
     path('<int:pk>/reformuler/', views.ReformulateProposalView.as_view(), name='reformulate_proposal'),

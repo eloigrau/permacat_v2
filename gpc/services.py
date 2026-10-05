@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
-from .models import Proposal, Objection, ObjectionResolutionVote
-
+from .models import Proposal, Objection, ObjectionResolutionVote, PhaseVote
+from django.db import transaction
 
 def submit_proposal(proposal: Proposal) -> None:
     if proposal.status != Proposal.Status.DRAFT:
@@ -49,29 +49,92 @@ def close_objections(proposal: Proposal) -> None:
         proposal.status = Proposal.Status.DELIBERATION
 
     proposal.save()
+#
+# def vote_to_resolve_objection(objection: Objection, voter, approve: bool = True) -> bool:
+#     """
+#     Enregistre le vote d'un membre pour lever ou conserver une objection.
+#     Si au moins N votes distincts (définis dans la proposition) favorables sont enregistrés, l'objection est automatiquement marquée comme levée.
+#     """
+#     if objection.is_resolved:
+#         raise ValidationError("Cette objection est déjà levée.")
+#
+#     ObjectionResolutionVote.objects.update_or_create(
+#         objection=objection,
+#         voter=voter,
+#         defaults={'approve_resolution': approve}
+#     )
+#
+#     # Vérification du seuil minimal de 3 votes distincts
+#     if objection.positive_votes_count >= objection.proposal.nbMinVote:
+#         objection.is_resolved = True
+#         objection.save()
+#         return True  # Objection levée !
+#
+#     return False
 
-def vote_to_resolve_objection(objection: Objection, voter, approve: bool = True) -> bool:
+@transaction.atomic
+def resolve_objection(objection: Objection, user) -> Objection:
     """
-    Enregistre le vote d'un membre pour lever ou conserver une objection.
-    Si au moins N votes distincts (définis dans la proposition) favorables sont enregistrés, l'objection est automatiquement marquée comme levée.
+    Règle/lève une objection dans la phase de délibération.
+    Seuls l'auteur de l'objection ou l'auteur de la proposition peuvent la lever.
     """
+    proposal = objection.proposal
+
+    # 1. Vérification de la phase
+    if proposal.status != Proposal.Status.DELIBERATION:
+        raise ValidationError(
+            "Les objections ne peuvent être levées qu'en phase de délibération."
+        )
+
+    # 2. Vérification des permissions (Auteur de l'objection OU auteur de la proposition)
+    if user != objection.author and user != proposal.author:
+        raise ValidationError(
+            "Seul l'auteur de l'objection ou l'auteur de la proposition peut lever cette objection."
+        )
+
+    # 3. Traitement de l'objection
     if objection.is_resolved:
-        raise ValidationError("Cette objection est déjà levée.")
+        raise ValidationError("Cette objection est déjà marquée comme levée.")
 
-    ObjectionResolutionVote.objects.update_or_create(
-        objection=objection,
-        voter=voter,
-        defaults={'approve_resolution': approve}
-    )
+    objection.is_resolved = True
+    objection.save(update_fields=['is_resolved'])
 
-    # Vérification du seuil minimal de 3 votes distincts
-    if objection.positive_votes_count >= objection.proposal.nbMinVote:
-        objection.is_resolved = True
-        objection.save()
-        return True  # Objection levée !
-
-    return False
-
+    return objection
+#
+# @transaction.atomic
+# def vote_to_resolve_objection(objection: Objection, voter, approve: bool = True) -> Objection:
+#     """
+#     Règle/lève une objection dans la phase de délibération.
+#     Seuls l'auteur de l'objection ou l'auteur de la proposition peuvent la lever.
+#     """
+#     proposal = objection.proposal
+#
+#     # 1. Vérification de la phase
+#     if proposal.status != Proposal.Status.DELIBERATION:
+#         raise ValidationError(
+#             "Les objections ne peuvent être levées qu'en phase de délibération."
+#         )
+#
+#     # 2. Vérification des permissions (Auteur de l'objection OU auteur de la proposition)
+#     if voter != objection.author and voter != proposal.author:
+#         raise ValidationError(
+#             "Seul l'auteur de l'objection ou l'auteur de la proposition peut lever cette objection."
+#         )
+#
+#     # 3. Traitement de l'objection
+#     if objection.is_resolved:
+#         raise ValidationError("Cette objection est déjà marquée comme levée.")
+#
+#     ObjectionResolutionVote.objects.update_or_create(
+#         objection=objection,
+#         voter=voter,
+#         defaults={'approve_resolution': approve}
+#     )
+#
+#     objection.is_resolved = True
+#     objection.save(update_fields=['is_resolved'])
+#
+#     return objection
 
 def close_deliberation(proposal: Proposal) -> None:
     """
@@ -113,3 +176,30 @@ def reject_proposal(proposal: Proposal) -> None:
 
     proposal.status = Proposal.Status.REJECTED
     proposal.save()
+
+
+@transaction.atomic
+def cast_validation_vote(proposal: Proposal, voter) -> PhaseVote:
+    """
+    Enregistre le vote d'un membre pour valider le traitement des objections
+    durant la phase de délibération.
+    """
+    # 1. Vérifier que la proposition est bien en phase de délibération
+    if proposal.status != Proposal.Status.DELIBERATION:
+        raise ValidationError(
+            "Les votes de validation ne sont ouverts qu'en phase de délibération."
+        )
+
+    # 2. Vérifier si l'utilisateur a déjà voté
+    if proposal.resolution_votes.filter(voter=voter).exists():
+        raise ValidationError(
+            "Vous avez déjà enregistré votre vote pour cette phase."
+        )
+
+    # 3. Créer et retourner le vote
+    vote = PhaseVote.objects.create(
+        proposal=proposal,
+        voter=voter
+    )
+
+    return vote

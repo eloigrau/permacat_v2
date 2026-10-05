@@ -95,27 +95,29 @@
 {% endif %}
 <!-- PHASE 1 : CLARIFICATIONS -->
 {% if proposal.status == 'CLARIFICATION' %}
-{% if user == proposal.author %}
+    {% if user == proposal.author and edit_form %}
         <div class="card mb-3 border-secondary">
             <div class="card-header bg-light">
                 <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editProposalForm">
-                    <i class="bi bi-pencil me-1"></i> Ajuster la proposition selon les clarifications
+                    <i class="bi bi-pencil me-1"></i> Ajuster la proposition (Titre, Contexte Summernote, Contenu)
                 </button>
             </div>
             <div class="collapse card-body" id="editProposalForm">
                 <form method="post" action="{% url 'gpc:edit_proposal_clarification' proposal.id %}">
                     {% csrf_token %}
-                    <div class="mb-2">
+                    {{ edit_form.media }}
+
+                    <div class="mb-3">
                         <label class="form-label fw-bold">Titre</label>
-                        <input type="text" name="title" class="form-control" value="{{ proposal.title }}" required>
+                        {{ edit_form.title }}
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Contexte</label>
-                        <textarea name="context" class="form-control" rows="2" required>{{ proposal.context }}</textarea>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Contexte (Summernote)</label>
+                        {{ edit_form.context }}
                     </div>
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label class="form-label fw-bold">Texte de la proposition</label>
-                        <textarea name="content" class="form-control" rows="4" required>{{ proposal.content }}</textarea>
+                        {{ edit_form.content }}
                     </div>
                     <button type="submit" class="btn btn-sm btn-success">Enregistrer les ajustements</button>
                 </form>
@@ -202,117 +204,131 @@
 
 <!-- PHASE 3 : DÉLIBÉRATION & VOTE DES MEMBRES POUR LA LEVÉE -->
 {% elif proposal.status == 'DELIBERATION' %}
-    <div class="card mb-4 border-dark shadow-sm">
-        <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
-            <span>Phase 3 : Traitement des objections</span>
-            <span class="badge bg-warning text-dark">Au moins {{proposal.nbMinVote}} votes membres requis par objection</span>
-        </div>
+ <div class="card mb-4 border-dark shadow-sm">
+        <div class="card-header bg-dark text-white fw-bold">Phase 3 : Délibération & Traitement des objections</div>
         <div class="card-body">
             {% for objection in proposal.objections.all %}
-                <div class="card mb-4 border-2 {% if objection.is_resolved %}border-success bg-light{% else %}border-danger{% endif %}">
+                <div class="card mb-3 border-2 {% if objection.is_resolved %}border-success bg-light{% else %}border-danger{% endif %}">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0 fw-bold {% if objection.is_resolved %}text-success{% else %}text-danger{% endif %}">
-                                Objection soulevée par {{ objection.author.username }}
+                                Objection de {{ objection.author.username }}
                             </h6>
                             {% if objection.is_resolved %}
-                                <span class="badge bg-success fs-6"><i class="bi bi-check-circle-fill"></i> Objection Levée par les membres</span>
+                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Objection Levée</span>
                             {% else %}
-                                <span class="badge bg-warning text-dark fs-6">
-                                    {{ objection.positive_votes_count }}/3 votes reçus pour la levée
-                                </span>
+                                <span class="badge bg-danger">Active</span>
                             {% endif %}
                         </div>
 
-                        <p class="card-text fs-5">{{ objection.description }}</p>
+                        <p class="card-text">{{ objection.description }}</p>
 
-                        <!-- Pistes de solution / Réponses -->
-                        <div class="ms-3 border-start border-3 ps-3 my-3">
-                            <h6 class="small fw-bold text-muted">Échanges & Pistes de résolution :</h6>
+                        <div class="ms-3 border-start border-2 ps-3 mt-3">
+                            <h6 class="small fw-bold text-muted">Pistes d'amendement :</h6>
                             {% for resp in objection.responses.all %}
                                 <div class="bg-white p-2 mb-2 rounded border">
                                     <small><strong>{{ resp.author.username }} :</strong> {{ resp.content }}</small>
                                 </div>
-                            {% empty %}
-                                <p class="text-muted small">Aucune réponse ou piste proposée pour l'instant.</p>
                             {% endfor %}
 
-                            <!-- Formulaire d'ajout de réponse -->
                             <form method="post" action="{% url 'gpc:add_objection_response' objection.id %}" class="mt-2 mb-3">
                                 {% csrf_token %}
                                 <div class="input-group input-group-sm">
-                                    <input type="text" name="content" class="form-control" placeholder="Apporter un argument ou une piste de solution..." required>
-                                    <button class="btn btn-outline-secondary" type="submit">Publier une piste</button>
+                                    <input type="text" name="content" class="form-control" placeholder="Proposer une réponse..." required>
+                                    <button class="btn btn-outline-secondary" type="submit">Ajouter</button>
                                 </div>
                             </form>
+
+                            {% if not objection.is_resolved and user == objection.author  %}
+                                <form method="post" action="{% url 'gpc:resolve_objection' objection.id %}" class="text-end">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-check-circle me-1"></i> Accepter et lever cette objection
+                                    </button>
+                                </form>
+                            {% endif %}
                         </div>
-
-                        <!-- SECTION DE VOTE PAR LES MEMBRES POUR LEVER L'OBJECTION -->
-                        {% if not objection.is_resolved %}
-                            <div class="p-3 bg-white rounded border border-warning mt-3">
-                                <h6 class="fw-bold mb-2">Vote des membres : Valider la réponse & lever l'objection</h6>
-                                <p class="small text-muted mb-2">
-                                    Il faut <strong>au moins 3 votes favorables</strong> de membres différents pour valider la levée de cette objection.
-                                </p>
-
-                                <div class="d-flex align-items-center gap-2">
-                                    <form method="post" action="{% url 'gpc:vote_resolve_objection' objection.id %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="approve" value="true">
-                                        <button type="submit" class="btn btn-success btn-sm">
-                                            <i class="bi bi-hand-thumbs-up me-1"></i> Voter POUR la levée de l'objection
-                                        </button>
-                                    </form>
-
-                                    <form method="post" action="{% url 'gpc:vote_resolve_objection' objection.id %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="approve" value="false">
-                                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                                            <i class="bi bi-hand-thumbs-down me-1"></i> Conserver l'objection
-                                        </button>
-                                    </form>
-                                </div>
-
-                                <!-- Liste des membres ayant déjà voté -->
-                                <div class="mt-2 small text-muted">
-                                    Votants actuels :
-                                    {% for v in objection.resolution_votes.all %}
-                                        <span class="badge {% if v.approve_resolution %}bg-success{% else %}bg-secondary{% endif %} me-1">
-                                            {{ v.voter.username }} ({% if v.approve_resolution %}Pour{% else %}Contre{% endif %})
-                                        </span>
-                                    {% empty %}
-                                        <em>Aucun vote enregistré pour l'instant.</em>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
 
-            <!-- BOUTON FINAL : CLÔTURER LA DÉLIBÉRATION -->
-            {% if user == proposal.author %}
-                <div class="p-3 bg-light rounded border mt-4">
-                    <h6 class="fw-bold">Actions de l'auteur de la proposition</h6>
-                    <p class="small text-muted mb-3">Vous pourrez adopter définitivement la proposition une fois que toutes les objections auront recueilli au moins 3 votes de levée.</p>
+            <!-- SECTION DES VOTES MEMBRES -->
+            <div class="p-3 bg-light rounded border mb-4">
+                <h6 class="fw-bold">Validation des membres (Minimum {{ proposal.nbMinVote }} votes)</h6>
+                <div class="mt-3">
+                    <h6 class="small text-uppercase text-muted fw-bold mb-2">Liste des votants :</h6>
+                    {% if proposal.resolution_votes %}
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle bg-white border rounded">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Membre</th>
+                                        <th>Date du vote</th>
+                                        <th class="text-end">Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vote in proposal.resolution_votes.all %}
+                                        <tr>
+                                            <td>
+                                                <i class="bi bi-person-circle text-secondary me-1"></i>
+                                                <strong>{{ vote.voter.get_full_name|default:vote.voter.username }}</strong>
+                                            </td>
+                                            <td class="text-muted small">
+                                                {{ vote.created_at|date:"d/m/Y à H:i" }}
+                                            </td>
+                                            <td class="text-end">
+                                                OK
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted small italic mb-0">Aucun vote enregistré pour le moment.</p>
+                    {% endif %}
+                </div>
+                <div class="progress mb-3" style="height: 20px;">
+                    <div class="progress-bar {% if votes_count >= proposal.nbMinVote %}bg-success{% else %}bg-warning text-dark{% endif %}"
+                         role="progressbar"
+                         style="width: {% if votes_count >= proposal.nbMinVote %}100{% else %}{{ votes_count|stringformat:'d' }}0{% endif %}%;">
+                        {{ votes_count }} / {{ proposal.nbMinVote }} votes
+                    </div>
+                </div>
 
+                {% if not user_has_voted %}
+                    <form method="post" action="{% url 'gpc:vote_deliberation' proposal.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-hand-thumbs-up me-1"></i> Voter pour valider le traitement des objections
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="badge bg-secondary"><i class="bi bi-check-circle"></i> Vous avez déjà voté pour cette phase</span>
+                {% endif %}
+            </div>
+
+            <!-- BOUTON FINAL : CLÔTURER -->
+            {% if user == proposal.author %}
+                <div class="p-3 bg-light rounded border">
+                    <h6 class="fw-bold">Clôture par l'auteur</h6>
                     <div class="d-flex flex-column gap-2">
                         <form method="post" action="{% url 'gpc:close_deliberation' proposal.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success w-100 fw-bold">
-                                <i class="bi bi-check-all me-1"></i> Clôturer la délibération & Adopter la proposition
+                            <button type="submit" class="btn btn-success w-100 fw-bold" {% if votes_count < proposal.nbMinVote %}disabled{% endif %}>
+                                Clôturer la délibération & Adopter par Consentement
                             </button>
+                            {% if votes_count < proposal.nbMinVote %}
+                                <small class="text-danger d-block mt-1">Il manque encore {{ proposal.nbMinVote|add:"-"|add:votes_count }} vote(s) de validation.</small>
+                            {% endif %}
                         </form>
 
                         <div class="d-flex gap-2 mt-2">
-                            <a href="{% url 'gpc:reformulate_proposal' proposal.id %}" class="btn btn-outline-primary flex-fill">
-                                Reformuler le texte (et relancer un tour d'objections)
-                            </a>
+                            <a href="{% url 'gpc:reformulate_proposal' proposal.id %}" class="btn btn-outline-primary flex-fill">Reformuler le texte</a>
                             <form method="post" action="{% url 'gpc:reject_proposal' proposal.id %}" class="flex-fill">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Confirmer l\'abandon ?');">
-                                    Abandonner la proposition
-                                </button>
+                                <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Abandonner ?');">Abandonner</button>
                             </form>
                         </div>
                     </div>

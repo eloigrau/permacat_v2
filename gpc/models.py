@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from bourseLibre.models import Asso
+from bourseLibre.models import Asso, Profil
 from django.utils.translation import gettext_lazy as _
 
 
@@ -75,3 +75,16 @@ class ProposalHistory(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='history')
     content = models.TextField()
     reformulated_at = models.DateTimeField(auto_now_add=True)
+
+
+class PhaseVote(models.Model):
+    proposal = models.ForeignKey(
+        Proposal,
+        on_delete=models.CASCADE,
+        related_name='resolution_votes'
+    )
+    voter = models.ForeignKey(Profil, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('proposal', 'voter')

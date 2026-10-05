@@ -3,7 +3,7 @@
 {% block subtitle %}
 <div class="d-flex justify-content-around align-items-center" xmlns="http://www.w3.org/1999/html">
     <input class="btn btn-secondary" ype="button" onclick="window.history.back();" value="Annuler"/>
-    <h2>Nouvelle Proposition</h2>
+    <h2>Faire une nouvelle Proposition (GPC)</h2>
     <div class="col-md-3">
         <a class="btn btn-light btn-sm" data-target="#help" data-toggle="modal" title="En savoir plus..." type="button">
             {% fa5_icon 'question-circle' %}
@@ -86,30 +86,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Nouvelle proposition (GPC)</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label" for="title">Titre de la proposition</label>
-            <input class="form-control" id="title" name="title" required type="text">
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="context">Contexte & Problème</label>
-            <textarea class="form-control" id="context" name="context" placeholder="Quel problème cette proposition cherche-t-elle à résoudre ?"
-                      required rows="3"></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="content">Proposition initiale</label>
-            <textarea class="form-control" id="content" name="content" placeholder="La solution concrète soumise au groupe..."
-                      required rows="4"></textarea>
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="content">Nombre minimum de Votants (pour valider la phase
-                d'objections)</label>
-            <input class="form-control" id="id_nbMinVote" name="nbMinVote" placeholder="1" type="number">
-        </div>
-        <button class="btn btn-success" type="submit">Soumettre pour clarification</button>
-    </form>
+    {% include 'form_template2.html' %}
 </div>
 {% endblock %}
 

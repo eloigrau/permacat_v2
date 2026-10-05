@@ -8,6 +8,7 @@ from django.urls import reverse
 
 from .models import Proposal, ClarificationQuestion, Objection, ObjectionResponse
 from . import services
+from .forms import ProposalClarificationEditForm, ProposalForm
 from bourseLibre.utils import TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
 
 
@@ -41,31 +42,55 @@ class ProposalDetailView(TestMembreAssoMixin, DetailView):
     template_name = 'gpc/proposal_detail.html'
     context_object_name = 'proposal'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        proposal = self.object
+        context['votes_count'] = proposal.resolution_votes.count()
+        context['user_has_voted'] = proposal.resolution_votes.filter(voter=self.request.user).exists()
+        # Formulaire d'édition pour la clarification (si auteur et phase clarification)
+        if proposal.status == Proposal.Status.CLARIFICATION and self.request.user == proposal.author:
+            context['edit_form'] = ProposalClarificationEditForm(instance=proposal)
+        return context
 
-class ProposalCreateView(TestMembreAssoMixin, CreateView):
+class ProposalCreateView(LoginRequiredMixin, CreateView):
     model = Proposal
-    fields = ['title', 'context', 'content', 'nbMinVote']
+    form_class = ProposalForm
     template_name = 'gpc/create_proposal.html'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        form.instance.asso = self.asso
         response = super().form_valid(form)
-        try:
-            services.submit_proposal(self.object)
-        except Exception as e:
-            messages.error(self.request, "Erreur : " + str(e))
-
+        services.submit_proposal(self.object)
         messages.success(self.request, "Proposition créée et soumise pour clarification.")
         return response
 
     def get_success_url(self):
         return reverse('gpc:proposal_detail', kwargs={'pk': self.object.pk})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['asso_slug'] = self.asso.slug
-        context['titre'] = "Ajouter une Proposition (GPC)"
+
+class EditProposalClarificationView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """Vue permettant à l'auteur d'éditer la proposition pendant la clarification."""
+    def test_func(self):
+        proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+        return self.request.user == proposal.author
+
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        form = ProposalClarificationEditForm(request.POST, instance=proposal)
+        if form.is_valid():
+            try:
+                services.update_proposal_in_clarification(
+                    proposal,
+                    form.cleaned_data['title'],
+                    form.cleaned_data['context'],
+                    form.cleaned_data['content']
+                )
+                messages.success(request, "La proposition a été mise à jour.")
+            except ValidationError as e:
+                messages.error(request, e.message)
+        else:
+            messages.error(request, "Formulaire invalide.")
+        return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 class AddClarificationView(TestMembreAssoMixin, View):
     def post(self, request, pk):
@@ -80,24 +105,6 @@ class AddClarificationView(TestMembreAssoMixin, View):
             messages.success(request, "Question transmise.")
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
-
-class EditProposalClarificationView(TestMembreAssoMixin, View):
-    """Vue permettant à l'auteur d'éditer la proposition pendant la clarification."""
-    def test_func(self):
-        proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
-        return self.request.user == proposal.author
-
-    def post(self, request, pk):
-        proposal = get_object_or_404(Proposal, pk=pk)
-        title = request.POST.get('title')
-        context = request.POST.get('context')
-        content = request.POST.get('content')
-        try:
-            services.update_proposal_in_clarification(proposal, title, context, content)
-            messages.success(request, "La proposition a été mise à jour.")
-        except ValidationError as e:
-            messages.error(request, e.message)
-        return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 class AnswerClarificationView(TestMembreAssoMixin, View):
     def test_func(self):
@@ -201,7 +208,7 @@ class ResolveObjectionView(TestMembreAssoMixin, UserPassesTestMixin, View):
 
     def post(self, request, objection_id):
         objection = get_object_or_404(Objection, pk=objection_id)
-        services.resolve_objection(objection)
+        services.resolve_objection(objection, request.user)
         messages.success(request, "L'objection a été marquée comme levée.")
         return redirect('gpc:proposal_detail', pk=objection.proposal.pk)
 
@@ -252,4 +259,17 @@ class RejectProposalView(TestMembreAssoMixin, UserPassesTestMixin, View):
         proposal = get_object_or_404(Proposal, pk=pk)
         services.reject_proposal(proposal)
         messages.error(request, "La proposition a été classée comme rejetée.")
+        return redirect('gpc:proposal_detail', pk=proposal.pk)
+
+
+# views.py
+class VoteDeliberationView(TestMembreAssoMixin, View):
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        try:
+            services.cast_validation_vote(proposal, request.user)
+            messages.success(request, "Votre vote de validation a été pris en compte.")
+        except ValidationError as e:
+            messages.error(request, e.message)
+
         return redirect('gpc:proposal_detail', pk=proposal.pk)

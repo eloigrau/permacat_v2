@@ -51,17 +51,21 @@ class ProposalCreateView(TestMembreAssoMixin, CreateView):
         form.instance.author = self.request.user
         form.instance.asso = self.asso
         response = super().form_valid(form)
-        services.submit_proposal(self.object)
+        try:
+            services.submit_proposal(self.object)
+        except Exception as e:
+            messages.error(self.request, "Erreur : " + str(e))
+
         messages.success(self.request, "Proposition créée et soumise pour clarification.")
         return response
 
     def get_success_url(self):
         return reverse('gpc:proposal_detail', kwargs={'pk': self.object.pk})
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
+        context['titre'] = "Ajouter une Proposition (GPC)"
 
 class AddClarificationView(TestMembreAssoMixin, View):
     def post(self, request, pk):

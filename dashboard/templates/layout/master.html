@@ -2,9 +2,11 @@
 {% load static %}
 {% load theme %}
 {% load cookielaw_tags %}
+{% load app_filters %}
+
 <!DOCTYPE html>
 <html lang="fr" class="layout-menu-fixed layout-compact layout-menu-collapsed"  data-assets-path="{% static 'dashboard/assets/' %}"  data-framework="django" data-template="vertical-menu"><head>
-    <title>{% block title %}{% endblock %} Perma.Cat</title>
+    <title>{% block title %}{% endblock %} {% if request.session.asso_slug%}{{request.session.asso_slug|getNomGroupeFromSlug}} - {%endif %}Perma.Cat</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=0.6, maximum-scale=1.2" />
   <!-- Add Meta -->

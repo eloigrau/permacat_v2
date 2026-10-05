@@ -6,22 +6,26 @@
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label for="title" class="form-label">Titre de la proposition</label>
-            <input type="text" class="form-control" id="title" name="title" required>
+            <label class="form-label" for="title">Titre de la proposition</label>
+            <input class="form-control" id="title" name="title" required type="text">
         </div>
         <div class="mb-3">
-            <label for="context" class="form-label">Contexte & Problème</label>
-            <textarea class="form-control" id="context" name="context" rows="3" placeholder="Quel problème cette proposition cherche-t-elle à résoudre ?" required></textarea>
+            <label class="form-label" for="context">Contexte & Problème</label>
+            <textarea class="form-control" id="context" name="context" placeholder="Quel problème cette proposition cherche-t-elle à résoudre ?"
+                      required rows="3"></textarea>
         </div>
         <div class="mb-3">
-            <label for="content" class="form-label">Proposition initiale</label>
-            <textarea class="form-control" id="content" name="content" rows="4" placeholder="La solution concrète soumise au groupe..." required></textarea>
+            <label class="form-label" for="content">Proposition initiale</label>
+            <textarea class="form-control" id="content" name="content" placeholder="La solution concrète soumise au groupe..."
+                      required rows="4"></textarea>
         </div>
         <div class="mb-3">
-            <label for="content" class="form-label">Nombre minimum de Votants (pour valider la phase d'objections)</label>
-            <input type="number" name="nbMinVote" placeholder="1" class="form-control" id="id_nbMinVote">
+            <label class="form-label" for="content">Nombre minimum de Votants (pour valider la phase
+                d'objections)</label>
+            <input class="form-control" id="id_nbMinVote" name="nbMinVote" placeholder="1" type="number">
         </div>
-        <button type="submit" class="btn btn-success">Soumettre pour clarification</button>
+        <button class="btn btn-success" type="submit">Soumettre pour clarification</button>
     </form>
 </div>
 {% endblock %}
+

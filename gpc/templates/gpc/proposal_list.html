@@ -1,15 +1,92 @@
 {% extends 'base.html' %}
 {% load app_filters %}
+{% load fontawesome_5 %}
 
 {% block title %}Liste des Propositions — GPC{% endblock %}
 
 {% block subtitle %}
-<div class="d-flex justify-content-around align-items-center">
-    <div>{{asso_slug|getLogoGroupeFromSlug}}</div>
-    <h2>Prises de décision avec la GPC</h2>
-    <a href="{% url 'gpc:proposal_create' %}" class="btn btn-success">
-        <i class="bi bi-plus-lg me-1"></i>Nouvelle Proposition
+<div class="d-flex justify-content-around align-items-center" xmlns="http://www.w3.org/1999/html">
+    <a class="btn btn-success" href="{% url 'gpc:proposal_create' %}">
+        <i class="fa fa-plus me-1"></i>Nouvelle Proposition
     </a>
+    <h2>Prises de décision avec la GPC</h2>
+    <div class="col-md-3">
+        <a class="btn btn-light btn-sm" data-target="#help" data-toggle="modal" title="En savoir plus..." type="button">
+            {% fa5_icon 'question-circle' %}
+        </a>
+        <!-- Modal -->
+        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="help" role="dialog"
+             tabindex="-1">
+            <div class="modal-dialog textaide" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row justify-content-center">
+                            <h5> Qu'est ce qu'Une GPC' ?</h5>
+                        </div>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body textleft">
+                        <p>La Gestion Par Consentement est un processus de gouvernance partagée qui permet de prendre
+                            une décision collectivement.</p>
+                        <p>Le processus est décrit dans <a
+                                href="https://www.perma.cat/static/documents/2026/09/Consentement_Uytls5a.pdf">ces
+                            fiches</a></p>
+                        <p>L'implémentation ici est simplifiée, elle se passe en 3 temps :
+                        <ol>
+                            <li>d'abord une personne formule une proposition (avec une explication du contexte). Ill
+                                doit indiquer le nombre minimum de votes pour valider la proposition (pour la phase
+                                Levée d'objections)
+                            </li>
+                            <li>Puis un tour de clarification (chavun-e peut poser des questions / faire des remarques).
+                                L'auteur doit alors répondre à toutes les demandes de clarification pour pouvoir passer
+                                à l'étape suivante
+                            </li>
+                            <li>Puis un tour d'objection : chacun peut poser une ou des objections (à condition qu'elle
+                                soit "raisonable" (voir ci-dessous). L'auteur doit proposer des solutions et
+                            </li>
+                        </ol>
+                        </p>
+                        <p>Une objection est dite raisonnable :
+                        <ul>
+                            <li>
+                                Si elle est argumentée: elle est accompagnée d’arguments convaincants pour lui donner du
+                                poids.
+                            </li>
+                            <li> Si elle dit en quoi concrètement la proposition pourrait nuire à la mission du cercle à
+                                remplir sa mission.
+                            </li>
+                            <li> Si elle ne respecte pas la ou les limites de celui ou celle qui objecte.</li>
+                        </ul>
+                        </p>
+                        <p>Conséquence :
+                        <ul>
+                            <li> Soit elle élimine la proposition: elle rend purement et simplement la proposition
+                                impossible.
+                            <li> Soit elle bonifie la proposition: elle sollicite la créativité du groupe pour améliorer
+                                la proposition de départ.
+                                À permettre de lever les risques non identifiés par tous·tes, de bonifier la proposition
+                                initiale, une objection dite
+                                raisonnable est considérée comme un cadeau pour le Nous.
+                            </li>
+                        </ul>
+                        </p>
+                        <p>Une objection n’est pas raisonnable :
+                        <ul>
+                            <li>Si elle est de l’ordre de la préférence: une façon d’exprimer une préférence de choix ou
+                                d’option.
+                            </li>
+                            <li>Si elle est contre la personne qui fait la proposition.</li>
+                            <li>Si c’est un avis personnel.</li>
+                            <li>Si c’est une autre proposition</li>
+                        </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock subtitle %}
 

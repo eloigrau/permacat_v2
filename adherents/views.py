@@ -1156,6 +1156,25 @@ def ajouterAdherentAListeDiffusion(request, asso_slug, listeDiffusion_pk):
     return render(request, 'adherents/listediffusion_ajouterAdherent.html', {"form": form, 'liste': listeDiffusion, "asso_slug":asso_slug})
 
 
+@login_required
+def ajouterGroupeAListeDiffusion(request, asso_slug, listeDiffusion_pk):
+    if not is_membre_bureau(request.user, asso_slug):
+        return HttpResponseForbidden()
+
+    listeDiffusion = get_object_or_404(ListeDiffusion, pk=listeDiffusion_pk)
+    asso = Asso.objects.get(slug=asso_slug)
+
+    for p in asso.getProfils():
+        adh = Adherent.objects.filter(asso=asso, profil=p)
+        if adh.exists():
+            InscriptionMail.objects.get_or_create(adherent=adh[0], liste_diffusion=listeDiffusion)
+        else:
+            InscriptionMail.objects.get_or_create(email_pasadherent=p.email, liste_diffusion=listeDiffusion)
+
+
+    return redirect('adherents:listeDiffusion_detail', pk=listeDiffusion_pk, asso_slug=asso_slug)
+
+
 
 @login_required
 def ajouterMailAListeDiffusion(request, asso_slug, listeDiffusion_pk):
@@ -1166,11 +1185,11 @@ def ajouterMailAListeDiffusion(request, asso_slug, listeDiffusion_pk):
     form = InscriptionMail_Mail_Form(listeDiffusion.get_liste_mails, request.POST or None)
 
     if form.is_valid():
-        adhesion = form.save(commit=False)
-        adhesion.liste_diffusion = listeDiffusion
-        adhesion = form.save()
-        action.send(adhesion, verb="listeDiff_"+asso_slug+"_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
-                     description=request.user.username + " a ajouté %s dans la liste : '%s'" %(adhesion.get_email, listeDiffusion.nom))
+        inscription = form.save(commit=False)
+        inscription.liste_diffusion = listeDiffusion
+        inscription = form.save()
+        action.send(inscription, verb="listeDiff_"+asso_slug+"_plus", action_object=listeDiffusion, url=listeDiffusion.get_absolute_url(),
+                     description=request.user.username + " a ajouté %s dans la liste : '%s'" %(inscription.get_email, listeDiffusion.nom))
 
         return redirect(listeDiffusion)
 

@@ -8,8 +8,9 @@ urlpatterns = [
     path('', views.ProposalListView.as_view(), name='proposal_list'),
     path('creer/', views.ProposalCreateView.as_view(), name='proposal_create'),
     path('<int:pk>/', views.ProposalDetailView.as_view(), name='proposal_detail'),
-
     # Phase Clarifications
+    path('<int:pk>/editer-clarification/', views.EditProposalClarificationView.as_view(),
+         name='edit_proposal_clarification'),
     path('<int:pk>/clarifier/', views.AddClarificationView.as_view(), name='add_clarification'),
     path('clarification/<int:question_id>/repondre/', views.AnswerClarificationView.as_view(),
          name='answer_clarification'),

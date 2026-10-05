@@ -22,6 +22,11 @@
     <div class="col textcenter">
         <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterAdherent' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter un adhérent à la liste</a></li>
         <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterMail' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter un mail à la liste</a></li>
+        {% if request.user.is_superuser %}
+        <a class="btn btn-danger"   href="{% url 'adherents:listeDiffusion_ajouterGroupe' listeDiffusion_pk=listediffusion.pk asso_slug=request.session.asso_slug %}"> Ajouter les membres du groupe à la liste</a></li>
+
+{% endif %}
+
     </div>
 </div>
 {% endif %}

@@ -9,6 +9,17 @@ def submit_proposal(proposal: Proposal) -> None:
     proposal.save()
 
 
+def update_proposal_in_clarification(proposal: Proposal, new_title: str, new_context: str, new_content: str) -> None:
+    """Permet à l'auteur d'ajuster le texte de la proposition pendant la phase de clarification."""
+    if proposal.status != Proposal.Status.CLARIFICATION:
+        raise ValidationError("La modification directe n'est autorisée qu'en phase de clarification.")
+
+    proposal.title = new_title.strip()
+    proposal.context = new_context.strip()
+    proposal.content = new_content.strip()
+    proposal.save()
+
+
 def close_clarifications(proposal: Proposal) -> None:
     if proposal.status != Proposal.Status.CLARIFICATION:
         raise ValidationError("La proposition n'est pas en phase de clarification.")

@@ -81,6 +81,24 @@ class AddClarificationView(TestMembreAssoMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
+class EditProposalClarificationView(TestMembreAssoMixin, View):
+    """Vue permettant à l'auteur d'éditer la proposition pendant la clarification."""
+    def test_func(self):
+        proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+        return self.request.user == proposal.author
+
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        title = request.POST.get('title')
+        context = request.POST.get('context')
+        content = request.POST.get('content')
+        try:
+            services.update_proposal_in_clarification(proposal, title, context, content)
+            messages.success(request, "La proposition a été mise à jour.")
+        except ValidationError as e:
+            messages.error(request, e.message)
+        return redirect('gpc:proposal_detail', pk=proposal.pk)
+
 class AnswerClarificationView(TestMembreAssoMixin, View):
     def test_func(self):
         res = super().test_func()

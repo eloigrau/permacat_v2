@@ -66,7 +66,7 @@ class ProposalAdmin(admin.ModelAdmin):
             Proposal.Status.DRAFT: 'secondary',
             Proposal.Status.CLARIFICATION: 'info',
             Proposal.Status.OBJECTION_ROUND: 'warning',
-            Proposal.Status.OBJECTION_RESPONSE: 'dark',
+            Proposal.Status.OBJECTION_RESPONSE: 'warning',
             Proposal.Status.REFORMULATION: 'primary',
             Proposal.Status.ACCEPTED: 'success',
             Proposal.Status.REJECTED: 'danger',

@@ -95,6 +95,34 @@
 {% endif %}
 <!-- PHASE 1 : CLARIFICATIONS -->
 {% if proposal.status == 'CLARIFICATION' %}
+{% if user == proposal.author %}
+        <div class="card mb-3 border-secondary">
+            <div class="card-header bg-light">
+                <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editProposalForm">
+                    <i class="bi bi-pencil me-1"></i> Ajuster la proposition selon les clarifications
+                </button>
+            </div>
+            <div class="collapse card-body" id="editProposalForm">
+                <form method="post" action="{% url 'gpc:edit_proposal_clarification' proposal.id %}">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Titre</label>
+                        <input type="text" name="title" class="form-control" value="{{ proposal.title }}" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Contexte</label>
+                        <textarea name="context" class="form-control" rows="2" required>{{ proposal.context }}</textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Texte de la proposition</label>
+                        <textarea name="content" class="form-control" rows="4" required>{{ proposal.content }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-success">Enregistrer les ajustements</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="card mb-4 border-info">
         <div class="card-header bg-info text-dark fw-bold">Phase 1 : Demandes de clarification</div>
         <div class="card-body">

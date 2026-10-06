@@ -380,10 +380,8 @@ def exists_asso_slug(req):
 
 @register.filter(is_safe=True)
 def is_lettre(param_url, lettre):
-    print ('aaa : ' + str(param_url) + " " + str(lettre) + " " + str('lettre' in param_url))
     if 'lettre' in param_url:
         params = parse.parse_qs(param_url)
-        print ('bbb : ' + str(params) + " " + str(lettre) + " " + str('lettre' in params)+ " " + str(params["lettre"] ) + " xxx " + str(params["lettre"] == lettre))
         if "lettre" in params and params["lettre"][0] == lettre:
             return True
     return False

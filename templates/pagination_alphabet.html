@@ -1,7 +1,9 @@
+{% load app_filters %}
 <div class="anchor_blank" id="pagination_alpha"></div>
 <div class="pagination">
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter" >
+        <a class="pagination-alpha btn-danger" href="{{ request.path }}">Ø </a>
     <a class="pagination-alpha" href="?lettre=a#pagination_alpha">A </a>
     <a class="pagination-alpha" href="?lettre=b#pagination_alpha">B </a>
     <a class="pagination-alpha" href="?lettre=c#pagination_alpha">C </a>

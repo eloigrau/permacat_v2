@@ -273,3 +273,17 @@ function fetchNotifications() {
         })
         .catch(error => console.error('Erreur lors de la récupération des notifications:', error));
 }
+
+function addMessage(text, level = 'info') {
+    // Normalisation du niveau (map les niveaux Django si besoin)
+    const validLevels = ['info', 'success', 'warning', 'error'];
+    const messageClass = validLevels.includes(level) ? level : 'info';
+
+    // Création de l'élément <li> avec jQuery
+    const $li = $('<li></li>')
+        .addClass(messageClass)
+        .text(text);
+
+    // Ajout dans la liste <ol id="messages-list">
+    $('#messages-list').append($li);
+}

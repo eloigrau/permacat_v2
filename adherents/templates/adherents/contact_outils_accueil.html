@@ -125,6 +125,16 @@
             </a>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-12 textcenter">
+            <a href="{% url 'adherents:nettoyer_SSA' asso_slug=request.session.asso_slug  %}">
+                <button type="button" class="btn btn-success">
+                    nettoyer_SSA
+                </button>
+            </a>
+        </div>
+    </div>
+
 {% endif %}
 
 

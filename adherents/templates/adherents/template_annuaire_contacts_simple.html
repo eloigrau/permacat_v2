@@ -3,7 +3,7 @@
 {% load static %}
 
 {%include 'pagination_alphabet.html' %}
-{% include 'pagination_new.html' %}
+
 {% if is_membre_bureau %}
 <nav class="nav nav-tabs justify-content-center">
         {% comment %}
@@ -47,8 +47,8 @@
                  {%if contact.get_contacts_html %}
                      {{ contact.get_contacts_html|safe }}
                      <button type="button"
-                            class="btn btn-sm btn-primary btn-load-comments"
-                            data-url="{% url 'adherents:contact_commentaires_ajax' asso_slug contact.id %}"
+                            class="btn btn-sm btn-info btn-load-comments"
+                            data-url="{% url 'adherents:ajax_contact_commentaires' asso_slug contact.id %}"
                             data-bs-toggle="modal"
                             data-bs-target="#commentsModal">
                         <i class="fa fa-eye"></i> Voir Contacts
@@ -133,7 +133,6 @@
 {% endif %}
 {% endcomment %}
 </div>
-{% include 'pagination_new.html' %}
 <p class="textcenter textepetit">({{contacts|length}} personnes)</p>
 
 

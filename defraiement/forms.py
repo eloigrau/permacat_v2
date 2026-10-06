@@ -3,7 +3,7 @@ from django import forms
 import itertools
 from local_summernote.widgets import SummernoteWidget
 from bourseLibre.models import Asso, Adresse
-from blog.models import Projet
+from blog.models import Projet, Profil
 from .models import Choix, ParticipantReunion, Reunion, Distance_ParticipantReunion, NoteDeFrais, get_typereunion
 from bourseLibre.utils import slugify_pcat
 from adherents.models import Adherent
@@ -180,11 +180,28 @@ class Distance_ParticipantReunionForm(forms.ModelForm):
         fields = ['type_trajet', 'distance', 'contexte_distance',]
 
 
-class ChoixAdherentConf(forms.Form):
-    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Adhérent", )
+class ChoixAdherent(forms.Form):
+    adherent = forms.ModelChoiceField(queryset=Adherent.objects.all().order_by('nom'), required=True, label="Choisir un Adhérent", )
 
     class Meta:
         fields = ['adherent']
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(ChoixAdherent, self).__init__(*args, **kwargs)
+        self.fields['adherent'].choices = [("", "---------"), ] + [(x.id, x.nom) for x in Adherent.objects.filter(asso__slug=asso_slug).order_by('nom')]
+
+
+class ChoixMembreGroupe(forms.Form):
+    adherent = forms.ModelChoiceField(queryset=Profil.objects.all(), required=True, label="Choisir un Membre du groupe", )
+
+    class Meta:
+        fields = ['adherent']
+
+    def __init__(self, asso_slug, *args, **kwargs):
+        super(ChoixMembreGroupe, self).__init__(*args, **kwargs)
+        self.fields['adherent'].choices = [("", "---------"), ] + [(x.id, x.username + "(" + x.first_name +" "+ x.last_name +")") for x in Asso.objects.get(slug=asso_slug).getProfils()]
+
+
 
 class NoteDeFrais_form(forms.ModelForm):
     participant = forms.ModelChoiceField(queryset=ParticipantReunion.objects.all().order_by('nom'), required=False,

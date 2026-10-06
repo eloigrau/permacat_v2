@@ -891,7 +891,7 @@ def ajax_infocontact(request, asso_slug, pk):
 
 
 @login_required
-def contact_commentaires_ajax(request, asso_slug,  pk_contact):
+def ajax_contact_commentaires(request, asso_slug,  pk_contact):
     """
     Renvoie les commentaires d'un contact au format JSON.
     """
@@ -902,10 +902,10 @@ def contact_commentaires_ajax(request, asso_slug,  pk_contact):
     data = [
         {
             'id': c.id,
-            'auteur': request.user.username,
-            'auteur_url': request.user.get_absolute_url(),
-            'edit_url': c.get_update_url()if (request.user == c.profil or request.user.is_superuser)else "",
-            'avatar': request.user.get_gravatar_icon(),
+            'auteur': c.profil.username,
+            'auteur_url': c.profil.get_absolute_url(),
+            'edit_url': c.get_update_url() if (request.user == c.profil or request.user.is_superuser)else "",
+            'avatar': c.profil.get_gravatar_icon(),
             'type': c.get_statut_display(),
             'description': c.commentaire,
             'date_contact': c.date_contact.strftime('%d/%m/%Y à %H:%M'),

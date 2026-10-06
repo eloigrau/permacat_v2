@@ -309,6 +309,7 @@
       }
    }
 
+
 function get_infos(url_tag) {
     $.ajax({
         url: url_tag,
@@ -318,10 +319,12 @@ function get_infos(url_tag) {
         data: { },
         error: function(response, status, error_msg) {
             console.log(error_msg);
+            addMessage("Erreur : " + error_msg, "error");
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
           $("#listeMails").html(data);  // replace the contents of the city input with the data that came from the server
             copyToClipboardElement($("#listeMails"));
+            addMessage("Liste copiée dans le presse-papier", "success");
         }
     });
 }
@@ -336,10 +339,13 @@ function get_infocontact() {
         data: { },
         error: function(response, status, error_msg) {
             console.log(error_msg);
+            addMessage("Erreur : " + error_msg, "error");
         },
         success: function (data) {   // `data` is the return of the `load_cities` view function
           $("#info_contacts").html(data);  // replace the contents of the city input with the data that came from the server
-        }
+
+            addMessage("Liste copiée dans le presse-papier", "success");
+            }
     });
 }
 

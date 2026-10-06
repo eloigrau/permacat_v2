@@ -48,7 +48,7 @@ def get_typereunion(asso):
 
 class ParticipantReunion(models.Model):
     nom = models.CharField(verbose_name=_("Nom du participant"), max_length=120)
-    adresse = models.ForeignKey(Adresse, on_delete=models.CASCADE,)
+    adresse = models.ForeignKey(Adresse, on_delete=models.SET_NULL, null=True)
     asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
     #vehicule = models.BooleanField(default=True, verbose_name=_("Est venu.e avec son véhicule"))
 

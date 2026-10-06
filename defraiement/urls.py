@@ -38,7 +38,7 @@ urlpatterns = [
 
     path(r'participant/<int:id>', views.lireParticipant, name='lireParticipant'),
     path(r'ajouterParticipant/<str:asso_slug>', views.ajouterParticipant, name='ajouterParticipant'),
-    path(r'ajouterParticipantAsso/<str:asso_slug>', views.ajouterParticipantAsso, name='ajouterParticipantAsso'),
+    path(r'ajouterParticipantAsso/<str:asso_slug>/<str:type_part>/', views.ajouterParticipantAsso, name='ajouterParticipantAsso'),
     path(r'modifierParticipant/<int:id>',
         login_required(views.ModifierParticipant.as_view(), login_url='/auth/login/'), name='modifierParticipant'),
     path(r'modifierTrajet/<int:pk>',

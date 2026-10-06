@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from .forms import ReunionForm, ReunionChangeForm, ParticipantReunionForm, PrixMaxForm, \
     ParticipantReunionMultipleChoiceForm, ParticipantReunionChoiceForm, Distance_ParticipantReunionForm, \
-    ChoixAdherentConf, NoteDeFrais_form, NoteDeFrais_update_form, ReunionDupliquerForm
+    ChoixAdherent, NoteDeFrais_form, NoteDeFrais_update_form, ReunionDupliquerForm, ChoixMembreGroupe
 from .models import Reunion, ParticipantReunion, Choix, get_typereunion, Distance_ParticipantReunion, NoteDeFrais, \
     ChoixMoyenPaiement
 from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
@@ -372,20 +372,49 @@ def ajouterParticipant(request, asso_slug):
 
 
 @login_required
-def ajouterParticipantAsso(request, asso_slug):
-    form = ChoixAdherentConf(request.POST or None, )
+def ajouterParticipantAsso(request, asso_slug, type_part="adherent"):
+    if type_part == "adherent":
+        form = ChoixAdherent(asso_slug, request.POST or None, )
+    elif type_part == "membre":
+        form = ChoixMembreGroupe(asso_slug, request.POST or None, )
+    else:
+        return HttpResponseForbidden("Type_part non reconnu : adherent ou membre")
+
     if form.is_valid():
         adherent = form.cleaned_data["adherent"]
+        if type_part == "adherent":
+            part = ParticipantReunion.objects.create(
+                asso=Asso.objects.get(slug=asso_slug),
+                nom=adherent.nom + " " + adherent.prenom,
+                adresse=adherent.adresse)
+        elif type_part == "membre":
+            part = ParticipantReunion.objects.create(
+                asso=Asso.objects.get(slug=asso_slug),
+                nom=adherent.first_name + " " + adherent.last_name,
+                adresse=adherent.adresse)
+        url = request.session.get('reunion_courante_url', part.get_absolute_url())
+        return redirect(url)
+
+    #if asso_slug=='conf66':
+    #    return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
+    return render(request, 'defraiement/choisirParticipantDansListe.html', {'form': form,
+                "nom_membres": "Adhérents de l'association" if type_part == "adherent" else "membres du Groupe" }) # 'form_adresse':form_adresse,
+
+@login_required
+def ajouterParticipantAsso_membre(request, asso_slug):
+    form = ChoixMembreGroupe(request.POST or None, )
+    if form.is_valid():
+        adherent = form.cleaned_data["membre"]
         part = ParticipantReunion.objects.create(
             asso=Asso.objects.get(slug=asso_slug),
-            nom=adherent.nom + " " + adherent.prenom,
+            nom=adherent.first_name + " " + adherent.last_nam,
             adresse=adherent.adresse)
         url = request.session.get('reunion_courante_url', part.get_absolute_url())
         return redirect(url)
 
-    if asso_slug=='conf66':
-        return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
-    return render(request, 'defraiement/ajouterParticipant.html', {'form': form }) # 'form_adresse':form_adresse,
+    #if asso_slug == 'conf66':
+    #    return render(request, 'defraiement/ajouterParticipantConf.html', {'form': form }) # 'form_adresse':form_adresse,
+    return render(request, 'defraiement/choisirParticipantDansListe.html', {'form': form }) # 'form_adresse':form_adresse,
 
 
 @login_required

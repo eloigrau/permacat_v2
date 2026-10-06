@@ -355,10 +355,14 @@ def sansp(html):
 @register.filter(is_safe=True)
 def urlSupprParam(param_url, nomParam):
     if nomParam in param_url:
+        print('aaaa ' + nomParam + "  ooo " + param_url)
         params = parse.parse_qs(param_url, keep_blank_values=True)
+        print(str(params) +" rrrr " + str(nomParam in params))
         if nomParam in params:
             del params[nomParam]
-            return "&".join([str(k)+"="+ str(v[0]) for k, v in params.items() ])
+            print(str(params.items()))
+            print("&".join([str(k) + "=" + str(v[0]) for k, v in params.items() ]))
+            return "&".join([str(k) + "=" + str(v[0]) for k, v in params.items() ])
         return param_url
     return param_url
 

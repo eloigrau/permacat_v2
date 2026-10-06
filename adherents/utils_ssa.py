@@ -161,3 +161,49 @@ def import_csv_orga_ssa(request, asso_slug):
         form = csvFile_form()
 
     return render(request, 'adherents/admin_utils.html', {"form": form, "title": "Lancer imports factures"})
+
+
+import requests
+
+
+def get_code_postal(nom_commune: str):
+    url = "https://api-adresse.data.gouv.fr/search/"
+    params = {
+        "q": nom_commune,
+        "type": "municipality",
+        "limit": 1
+    }
+
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        features = data.get("features", [])
+        if features:
+            return features[0]["properties"]["postcode"]
+    return None
+
+@login_required
+def nettoyer_SSA(request, asso_slug):
+    if not request.user.is_superuser:
+        return "Déso, Vous n'etes pas autorisé a utiliser cette fonctionnalité"
+
+    testIsMembreAsso(request, "ssa")
+    m = ""
+    for contact in Contact.objects.filter(projet__asso__slug="ssa"):
+        if contact.adresse:
+            if contact.adresse.commune:
+                try:
+                    code_postal = get_code_postal(contact.adresse.commune)
+                    if code_postal:
+                        contact.adresse.code_postal = code_postal
+                        contact.adresse.save()
+                    m += "<p>Adresse corrigee " + str(contact.adresse)+" " + str(contact.adresse.code_postal)+"</p>"
+                except Exception as e:
+                    m += "ErreurGet CP " + str(e) +" ; " + str(contact.adresse.commune) + " " + str(contact.id)
+
+            if contact.commentaire == " ; ":
+                contact.commentaire = ""
+                contact.save()
+                m += "<p>commentaire corrige " + str(contact)+"</p>"
+
+    return render(request, 'adherents/contact_outils_accueil.html', {"message": m, "title": "Resultat nettoyage SSA"})

@@ -13,20 +13,22 @@
 	<div class="col col-md-12 textcenter"><h3>Ajouter un participant  </h3>
         <p>à la liste des participants pour le défraiement</p>
 	</div>
-
 </div>
 {% endblock  %}
 {% block content %}
 
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">
-{% if request.session.asso_slug == "conf66" %}
-    <a href="{% url 'defraiement:ajouterParticipantAsso' asso_slug=request.session.asso_slug%}">
+    <a href="{% url 'defraiement:ajouterParticipantAsso' asso_slug=request.session.asso_slug type_part='adherent' %}">
     <button type="button" class="btn btn-success" >
-        <i class="fa fa-plus"></i> Ajouter un adhérent de la Conf
+        <i class="fa fa-plus"></i> Ajouter un-e Adhérent-e de l'association
     </button>
     </a>
-{% endif %}
+    <a href="{% url 'defraiement:ajouterParticipantAsso' asso_slug=request.session.asso_slug type_part='membre' %}">
+    <button type="button" class="btn btn-success" >
+        <i class="fa fa-plus"></i> Ajouter un-e Membre du groupe sur perma.cat
+    </button>
+    </a>
 </div></div>
 <div class="row justify-content-sm-center">
 <div class="col-sm-12 col-md-10 col-lg-9 text-center">

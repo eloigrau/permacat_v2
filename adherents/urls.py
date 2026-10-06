@@ -106,7 +106,7 @@ urlpatterns = [
     path(r'<str:asso_slug>/phoning/contact/supprimer/<int:contact_contact_pk>', views_phoning.contactContact_supprimer, name="phoning_contact_contact_supprimer"),
     path(r'<str:asso_slug>/phoning/contact/modifier/<int:pk>', login_required(views_phoning.contactContact_modifier.as_view()), name="phoning_contact_contact_modifier"),
     path(r'<str:asso_slug>/phoning/get_csv_contacts/', views_phoning.get_csv_contacts, name="get_csv_contacts"),
-    path('<str:asso_slug>/phoning/<int:pk_contact>/commentaires/json/', views_phoning.contact_commentaires_ajax, name='contact_commentaires_ajax'),
+    path('<str:asso_slug>/phoning/<int:pk_contact>/commentaires/json/', views_phoning.ajax_contact_commentaires, name='ajax_contact_commentaires'),
 
     path(r'<str:asso_slug>/phoning/projet/ajouter', login_required(views_phoning.ProjetPhoning_ajouter.as_view()), name="phoning_projet_ajouter"),
     path(r'<str:asso_slug>/phoning/projet/<int:pk>/modifier', login_required(views_phoning.ProjetPhoning_modifier.as_view()), name="phoning_projet_modifier"),
@@ -119,5 +119,6 @@ urlpatterns = [
 
 
     path(r'<str:asso_slug>/phoning/import_csv_orga_ssa', utils_ssa.import_csv_orga_ssa, name="import_csv_orga_ssa"),
+    path(r'<str:asso_slug>/phoning/nettoyer_SSA', utils_ssa.nettoyer_SSA, name="nettoyer_SSA"),
 
 ]

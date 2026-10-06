@@ -64,7 +64,7 @@
                  <div class="justify-content-around">
                      <button type="button"
                             class="btn btn-sm btn-primary btn-load-comments"
-                            data-url="{% url 'adherents:contact_commentaires_ajax' asso_slug contact.id %}"
+                            data-url="{% url 'adherents:ajax_contact_commentaires' asso_slug contact.id %}"
                             data-bs-toggle="modal"
                             data-bs-target="#commentsModal">
                         <i class="fa fa-eye"></i> Voir Contacts
@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const loading = document.getElementById('commentsLoading');
     const modalTitleNom = document.getElementById('modalContactNom');
 
+    if (modalElement){
     modalElement.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
         const url = button.getAttribute('data-url');
@@ -233,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
             container.classList.remove('d-none');
         });
     });
+    }
 
     // Fonction de protection contre les failles XSS
     function escapeHtml(text) {

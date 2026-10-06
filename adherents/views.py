@@ -787,7 +787,7 @@ def get_infos_contacts(request, projet_pk, type_info="email"):
         return HttpResponseForbidden()
 
     profils = Contact.objects.filter(projet=projet)
-    profils_filtres = ContactCarteFilter(request, queryset=profils)
+    profils_filtres = ContactCarteFilter(request, request.GET, queryset=profils)
     if type_info == "tel":
         template = 'adherents/template_tel.html'
     elif type_info == "email":

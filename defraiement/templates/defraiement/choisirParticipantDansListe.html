@@ -1,0 +1,12 @@
+{% extends 'base_defraiement2.html' %}
+{% load app_filters %}
+
+{% block subtitle %}
+<div class="row justify-content-center">
+	<div class="col col-md-12 textcenter"><h3>Ajouter un-e participant-e au défraiement {% if request.session.asso_slug %} {{request.session.asso_slug|getNomGroupeFromSlug}} {% endif %} </h3>
+	</div>
+</div>
+{% endblock  %}
+{% block content %}
+{% include 'form_template.html' %}
+{% endblock  %}

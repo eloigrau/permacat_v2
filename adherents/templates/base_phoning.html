@@ -22,7 +22,7 @@
             <li class="nav-item nav-notif {% if '/phoning/projet/simple/' in request.path %}actif{% endif %}"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_courant' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste Simple</a></li>
 
             <li class="nav-item nav-notif {% if '/phoning/projet/courant/complet' in request.path %}actif{% endif %}"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Liste Complète</a></li>
-            <li class="nav-item nav-notif {% if '/phoning/projet/courant/carte' in request.path %}actif{% endif %}"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_carte' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Carte</a></li>
+            <li class="nav-item nav-notif {% if '/phoning/projet/carte' in request.path %}actif{% endif %}"><a class="dropdown-item"   href="{% url 'adherents:phoning_projet_carte' asso_slug=request.session.asso_slug  %}?{{ request.GET.urlencode }}"> Carte</a></li>
 
             {% if request.user.is_superuser %}
             <li class="nav-item nav-notif {% if 'phoning/ajouter/' in request.path %}actif{% endif %}"><a class="dropdown-item"   href="{% url 'adherents:phoning_contact_outils' asso_slug=request.session.asso_slug  %}"> Outils</a></li>

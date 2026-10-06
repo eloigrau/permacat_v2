@@ -4,9 +4,9 @@
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter" >
         <a class="pagination-alpha btn-danger" href="{{ request.path }}">Ø </a>
-    <a class="pagination-alpha" href="?lettre=a#pagination_alpha">A </a>
-    <a class="pagination-alpha" href="?lettre=b#pagination_alpha">B </a>
-    <a class="pagination-alpha" href="?lettre=c#pagination_alpha">C </a>
+    <a class="pagination-alpha{% if 'lettre=a' in request.GET %} actif{% endif %}" href="?lettre=a#pagination_alpha">A </a>
+    <a class="pagination-alpha{% if 'lettre=b' in request.GET %} actif{% endif %}" href="?lettre=b#pagination_alpha">B </a>
+    <a class="pagination-alpha{% if 'lettre=c' in request.GET %} actif{% endif %}" href="?lettre=c#pagination_alpha">C </a>
     <a class="pagination-alpha" href="?lettre=d#pagination_alpha">D </a>
     <a class="pagination-alpha" href="?lettre=e#pagination_alpha">E </a>
     <a class="pagination-alpha" href="?lettre=f#pagination_alpha">F </a>

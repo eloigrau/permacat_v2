@@ -796,7 +796,7 @@ def get_infos_contacts(request, projet_pk, type_info="email"):
         template = 'adherents/template_inconnu.html'
 
     taille = 90
-    qs = profils_filtres.qs
+    qs = profils_filtres.qs.distinct()
     if type_info == "email" and len(qs) > taille:
         data = []
         for i in range(0, len(qs), taille):

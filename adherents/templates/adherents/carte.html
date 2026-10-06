@@ -193,21 +193,21 @@
         });
 
         var markers = L.markerClusterGroup({ maxClusterRadius: 10 });
-        {% for profil in contacts %}
-            var lat = {{profil.get_latitude}};
-            var lon = {{profil.get_longitude}};
-            {% if profil.get_contacts_nb == 0 %}
-            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
-            {% elif profil.get_contacts_nb == 1 %}
-            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
-            {% elif profil.get_contacts_nb == 2 %}
-            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
-            {% elif profil.get_contacts_nb == 3 %}
-            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
-            {% elif profil.get_contacts_nb == 4 %}
-            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} - {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+        {% for contact in contacts %}
+            var lat = {{contact.get_latitude}};
+            var lon = {{contact.get_longitude}};
+            {% if contact.get_contacts_nb == 0 %}
+            var marker = L.marker([lat, lon], {icon: blackIcon}).bindPopup('<a href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}#contact_{{contact.id}}"> {{contact.type_structure}} {{contact.nom}} {{contact.prenom}} - {{contact.adresse.telephone}} ({{contact.get_contacts_nb}})</a>');
+            {% elif contact.get_contacts_nb == 1 %}
+            var marker = L.marker([lat, lon], {icon: blueIcon}).bindPopup('<a href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}#contact_{{contact.id}}"> {{contact.type_structure}} {{contact.nom}} {{contact.prenom}} - {{contact.adresse.telephone}} ({{contact.get_contacts_nb}})</a>');
+            {% elif contact.get_contacts_nb == 2 %}
+            var marker = L.marker([lat, lon], {icon: greenIcon}).bindPopup('<a href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}#contact_{{contact.id}}"> {{contact.type_structure}} {{contact.nom}} {{contact.prenom}} - {{contact.adresse.telephone}} ({{contact.get_contacts_nb}})</a>');
+            {% elif contact.get_contacts_nb == 3 %}
+            var marker = L.marker([lat, lon], {icon: yellowIcon}).bindPopup('<a href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}#contact_{{contact.id}}"> {{contact.type_structure}} {{contact.nom}} {{contact.prenom}} - {{contact.adresse.telephone}} ({{contact.get_contacts_nb}})</a>');
+            {% elif contact.get_contacts_nb > 3 %}
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}#contact_{{contact.id}}"> {{contact.type_structure}} {{contact.nom}} {{contact.prenom}} - {{contact.adresse.telephone}} ({{contact.get_contacts_nb}})</a>');
             {% else %}
-            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{{profil.get_ajoutContact_url}}"> {{profil.nom}} {{profil.prenom}} {{profil.adresse.telephone}} ({{profil.get_contacts_nb}})</a>');
+            var marker = L.marker([lat, lon], {icon: orangeIcon}).bindPopup('<a href="{% url 'adherents:phoning_projet_complet' asso_slug=request.session.asso_slug  %}#contact_{{contact.id}}"> {{contact.type_structure}} {{contact.nom}} {{contact.prenom}} {{contact.adresse.telephone}} ({{contact.get_contacts_nb}})</a>');
             {% endif %}
             markers.addLayer(marker);
         {%endfor%}
@@ -223,80 +223,5 @@
         {% leaflet_map "yourmap" callback="window.map_init_basic" %}
     </div>
 </div>
-
-<div id="listeMails" class="textcenter"></div>
-<div class="row justify-content-center textcenter">
-<div class="col-sm-12 col-md-10 col-lg-8">
-    <a href="{% url 'adherents:get_csv_contacts' asso_slug=request.session.asso_slug %}?{{ request.GET.urlencode }}" target="_blank"
-       rel="noopener noreferrer nofollow">
-        <button type="button" class="btn btn-sm btn-primary">
-            &nbsp;Exporter en CSV
-        </button>
-    </a>
-
-    <a onclick="get_infos('{% url 'adherents:get_infos_contacts' projet_pk=request.session.projet_courant_pk type_info='tel' %}?{{ request.GET.urlencode }}')">
-        <button type="button" class="btn btn-sm btn-primary">
-            Téléphones
-        </button>
-    </a>
-    <a onclick="get_infos('{% url 'adherents:get_infos_contacts' projet_pk=request.session.projet_courant_pk type_info='email' %}?{{ request.GET.urlencode }}')">
-        <button type="button" class="btn btn-sm btn-primary">
-            Liste de mails
-        </button>
-    </a>
-</div>
-</div>
-
-
-<script>
-    function toggle_visibility(id) {
-       var e = document.getElementById(id);
-       var btn = document.getElementById("btn-archives");
-       if(e.style.display == 'block'){
-          e.style.display = 'none';
-          btn.textContent = "Afficher la carte";
-      }
-       else{
-          e.style.display = 'block';
-          btn.textContent = "Cacher la carte";
-      }
-   }
-
-function get_infos(url_tag) {
-    $.ajax({
-        url: url_tag,
-        type: "GET",
-        contentType: "application/x-www-form-urlencoded",
-        async: false,
-        data: { },
-        error: function(response, status, error_msg) {
-            console.log(error_msg);
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#listeMails").html(data);  // replace the contents of the city input with the data that came from the server
-            copyToClipboardElement($("#listeMails"));
-        }
-    });
-}
-
-
-function get_infocontact() {
-    $.ajax({
-        url: "{% url 'adherents:phoning_ajax_infocontact' pk=projet.pk asso_slug=request.session.asso_slug %}",
-        type: "GET",
-        contentType: "application/x-www-form-urlencoded",
-        async: false,
-        data: { },
-        error: function(response, status, error_msg) {
-            console.log(error_msg);
-        },
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-          $("#info_contacts").html(data);  // replace the contents of the city input with the data that came from the server
-        }
-    });
-}
-
-
-</script>
 
 {% endblock %}

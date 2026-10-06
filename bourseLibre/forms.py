@@ -622,7 +622,7 @@ class SalonForm(forms.ModelForm):
 class Lien_AssoSalon_adminForm(forms.ModelForm):
     class Meta:
         model = Lien_AssoSalon
-        fields = ['asso', 'salon',]
+        fields = ['asso', 'salon', "slug_type"]
 
 class SalonForm_admin(forms.ModelForm):
     class Meta:

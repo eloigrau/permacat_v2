@@ -17,11 +17,11 @@
   <div class="tab-pane fade show active" id="adresse">
    <div class="row">
     <div class="col-md-12">
-        <div style="overflow-x:auto;">
+        <div style="">
     <table class="table table-condensed tableprofils table-striped table-middle sortable table-phoning">
         <thead class="thead-inverse">
             <tr>
-                <th>Nom Prénom Tel Edit</th>
+                <th>Structure Nom Prénom Tel</th>
                 <th>Contacts</th>
             </tr>
         </thead>
@@ -30,7 +30,8 @@
         <tr style="background-color:{{contact.get_background_color}} ; outline: thin solid;" id="contact_{{contact.pk}}" >
             <td> {% if contact.adherent %}
                 <a href="{% url 'adherents:adherent_detail' pk=contact.adherent.pk asso_slug=request.session.asso_slug %}">
-                    {{ contact.nom }}  {{ contact.prenom }}  - {{ contact.email }} -
+
+                {{contact.nom_structure }} - {{ contact.nom }} {{ contact.prenom }} - {{ contact.email }} -
                 </a>
                 {% else %}
                     {{ contact.nom }}  {{ contact.prenom }} - {{ contact.email }} -

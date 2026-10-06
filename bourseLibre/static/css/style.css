@@ -2542,8 +2542,19 @@ padding-bottom:10px;
     color: #fff;
     background-color: #6D85C7;
 }
+.pagination-reset {
+    padding: 7px 10px;
+    border-radius: 2px;
+    background-color: #ccccff;
+}
 .pagination-alpha {
     padding: 7px 10px;
+    border-radius: 2px;
+    background-color: #ccffcc;
+}
+
+a.pagination-alpha.actif{
+    padding: 9px 12px;
     border-radius: 2px;
     background-color: #99ff99;
 }

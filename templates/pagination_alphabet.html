@@ -3,33 +3,33 @@
 <div class="pagination">
 <div class="row justify-content-center">
     <div class="col-sm-12 textcenter" >
-        <a class="pagination-alpha btn-danger" href="{{ request.path }}">Ø </a>
-    <a class="pagination-alpha{% if 'lettre=a' in request.GET %} actif{% endif %}" href="?lettre=a#pagination_alpha">A </a>
-    <a class="pagination-alpha{% if 'lettre=b' in request.GET %} actif{% endif %}" href="?lettre=b#pagination_alpha">B </a>
-    <a class="pagination-alpha{% if 'lettre=c' in request.GET %} actif{% endif %}" href="?lettre=c#pagination_alpha">C </a>
-    <a class="pagination-alpha" href="?lettre=d#pagination_alpha">D </a>
-    <a class="pagination-alpha" href="?lettre=e#pagination_alpha">E </a>
-    <a class="pagination-alpha" href="?lettre=f#pagination_alpha">F </a>
-    <a class="pagination-alpha" href="?lettre=g#pagination_alpha">G </a>
-    <a class="pagination-alpha" href="?lettre=h#pagination_alpha">H </a>
-    <a class="pagination-alpha" href="?lettre=i#pagination_alpha">I </a>
-    <a class="pagination-alpha" href="?lettre=j#pagination_alpha">J </a>
-    <a class="pagination-alpha" href="?lettre=k#pagination_alpha">K </a>
-    <a class="pagination-alpha" href="?lettre=l#pagination_alpha">L </a>
-    <a class="pagination-alpha" href="?lettre=m#pagination_alpha">M </a>
-    <a class="pagination-alpha" href="?lettre=n#pagination_alpha">N </a>
-    <a class="pagination-alpha" href="?lettre=o#pagination_alpha">O </a>
-    <a class="pagination-alpha" href="?lettre=p#pagination_alpha">P </a>
-    <a class="pagination-alpha" href="?lettre=q#pagination_alpha">Q  </a>
-    <a class="pagination-alpha" href="?lettre=r#pagination_alpha">R </a>
-    <a class="pagination-alpha" href="?lettre=s#pagination_alpha">S </a>
-    <a class="pagination-alpha" href="?lettre=t#pagination_alpha">T </a>
-    <a class="pagination-alpha" href="?lettre=u#pagination_alpha">U </a>
-    <a class="pagination-alpha" href="?lettre=v#pagination_alpha">V </a>
-    <a class="pagination-alpha" href="?lettre=w#pagination_alpha">W </a>
-    <a class="pagination-alpha" href="?lettre=x#pagination_alpha">X </a>
-    <a class="pagination-alpha" href="?lettre=y#pagination_alpha">Y </a>
-    <a class="pagination-alpha" href="?lettre=z#pagination_alpha">Z </a>
+        <a class="pagination-reset btn-danger" href="{{ request.path }}">Ø </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'a' %} actif{% endif %}" href="?lettre=a#pagination_alpha">A </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'b' %} actif{% endif %}" href="?lettre=b#pagination_alpha">B </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'c' %} actif{% endif %}" href="?lettre=c#pagination_alpha">C </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'d' %} actif{% endif %}" href="?lettre=d#pagination_alpha">D </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'e' %} actif{% endif %}" href="?lettre=e#pagination_alpha">E </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'f' %} actif{% endif %}" href="?lettre=f#pagination_alpha">F </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'g' %} actif{% endif %}" href="?lettre=g#pagination_alpha">G </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'h' %} actif{% endif %}" href="?lettre=h#pagination_alpha">H </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'i' %} actif{% endif %}" href="?lettre=i#pagination_alpha">I </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'j' %} actif{% endif %}" href="?lettre=j#pagination_alpha">J </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'k' %} actif{% endif %}" href="?lettre=k#pagination_alpha">K </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'l' %} actif{% endif %}" href="?lettre=l#pagination_alpha">L </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'m' %} actif{% endif %}" href="?lettre=m#pagination_alpha">M </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'n' %} actif{% endif %}" href="?lettre=n#pagination_alpha">N </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'o' %} actif{% endif %}" href="?lettre=o#pagination_alpha">O </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'p' %} actif{% endif %}" href="?lettre=p#pagination_alpha">P </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'q' %} actif{% endif %}" href="?lettre=q#pagination_alpha">Q  </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'r' %} actif{% endif %}" href="?lettre=r#pagination_alpha">R </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'s' %} actif{% endif %}" href="?lettre=s#pagination_alpha">S </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'t' %} actif{% endif %}" href="?lettre=t#pagination_alpha">T </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'u' %} actif{% endif %}" href="?lettre=u#pagination_alpha">U </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'v' %} actif{% endif %}" href="?lettre=v#pagination_alpha">V </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'w' %} actif{% endif %}" href="?lettre=w#pagination_alpha">W </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'x' %} actif{% endif %}" href="?lettre=x#pagination_alpha">X </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'y' %} actif{% endif %}" href="?lettre=y#pagination_alpha">Y </a>
+    <a class="pagination-alpha{% if request.GET.urlencode|is_lettre:'z' %} actif{% endif %}" href="?lettre=z#pagination_alpha">Z </a>
 </div>
 </div>
 </div>

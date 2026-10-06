@@ -355,13 +355,9 @@ def sansp(html):
 @register.filter(is_safe=True)
 def urlSupprParam(param_url, nomParam):
     if nomParam in param_url:
-        print('aaaa ' + nomParam + "  ooo " + param_url)
         params = parse.parse_qs(param_url, keep_blank_values=True)
-        print(str(params) +" rrrr " + str(nomParam in params))
         if nomParam in params:
             del params[nomParam]
-            print(str(params.items()))
-            print("&".join([str(k) + "=" + str(v[0]) for k, v in params.items() ]))
             return "&".join([str(k) + "=" + str(v[0]) for k, v in params.items() ])
         return param_url
     return param_url
@@ -380,3 +376,14 @@ def filterApostrophe(nom):
 @register.filter(is_safe=True)
 def exists_asso_slug(req):
     return "asso_slug" in req
+
+
+@register.filter(is_safe=True)
+def is_lettre(param_url, lettre):
+    print ('aaa : ' + str(param_url) + " " + str(lettre) + " " + str('lettre' in param_url))
+    if 'lettre' in param_url:
+        params = parse.parse_qs(param_url)
+        print ('bbb : ' + str(params) + " " + str(lettre) + " " + str('lettre' in params)+ " " + str(params["lettre"] ) + " xxx " + str(params["lettre"] == lettre))
+        if "lettre" in params and params["lettre"][0] == lettre:
+            return True
+    return False

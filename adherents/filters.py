@@ -84,6 +84,13 @@ class ContactCarteFilter(django_filters.FilterSet):
     statut = django_filters.MultipleChoiceFilter(choices=STATUT_CHOICES, label="Statut", method='get_statut_filter',)
     #production_ape = django_filters.MultipleChoiceFilter(choices=get_choix_Production(), label="Production",  method='get_production_ape_filter',)
 
+    structure = django_filters.CharFilter(lookup_expr='icontains', method='get_structure_filter', label="Structure : ",
+                                        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '',
+                                                             'tabindex': 2, }))
+
+    referent = django_filters.CharFilter(field_name="referent", lookup_expr='icontains', label="Structure : ",
+                                        widget=forms.TextInput(attrs={'class': 'form-control',  }))
+
     def get_statut_filter(self, queryset, field_name, value):
         if value == '0':
             return queryset
@@ -116,6 +123,12 @@ class ContactCarteFilter(django_filters.FilterSet):
                                Q(nom__icontains=value)|
                                Q(prenom__icontains=value)|
                                Q(commentaire__icontains=value)
+                               )
+
+    def get_structure_filter(self, queryset, field_name, value):
+        return queryset.filter(Q(type_structure__icontains=value)|
+                               Q(nom_structure__icontains=value)|
+                               Q(nom__icontains=value)
                                )
 
     def get_dejacontacte_filter(self, queryset, field_name, value):

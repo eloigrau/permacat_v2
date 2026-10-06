@@ -191,7 +191,7 @@ def nettoyer_SSA(request, asso_slug):
     m = ""
     for contact in Contact.objects.filter(projet__asso__slug="ssa"):
         if contact.adresse:
-            if contact.adresse.commune:
+            if contact.adresse.commune and not contact.adresse.code_postal:
                 try:
                     code_postal = get_code_postal(contact.adresse.commune)
                     if code_postal:
@@ -201,7 +201,7 @@ def nettoyer_SSA(request, asso_slug):
                 except Exception as e:
                     m += "ErreurGet CP " + str(e) +" ; " + str(contact.adresse.commune) + " " + str(contact.id)
 
-            if contact.commentaire == " ; ":
+            if contact.commentaire == " ; " or contact.commentaire == ";":
                 contact.commentaire = ""
                 contact.save()
                 m += "<p>commentaire corrige " + str(contact)+"</p>"

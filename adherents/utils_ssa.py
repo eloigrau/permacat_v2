@@ -201,9 +201,9 @@ def nettoyer_SSA(request, asso_slug):
                 except Exception as e:
                     m += "ErreurGet CP " + str(e) +" ; " + str(contact.adresse.commune) + " " + str(contact.id)
 
-            if contact.commentaire == " ; " or contact.commentaire == ";":
-                contact.commentaire = ""
-                contact.save()
-                m += "<p>commentaire corrige " + str(contact)+"</p>"
+        if contact.commentaire == " ; " or contact.commentaire == ";" or contact.commentaire == "; " or contact.commentaire == " ;":
+            contact.commentaire = ""
+            contact.save()
+            m += "<p>commentaire corrige " + str(contact)+"</p>"
 
     return render(request, 'adherents/contact_outils_accueil.html', {"message": m, "title": "Resultat nettoyage SSA"})

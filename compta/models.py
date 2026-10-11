@@ -180,9 +180,10 @@ class Client(models.Model):
     def get_absolute_url(self):
         return reverse('compta:client_update', kwargs={'pk':self.pk})
 
-    def save(self, asso, *args, **kwargs):
+    def save(self, asso=None, *args, **kwargs):
         if not self.code_client:
-            self.asso = asso
+            if asso:
+                self.asso = asso
             annee_en_cours = timezone.now().year
             prefixe = f"CLI-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 
@@ -226,9 +227,10 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('compta:product_update', kwargs={'pk':self.pk})
 
-    def save(self, asso, *args, **kwargs):
+    def save(self, asso=None, *args, **kwargs):
         if not self.code_product:
-            self.asso = asso
+            if asso:
+                self.asso = asso
             annee_en_cours = timezone.now().year
             prefixe = f"P-{slugify_pcat_mini(self.asso.nom[:5])}-{annee_en_cours}-"
 

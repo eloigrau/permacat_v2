@@ -157,7 +157,7 @@ FactureItemFormSet = inlineformset_factory(
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['code_client', 'name', 'address', 'siret', 'telephone', 'email', 'infos']
+        fields = ['name', 'address', 'siret', 'telephone', 'email', 'infos']
         widgets = {
             'code_client': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: CLT-001'}),
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom ou Raison Sociale'}),

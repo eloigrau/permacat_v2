@@ -31,7 +31,7 @@ class FactureItemInline(admin.TabularInline):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('code_client', 'name', 'siret')
+    list_display = ('asso', 'code_client', 'name', 'siret')
     search_fields = ('code_client', 'name', 'siret')
 
 

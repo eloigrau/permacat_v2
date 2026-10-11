@@ -458,6 +458,9 @@ class ClientUpdateView(TestMembreAssoMixin, UpdateView):
         context['title'] = "Modifier le Client"
         return context
 
+    def form_valid(self, form):
+        self.object = form.save(self.asso)
+        return HttpResponseRedirect(self.get_success_url())
 
 def accueil(request):
     return render(request, "compta/facturation_accueil.html")

@@ -5,15 +5,19 @@ from django.db.models import Q
 from django.http import JsonResponse
 from actstream.models import Action, any_stream, Follow
 from bourseLibre.constantes import Choix as Choix_global
-from bourseLibre.models import Profil, Asso, Conversation, Message
 from django.utils.timezone import now
 from itertools import chain
 from .forms import nouvelleDateForm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from pytz import UTC as utc
 from hitcount.models import HitCount, Hit
 import pytz
 from bourseLibre.utils import testIsMembreAsso_bool
+
+from bourseLibre.models import Profil, Message, EvenementSalon
+from ateliers.models import Atelier
+from blog.models import Article, Projet, Evenement
+
 
 @login_required
 def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
@@ -474,3 +478,59 @@ def nbDerniersMessages(request):
 
 
     return JsonResponse(dico, safe=True)
+
+
+
+
+def getEvenementsSemaine(user):
+    current_week = date.today().isocalendar()[1]
+    current_year = date.today().isocalendar()[0]
+    #eve_passe, eve_futur = [], []
+    #evenements  = []
+
+    ev_art = Evenement.objects.exclude(article__asso__slug__in=user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+    ev_2 = Article.objects.exclude(asso__slug__in=user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+    #evenements.append(ev_2)
+    ev_4 = Projet.objects.exclude(asso__slug__in=user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+    ev_5 = Atelier.objects.exclude(asso__slug__in=user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
+    ev_3 = EvenementSalon.objects.filter(start_time__year=current_year, start_time__week=current_week).order_by('start_time')
+
+    evenements = [ev for ev in ev_3 if ev.est_autorise(user)] + list(chain(ev_art, ev_2, ev_4, ev_5))
+    # utc = pytz.UTC
+    # y = []
+    # y2 = []
+    # for ev in list(chain(ev_art, ev_2, ev_4, ev_5)):
+    #     try:
+    #         if ev.start_time >= date.today():
+    #             y.append((ev, date(ev.start_time.year, ev.start_time.month, ev.start_time.day)))
+    #         else:
+    #             y2.append((ev, date(ev.start_time.year, ev.start_time.month, ev.start_time.day)))
+    #
+    #     except:
+    #         pass
+    # eve = sorted(y, key=lambda x:x[1])
+    # eve2 = sorted(y2, key=lambda x:x[1])
+    #
+    # #evenements = [(x, y.weekday()) for x, y in eve]
+    # #evenements2 = [(x, y.weekday()) for x, y in eve2]
+    #
+    # dict_passe = {}
+    # dict_futur = {}
+    # for ev in list(chain(ev_art, ev_2, ev_4, ev_5)):
+    #     date_ev = ev.start_time
+    #     if date_ev < date.today():
+    #         if not date_ev in dict_passe.keys():
+    #             dict_passe[date_ev] = []
+    #         dict_passe[date_ev].append(ev)
+    #     else:
+    #         if not date_ev in dict_futur.keys():
+    #             dict_futur[date_ev] = []
+    #         dict_futur[date_ev].append(ev)
+    #
+    # liste_passe = [(date, evs) for date, evs in dict_passe.items()]
+    # liste_futur = [(date, evs) for date, evs in dict_futur.items()]
+    #
+    # eve_passe = sorted(liste_passe, key=lambda x:x[0])
+    # eve_futur = sorted(liste_futur, key=lambda x:x[0])
+
+    return evenements

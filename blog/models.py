@@ -336,6 +336,12 @@ class Article(models.Model):
     def get_bx_icon(self,):
         return get_bx_icon("article")
 
+    @property
+    def date_text(self):
+        if self.start_time:
+            return self.start_time.strftime("%d/%m/%Y")
+        return ""
+
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
         suiveurs = []
@@ -601,6 +607,10 @@ class Evenement(models.Model):
         return self.titre_even
 
     @property
+    def date_text(self):
+        return self.start_time.strftime("%d/%m/%Y")
+
+    @property
     def estPublic(self):
         return self.article.asso.slug == 'public'
 
@@ -822,6 +832,12 @@ class Projet(models.Model):
     @property
     def get_bx_icon(self,):
         return get_bx_icon("event")
+
+    @property
+    def date_text(self):
+        if self.start_time:
+            return self.start_time.strftime("%d/%m/%Y")
+        return ""
 
     def save(self, sendMail = True, *args, **kwargs):
         ''' On save, update timestamps '''

@@ -84,6 +84,12 @@ class Atelier(models.Model):
     def get_absolute_url_site(self):
         return "https://www.perma.cat" + self.get_absolute_url()
 
+    @property
+    def date_text(self):
+        if self.start_time:
+            return self.start_time.strftime("%d/%m/%Y")
+        return ""
+
     def save(self, sendMail=True, *args, **kwargs):
         ''' On save, update timestamps '''
         emails, suiveurs = [], []

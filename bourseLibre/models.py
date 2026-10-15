@@ -1418,7 +1418,9 @@ class Salon(models.Model):
         elif self.type_salon == Type_Salon.PRIVE:
             return [u.profil for u in InscritSalon.objects.filter(salon=self)]
         elif self.type_salon == Type_Salon.ASSO:
-            return self.asso.getProfils()
+            if self.asso:
+                return self.asso.getProfils()
+            return Profil.objects.none()
 
     def getInvites(self):
         return [u.profil_invite for u in InvitationDansSalon.objects.filter(salon=self)]
@@ -1567,6 +1569,11 @@ class EvenementSalon(models.Model):
     def est_autorise(self, user):
         return self.salon.est_autorise(user)
 
+    @property
+    def date_text(self):
+        if self.start_time:
+            return self.start_time.strftime("%d/%m/%Y")
+        return ""
 
     @property
     def get_bx_icon(self,):

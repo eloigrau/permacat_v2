@@ -22,6 +22,7 @@ from .emails_templates import get_emailNexsletter2023
 from hitcount.models import HitCount
 from actstream.models import following
 from django.db.models import Q
+from.views_notifications import getEvenementsSemaine
 
 from enum import Enum
 
@@ -58,9 +59,12 @@ def getListeMailsAlerte():
     for mail, messages in messagesParMails.items():
         titre = "[Perma.Cat] Du nouveau sur Perma.Cat"
         try:
-            pseudo = Profil.objects.get(email=mail).username
+            profil = Profil.objects.get(email=mail)
+            pseudo = profil.username
         except:
             pseudo = ""
+            profil = None
+
         messagetxt = "Bonjour / Bon dia "+ pseudo +", Voici les dernières nouvelles des pages auxquelles tu es abonné-e :\n"
         message = "<p>Bonjour / Bon dia "+ pseudo +",</p><p>Voici les dernières nouvelles des pages auxquelles tu es abonné-e :</p><ul>"
         liste_messages = []
@@ -73,12 +77,22 @@ def getListeMailsAlerte():
                 messagetxt += re.sub('<[^>]+>', '', m) + "\n"
         liste_messages.sort()
 
-
         message += "".join(liste_messages)
+        message += "</ul>"
+        if profil:
+            evenementsSemaine = getEvenementsSemaine(profil)
+            if evenementsSemaine:
+                messagetxt += "\n\nEvenements de la semaine : \n"
+                message += "<hr><h4>Evènements de la semaine :</h4>"
+                message += "<ul>"
+                for eve in evenementsSemaine:
+                    message += "<li><a href=" + eve.get_absolute_url() + ">" + eve.date_text + " - " + eve.titre+"</a></li>"
+                    messagetxt += eve.titre + "\n"
+                message += "</ul>"
 
         messagetxt += "\nFins Aviat !\n---------------\nPour voir toute l'activité sur le site, consultez les Notifications : https://www.perma.cat/notifications/activite/ \n" + \
                       "Pour vous désinscrire des alertes mails, barrez les cloches sur le site (ou consultez la FAQ : https://www.perma.cat/faq/) "
-        message += "</ul><br><p>Fins Aviat !</p><hr>" + \
+        message += "<br><p>Fins Aviat !</p><hr>" + \
                    "<p><small>Pour voir toute l'activité sur le site, consultez les <a href='https://www.perma.cat/notifications/activite/'>Notifications </a> </small>. " + \
                    "<small>Pour vous désinscrire des alertes mails, barrez les cloches sur le site (ou supprimez  <a href='https://www.perma.cat/accounts/mesSuivis/'>vos abonnements</a> ou consultez la <a href='https://www.perma.cat/faq/'>FAQ</a>)</small></p>"
 

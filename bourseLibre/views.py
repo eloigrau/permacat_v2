@@ -87,8 +87,6 @@ def getEvenementsSemaine(request):
         #    ev_3 = Article_jardin.objects.filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
         ev_4 = Projet.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
-
-
         ev_5 = Atelier.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(Q(start_time__week=current_week) & Q(start_time__year=current_year)).order_by('start_time')
 
         utc = pytz.UTC

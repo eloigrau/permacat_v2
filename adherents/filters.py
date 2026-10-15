@@ -133,13 +133,13 @@ class ContactCarteFilter(django_filters.FilterSet):
 
     def get_dejacontacte_filter(self, queryset, field_name, value):
         if value == '0':
-            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b=0)
+            return queryset.annotate(num_b=Count('commentaires')).filter(num_b=0)
         elif value == '1':
-            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b=1)
+            return queryset.annotate(num_b=Count('commentaires')).filter(num_b=1)
         if value == '2':
-            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=0)
+            return queryset.annotate(num_b=Count('commentaires')).filter(num_b__gt=0)
         if value == '3':
-            return queryset.annotate(num_b=Count('contactcontact')).filter(num_b__gt=1)
+            return queryset.annotate(num_b=Count('commentaires')).filter(num_b__gt=1)
         else:
             return queryset
 

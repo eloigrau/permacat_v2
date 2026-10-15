@@ -285,7 +285,7 @@ class ProjetPhoning_form(forms.ModelForm):
 class ProjetPhoning_UpdateForm(forms.ModelForm):
     class Meta:
         model = ProjetPhoning
-        fields = [ "titre", 'asso', 'description', 'estArchive']
+        fields = ["titre", 'asso', 'description', 'estArchive']
         widgets = {
             'description': SummernoteWidget(),
         }

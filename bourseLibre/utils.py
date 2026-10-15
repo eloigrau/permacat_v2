@@ -125,3 +125,4 @@ class TestBureauAssoMixin(UserPassesTestMixin):
             return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user.is_superuser
         except:
             return False
+

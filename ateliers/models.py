@@ -3,7 +3,7 @@ from blog.models import Article
 from django.urls import reverse
 from django.utils import timezone
 import uuid
-from bourseLibre.constantes import get_bx_icon
+from bourseLibre.constantes import get_bx_icon, get_date_text
 from bourseLibre.models import Profil, Suivis, Asso, username_re
 from actstream.models import followers
 from actstream import action
@@ -86,9 +86,7 @@ class Atelier(models.Model):
 
     @property
     def date_text(self):
-        if self.start_time:
-            return self.start_time.strftime("%d/%m/%Y")
-        return ""
+        return get_date_text(self.start_time)
 
     def save(self, sendMail=True, *args, **kwargs):
         ''' On save, update timestamps '''

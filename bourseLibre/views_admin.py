@@ -66,7 +66,8 @@ def getListeMailsAlerte():
             profil = None
 
         messagetxt = "Bonjour / Bon dia "+ pseudo +", Voici les dernières nouvelles des pages auxquelles tu es abonné-e :\n"
-        message = "<p>Bonjour / Bon dia "+ pseudo +",</p><p>Voici les dernières nouvelles des pages auxquelles tu es abonné-e :</p><ul>"
+        message = "<p>Bonjour / Bon dia "+ pseudo +",</p>"
+        message += "<h5>Les dernières nouvelles :</h4><ul>"
         liste_messages = []
         for m in messages:
             liste_messages.append("<li>" + m + "</li>")
@@ -83,10 +84,10 @@ def getListeMailsAlerte():
             evenementsSemaine = getEvenementsSemaine(profil)
             if evenementsSemaine:
                 messagetxt += "\n\nEvenements de la semaine : \n"
-                message += "<hr><h4>Evènements de la semaine :</h4>"
+                message += "<hr><h5>Les évènements de la semaine :</h4>"
                 message += "<ul>"
                 for eve in evenementsSemaine:
-                    message += "<li><a href=" + eve.get_absolute_url() + ">" + eve.date_text + " - " + eve.titre+"</a></li>"
+                    message += "<li><a href=" + eve.get_absolute_url() + ">" + eve.date_text + " : " + eve.titre+"</a></li>"
                     messagetxt += eve.titre + "\n"
                 message += "</ul>"
 

@@ -16,7 +16,7 @@ from jardins.models import Jardin
 from django.core.validators import MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 import uuid
-from bourseLibre.constantes import get_bx_icon
+from bourseLibre.constantes import get_bx_icon, get_date_text
 from django.contrib import messages
 
 class Choix:
@@ -338,9 +338,7 @@ class Article(models.Model):
 
     @property
     def date_text(self):
-        if self.start_time:
-            return self.start_time.strftime("%d/%m/%Y")
-        return ""
+        return get_date_text(self.start_time)
 
     def sendMailArticle_newormodif(self, creation, forcerCreationMails):
         emails = []
@@ -608,7 +606,7 @@ class Evenement(models.Model):
 
     @property
     def date_text(self):
-        return self.start_time.strftime("%d/%m/%Y")
+        return get_date_text(self.start_time)
 
     @property
     def estPublic(self):
@@ -835,9 +833,7 @@ class Projet(models.Model):
 
     @property
     def date_text(self):
-        if self.start_time:
-            return self.start_time.strftime("%d/%m/%Y")
-        return ""
+        return get_date_text(self.start_time)
 
     def save(self, sendMail = True, *args, **kwargs):
         ''' On save, update timestamps '''

@@ -83,3 +83,23 @@ def get_bx_icon(nom):
     if nom in Choix.bx_icons.keys():
         return Choix.bx_icons[nom]
     return Choix.bx_icons["defaut"]
+
+class Date_utils:
+    jours_fr = {
+        0: 'lundi   ',
+        1: 'mardi   ',
+        2: 'mercredi',
+        3: 'jeudi   ',
+        4: 'vendredi',
+        5: 'samedi  ',
+        6: 'dimanche',
+    }
+
+
+def get_date_text(date, avecJourSemaine = True):
+    if date:
+        if avecJourSemaine:
+            return date.strftime("%d/%m/%Y - ") + Date_utils.jours_fr[date.weekday()]
+        else:
+            return date.strftime("%d/%m/%Y")
+    return date

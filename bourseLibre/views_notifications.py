@@ -532,5 +532,5 @@ def getEvenementsSemaine(user):
     #
     # eve_passe = sorted(liste_passe, key=lambda x:x[0])
     # eve_futur = sorted(liste_futur, key=lambda x:x[0])
-
-    return evenements
+    eve = sorted(evenements, key=lambda x:x.start_time)
+    return eve

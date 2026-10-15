@@ -34,7 +34,7 @@ from model_utils.managers import InheritanceManager
 from taggit.managers import TaggableManager
 
 from webpush import send_user_notification
-from .constantes import Choix, DEGTORAD, get_bx_icon
+from .constantes import Choix, DEGTORAD, get_bx_icon, get_date_text
 from .settings.production import SERVER_EMAIL
 from .settings import LANGUAGES, LANGUAGE_CODE, AVATAR_GRAVATAR_DEFAULT
 
@@ -1571,9 +1571,7 @@ class EvenementSalon(models.Model):
 
     @property
     def date_text(self):
-        if self.start_time:
-            return self.start_time.strftime("%d/%m/%Y")
-        return ""
+        return get_date_text(self.start_time)
 
     @property
     def get_bx_icon(self,):

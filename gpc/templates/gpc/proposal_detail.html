@@ -23,7 +23,7 @@
             {% endif %}
         </h6>
         <p class="card-text fs-4 bg-light p-3 rounded border-start border-4 border-primary">
-            {{ proposal.content }}
+            {{ proposal.content | safe }}
         </p>
 
         <hr>

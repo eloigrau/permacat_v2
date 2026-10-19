@@ -7,7 +7,7 @@ from local_summernote.widgets import SummernoteWidget
 class ProposalForm(forms.ModelForm):
     class Meta:
         model = Proposal
-        fields = ['title', 'context', 'content']
+        fields = ['title', 'context', 'content', 'nbMinVote']
         widgets = {
             'context': SummernoteWidget(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
@@ -19,7 +19,7 @@ class ProposalClarificationEditForm(forms.ModelForm):
     """Formulaire d'édition du contexte/titre/contenu pendant la phase de clarification."""
     class Meta:
         model = Proposal
-        fields = ['title', 'context', 'content']
+        fields = ['title', 'context', 'content', 'nbMinVote']
         widgets = {
             'context': SummernoteWidget(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),

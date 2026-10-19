@@ -23,6 +23,7 @@ from django.db.models import Count, Max, Min
 import re
 from.views import write_csv_data, is_membre_bureau
 from django.contrib.auth.decorators import login_required, permission_required
+from bs4 import BeautifulSoup
 
 from django.contrib import messages
 
@@ -716,11 +717,11 @@ def get_csv_contacts(request, asso_slug):
     profils_filtres = ContactCarteFilter(request, request.GET, queryset=profils)
     #current_year = date.today().isocalendar()[0]
 
-    csv_data = [("nom", "prenom", "Type", "Structure", "referent", "telephone","email","adresse_postale","code_postal","commune","adherent_nom","commentaire","contacts"),]
+    csv_data = [("nom", "prenom", "type", "structure", "referent", "telephone","email","adresse_postale","code_postal","commune","adherent_nom","commentaire","contacts"),]
     csv_data += [(a.nom, a.prenom, a.type_structure, a.nom_structure, a.referent, a.adresse.telephone if a.adresse else "", a.email,a.adresse.rue if a.adresse else "",a.adresse.code_postal if a.adresse else "",
                   a.adresse.commune if a.adresse else "", a.get_profil_username(), a.commentaire,
-                  ";".join([c.date_contact.strftime("%d-%m-%Y") + ": " + c.commentaire for c in a.commentaires.all()]))
-                 for a in profils_filtres.qs.distinct() ]
+                  ";".join([c.date_contact.strftime("%d-%m-%Y") + ": " + BeautifulSoup(c.commentaire).get_text() for c in a.commentaires.all()]))
+                 for a in profils_filtres.qs.distinct()]
 
     return write_csv_data(request, csv_data)
 

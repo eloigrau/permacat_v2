@@ -10,6 +10,7 @@ from .models import Proposal, ClarificationQuestion, Objection, ObjectionRespons
 from . import services
 from .forms import ProposalClarificationEditForm, ProposalForm
 from bourseLibre.utils import TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
+from bourseLibre.models import Asso
 
 
 class ProposalListView(TestMembreAssoMixin, ListView):
@@ -52,13 +53,14 @@ class ProposalDetailView(TestMembreAssoMixin, DetailView):
             context['edit_form'] = ProposalClarificationEditForm(instance=proposal)
         return context
 
-class ProposalCreateView(LoginRequiredMixin, CreateView):
+class ProposalCreateView(TestMembreAssoMixin, CreateView):
     model = Proposal
     form_class = ProposalForm
     template_name = 'gpc/create_proposal.html'
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.asso = self.asso
         response = super().form_valid(form)
         services.submit_proposal(self.object)
         messages.success(self.request, "Proposition créée et soumise pour clarification.")
@@ -68,7 +70,7 @@ class ProposalCreateView(LoginRequiredMixin, CreateView):
         return reverse('gpc:proposal_detail', kwargs={'pk': self.object.pk})
 
 
-class EditProposalClarificationView(LoginRequiredMixin, UserPassesTestMixin, View):
+class EditProposalClarificationView(TestMembreAssoMixin, UserPassesTestMixin, View):
     """Vue permettant à l'auteur d'éditer la proposition pendant la clarification."""
     def test_func(self):
         proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])

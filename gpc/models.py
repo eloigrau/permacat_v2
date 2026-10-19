@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from bourseLibre.models import Asso, Profil
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 
 
 class Proposal(models.Model):
@@ -27,6 +28,15 @@ class Proposal(models.Model):
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"
 
+    def get_absolute_url(self):
+        return reverse('gpc:proposal_detail', kwargs={'pk':self.pk})
+
+    def est_autorise(self, user):
+        if user == self.auteur:
+            return True
+        elif self.asso.est_autorise(user):
+            return True
+        return False
 
 class ClarificationQuestion(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='clarifications')

@@ -19,7 +19,8 @@
 
  <div class="row rowcentre">
         <div class="col-sm-12 textcenter">
-            {%if request.user.is_superuser or request.user == atelier.referent or request.user == atelier.auteur  %}
+        {%if request.user.is_authenticated %}
+            {%if request.user.is_superuser or request.user.username == atelier.referent or request.user == atelier.auteur  %}
             <div class = "btn-group">
             <a href="{%if request.user.is_authenticated %}{% url 'ateliers:modifierAtelier' slug=atelier.slug %}{% endif %}">
                <button type="button" class="btn btn-sm btn-warning">
@@ -36,11 +37,12 @@
                <button type="button" class="btn btn-sm btn-danger">
                  &nbsp;Supprimer l'atelier
                </button></a>
-      {%if request.user.is_superuser %}
-            <a class="btn btn-sm btn-danger" href="http://127.0.0.1:8000/gestion/ateliers/atelier/{{atelier.pk}}/change/" type="button">
-                Admin</a>
-      {%endif%}
+              {%if request.user.is_superuser %}
+                    <a class="btn btn-sm btn-danger" href="http://127.0.0.1:8000/gestion/ateliers/atelier/{{atelier.pk}}/change/" type="button">
+                        Admin</a>
+              {%endif%}
             {% endif %}
+        {% endif %}
         </div>
  </div>
 {% endblock %}
@@ -105,7 +107,7 @@
     </div>
 
 {%if request.user.is_authenticated %}
-	 {% if user_inscrit or request.user.is_superuser or request.user == atelier.auteur  %}
+	 {% if user_inscrit or request.user.is_superuser or request.user == atelier.auteur or request.user.username == atelier.referent %}
  	<div class="row">
     <div class="col-md-12 textcenter">
             <a href="{% url 'ateliers:contacterParticipantsAtelier' slug=atelier.slug %}">

@@ -9,8 +9,10 @@ from django.urls import reverse
 from .models import Proposal, ClarificationQuestion, Objection, ObjectionResponse
 from . import services
 from .forms import ProposalClarificationEditForm, ProposalForm
-from bourseLibre.utils import TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
-from bourseLibre.models import Asso
+from bourseLibre.utils import TestMembreAssoMixin, UserPassesTestMixin
+from actstream import action
+from actstream.models import followers
+from bourseLibre.models import Suivis
 
 
 class ProposalListView(TestMembreAssoMixin, ListView):
@@ -64,6 +66,15 @@ class ProposalCreateView(TestMembreAssoMixin, CreateView):
         response = super().form_valid(form)
         services.submit_proposal(self.object)
         messages.success(self.request, "Proposition créée et soumise pour clarification.")
+        action.send(self.request.user, verb='gpc_nouveau_' + self.object.asso.slug, action_object=self.object, url=self.object.get_absolute_url(),
+                     description="a ajouté la Proposition (GPC): '%s'" % self.object.title)
+
+        suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
+        suiveurs = [suiv for suiv in followers(suivi) if self.est_autorise(suiv) and self.auteur != suiv]
+        emails = [suiv.email for suiv in suiveurs]
+        action.send(self, verb='emails', url=self.object.get_absolute_url(), titre=self.object.title, message=message, emails=emails)
+        message = "Nouvelle proposition [" + str(self.asso.nom) + "] : '<a href='" + self.object.get_absolute_url() + "'>" + self.object.title + "</a>'"
+
         return response
 
     def get_success_url(self):

@@ -112,6 +112,7 @@ def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
             Q(verb__startswith="invitation_salon", description__contains=request.user.username) |
             Q(verb__startswith='inscription') |
             Q(verb__startswith='mention_' + request.user.username) |
+            Q(verb__startswith='gpc_') |
             Q(verb__startswith='suppression' + request.user.username))).distinct().order_by(orderBy)
 
     query_exclude = Q()

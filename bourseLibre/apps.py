@@ -17,6 +17,7 @@ class BourseLibreConfig(AppConfig):
         from permagora.models import Commentaire_charte, PropositionCharte, Message_permagora
         from jardins.models import Jardin as Jardin_partage, Grainotheque
         from adherents.models import ListeDiffusion, Adherent
+        from gpc.models import Proposal
         registry.register(self.get_model('Profil'))
         registry.register(self.get_model('MessageGeneral'))
         registry.register(self.get_model('Message_salon'))
@@ -54,5 +55,6 @@ class BourseLibreConfig(AppConfig):
         registry.register(Grainotheque)
         registry.register(ListeDiffusion)
         registry.register(Adherent)
+        registry.register(Proposal)
 
 

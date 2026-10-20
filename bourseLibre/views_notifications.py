@@ -34,6 +34,7 @@ def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
     suppressions = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='suppression_article')).order_by(orderBy)
     jardins = Action.objects.none()
     conversations = Action.objects.none()
+    gpc = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='gpc_')).order_by(orderBy)
 
     for nomAsso in Choix_global.slugsAsso:
         if not getattr(request.user, "adherent_" + nomAsso):
@@ -43,6 +44,7 @@ def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
             albums = albums.exclude(Q(verb__icontains=nomAsso))
             documents = documents.exclude(Q(verb__icontains=nomAsso))
             suppressions = suppressions.exclude(Q(verb__icontains=nomAsso))
+            gpc = gpc.exclude(Q(verb__icontains=nomAsso))
         else:
             if nomAsso == 'jp':
                 jardins = Action.objects.filter(Q(timestamp__gt=dateMin) & Q(verb__startswith='jardins_'))
@@ -73,6 +75,7 @@ def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
     mentions = mentions.distinct().order_by(orderBy)[:tampon]
     fiches = fiches.distinct().order_by(orderBy)[:tampon]
     ateliers = ateliers.distinct().order_by(orderBy)[:tampon]
+    gpc = gpc.distinct().order_by(orderBy)[:tampon]
 
     if jardins:
         jardins = jardins.distinct().order_by(orderBy)[:tampon]
@@ -85,14 +88,16 @@ def getNotifications(request, dateMin=None, nbNotif=15, orderBy="-timestamp"):
     offres = [art for i, art in enumerate(offres) if i == 0 or not (art.description == offres[i-1].description and art.actor == offres[i-1].actor ) ][:nbNotif]
     albums = [art for i, art in enumerate(albums) if i == 0 or not (art.description == albums[i-1].description and art.actor == albums[i-1].actor ) ][:nbNotif]
     mentions = [art for i, art in enumerate(mentions) if i == 0 or not (art.description == mentions[i-1].description and art.actor == mentions[i-1].actor ) ][:nbNotif]
+    #mentions = [art for i, art in enumerate(mentions) if i == 0 or not (art.description == mentions[i-1].description and art.actor == mentions[i-1].actor ) ][:nbNotif]
     #conversations = [art for i, art in enumerate(conversations) if i == 0 or not (art.description == conversations[i-1].description and art.actor == conversations[i-1].actor)][:nbNotif]
 
 
     if jardins:
         jardins = [art for i, art in enumerate(jardins) if i == 0 or not (art.description == jardins[i-1].description and art.actor == jardins[i-1].actor ) ][:nbNotif]
     documents = [art for i, art in enumerate(documents) if i == 0 or not (art.description == documents[i-1].description and art.actor == documents[i-1].actor ) ][:nbNotif]
+    gpc = [art for i, art in enumerate(gpc) if i == 0 or not (art.description == gpc[i-1].description and art.actor == gpc[i-1].actor ) ][:nbNotif]
 
-    return salons, articles, projets, offres, conversations, fiches, ateliers, inscription, suffrages, albums, documents, mentions, jardins, suppressions
+    return salons, articles, projets, offres, conversations, fiches, ateliers, inscription, suffrages, albums, documents, mentions, jardins, suppressions, gpc
 
 @login_required
 def getNotificationsParDate(request, dateMinimum=None, orderBy="-timestamp"):
@@ -206,7 +211,7 @@ def notifications_news_regroup(request):
         dateMin = request.user.date_notifications if request.user.date_notifications > date31jours else date31jours
         type_notif = "dateNotif"
 
-    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions = getNotifications(request, dateMin=dateMin, nbNotif=500)
+    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions, gpc = getNotifications(request, dateMin=dateMin, nbNotif=500)
 
     dicoTexte = {}
     dicoTexte['dicoarticles'] = {}
@@ -303,7 +308,7 @@ def notifications_news_regroup(request):
 
 
     dicoTexte['listautres'] = []
-    for action in list(chain(suffrages, conversations, salons, offres, ateliers, fiches, albums, documents, mentions, jardins, suppressions)):
+    for action in list(chain(suffrages, conversations, salons, offres, ateliers, fiches, albums, documents, mentions, jardins, suppressions, gpc)):
         dicoTexte['listautres'].append(action)
 
     maintenant = now()
@@ -315,8 +320,8 @@ def notifications_news_regroup(request):
 
 @login_required
 def notifications(request):
-    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions = getNotifications(request)
-    return render(request, 'notifications/notifications.html', {'salons': salons, 'articles': articles,'projets': projets, 'offres':offres, 'conversations':conversations, 'fiches':fiches, 'ateliers':ateliers, 'inscriptions':inscriptions, 'suffrages':suffrages})
+    salons, articles, projets, offres, conversations, fiches, ateliers, inscriptions, suffrages, albums, documents, mentions, jardins, suppressions, gpc = getNotifications(request)
+    return render(request, 'notifications/notifications.html', {'salons': salons, 'articles': articles,'projets': projets, 'offres':offres, 'conversations':conversations, 'fiches':fiches, 'ateliers':ateliers, 'inscriptions':inscriptions, 'suffrages':suffrages, 'gpc':gpc})
 
 @login_required
 def notifications_news(request):

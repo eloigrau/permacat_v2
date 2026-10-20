@@ -16,6 +16,7 @@ class Proposal(models.Model):
         ACCEPTED = 'ACCEPTED', 'Adoptée (Consentement)'
         REJECTED = 'REJECTED', 'Refusée'
 
+
     title = models.CharField(max_length=255)
     context = models.TextField(verbose_name="Contexte et problème à résoudre", help_text="De quoi parle-t-on ? Liens utiles ?")
     content = models.TextField(verbose_name="La proposition concrète / Formulation actuelle", help_text="Une ou deux phrases pour prendre une décision claire")

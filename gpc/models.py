@@ -10,6 +10,8 @@ class Proposal(models.Model):
         DRAFT = 'DRAFT', 'Brouillon'
         CLARIFICATION = 'CLARIFICATION', 'Demandes de clarification'
         OBJECTION_ROUND = 'OBJECTION_ROUND', 'Recueil des objections'
+        REFORMULATION = 'REFORMULATION', 'Reformulation'
+        OBJECTION_RESPONSE = 'OBJECTION_RESPONSE', 'warning'
         DELIBERATION = 'DELIBERATION', 'Délibération & Traitement'
         ACCEPTED = 'ACCEPTED', 'Adoptée (Consentement)'
         REJECTED = 'REJECTED', 'Refusée'

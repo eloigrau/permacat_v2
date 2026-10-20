@@ -1593,6 +1593,7 @@ def ajouterEvenementSalon(request, slug_salon):
     salon = Salon.objects.get(slug=slug_salon)
     if form.is_valid():
         ev = form.save(request, salon)
+        messages.success(request, "L'évenement a bien été ajouté à l'agenda et au salon")
         return redirect(ev.salon)
 
     return render(request, 'blog/ajouterEvenement.html', {'form': form, 'titre':"Ajouter une date au salon '" + str(salon.titre) + "'"})

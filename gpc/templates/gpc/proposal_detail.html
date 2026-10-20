@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load fontawesome_5 %}
+{% load widget_tweaks %}
 
 {% block title %}{{ proposal.title }} — GPC{% endblock %}
 
@@ -22,14 +23,16 @@
                 Formulation Actuelle de la Proposition
             {% endif %}
         </h6>
-        <p class="card-text fs-4 bg-light p-3 rounded border-start border-4 border-primary">
+        <div class="card-text fs-4 bg-light p-3 rounded border-start border-4 border-primary">
             {{ proposal.content | safe }}
-        </p>
+        </div>
 
         <hr>
         <h6 class="text-uppercase text-muted fw-bold">Contexte</h6>
         <p class="card-text text-secondary">{{ proposal.context|safe|linebreaks }}</p>
-
+        <hr>
+        <p class="text-muted fw-bold">Nombre minimum de votants : <span class="card-text text-secondary">{{ proposal.nbMinVote }}</span></p>
+        <hr>
         <div class="text-end text-muted small">
             Auteur : <strong>{{ proposal.author.username }}</strong> | Mise à jour : {{ proposal.updated_at|date:"d/m/Y à H:i" }}
         </div>
@@ -50,7 +53,7 @@
                         {% endif %}
                     </div>
                 {% empty %}
-                    <p class="text-muted">Aucune question de clarification posée pour le moment.</p>
+                    <p class="text-muted">Aucune question de clarification</p>
                 {% endfor %}
             </div>
     </div>
@@ -106,24 +109,7 @@
             <div class="collapse card-body" id="editProposalForm">
                 <form method="post" action="{% url 'gpc:edit_proposal_clarification' proposal.id %}">
                     {% csrf_token %}
-                    {{ edit_form.media }}
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Titre</label>
-                        {{ edit_form.title }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Contexte</label>
-                        {{ edit_form.context }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Texte de la proposition</label>
-                        {{ edit_form.content }}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nombre de votants minimum</label>
-                        {{ edit_form.nbMinVote }}
-                    </div>
+                    {% include 'form_template2.html' with form=edit_form %}
                     <button type="submit" class="btn btn-sm btn-success">Enregistrer les ajustements</button>
                 </form>
             </div>
@@ -177,7 +163,7 @@
             <div class="list-group mb-3">
                 <form method="post" action="{% url 'gpc:no_clarification' proposal.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary w-100">Je n'ai pas ou plus de questions de clarification</button>
+                    <button type="submit" class="btn btn-secondary w-100">Je n'ai pas (ou plus) de questions de clarification</button>
                 </form>
             </div>
             {% endif %}

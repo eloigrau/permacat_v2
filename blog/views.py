@@ -1141,9 +1141,9 @@ def ajouterEvenement(request, date=None):
 
     if form.is_valid():
         form.save(request)
+        messages.success(request, "L'évenement a bien été ajouté à l'agenda")
         return redirect('cal:agenda')
 
-    messages.success(request, "L'évenement a bien été ajouté à l'agenda")
     return render(request, 'blog/ajouterEvenement.html', {'form': form, 'titre':"Ajouter un evenement"})
 
 

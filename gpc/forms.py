@@ -11,7 +11,7 @@ class ProposalForm(forms.ModelForm):
         widgets = {
             'context': SummernoteWidget(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'content': SummernoteWidget(),
         }
 
 
@@ -23,5 +23,5 @@ class ProposalClarificationEditForm(forms.ModelForm):
         widgets = {
             'context': SummernoteWidget(),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'content': SummernoteWidget(),
         }

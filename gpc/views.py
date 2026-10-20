@@ -70,11 +70,10 @@ class ProposalCreateView(TestMembreAssoMixin, CreateView):
                      description="a ajouté la Proposition (GPC): '%s'" % self.object.title)
 
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
-        suiveurs = [suiv for suiv in followers(suivi) if self.object.est_autorise(suiv) and self.auteur != suiv]
+        suiveurs = [suiv for suiv in followers(suivi) if self.object.est_autorise(suiv) ]
         emails = [suiv.email for suiv in suiveurs]
-        action.send(self, verb='emails', url=self.object.get_absolute_url(), titre=self.object.title, message=message, emails=emails)
         message = "Nouvelle proposition [" + str(self.asso.nom) + "] : '<a href='" + self.object.get_absolute_url() + "'>" + self.object.title + "</a>'"
-
+        action.send(self, verb='emails', url=self.object.get_absolute_url(), titre=self.object.title, message=message, emails=emails)
         return response
 
     def get_success_url(self):

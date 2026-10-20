@@ -28,7 +28,7 @@
 
         <hr>
         <h6 class="text-uppercase text-muted fw-bold">Contexte</h6>
-        <p class="card-text text-secondary">{{ proposal.context|linebreaks }}</p>
+        <p class="card-text text-secondary">{{ proposal.context|safe|linebreaks }}</p>
 
         <div class="text-end text-muted small">
             Auteur : <strong>{{ proposal.author.username }}</strong> | Mise à jour : {{ proposal.updated_at|date:"d/m/Y à H:i" }}

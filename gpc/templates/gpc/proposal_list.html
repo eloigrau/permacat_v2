@@ -139,7 +139,7 @@
                             </span>
                         </div>
                         <p class="card-text text-muted small">
-                            {{ proposal.context|truncatewords:20 }}
+                            {{ proposal.context|safe|truncatewords:20 }}
                         </p>
                     </div>
                     <div class="card-footer bg-transparent text-muted d-flex justify-content-between align-items-center small">

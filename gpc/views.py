@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.urls import reverse
 
-from .models import Proposal, ClarificationQuestion, Objection, ObjectionResponse
+from .models import Proposal, ClarificationQuestion, Objection, ObjectionResponse, ClarificationVoteOK, ObjectionVoteOK
 from . import services
 from .forms import ProposalClarificationEditForm, ProposalForm
 from bourseLibre.utils import TestMembreAssoMixin, UserPassesTestMixin
@@ -50,6 +50,8 @@ class ProposalDetailView(TestMembreAssoMixin, DetailView):
         proposal = self.object
         context['votes_count'] = proposal.resolution_votes.count()
         context['user_has_voted'] = proposal.resolution_votes.filter(voter=self.request.user).exists()
+        context['user_clarification_ok'] = proposal.clarifications_ok.filter(author=self.request.user).exists()
+        context['user_objections_ok'] = proposal.objections_ok.filter(author=self.request.user).exists()
         # Formulaire d'édition pour la clarification (si auteur et phase clarification)
         if proposal.status == Proposal.Status.CLARIFICATION and self.request.user == proposal.author:
             context['edit_form'] = ProposalClarificationEditForm(instance=proposal)
@@ -118,6 +120,16 @@ class AddClarificationView(TestMembreAssoMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
+class NoClarificationView(TestMembreAssoMixin, View):
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        ClarificationVoteOK.objects.create(
+            proposal=proposal,
+            author=request.user,
+        )
+        messages.success(request, "Pas de Question de clarification - OK")
+        return redirect('gpc:proposal_detail', pk=proposal.pk)
+
 class AnswerClarificationView(TestMembreAssoMixin, View):
     def test_func(self):
         res = super().test_func()
@@ -165,6 +177,16 @@ class AddObjectionView(TestMembreAssoMixin, View):
                 description=description
             )
             messages.warning(request, "Objection enregistrée.")
+        return redirect('gpc:proposal_detail', pk=proposal.pk)
+
+class NoObjectionResponseView(TestMembreAssoMixin, View):
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        ObjectionVoteOK.objects.create(
+            proposal=proposal,
+            author=request.user
+        )
+        messages.success(request, "Vous n'avez pas d'Objection - enregistré")
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 class VoteResolveObjectionView(LoginRequiredMixin, View):

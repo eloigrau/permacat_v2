@@ -48,6 +48,15 @@ class ClarificationQuestion(models.Model):
     answer = models.TextField(blank=True, null=True, help_text="Réponse fournie par l'auteur de la proposition")
     created_at = models.DateTimeField(auto_now_add=True)
 
+class ClarificationVoteOK(models.Model):
+    proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='clarifications_ok')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ObjectionVoteOK(models.Model):
+    proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='objections_ok')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class Objection(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='objections')

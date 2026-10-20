@@ -30,6 +30,12 @@ def close_clarifications(proposal: Proposal) -> None:
             f"Impossible de clôturer : l'auteur doit répondre aux {unanswered_count} question(s) en attente."
         )
 
+    ok_count = proposal.clarifications_ok.filter().count()
+    if ok_count < proposal.nbMinVote:
+        raise ValidationError(
+            f"Impossible de clôturer : Il faut que au moins {proposal.nbMinVote} personnes votent 'Pas de question'"
+        )
+
     proposal.status = Proposal.Status.OBJECTION_ROUND
     proposal.save()
 

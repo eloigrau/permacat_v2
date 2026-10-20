@@ -12,6 +12,7 @@ urlpatterns = [
     path('<int:pk>/editer-clarification/', views.EditProposalClarificationView.as_view(),
          name='edit_proposal_clarification'),
     path('<int:pk>/clarifier/', views.AddClarificationView.as_view(), name='add_clarification'),
+    path('<int:pk>/clarifier/OK/', views.NoClarificationView.as_view(), name='no_clarification'),
     path('clarification/<int:question_id>/repondre/', views.AnswerClarificationView.as_view(),
          name='answer_clarification'),
     path('<int:pk>/cloturer-clarifications/', views.CloseClarificationsView.as_view(), name='close_clarifications'),
@@ -22,6 +23,7 @@ urlpatterns = [
 
     # Phase Délibération & Levée
     path('objection/<int:objection_id>/respond/', views.AddObjectionResponseView.as_view(), name='add_objection_response'),
+    path('objection/<int:pk>/ok/', views.NoObjectionResponseView.as_view(), name='no_objection_response'),
     path('objection/<int:objection_id>/resolve/', views.ResolveObjectionView.as_view(), name='resolve_objection'),
     path('<int:pk>/vote-deliberation/', views.VoteDeliberationView.as_view(), name='vote_deliberation'),
     path('<int:pk>/close-deliberation/', views.CloseDeliberationView.as_view(), name='close_deliberation'),

@@ -100,7 +100,7 @@
         <div class="card mb-3 border-secondary">
             <div class="card-header bg-light">
                 <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editProposalForm">
-                    <i class="bi bi-pencil me-1"></i> Ajuster la proposition (Titre, Contexte Summernote, Contenu)
+                    <i class="bi bi-pencil me-1"></i> Ajuster la proposition
                 </button>
             </div>
             <div class="collapse card-body" id="editProposalForm">
@@ -119,6 +119,10 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">Texte de la proposition</label>
                         {{ edit_form.content }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre de votants minimum</label>
+                        {{ edit_form.nbMinVote }}
                     </div>
                     <button type="submit" class="btn btn-sm btn-success">Enregistrer les ajustements</button>
                 </form>
@@ -151,7 +155,7 @@
                     <p class="text-muted">Aucune question de clarification posée pour le moment.</p>
                 {% endfor %}
             </div>
-
+            {% if not user_clarification_ok %}
             <form method="post" action="{% url 'gpc:add_clarification' proposal.id %}">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -159,6 +163,24 @@
                 </div>
                 <button type="submit" class="btn btn-secondary">Demander une clarification</button>
             </form>
+            {% endif %}
+    <hr>
+            <div class="list-group mb-3">
+                {% for q in proposal.clarifications_ok.all %}
+                    <div class="list-group-item list-group-item-success">
+                        <p class="mb-1"><strong>{{ q.author.username }} :</strong> Pas de question supplémentaire - OK pour passer aux objections</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if not user_clarification_ok %}
+            <div class="list-group mb-3">
+                <form method="post" action="{% url 'gpc:no_clarification' proposal.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-secondary w-100">Je n'ai pas ou plus de questions de clarification</button>
+                </form>
+            </div>
+            {% endif %}
 
             {% if user == proposal.author %}
                 <form method="post" action="{% url 'gpc:close_clarifications' proposal.id %}" class="mt-4 border-top pt-3">
@@ -175,7 +197,7 @@
     <div class="card mb-4 border-warning">
         <div class="card-header bg-warning text-dark fw-bold">Phase 2 : Recueil des objections</div>
         <div class="card-body">
-            <div class="alert alert-warning small">
+            <div class="small">
                 Une objection exprime un risque collectif ou un problème de sécurité, pas une préférence personnelle.
             </div>
 
@@ -188,7 +210,8 @@
                     <p class="text-muted">Aucune objection soulevée pour le moment.</p>
                 {% endfor %}
             </div>
-
+            <hr>
+            {% if not user_objections_ok %}
             <form method="post" action="{% url 'gpc:add_objection' proposal.id %}">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -196,6 +219,21 @@
                 </div>
                 <button type="submit" class="btn btn-danger">Poser une objection</button>
             </form>
+            <hr>
+
+            <form method="post" action="{% url 'gpc:no_objection_response' proposal.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary w-100 fw-bold">Je n'ai pas d'objection</button>
+            </form>
+            {% endif %}
+            <div class="list-group mb-3">
+                {% for obj in proposal.objections_ok.all %}
+                    <div class="list-group-item list-group-item-success">
+                        <strong>{{ obj.author.username }} :</strong> Pas d'objection
+                    </div>
+                {% endfor %}
+            </div>
+
 
             <form method="post" action="{% url 'gpc:close_objections' proposal.id %}" class="mt-4 border-top pt-3">
                 {% csrf_token %}

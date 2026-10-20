@@ -74,7 +74,7 @@ class ProposalCreateView(TestMembreAssoMixin, CreateView):
         suivi, created = Suivis.objects.get_or_create(nom_suivi='articles_' + str(self.asso.slug))
         suiveurs = [suiv for suiv in followers(suivi) if self.object.est_autorise(suiv) ]
         emails = [suiv.email for suiv in suiveurs]
-        message = "Nouvelle proposition [" + str(self.asso.nom) + "] : '<a href='" + self.object.get_absolute_url() + "'>" + self.object.title + "</a>'"
+        message = "Nouvelle proposition (GPC) [" + str(self.asso.nom) + "] : '<a href='" + self.object.get_absolute_url() + "'>" + self.object.title + "</a>'"
         action.send(self.object, verb='emails', url=self.object.get_absolute_url(), titre=self.object.title, message=message, emails=emails)
         return response
 

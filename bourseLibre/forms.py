@@ -713,9 +713,8 @@ class EvenementSalonForm(forms.ModelForm):
                        }),
         }
 
-    def save(self, request, slug_salon):
+    def save(self, request, salon):
         instance = super(EvenementSalonForm, self).save(commit=False)
-        salon = Salon.objects.get(slug=slug_salon)
         instance.salon = salon
         instance.auteur = request.user
         instance.save()

@@ -1590,12 +1590,12 @@ def sortirDuSalon(request, slug_salon):
 @login_required
 def ajouterEvenementSalon(request, slug_salon):
     form = EvenementSalonForm(request.POST or None)
-
+    salon = Salon.objects.get(slug=slug_salon)
     if form.is_valid():
-        ev = form.save(request, slug_salon)
+        ev = form.save(request, salon)
         return redirect(ev.salon)
 
-    return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+    return render(request, 'blog/ajouterEvenement.html', {'form': form, 'titre':"Ajouter une date au salon '" + str(salon.titre) + "'"})
 
 
 class SupprimerEvenementSalon(DeleteAccess, DeleteView):

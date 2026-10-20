@@ -1144,15 +1144,15 @@ def ajouterEvenement(request, date=None):
         return redirect('cal:agenda')
 
     messages.success(request, "L'évenement a bien été ajouté à l'agenda")
-    return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+    return render(request, 'blog/ajouterEvenement.html', {'form': form, 'titre':"Ajouter un evenement"})
 
 
 @login_required
 def ajouterEvenementArticle(request, slug_article):
     form = EvenementArticleForm(request.POST or None)
+    article = Article.objects.get(slug=slug_article)
 
     if form.is_valid():
-        article = Article.objects.get(slug=slug_article)
         ev = form.save(request, article)
         action.send(request.user,
                     action_object=article,
@@ -1162,7 +1162,7 @@ def ajouterEvenementArticle(request, slug_article):
         messages.success(request, "L'évenement a bien été ajouté à l'agenda et à l'article")
         return redirect(ev.article)
 
-    return render(request, 'blog/ajouterEvenement.html', {'form': form, })
+    return render(request, 'blog/ajouterEvenement.html', {'form': form, 'titre':"Ajouter une date à l'article '" + str(article.titre) + "'"})
 
 
 @login_required

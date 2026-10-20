@@ -24,10 +24,8 @@ import re
 from.views import write_csv_data, is_membre_bureau
 from django.contrib.auth.decorators import login_required, permission_required
 from bs4 import BeautifulSoup
-
 from django.contrib import messages
 
-from unidecode import unidecode
 
 
 
@@ -89,8 +87,7 @@ class Contact_modifier(UserPassesTestMixin, UpdateView, ):
                 'code_postal': contact.adresse.code_postal,
                 'telephone': contact.adresse.telephone,
             }
-        return {
-            }
+        return {}
 
     def form_valid(self, form):
         self.object = form.save()
@@ -138,7 +135,7 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
 
     def get_success_url(self):
         desc = " a supprimé le contact : " + str(self.object.nom) + ", " + str(self.object.prenom)
-        action.send(self.request.user, verb='adherent_conf66_contact_supprimer', url=reverse('adherents:accueil'), description=desc)
+        action.send(self.request.user, verb='adherent_'+ str(self.asso.slug) +'_contact_supprimer', url=reverse('adherents:accueil'), description=desc)
         return reverse('adherents:phoning_projet_courant', kwargs={'asso_slug': self.asso.slug})
 
 
@@ -150,7 +147,6 @@ class Contact_supprimer(UserPassesTestMixin, DeleteView, ):
 @login_required
 def contact_supprimer(request, asso_slug, contact_pk):
     #if not request.user.has_perm(request.session["request.session.asso_slug"].slug + '_delete_contact'):
-
     asso = testIsMembreAsso(request, asso_slug)
     contact = get_object_or_404(Contact, pk=contact_pk)
     contact.adresse.delete()
@@ -236,6 +232,7 @@ def contactContact_supprimer(request, asso_slug, contact_contact_pk):
     asso = testIsMembreAsso(request, asso_slug)
 
     c = get_object_or_404(ContactContact, pk=contact_contact_pk)
+
     c.delete()
     return redirect('adherents:phoning_projet_courant', asso_slug=asso_slug)
 

@@ -1,0 +1,173 @@
+{% extends 'blog/visu/visu_template.html' %}
+
+{% block title %}Liens de l'article {{article}} |{% endblock %}
+
+{% block subtitle %}
+<h4 class="textcenter">Visualisation des liens de l'article {{article}}</h4>
+<p class="textcenter"><small>(Cliquer sur un cercle, zoomez avec la mollette)</small></p>
+{% endblock %}
+
+
+{% block content2 %}
+
+<div class="row justify-content-center">
+  <div class="col-sm-12 col-md-10 col-lg-8" >
+      <p>Lien : <span id="lien" class="textcenter"><a href=""></a></span></p>
+  </div>
+</div>
+{% endblock content2 %}
+
+ {% block jscript %}
+
+d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=request.session.asso_slug article_slug=article.slug  %}")
+.then(function(data) {// Specify the dimensions of the chart.
+  const width = $(window).width()/2;
+  const height = $(window).height()/2;
+
+//console.log(data)
+
+// -1- Create a tooltip div that is hidden by default:
+  const tooltip = d3.select("#my_dataviz")
+    .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "black")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+      .style("color", "white");
+
+  // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+  const showTooltip = function(event, d) {
+    tooltip
+      .transition()
+      //.duration(200)
+        ;
+    tooltip
+      .style("opacity", 1)
+      .html(d.name)
+      .style("left", (event.x)/2 + "px")
+      .style("top", (event.y)/2+30 + "px");
+  }
+  const moveTooltip = function(event, d) {
+    tooltip
+      .style("left", (event.x)/2 + "px")
+      .style("top", (event.y)/2+30 + "px");
+  }
+  const hideTooltip = function(event, d) {
+    tooltip
+      .transition()
+      //.duration(200)
+      .style("opacity", 0);
+  }
+
+  // Specify the color scale.
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  // The force simulation mutates links and nodes, so create a copy
+  // so that re-evaluating this cell produces the same result.
+  const links = data.links.map(d => ({...d}));
+  const nodes = data.nodes.map(d => ({...d}));
+
+  // Create a simulation with several forces.
+  const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id(d => d.id))
+      .force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .on("tick", ticked);
+
+  // Create the SVG container.
+  const svg = d3.select("#my_dataviz")
+      .style("overflow", "scroll")
+      .style("-webkit-overflow-scrolling", "touch").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height])
+      .attr("style", "max-width: 100%; height: auto;");
+
+  // Add a line for each link, and a circle for each node.
+  const link = svg.append("g")
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", 0.6)
+    .selectAll()
+    .data(links)
+    .join("line")
+      .attr("stroke-width", d => Math.sqrt(d.value));
+
+  const node = svg.append("g")
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 0.5)
+    .selectAll()
+    .data(nodes)
+    .join("circle")
+      .attr("r", d => d.rayon)
+      .attr("fill", d => color(d.group))
+      .attr("xlink:href", function(d) {return d.url});
+
+node.on("mouseover", showTooltip )
+    .on("mousemove", moveTooltip )
+    .on("mouseleave", hideTooltip );
+
+node.on("click", function(event, d) {
+    d3.select("#lien")
+      .select("a")
+       .attr("href", d.url)
+      .html(d.name)
+    });
+
+
+  // Add a drag behavior.
+  node.call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+
+function handleZoom(e) {
+    node.attr('transform', e.transform);
+    link.attr('transform', e.transform);
+}
+const zoom = d3.zoom().on('zoom', handleZoom);
+d3.select('svg').call(zoom);
+
+  // Set the position attributes of links and nodes each time the simulation ticks.
+  function ticked() {
+    link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+  }
+
+  // Reheat the simulation when drag starts, and fix the subject position.
+  function dragstarted(event) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    event.subject.fx = event.subject.x;
+    event.subject.fy = event.subject.y;
+  }
+
+  // Update the subject (dragged node) position during drag.
+  function dragged(event) {
+    event.subject.fx = event.x;
+    event.subject.fy = event.y;
+  }
+
+  // Restore the target alpha so the simulation cools after dragging ends.
+  // Unfix the subject position now that it’s no longer being dragged.
+  function dragended(event) {
+    if (!event.active) simulation.alphaTarget(0);
+    event.subject.fx = null;
+    event.subject.fy = null;
+  }
+
+  return svg.node();
+}).catch(function(error) {
+    console.warn(error)
+  });
+
+{% endblock %}
+
+    

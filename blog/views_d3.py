@@ -103,8 +103,8 @@ class Noeuds():
 
     def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
         self.asso = asso_slug
-        self.rayon = {"article":10, "categorie":20, "projet":30, "centre":1, "atelier":5, "document":5}
-        self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
+        self.rayon = {"article":10, "categorie":20, "projet":30, "centre":8, "atelier":5, "document":5, "doc_ptg":5}
+        #self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
         self.lienDossierArticles = lienDossierArticles
         self.projetAuCentre = projetAuCentre
         self.categorieAuCentre = categorieAuCentre
@@ -180,6 +180,16 @@ class Noeuds():
         self.ajouterNoeudArticle(doc.article)
         return id
 
+    def ajouterNoeudDocumentPartage(self, doc):
+        id = self.get_document_id(doc.id)
+        cree = self.ajouterNoeud(noeud_id=id,
+                          nom="DocumentPTG : " + formatTitre(doc.nom),
+                          group="doc_ptg",
+                          url=doc.get_absolute_url(),
+                          type_noeud="doc_ptg")
+        self.ajouterNoeudArticle(doc.article)
+        return id
+
     def ajouterNoeudCategorie(self, art):
         id = self.get_categorie_id(art.categorie)
         cree = self.ajouterNoeud(id,
@@ -219,6 +229,9 @@ class Noeuds():
         for a in Document.objects.filter(article=art):
             id_at = self.ajouterNoeudDocument(a)
             self.ajouterLien(id_at, art.id, "document")
+        for a in DocumentPartage.objects.filter(article=art):
+            id_at = self.ajouterNoeudDocumentPartage(a)
+            self.ajouterLien(id_at, art.id,  "doc_ptg")
 
 
 @login_required
@@ -248,6 +261,43 @@ def get_articles_asso_d3_network(request, asso_slug):
 
         noeuds.ajouterLienArticleCategorie(art)
         noeuds.ajouterLienArticleDocumentsAteliers(art)
+
+    return JsonResponse(noeuds.get_dico_d3(), safe=True)
+
+
+@login_required
+def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+
+    art = Article.objects.get(slug=article_slug)
+
+    noeuds = Noeuds(asso_slug, categorieAuCentre=False)
+
+    for liens in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
+            .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):
+        if liens.article_lie and liens.article:
+            noeuds.ajouterNoeudsEtLiens_articles(liens.article, liens.article_lie, type_lien="liens")
+            noeuds.ajouterLienArticleCategorie(liens.article_lie)
+            noeuds.ajouterLienArticleDocumentsAteliers(liens.article_lie)
+
+            for liens_2 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
+                    .filter(Q(article_lie__estArchive=False) & (Q(article=liens.article_lie) | Q(article_lie=liens.article_lie)))):
+                noeuds.ajouterNoeudsEtLiens_articles(liens_2.article, liens_2.article_lie, type_lien="liens")
+                noeuds.ajouterLienArticleCategorie(liens_2.article_lie)
+                noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article_lie)
+                for liens_3 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
+                        .filter(Q(article_lie__estArchive=False) & (Q(article=liens_2.article_lie) | Q(article_lie=liens.article_lie)))):
+                    noeuds.ajouterNoeudsEtLiens_articles(liens_3.article, liens_3.article_lie, type_lien="liens")
+                    noeuds.ajouterLienArticleCategorie(liens_3.article_lie)
+                    noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article_lie)
+
+    for liens in ArticleLienProjet.objects.exclude(
+        projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
+        projet_lie__estArchive=False, projet_lie__asso=asso, article=art):
+        noeuds.ajouterNoeudsEtLiens_projet(art, liens.projet_lie)
+
+    noeuds.ajouterLienArticleCategorie(art)
+    noeuds.ajouterLienArticleDocumentsAteliers(art)
 
     return JsonResponse(noeuds.get_dico_d3(), safe=True)
 
@@ -501,6 +551,17 @@ def voir_articles_liens_d3_network(request, asso_slug):
 
     return render(request, 'blog/visu/voir_articlesliens_d3_network.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
+
+@login_required
+def voir_articles_liens_d3_network_article(request, asso_slug, article_slug):
+    asso = testIsMembreAsso(request, asso_slug)
+    article = Article.objects.get(slug=article_slug)
+
+    form_article_recherche = Article_rechercheForm(request.POST or None)
+    if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
+        return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_article.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "article":article})
 
 @login_required
 def voir_articles_liens_d3_network_dossier(request, asso_slug):

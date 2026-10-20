@@ -678,6 +678,11 @@
                                href="{% url 'blog:ajouterArticleLiens' slug_article=article.slug %}"><i
                                     class="fa fa-plus"></i> Lier à un autre article </a>
                         </div>
+                        <div class="col-sm-2 textright">
+                            <a class="btn btn-sm btn-success textleft"
+                               href="{% url 'blog:voir_articles_liens_d3_network_article' asso_slug=article.asso.slug article_slug=article.slug %}"><i
+                                    class="fa fa-eye"></i> </a>
+                        </div>
                     </div>
                     {% if articles_liens %}
                     <div class="row justify-content-center">

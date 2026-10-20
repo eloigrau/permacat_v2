@@ -34,6 +34,11 @@
                        Par Mot-clé
                     </a>
                 </li>
+                <li class="nav-item nav-jardin">
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3' asso_slug=request.session.asso_slug %}">
+                        Liens articles entreux
+                    </a>
+                </li>
                 {% if request.user.is_superuser %}
                 <li class="nav-item nav-jardin">
                     <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network' asso_slug=request.session.asso_slug %}">
@@ -68,13 +73,15 @@
 {% endblock %}
 {% block content %}
 
+{% block content2 %}
+{% endblock %}
+
 <div class="row justify-content-center overflow-auto">
     <div class="col-md-12 overflow-auto" id="graph">
-        <div id="my_dataviz"></div>
+        <div id="my_dataviz" style="border:aliceblue;border-style:double"></div>
     </div>
 </div>
 
-{% comment %}
 <hr>
 <h6 class="textcenter">Trouver un article :</h6>
 <div class="row justify-content-center">
@@ -94,9 +101,6 @@
             </form>
   </div>
 </div>
-{% endcomment %}
-{% block content2 %}
-{% endblock %}
 
 <style>
 .article_epingle{font-weight: bold;}

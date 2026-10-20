@@ -32,7 +32,7 @@ class Proposal(models.Model):
         return reverse('gpc:proposal_detail', kwargs={'pk':self.pk})
 
     def est_autorise(self, user):
-        if user == self.auteur:
+        if user == self.author:
             return True
         elif self.asso.est_autorise(user):
             return True

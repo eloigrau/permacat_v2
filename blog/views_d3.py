@@ -100,11 +100,14 @@ class Noeuds():
     ateliers_id = {}
     document_id = {}
     projet_id = {}
+    salon_id = {}
+    docptg_id = {}
 
     def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
         self.asso = asso_slug
-        self.rayon = {"article":10, "categorie":20, "projet":30, "centre":8, "atelier":5, "document":5, "doc_ptg":5}
-        #self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
+        self.rayon = {"article":15, "categorie":5, "projet":20, "centre":40, "atelier":9, "document":8, "salon":8, "doc_ptg":8}
+        if projetAuCentre or categorieAuCentre:
+            self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
         self.lienDossierArticles = lienDossierArticles
         self.projetAuCentre = projetAuCentre
         self.categorieAuCentre = categorieAuCentre
@@ -129,22 +132,32 @@ class Noeuds():
             self.document_id[cat] = 4000000 + len(self.document_id)
         return self.document_id[cat]
 
+    def get_docptg_id(self, cat):
+        if not cat in self.docptg_id:
+            self.docptg_id[cat] = 5000000 + len(self.docptg_id)
+        return self.docptg_id[cat]
+
+    def get_salon_id(self, cat):
+        if not cat in self.salon_id:
+            self.salon_id[cat] = 6000000 + len(self.salon_id)
+        return self.salon_id[cat]
 
     def get_dico_d3(self):
         return {
         "links": self.listeLiens,
-         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
+         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "label":v["label"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
         }
 
     def ajouterLien(self, source_id, target_id, type_lien):
         #if not any()
         self.listeLiens.append({"source":source_id, "target":target_id,"type":type_lien})
 
-    def ajouterNoeud(self, noeud_id, nom, group, url, type_noeud):
+    def ajouterNoeud(self, noeud_id, nom, group, url, type_noeud, label=None):
         if not noeud_id in self.diconoeuds.keys():
             self.diconoeuds[noeud_id]={"name": formatTitre(nom),
                                 "url":url,
                                 "group":group,
+                                "label":label,
                                "type_noeud":type_noeud}
             return True
         return False
@@ -163,6 +176,7 @@ class Noeuds():
         id = self.get_atelier_id(a.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Atelier : " + formatTitre(a.titre),
+                          label=formatTitre(a.titre),
                           group="atelier",
                           url=a.get_absolute_url(),
                           type_noeud="atelier")
@@ -174,6 +188,7 @@ class Noeuds():
         id = self.get_document_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Document : " + formatTitre(doc.titre),
+                          label=formatTitre(doc.titre),
                           group="document",
                           url=doc.get_absolute_url(),
                           type_noeud="document")
@@ -181,22 +196,35 @@ class Noeuds():
         return id
 
     def ajouterNoeudDocumentPartage(self, doc):
-        id = self.get_document_id(doc.id)
+        id = self.get_docptg_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
-                          nom="DocumentPTG : " + formatTitre(doc.nom),
+                          nom="Doc Partagé : " + formatTitre(doc.nom),
+                          label=formatTitre(doc.nom),
                           group="doc_ptg",
                           url=doc.get_absolute_url(),
                           type_noeud="doc_ptg")
         self.ajouterNoeudArticle(doc.article)
         return id
 
+    def ajouterNoeudSalon(self, salon):
+        id = self.get_salon_id(salon.id)
+        cree = self.ajouterNoeud(noeud_id=id,
+                          nom="Salon : " + formatTitre(salon.titre),
+                          label=formatTitre(salon.titre),
+                          group="salon",
+                          url=salon.get_absolute_url(),
+                          type_noeud="salon")
+        self.ajouterNoeudArticle(salon.article)
+        return id
+
     def ajouterNoeudCategorie(self, art):
         id = self.get_categorie_id(art.categorie)
         cree = self.ajouterNoeud(id,
-                          "Dossier : " + art.get_categorie_display(),
-                          art.categorie,
-                          reverse('blog:index_asso', kwargs={"asso": self.asso + "?categorie=" + art.categorie}),
-                          "categorie")
+                          nom="Dossier : " + art.get_categorie_display(),
+                          label=art.get_categorie_display(),
+                          group=art.categorie,
+                          url=reverse('blog:index_asso', kwargs={"asso": self.asso + "?categorie=" + art.categorie}),
+                          type_noeud="categorie")
         self.ajouterNoeudArticle(art)
         if cree and self.categorieAuCentre:
             self.ajouterLien(id, 999999, "centre")
@@ -232,6 +260,9 @@ class Noeuds():
         for a in DocumentPartage.objects.filter(article=art):
             id_at = self.ajouterNoeudDocumentPartage(a)
             self.ajouterLien(id_at, art.id,  "doc_ptg")
+        for a in Salon.objects.filter(article=art):
+            id_at = self.ajouterNoeudSalon(a)
+            self.ajouterLien(id_at, art.id,  "salon")
 
 
 @login_required

@@ -91,7 +91,7 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=request.se
     .selectAll()
     .data(links)
     .join("line")
-      .attr("stroke-width", d => Math.sqrt(d.value));
+      .attr("stroke-width", d => d.value);
 
   const node = svg.append("g")
       .attr("stroke", "#fff")

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load fontawesome_5 %}
+{% load app_filters %}
 {% load widget_tweaks %}
 
 {% block title %}{{ proposal.title }} — GPC{% endblock %}
@@ -31,7 +32,7 @@
         <h6 class="text-uppercase text-muted fw-bold">Contexte</h6>
         <p class="card-text text-secondary">{{ proposal.context|safe|linebreaks }}</p>
         <hr>
-        <p class="text-muted fw-bold">Nombre minimum de votants : <span class="card-text text-secondary">{{ proposal.nbMinVote }}</span></p>
+        <p class="text-muted fw-bold">Nombre minimum de votants : <span class="card-text text-secondary"> {{ proposal.nbMinVote }}</span></p>
         <hr>
         <div class="text-end text-muted small">
             Auteur : <strong>{{ proposal.author.username }}</strong> | Mise à jour : {{ proposal.updated_at|date:"d/m/Y à H:i" }}
@@ -163,7 +164,7 @@
             <div class="list-group mb-3">
                 <form method="post" action="{% url 'gpc:no_clarification' proposal.id %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary w-100">Je n'ai pas (ou plus) de questions de clarification</button>
+                    <button type="submit" class="btn btn-warning w-100">Je n'ai pas (ou plus) de questions de clarification</button>
                 </form>
             </div>
             {% endif %}
@@ -209,7 +210,7 @@
 
             <form method="post" action="{% url 'gpc:no_objection_response' proposal.id %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-secondary w-100 fw-bold">Je n'ai pas d'objection</button>
+                <button type="submit" class="btn btn-warning w-100 fw-bold">Je n'ai pas (ou plus) d'objection</button>
             </form>
             {% endif %}
             <div class="list-group mb-3">
@@ -221,10 +222,12 @@
             </div>
 
 
+            {% if user == proposal.author %}
             <form method="post" action="{% url 'gpc:close_objections' proposal.id %}" class="mt-4 border-top pt-3">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-warning w-100 fw-bold">Clôturer le recueil des objections & Passer à la délibération</button>
             </form>
+            {% endif %}
         </div>
     </div>
 
@@ -348,7 +351,7 @@
                                 Clôturer la délibération & Adopter par Consentement
                             </button>
                             {% if votes_count < proposal.nbMinVote %}
-                                <small class="text-danger d-block mt-1">Il manque encore {{ proposal.nbMinVote|add:"-"|add:votes_count }} vote(s) de validation.</small>
+                                <small class="text-danger d-block mt-1">Il manque encore {{ proposal.nbMinVote|soustrait:votes_count }} vote(s) de validation.</small>
                             {% endif %}
                         </form>
 
@@ -374,7 +377,7 @@
             {% for item in proposal.history.all %}
                 <li class="list-group-item bg-transparent">
                     <small class="text-muted d-block">Version archivée le {{ item.reformulated_at|date:"d/m/Y à H:i" }} :</small>
-                    <p class="mb-0 small text-secondary">{{ item.content }}</p>
+                    <p class="mb-0 small text-secondary">{{ item.content | safe }}</p>
                 </li>
             {% endfor %}
         </ul>

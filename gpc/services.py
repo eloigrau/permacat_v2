@@ -106,7 +106,7 @@ def resolve_objection(objection: Objection, user) -> Objection:
     objection.save(update_fields=['is_resolved'])
 
     return objection
-#
+
 # @transaction.atomic
 # def vote_to_resolve_objection(objection: Objection, voter, approve: bool = True) -> Objection:
 #     """
@@ -163,15 +163,18 @@ def close_deliberation(proposal: Proposal) -> None:
     proposal.save()
 
 
-def reformulate_proposal(proposal: Proposal, new_content: str) -> None:
+def reformulate_proposal(proposal: Proposal, new_content: Proposal) -> None:
     if proposal.status != Proposal.Status.DELIBERATION:
         raise ValidationError("La proposition doit être en délibération pour être reformulée.")
 
-    if not new_content or not new_content.strip():
+    if not new_content.content:
         raise ValidationError("Le texte de la reformulation ne peut pas être vide.")
 
     proposal.history.create(content=proposal.content)
-    proposal.content = new_content.strip()
+    proposal.title = new_content.title
+    proposal.content = new_content.content
+    proposal.context = new_content.context
+    proposal.nbMinVote = new_content.nbMinVote
     proposal.status = Proposal.Status.OBJECTION_ROUND
     proposal.save()
 

@@ -372,6 +372,12 @@ def isequal(a, b):
 def filterApostrophe(nom):
     return nom.replace("'"," ")
 
+@register.filter(is_safe=True)
+def soustrait(num, value):
+    try:
+        return num - value
+    except:
+        return f"{num} - {value}"
 
 @register.filter(is_safe=True)
 def exists_asso_slug(req):

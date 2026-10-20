@@ -212,7 +212,7 @@ class CloseObjectionsView(TestMembreAssoMixin, View):
         try:
             services.close_objections(proposal)
             if proposal.status == Proposal.Status.ACCEPTED:
-                messages.success(request, "Aucune objection bloquante. Proposition adoptée par consentement !")
+                messages.success(request, "Aucune objection bloquante. Proposition adoptée par consentement ! Bravo \o/")
             else:
                 messages.info(request, "Objections à traiter. Passage en délibération.")
         except ValidationError as e:
@@ -270,18 +270,21 @@ class ReformulateProposalView(TestMembreAssoMixin, UserPassesTestMixin, View):
 
     def get(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
-        return render(request, 'gpc/reformulate.html', {'proposal': proposal})
+        form = ProposalClarificationEditForm(request.POST or None, instance=proposal)
+        return render(request, 'gpc/reformulate.html', {'proposal': proposal, 'form':form})
 
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
-        new_content = request.POST.get('content', '').strip()
-        try:
-            services.reformulate_proposal(proposal, new_content)
-            messages.success(request, "Proposition reformulée. Un nouveau tour d'objections est ouvert.")
-            return redirect('gpc:proposal_detail', pk=proposal.pk)
-        except ValidationError as e:
-            messages.error(request, e.message)
-            return redirect('gpc:proposal_detail', pk=proposal.pk)
+        form = ProposalClarificationEditForm(request.POST or None, instance=proposal)
+        if form.is_valid():
+            try:
+                new_content = form.save()
+                services.reformulate_proposal(proposal, new_content)
+                messages.success(request, "Proposition reformulée. Un nouveau tour d'objections est ouvert.")
+                return redirect('gpc:proposal_detail', pk=proposal.pk)
+            except ValidationError as e:
+                messages.error(request, e.message)
+                return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
 class RejectProposalView(TestMembreAssoMixin, UserPassesTestMixin, View):

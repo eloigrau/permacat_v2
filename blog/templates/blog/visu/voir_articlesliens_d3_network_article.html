@@ -68,6 +68,12 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=request.se
   const links = data.links.map(d => ({...d}));
   const nodes = data.nodes.map(d => ({...d}));
 
+const centralNode = nodes.find(d => d.type_noeud === "centre");
+
+if (centralNode) {
+    centralNode.fx = width / 2;  // Fixe la position X au centre
+    centralNode.fy = height / 2;  // Fixe la position Y au centre
+}
   // Create a simulation with several forces.
   const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links)
@@ -77,17 +83,17 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=request.se
             if (d.source.group === d.target.group) {
                 return 30; // Liens plus courts pour un même groupe (effet "cluster")
             } else {
-                return 40; // Liens plus longs entre des groupes différents
+                return 50; // Liens plus longs entre des groupes différents
             }
         })
-       /* .strength(d => {
+        .strength(d => {
             // Rigidité du lien selon le groupe
             if (d.source.group === d.target.group) {
-                return 0.8; // Ressort plus ferme
+                return 0.1; // Ressort plus ferme
             } else {
-                return 0.2; // Ressort plus souple
+                return 0.8; // Ressort plus souple
             }
-        })*/
+        })
     )
       //.force("charge", d3.forceManyBody())
         .force("charge", d3.forceManyBody().strength(-300))

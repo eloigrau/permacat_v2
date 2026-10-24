@@ -105,8 +105,8 @@ class Noeuds():
 
     def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
         self.asso = asso_slug
-        self.rayon = {"article":20, "categorie":30, "projet":20, "centre":40, "atelier":10, "document":10, "salon":10, "doc_ptg":10}
-        self.tailleTexte = {"article":6, "categorie":8, "projet":10, "centre":40, "atelier":5, "document":5, "salon":5, "doc_ptg":5}
+        self.rayon = {"article":20, "categorie":30, "projet":20, "centre":35, "atelier":14, "document":14, "salon":14, "doc_ptg":14}
+        self.tailleTexte = {"article":8, "categorie":9, "projet":9, "centre":12, "atelier":6, "document":6, "salon":6, "doc_ptg":5}
         if projetAuCentre or categorieAuCentre:
             self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
         self.lienDossierArticles = lienDossierArticles
@@ -146,7 +146,7 @@ class Noeuds():
     def get_dico_d3(self):
         return {
         "links": self.listeLiens,
-         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "label":v["label"], "rayon":self.rayon[v["type_noeud"]], "tailleTexte":self.tailleTexte[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
+         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "label":v["label"], "rayon":self.rayon[v["type_noeud"]], "type_noeud":v["type_noeud"],  "tailleTexte":self.tailleTexte[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
         }
 
     def ajouterLien(self, source_id, target_id, type_lien):
@@ -163,13 +163,13 @@ class Noeuds():
             return True
         return False
 
-    def ajouterNoeudArticle(self, art):
+    def ajouterNoeudArticle(self, art, type_noeud="article"):
         return self.ajouterNoeud(noeud_id=art.id,
                                  nom="Article : " + formatTitre(art.titre),
                                  label=formatTitre(art.titre),
                                  group=art.categorie,
                                  url=art.get_absolute_url(),
-                                 type_noeud="article")
+                                 type_noeud=type_noeud)
 
     def ajouterNoeudProjet(self, proj):
         id = self.get_projet_id(proj.id)
@@ -182,7 +182,7 @@ class Noeuds():
         id = self.get_atelier_id(a.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Atelier : " + formatTitre(a.titre),
-                          label="", #formatTitre(a.titre),
+                          label=formatTitre(a.titre)[:2] if a.titre else "",
                           group="atelier",
                           url=a.get_absolute_url(),
                           type_noeud="atelier")
@@ -194,7 +194,7 @@ class Noeuds():
         id = self.get_document_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Document : " + formatTitre(doc.titre),
-                          label="", #formatTitre(doc.titre),
+                          label=formatTitre(doc.titre)[:2] if doc.titre else "",
                           group="document",
                           url=doc.get_absolute_url(),
                           type_noeud="document")
@@ -205,7 +205,7 @@ class Noeuds():
         id = self.get_docptg_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Doc Partagé : " + formatTitre(doc.nom),
-                          label="", #formatTitre(doc.nom),
+                          label=formatTitre(doc.nom)[:2] if doc.nom else "",
                           group="doc_ptg",
                           url=doc.get_absolute_url(),
                           type_noeud="doc_ptg")
@@ -216,7 +216,7 @@ class Noeuds():
         id = self.get_salon_id(salon.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Salon : " + formatTitre(salon.titre),
-                          label="", #formatTitre(salon.titre),
+                          label=formatTitre(salon.titre)[:2] if salon.titre else "",
                           group="salon",
                           url=salon.get_absolute_url(),
                           type_noeud="salon")
@@ -309,6 +309,9 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
     art = Article.objects.get(slug=article_slug)
 
     noeuds = Noeuds(asso_slug, categorieAuCentre=False)
+    noeuds.ajouterNoeudArticle(art, type_noeud="centre")
+    noeuds.ajouterLienArticleCategorie(art)
+    noeuds.ajouterLienArticleDocumentsAteliers(art)
 
     for liens in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
             .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):
@@ -347,8 +350,6 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
         projet_lie__estArchive=False, projet_lie__asso=asso, article=art):
         noeuds.ajouterNoeudsEtLiens_projet(art, liens.projet_lie)
 
-    noeuds.ajouterLienArticleCategorie(art)
-    noeuds.ajouterLienArticleDocumentsAteliers(art)
 
     return JsonResponse(noeuds.get_dico_d3(), safe=True)
 

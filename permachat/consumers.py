@@ -7,7 +7,8 @@ from .exceptions import ClientError
 from .utils import get_room_or_error
 from .models import Room, Profil, Message
 from django.utils.timezone import now
-
+from django.utils import timezone
+from django.urls import reverse
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -771,4 +772,69 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             "command": command,
             "payload": payload,
             "stamp": stamp
+        })
+
+
+class PermaChatConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        self.room_name = "support_room"
+        self.room_group_name = f"chat_{self.room_name}"
+
+        # Rejoindre le groupe de discussion
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Quitter le groupe
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    async def receive_json(self, content, **kwargs):
+        message = content.get('message', '')
+
+
+
+        # Récupération de l'utilisateur connecté (ou Visiteur si non connecté)
+        user = self.scope.get("user")
+        if user and user.is_authenticated:
+            username = user.username
+            # Adaptez selon votre modèle de profil (ex: user.profile.avatar.url)
+            avatar_url = user.get_gravatar_url()
+            profile_url = user.get_profil_url()
+            message_url = reverse('agora_conversation', kwargs={"destinataire":user.id})
+        else:
+            username = "Anonyme"
+            avatar_url = "https://ui-avatars.com/api/?name=Anonyme&background=6c757d&color=fff"
+            profile_url = "#"
+            message_url = ""
+
+        # Générer l'horodatage (ex: 14:32)
+        timestamp = timezone.now().strftime("%H:%M")
+
+        # Diffusion à tout le groupe
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message,
+                'username': username,
+                'avatar_url': avatar_url,
+                'profile_url': profile_url,
+                'message_url': message_url,
+                'timestamp': timestamp
+            }
+        )
+
+    async def chat_message(self, event):
+        await self.send_json({
+            'message': event['message'],
+            'username': event['username'],
+            'avatar_url': event['avatar_url'],
+            'profile_url': event['profile_url'],
+            'timestamp': event['timestamp']
         })

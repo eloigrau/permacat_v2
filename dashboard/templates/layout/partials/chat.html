@@ -1,0 +1,134 @@
+<div class="position-fixed p-3" style="bottom: 0; right: 0; z-index: 1050;">
+    <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+        💬
+    </button>
+</div>
+<!-- Fenêtre de Chat responsive (Corrigé avec min-height: 0) -->
+<div id="chat-box" class="card shadow-lg position-fixed d-flex flex-column" style="display: none; width: 380px; max-width: calc(100vw - 30px); height: 500px; bottom: 90px; right: 15px; z-index: 1050; border-radius: 12px; overflow: hidden;">
+
+    <!-- En-tête (Fixe) -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 flex-shrink-0">
+        <h6 class="mb-0 font-weight-bold">
+            <i class="fas fa-headset mr-2"></i> Chat en direct
+        </h6>
+        <button type="button" id="chat-close-btn" class="close text-white m-0 p-0" style="opacity: 0.9; font-size: 24px; outline: none;">
+            <span>&times;</span>
+        </button>
+    </div>
+
+    <!-- Corps des messages : Ajout de min-height: 0 (INDISPENSABLE en Flexbox) -->
+    <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.85rem; flex: 1 1 auto; min-height: 0; ">
+        <!-- Message système initial -->
+        <div class="text-center text-muted small my-2">Bienvenue sur le chat en direct !</div>
+    </div>
+
+    <!-- Pied de page / Saisie (Fixe en bas) -->
+    <div class="card-footer bg-white p-2 border-top flex-shrink-0">
+        <div class="input-group">
+            <input type="text" id="chat-input" class="form-control form-control-sm" placeholder="Écrivez votre message...">
+            <div class="input-group-append">
+                <button id="chat-send-btn" class="btn btn-primary btn-sm px-3" type="button">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- SCRIPT WEBSOCKET ET RENDU DYNAMIQUE -->
+<script>
+    const toggleBtn = document.getElementById('chat-toggle-btn');
+    const chatBox = document.getElementById('chat-box');
+    const closeBtn = document.getElementById('chat-close-btn');
+    const sendBtn = document.getElementById('chat-send-btn');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    // Connexion WebSocket Django Channels
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const chatSocket = new WebSocket(wsProtocol + window.location.host + '/permachat/chat_direct/');
+
+    // Réception des messages du serveur
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        appendMessage(data);
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('WebSocket fermé de manière inattendue.');
+    };
+
+    // Affichage/Masquage du chat
+    toggleBtn.addEventListener('click', () => {
+        const isVisible = chatBox.style.display === 'flex';
+        chatBox.style.display = isVisible ? 'none' : 'flex';
+        toggleBtn.innerHTML = isVisible ? '💬' : '✕';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        chatBox.style.display = 'none';
+        toggleBtn.innerHTML = '💬';
+    });
+
+    // Fonction pour construire dynamiquement la structure du message avec Avatar, Menu déroulant et Timestamp
+    function appendMessage(data) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = "d-flex align-items-start mb-2";
+
+        // HTML interne avec structure Bootstrap 4 (Avatar + Infos + Menu déroulant)
+        messageContainer.innerHTML = `
+            <!-- Avatar -->
+            <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
+
+            <div class="flex-grow-1">
+                <!-- En-tête : Nom avec Menu Déroulant Bootstrap + Timestamp -->
+                <div class="d-flex justify-content-between align-items-center mb-1">
+
+                    <!-- Dropdown Bootstrap 4 sur l'auteur -->
+                    <div class="dropdown">
+                        <a class="font-weight-bold text-dark text-decoration-none dropdown-toggle small" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ${data.username}
+                        </a>
+                        <div class="dropdown-menu shadow-sm border-0" style="font-size: 0.8rem;">
+                            <a class="dropdown-item" href="${data.profile_url}">👤 Voir le profil</a>
+                            <a class="dropdown-item" href="${data.message_url}">✉️ Envoyer un message privé</a>
+                        </div>
+                    </div>
+
+                    <!-- Horodatage -->
+                    <span class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</span>
+                </div>
+
+                <!-- Bulle de texte du message -->
+                <div class="p-2 px-3 rounded bg-white text-dark shadow-sm border" style="display: inline-block; max-width: 100%; word-break: break-word;">
+                    ${escapeHtml(data.message)}
+                </div>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Échappement anti-XSS basique pour le texte
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Envoi du message au serveur WebSocket
+    function handleSend() {
+        const text = chatInput.value.trim();
+        if (text === '') return;
+
+        chatSocket.send(JSON.stringify({
+            'message': text
+        }));
+
+        chatInput.value = '';
+    }
+
+    sendBtn.addEventListener('click', handleSend);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSend();
+        }
+    });
+</script>

@@ -1,0 +1,102 @@
+<!-- Bouton flottant (Bas à droite) -->
+<div class="position-fixed p-3" style="bottom: 0; right: 0; z-index: 1050;">
+    <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+        💬
+    </button>
+</div>
+
+<!-- Fenêtre de chat (Sous forme de Card Bootstrap) -->
+<div id="chat-box" class="card shadow-lg position-fixed" style="display: none; width: 350px; max-width: calc(100vw - 30px); height: 450px; bottom: 90px; right: 15px; z-index: 1050; border-radius: 12px; overflow: hidden;">
+
+    <!-- En-tête -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+        <h6 class="mb-0 font-weight-bold">
+            <i class="fas fa-headset mr-2"></i> Support en direct
+        </h6>
+        <button type="button" id="chat-close-btn" class="close text-white m-0 p-0" style="opacity: 0.9; font-size: 24px; outline: none;">
+            <span>&times;</span>
+        </button>
+    </div>
+
+    <!-- Corps des messages (Scrollable) -->
+    <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.9rem; gap: 10px;">
+        <!-- Message de bienvenue -->
+        <div class="p-2 px-3 rounded bg-white text-dark align-self-start shadow-sm border" style="max-width: 85%;">
+            Bonjour ! 👋 Comment pouvons-nous vous aider aujourd'hui ?
+        </div>
+    </div>
+
+    <!-- Pied de page / Zone de saisie -->
+    <div class="card-footer bg-white p-2 border-top">
+        <div class="input-group">
+            <input type="text" id="chat-input" class="form-control form-control-sm" placeholder="Écrivez votre message...">
+            <div class="input-group-append">
+                <button id="chat-send-btn" class="btn btn-primary btn-sm px-3" type="button">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- SCRIPT JAVASCRIPT                          -->
+<!-- ========================================== -->
+<script>
+    const toggleBtn = document.getElementById('chat-toggle-btn');
+    const chatBox = document.getElementById('chat-box');
+    const closeBtn = document.getElementById('chat-close-btn');
+    const sendBtn = document.getElementById('chat-send-btn');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+
+    // 1. Connexion au WebSocket Django Channels
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const chatSocket = new WebSocket(wsProtocol + window.location.host + '/permachat/chat_direct/');
+
+    // 2. Réception des messages du serveur en temps réel
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const messageText = data.message;
+
+        const botMsg = document.createElement('div');
+        botMsg.style.cssText = "background: #e5e7eb; color: #1f2937; padding: 10px 12px; border-radius: 8px; max-width: 80%; align-self: flex-start;";
+        botMsg.textContent = messageText;
+        chatMessages.appendChild(botMsg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('La connexion WebSocket a été fermée de manière inattendue.');
+    };
+
+    // Gestion de l'affichage de la boîte de chat
+    toggleBtn.addEventListener('click', () => {
+        const isOpen = chatBox.style.display === 'flex';
+        chatBox.style.display = isOpen ? 'none' : 'flex';
+        toggleBtn.style.transform = isOpen ? 'scale(1)' : 'scale(0.9)';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        chatBox.style.display = 'none';
+        toggleBtn.style.transform = 'scale(1)';
+    });
+
+    // 3. Envoi du message au serveur via WebSocket
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (text === '') return;
+
+        // Envoi au consumer Django Channels
+        chatSocket.send(JSON.stringify({
+            'message': text
+        }));
+
+        chatInput.value = '';
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>

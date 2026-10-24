@@ -7,7 +7,7 @@
   <div class="layout-container">
 {% if request.user.is_authenticated %}
     {% include "../layout/partials/menu/vertical/vertical_menu.html" %}
-    {% endif %}
+{% endif %}
 
     <!-- Layout page: Start -->
     <div class="layout-page">
@@ -23,7 +23,7 @@
             {% block messages %}
               {% if messages %}
                 <ul class="messagelist">{% for message in messages %}
-                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst|safe }}</li>
+                  <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message|capfirst|safe }}</li>
                 {% endfor %}
                 </ul>
               {% endif %}
@@ -49,10 +49,13 @@
       <!-- / Layout page: End -->
     </div>
 
+{% if request.user.is_authenticated %}
+    {% include "../layout/partials/chat.html" %}
+{% endif %}
+
     <div class="layout-overlay layout-menu-toggle"></div>
     <!-- Drag Target Area To SlideIn Menu On Small Screens -->
     <div class="drag-target"></div>
-  </div>
 </div>
 <!-- Layout wrapper: End -->
 {% endblock layout %}

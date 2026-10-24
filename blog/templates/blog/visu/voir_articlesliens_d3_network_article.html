@@ -79,6 +79,10 @@ const groups = Array.from(
     new Map(nodes.map(d => [d.group, d.group])).entries()
 ).map(([group, name]) => ({ group, name }));
 
+const color_cercle = Array.from(
+    new Map(nodes.map(d => [d.asso, d.asso])).entries()
+).map(([asso, name]) => ({ asso, name }));
+
 const legend = d3.select("#my_dataviz") // Or select your container div e.g., d3.select("#chart-container")
   .append("div")
   .attr("class", "chart-legend")
@@ -126,9 +130,9 @@ legendItem.append("span")
         .distance(d => {
             // Distance dynamique selon le groupe
             if (d.source.group === d.target.group) {
-                return 80; // Liens plus courts pour un même groupe (effet "cluster")
+                return 70; // Liens plus courts pour un même groupe (effet "cluster")
             } else {
-                return 40; // Liens plus longs entre des groupes différents
+                return 30; // Liens plus longs entre des groupes différents
             }
         })
        /* .strength(d => {
@@ -170,6 +174,7 @@ legendItem.append("span")
     .data(nodes)
     .join("circle")
       .attr("r", d => d.rayon)
+      .attr("fill", d => color(d.group))
       .attr("fill", d => color(d.group))
       .attr("xlink:href", function(d) {return d.url});
 

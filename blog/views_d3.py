@@ -158,14 +158,14 @@ class Noeuds():
             self.diconoeuds[noeud_id]={"name": formatTitre(nom),
                                 "url":url,
                                 "group":group,
-                                "label":label[:8] if label else "",
+                                "label":label[:10] if label else "",
                                "type_noeud":type_noeud}
             return True
         return False
 
     def ajouterNoeudArticle(self, art, type_noeud="article"):
         return self.ajouterNoeud(noeud_id=art.id,
-                                 nom="Article : " + formatTitre(art.titre),
+                                 nom="Article : [" + str(art.asso.nom) +"] " + formatTitre(art.titre),
                                  label=formatTitre(art.titre),
                                  group=art.categorie,
                                  url=art.get_absolute_url(),
@@ -182,7 +182,7 @@ class Noeuds():
         id = self.get_atelier_id(a.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Atelier : " + formatTitre(a.titre),
-                          label=formatTitre(a.titre)[:2] if a.titre else "",
+                          label=formatTitre(a.titre)[:3] if a.titre else "",
                           group="atelier",
                           url=a.get_absolute_url(),
                           type_noeud="atelier")
@@ -194,7 +194,7 @@ class Noeuds():
         id = self.get_document_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Document : " + formatTitre(doc.titre),
-                          label=formatTitre(doc.titre)[:2] if doc.titre else "",
+                          label=formatTitre(doc.titre)[:3] if doc.titre else "",
                           group="document",
                           url=doc.get_absolute_url(),
                           type_noeud="document")
@@ -205,7 +205,7 @@ class Noeuds():
         id = self.get_docptg_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Doc Partagé : " + formatTitre(doc.nom),
-                          label=formatTitre(doc.nom)[:2] if doc.nom else "",
+                          label=formatTitre(doc.nom)[:3] if doc.nom else "",
                           group="doc_ptg",
                           url=doc.get_absolute_url(),
                           type_noeud="doc_ptg")
@@ -216,7 +216,7 @@ class Noeuds():
         id = self.get_salon_id(salon.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Salon : " + formatTitre(salon.titre),
-                          label=formatTitre(salon.titre)[:2] if salon.titre else "",
+                          label=formatTitre(salon.titre)[:3] if salon.titre else "",
                           group="salon",
                           url=salon.get_absolute_url(),
                           type_noeud="salon")
@@ -229,7 +229,7 @@ class Noeuds():
                           nom="Dossier : " + art.get_categorie_display(),
                           label=art.get_categorie_display(),
                           group=art.categorie,
-                          url=reverse('blog:index_asso', kwargs={"asso": self.asso + "?categorie=" + art.categorie}),
+                          url=reverse('blog:index_asso', kwargs={"asso": self.asso })+ "?categorie=" + art.categorie + "&ancre_navtab=dossier",
                           type_noeud="categorie")
         self.ajouterNoeudArticle(art)
         if cree and self.categorieAuCentre:

@@ -45,7 +45,7 @@ class Choix:
                    ('Jardin', 'Jardins partagés'), ('ChantPossible', 'Ecolieu Chant des possibles'), ('BD_Fred', 'Les BD de Frédéric')  #('KitPerma', 'Kit Perma Ecole'),
     type_annonce_bzz2022 = ('AgendaBzz', 'AgendaBzz'),  ('Documentation', 'Documentation'), ('rendez-vous', 'Rendez-vous'), ('Lucioles', 'Projet Luciole Abeille'),
     type_annonce_jp_base = ('Discu','Information'), ('Organisation', 'Organisation'),  \
-                   ('Documentation','Documentation'), ('PeupleArbres', "Peuple de l'Arbre"), ('Greffe', 'Greffage'), ('Autre','Autre'),
+                   ('Documentation','Documentation'), ('PeupleArbres', "Peuple de l'Arbre"), ('Greffe', 'Greffage'), ('Champi', 'Champignons'), ('Autre','Autre'),
     type_annonce_permolives = type_annonce_base
 
     type_annonce_jp = type_annonce_jp_base + tuple([('jardin_' + str(i), 'Jardin_' + str(i)) for i in range(100)])

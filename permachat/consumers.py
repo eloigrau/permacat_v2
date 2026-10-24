@@ -9,6 +9,7 @@ from .models import Room, Profil, Message
 from django.utils.timezone import now
 from django.utils import timezone
 from django.urls import reverse
+from dateutil.tz import tzlocal
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -844,7 +845,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             message_url = ""
 
         # Générer l'horodatage (ex: 14:32)
-        timestamp = timezone.now().strftime("%H:%M")
+        timestamp = timezone.now(tzlocal()).strftime("%H:%M")
 
         # Diffusion à tout le groupe
         await self.channel_layer.group_send(

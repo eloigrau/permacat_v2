@@ -75,9 +75,9 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=request.se
         .distance(d => {
             // Distance dynamique selon le groupe
             if (d.source.group === d.target.group) {
-                return 45; // Liens plus courts pour un même groupe (effet "cluster")
+                return 30; // Liens plus courts pour un même groupe (effet "cluster")
             } else {
-                return 60; // Liens plus longs entre des groupes différents
+                return 40; // Liens plus longs entre des groupes différents
             }
         })
        /* .strength(d => {

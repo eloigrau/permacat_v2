@@ -330,17 +330,17 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
                     noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article_lie)
                     nouvel_art = liens_2.article_lie
 
-                for liens_3 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
-                        .filter(Q(article_lie__estArchive=False) & (Q(article=nouvel_art) | Q(article_lie=nouvel_art)))):
-
-                    noeuds.ajouterNoeudsEtLiens_articles(liens_3.article, liens_3.article_lie, type_lien="liens")
-                    #
-                    if liens_3.article_lie == nouvel_art:
-                        noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article)
-                        noeuds.ajouterLienArticleCategorie(liens_3.article)
-                    else:
-                        noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article_lie)
-                        noeuds.ajouterLienArticleCategorie(liens_3.article_lie)
+                # for liens_3 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
+                #         .filter(Q(article_lie__estArchive=False) & (Q(article=nouvel_art) | Q(article_lie=nouvel_art)))):
+                #
+                #     noeuds.ajouterNoeudsEtLiens_articles(liens_3.article, liens_3.article_lie, type_lien="liens")
+                #     #
+                #     if liens_3.article_lie == nouvel_art:
+                #         noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article)
+                #         noeuds.ajouterLienArticleCategorie(liens_3.article)
+                #     else:
+                #         noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article_lie)
+                #         noeuds.ajouterLienArticleCategorie(liens_3.article_lie)
 
     for liens in ArticleLienProjet.objects.exclude(
         projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(

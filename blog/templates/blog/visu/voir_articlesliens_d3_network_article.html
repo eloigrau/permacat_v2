@@ -83,6 +83,7 @@ const color_cercle = Array.from(
     new Map(nodes.map(d => [d.asso, d.asso])).entries()
 ).map(([asso, name]) => ({ asso, name }));
 
+
 const legend = d3.select("#my_dataviz") // Or select your container div e.g., d3.select("#chart-container")
   .append("div")
   .attr("class", "chart-legend")
@@ -116,6 +117,22 @@ legendItem.append("div")
   .style("border-radius", "50%")
   .style("background-color", d => color(d.group))
   .style("border", "1px solid #fff")
+  .style("margin-right", "8px");
+
+// 5. Add the text label
+legendItem.append("span")
+  .style("color", "#333")
+  .text(d => d.name);
+
+
+// 4. Add the colored circle symbol
+legendItem.append("div")
+  .style("width", "12px")
+  .style("height", "12px")
+  .style("border-radius", "50%")
+  .style("background-color", "fff")
+  .style("border", "1px solid")
+  .style("border-color", d => color(d.asso))
   .style("margin-right", "8px");
 
 // 5. Add the text label
@@ -168,15 +185,14 @@ legendItem.append("span")
       .attr("stroke-width", d => d.value);
 
   const node = svg.append("g")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 0.5)
     .selectAll()
     .data(nodes)
     .join("circle")
-      .attr("r", d => d.rayon)
-      .attr("fill", d => color(d.group))
-      .attr("fill", d => color(d.group))
-      .attr("xlink:href", function(d) {return d.url});
+        .attr("r", d => d.rayon)
+        .attr("fill", d => color(d.group))
+        .attr("stroke", d => color(d.asso))
+        .attr("stroke-width", 2)
+        .attr("xlink:href", function(d) {return d.url});
 
     const labels = svg.append("g")
       .selectAll("text")

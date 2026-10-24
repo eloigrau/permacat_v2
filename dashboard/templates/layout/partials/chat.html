@@ -1,10 +1,16 @@
+<!-- ========================================== -->
+<!-- WIDGET DE CHAT COMPLET (Bootstrap 4.2)     -->
+<!-- ========================================== -->
+
+<!-- Bouton Flottant (Bas à droite) -->
 <div class="position-fixed p-3" style="bottom: 0; right: 0; z-index: 1050;">
     <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
         💬
     </button>
 </div>
-<!-- Fenêtre de Chat responsive (Corrigé avec min-height: 0) -->
-<div id="chat-box" class="card shadow-lg position-fixed d-flex flex-column" style="display: none; width: 380px; max-width: calc(100vw - 30px); height: 500px; bottom: 90px; right: 15px; z-index: 1050; border-radius: 12px; overflow: hidden;">
+
+<!-- Fenêtre de Chat (Card Bootstrap responsive avec correctif de scroll) -->
+<div id="chat-box" class="card shadow-lg position-fixed flex-column" style="display: none; width: 380px; max-width: calc(100vw - 30px); height: 500px; bottom: 90px; right: 15px; z-index: 1050; border-radius: 12px; overflow: hidden;">
 
     <!-- En-tête (Fixe) -->
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 flex-shrink-0">
@@ -16,10 +22,10 @@
         </button>
     </div>
 
-    <!-- Corps des messages : Ajout de min-height: 0 (INDISPENSABLE en Flexbox) -->
-    <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.85rem; flex: 1 1 auto; min-height: 0; ">
+    <!-- Corps des messages (Scrollable, min-height: 0 et padding de bas pour éviter le masquage) -->
+    <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.85rem; gap: 12px; flex: 1 1 auto; min-height: 0; padding-bottom: 2rem;">
         <!-- Message système initial -->
-        <div class="text-center text-muted small my-2">Bienvenue sur le chat en direct !</div>
+        <div class="text-center text-muted small my-2">Benvingut ! (Ceci est une expérimentation, si vous avez des questions, vous pouvez commenter <a href="{% url 'blog:lireArticle' slug='faq-du-site' %}#idDiscussion" target="_blank"> cet article</a>)</div>
     </div>
 
     <!-- Pied de page / Saisie (Fixe en bas) -->
@@ -32,7 +38,10 @@
         </div>
     </div>
 </div>
-<!-- SCRIPT WEBSOCKET ET RENDU DYNAMIQUE -->
+
+<!-- ========================================== -->
+<!-- SCRIPT JAVASCRIPT & WEBSOCKET              -->
+<!-- ========================================== -->
 <script>
     const toggleBtn = document.getElementById('chat-toggle-btn');
     const chatBox = document.getElementById('chat-box');
@@ -48,14 +57,20 @@
     // Réception des messages du serveur
     chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        appendMessage(data);
+
+        // Gestion selon le type d'événement reçu du backend
+        if (data.type === 'user_status') {
+            appendSystemMessage(data.message);
+        } else if (data.type === 'chat_message') {
+            appendMessage(data);
+        }
     };
 
     chatSocket.onclose = function(e) {
         console.error('WebSocket fermé de manière inattendue.');
     };
 
-    // Affichage/Masquage du chat
+    // Gestion de l'affichage / masquage de la fenêtre de chat
     toggleBtn.addEventListener('click', () => {
         const isVisible = chatBox.style.display === 'flex';
         chatBox.style.display = isVisible ? 'none' : 'flex';
@@ -67,18 +82,27 @@
         toggleBtn.innerHTML = '💬';
     });
 
-    // Fonction pour construire dynamiquement la structure du message avec Avatar, Menu déroulant et Timestamp
+    // Affichage des messages de statut (connexion / déconnexion)
+    function appendSystemMessage(text) {
+        const systemDiv = document.createElement('div');
+        systemDiv.className = "text-center text-muted small my-2 font-italic w-100";
+        systemDiv.textContent = text;
+
+        chatMessages.appendChild(systemDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Affichage d'un message standard (avec avatar, menu déroulant et timestamp)
     function appendMessage(data) {
         const messageContainer = document.createElement('div');
         messageContainer.className = "d-flex align-items-start mb-2";
 
-        // HTML interne avec structure Bootstrap 4 (Avatar + Infos + Menu déroulant)
         messageContainer.innerHTML = `
             <!-- Avatar -->
             <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
 
             <div class="flex-grow-1">
-                <!-- En-tête : Nom avec Menu Déroulant Bootstrap + Timestamp -->
+                <!-- En-tête : Nom (Menu Dropdown) + Timestamp -->
                 <div class="d-flex justify-content-between align-items-center mb-1">
 
                     <!-- Dropdown Bootstrap 4 sur l'auteur -->
@@ -96,7 +120,7 @@
                     <span class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</span>
                 </div>
 
-                <!-- Bulle de texte du message -->
+                <!-- Bulle de texte -->
                 <div class="p-2 px-3 rounded bg-white text-dark shadow-sm border" style="display: inline-block; max-width: 100%; word-break: break-word;">
                     ${escapeHtml(data.message)}
                 </div>
@@ -107,7 +131,7 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    // Échappement anti-XSS basique pour le texte
+    // Fonction d'échappement anti-XSS basique
     function escapeHtml(text) {
         const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
         return text.replace(/[&<>"']/g, function(m) { return map[m]; });
@@ -118,9 +142,15 @@
         const text = chatInput.value.trim();
         if (text === '') return;
 
-        chatSocket.send(JSON.stringify({
-            'message': text
-        }));
+        if (chatSocket.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({
+                'message': text
+            }));
+            chatInput.value = '';
+        } else {
+            console.error("❌ Impossible d'envoyer : Le WebSocket n'est pas ouvert (État actuel : " + chatSocket.readyState + ")");
+            alert("La connexion au chat est perdue. Veuillez rafraîchir la page.");
+        }
 
         chatInput.value = '';
     }

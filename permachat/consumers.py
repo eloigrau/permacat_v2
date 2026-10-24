@@ -777,8 +777,15 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
 
 class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
-        self.room_name = "support_room"
+        self.room_name = "PermaChat"
         self.room_group_name = f"chat_{self.room_name}"
+
+        # Récupérer l'utilisateur connecté
+        user = self.scope.get("user")
+        if user and user.is_authenticated:
+            self.username = user.username
+        else:
+            self.username = "Un visiteur"
 
         # Rejoindre le groupe de discussion
         await self.channel_layer.group_add(
@@ -787,17 +794,40 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         )
         await self.accept()
 
+        # Diffuser l'information de connexion à tout le groupe
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'user_status',
+                'message': f"🟢 {self.username} a rejoint le chat."
+            }
+        )
+
     async def disconnect(self, close_code):
+        # Diffuser l'information de déconnexion avant de quitter le groupe
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'user_status',
+                'message': f"🔴 {self.username} a quitté le chat."
+            }
+        )
+
         # Quitter le groupe
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
 
+    # NOUVEAU : Gestionnaire pour les statuts de connexion / déconnexion
+    async def user_status(self, event):
+        await self.send_json({
+            'type': 'user_status',
+            'message': event['message']
+        })
+
     async def receive_json(self, content, **kwargs):
         message = content.get('message', '')
-
-
 
         # Récupération de l'utilisateur connecté (ou Visiteur si non connecté)
         user = self.scope.get("user")
@@ -832,6 +862,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def chat_message(self, event):
         await self.send_json({
+            'type': 'chat_message',
             'message': event['message'],
             'username': event['username'],
             'avatar_url': event['avatar_url'],

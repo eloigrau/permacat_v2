@@ -329,7 +329,7 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
                     noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article)
                     #nouvel_art = liens_2.article
                 else:
-                    noeuds.ajouterLienArticleCategorie(liens_2.article_lie)
+                    #noeuds.ajouterLienArticleCategorie(liens_2.article_lie)
                     noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article_lie)
                     #nouvel_art = liens_2.article_lie
 

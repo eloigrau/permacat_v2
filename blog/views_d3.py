@@ -167,7 +167,7 @@ class Noeuds():
         return self.ajouterNoeud(noeud_id=art.id,
                                  nom="Article : [" + str(art.asso.nom) +"] " + formatTitre(art.titre),
                                  label=formatTitre(art.titre),
-                                 group=art.categorie,
+                                 group=art.get_categorie_display(),
                                  url=art.get_absolute_url(),
                                  type_noeud=type_noeud)
 
@@ -183,7 +183,7 @@ class Noeuds():
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Atelier : " + formatTitre(a.titre),
                           label=formatTitre(a.titre)[:3] if a.titre else "",
-                          group="atelier",
+                          group="Atelier",
                           url=a.get_absolute_url(),
                           type_noeud="atelier")
         if cree:
@@ -195,7 +195,7 @@ class Noeuds():
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Document : " + formatTitre(doc.titre),
                           label=formatTitre(doc.titre)[:3] if doc.titre else "",
-                          group="document",
+                          group="Document",
                           url=doc.get_absolute_url(),
                           type_noeud="document")
         self.ajouterNoeudArticle(doc.article)
@@ -206,7 +206,7 @@ class Noeuds():
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Doc Partagé : " + formatTitre(doc.nom),
                           label=formatTitre(doc.nom)[:3] if doc.nom else "",
-                          group="doc_ptg",
+                          group="Doc partage",
                           url=doc.get_absolute_url(),
                           type_noeud="doc_ptg")
         self.ajouterNoeudArticle(doc.article)
@@ -217,7 +217,7 @@ class Noeuds():
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Salon : " + formatTitre(salon.titre),
                           label=formatTitre(salon.titre)[:3] if salon.titre else "",
-                          group="salon",
+                          group="Salon",
                           url=salon.get_absolute_url(),
                           type_noeud="salon")
         self.ajouterNoeudArticle(salon.article)
@@ -228,8 +228,8 @@ class Noeuds():
         cree = self.ajouterNoeud(id,
                           nom="Dossier : " + art.get_categorie_display(),
                           label=art.get_categorie_display(),
-                          group=art.categorie,
-                          url=reverse('blog:index_asso', kwargs={"asso": self.asso })+ "?categorie=" + art.categorie + "&ancre_navtab=dossier",
+                          group="Dossier : " + art.get_categorie_display(),
+                          url=reverse('blog:index_asso', kwargs={"asso": self.asso}) + "?categorie=" + art.categorie + "&ancre_navtab=dossier",
                           type_noeud="categorie")
         self.ajouterNoeudArticle(art)
         if cree and self.categorieAuCentre:
@@ -310,14 +310,14 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
 
     noeuds = Noeuds(asso_slug, categorieAuCentre=False)
     noeuds.ajouterNoeudArticle(art, type_noeud="centre")
-    noeuds.ajouterLienArticleCategorie(art)
+    #noeuds.ajouterLienArticleCategorie(art)
     noeuds.ajouterLienArticleDocumentsAteliers(art)
 
     for liens in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
             .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):
         if liens.article_lie and liens.article:
             noeuds.ajouterNoeudsEtLiens_articles(liens.article, liens.article_lie, type_lien="liens")
-            noeuds.ajouterLienArticleCategorie(liens.article_lie)
+            #noeuds.ajouterLienArticleCategorie(liens.article_lie)
             noeuds.ajouterLienArticleDocumentsAteliers(liens.article_lie)
 
             for liens_2 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
@@ -325,13 +325,13 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
                 noeuds.ajouterNoeudsEtLiens_articles(liens_2.article, liens_2.article_lie, type_lien="liens")
 
                 if liens_2.article_lie == liens.article_lie:
-                    noeuds.ajouterLienArticleCategorie(liens_2.article)
+                    #noeuds.ajouterLienArticleCategorie(liens_2.article)
                     noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article)
-                    nouvel_art = liens_2.article
+                    #nouvel_art = liens_2.article
                 else:
                     noeuds.ajouterLienArticleCategorie(liens_2.article_lie)
                     noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article_lie)
-                    nouvel_art = liens_2.article_lie
+                    #nouvel_art = liens_2.article_lie
 
                 # for liens_3 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
                 #         .filter(Q(article_lie__estArchive=False) & (Q(article=nouvel_art) | Q(article_lie=nouvel_art)))):
@@ -447,7 +447,7 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_slug):
             "name":nom,
             #"nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
-            "url":"" ,#reverse('blog:index_asso', kwargs={"asso":asso.slug + "?categorie=" + cat}),
+            "url":reverse('blog:index_asso', kwargs={"asso": self.asso })+ "?categorie=" + art.categorie + "&ancre_navtab=dossier",
             "type": "dossier",
             "children": [{
                    # "nb_comm":Commentaire.objects.filter(article=art).count(),
@@ -575,7 +575,7 @@ def get_articles_asso_d3_bubble(request, asso_slug):
               "id": i + 1000000,
               "name": Choix.get_categorie_from_id(g),
               "value": 10,
-              "url" : reverse('blog:index_asso', kwargs={"asso":asso}) + "?categorie=" + g
+              "url" : reverse('blog:index_asso', kwargs={"asso":asso}) + "?categorie=" + g + "&ancre_navtab=dossier"
               } for i, g in enumerate(groupes)]
     #for art in articles: #parcourt des articles de l'asso non archives
    #     dico = "article." + art.categorie + "." + art.slug

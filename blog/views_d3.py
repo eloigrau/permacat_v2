@@ -105,7 +105,8 @@ class Noeuds():
 
     def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
         self.asso = asso_slug
-        self.rayon = {"article":15, "categorie":5, "projet":20, "centre":40, "atelier":9, "document":8, "salon":8, "doc_ptg":8}
+        self.rayon = {"article":20, "categorie":30, "projet":20, "centre":40, "atelier":10, "document":10, "salon":10, "doc_ptg":10}
+        self.tailleTexte = {"article":6, "categorie":8, "projet":10, "centre":40, "atelier":5, "document":5, "salon":5, "doc_ptg":5}
         if projetAuCentre or categorieAuCentre:
             self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
         self.lienDossierArticles = lienDossierArticles
@@ -127,10 +128,10 @@ class Noeuds():
             self.ateliers_id[cat] = 3000000 + len(self.ateliers_id)
         return self.ateliers_id[cat]
 
-    def get_document_id(self, cat):
-        if not cat in self.document_id:
-            self.document_id[cat] = 4000000 + len(self.document_id)
-        return self.document_id[cat]
+    def get_document_id(self, id):
+        if not id in self.document_id:
+            self.document_id[id] = 4000000 + len(self.document_id)
+        return self.document_id[id]
 
     def get_docptg_id(self, cat):
         if not cat in self.docptg_id:
@@ -145,7 +146,7 @@ class Noeuds():
     def get_dico_d3(self):
         return {
         "links": self.listeLiens,
-         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "label":v["label"], "rayon":self.rayon[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
+         "nodes": [{"id": k,"name":v["name"],"group":v["group"],"url":v["url"], "label":v["label"], "rayon":self.rayon[v["type_noeud"]], "tailleTexte":self.tailleTexte[v["type_noeud"]]} for k, v in self.diconoeuds.items()]
         }
 
     def ajouterLien(self, source_id, target_id, type_lien):
@@ -157,13 +158,18 @@ class Noeuds():
             self.diconoeuds[noeud_id]={"name": formatTitre(nom),
                                 "url":url,
                                 "group":group,
-                                "label":label,
+                                "label":label[:8] if label else "",
                                "type_noeud":type_noeud}
             return True
         return False
 
     def ajouterNoeudArticle(self, art):
-        return self.ajouterNoeud(art.id, "Article : " + formatTitre(art.titre), art.categorie, art.get_absolute_url(), "article")
+        return self.ajouterNoeud(noeud_id=art.id,
+                                 nom="Article : " + formatTitre(art.titre),
+                                 label=formatTitre(art.titre),
+                                 group=art.categorie,
+                                 url=art.get_absolute_url(),
+                                 type_noeud="article")
 
     def ajouterNoeudProjet(self, proj):
         id = self.get_projet_id(proj.id)
@@ -176,7 +182,7 @@ class Noeuds():
         id = self.get_atelier_id(a.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Atelier : " + formatTitre(a.titre),
-                          label=formatTitre(a.titre),
+                          label="", #formatTitre(a.titre),
                           group="atelier",
                           url=a.get_absolute_url(),
                           type_noeud="atelier")
@@ -188,7 +194,7 @@ class Noeuds():
         id = self.get_document_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Document : " + formatTitre(doc.titre),
-                          label=formatTitre(doc.titre),
+                          label="", #formatTitre(doc.titre),
                           group="document",
                           url=doc.get_absolute_url(),
                           type_noeud="document")
@@ -199,7 +205,7 @@ class Noeuds():
         id = self.get_docptg_id(doc.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Doc Partagé : " + formatTitre(doc.nom),
-                          label=formatTitre(doc.nom),
+                          label="", #formatTitre(doc.nom),
                           group="doc_ptg",
                           url=doc.get_absolute_url(),
                           type_noeud="doc_ptg")
@@ -210,7 +216,7 @@ class Noeuds():
         id = self.get_salon_id(salon.id)
         cree = self.ajouterNoeud(noeud_id=id,
                           nom="Salon : " + formatTitre(salon.titre),
-                          label=formatTitre(salon.titre),
+                          label="", #formatTitre(salon.titre),
                           group="salon",
                           url=salon.get_absolute_url(),
                           type_noeud="salon")
@@ -314,13 +320,27 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
             for liens_2 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
                     .filter(Q(article_lie__estArchive=False) & (Q(article=liens.article_lie) | Q(article_lie=liens.article_lie)))):
                 noeuds.ajouterNoeudsEtLiens_articles(liens_2.article, liens_2.article_lie, type_lien="liens")
-                noeuds.ajouterLienArticleCategorie(liens_2.article_lie)
-                noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article_lie)
+
+                if liens_2.article_lie == liens.article_lie:
+                    noeuds.ajouterLienArticleCategorie(liens_2.article)
+                    noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article)
+                    nouvel_art = liens_2.article
+                else:
+                    noeuds.ajouterLienArticleCategorie(liens_2.article_lie)
+                    noeuds.ajouterLienArticleDocumentsAteliers(liens_2.article_lie)
+                    nouvel_art = liens_2.article_lie
+
                 for liens_3 in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
-                        .filter(Q(article_lie__estArchive=False) & (Q(article=liens_2.article_lie) | Q(article_lie=liens.article_lie)))):
+                        .filter(Q(article_lie__estArchive=False) & (Q(article=nouvel_art) | Q(article_lie=nouvel_art)))):
+
                     noeuds.ajouterNoeudsEtLiens_articles(liens_3.article, liens_3.article_lie, type_lien="liens")
-                    noeuds.ajouterLienArticleCategorie(liens_3.article_lie)
-                    noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article_lie)
+                    #
+                    if liens_3.article_lie == nouvel_art:
+                        noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article)
+                        noeuds.ajouterLienArticleCategorie(liens_3.article)
+                    else:
+                        noeuds.ajouterLienArticleDocumentsAteliers(liens_3.article_lie)
+                        noeuds.ajouterLienArticleCategorie(liens_3.article_lie)
 
     for liens in ArticleLienProjet.objects.exclude(
         projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(

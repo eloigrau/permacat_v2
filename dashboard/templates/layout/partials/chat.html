@@ -177,6 +177,11 @@
             setTimeout(connectWebSocket, 2000);
         };
 
+        chatSocket.onerror = function(error) {
+            console.error("Erreur WebSocket détectée :", error);
+            statusSpan.textContent = "● Erreur";
+            statusSpan.style.color = "#ff6b6b"; // Rouge clair pour signaler l'erreur
+        };
     }
 
 

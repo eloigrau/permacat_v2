@@ -39,6 +39,19 @@
             gap: 6px;
         }
         #user-list li:last-child { border-bottom: none; }
+        /* État hors ligne / déconnecté volontaire */
+        #offline-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            text-align: center;
+            padding: 20px;
+        }
 </style>
 <!-- Bouton Flottant (Bas à droite) -->
 <div class="position-fixed p-3" style="bottom: 0; right: 0; z-index: 1050;">
@@ -54,12 +67,17 @@
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 flex-shrink-0">
             <div>
                 <span>Perma.Chat</span>
-
             </div>
-        <div id="user-menu-container">
-                <button id="user-menu-btn" type="button">👥 <span id="online-count">0</span> ▼</button>
-                <div id="user-dropdown">
-                    <ul id="user-list"></ul>
+        <div class="header-actions">
+                <!-- Bouton Quitter -->
+
+                <!-- Menu déroulant des connectés -->
+                <div id="user-menu-container">
+                    <button id="user-menu-btn" class="btn btn-info chat-btn" type="button">👥 <span id="online-count">0</span> ▼</button>
+                    <div id="user-dropdown">
+                        <ul id="user-list"></ul>
+                    </div>
+                    <button id="leave-btn" class="btn btn-danger" type="button">Quitter</button>
                 </div>
         </div>
         <button type="button" id="chat-close-btn" class="close text-white m-0 p-0" style="opacity: 0.9; font-size: 24px; outline: none;">
@@ -71,6 +89,10 @@
     <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.85rem; gap: 12px; flex: 1 1 auto; min-height: 0; padding-bottom: 2rem;">
         <!-- Message système initial -->
         <span id="connection-status" class="text-center text-muted small my-2">Benvingut !</span>
+        <div id="offline-overlay">
+            <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vous avez quitté le chat.</p>
+            <button id="rejoin-btn" style="background: #28a745; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px;">Rejoindre</button>
+        </div>
     </div>
 
     <!-- Pied de page / Saisie (Fixe en bas) -->
@@ -99,6 +121,10 @@
     const userMenuBtn = document.querySelector('#user-menu-btn');
     const userDropdown = document.querySelector('#user-dropdown');
 
+    const leaveBtn = document.querySelector('#leave-btn');
+    const rejoinBtn = document.querySelector('#rejoin-btn');
+    const offlineOverlay = document.querySelector('#offline-overlay');
+
     // Connexion WebSocket Django Channels
     //const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
     //const chatSocket = new WebSocket(wsProtocol + window.location.host + '/permachat/chat_direct/');
@@ -120,7 +146,19 @@
         window.onclick = function() {
             userDropdown.style.display = 'none';
         };
+
     function connectWebSocket() {
+        if (localStorage.getItem('chat_user_left') === 'true') {
+            offlineOverlay.style.display = 'flex';
+            statusSpan.textContent = "○ Hors ligne";
+            statusSpan.style.color = "#ccc";
+            onlineCountSpan.textContent = "0";
+            userListUl.innerHTML = '';
+            return; // Stoppe net l'exécution, aucune socket n'est ouverte
+        }
+
+        offlineOverlay.style.display = 'none';
+        intentionalClose = false;
         // 1. Get the ID of the last message saved locally
         const lastMessageId = localStorage.getItem('last_message_id') || 0;
 
@@ -131,7 +169,7 @@
         chatSocket = new WebSocket(wsUrl);
 
         chatSocket.onopen = function() {
-            statusSpan.textContent = "Online";
+            statusSpan.textContent = "Connecté";
             statusSpan.style.color = "#d4edda";
 
             if (!sessionStorage.getItem('chat_session_initialized')) {
@@ -147,21 +185,22 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-
+            console.log(data.type);
             // Gestion selon le type d'événement reçu du backend
             if (data.type === 'user_status') {
                 appendSystemMessage(data.message);
             } else if (data.type === 'chat_message') {
                 appendMessage(data);
             }else if (data.type === 'user_list') {
-                    // Mise à jour de la liste des utilisateurs connectés
-                    onlineCountSpan.textContent = data.users.length;
-                    userListUl.innerHTML = '';
-                    data.users.forEach(u => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<span style="color: #28a745;">●</span> ${u} ${u === username ? '(moi)' : ''}`;
-                        userListUl.appendChild(li);
-                    });
+                // Mise à jour de la liste des utilisateurs connectés
+                onlineCountSpan.textContent = data.users.length;
+                userListUl.innerHTML = '';
+                data.users.forEach(u => {
+                    console.log(u);
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span style="color: #28a745;">●</span> ${u} ${u === username ? '(moi)' : ''}`;
+                    userListUl.appendChild(li);
+                });
             }
 
             // 3. Update localStorage with the newest message ID received
@@ -171,10 +210,11 @@
         };
 
         chatSocket.onclose = function() {
-            statusSpan.textContent = "Reconnecting...";
-            statusSpan.style.color = "#fff3cd";
-            // Automatically attempt to reconnect after 2 seconds if connection drops
-            setTimeout(connectWebSocket, 2000);
+            if (!intentionalClose && localStorage.getItem('chat_user_left') !== 'true') {
+                statusSpan.textContent = "○ Reconnexion...";
+                statusSpan.style.color = "#fff3cd";
+                setTimeout(connectWebSocket, 2000);
+            }
         };
 
         chatSocket.onerror = function(error) {
@@ -265,6 +305,47 @@
 
         chatInput.value = '';
     }
+leaveBtn.onclick = function() {
+        if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+            intentionalClose = true;
+
+            // Envoyer l'action de départ au serveur
+            chatSocket.send(JSON.stringify({
+                'action': 'leave',
+                'user': username
+            }));
+
+            // Petit délai de sécurité (100ms) pour s'assurer que le message WebSocket
+            // est bien envoyé avant de couper la socket
+            setTimeout(() => {
+                if (chatSocket) {
+                    chatSocket.close();
+                }
+            }, 100);
+        }
+
+        // Marquer comme déconnecté de façon persistante sur le site
+        localStorage.setItem('chat_user_left', 'true');
+
+        // Mettre à jour l'interface locale instantanément
+        offlineOverlay.style.display = 'flex';
+        statusSpan.textContent = "○ Hors ligne";
+        statusSpan.style.color = "#ccc";
+        onlineCountSpan.textContent = "0";
+        userListUl.innerHTML = '';
+
+        // Fermer le menu déroulant s'il était ouvert
+        userDropdown.style.display = 'none';
+    };
+
+    // Clic sur "Rejoindre"
+    rejoinBtn.onclick = function() {
+        // Suppression du flag pour autoriser la reconnexion sur toutes les pages
+        localStorage.removeItem('chat_user_left');
+        sessionStorage.removeItem('chat_session_initialized');
+        connectWebSocket();
+    };
+
 
     sendBtn.addEventListener('click', handleSend);
     chatInput.addEventListener('keypress', (e) => {

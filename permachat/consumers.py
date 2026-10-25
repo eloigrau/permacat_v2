@@ -778,7 +778,7 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             "stamp": stamp
         })
 
-ONLINE_CHANNELS_KEY = "global_chat_online_users"
+ONLINE_CHANNELS_KEY = "global_permachat"
 
 class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
@@ -815,7 +815,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         # Send any messages the user missed during page navigation
         missed_messages = await self.get_missed_messages(last_id)
         for msg in missed_messages:
-            if msg.type == '0':
+            if msg.message_type == '0':
                 infos = await self.get_message_infos(msg)
                 avatar_url = infos[0]
                 profile_url = infos[1]
@@ -830,6 +830,14 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     'avatar_url': avatar_url,
                     'profile_url': profile_url,
                     'message_url': message_url,
+                    'timestamp': msg.timestamp.strftime('%H:%M')
+                })
+            elif msg.message_type == '1':
+                await self.send_json({
+                    'type': 'user_status',
+                    'message': msg.message,
+                    'id': msg.id,
+                    'username': "system",
                     'timestamp': msg.timestamp.strftime('%H:%M')
                 })
             else:
@@ -881,7 +889,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                 self.room_group_name,
                 {
                     'type': 'user_status',
-                    'message': f"{user} joined the chat.",
+                    'message': f"{user} a rejoint le chat.",
                 }
             )
         elif action == 'message':
@@ -915,8 +923,31 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     }
                 )
 
+        elif action == 'leave':
+            # 1. Enregistrer le message système de départ
+            chat_msg = await self.save_message("System", f"{user} a quitté le chat.", message_type="system")
+
+            # 2. Retirer immédiatement la connexion du cache Redis
+            await self.remove_online_connection(self.channel_name)
+
+            # 3. FORCER la diffusion immédiate de la liste mise à jour à tous les clients connectés
+            await self.broadcast_user_list()
+
+            # 4. Diffuser le message système dans le chat
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message_event',
+                    'id': chat_msg.id,
+                    'user': "System",
+                    'message': chat_msg.message,
+                    'message_type': chat_msg.message_type,
+                    'timestamp': chat_msg.timestamp.strftime('%H:%M')
+                }
+            )
+
     async def chat_message(self, event):
-        chat_msg = await self.save_message(event['user'] if 'user' in event else event['username'], event['message'], type='0')
+        chat_msg = await self.save_message(event['user'] if 'user' in event else event['username'], event['message'], message_type='0')
         await self.send_json({
             'type': 'chat_message',
             'id': chat_msg.id,
@@ -928,11 +959,11 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         })
 
     @database_sync_to_async
-    def save_message(self, user, message, type="message"):
+    def save_message(self, user, message, message_type="message"):
         if type == 'message':
-            return MessageGlobal.objects.create(user=user, message=message, type='0')
+            return MessageGlobal.objects.create(user=user, message=message, message_type='0')
         else:
-            return MessageGlobal.objects.create(user=None, message=message, type='1')
+            return MessageGlobal.objects.create(user=None, message=message, message_type='1')
 
 
     @database_sync_to_async
@@ -957,7 +988,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             return msg.user.get_profil_url(), msg.user.get_gravatar_url(), \
                    reverse('agora_conversation', kwargs={"destinataire":msg.user.id}), msg.user.username
         else:
-            return  None, None, None, None
+            return None, None, None, None
 
     @database_sync_to_async
     def cleanup_old_messages(self):
@@ -993,7 +1024,6 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def broadcast_user_list(self):
         users = await self.get_online_users()
-        print (users)
         await self.channel_layer.group_send(
             self.room_group_name,
             {

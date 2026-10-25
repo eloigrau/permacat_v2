@@ -87,9 +87,7 @@ def getListeMailsAlerte():
                 message += "<hr><h5>Les évènements de la semaine :</h4>"
                 message += "<ul>"
                 for eve in evenementsSemaine:
-                    url = eve.get_absolute_url()
-                    if not "http" in url:
-                        url = "http://www.perma.cat" + url
+                    url = "https://www.perma.cat" + eve.get_absolute_url()
                     message += "<li><a href=" + url + ">" + eve.date_text + " : " + eve.titre+"</a></li>"
                     messagetxt += eve.titre + "\n"
                 message += "</ul>"

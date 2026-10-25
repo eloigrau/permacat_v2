@@ -270,9 +270,25 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [("127.0.0.1" or redis_host, 6379)],#"hosts": [(127.0.0.1 or redis_host, 6378)],
+# Paramètres de robustesse optionnels pour la production :
+            "capacity": 1500,          # Taille maximale de la file d'attente par canal
+            "expiry": 10,              # Temps d'expiration des messages en secondes
         },
     },
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 100,
+            },
+        }
+    }
+}
+
 
 AUTH_PASSWORD_VALIDATORS = [
     #{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
@@ -370,11 +386,12 @@ LEAFLET_CONFIG = {
 'NO_GLOBALS': False,
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+#     }
+
+
 
 PHONENUMBER_DEFAULT_REGION = 'EUROPE'
 

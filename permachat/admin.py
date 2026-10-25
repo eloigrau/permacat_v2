@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Message
+from .models import Room, Message, MessageGlobal
 from django.contrib.admin import site, ModelAdmin, TabularInline
 
 # admin.site.register(
@@ -67,3 +67,4 @@ class MessageAdmin(ModelAdmin):
 # Register your models here.
 site.register(Room, RoomAdmin)
 site.register(Message, MessageAdmin)
+site.register(MessageGlobal)

@@ -5,11 +5,14 @@ from asgiref.sync import sync_to_async
 
 from .exceptions import ClientError
 from .utils import get_room_or_error
-from .models import Room, Profil, Message
+from .models import Room, Profil, Message, MessageGlobal
 from django.utils.timezone import now
 from django.urls import reverse
 from datetime import datetime
 from tzlocal import get_localzone
+from datetime import timedelta
+from django.utils import timezone
+from django.core.cache import cache
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -775,46 +778,78 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             "stamp": stamp
         })
 
+ONLINE_CHANNELS_KEY = "global_chat_online_users"
 
 class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         self.room_name = "PermaChat"
         self.room_group_name = f"chat_{self.room_name}"
 
-        # Récupérer l'utilisateur connecté
-        user = self.scope.get("user")
-        if user and user.is_authenticated:
-            self.username = user.username
-        else:
-            self.username = "Un visiteur"
-
-        # Rejoindre le groupe de discussion
+        # Join room group
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
         await self.accept()
+        # Parse query string to extract 'last_id' from localStorage
+        query_string = self.scope['query_string'].decode()
+        params = dict(param.split('=') for param in query_string.split('&') if '=' in param)
+        last_id = params.get('last_id', 0)
 
-        # Diffuser l'information de connexion à tout le groupe
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'user_status',
-                'message': f"🟢 {self.username} a rejoint le chat."
-            }
-        )
+        # Récupérer l'utilisateur connecté
+        user = self.scope.get("user")
+
+        if user and user.is_authenticated:
+            self.username = user.username
+        else:
+            self.username = "Un visiteur"
+
+        await self.add_online_connection(self.channel_name, self.username)
+        await self.broadcast_user_list()
+
+        try:
+            last_id = int(last_id)
+        except ValueError:
+            last_id = 0
+
+        # Send any messages the user missed during page navigation
+        missed_messages = await self.get_missed_messages(last_id)
+        for msg in missed_messages:
+            if msg.type == '0':
+                infos = await self.get_message_infos(msg)
+                avatar_url = infos[0]
+                profile_url = infos[1]
+                message_url = infos[2]
+                username = infos[3]
+
+                await self.send_json({
+                    'type': 'chat_message',
+                    'message': msg.message,
+                    'id': msg.id,
+                    'username':  username,
+                    'avatar_url': avatar_url,
+                    'profile_url': profile_url,
+                    'message_url': message_url,
+                    'timestamp': msg.timestamp.strftime('%H:%M')
+                })
+            else:
+                await self.send_json({
+                    'type': 'user_status',
+                    'message': msg.message,
+                    'id': msg.id,
+                    'username': "system",
+                    'timestamp': msg.timestamp.strftime('%H:%M')
+                })
+
+
+        await self.cleanup_old_messages()
+
+
 
     async def disconnect(self, close_code):
-        # Diffuser l'information de déconnexion avant de quitter le groupe
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'user_status',
-                'message': f"🔴 {self.username} a quitté le chat."
-            }
-        )
+        await self.remove_online_connection(self.channel_name)
+        await self.broadcast_user_list()
 
-        # Quitter le groupe
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
@@ -828,21 +863,8 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         })
 
     async def receive_json(self, content, **kwargs):
-        message = content.get('message', '')
-
         # Récupération de l'utilisateur connecté (ou Visiteur si non connecté)
         user = self.scope.get("user")
-        if user and user.is_authenticated:
-            username = user.username
-            # Adaptez selon votre modèle de profil (ex: user.profile.avatar.url)
-            avatar_url = user.get_gravatar_url()
-            profile_url = user.get_profil_url()
-            message_url = reverse('agora_conversation', kwargs={"destinataire":user.id})
-        else:
-            username = "Anonyme"
-            avatar_url = "https://ui-avatars.com/api/?name=Anonyme&background=6c757d&color=fff"
-            profile_url = "#"
-            message_url = ""
 
         # Générer l'horodatage (ex: 14:32)
 
@@ -852,26 +874,130 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         # Get the current time aware of the local timezone
         timestamp = now().astimezone(local_tz).strftime("%H:%M")
 
-        # Diffusion à tout le groupe
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': message,
-                'username': username,
-                'avatar_url': avatar_url,
-                'profile_url': profile_url,
-                'message_url': message_url,
-                'timestamp': timestamp
-            }
-        )
+        action = content.get('action', 'message')
+        if action == 'join':
+            # Save and broadcast a system notification when user first connects
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'user_status',
+                    'message': f"{user} joined the chat.",
+                }
+            )
+        elif action == 'message':
+            if user and user.is_authenticated:
+                # Adaptez selon votre modèle de profil (ex: user.profile.avatar.url)
+                infos = await self.get_infos_user(user)
+                avatar_url = infos[0]
+                profile_url = infos[1]
+                message_url = infos[2]
+                username = infos[3]
+            else:
+                username = "Anonyme"
+                avatar_url = "https://ui-avatars.com/api/?name=Anonyme&background=6c757d&color=fff"
+                profile_url = "#"
+                message_url = ""
+
+            message = content.get('message', '')
+            if message:
+                chat_msg = await self.save_message(user, message)
+                # Diffusion à tout le groupe
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'chat_message',
+                        'message': message,
+                        'username': username,
+                        'avatar_url': avatar_url,
+                        'profile_url': profile_url,
+                        'message_url': message_url,
+                        'timestamp': timestamp
+                    }
+                )
 
     async def chat_message(self, event):
+        chat_msg = await self.save_message(event['user'] if 'user' in event else event['username'], event['message'], type='0')
         await self.send_json({
             'type': 'chat_message',
+            'id': chat_msg.id,
             'message': event['message'],
             'username': event['username'],
             'avatar_url': event['avatar_url'],
             'profile_url': event['profile_url'],
             'timestamp': event['timestamp']
         })
+
+    @database_sync_to_async
+    def save_message(self, user, message, type="message"):
+        if type == 'message':
+            return MessageGlobal.objects.create(user=user, message=message, type='0')
+        else:
+            return MessageGlobal.objects.create(user=None, message=message, type='1')
+
+
+    @database_sync_to_async
+    def get_missed_messages(self, last_id):
+        return list(MessageGlobal.objects.filter().order_by('timestamp'))
+
+    @database_sync_to_async
+    def get_infos_user(self, user):
+        if not user or not user.is_authenticated:
+            return None, None, None, None
+        try:
+            profil = user.get_profil_url()
+            avatar = user.get_gravatar_url()
+            url = reverse('agora_conversation', kwargs={"destinataire":user.id})
+        except:
+            return None, None, None
+        return profil, avatar, url, user.username
+
+    @database_sync_to_async
+    def get_message_infos(self, msg):
+        if msg.user:
+            return msg.user.get_profil_url(), msg.user.get_gravatar_url(), \
+                   reverse('agora_conversation', kwargs={"destinataire":msg.user.id}), msg.user.username
+        else:
+            return  None, None, None, None
+
+    @database_sync_to_async
+    def cleanup_old_messages(self):
+        # Delete messages older than 30 minutes
+        cutoff_time = timezone.now() - timedelta(minutes=30)
+        MessageGlobal.objects.filter(timestamp__lt=cutoff_time).delete()
+
+    async def user_list_event(self, event):
+        await self.send_json(
+            {
+            'type': 'user_list',
+            'users': event['users']
+        })
+
+    @database_sync_to_async
+    def add_online_connection(self, channel_name, username):
+        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        connections[channel_name] = username
+        cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+
+    @database_sync_to_async
+    def remove_online_connection(self, channel_name):
+        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        if channel_name in connections:
+            del connections[channel_name]
+            cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+
+    @database_sync_to_async
+    def get_online_users(self):
+        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        # Retourne la liste unique de tous les noms d'utilisateurs connectés
+        return list(set(connections.values()))
+
+    async def broadcast_user_list(self):
+        users = await self.get_online_users()
+        print (users)
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'user_list_event',
+                'users': users
+            }
+        )

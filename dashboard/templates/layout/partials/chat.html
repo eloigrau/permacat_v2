@@ -1,7 +1,45 @@
 <!-- ========================================== -->
 <!-- WIDGET DE CHAT COMPLET (Bootstrap 4.2)     -->
 <!-- ========================================== -->
-
+<style>
+    /* Menu déroulant des utilisateurs */
+        #user-menu-container { position: relative; }
+        #user-menu-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        #user-menu-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        #user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 32px;
+            background: white;
+            color: #333;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 180px;
+            max-height: 160px;
+            overflow-y: auto;
+            z-index: 100;
+            padding: 5px 0;
+        }
+        #user-list { list-style: none; margin: 0; padding: 0; }
+        #user-list li {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #user-list li:last-child { border-bottom: none; }
+</style>
 <!-- Bouton Flottant (Bas à droite) -->
 <div class="position-fixed p-3" style="bottom: 0; right: 0; z-index: 1050;">
     <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
@@ -14,9 +52,16 @@
 
     <!-- En-tête (Fixe) -->
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 flex-shrink-0">
-        <h6 class="mb-0 font-weight-bold">
-            <i class="fas fa-headset mr-2"></i> Chat en direct - parlez aux gens connectés sur la plateforme Perma.Cat
-        </h6>
+            <div>
+                <span>Perma.Chat</span>
+
+            </div>
+        <div id="user-menu-container">
+                <button id="user-menu-btn" type="button">👥 <span id="online-count">0</span> ▼</button>
+                <div id="user-dropdown">
+                    <ul id="user-list"></ul>
+                </div>
+        </div>
         <button type="button" id="chat-close-btn" class="close text-white m-0 p-0" style="opacity: 0.9; font-size: 24px; outline: none;">
             <span>&times;</span>
         </button>
@@ -25,7 +70,7 @@
     <!-- Corps des messages (Scrollable, min-height: 0 et padding de bas pour éviter le masquage) -->
     <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.85rem; gap: 12px; flex: 1 1 auto; min-height: 0; padding-bottom: 2rem;">
         <!-- Message système initial -->
-        <div class="text-center text-muted small my-2">Benvingut ! Ceci est une expérimentation, si vous avez des questions ou remarques, vous pouvez commenter <a href="{% url 'blog:lireArticle' slug='faq-du-site' %}#idDiscussion" target="_blank"> cet article</a>, merci ! Rien de ce que vous dites ici n'est enregistré, vous pouvez juste vous adresser en direct aux autres personnes connectées</div>
+        <span id="connection-status" class="text-center text-muted small my-2">Benvingut !</span>
     </div>
 
     <!-- Pied de page / Saisie (Fixe en bas) -->
@@ -49,26 +94,91 @@
     const sendBtn = document.getElementById('chat-send-btn');
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
+    const userListUl = document.querySelector('#user-list');
+    const onlineCountSpan = document.querySelector('#online-count');
+    const userMenuBtn = document.querySelector('#user-menu-btn');
+    const userDropdown = document.querySelector('#user-dropdown');
 
     // Connexion WebSocket Django Channels
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    const chatSocket = new WebSocket(wsProtocol + window.location.host + '/permachat/chat_direct/');
+    //const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    //const chatSocket = new WebSocket(wsProtocol + window.location.host + '/permachat/chat_direct/');
 
-    // Réception des messages du serveur
-    chatSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
+    if (!sessionStorage.getItem('chat_user')) {
+        sessionStorage.setItem('chat_user', 'User_' + Math.floor(Math.random() * 900 + 100));
+    }
+    const username = sessionStorage.getItem('chat_user');
 
-        // Gestion selon le type d'événement reçu du backend
-        if (data.type === 'user_status') {
-            appendSystemMessage(data.message);
-        } else if (data.type === 'chat_message') {
-            appendMessage(data);
-        }
-    };
+    const statusSpan = document.querySelector('#connection-status');
+    let chatSocket = null;
 
-    chatSocket.onclose = function(e) {
-        console.error('WebSocket fermé de manière inattendue.');
-    };
+    userMenuBtn.onclick = function(e) {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        // Fermer le menu si on clique ailleurs dans la page
+        window.onclick = function() {
+            userDropdown.style.display = 'none';
+        };
+    function connectWebSocket() {
+        // 1. Get the ID of the last message saved locally
+        const lastMessageId = localStorage.getItem('last_message_id') || 0;
+
+        // 2. Open WebSocket and pass last_id as a query parameter
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const wsUrl = wsProtocol + window.location.host + '/permachat/chat_direct/?last_id=' + lastMessageId;
+
+        chatSocket = new WebSocket(wsUrl);
+
+        chatSocket.onopen = function() {
+            statusSpan.textContent = "Online";
+            statusSpan.style.color = "#d4edda";
+
+            if (!sessionStorage.getItem('chat_session_initialized')) {
+                sessionStorage.setItem('chat_session_initialized', 'true');
+
+                // Send join notification to the server only once
+                chatSocket.send(JSON.stringify({
+                    'action': 'join',
+                    'user': username
+                }));
+            }
+        };
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+
+            // Gestion selon le type d'événement reçu du backend
+            if (data.type === 'user_status') {
+                appendSystemMessage(data.message);
+            } else if (data.type === 'chat_message') {
+                appendMessage(data);
+            }else if (data.type === 'user_list') {
+                    // Mise à jour de la liste des utilisateurs connectés
+                    onlineCountSpan.textContent = data.users.length;
+                    userListUl.innerHTML = '';
+                    data.users.forEach(u => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span style="color: #28a745;">●</span> ${u} ${u === username ? '(moi)' : ''}`;
+                        userListUl.appendChild(li);
+                    });
+            }
+
+            // 3. Update localStorage with the newest message ID received
+            if (data.id) {
+                localStorage.setItem('last_message_id', data.id);
+            }
+        };
+
+        chatSocket.onclose = function() {
+            statusSpan.textContent = "Reconnecting...";
+            statusSpan.style.color = "#fff3cd";
+            // Automatically attempt to reconnect after 2 seconds if connection drops
+            setTimeout(connectWebSocket, 2000);
+        };
+
+    }
+
 
     // Gestion de l'affichage / masquage de la fenêtre de chat
     toggleBtn.addEventListener('click', () => {
@@ -84,18 +194,14 @@
 
     // Affichage des messages de statut (connexion / déconnexion)
     function appendSystemMessage(text) {
-        const systemDiv = document.createElement('div');
-        systemDiv.className = "text-center text-muted small my-2 font-italic w-100";
-        systemDiv.textContent = text;
-
-        chatMessages.appendChild(systemDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        statusSpan.textContent = text;
+        statusSpan.style.color = "grey";
     }
 
     // Affichage d'un message standard (avec avatar, menu déroulant et timestamp)
     function appendMessage(data) {
         const messageContainer = document.createElement('div');
-        messageContainer.className = "d-flex align-items-start mb-2";
+        messageContainer.className = "d-flex align-items-start mb-4";
 
         messageContainer.innerHTML = `
             <!-- Avatar -->
@@ -161,4 +267,5 @@
             handleSend();
         }
     });
+    document.addEventListener("DOMContentLoaded", connectWebSocket);
 </script>

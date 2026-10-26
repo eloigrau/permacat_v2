@@ -58,6 +58,8 @@
     <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
         💬
     </button>
+<span id="unread-badge" class="position-absolute  start-50 translate-middle badge rounded-pill bg-info" style="display: none;">0</span>
+
 </div>
 
 <!-- Fenêtre de Chat (Card Bootstrap responsive avec correctif de scroll) -->
@@ -124,6 +126,8 @@
     const leaveBtn = document.querySelector('#leave-btn');
     const rejoinBtn = document.querySelector('#rejoin-btn');
     const offlineOverlay = document.querySelector('#offline-overlay');
+    const statusSpan = document.querySelector('#connection-status');
+    const unreadBadge = document.querySelector('#unread-badge');
 
     // Connexion WebSocket Django Channels
     //const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -134,8 +138,8 @@
     }
     const username = sessionStorage.getItem('chat_user');
 
-    const statusSpan = document.querySelector('#connection-status');
     let chatSocket = null;
+    let unreadCount = 0;
 
     userMenuBtn.onclick = function(e) {
             e.stopPropagation();
@@ -230,6 +234,16 @@
         const isVisible = chatBox.style.display === 'flex';
         chatBox.style.display = isVisible ? 'none' : 'flex';
         toggleBtn.innerHTML = isVisible ? '💬' : '✕';
+
+        if (isVisible){
+            unreadCount = 0;
+            unreadBadge.style.display = 'inline-block';
+            unreadBadge.textContent = '0';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        }else{
+            unreadBadge.style.display = 'none';
+        }
     });
 
     closeBtn.addEventListener('click', () => {
@@ -280,6 +294,11 @@
 
         chatMessages.appendChild(messageContainer);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (chatBox.style.display !== 'flex' && data.user !== "System") {
+            unreadCount++;
+            unreadBadge.textContent = unreadCount;
+            unreadBadge.style.display = 'inline-block';
+        }
     }
 
     // Fonction d'échappement anti-XSS basique
@@ -305,7 +324,7 @@
 
         chatInput.value = '';
     }
-leaveBtn.onclick = function() {
+    leaveBtn.onclick = function() {
         if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
             intentionalClose = true;
 

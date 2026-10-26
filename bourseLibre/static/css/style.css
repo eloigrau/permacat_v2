@@ -3025,3 +3025,26 @@ td ul.errorlist + input, td ul.errorlist + select, td ul.errorlist + textarea {
     font-size: 0.75rem;
     border-radius: 12px;
 }
+
+
+/* 2. Forcer le conteneur principal de Select2 à 100% (ignore le style en pixels inline) */
+span.select2-container,
+span.select2-container--default {
+    width: 80% !important;
+    max-width: 80% !important;
+    min-width: 20%;
+}
+
+/* 3. Forcer la boîte de sélection interne */
+span.select2-container .select2-selection {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 20%;
+}
+
+/* 4. Empêcher le champ de recherche interne de faire éclater le layout */
+.select2-search__field {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}

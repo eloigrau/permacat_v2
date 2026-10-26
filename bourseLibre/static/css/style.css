@@ -3030,9 +3030,9 @@ td ul.errorlist + input, td ul.errorlist + select, td ul.errorlist + textarea {
 /* 2. Forcer le conteneur principal de Select2 à 100% (ignore le style en pixels inline) */
 span.select2-container,
 span.select2-container--default {
-    width: 80% !important;
-    max-width: 80% !important;
-    min-width: 20%;
+    width: 90% !important;
+    max-width: 90% !important;
+    min-width: 10%;
 }
 
 /* 3. Forcer la boîte de sélection interne */

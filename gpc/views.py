@@ -299,7 +299,6 @@ class RejectProposalView(TestMembreAssoMixin, UserPassesTestMixin, View):
         return redirect('gpc:proposal_detail', pk=proposal.pk)
 
 
-# views.py
 class VoteDeliberationView(TestMembreAssoMixin, View):
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
@@ -310,3 +309,16 @@ class VoteDeliberationView(TestMembreAssoMixin, View):
             messages.error(request, e.message)
 
         return redirect('gpc:proposal_detail', pk=proposal.pk)
+
+class UnVoteDeliberationView(TestMembreAssoMixin, View):
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        try:
+            services.uncast_validation_vote(proposal, request.user)
+            messages.success(request, "Votre vote de validation a été annulé")
+        except ValidationError as e:
+            messages.error(request, e.message)
+
+        return redirect('gpc:proposal_detail', pk=proposal.pk)
+
+

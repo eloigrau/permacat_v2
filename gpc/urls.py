@@ -26,6 +26,7 @@ urlpatterns = [
     path('objection/<int:pk>/ok/', views.NoObjectionResponseView.as_view(), name='no_objection_response'),
     path('objection/<int:objection_id>/resolve/', views.ResolveObjectionView.as_view(), name='resolve_objection'),
     path('<int:pk>/vote-deliberation/', views.VoteDeliberationView.as_view(), name='vote_deliberation'),
+    path('<int:pk>/unvote-deliberation/', views.UnVoteDeliberationView.as_view(), name='unvote_deliberation'),
     path('<int:pk>/close-deliberation/', views.CloseDeliberationView.as_view(), name='close_deliberation'),
 
     # Actions Auteur

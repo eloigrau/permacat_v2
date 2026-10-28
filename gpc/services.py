@@ -49,7 +49,10 @@ def close_objections(proposal: Proposal) -> None:
         is_resolved=False
     ).exists()
 
-    if not has_active_objections:
+    has_objections = proposal.objections.filter().exists()
+
+
+    if not has_active_objections and has_objections:
         proposal.status = Proposal.Status.ACCEPTED
     else:
         proposal.status = Proposal.Status.DELIBERATION
@@ -170,6 +173,13 @@ def reformulate_proposal(proposal: Proposal, new_content: Proposal) -> None:
     if not new_content.content:
         raise ValidationError("Le texte de la reformulation ne peut pas être vide.")
 
+    for vote in proposal.resolution_votes.all():
+        vote.delete()
+    for vote in proposal.objections_ok.all():
+        vote.delete()
+
+    proposal.status = Proposal.Status.OBJECTION_ROUND
+
     proposal.history.create(content=proposal.content)
     proposal.title = new_content.title
     proposal.content = new_content.content
@@ -212,3 +222,22 @@ def cast_validation_vote(proposal: Proposal, voter) -> PhaseVote:
     )
 
     return vote
+
+
+@transaction.atomic
+def uncast_validation_vote(proposal: Proposal, voter):
+    """
+    Enregistre le vote d'un membre pour valider le traitement des objections
+    durant la phase de délibération.
+    """
+    # 1. Vérifier que la proposition est bien en phase de délibération
+    if proposal.status != Proposal.Status.DELIBERATION:
+        raise ValidationError(
+            "Les votes de validation ne sont ouverts qu'en phase de délibération."
+        )
+
+    # 2. Vérifier si l'utilisateur a déjà voté
+    for p in proposal.resolution_votes.filter(voter=voter):
+        p.delete()
+
+    return

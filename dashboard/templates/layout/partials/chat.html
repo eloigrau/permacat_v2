@@ -137,16 +137,73 @@
                     <i class="fa fa-paper-plane"></i>
                 </button>
             </div>
-            <!-- Petit panneau d'emojis rapides optionnel -->
-            <div id="emoji-picker-panel" class="bg-white border rounded shadow-sm p-2 mt-1" style="display: none; font-size: 18px;">
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">😊</span>
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">😂</span>
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">👍</span>
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">❤️</span>
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">🔥</span>
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">🎉</span>
-                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">🙏</span>
-                <span class="emoji-option" style="cursor: pointer;">😎</span>
+            <!-- Panneau d'emojis étendu et catégorisé -->
+            <div id="emoji-picker-panel" class="bg-white border rounded shadow p-2 position-absolute bottom-100 start-0 mb-2 w-100" style="display: none; max-height: 220px; overflow-y: auto; z-index: 1060; font-size: 20px;">
+
+                 <div class="mb-2">
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😀</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😂</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤣</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😊</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😍</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😎</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤔</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😅</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😴</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🥳</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😭</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😡</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😱</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😇</span>
+
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👍</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👎</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👏</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🙌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤝</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✌️</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤞</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💪</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🙏</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👋</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👇</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👆</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👈</span>
+
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🔥</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">⭐</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✨</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🎉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✅</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">❌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💡</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🚀</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👀</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">❤️</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💔</span>
+                </div>
+
+                {% comment %}
+                <div class="text-muted small fw-bold mb-1" style="font-size: 11px;">Symboles</div>
+                <div>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">❤️</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🧡</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💛</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💚</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💙</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💜</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🖤</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🔥</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">⭐</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✨</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🎉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💯</span>
+                </div>
+                {% endcomment %}
             </div>
         </div>
     </div>

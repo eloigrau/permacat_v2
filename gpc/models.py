@@ -41,6 +41,25 @@ class Proposal(models.Model):
             return True
         return False
 
+    def get_user_has_voted(self, user):
+        return self.resolution_votes.filter(voter=user).exists()
+
+    def get_nb_user_has_voted(self, user):
+        return self.resolution_votes.filter(voter=user).count()
+
+    def get_user_clarifications_ok(self, user):
+        return self.clarifications_ok.filter(author=user).exists()
+
+    def get_nb_user_clarifications_ok(self, user):
+        return self.clarifications_ok.filter(author=user).count()
+
+    def get_user_objections_ok(self, user):
+        return self.objections_ok.filter(author=user).exists()
+
+    def get_nb_user_objections_ok(self, user):
+        return self.objections_ok.filter(author=user).count()
+
+
 class ClarificationQuestion(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='clarifications')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

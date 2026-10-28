@@ -139,9 +139,9 @@
                                 {{ proposal.get_status_display }}
 
                                 {% if proposal.status == "CLARIFICATION" %}
-                                - {{ proposal|nb_user_clarifications_ok:request.user }} / {{ proposal.nbMinVote }}
+                                - {{ proposal|nb_clarifications_ok }} / {{ proposal.nbMinVote }}
                                 {% elif proposal.status == "OBJECTION_ROUND" %}
-                                - {{ proposal|nb_user_objections_ok:request.user}} / {{ proposal.nbMinVote }}
+                                - {{ proposal|nb_objections_ok}} / {{ proposal.nbMinVote }}
                                 {% elif proposal.status == "DELIBERATION" %}
                                 - {{ proposal|nb_user_has_voted:request.user }} / {{ proposal.nbMinVote }}
                                 {% endif %}

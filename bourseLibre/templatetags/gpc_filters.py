@@ -4,16 +4,16 @@ import re
 register = template.Library()
 
 @register.filter(is_safe=True)
-def nb_user_has_voted(proposal, user):
-    return proposal.get_nb_user_has_voted(user)
+def nb_has_voted(proposal):
+    return proposal.get_nb_has_voted()
 
 @register.filter(is_safe=True)
-def nb_user_clarifications_ok(proposal, user):
-    return proposal.get_nb_user_clarifications_ok(user)
+def nb_clarifications_ok(proposal):
+    return proposal.get_nb_clarifications_ok()
 
 @register.filter(is_safe=True)
-def nb_user_objections_ok(proposal, user):
-    return proposal.get_nb_user_objections_ok(user)
+def nb_objections_ok(proposal):
+    return proposal.get_nb_objections_ok()
 
 @register.filter(is_safe=True)
 def user_has_voted(proposal, user):

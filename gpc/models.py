@@ -44,21 +44,24 @@ class Proposal(models.Model):
     def get_user_has_voted(self, user):
         return self.resolution_votes.filter(voter=user).exists()
 
-    def get_nb_user_has_voted(self, user):
-        return self.resolution_votes.filter(voter=user).count()
+    def get_nb_has_voted(self,):
+        return self.resolution_votes.all().count()
 
     def get_user_clarifications_ok(self, user):
         return self.clarifications_ok.filter(author=user).exists()
 
-    def get_nb_user_clarifications_ok(self, user):
-        return self.clarifications_ok.filter(author=user).count()
+    def get_nb_clarifications_ok(self,):
+        return self.clarifications_ok.all().count()
 
     def get_user_objections_ok(self, user):
         return self.objections_ok.filter(author=user).exists()
 
-    def get_nb_user_objections_ok(self, user):
-        return self.objections_ok.filter(author=user).count()
+    def get_nb_objections_ok(self,):
+        return self.objections_ok.filter().count()
 
+    @property
+    def pourcentageVotes(self,):
+        return str(int(self.get_nb_has_voted()/self.nbMinVote))
 
 class ClarificationQuestion(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name='clarifications')

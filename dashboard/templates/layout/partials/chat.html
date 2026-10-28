@@ -123,13 +123,30 @@
 
     <!-- Pied de page / Saisie (Fixe en bas) -->
     <div class="card-footer bg-white p-2 border-top flex-shrink-0">
-        <div class="input-group">
-            <button id="mic-btn" class="btn btn-outline-secondary btn-sm px-2" type="button" title="Maintenir ou cliquer pour enregistrer un vocal">
-            <i class="fa fa-microphone"></i>
-            </button>
-            <input type="text" id="chat-input" class="form-control form-control-sm" placeholder="Écrivez votre message...">
-            <div class="input-group-append">
-                <button id="chat-send-btn" class="btn btn-primary btn-sm px-3" type="button">Envoyer</button>
+            <div class="input-group">
+                <!-- Bouton Emoji -->
+                <button id="emoji-btn" class="btn btn-outline-secondary btn-sm px-2" type="button" title="Insérer un emoji">
+                    <i class="fa fa-smile"></i>
+                </button>
+                <!-- Bouton Microphone Vocal -->
+                <button id="mic-btn" class="btn btn-outline-secondary btn-sm px-2" type="button" title="Enregistrer un vocal">
+                    <i class="fa fa-microphone"></i>
+                </button>
+                <input id="chat-input" type="text" class="form-control form-control-sm" placeholder="Écrire un message..." autocomplete="off">
+                <button id="chat-send-btn" class="btn btn-primary btn-sm" type="button">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+            <!-- Petit panneau d'emojis rapides optionnel -->
+            <div id="emoji-picker-panel" class="bg-white border rounded shadow-sm p-2 mt-1" style="display: none; font-size: 18px;">
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">😊</span>
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">😂</span>
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">👍</span>
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">❤️</span>
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">🔥</span>
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">🎉</span>
+                <span class="emoji-option" style="cursor: pointer; margin-right: 8px;">🙏</span>
+                <span class="emoji-option" style="cursor: pointer;">😎</span>
             </div>
         </div>
     </div>
@@ -155,6 +172,9 @@
     const offlineOverlay = document.querySelector('#offline-overlay');
     const statusSpan = document.querySelector('#connection-status');
     const unreadBadge = document.querySelector('#unread-badge');
+
+    const emojiBtn = document.querySelector('#emoji-btn');
+    const emojiPickerPanel = document.querySelector('#emoji-picker-panel');
 
     let mediaRecorder;
     let audioChunks = [];
@@ -185,6 +205,14 @@
         };
 
     function connectWebSocket() {
+        const username = "{{ request.user.username|default:'' }}";
+
+        // Si l'utilisateur n'est pas connecté, on masque complètement le widget de chat
+        if (!username || username === "") {
+            if (chatToggleBtn) chatToggleBtn.style.display = 'none';
+            return;
+        }
+
         if (localStorage.getItem('chat_user_left') === 'true') {
             offlineOverlay.style.display = 'flex';
             statusSpan.textContent = "○ Hors ligne";
@@ -198,7 +226,7 @@
         intentionalClose = false;
         // 1. Get the ID of the last message saved locally
         const lastMessageId = localStorage.getItem('last_message_id') || 0;
-
+        console.log("LAAST id " + lastMessageId);
         // 2. Open WebSocket and pass last_id as a query parameter
         const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         const wsUrl = wsProtocol + window.location.host + '/permachat/chat_direct/?last_id=' + lastMessageId;
@@ -284,11 +312,12 @@
         toggleBtn.innerHTML = '💬';
     });
 
-micBtn.onclick = async function() {
+    micBtn.onclick = async function() {
     if (!isRecording) {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
+            // 1. Sauvegarder le flux dans mediaStream
+            mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(mediaStream);
             audioChunks = [];
 
             mediaRecorder.ondataavailable = event => {
@@ -296,15 +325,18 @@ micBtn.onclick = async function() {
             };
 
             mediaRecorder.onstop = async function() {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                // 2. LIBÉRER LE MICROPHONE : Arrêter toutes les pistes audio du flux
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    mediaStream = null;
+                }
 
-                // Convertir le Blob en Base64 pour l'envoyer dans le WebSocket
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                 const reader = new FileReader();
                 reader.readAsDataURL(audioBlob);
 
                 reader.onloadend = function() {
                     const base64Audio = reader.result;
-
                     if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
                         chatSocket.send(JSON.stringify({
                             'action': 'audio',
@@ -318,8 +350,8 @@ micBtn.onclick = async function() {
             mediaRecorder.start();
             isRecording = true;
             micBtn.classList.remove('btn-outline-secondary');
-            micBtn.classList.add('btn-danger'); // Le bouton devient rouge pendant l'enregistrement
-            micBtn.innerHTML = '<i class="fa fa-stop"></i>';
+            micBtn.classList.add('btn-danger');
+            micBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
 
         } catch (err) {
             console.error("Accès micro refusé :", err);
@@ -344,7 +376,9 @@ micBtn.onclick = async function() {
     function appendMessage(data) {
         const messageContainer = document.createElement('div');
         messageContainer.className = "d-flex align-items-start mb-4";
-
+        if (data.id) {
+            localStorage.setItem('last_message_id', data.id);
+        }
         messageContainer.innerHTML = `
             <!-- Avatar -->
             <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
@@ -508,4 +542,38 @@ micBtn.onclick = async function() {
         }
     });
     document.addEventListener("DOMContentLoaded", connectWebSocket);
+
+
+    // Afficher/Masquer le panneau d'emojis rapides au clic
+    emojiBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (emojiPickerPanel.style.display === 'none') {
+            emojiPickerPanel.style.display = 'block';
+        } else {
+            emojiPickerPanel.style.display = 'none';
+        }
+    };
+
+    // Insérer l'emoji cliqué dans l'input à la position du curseur
+    document.querySelectorAll('.emoji-option').forEach(span => {
+        span.onclick = function() {
+            const emoji = this.textContent;
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+
+            chatInput.value = chatInput.value.substring(0, start) + emoji + chatInput.value.substring(end);
+            chatInput.focus();
+            chatInput.setSelectionRange(start + emoji.length, start + emoji.length);
+
+            // Fermer le panneau après sélection
+            emojiPickerPanel.style.display = 'none';
+        };
+    });
+
+    // Fermer le panneau si on clique ailleurs dans le chat
+    document.addEventListener('click', function(e) {
+        if (!emojiPickerPanel.contains(e.target) && e.target !== emojiBtn && !emojiBtn.contains(e.target)) {
+            emojiPickerPanel.style.display = 'none';
+        }
+    });
 </script>

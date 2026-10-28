@@ -785,6 +785,14 @@ ONLINE_CHANNELS_KEY = "global_permachat"
 
 class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
+
+        # Récupérer l'utilisateur connecté
+        user = self.scope.get("user")
+
+        if not user.is_authenticated:
+            await self.close()
+            return
+
         self.room_name = "PermaChat"
         self.room_group_name = f"chat_{self.room_name}"
 
@@ -798,13 +806,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
         params = dict(param.split('=') for param in query_string.split('&') if '=' in param)
 
-        # Récupérer l'utilisateur connecté
-        user = self.scope.get("user")
-
-        if user and user.is_authenticated:
-            self.username = user.username
-        else:
-            self.username = "Un visiteur"
+        self.username = user.username
 
         await self.add_online_connection(self.channel_name, self.username)
         await self.broadcast_user_list()
@@ -820,8 +822,8 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         for msg in missed_messages:
             if msg.message_type == '0':
                 infos = await self.get_message_infos(msg)
-                avatar_url = infos[0]
-                profile_url = infos[1]
+                profile_url = infos[0]
+                avatar_url = infos[1]
                 message_url = infos[2]
                 username = infos[3]
 
@@ -935,6 +937,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     self.room_group_name,
                     {
                         'type': 'chat_message',
+                        'id':chat_msg.id,
                         'message': message,
                         'username': username,
                         'avatar_url': avatar_url,
@@ -983,6 +986,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                         self.room_group_name,
                         {
                             'type': 'audio_message',
+                            'id':chat_msg.id,
                             'user': chat_msg.user.username,
                             'profile_url': infos[0],
                             'avatar_url': infos[1],
@@ -1029,7 +1033,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def get_missed_messages(self, last_id):
-        return list(MessageGlobal.objects.filter().order_by('timestamp'))
+        return list(MessageGlobal.objects.filter(id__gt=last_id).order_by('timestamp'))
 
     @database_sync_to_async
     def get_infos_user(self, user):

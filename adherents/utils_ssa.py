@@ -18,7 +18,7 @@ class csvFile_form(forms.Form):
     fichier_csv_clients = forms.FileField(label="Selectionner CSV Orga", required=True, )
     type_fic = forms.ChoiceField(label="Production",
                                        help_text="Selectionner la production correspondant à votre code APE dans la liste",
-                                      choices=(('1', "Orgas"), ("2","Autre")))
+                                      choices=(('1', "Orgas"), ("2","Autre"), ("3","Ressources")))
     #fichier_csv_produits = forms.FileField(label="Selectionner CSV Produits", required=False, )
 
 @login_required
@@ -120,6 +120,51 @@ def lire_csv_clients2(request, csv_reader):
             msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
     return msg
 
+@login_required
+def lire_csv_clients_ressources(request, csv_reader):
+    if not request.user.is_superuser:
+        return "Déso, Vous n'etes pas autorisé a utiliser cette fonctionnalité"
+    asso = Asso.objects.get(slug=request.session["asso_slug"])
+    projet_courant = ProjetPhoning.objects.get(pk=request.session['projet_courant_pk'] )
+    msg = ""
+    for i, line in enumerate(csv_reader):
+        # if i == 0:
+        #    continue
+        try:
+            cles = line.keys()
+            if "Nom" in line and line["Nom"] and Contact.objects.filter(projet=projet_courant,
+                    nom=line["Nom"]):
+                msg += "<p> DEJA  " + str(line) + "#" + line["Nom"] + "#</p>"
+                continue
+
+            if  ("Commune" in line and line["Commune"]) or ("Téléphone" in line and line["Téléphone"]):
+                adres, created = Adresse.objects.get_or_create(rue=line["rue"] if 'rue' in cles else "",
+                                                               code_postal=line["CP"] if 'CP' in cles else "",
+                                                               commune=line["Commune"] if 'Commune' in cles else "",
+                                                               telephone=line["Téléphone"] if 'Téléphone' in cles else "")
+                adres.save()
+            else:
+                adres, created = Adresse.objects.get_or_create(rue="adresse inconnue")
+
+            contact, created = Contact.objects.get_or_create(
+                nom=line["Nom"] if 'Nom' in cles else "",
+                prenom=line["PRENOM"] if 'PRENOM' in cles else "",
+                adresse=adres,
+                email=line["Mail"] if 'Mail' in cles else "",
+                commentaire=line["FONCTION"],
+                nom_structure=line["POLE"] if 'POLE' in cles else "",
+                type_structure="Personne Ressource",
+                projet=projet_courant,
+            )
+            if created:
+                msg += "<p> ajoute " + str(line) + " / " + str(contact) + "</p>"
+            else:
+                msg += "<p>  deja present " + str(line) + " / " + str(contact) + "</p>"
+
+        except Exception as e:
+            msg += "<p>Erreur " + str(e) + " > " + str(i) + " " + str(line)
+    return msg
+
 
 @login_required
 def import_csv_orga_ssa(request, asso_slug):
@@ -134,6 +179,8 @@ def import_csv_orga_ssa(request, asso_slug):
                 m += lire_csv_clients(request, csv_reader)
             elif type == "2":
                 m += lire_csv_clients2(request, csv_reader)
+            elif type == "3":
+                m += lire_csv_clients_ressources(request, csv_reader)
             else:
                 m += "Type de fichier non reconnu"
 

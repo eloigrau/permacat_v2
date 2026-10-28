@@ -314,6 +314,8 @@ class Document(models.Model):
     def get_change_url(self):
         return reverse("photologue:modifierDocument", kwargs={"slug":self.slug})
 
+
+
     def save(self, sendMail=True, *args, **kwargs):
         emails = []
         if not self.id:
@@ -632,6 +634,7 @@ class ImageModel(models.Model):
         # to Photologue!
         super().delete()
         self.image.storage.delete(self.image.name)
+        self.image.delete()
 
 
 class Photo(ImageModel):

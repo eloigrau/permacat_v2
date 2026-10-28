@@ -34,4 +34,4 @@ def bool_to_ouinon(test):
 
 @register.filter(is_safe=True)
 def bool_to_avote(test):
-    return "J'ai déjà voté" if test else "Je n'ai pas encore voté"
+    return "J'ai voté" if test else "Je n'ai pas encore voté"

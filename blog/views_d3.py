@@ -446,20 +446,18 @@ def get_articles_asso_d3_hierar_dossier_simple(request, asso_slug):
 
     categorie = sorted(list(set([(v, Choix.get_categorie_from_id(v)) for v in articles.values_list('categorie', flat=True).distinct()])), key=lambda x:str.lower(x[1]))
 
-
-
-    dico = {"name":asso.nom, "children":[]}
+    dico = {"name": asso.nom, "children": []}
     for cat, nom in categorie: #parcourt des articles de l'asso non archives
         dico["children"].append({
-            "name":nom,
+            "name": nom,
             #"nb_comm": 0,
             "couleur": Choix.couleurs_lien["categorie"],
-            "url":reverse('blog:index_asso', kwargs={"asso": self.asso })+ "?categorie=" + art.categorie + "&ancre_navtab=dossier",
+            "url": reverse('blog:index_asso', kwargs={"asso": asso.slug })+ "?categorie=" + cat + "&ancre_navtab=dossier",
             "type": "dossier",
             "children": [{
                    # "nb_comm":Commentaire.objects.filter(article=art).count(),
                     "name": formatTitre(art.titre),
-                    "url":art.get_absolute_url(),
+                    "url": art.get_absolute_url(),
                     "couleur": Choix.couleurs_lien["article"] ,
                     "type": "article_epingle" if art.estEpingle else "article",
                     "children": None

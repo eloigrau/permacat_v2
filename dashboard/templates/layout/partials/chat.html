@@ -11,10 +11,23 @@
             right: 0 !important;
             bottom: 0 !important;
             width: 100% !important;
-            height: 90% !important; /* Prend 100% de la hauteur de l'écran */
+            max-height:65vh;/* Prend 100% de la hauteur de l'écran */
             margin: 0 !important;
             border-radius: 0 !important; /* Supprime les coins arrondis pour un effet natif */
         }
+    }
+
+    #chat-box{
+        display: none;
+        width: 380px;
+        max-width: calc(100vw - 30px);
+        height: 500px;
+        bottom: 65px;
+        right: 15px; z-index: 1050;
+        border-radius: 12px;
+        overflow: hidden;
+        height:500px;
+        max-height:80vh;/* Prend 100% de la hauteur de l'écran */
     }
     /* Menu déroulant des utilisateurs */
         #user-menu-container { position: relative; }
@@ -22,8 +35,6 @@
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
         }
@@ -72,12 +83,12 @@
     <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
         💬
     </button>
-<span id="unread-badge" class="position-absolute  start-50 translate-middle badge rounded-pill bg-info" style="display: none;">0</span>
+<span id="unread-badge" class="position-absolute  start-50 translate-middle badge rounded-pill bg-warning" style="display: none;">0</span>
 
 </div>
 
 <!-- Fenêtre de Chat (Card Bootstrap responsive avec correctif de scroll) -->
-<div id="chat-box" class="card shadow-lg position-fixed flex-column" style="display: none; width: 380px; max-width: calc(100vw - 30px); height: 500px; bottom: 90px; right: 15px; z-index: 1050; border-radius: 12px; overflow: hidden;">
+<div id="chat-box" class="card shadow-lg position-fixed flex-column">
 
     <!-- En-tête (Fixe) -->
     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 flex-shrink-0">
@@ -91,9 +102,9 @@
                     <div id="user-dropdown">
                         <ul id="user-list"></ul>
                     </div>
-                    </div>
-            <button id="leave-btn" class="btn btn-sm btn-warning" type="button"><i class="fa fa-door-open"></i></button>
+                    <button id="leave-btn" class="btn btn-sm btn-warning" type="button"><i class="fa fa-door-open"></i></button>
 
+                </div>
         </div>
         <button type="button" id="chat-close-btn" class="close text-white m-0 p-0" style="opacity: 0.9; font-size: 24px; outline: none;">
             <span>&times;</span>
@@ -113,6 +124,9 @@
     <!-- Pied de page / Saisie (Fixe en bas) -->
     <div class="card-footer bg-white p-2 border-top flex-shrink-0">
         <div class="input-group">
+            <button id="mic-btn" class="btn btn-outline-secondary btn-sm px-2" type="button" title="Maintenir ou cliquer pour enregistrer un vocal">
+            <i class="fa fa-microphone"></i>
+            </button>
             <input type="text" id="chat-input" class="form-control form-control-sm" placeholder="Écrivez votre message...">
             <div class="input-group-append">
                 <button id="chat-send-btn" class="btn btn-primary btn-sm px-3" type="button">Envoyer</button>
@@ -141,6 +155,12 @@
     const offlineOverlay = document.querySelector('#offline-overlay');
     const statusSpan = document.querySelector('#connection-status');
     const unreadBadge = document.querySelector('#unread-badge');
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+    const micBtn = document.querySelector('#mic-btn');
+
 
     // Connexion WebSocket Django Channels
     //const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -202,18 +222,18 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            console.log(data.type);
             // Gestion selon le type d'événement reçu du backend
             if (data.type === 'user_status') {
                 appendSystemMessage(data.message);
             } else if (data.type === 'chat_message') {
                 appendMessage(data);
+            }else if (data.type === "audio_message") {
+                appendMessageAudio(data);
             }else if (data.type === 'user_list') {
                 // Mise à jour de la liste des utilisateurs connectés
                 onlineCountSpan.textContent = data.users.length;
                 userListUl.innerHTML = '';
                 data.users.forEach(u => {
-                    console.log(u);
                     const li = document.createElement('li');
                     li.innerHTML = `<span style="color: #28a745;">●</span> ${u} ${u === username ? '(moi)' : ''}`;
                     userListUl.appendChild(li);
@@ -264,6 +284,56 @@
         toggleBtn.innerHTML = '💬';
     });
 
+micBtn.onclick = async function() {
+    if (!isRecording) {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async function() {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+
+                // Convertir le Blob en Base64 pour l'envoyer dans le WebSocket
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+
+                reader.onloadend = function() {
+                    const base64Audio = reader.result;
+
+                    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                        chatSocket.send(JSON.stringify({
+                            'action': 'audio',
+                            'user': username,
+                            'audio_data': base64Audio
+                        }));
+                    }
+                };
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            micBtn.classList.remove('btn-outline-secondary');
+            micBtn.classList.add('btn-danger'); // Le bouton devient rouge pendant l'enregistrement
+            micBtn.innerHTML = '<i class="fa fa-stop"></i>';
+
+        } catch (err) {
+            console.error("Accès micro refusé :", err);
+            alert("Veuillez autoriser l'accès au microphone.");
+        }
+    } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.classList.remove('btn-danger');
+        micBtn.classList.add('btn-outline-secondary');
+        micBtn.innerHTML = '<i class="fa fa-microphone"></i>';
+    }
+};
+
     // Affichage des messages de statut (connexion / déconnexion)
     function appendSystemMessage(text) {
         statusSpan.textContent = text;
@@ -301,6 +371,58 @@
                 <!-- Bulle de texte -->
                 <div class="p-2 px-3 rounded bg-white text-dark shadow-sm border" style="display: inline-block; max-width: 100%; word-break: break-word;">
                     ${escapeHtml(data.message)}
+                </div>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (chatBox.style.display !== 'flex' && data.user !== "System") {
+            unreadCount++;
+            unreadBadge.textContent = unreadCount;
+            unreadBadge.style.display = 'inline-block';
+        }
+    }
+
+// Affichage d'un message standard (avec avatar, menu déroulant et timestamp)
+    function appendMessageAudio(data) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = "d-flex align-items-start mb-4";
+        const formattedMessage = linkify(data.message);
+        const isMe = data.user === username;
+        messageContainer.innerHTML = `
+            <!-- Avatar -->
+            <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
+
+            <div class="flex-grow-1">
+                <!-- En-tête : Nom (Menu Dropdown) + Timestamp -->
+                <div class="d-flex justify-content-between align-items-center mb-1">
+
+                    <!-- Dropdown Bootstrap 4 sur l'auteur -->
+                    <div class="dropdown">
+                        <a class="font-weight-bold text-dark text-decoration-none dropdown-toggle small" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ${data.username}
+                        </a>
+                        <div class="dropdown-menu shadow-sm border-0" style="font-size: 0.8rem;">
+                            <a class="dropdown-item" href="${data.profile_url}">👤 Voir le profil</a>
+                            <a class="dropdown-item" href="${data.message_url}">✉️ Envoyer un message privé</a>
+                        </div>
+                    </div>
+
+                    <!-- Horodatage -->
+                    <span class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</span>
+                </div>
+
+                <!-- Bulle de texte -->
+                <div class="p-2 px-3 rounded bg-white text-dark shadow-sm border" style="display: inline-block; max-width: 100%; word-break: break-word;">
+                    <div class="d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}">
+                        <div class="p-2 rounded ${isMe ? 'bg-primary text-white' : 'bg-white border text-dark'} shadow-sm" style="max-width: 90%;">
+                            <audio controls style="height: 32px; width: 200px;">
+                                <source src="${data.message}" type="audio/webm">
+                                Votre navigateur ne supporte pas l'audio.
+                            </audio>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;

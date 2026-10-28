@@ -61,7 +61,6 @@ class Message(models.Model):
     class Meta:
         ordering = ('date_creation',)
 
-
     def __str__(self):
         return self.content
 
@@ -70,7 +69,9 @@ class MessageGlobal(models.Model):
     user = models.ForeignKey(Profil, related_name='messages_chat', on_delete=models.SET_NULL, blank=True, null=True)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    message_type = models.CharField(max_length=2, choices=(('0', 'MESSAGE'), ('1', 'SYSTEM')), default='0')
+    message_type = models.CharField(max_length=2, choices=(('0', 'MESSAGE'), ('1', 'SYSTEM'), ('2', 'AUDIO')), default='0')
+    audio_file = models.FileField(upload_to='chat_audio/', blank=True, null=True)  # Stockage des vocaux
 
     def __str__(self):
         return f"{self.user}: {self.message[:30]}"
+

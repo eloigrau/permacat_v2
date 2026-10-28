@@ -13,6 +13,9 @@ from tzlocal import get_localzone
 from datetime import timedelta
 from django.utils import timezone
 from django.core.cache import cache
+import base64
+from django.core.files.base import ContentFile
+
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -794,7 +797,6 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         # Parse query string to extract 'last_id' from localStorage
         query_string = self.scope['query_string'].decode()
         params = dict(param.split('=') for param in query_string.split('&') if '=' in param)
-        last_id = params.get('last_id', 0)
 
         # Récupérer l'utilisateur connecté
         user = self.scope.get("user")
@@ -807,6 +809,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         await self.add_online_connection(self.channel_name, self.username)
         await self.broadcast_user_list()
 
+        last_id = params.get('last_id', 0)
         try:
             last_id = int(last_id)
         except ValueError:
@@ -838,6 +841,22 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     'message': msg.message,
                     'id': msg.id,
                     'username': "system",
+                    'timestamp': msg.timestamp.strftime('%H:%M')
+                })
+            elif msg.message_type == '2':
+                infos = await self.get_message_infos(msg)
+                avatar_url = infos[0]
+                profile_url = infos[1]
+                message_url = infos[2]
+                username = infos[3]
+                await self.send_json({
+                    'type': 'audio_message',
+                    'message': msg.audio_file.url,
+                    'id': msg.id,
+                    'username':  username,
+                    'avatar_url': avatar_url,
+                    'profile_url': profile_url,
+                    'message_url': message_url,
                     'timestamp': msg.timestamp.strftime('%H:%M')
                 })
             else:
@@ -884,6 +903,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
         action = content.get('action', 'message')
         if action == 'join':
+            chat_msg = await self.save_message(username="system", message=f"{user} a rejoint le chat.", message_type='1')
             # Save and broadcast a system notification when user first connects
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -896,8 +916,8 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             if user and user.is_authenticated:
                 # Adaptez selon votre modèle de profil (ex: user.profile.avatar.url)
                 infos = await self.get_infos_user(user)
-                avatar_url = infos[0]
-                profile_url = infos[1]
+                profile_url = infos[0]
+                avatar_url = infos[1]
                 message_url = infos[2]
                 username = infos[3]
             else:
@@ -908,7 +928,8 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
             message = content.get('message', '')
             if message:
-                chat_msg = await self.save_message(user, message)
+                chat_msg = await self.save_message(username=username, message=message, message_type='0')
+
                 # Diffusion à tout le groupe
                 await self.channel_layer.group_send(
                     self.room_group_name,
@@ -925,7 +946,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
         elif action == 'leave':
             # 1. Enregistrer le message système de départ
-            chat_msg = await self.save_message("System", f"{user} a quitté le chat.", message_type="system")
+            #chat_msg = await self.save_message("System", f"{user} a quitté le chat.", message_type="1")
 
             # 2. Retirer immédiatement la connexion du cache Redis
             await self.remove_online_connection(self.channel_name)
@@ -938,19 +959,57 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                 self.room_group_name,
                 {
                     'type': 'chat_message_event',
-                    'id': chat_msg.id,
                     'user': "System",
-                    'message': chat_msg.message,
-                    'message_type': chat_msg.message_type,
-                    'timestamp': chat_msg.timestamp.strftime('%H:%M')
+                    'message': f"{user} a quitté le chat.",
+                    'message_type': '1',
+                    'timestamp': timestamp.strftime('%H:%M')
                 }
             )
+        elif action == 'audio':
+            audio_data = content.get('audio_data', '')
+            if audio_data:
+                try:
+                    # Décoder les données Base64 reçues du WebSocket
+                    format_header, imgstr = audio_data.split(';base64,')
+                    ext = format_header.split('/')[-1]  # ex: webm
+                    file_name = f"voice_{timezone.now().strftime('%Y%m%d_%H%M%S')}.{ext}"
+                    file_data = ContentFile(base64.b64decode(imgstr), name=file_name)
+
+                    # Sauvegarder dans le modèle
+                    chat_msg = await self.save_audio_message(user, file_data)
+                    infos = await self.get_infos_user(user)
+                    # Diffuser à tout le groupe via self.channel_layer (qui fonctionne déjà !)
+                    await self.channel_layer.group_send(
+                        self.room_group_name,
+                        {
+                            'type': 'audio_message',
+                            'user': chat_msg.user.username,
+                            'profile_url': infos[0],
+                            'avatar_url': infos[1],
+                            'message_url': infos[2],
+                            'username':  infos[3],
+                            'message': chat_msg.audio_file.url,  # On transmet l'URL du fichier sauvegardé
+                            'message_type': 'audio',
+                            'timestamp': chat_msg.timestamp.strftime('%H:%M')
+                        }
+                    )
+                except Exception as e:
+                    print(f"Erreur lors du traitement du fichier audio : {e}")
 
     async def chat_message(self, event):
-        chat_msg = await self.save_message(event['user'] if 'user' in event else event['username'], event['message'], message_type='0')
         await self.send_json({
             'type': 'chat_message',
-            'id': chat_msg.id,
+            'message': event['message'],
+            'username': event['username'],
+            'avatar_url': event['avatar_url'],
+            'profile_url': event['profile_url'],
+            'timestamp': event['timestamp']
+        })
+
+
+    async def audio_message(self, event):
+        await self.send_json({
+            'type': 'audio_message',
             'message': event['message'],
             'username': event['username'],
             'avatar_url': event['avatar_url'],
@@ -959,11 +1018,13 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         })
 
     @database_sync_to_async
-    def save_message(self, user, message, message_type="message"):
-        if type == 'message':
-            return MessageGlobal.objects.create(user=user, message=message, message_type='0')
-        else:
-            return MessageGlobal.objects.create(user=None, message=message, message_type='1')
+    def save_message(self, username, message, message_type="0"):
+        try:
+            profil = Profil.objects.get(username=username)
+            return MessageGlobal.objects.create(user=profil, message=message, message_type=message_type)
+        except:
+            return MessageGlobal.objects.create(message=message, message_type=message_type)
+
 
 
     @database_sync_to_async
@@ -1030,4 +1091,13 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                 'type': 'user_list_event',
                 'users': users
             }
+        )
+
+    @database_sync_to_async
+    def save_audio_message(self, user, file_data):
+        return MessageGlobal.objects.create(
+            user=user,
+            audio_file=file_data,
+            message='Enregistrement',
+            message_type='2'
         )

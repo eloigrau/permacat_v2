@@ -2,7 +2,13 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .models import Room, Message
 from django.utils.text import slugify
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .models import MessageGlobal
+from .consumers import ONLINE_CHANNELS_KEY
+from bourseLibre.models import Profil
 
 
 @login_required
@@ -60,3 +66,4 @@ def paint(request, room_name):
         room.save()
     messages = Message.objects.filter(room=room)[:30]
     return render(request, "permachat/paint.html", {"room": room, "messages":messages})
+

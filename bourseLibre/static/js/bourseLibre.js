@@ -287,3 +287,23 @@ function addMessage(text, level = 'info') {
     // Ajout dans la liste <ol id="messages-list">
     $('#messages-list').append($li);
 }
+
+function linkify(text) {
+    if (!text) return '';
+    // 1. Échapper les caractères HTML pour éviter les failles XSS
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    const safeText = text.replace(/[&<>"']/g, function(m) { return map[m]; });
+
+    // 2. Expression régulière pour détecter les URL et les transformer en balises <a>
+    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+    return safeText.replace(urlRegex, function(url) {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="${username === data_user ? 'text-white' : 'text-primary'} text-decoration-underline">${url}</a>`;
+    });
+}

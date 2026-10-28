@@ -143,7 +143,7 @@
                                 {% elif proposal.status == "OBJECTION_ROUND" %}
                                 - {{ proposal|nb_objections_ok}} / {{ proposal.nbMinVote }}
                                 {% elif proposal.status == "DELIBERATION" %}
-                                - {{ proposal|nb_user_has_voted:request.user }} / {{ proposal.nbMinVote }}
+                                - {{ proposal|nb_has_voted }} / {{ proposal.nbMinVote }}
                                 {% endif %}
                             </span>
                         </div>
@@ -159,13 +159,13 @@
                         </div>
                         <div>
                         {% if proposal.status == "CLARIFICATION" %}
-                        <span><i class="bi bi-person me-1"></i>{{ proposal|nb_user_clarifications_ok:request.user }} / {{ proposal.nbMinVote }}</span>
+                        <span><i class="bi bi-person me-1"></i>{{ proposal|nb_clarifications_ok }} / {{ proposal.nbMinVote }}</span>
                         <span><i class="bi bi-person me-1"></i>{{ proposal|user_clarifications_ok:request.user|bool_to_avote }} </span>
                         {% elif proposal.status == "OBJECTION_ROUND" %}
-                        <span><i class="bi bi-person me-1"></i>{{ proposal|nb_user_objections_ok:request.user}} / {{ proposal.nbMinVote }}</span>
+                        <span><i class="bi bi-person me-1"></i>{{ proposal|nb_objections_ok}} / {{ proposal.nbMinVote }}</span>
                         <span><i class="bi bi-person me-1"></i>{{ proposal|user_objections_ok:request.user|bool_to_avote}}</span>
                         {% elif proposal.status == "DELIBERATION" %}
-                        <span><i class="bi bi-person me-1"></i>{{ proposal|nb_user_has_voted:request.user }} / {{ proposal.nbMinVote }}</span>
+                        <span><i class="bi bi-person me-1"></i>{{ proposal|nb_has_voted }} / {{ proposal.nbMinVote }}</span>
                         <span><i class="bi bi-person me-1"></i>{{ proposal|user_has_voted:request.user|bool_to_avote }} </span>
                         {% endif %}
                         </div>

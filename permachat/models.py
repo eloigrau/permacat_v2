@@ -75,3 +75,12 @@ class MessageGlobal(models.Model):
     def __str__(self):
         return f"{self.user}: {self.message[:30]}"
 
+# Receive the pre_delete signal and delete the file associated with the model instance.
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+
+@receiver(pre_delete, sender=MessageGlobal)
+def mymodel_delete(sender, instance, **kwargs):
+    # Pass false so FileField doesn't save the model.
+    if instance.audio_file:
+        instance.audio_file.delete(False)

@@ -1069,3 +1069,13 @@ class Document_recherche(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE, null=True, blank=True,
                                  help_text=mark_safe("<p style='color:teal'>(écrire ci-dessus une partie du titre recherché)</p>")
                                )
+
+
+# Receive the pre_delete signal and delete the file associated with the model instance.
+from django.db.models.signals import pre_delete
+from django.dispatch.dispatcher import receiver
+
+@receiver(pre_delete, sender=Document)
+def document_delete(sender, instance, **kwargs):
+    # Pass false so FileField doesn't save the model.
+    instance.doc.delete(False)

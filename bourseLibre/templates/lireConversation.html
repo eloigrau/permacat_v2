@@ -1,7 +1,6 @@
 {% extends 'base_forum.html' %}
 {% load blog_filters %}
 {% load avatar_tags %}
-{%block message%}{%endblock%}
 
 {%block bodyEntete%} style="visibility: collapse;" {%endblock%}
 {% block subtitle %}
@@ -13,9 +12,7 @@
 {% endblock %}
 {% block content %}
 <div class="anchor_blank" id="idConversation"></div>
-
 {% include 'pagination_new.html' %}
-
 <div class="conversation">
     <div class="conversation-container">
         {% for comment in page_obj %}
@@ -57,35 +54,6 @@
     </div>
 </div>
 
-{% comment %}
-
-{% for mess in page_obj %}
-
-{% ifchanged %}
-<div class="row msg-date">
-    <div class="col-sm-12">
-        <p class="infos textcenter">{{ mess.date_creation|date:"DATE_FORMAT" }}</p>
-    </div>
-</div>
-{% endifchanged %}
-<div class="row {% if mess.auteur.id == request.user.id %} msg-auteur  {%else%} msg-destinataire{%endif%}">
-    <div class="col-sm-2 col-md-3 col-lg-1">
-        <p class="infos  textepetit">
-            {{ mess.date_creation|date:"G:i" }} {% ifchanged %}, <a href="{% url 'profil' mess.auteur.id %}">
-            {{mess.auteur}}</a>{% endifchanged %}
-            {% if request.user == mess.auteur %}
-            <a class="boutonediter" href="{{ mess.get_edit_url  }}" role="button"><i class="fa fa-edit"></i></a>
-            {% endif %}
-        </p>
-    </div>
-    <div class=" col-sm-10 col-md-9 col-lg-10 message ">
-        <p>{{ mess.message|safe }}</p>
-    </div>
-</div>
-
-{% endfor %}
-
-{% endcomment %}
 {% include 'pagination_new.html' %}
 
 <hr>
@@ -121,11 +89,11 @@
 {% block scriptblock %}
 <script>
 function toggle_visibility_class() {
-       var e = $(".pascetteannee");
-       if(e.length){
-              e.toggleClass("invisible visible");
-       }
-       $('.btn-detail-comments').removeClass('visible').addClass('invisible');
+   var e = $(".pascetteannee");
+   if(e.length){
+          e.toggleClass("invisible visible");
+   }
+   $('.btn-detail-comments').removeClass('visible').addClass('invisible');
 }
 
 
@@ -140,7 +108,19 @@ function toggle_visibility_class() {
              btn.html( `envoi en cours, veuillez patientez...` );
           }, 60000);
     });
+
 });
 
+{% if dernierMessage_id %}
+document.addEventListener('DOMContentLoaded', function() {
+    const targetElement = document.querySelector('#comm_{{dernierMessage_id}}');
+    if (targetElement) {
+        targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center' // Centre l'élément à l'écran
+        });
+    }
+});
+{% endif %}
 </script>
 {% endblock %}

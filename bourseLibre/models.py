@@ -32,6 +32,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from taggit.managers import TaggableManager
+import uuid
 
 from webpush import send_user_notification
 from .constantes import Choix, DEGTORAD, get_bx_icon, get_date_text
@@ -50,8 +51,8 @@ def get_categorie_from_subcat(subcat):
 LATITUDE_DEFAUT = '42.6976'
 LONGITUDE_DEFAUT = '2.8954'
 
-#from django.contrib.gis.db import models as models_gis
 class Adresse(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     rue = models.CharField(max_length=200, blank=True, null=True)
     code_postal = models.CharField(max_length=5, blank=True, null=True, default="")
     commune = models.CharField(max_length=50, blank=True, null=True, default="")
@@ -81,16 +82,16 @@ class Adresse(models.Model):
 
     @property
     def get_url_map(self):
-        return reverse('voirLieu',  kwargs={'id_lieu': self.id})
+        return reverse('voirLieu',  kwargs={'uuid_lieu': self.uuid})
 
     def __str__(self):
         if self.commune:
-            return "("+str(self.id)+") " + str(self.commune)
+            return str(self.commune)
         else:
-            return "("+str(self.id)+") " + str(self.code_postal)
+            return str(self.code_postal)
 
     def getStrAll(self):
-        return  "(%d) %s %s %s %s" %(self.id, self.rue, self.commune, self.code_postal, self.telephone)
+        return "(%d) %s %s %s %s" %(self.id, self.rue, self.commune, self.code_postal, self.telephone)
 
     @property
     def estLieAUnObjet(self):
@@ -1339,7 +1340,7 @@ def getOrCreateConversation(nom1, nom2):
 class Type_Salon(models.IntegerChoices):
     PUBLIC = 0, _('Public')
     PRIVE = 1, _('Privé (sur invitation)')
-    ASSO = 2, _("Réservé à tous les membres d'un groupe du site")
+    ASSO = 2, _("Réservé à tous les membres du groupe")
 
 class Salon(models.Model):
     titre = models.CharField(max_length=250)

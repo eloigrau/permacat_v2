@@ -1076,6 +1076,11 @@ def lireConversation(request, destinataire):
     messages = Message.objects.filter(conversation=conversation).order_by("date_creation")
     profil_destinataire = Profil.objects.get(username=destinataire)
     paginator = Paginator(messages, 25) # Show 10 contacts per page.
+    if messages:
+        dernierMessage_id = messages.reverse()[0].id
+    else:
+        dernierMessage_id = None
+
     if not 'page' in request.GET:
         page_number = paginator.num_pages
     else:
@@ -1128,7 +1133,7 @@ def lireConversation(request, destinataire):
             #             sujet + "\n" + message + "\n xxx \n" + str(profil_destinataire.email) + "\n erreur : " + str(inst))
         return redirect(message.get_absolute_url())
 
-    return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':profil_destinataire})
+    return render(request, 'lireConversation.html', {'conversation': conversation, 'form': form, 'page_obj': page_obj, 'destinataire':profil_destinataire, "dernierMessage_id":dernierMessage_id})
 
 
 @login_required
@@ -1139,10 +1144,11 @@ def partagerPosition(request, slug_conversation):
     if form_adresse.is_valid():
         adresse = form_adresse.save()
         try :
-            url = reverse('voirLieu', kwargs={'id_lieu':adresse.id})
-            mess = request.user.username + "<a href='" + url + ">" + \
-                   " a partagé une position avec vous</a> (<a href='"+adresse.getGoogleUrl + \
-                   "' target='_blank'  rel='noopener noreferrer nofollow'>voir sur google</a>)"
+            url = reverse('voirLieu', kwargs={'uuid_lieu':adresse.uuid})
+            mess = request.user.username  + \
+                   " a partagé une position avec vous : <a href='" + url + "'>voir sur Perma.Cat</a> - "+ \
+                    "<a href='"+adresse.getGoogleUrl + \
+                   "' target='_blank'  rel='noopener noreferrer nofollow'>voir sur GoogleMaps</a>)"
             message = Message(message=mess, conversation=conversation, auteur=request.user)
             message.save()
         except:
@@ -1155,14 +1161,8 @@ def partagerPosition(request, slug_conversation):
 
 
 @login_required
-def voirLieu(request, id_lieu):
-    lieux = [Adresse.objects.get(id=id_lieu), ]
-    titre = lieux[0]
-    return render(request, 'carte_adresses.html', {'titre':titre, "lieux":lieux})
-
-@login_required
-def voirLieuInfo(request, id_lieu):
-    lieux = [Adresse.objects.get(id=id_lieu), ]
+def voirLieu(request, uuid_lieu):
+    lieux = [Adresse.objects.get(uuid=uuid_lieu), ]
     titre = lieux[0]
     return render(request, 'carte_adresses.html', {'titre':titre, "lieux":lieux})
 

@@ -244,7 +244,7 @@ urlpatterns = [
     re_path(r'^activity/', include('actstream.urls')),
 
     path(r'partagerPosition/<str:slug_conversation>', views.partagerPosition, name='partagerPosition'),
-    path(r'voirLieu/<str:id_lieu>', views.voirLieu, name='voirLieu'),
+    path(r'voirLieu/<uuid:uuid_lieu>', views.voirLieu, name='voirLieu'),
 #    path(r'wiki_ecovillage_notifications/', include('django_nyt.urls')),
 #    path(r'wiki_ecovillage/', include('wiki.urls')),
 

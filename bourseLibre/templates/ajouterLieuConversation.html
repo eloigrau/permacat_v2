@@ -67,26 +67,7 @@
             });
         });
 }
-$('.example').leafletLocationPicker({
-  alwaysOpen: false,
-  {% comment %}
-  className: baseClassName,
-  map: yourmap,
-  location: yourmap.center,
-  {% endcomment %}
-  locationFormat: '{lat}{sep}{lng}',
-  locationMarker: true,
-  locationDigits: 6,
-  locationSep: ',',
-  position: 'topright',
-  layer: 'OSM',
-  height: 140,
-  width: 200,
-  event: 'click',
-  cursorSize: '30px',
-  onChangeLocation: $.noop,
-  mapContainer: "#yourmap"
-});
+
 </script>
 {% leaflet_map "yourmap" callback="window.map_init_basic" %}
 </div>

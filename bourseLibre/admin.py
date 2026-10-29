@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from .models import (Adresse, Produit, Panier, MessageAdmin, Item, Adhesion_asso, Adhesion_permacat,
                      Asso, MessageGeneral, Conversation, InscriptionNewsletter, InscriptionNewsletterAsso,
-                     InvitationDansSalon, InscritSalon, Monnaie, Lien_AssoSalon)
+                     InvitationDansSalon, InscritSalon, Monnaie, Lien_AssoSalon, Message)
 from blog.models import (Article, Projet, FicheProjet, Commentaire, Discussion, CommentaireProjet, Evenement,
                          EvenementAccueil, AdresseArticle
                          )

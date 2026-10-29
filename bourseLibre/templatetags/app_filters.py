@@ -183,16 +183,18 @@ def raccourcirTempsStr(date):
 
 
 def testeEtRemplaceMentionProfil(test):
-    if Profil.objects.filter(username__iexact=test).exists():
-        return '<a href="/accounts/profil/'+ test + '/"> '+test +'</a>'
-    return test
+    try:
+        p = Profil.objects.get(username__iexact=test)
+        return p.get_absolute_url()
+    except:
+        return test
 
 @register.filter(name='usermention', is_safe=True)
 @stringfilter
 def usermention(value):
-    profils = [v for v in username_re.findall(value) if Profil.objects.filter(username__iexact=v).exists()]
-    for p in profils:
-        value = value.replace('@' + p,  '<a href="/accounts/profil/'+ p + '/">@'+ p +'</a>')
+    profils = [(v, Profil.objects.get(username__iexact=v)) for v in username_re.findall(value) if Profil.objects.filter(username__iexact=v).exists()]
+    for nom, p in profils:
+        value = value.replace('@' + nom,  '<a href="' + p.get_absolute_url() +'">@'+ p.username +'</a>')
     #value = re.sub(username_re, testeEtRemplaceMentionProfil, value)
     #value = re.sub(username_re, r'<a href="/accounts/profil/\1/"> @\1</a>', value)
     return value

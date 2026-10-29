@@ -320,7 +320,7 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
     noeuds.ajouterLienArticleCategorie(art)
     noeuds.ajouterLienArticleDocumentsAteliers(art)
 
-    for art in Article.objects.filter(asso=asso, categorie=art.categorie):
+    for art in Article.objects.filter(asso=asso, categorie=art.categorie, estArchive=False):
         noeuds.ajouterNoeudArticle(art)
         noeuds.ajouterLienArticleCategorie(art)
 

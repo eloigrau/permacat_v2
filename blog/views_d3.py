@@ -323,6 +323,7 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
     for art in Article.objects.filter(asso=asso, categorie=art.categorie, estArchive=False):
         noeuds.ajouterNoeudArticle(art)
         noeuds.ajouterLienArticleCategorie(art)
+        noeuds.ajouterLienArticleDocumentsAteliers(art)
 
     for liens in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
             .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):

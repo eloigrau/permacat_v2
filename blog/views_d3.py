@@ -108,7 +108,14 @@ class Noeuds():
         self.rayon = {"article":20, "categorie":30, "projet":20, "centre":35, "atelier":14, "document":14, "salon":14, "doc_ptg":14}
         self.tailleTexte = {"article":8, "categorie":9, "projet":9, "centre":12, "atelier":6, "document":6, "salon":6, "doc_ptg":5}
         if projetAuCentre or categorieAuCentre:
-            self.ajouterNoeud(999999, "Articles", "group", reverse("blog:index_asso", kwargs={"asso":self.asso}), "centre" )
+            self.ajouterNoeud(noeud_id=999999,
+                              nom="Articles",
+                              label="Articles",
+                              group="group",
+                              url=reverse("blog:index_asso", kwargs={"asso":self.asso}),
+                              asso=self.asso,
+                              type_noeud="centre")
+
         self.lienDossierArticles = lienDossierArticles
         self.projetAuCentre = projetAuCentre
         self.categorieAuCentre = categorieAuCentre
@@ -175,7 +182,13 @@ class Noeuds():
 
     def ajouterNoeudProjet(self, proj):
         id = self.get_projet_id(proj.id)
-        cree = self.ajouterNoeud(id, "Projet : " + formatTitre(proj.titre), "Projet", proj.get_absolute_url(), "projet")
+        cree = self.ajouterNoeud(noeud_id=id,
+                                 nom="Projet : " + formatTitre(proj.titre),
+                                 label=formatTitre(proj.titre),
+                                 group="projet",
+                                 url=proj.get_absolute_url(),
+                                 asso=proj.asso,
+                                 type_noeud="projet")
         if cree and self.projetAuCentre:
             self.ajouterLien(id, 999999,  type_lien="projet")
         return id
@@ -249,7 +262,7 @@ class Noeuds():
         self.ajouterLien(art2.id, art1.id, type_lien)
 
     def ajouterNoeudsEtLiens_projet(self, article, proj2):
-        self.ajouterNoeud(article.id, "Article : " + article.titre, article.categorie, article.get_absolute_url(), "article")
+        self.ajouterNoeud(article.id, "Article : " + article.titre, article.titre, article.categorie, article.get_absolute_url(), article.asso, "article")
         id = self.ajouterNoeudProjet(proj2)
         self.ajouterLien(id, article.id,  type_lien="projet")
 

@@ -149,7 +149,8 @@ def contact_supprimer(request, asso_slug, contact_pk):
     #if not request.user.has_perm(request.session["request.session.asso_slug"].slug + '_delete_contact'):
     asso = testIsMembreAsso(request, asso_slug)
     contact = get_object_or_404(Contact, pk=contact_pk)
-    contact.adresse.delete()
+    if contact.adresse:
+        contact.adresse.delete()
     contact.delete()
     return redirect('adherents:phoning_projet_courant', asso_slug=asso_slug)
 

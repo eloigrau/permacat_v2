@@ -234,7 +234,7 @@ class Noeuds():
         cree = self.ajouterNoeud(id,
                           nom="Dossier : " + art.get_categorie_display(),
                           label=art.get_categorie_display(),
-                          group="Dossier : " + art.get_categorie_display(),
+                          group=art.get_categorie_display(),
                           url=reverse('blog:index_asso', kwargs={"asso": self.asso}) + "?categorie=" + art.categorie + "&ancre_navtab=dossier",
                           asso=art.asso.nom,
                           type_noeud="categorie")
@@ -317,8 +317,12 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
 
     noeuds = Noeuds(asso_slug, categorieAuCentre=False)
     noeuds.ajouterNoeudArticle(art, type_noeud="centre")
-    #noeuds.ajouterLienArticleCategorie(art)
+    noeuds.ajouterLienArticleCategorie(art)
     noeuds.ajouterLienArticleDocumentsAteliers(art)
+
+    for art in Article.objects.filter(asso=asso, categorie=art.categorie):
+        noeuds.ajouterNoeudArticle(art)
+        noeuds.ajouterLienArticleCategorie(art)
 
     for liens in (ArticleLiens.objects.exclude(article__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
             .filter(Q(article_lie__estArchive=False) & (Q(article=art) | Q(article_lie=art)))):

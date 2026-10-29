@@ -35,8 +35,8 @@
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3' asso_slug=request.session.asso_slug %}">
-                        Liens articles entreux
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_slug=request.session.asso_slug %}">
+                        Réseau Par Dossier
                     </a>
                 </li>
                 {% if request.user.is_superuser %}
@@ -46,8 +46,8 @@
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">
-                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3_network_dossier' asso_slug=request.session.asso_slug %}">
-                        liens Dossier
+                    <a class="dropdown-item" href="{% url 'blog:voir_articles_liens_d3' asso_slug=request.session.asso_slug %}">
+                        Liens articles entreux
                     </a>
                 </li>
                 <li class="nav-item nav-jardin">

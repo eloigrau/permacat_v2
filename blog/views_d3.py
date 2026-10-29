@@ -7,6 +7,7 @@ from .models import Article, Salon, Projet, DocumentPartage, CommentaireProjet, 
 from .views import get_tags_asso, get_articlesParTag
 from django.contrib.auth.decorators import login_required
 from bourseLibre.utils import testIsMembreAsso
+from bourseLibre.models import Asso
 from ateliers.models import Atelier, CommentaireAtelier
 from django.db.models import Q
 from photologue.models import Document
@@ -104,16 +105,16 @@ class Noeuds():
     docptg_id = {}
 
     def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
-        self.asso = asso_slug
+        self.asso = Asso.objects.get(slug=asso_slug)
         self.rayon = {"article":20, "categorie":30, "projet":20, "centre":35, "atelier":14, "document":14, "salon":14, "doc_ptg":14}
         self.tailleTexte = {"article":8, "categorie":9, "projet":9, "centre":12, "atelier":6, "document":6, "salon":6, "doc_ptg":5}
         if projetAuCentre or categorieAuCentre:
             self.ajouterNoeud(noeud_id=999999,
-                              nom="Articles",
-                              label="Articles",
+                              nom="Dossiers",
+                              label="Dossiers",
                               group="group",
-                              url=reverse("blog:index_asso", kwargs={"asso":self.asso}),
-                              asso=self.asso,
+                              url=reverse("blog:index_asso", kwargs={"asso":self.asso.slug}),
+                              asso=self.asso.nom,
                               type_noeud="centre")
 
         self.lienDossierArticles = lienDossierArticles
@@ -187,7 +188,7 @@ class Noeuds():
                                  label=formatTitre(proj.titre),
                                  group="projet",
                                  url=proj.get_absolute_url(),
-                                 asso=proj.asso,
+                                 asso=proj.asso.nom,
                                  type_noeud="projet")
         if cree and self.projetAuCentre:
             self.ajouterLien(id, 999999,  type_lien="projet")
@@ -248,7 +249,7 @@ class Noeuds():
                           nom="Dossier : " + art.get_categorie_display(),
                           label=art.get_categorie_display(),
                           group=art.get_categorie_display(),
-                          url=reverse('blog:index_asso', kwargs={"asso": self.asso}) + "?categorie=" + art.categorie + "&ancre_navtab=dossier",
+                          url=reverse('blog:index_asso', kwargs={"asso": self.asso.slug}) + "?categorie=" + art.categorie + "&ancre_navtab=dossier",
                           asso=art.asso.nom,
                           type_noeud="categorie")
         self.ajouterNoeudArticle(art)
@@ -262,7 +263,7 @@ class Noeuds():
         self.ajouterLien(art2.id, art1.id, type_lien)
 
     def ajouterNoeudsEtLiens_projet(self, article, proj2):
-        self.ajouterNoeud(article.id, "Article : " + article.titre, article.titre, article.categorie, article.get_absolute_url(), article.asso, "article")
+        self.ajouterNoeud(article.id, "Article : " + article.titre, article.titre, article.categorie, article.get_absolute_url(), article.asso.nom, "article")
         id = self.ajouterNoeudProjet(proj2)
         self.ajouterLien(id, article.id,  type_lien="projet")
 
@@ -296,7 +297,7 @@ def get_articles_asso_d3_network(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
 
     articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()) \
-                                .filter(estArchive=False, asso=asso)
+                                .filter(estArchive=False, asso=asso.nom)
 
     noeuds = Noeuds(asso_slug)
     for art in articles: #parcourt des articles de l'asso non archives
@@ -313,7 +314,7 @@ def get_articles_asso_d3_network(request, asso_slug):
 
         for liens in ArticleLienProjet.objects.exclude(
             projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
-            projet_lie__estArchive=False, projet_lie__asso=asso, article=art):
+            projet_lie__estArchive=False, projet_lie__asso=asso.nom, article=art):
             noeuds.ajouterNoeudsEtLiens_projet(art, liens.projet_lie)
 
         noeuds.ajouterLienArticleCategorie(art)

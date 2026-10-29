@@ -3,10 +3,10 @@
 {% block subtitle %}
 <h4 class="textcenter">Visualisation des articles du Forum</h4>
 <p class="textcenter"><small>(Cliquer sur un cercle, zoomez avec la mollette)</small></p>
-<h6 class="textcenter">Noeud cliqué : </h6>
+
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8" >
-      <div id="lien" class="textcenter"><a href=""></a></div>
+      <div id="lien" class="textcenter btn btn-outline-info"><a href=""></a></div>
   </div>
 </div>
 {% endblock %}
@@ -15,10 +15,9 @@
 
 d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=request.session.asso_slug %}")
 .then(function(data) {// Specify the dimensions of the chart.
-  const width = 928;
-  const height = 600;
+  const width = $(window).width()*0.98;
+  const height = $(window).height()*0.95;
 
-//console.log(data)
 
 // -1- Create a tooltip div that is hidden by default:
   const tooltip = d3.select("#my_dataviz")
@@ -55,15 +54,107 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=request.se
 
   // Specify the color scale.
   const color = d3.scaleOrdinal(d3.schemeCategory10);
+  const color2 = d3.scaleOrdinal(d3.schemeCategory10);
 
   // The force simulation mutates links and nodes, so create a copy
   // so that re-evaluating this cell produces the same result.
   const links = data.links.map(d => ({...d}));
   const nodes = data.nodes.map(d => ({...d}));
 
+    const centralNode = nodes.find(d => d.type_noeud === "centre");
+
+    if (centralNode) {
+        centralNode.fx = width / 2;  // Fixe la position X au centre
+        centralNode.fy = height / 2;  // Fixe la position Y au centre
+    }
+
+
+    const groups = Array.from(
+        new Map(nodes.map(d => [d.group, d.group])).entries()
+    ).map(([group, name]) => ({ group, name }));
+
+    const color_cercle = Array.from(
+        new Map(nodes.map(d => [d.asso, d.asso])).entries()
+    ).map(([asso, nom_asso]) => ({ asso, nom_asso }));
+
+
+const legend = d3.select("#my_dataviz") // Or select your container div e.g., d3.select("#chart-container")
+  .append("div")
+  .attr("class", "chart-legend")
+  .style("position", "absolute")
+  .style("top", "20px")
+  .style("right", "20px")
+  .style("background", "rgba(255, 255, 255, 0.9)")
+  .style("padding", "12px")
+  .style("border-radius", "6px")
+  .style("box-shadow", "0 2px 8px rgba(0,0,0,0.15)")
+  .style("font-family", "sans-serif")
+  .style("font-size", "12px")
+  .style("pointer-events", "none"); // Allows clicks to pass through if needed
+
+
+const legendItem2 = legend.selectAll(".legend-item")
+  .data(color_cercle)
+  .join("div")
+  .style("display", "flex")
+  .style("align-items", "center")
+  .style("margin-bottom", "6px");
+
+// 4. Add the colored circle symbol
+legendItem2.append("div")
+  .style("width", "12px")
+  .style("height", "12px")
+  .style("border-radius", "50%")
+  .style("background-color", "fff")
+  .style("border", "3px solid")
+  .style("border-color", d => color2(d.asso))
+  .style("margin-right", "8px");
+
+// 5. Add the text label
+legendItem2.append("span")
+  .style("color", "#333")
+  .text(d => d.asso);
+
+
+// 3. Create a row for each group item
+const legendItem = legend.selectAll(".legend-item")
+  .data(groups)
+  .join("div")
+  .style("display", "flex")
+  .style("align-items", "center")
+  .style("margin-bottom", "6px");
+
+// Remove margin for the last item
+legendItem.filter((d, i, nodes) => i === nodes.length - 1)
+  .style("margin-bottom", "0");
+
+// 4. Add the colored circle symbol
+legendItem.append("div")
+  .style("width", "12px")
+  .style("height", "12px")
+  .style("border-radius", "50%")
+  .style("background-color", d => color(d.group))
+  .style("border", "1px solid #fff")
+  .style("margin-right", "8px");
+
+// 5. Add the text label
+legendItem.append("span")
+  .style("color", "#333")
+  .text(d => d.name);
+//console.log(data)
+
   // Create a simulation with several forces.
   const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id))
+      .force("link", d3.forceLink(links)
+        .id(d => d.id) // Crucial : permet à d.source et d.target de devenir des objets
+        .distance(d => {
+            // Distance dynamique selon le groupe
+            if (d.source.group === d.target.group) {
+                return 70; // Liens plus courts pour un même groupe (effet "cluster")
+            } else {
+                return 30; // Liens plus longs entre des groupes différents
+            }
+        }))
       .force("charge", d3.forceManyBody())
       .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
@@ -86,19 +177,34 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=request.se
     .selectAll()
     .data(links)
     .join("line")
-      .attr("stroke-width", d => Math.sqrt(d.value));
+      .attr("stroke-width", d => d.value);
 
   const node = svg.append("g")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1.5)
     .selectAll()
     .data(nodes)
     .join("circle")
-      .attr("r", d => d.rayon)
-      .attr("fill", d => color(d.group))
-      .attr("xlink:href", function(d) {return d.url});
+        .attr("r", d => d.rayon)
+        .attr("fill", d => color(d.group))
+        .attr("stroke", d => color2(d.asso))
+        .attr("stroke-width", 2)
+        .attr("xlink:href", function(d) {return d.url});
+
+    const labels = svg.append("g")
+      .selectAll("text")
+      .data(nodes)
+      .join("text")
+        .text(d => d.label)
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .attr("font-size", d => d.tailleTexte)
+        .attr("fill", "#000")
+        .attr("xlink:href", function(d) {return d.url});
 
 node.on("mouseover", showTooltip )
+    .on("mousemove", moveTooltip )
+    .on("mouseleave", hideTooltip );
+
+labels.on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
     .on("mouseleave", hideTooltip );
 
@@ -109,15 +215,18 @@ node.on("click", function(event, d) {
       .html(d.name)
     });
 
+
   // Add a drag behavior.
   node.call(d3.drag()
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended));
 
+
 function handleZoom(e) {
     node.attr('transform', e.transform);
     link.attr('transform', e.transform);
+    labels.attr('transform', e.transform);
 }
 const zoom = d3.zoom().on('zoom', handleZoom);
 d3.select('svg').call(zoom);
@@ -133,6 +242,10 @@ d3.select('svg').call(zoom);
     node
         .attr("cx", d => d.x)
         .attr("cy", d => d.y);
+
+    labels
+        .attr("x", d => d.x)
+        .attr("y", d => d.y);
   }
 
   // Reheat the simulation when drag starts, and fix the subject position.
@@ -162,5 +275,4 @@ d3.select('svg').call(zoom);
   });
 
 {% endblock %}
-
     

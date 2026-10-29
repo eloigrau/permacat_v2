@@ -16,7 +16,7 @@
   <div class="tab-pane fade show active" id="adresse">
    <div class="row">
     <div class="col-md-12">
-        <div style="">
+        <div class="table-container-centered">
     <table class="table table-condensed tableprofils table-striped table-middle sortable table-phoning">
         <thead class="thead-inverse">
             <tr>
@@ -24,7 +24,7 @@
                 <th>Structure</th>
                 <th>Nom Prénom</th>
                 <th>email</th>
-                <th>Telephone______</th>
+                <th>Telephone_</th>
                 <th>Contacts</th>
                 <th>Referent-e</th>
                 <th>Code postal</th>
@@ -48,7 +48,7 @@
                     {{ contact.nom }}  {{ contact.prenom }}
                 {% endif %}
             </td>
-            <td>
+            <td class="small">
             {% if contact.email %}
                     {{ contact.email }}
                 {% endif %}
@@ -58,7 +58,7 @@
 
                 {% else %}-{% endif %}
             </td>
-             <td style="width:50%;">
+             <td style="width:max-content;">
                  {%if contact.get_contacts_html %}
                      {{ contact.get_contacts_html|safe }}
                  <div class="justify-content-around">

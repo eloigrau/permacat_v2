@@ -918,6 +918,17 @@ border: 1px inset rgba(28,110,164,0.65);
 .table-phoning{
     text-align: center;
 }
+.table-container-centered {
+width: 100vw;               /* Force la largeur sur 100% de la fenêtre d'affichage */
+position: relative;
+left: 50%;
+right: 50%;
+margin-left: calc(-50vw + 50px);         /* Décale vers la gauche de la moitié de l'écran */
+margin-right: calc(-49vw+50px);        /* Décale vers la droite de la moitié de l'écran */
+display: flex;
+justify-content: center;   /* Centre le tableau horizontalement à l'intérieur */
+overflow: visible !important;
+    }
 
 .offre_entree{
     padding-bottom:4px;

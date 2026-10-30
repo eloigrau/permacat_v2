@@ -26,17 +26,6 @@ d3.json("{% url 'blog:get_articles_asso_d3_network_projet' asso_slug=asso_slug %
   const width = $(window).width()*0.98;
   const height = $(window).height()*0.95;
 
-    // --- REINIT / CLEANUP OLD DATA & MEMORY ---
-    const container = d3.select("#my_dataviz");
-    // 1. Unbind all previous D3 event listeners to prevent memory leaks
-    container.selectAll("*").on(".all", null);
-    // 2. Stop any ongoing transitions or animations
-    container.selectAll("*").interrupt();
-    // 3. Completely clear the container of any old SVG, nodes, or links
-    container.selectAll("*").remove();
-
-    d3.select("svg").remove();
-
 //console.log(data)
 
 // -1- Create a tooltip div that is hidden by default:

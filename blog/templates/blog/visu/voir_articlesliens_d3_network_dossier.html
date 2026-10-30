@@ -186,17 +186,24 @@ legendItem.append("span")
       .force("link", d3.forceLink(links)
         .id(d => d.id) // Crucial : permet à d.source et d.target de devenir des objets
         .distance(d => {
+            var dist = 100;
             // Distance dynamique selon le groupe
             if (d.type === "centre") {
-                return 150; // Liens plus courts pour un même groupe (effet "cluster")
+                dist = 300; // Liens plus courts pour un même groupe (effet "cluster")
             } else if (d.type === "atelier" || d.type === "salon" || d.type === "document" || d.type === "doc_ptg" ) {
-                return 60;
+                dist =  60;
             } else if (d.type === "article") {
-                return 150;
+                dist =  150;
             } else if (d.type === "dossier") {
-                return 200;
+                dist =  200;
             }else {
-                return 250; // Liens plus longs entre des groupes différents
+                dist =  250; // Liens plus longs entre des groupes différents
+            }
+
+            if (d.source.group === d.target.group) {
+                return dist;
+            }else{
+                return dist + 50;
             }
         }))
      // .force("charge", d3.forceManyBody())

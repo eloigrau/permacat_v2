@@ -431,6 +431,9 @@
     function appendMessage(data) {
         const messageContainer = document.createElement('div');
         messageContainer.className = "d-flex align-items-start mb-4";
+        if (data.id){
+            messageContainer.id = "msg_" + data.id.toString();
+        }
         messageContainer.innerHTML = `
             <!-- Avatar -->
             <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
@@ -475,7 +478,7 @@
         const messageContainer = document.createElement('div');
         messageContainer.className = "d-flex align-items-start mb-4";
         if (data.id){
-            messageContainer.id = "msg_" + str(data.id);
+            messageContainer.id = "msg_" + data.id.toString();
         }
         const formattedMessage = linkify(data.message);
         const isMe = data.user === username;

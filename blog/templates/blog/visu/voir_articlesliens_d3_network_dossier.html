@@ -2,34 +2,41 @@
 {% load app_filters %}
 
 {% block subtitle %}
+<style>
+         /* Classe pour cacher avec transition fluide */
+        .hidden-group {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.3s ease;
+        }
+        .node, .link, .node-label {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+
 <h4 class="textcenter">Visualisation des articles {{asso_slug|getNomGroupeFromSlug}}</h4>
 <p class="textcenter"><small>(Cliquer sur un cercle, zoomez avec la mollette)</small></p>
 
 <div class="row justify-content-center">
-  <div class="col-sm-12 col-md-10 col-lg-8" >
+  <div class="col-sm-12 col-md-10 col-lg-8 " >
       <div id="lien" class="textcenter btn btn-outline-info"><a href=""></a></div>
   </div>
+  <div class="col-sm-12 col-md-2 col-lg-4 textright" >
+      <button id="toggle-legend" class="btn btn-secondary" >Masquer la légende</button>
+      <button id="toggle-groups-btn" class="btn btn-secondary toggle-btn">Masquer détails</button>
+  </div>
 </div>
+
+
 {% endblock %}
 
  {% block jscript %}
 
-d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=asso_slug %}")
+d3.json("{{url_json}}") //{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=asso_slug %}")
 .then(function(data) {// Specify the dimensions of the chart.
   const width = $(window).width()*0.98;
   const height = $(window).height()*0.95;
-
-    // --- REINIT / CLEANUP OLD DATA & MEMORY ---
-    const container = d3.select("#my_dataviz");
-    // 1. Unbind all previous D3 event listeners to prevent memory leaks
-    container.selectAll("*").on(".all", null);
-    // 2. Stop any ongoing transitions or animations
-    container.selectAll("*").interrupt();
-    // 3. Completely clear the container of any old SVG, nodes, or links
-    container.selectAll("*").remove();
-
-    d3.select("svg").selectAll("*").remove();
-    d3.select("svg").remove();
+  const targetGroups = ["doc_ptg", "atelier", "salon", "document", "document"];
 
 // -1- Create a tooltip div that is hidden by default:
   const tooltip = d3.select("#my_dataviz")
@@ -155,6 +162,25 @@ legendItem.append("span")
   .text(d => d.name);
 //console.log(data)
 
+    // 4. Implement Toggle Functionality
+    let isLegendVisible = true;
+
+    d3.select("#toggle-legend").on("click", function() {
+        isLegendVisible = !isLegendVisible;
+
+        // Option A: Using opacity and pointer-events (Allows smooth CSS transitions)
+        legend.transition()
+            .duration(300)
+            .style("opacity", isLegendVisible ? 1 : 0)
+            .style("pointer-events", isLegendVisible ? "all" : "none");
+
+        // Update button text accordingly
+        d3.select(this).text(isLegendVisible ? "Masquer la légende" : "Afficher la légende");
+
+        // Option B (Alternative): If you prefer completely removing it from layout/DOM
+        // legend.style("display", isLegendVisible ? null : "none");
+    });
+
   // Create a simulation with several forces.
   const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links)
@@ -168,8 +194,8 @@ legendItem.append("span")
             }
         }))
       //.force("charge", d3.forceManyBody())
-        .force("charge", d3.forceManyBody().strength(-300))
-      .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("charge", d3.forceManyBody().strength(-100))
+      //.force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
   // Create the SVG container.
@@ -190,6 +216,7 @@ legendItem.append("span")
     .selectAll()
     .data(links)
     .join("line")
+      .classed("target-group-element", d => targetGroups.includes(d.type))
       .attr("stroke-width", d => d.value);
 
   const node = svg.append("g")
@@ -200,7 +227,9 @@ legendItem.append("span")
         .attr("fill", d => color(d.group))
         .attr("stroke", d => color2(d.asso))
         .attr("stroke-width", 2)
-        .attr("xlink:href", function(d) {return d.url});
+        .attr("xlink:href", function(d) {return d.url})
+        .classed("target-group-element", d => targetGroups.includes(d.type_noeud))
+        ;
 
     const labels = svg.append("g")
       .selectAll("text")
@@ -211,6 +240,7 @@ legendItem.append("span")
         .attr("dy", "0.35em")
         .attr("font-size", d => d.tailleTexte)
         .attr("fill", "#000")
+        .classed("target-group-element", d => targetGroups.includes(d.type_noeud))
         .attr("xlink:href", function(d) {return d.url});
 
 node.on("mouseover", showTooltip )
@@ -287,6 +317,26 @@ d3.select('svg').call(zoom);
     event.subject.fx = null;
     event.subject.fy = null;
   }
+
+
+    let areGroupsVisible = true;
+
+    d3.select("#toggle-groups-btn").on("click", function() {
+        areGroupsVisible = !areGroupsVisible;
+
+        // Sélectionne tous les éléments (nœuds, liens, labels) appartenant aux groupes ciblés
+        const elementsToToggle = svg.selectAll(".target-group-element");
+
+        // Ajoute ou retire la classe CSS pour masquer/afficher
+        elementsToToggle.classed("hidden-group", !areGroupsVisible);
+
+        // Met à jour le texte du bouton
+        d3.select(this).text(areGroupsVisible
+            ? "Masquer groupes spécifiques"
+            : "Afficher groupes spécifiques"
+        );
+    });
+
 
   return svg.node();
 }).catch(function(error) {

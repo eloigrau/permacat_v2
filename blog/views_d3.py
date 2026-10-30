@@ -272,6 +272,7 @@ class Noeuds():
         if art:
             id = self.ajouterNoeudCategorie(art)
             self.ajouterLien(art.id, id, "dossier")
+            self.ajouterNoeudArticle(art)
 
     def ajouterLienArticleDocumentsAteliers(self, art):
         self.ajouterNoeudArticle(art)
@@ -641,8 +642,8 @@ def voir_articles_liens_d3_network_dossier(request, asso_slug):
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
-
-    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
+    url_json = reverse('blog:get_articles_asso_d3_network_dossier', kwargs={"asso_slug":asso.slug})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "url_json":url_json})
 
 @login_required
 def voir_articles_liens_d3_network_projet(request, asso_slug):
@@ -651,6 +652,9 @@ def voir_articles_liens_d3_network_projet(request, asso_slug):
     form_article_recherche = Article_rechercheForm(request.POST or None)
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
+
+    url_json = reverse('blog:get_articles_asso_d3_network_projet', kwargs={"asso_slug":asso.slug})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "url_json":url_json})
 
     return render(request, 'blog/visu/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 

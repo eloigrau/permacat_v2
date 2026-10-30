@@ -282,7 +282,6 @@
         intentionalClose = false;
         // 1. Get the ID of the last message saved locally
         const lastMessageId = localStorage.getItem('last_message_id') || 0;
-        console.log("LAAST id " + lastMessageId);
         // 2. Open WebSocket and pass last_id as a query parameter
         const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         const wsUrl = wsProtocol + window.location.host + '/permachat/chat_direct/?last_id=' + lastMessageId;

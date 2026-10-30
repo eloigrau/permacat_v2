@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.core.cache import cache
 import base64
 from django.core.files.base import ContentFile
-
+import json
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -833,7 +833,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                 message_url = infos[2]
                 username = infos[3]
 
-                await self.send_json({
+                await self.send(text_data=json.dumps({
                     'type': 'chat_message',
                     'message': msg.message,
                     'id': msg.id,
@@ -842,22 +842,22 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     'profile_url': profile_url,
                     'message_url': message_url,
                     'timestamp': timezone.localtime(msg.timestamp).strftime('%H:%M')
-                })
+                }))
             elif msg.message_type == '1':
-                await self.send_json({
+                await self.send(text_data=json.dumps({
                     'type': 'user_status',
                     'message': msg.message,
                     'id': msg.id,
                     'username': "system",
                     'timestamp': msg.timestamp.strftime('%H:%M')
-                })
+                }))
             elif msg.message_type == '2':
                 infos = await self.get_message_infos(msg)
                 avatar_url = infos[0]
                 profile_url = infos[1]
                 message_url = infos[2]
                 username = infos[3]
-                await self.send_json({
+                await self.send(text_data=json.dumps({
                     'type': 'audio_message',
                     'message': msg.audio_file.url,
                     'id': msg.id,
@@ -866,7 +866,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     'profile_url': profile_url,
                     'message_url': message_url,
                     'timestamp': msg.timestamp.strftime('%H:%M')
-                })
+                }))
             else:
                 await self.send_json({
                     'type': 'user_status',
@@ -884,7 +884,10 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         await self.remove_online_connection(self.channel_name)
         await self.remove_online_connections_user()
         await self.broadcast_user_list()
-        await self.close(code=1001)
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name)
+
 
     async def receive_json(self, content, **kwargs):
         # Récupération de l'utilisateur connecté (ou Visiteur si non connecté)
@@ -962,7 +965,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             # 2. Retirer immédiatement la connexion du cache Redis
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
             await self.remove_online_connections_user()
-            await self.disconnect(close_code="1001")
+            await self.disconnect(close_code="3001")
 
         elif action == 'audio':
             audio_data = content.get('audio_data', '')
@@ -1019,6 +1022,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
     # Gestionnaire pour les statuts de connexion / déconnexion
     async def user_status(self, event):
+
         await self.send_json({
             'type': 'user_status',
             'message': event['message']
@@ -1087,10 +1091,12 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     def remove_online_connections_user(self,):
         connections = cache.get(ONLINE_CHANNELS_KEY, {})
         if self.username in connections.values():
-            for channel, user_name in connections.items() :
-                if user_name == self.username:
-                    del connections[channel]
-            cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+            new_connections = {}
+            for channel, user_name in connections.items():
+                if user_name != self.username:
+                    new_connections[channel] = user_name
+
+            cache.set(ONLINE_CHANNELS_KEY, new_connections, timeout=None)
 
     @database_sync_to_async
     def get_online_users(self):

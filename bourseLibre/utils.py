@@ -98,6 +98,8 @@ def testIsMembreAsso(request, asso):
 
         if not assos.is_membre(request.user) and not request.user.is_superuser:
             return render(request, 'notMembre.html', {'asso':assos } )
+
+        request.session["asso_slug"] = assos.slug
         return assos
 
     return Asso.objects.get(nom="Public")

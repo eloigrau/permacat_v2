@@ -95,25 +95,27 @@ def formatTitre(titre):
     return titre[:100].replace('"',"-")#.replace("'","-")
 
 class Noeuds():
-    diconoeuds = {}
-    listeLiens = []
-    categories_id = {}
-    ateliers_id = {}
-    document_id = {}
-    projet_id = {}
-    salon_id = {}
-    docptg_id = {}
 
     def __init__(self, asso_slug, lienDossierArticles=True, projetAuCentre=False, categorieAuCentre=True):
+        self.diconoeuds = {}
+        self.listeLiens = []
+        self.categories_id = {}
+        self.ateliers_id = {}
+        self.document_id = {}
+        self.projet_id = {}
+        self.salon_id = {}
+        self.docptg_id = {}
         self.asso = Asso.objects.get(slug=asso_slug)
         self.rayon = {"article":20, "categorie":30, "projet":20, "centre":35, "atelier":14, "document":14, "salon":14, "doc_ptg":14}
         self.tailleTexte = {"article":8, "categorie":9, "projet":9, "centre":12, "atelier":6, "document":6, "salon":6, "doc_ptg":5}
+
         if projetAuCentre or categorieAuCentre:
+            nom = "Dossiers" if categorieAuCentre else "Projets"
             self.ajouterNoeud(noeud_id=999999,
-                              nom="Dossiers",
-                              label="Dossiers",
+                              nom=nom,
+                              label=nom,
                               group="group",
-                              url=reverse("blog:index_asso", kwargs={"asso":self.asso.slug}),
+                              url=reverse("blog:index_projets"),
                               asso=self.asso.nom,
                               type_noeud="centre")
 
@@ -159,10 +161,10 @@ class Noeuds():
 
     def ajouterLien(self, source_id, target_id, type_lien):
         #if not any()
-        self.listeLiens.append({"source":source_id, "target":target_id,"type":type_lien})
+        self.listeLiens.append({"source": source_id, "target": target_id, "type": type_lien})
 
     def ajouterNoeud(self, noeud_id, nom, group, url, type_noeud, asso, label=None):
-        if not noeud_id in self.diconoeuds.keys():
+        if noeud_id not in self.diconoeuds.keys():
             self.diconoeuds[noeud_id]={"name": formatTitre(nom),
                                 "url":url,
                                 "group":group,
@@ -174,7 +176,7 @@ class Noeuds():
 
     def ajouterNoeudArticle(self, art, type_noeud="article"):
         return self.ajouterNoeud(noeud_id=art.id,
-                                 nom="Article : [" + str(art.asso.nom) +"] " + formatTitre(art.titre),
+                                 nom="Article : [" + str(art.asso.nom) + "] " + formatTitre(art.titre),
                                  label=formatTitre(art.titre),
                                  group=art.get_categorie_display(),
                                  url=art.get_absolute_url(),
@@ -203,8 +205,6 @@ class Noeuds():
                           url=a.get_absolute_url(),
                           asso=a.asso.nom,
                           type_noeud="atelier")
-        if cree:
-            self.ajouterNoeudArticle(a.article)
         return id
 
     def ajouterNoeudDocument(self, doc):
@@ -216,7 +216,6 @@ class Noeuds():
                           url=doc.get_absolute_url(),
                           asso=doc.asso.nom,
                           type_noeud="document")
-        self.ajouterNoeudArticle(doc.article)
         return id
 
     def ajouterNoeudDocumentPartage(self, doc):
@@ -228,7 +227,6 @@ class Noeuds():
                           url=doc.get_absolute_url(),
                           asso=doc.article.asso.nom,
                           type_noeud="doc_ptg")
-        self.ajouterNoeudArticle(doc.article)
         return id
 
     def ajouterNoeudSalon(self, salon):
@@ -240,7 +238,6 @@ class Noeuds():
                           url=salon.get_absolute_url(),
                           asso=salon.article.asso.nom if salon.article else "?",
                           type_noeud="salon")
-        self.ajouterNoeudArticle(salon.article)
         return id
 
     def ajouterNoeudCategorie(self, art):
@@ -252,7 +249,6 @@ class Noeuds():
                           url=reverse('blog:index_asso', kwargs={"asso": self.asso.slug}) + "?categorie=" + art.categorie + "&ancre_navtab=dossier",
                           asso=art.asso.nom,
                           type_noeud="categorie")
-        self.ajouterNoeudArticle(art)
         if cree and self.categorieAuCentre:
             self.ajouterLien(id, 999999, "centre")
 
@@ -278,6 +274,7 @@ class Noeuds():
             self.ajouterLien(art.id, id, "dossier")
 
     def ajouterLienArticleDocumentsAteliers(self, art):
+        self.ajouterNoeudArticle(art)
         for a in Atelier.objects.filter(article=art):
             id_at = self.ajouterNoeudAtelier(a)
             self.ajouterLien(id_at, art.id,  "atelier")
@@ -383,8 +380,8 @@ def get_articles_asso_d3_network_article(request, asso_slug, article_slug):
 def get_articles_asso_d3_network_dossier(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
 
-    articles = Article.objects.exclude(asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
-                                       estArchive=False, asso=asso)
+    articles = Article.objects.filter(estArchive=False, asso=asso)
+
     noeuds = Noeuds(asso_slug, )
     for art in articles:
         noeuds.ajouterLienArticleCategorie(art)
@@ -398,11 +395,9 @@ def get_articles_asso_d3_network_projet(request, asso_slug):
     asso = testIsMembreAsso(request, asso_slug)
 
     noeuds = Noeuds(asso_slug, lienDossierArticles=False, categorieAuCentre=False, projetAuCentre=True)
-    for liens in ArticleLienProjet.objects.exclude(
-        projet_lie__asso__slug__in=request.user.getListeSlugsAssos_nonmembre()).filter(
+    for liens in ArticleLienProjet.objects.filter(
         projet_lie__estArchive=False, projet_lie__asso=asso, article__asso=asso):
         noeuds.ajouterNoeudsEtLiens_projet_centre(liens.article, liens.projet_lie)
-
         noeuds.ajouterLienArticleDocumentsAteliers(liens.article)
 
     return JsonResponse(noeuds.get_dico_d3(), safe=True)

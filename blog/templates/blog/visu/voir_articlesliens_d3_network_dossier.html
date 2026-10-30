@@ -1,7 +1,8 @@
 {% extends 'blog/visu/visu_template.html' %}
+{% load app_filters %}
 
 {% block subtitle %}
-<h4 class="textcenter">Visualisation des articles du Forum</h4>
+<h4 class="textcenter">Visualisation des articles {{asso_slug|getNomGroupeFromSlug}}</h4>
 <p class="textcenter"><small>(Cliquer sur un cercle, zoomez avec la mollette)</small></p>
 
 <div class="row justify-content-center">
@@ -13,11 +14,22 @@
 
  {% block jscript %}
 
-d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=request.session.asso_slug %}")
+d3.json("{% url 'blog:get_articles_asso_d3_network_dossier' asso_slug=asso_slug %}")
 .then(function(data) {// Specify the dimensions of the chart.
   const width = $(window).width()*0.98;
   const height = $(window).height()*0.95;
 
+    // --- REINIT / CLEANUP OLD DATA & MEMORY ---
+    const container = d3.select("#my_dataviz");
+    // 1. Unbind all previous D3 event listeners to prevent memory leaks
+    container.selectAll("*").on(".all", null);
+    // 2. Stop any ongoing transitions or animations
+    container.selectAll("*").interrupt();
+    // 3. Completely clear the container of any old SVG, nodes, or links
+    container.selectAll("*").remove();
+
+    d3.select("svg").selectAll("*").remove();
+    d3.select("svg").remove();
 
 // -1- Create a tooltip div that is hidden by default:
   const tooltip = d3.select("#my_dataviz")
@@ -155,7 +167,8 @@ legendItem.append("span")
                 return 30; // Liens plus longs entre des groupes différents
             }
         }))
-      .force("charge", d3.forceManyBody())
+      //.force("charge", d3.forceManyBody())
+        .force("charge", d3.forceManyBody().strength(-300))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
@@ -215,6 +228,12 @@ node.on("click", function(event, d) {
       .html(d.name)
     });
 
+labels.on("click", function(event, d) {
+    d3.select("#lien")
+      .select("a")
+       .attr("href", d.url)
+      .html(d.name)
+    });
 
   // Add a drag behavior.
   node.call(d3.drag()

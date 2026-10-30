@@ -1,4 +1,5 @@
 {% extends 'blog/visu/visu_template.html' %}
+{% load app_filters %}
 
 {% block title %}Liens de l'article {{article}} |{% endblock %}
 
@@ -19,12 +20,23 @@
 
  {% block jscript %}
 
-d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=request.session.asso_slug article_slug=article.slug  %}")
+d3.json("{% url 'blog:get_articles_asso_d3_network_article' asso_slug=asso_slug article_slug=article.slug  %}")
 .then(function(data) {// Specify the dimensions of the chart.
+
   const width = $(window).width()*0.98;
   const height = $(window).height()*0.95;
 
-//console.log(data)
+    // --- REINIT / CLEANUP OLD DATA & MEMORY ---
+    const container = d3.select("#my_dataviz");
+    // 1. Unbind all previous D3 event listeners to prevent memory leaks
+    container.selectAll("*").on(".all", null);
+    // 2. Stop any ongoing transitions or animations
+    container.selectAll("*").interrupt();
+    // 3. Completely clear the container of any old SVG, nodes, or links
+    container.selectAll("*").remove();
+
+    d3.select("svg").remove();
+
 
 // -1- Create a tooltip div that is hidden by default:
   const tooltip = d3.select("#my_dataviz")
@@ -83,7 +95,6 @@ const groups = Array.from(
 const color_cercle = Array.from(
     new Map(nodes.map(d => [d.asso, d.asso])).entries()
 ).map(([asso, nom_asso]) => ({ asso, nom_asso }));
-
 
 const legend = d3.select("#my_dataviz") // Or select your container div e.g., d3.select("#chart-container")
   .append("div")
@@ -156,9 +167,9 @@ legendItem.append("span")
         .distance(d => {
             // Distance dynamique selon le groupe
             if (d.source.group === d.target.group) {
-                return 70; // Liens plus courts pour un même groupe (effet "cluster")
+                return 60; // Liens plus courts pour un même groupe (effet "cluster")
             } else {
-                return 30; // Liens plus longs entre des groupes différents
+                return 25; // Liens plus longs entre des groupes différents
             }
         })
        /* .strength(d => {
@@ -178,7 +189,8 @@ legendItem.append("span")
   // Create the SVG container.
   const svg = d3.select("#my_dataviz")
       .style("overflow", "scroll")
-      .style("-webkit-overflow-scrolling", "touch").append("svg")
+      .style("-webkit-overflow-scrolling", "touch")
+      .append("svg")
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])
@@ -214,6 +226,7 @@ legendItem.append("span")
         .attr("fill", "#000")
         .attr("xlink:href", function(d) {return d.url});
 
+
 node.on("mouseover", showTooltip )
     .on("mousemove", moveTooltip )
     .on("mouseleave", hideTooltip );
@@ -229,6 +242,12 @@ node.on("click", function(event, d) {
       .html(d.name)
     });
 
+labels.on("click", function(event, d) {
+    d3.select("#lien")
+      .select("a")
+       .attr("href", d.url)
+      .html(d.name)
+    });
 
   // Add a drag behavior.
   node.call(d3.drag()

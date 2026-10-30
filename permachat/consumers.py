@@ -785,7 +785,6 @@ ONLINE_CHANNELS_KEY = "global_permachat"
 
 class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
-
         # Récupérer l'utilisateur connecté
         user = self.scope.get("user")
 
@@ -810,6 +809,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
         await self.add_online_connection(self.channel_name, self.username)
         await self.broadcast_user_list()
+        await self.cleanup_old_messages()
 
         last_id = params.get('last_id', 0)
         try:
@@ -871,25 +871,11 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                 })
 
 
-        await self.cleanup_old_messages()
-
-
 
     async def disconnect(self, close_code):
         await self.remove_online_connection(self.channel_name)
         await self.broadcast_user_list()
-
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
-
-    # NOUVEAU : Gestionnaire pour les statuts de connexion / déconnexion
-    async def user_status(self, event):
-        await self.send_json({
-            'type': 'user_status',
-            'message': event['message']
-        })
+        await self.close()
 
     async def receive_json(self, content, **kwargs):
         # Récupération de l'utilisateur connecté (ou Visiteur si non connecté)
@@ -905,7 +891,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
         action = content.get('action', 'message')
         if action == 'join':
-            chat_msg = await self.save_message(username="system", message=f"{user} a rejoint le chat.", message_type='1')
+            #chat_msg = await self.save_message(username="system", message=f"{user} a rejoint le chat.", message_type='1')
             # Save and broadcast a system notification when user first connects
             await self.channel_layer.group_send(
                 self.room_group_name,
@@ -937,7 +923,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     self.room_group_name,
                     {
                         'type': 'chat_message',
-                        'id':chat_msg.id,
+                        'id': chat_msg.id,
                         'message': message,
                         'username': username,
                         'avatar_url': avatar_url,
@@ -951,23 +937,19 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             # 1. Enregistrer le message système de départ
             #chat_msg = await self.save_message("System", f"{user} a quitté le chat.", message_type="1")
 
-            # 2. Retirer immédiatement la connexion du cache Redis
-            await self.remove_online_connection(self.channel_name)
-
-            # 3. FORCER la diffusion immédiate de la liste mise à jour à tous les clients connectés
-            await self.broadcast_user_list()
-
             # 4. Diffuser le message système dans le chat
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
-                    'type': 'chat_message_event',
-                    'user': "System",
+                    'type': 'user_status',
                     'message': f"{user} a quitté le chat.",
-                    'message_type': '1',
-                    'timestamp': timestamp.strftime('%H:%M')
                 }
             )
+
+            # 2. Retirer immédiatement la connexion du cache Redis
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+            await self.disconnect(close_code="1001")
+
         elif action == 'audio':
             audio_data = content.get('audio_data', '')
             if audio_data:
@@ -1021,6 +1003,13 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             'timestamp': event['timestamp']
         })
 
+    # Gestionnaire pour les statuts de connexion / déconnexion
+    async def user_status(self, event):
+        await self.send_json({
+            'type': 'user_status',
+            'message': event['message']
+        })
+
     @database_sync_to_async
     def save_message(self, username, message, message_type="0"):
         try:
@@ -1071,8 +1060,9 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def add_online_connection(self, channel_name, username):
         connections = cache.get(ONLINE_CHANNELS_KEY, {})
-        connections[channel_name] = username
-        cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+        if not channel_name in connections and not username in connections.values():
+            connections[channel_name] = username
+            cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
 
     @database_sync_to_async
     def remove_online_connection(self, channel_name):

@@ -106,8 +106,8 @@ class Noeuds():
         self.salon_id = {}
         self.docptg_id = {}
         self.asso = Asso.objects.get(slug=asso_slug)
-        self.rayon = {"article":80, "categorie":120, "projet":100, "centre":140, "atelier":56, "document":56, "salon":56, "doc_ptg":56}
-        self.tailleTexte = {"article":25, "categorie":30, "projet":30, "centre":40, "atelier":20, "document":20, "salon":20, "doc_ptg":20}
+        self.rayon = {"article":40, "categorie":60, "projet":50, "centre":70, "atelier":28, "document":28, "salon":28, "doc_ptg":27}
+        self.tailleTexte = {"article":20, "categorie":25, "projet":25, "centre":30, "atelier":15, "document":15, "salon":15, "doc_ptg":15}
 
         if projetAuCentre or categorieAuCentre:
             nom = "Dossiers" if categorieAuCentre else "Projets"

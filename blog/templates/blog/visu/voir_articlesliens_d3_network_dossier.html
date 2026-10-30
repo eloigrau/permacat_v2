@@ -187,15 +187,21 @@ legendItem.append("span")
         .id(d => d.id) // Crucial : permet à d.source et d.target de devenir des objets
         .distance(d => {
             // Distance dynamique selon le groupe
-            if (d.source.group === d.target.group) {
-                return 300; // Liens plus courts pour un même groupe (effet "cluster")
-            } else {
+            if (d.type === "centre") {
+                return 150; // Liens plus courts pour un même groupe (effet "cluster")
+            } else if (d.type === "atelier" || d.type === "salon" || d.type === "document" || d.type === "doc_ptg" ) {
+                return 60;
+            } else if (d.type === "article") {
+                return 150;
+            } else if (d.type === "dossier") {
+                return 200;
+            }else {
                 return 250; // Liens plus longs entre des groupes différents
             }
         }))
-      //.force("charge", d3.forceManyBody())
-        .force("charge", d3.forceManyBody().strength(-100))
-      //.force("center", d3.forceCenter(width / 2, height / 2))
+     // .force("charge", d3.forceManyBody())
+        .force("charge", d3.forceManyBody().strength(-200))
+      .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
   // Create the SVG container.

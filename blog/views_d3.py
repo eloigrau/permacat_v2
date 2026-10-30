@@ -633,7 +633,11 @@ def voir_articles_liens_d3_network_article(request, asso_slug, article_slug):
     if form_article_recherche.is_valid() and form_article_recherche.cleaned_data['article']:
         return HttpResponseRedirect(form_article_recherche.cleaned_data['article'].get_absolute_url())
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_network_article.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "article":article})
+    url_json = reverse('blog:get_articles_asso_d3_network_article', kwargs={"asso_slug":asso.slug, "article_slug":article.slug})
+    return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',
+                  {"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "url_json":url_json, "article":article})
+
+    #return render(request, 'blog/visu/voir_articlesliens_d3_network_article.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "article":article})
 
 @login_required
 def voir_articles_liens_d3_network_dossier(request, asso_slug):
@@ -656,7 +660,7 @@ def voir_articles_liens_d3_network_projet(request, asso_slug):
     url_json = reverse('blog:get_articles_asso_d3_network_projet', kwargs={"asso_slug":asso.slug})
     return render(request, 'blog/visu/voir_articlesliens_d3_network_dossier.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug, "url_json":url_json})
 
-    return render(request, 'blog/visu/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
+    #return render(request, 'blog/visu/voir_articlesliens_d3_network_projet.html',{"form_article_recherche":form_article_recherche, "asso_slug":asso.slug})
 
 @login_required
 def voir_articles_liens_d3_bubble(request, asso_slug):

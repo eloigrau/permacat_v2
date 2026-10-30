@@ -34,6 +34,10 @@
             </button>
             {% endif %}
         </a>
+
+        <a  class="btn btn-light btn-sm" href="{% url 'blog:voir_articles_liens_d3_network_projet' asso_slug=request.session.asso_slug %}">
+            <i class="fa fa-eye"></i>
+        </a>
     </div>
 </div>
 

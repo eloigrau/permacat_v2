@@ -1,5 +1,6 @@
 {% extends 'blog/visu/visu_template.html' %}
 {% load app_filters %}
+{% load fontawesome_5 %}
 
 {% block subtitle %}
 <style>
@@ -14,8 +15,43 @@
         }
     </style>
 
-<h4 class="textcenter">Visualisation des articles {{asso_slug|getNomGroupeFromSlug}}</h4>
-<p class="textcenter"><small>(Cliquer sur un cercle, zoomez avec la mollette)</small></p>
+<div class="row justify-content-center align-content-center">
+    <div class="col-sm-12 col-md-2 col-lg-2  align-content-center">
+        <button type="cancel" onclick="window.history.back();" class="btn btn-success btn-sm"><i class="fa fa-arrow-left"></i> </button>
+    </div>
+    <div class="col-sm-12 col-md-6 col-lg-8  align-content-center">
+        {% if article %}
+        <h4 class="textcenter">Visualisation des liens de l'article {{article}}</h4>
+        {% else %}
+        <h4 class="textcenter">Visualisation des articles {{asso_slug|getNomGroupeFromSlug}}</h4>
+        {% endif %}
+    </div>
+    <div class="col-sm-12 col-md-2 col-lg-2  align-content-center">
+        <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#help"
+                title="En savoir plus...">
+            {% fa5_icon 'question-circle' %}
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog textaide" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row justify-content-center">
+                            <h5> Visualisez les articles et les liens avec les dossiers, projets, documents...</h5>
+                        </div>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body textleft">
+                        <p >Cliquer sur un cercle pour le déplacer ou afficher le lien, zoomez avec la mollette)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+</div>
 
 <div class="row justify-content-center">
   <div class="col-sm-12 col-md-10 col-lg-8 " >
@@ -284,6 +320,11 @@ labels.on("click", function(event, d) {
         .on("drag", dragged)
         .on("end", dragended));
 
+  // Add a drag behavior.
+  labels.call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
 
 function handleZoom(e) {
     node.attr('transform', e.transform);

@@ -2,7 +2,7 @@ from bourseLibre import settings
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from asgiref.sync import sync_to_async
-
+import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
 from .models import Room, Profil, Message, MessageGlobal
@@ -781,9 +781,12 @@ class ChatConsumer2(AsyncJsonWebsocketConsumer):
             "stamp": stamp
         })
 
+
 ONLINE_CHANNELS_KEY = "global_permachat"
 
 class PermaChatConsumer(AsyncJsonWebsocketConsumer):
+    DELAI_INACTIVITE = 300
+
     async def connect(self):
         # Récupérer l'utilisateur connecté
         user = self.scope.get("user")
@@ -801,24 +804,27 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+
+        self.username = user.username
+
         # Parse query string to extract 'last_id' from localStorage
         query_string = self.scope['query_string'].decode()
         params = dict(param.split('=') for param in query_string.split('&') if '=' in param)
 
-        self.username = user.username
+        try:
+            # Récupère le premier élément de la liste 'last_id', convertit en entier
+            self.last_id = int(params.get('last_id', [0])[0])
+        except (ValueError, TypeError):
+            self.last_id = 0
 
         await self.add_online_connection(self.channel_name, self.username)
         await self.broadcast_user_list()
         await self.cleanup_old_messages()
 
-        last_id = params.get('last_id', 0)
-        try:
-            last_id = int(last_id)
-        except ValueError:
-            last_id = 0
+        self.tache_inactivite = asyncio.create_task(self.surveiller_inactivite())
 
         # Send any messages the user missed during page navigation
-        missed_messages = await self.get_missed_messages(last_id)
+        missed_messages = await self.get_missed_messages(self.last_id)
         for msg in missed_messages:
             if msg.message_type == '0':
                 infos = await self.get_message_infos(msg)
@@ -835,7 +841,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                     'avatar_url': avatar_url,
                     'profile_url': profile_url,
                     'message_url': message_url,
-                    'timestamp': msg.timestamp.strftime('%H:%M')
+                    'timestamp': timezone.localtime(msg.timestamp).strftime('%H:%M')
                 })
             elif msg.message_type == '1':
                 await self.send_json({
@@ -873,9 +879,12 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
+        if hasattr(self, 'tache_inactivite'):
+            self.tache_inactivite.cancel()
         await self.remove_online_connection(self.channel_name)
+        await self.remove_online_connections_user()
         await self.broadcast_user_list()
-        await self.close()
+        await self.close(code=1001)
 
     async def receive_json(self, content, **kwargs):
         # Récupération de l'utilisateur connecté (ou Visiteur si non connecté)
@@ -901,6 +910,10 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
         elif action == 'message':
+            if hasattr(self, 'tache_inactivite'):
+                self.tache_inactivite.cancel()
+            self.tache_inactivite = asyncio.create_task(self.surveiller_inactivite())
+
             if user and user.is_authenticated:
                 # Adaptez selon votre modèle de profil (ex: user.profile.avatar.url)
                 infos = await self.get_infos_user(user)
@@ -948,6 +961,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
             # 2. Retirer immédiatement la connexion du cache Redis
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+            await self.remove_online_connections_user()
             await self.disconnect(close_code="1001")
 
         elif action == 'audio':
@@ -1018,8 +1032,6 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         except:
             return MessageGlobal.objects.create(message=message, message_type=message_type)
 
-
-
     @database_sync_to_async
     def get_missed_messages(self, last_id):
         return list(MessageGlobal.objects.filter(id__gt=last_id).order_by('timestamp'))
@@ -1060,7 +1072,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def add_online_connection(self, channel_name, username):
         connections = cache.get(ONLINE_CHANNELS_KEY, {})
-        if not channel_name in connections and not username in connections.values():
+        if not channel_name in connections:
             connections[channel_name] = username
             cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
 
@@ -1069,6 +1081,15 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
         connections = cache.get(ONLINE_CHANNELS_KEY, {})
         if channel_name in connections:
             del connections[channel_name]
+            cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+
+    @database_sync_to_async
+    def remove_online_connections_user(self,):
+        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        if self.username in connections.values():
+            for channel, user_name in connections.items() :
+                if user_name == self.username:
+                    del connections[channel]
             cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
 
     @database_sync_to_async
@@ -1095,3 +1116,18 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             message='Enregistrement',
             message_type='2'
         )
+
+    async def surveiller_inactivite(self):
+        try:
+            # Attendre la durée spécifiée
+            await asyncio.sleep(self.DELAI_INACTIVITE)
+
+            # Si le délai expire sans annulation, on ferme le WebSocket.
+            # Le code 4001 (ou autre code personnalisé entre 4000 et 4999)
+            # permet au frontend de savoir qu'il s'agit d'un timeout d'inactivité.
+            await self.close(code=4001)
+
+        except asyncio.CancelledError:
+            # La tâche a été annulée parce que le client a envoyé un message.
+            # Tout va bien, on ne fait rien.
+            pass

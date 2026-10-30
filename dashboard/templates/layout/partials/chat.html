@@ -281,7 +281,7 @@
         offlineOverlay.style.display = 'none';
         intentionalClose = false;
         // 1. Get the ID of the last message saved locally
-        const lastMessageId = localStorage.getItem('last_message_id') || 0;
+        const lastMessageId = localStorage.getItem('last_id') || 0;
         // 2. Open WebSocket and pass last_id as a query parameter
         const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         const wsUrl = wsProtocol + window.location.host + '/permachat/chat_direct/?last_id=' + lastMessageId;
@@ -325,7 +325,7 @@
 
             // 3. Update localStorage with the newest message ID received
             if (data.id) {
-                localStorage.setItem('last_message_id', data.id);
+                localStorage.setItem('last_id', data.id);
             }
         };
 
@@ -431,9 +431,6 @@
     function appendMessage(data) {
         const messageContainer = document.createElement('div');
         messageContainer.className = "d-flex align-items-start mb-4";
-        if (data.id) {
-            localStorage.setItem('last_message_id', data.id);
-        }
         messageContainer.innerHTML = `
             <!-- Avatar -->
             <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
@@ -477,6 +474,9 @@
     function appendMessageAudio(data) {
         const messageContainer = document.createElement('div');
         messageContainer.className = "d-flex align-items-start mb-4";
+        if (data.id){
+            messageContainer.id = "msg_" + str(data.id);
+        }
         const formattedMessage = linkify(data.message);
         const isMe = data.user === username;
         messageContainer.innerHTML = `
@@ -576,6 +576,10 @@
         statusSpan.style.color = "#ccc";
         onlineCountSpan.textContent = "0";
         userListUl.innerHTML = '';
+        const messagesToRemove = chatMessages.querySelectorAll('[id^="msg_"]');
+
+        // Supprime chaque élément trouvé
+        messagesToRemove.forEach(el => el.remove());
 
         // Fermer le menu déroulant s'il était ouvert
         userDropdown.style.display = 'none';

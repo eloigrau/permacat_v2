@@ -2,8 +2,8 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.management.base import BaseCommand
 from django.core.cache import cache
+from permachat.consumers import ONLINE_CHANNELS_KEY
 
-ONLINE_CHANNELS_KEY = "global_permachat"
 
 class Command(BaseCommand):
     help = 'Ferme de force toutes les connexions WebSocket actives du chat'

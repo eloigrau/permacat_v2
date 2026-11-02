@@ -24,7 +24,7 @@
 
 <nav class="nav nav-tabs justify-content-center">
     {%for cat in liens.keys %}
-          <a class="nav-item nav-link {% if forloop.counter == 1 %}active{% endif %}" href="#{{cat|slug}}" data-toggle="tab">{{cat}}</a>
+          <a class="nav-item nav-link {% if forloop.counter == 1 %}active{% endif %}" href="#{{cat|slug}}" data-toggle="tab" title="{{cat}}">{{cat}}</a>
     {% endfor %}
 </nav>
 

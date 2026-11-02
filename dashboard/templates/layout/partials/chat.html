@@ -318,7 +318,7 @@
                 userListUl.innerHTML = '';
                 data.users.forEach(u => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<span style="color: #28a745;">●</span> ${u} ${u === username ? '(moi)' : ''}`;
+                    li.innerHTML = `<a href="${u[1]}" target=_blank><span style="color: #28a745;">●</span> ${u[0]} ${u[0] === username ? '(moi)' : ''} </a>`;
                     userListUl.appendChild(li);
                 });
             }

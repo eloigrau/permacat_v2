@@ -7,7 +7,7 @@
 <nav class="nav nav-tabs justify-content-center" id="idConversation_2">
     {% for discu in commentaires.keys %}
     <a class="nav-item nav-link {% if forloop.first %} active{% endif %}" href="#{{discu.slug}}" data-toggle="tab"
-       id="navtab_{{discu.slug}}">{{discu.titre}}</a>
+       id="navtab_{{discu.slug}}" title="{{discu.titre}}">{{discu.titre}}</a>
     {% endfor %}
     <a class="nav-item nav-link" href="#ajoutDiscussion" data-toggle="tab">Ajouter une discussion</a>
 </nav>
@@ -17,7 +17,6 @@
     <div class="tab-content">
         {% for discu, comments in commentaires.items %}
         <div class="tab-pane fade  {% if forloop.first %} active show{% endif %}" id="{{discu.slug}}">
-
             <div class="conversation">
                 <div class="conversation-container">
                     {% for comment in comments %}
@@ -67,8 +66,6 @@
             </div>
         </div>
         {% endfor %}
-
-
         <div class="tab-pane fade" id="ajoutDiscussion">
             <p>
             <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
@@ -124,8 +121,10 @@
         if (nom != "#ajoutDiscussion"){
             $("#commentaires").show();
             $("input[name='message_discu']").attr("value", nom);
+            $("#idComenter").show();
         }else{
             $("#commentaires").hide();
+            $("#idComenter").hide();
         }
     });
 
@@ -135,21 +134,31 @@
     });
 
     {% if ancre %}
-    $("#navtab_{{ancre}}").trigger('click');
-    $('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
-    $('#idConversation').scrollTop = $('#idConversation').scrollHeight - $('#idConversation').clientHeight;
+        $("#navtab_{{ancre}}").trigger('click');
+        $('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
+        $('#idConversation_2').scrollTop = $('#idConversation_2').scrollHeight - $('#idConversation_2').clientHeight;
     {% endif %}
 
 {% if request.GET.ancre %}
-$("#navtab_{{request.GET.ancre}}").trigger('click');
-$('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
-$('#idConversation').scrollTop = $('#idConversation').scrollHeight - $('#idConversation').clientHeight;
- {% endif %}
+    $("#navtab_{{request.GET.ancre}}").trigger('click');
+    $('html, body').scrollTop = $("#{{request.GET.ancre}}").offset().top;
+    $('#idConversation_2').scrollTop = $('#idConversation_2').scrollHeight - $('#idConversation_2').clientHeight;
+{% endif %}
 
     var messageBody = document.querySelector('#contenucommentaires');
-    messageBody.scrollTop = contenucommentaires.scrollHeight - contenucommentaires.clientHeight;
+    messageBody.scrollTop = contenucommentaires.scrollHeight;
 
+    $('#idConversation_2 > a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var targetID = $(e.target).attr('href');
 
+        if (targetID and targetID != "#") {
+            var $pane = $(targetID);
+            if ($pane.length) {
+               // $pane.scrollTop($pane[0].scrollHeight);
+                contenucommentaires.scrollTop = $pane[0].scrollHeight - $('#idConversation_2')[0].scrollHeight;
+            }
+        }
+    });
     $('#myForm').one('submit', function() {
         var btn = $("#btn-valider");
         btn.prop("disabled", true);

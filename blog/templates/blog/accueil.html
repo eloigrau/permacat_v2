@@ -168,10 +168,10 @@ function get_derniers_commentaires(url_tag) {
 <hr>
 
 <nav class="nav nav-tabs justify-content-center">
-    <a class="nav-item nav-link active" data-toggle="tab" href="#der_articles"> Derniers Articles</a>
+    <a class="nav-item nav-link active" data-toggle="tab" href="#der_articles" title="Derniers Articles"> Derniers Articles</a>
     <a class="nav-item nav-link" data-toggle="tab"
        href="#der_comm" id="navtab_archives"
-       onclick="get_derniers_commentaires('{% url 'blog:ajax_dernierscommentaires' %}')"> Derniers Commentaires</a>
+       onclick="get_derniers_commentaires('{% url 'blog:ajax_dernierscommentaires' %}')" title="Derniers Commentaires">> Derniers Commentaires</a>
 </nav>
 
 <div class="tab-content">

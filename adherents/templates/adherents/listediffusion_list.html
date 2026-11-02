@@ -20,13 +20,13 @@
 {% block content %}
 
 <nav class="nav nav-tabs justify-content-center">
-    <a class="nav-item nav-link active" href="#theme" data-toggle="tab">Par thème</a>
+    <a class="nav-item nav-link active" href="#theme" data-toggle="tab" title="Listes Par thème">Par thème</a>
     {% if request.session.asso_slug == 'conf66'%}
-    <a class="nav-item nav-link " href="#production" data-toggle="tab">Par production</a>
+    <a class="nav-item nav-link " href="#production" data-toggle="tab" title="Listes Par Production">Par production</a>
     {% endif %}
     {% if is_membre_bureau %}
-    <a class="nav-item nav-link " href="#bureau" data-toggle="tab">Bureau</a>
-    <a class="nav-item nav-link " href="#histo" data-toggle="tab">Historique</a>
+    <a class="nav-item nav-link " href="#bureau" data-toggle="tab" title="Bureau">Bureau</a>
+    <a class="nav-item nav-link " href="#histo" data-toggle="tab" title="Historique">Historique</a>
     {% endif %}
 </nav>
 

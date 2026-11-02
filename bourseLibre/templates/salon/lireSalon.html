@@ -74,10 +74,10 @@
 <nav class="nav nav-tabs justify-content-center">
     <a class="nav-item nav-link active" href="#discussion" data-toggle="tab">
         {% fa5_icon 'comments' class='iconleft' %}</a>
-    <a class="nav-item nav-link" href="#infos" data-toggle="tab"> {% fa5_icon 'info' %}</a>
-    <a class="nav-item nav-link" href="#dates" data-toggle="tab"> {% fa5_icon 'calendar' %}</a>
+    <a class="nav-item nav-link" href="#infos" data-toggle="tab" title="Infos du Salon"> {% fa5_icon 'info' %}</a>
+    <a class="nav-item nav-link" href="#dates" data-toggle="tab" title="Dates et evenements"> {% fa5_icon 'calendar' %}</a>
     {% if salon.type_salon == 1 %}
-    <a class="nav-item nav-link" href="#membres" data-toggle="tab"> {% fa5_icon 'users' %}</a>
+    <a class="nav-item nav-link" href="#membres" data-toggle="tab" title="Membres"> {% fa5_icon 'users' %}</a>
     {% endif %}
 </nav>
 

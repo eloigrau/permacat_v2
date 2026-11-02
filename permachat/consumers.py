@@ -1102,7 +1102,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
     def get_online_users(self):
         connections = cache.get(ONLINE_CHANNELS_KEY, {})
         # Retourne la liste unique de tous les noms d'utilisateurs connectés
-        return list(set(connections.values()))
+        return [(u, Profil.objects.get(username=u).get_absolute_url()) for u in list(set(connections.values()))]
 
     async def broadcast_user_list(self):
         users = await self.get_online_users()

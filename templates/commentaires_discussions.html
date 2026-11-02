@@ -151,7 +151,7 @@
     $('#idConversation_2 > a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var targetID = $(e.target).attr('href');
 
-        if (targetID and targetID != "#") {
+        if (targetID && targetID != "#") {
             var $pane = $(targetID);
             if ($pane.length) {
                // $pane.scrollTop($pane[0].scrollHeight);

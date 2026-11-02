@@ -29,6 +29,7 @@ class Choix:
                         "Date >":'start_time',
                         "Titre":'titre',
                         "Catégorie":'categorie',
+                        "Projet":'projet',
     }
     ordre_tri_ndf = {
                         "Date <":'-date_note',

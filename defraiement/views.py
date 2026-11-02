@@ -577,7 +577,7 @@ class ListeReunions_asso(ListView):
         if "ordreTri" in self.params:
             qs = qs.order_by(self.params['ordreTri'])
         else:
-            qs = qs.order_by('-start_time', 'categorie', 'titre', )
+            qs = qs.order_by('-start_time', 'categorie', 'titre', 'projet')
 
         return qs
 

@@ -25,7 +25,7 @@
                     <tr class="infinite-item">
                         <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
                         <td style="min-width:40%;">
-                            <a href="{{doc.doc.url}}" style="width:100%;">
+                            <a href="{{doc.get_download_url}}" style="width:100%;">
                                 {% fa5_icon 'download' class='iconright' %} {{ doc.titre }}
                             </a>
                         </td>

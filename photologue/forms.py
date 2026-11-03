@@ -293,7 +293,7 @@ class DocumentForm(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = ['asso', 'titre', 'doc', 'tags']
+        fields = ['asso', 'titre', 'doc', 'visibility']
 
     def __init__(self, request, article=None, *args, **kwargs):
         super(DocumentForm, self).__init__(*args, **kwargs)
@@ -333,7 +333,7 @@ class DocumentChangeForm(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = ['asso', 'titre', 'tags']
+        fields = ['asso', 'titre', 'visibility']
 
     def __init__(self, request, *args, **kwargs):
         super(DocumentChangeForm, self).__init__(*args, **kwargs)
@@ -348,7 +348,7 @@ class DocumentFormAsso(forms.ModelForm):
 
     class Meta:
         model = Document
-        fields = [ 'titre', 'doc', 'tags']
+        fields = [ 'titre', 'doc', 'visibility']
 
     def __init__(self, *args, **kwargs):
         super(DocumentFormAsso, self).__init__(*args, **kwargs)

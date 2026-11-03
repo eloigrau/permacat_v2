@@ -1,5 +1,7 @@
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
+from django.shortcuts import get_object_or_404
+from django.http import Http404, FileResponse, HttpResponseForbidden
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, HttpResponseRedirect
@@ -471,3 +473,49 @@ def derniersDocs(request, asso):
         docsList = Document.objects.filter(asso=asso).order_by("date_creation")[:5]
     return render(request, 'photologue/ajax/derniersDocs.html', {'docsList': docsList, 'asso': asso})
 
+
+
+def download_document(request, pk):
+    document = get_object_or_404(Document, pk=pk)
+
+    # --- NIVEAU 1 : FICHIER PUBLIC ---
+    if document.visibility == 'public':
+        # Pas de vérification, tout le monde peut télécharger
+        pass
+
+    # --- NIVEAU 2 : UTILISATEURS CONNECTÉS ---
+    elif document.visibility == 'authenticated':
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden("Vous devez être connecté pour accéder à ce fichier.")
+
+    # --- NIVEAU 2 : UTILISATEURS CONNECTÉS ---
+    elif document.visibility == 'membre':
+        if not document.asso.est_autorise(request.user):
+            return HttpResponseForbidden("Vous devez être membre du groupe pour accéder à ce fichier.")
+
+    # --- NIVEAU 3 : RESTREINT (Groupes / Utilisateurs / Propriétaire) ---
+    elif document.visibility == 'restricted':
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden("Accès refusé. Veuillez vous connecter.")
+
+        # Un administrateur ou le propriétaire du fichier a toujours le droit
+        is_owner = (document.uploaded_by == request.user)
+        is_admin = request.user.is_staff or request.user.is_superuser
+
+        # Vérifie si l'utilisateur fait partie d'un groupe autorisé ou est explicitement autorisé
+        user_in_groups = document.allowed_groups.filter(id__in=request.user.groups.all()).exists()
+        user_explicitly_allowed = document.allowed_users.filter(id=request.user.id).exists()
+
+        if not (is_owner or is_admin or user_in_groups or user_explicitly_allowed):
+            return HttpResponseForbidden("Vous n'avez pas les autorisations nécessaires pour accéder à ce fichier.")
+
+    # --- SERVIR LE FICHIER ---
+    if not document.doc:
+        raise Http404("Fichier introuvable sur le serveur.")
+
+    filename = document.doc.name.split('/')[-1]
+
+    hit_count = HitCount.objects.get_for_object(document)
+    hit_count_response = HitCountMixin.hit_count(request, hit_count)
+
+    return FileResponse(document.doc.open('rb'), as_attachment=True, filename=filename)

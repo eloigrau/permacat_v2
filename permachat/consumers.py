@@ -1038,7 +1038,8 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def get_missed_messages(self, last_id):
-        return list(MessageGlobal.objects.filter(id__gt=last_id).order_by('timestamp'))
+        #return list(MessageGlobal.objects.filter(id__gt=last_id).order_by('timestamp'))
+        return list(MessageGlobal.objects.filter().order_by('timestamp'))
 
     @database_sync_to_async
     def get_infos_user(self, user):

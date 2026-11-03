@@ -40,6 +40,8 @@ from actstream import action
 from hitcount.models import HitCount
 from django.utils.safestring import mark_safe
 #from urlshortner.utils import shorten_url
+from django.contrib.auth.models import User, Group
+
 
 logger = logging.getLogger('photologue.models')
 
@@ -287,6 +289,13 @@ class Album(models.Model):
         return self.photos.all()[:1]
 
 class Document(models.Model):
+    VISIBILITY_CHOICES = [
+        ('public', 'Public (Accessible à tous)'),
+        ('authenticated', 'Connectés (Tous les inscrits)'),
+        ('membre', 'Membre du Groupe'),
+        ('restricted', 'Restreint (Groupes spécifiques)'),
+    ]
+
     doc = models.FileField('Document',
                             max_length=IMAGE_FIELD_MAX_LENGTH,
                             upload_to='documents/%Y/%m', )
@@ -305,8 +314,20 @@ class Document(models.Model):
 
     article = models.ForeignKey('blog.Article', on_delete=models.CASCADE, null=True, blank=True)
 
+    # Gestion de la visibilité
+    visibility = models.CharField(verbose_name=_("Visibilité"), help_text="Restriction ou pas pour le téléchargement du fichier", max_length=20, choices=VISIBILITY_CHOICES, default='public')
+
+    # Groupes autorisés (uniquement utilisé si visibility == 'restricted')
+    allowed_groups = models.ManyToManyField(Group, blank=True, related_name='allowed_documents')
+
+    # Optionnel : Utilisateurs spécifiques autorisés individuellement
+    allowed_users = models.ManyToManyField(Profil, blank=True, related_name='allowed_documents')
+
     def __str__(self):
-        return self.titre + " (" + str(self.doc) +")"
+        return self.titre + " (" + str(self.doc) + ")"
+
+    def get_download_url(self):
+        return reverse("photologue:download_document", kwargs={"pk":self.pk})
 
     def get_delete_url(self):
         return reverse("photologue:supprimerDocument", kwargs={"slug":self.slug})

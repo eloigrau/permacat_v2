@@ -66,7 +66,7 @@ urlpatterns = [
 
     re_path(r'^docs/doc-ac/$', views.DocumentAutocomplete.as_view(), name='document-ac', ),
     re_path(r'^docs/doc-ac-asso/$', views.DocumentAutocomplete_asso.as_view(), name='document-ac-asso', ),
-
+    path('docs/download/<int:pk>/', views.download_document, name='download_document'),
 ]
 
 # sitemaps = {'photologue_galleries': AlbumSitemap,

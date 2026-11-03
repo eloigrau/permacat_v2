@@ -315,7 +315,7 @@ class Document(models.Model):
     article = models.ForeignKey('blog.Article', on_delete=models.CASCADE, null=True, blank=True)
 
     # Gestion de la visibilité
-    visibility = models.CharField(verbose_name=_("Visibilité"), help_text="Restriction ou pas pour le téléchargement du fichier", max_length=20, choices=VISIBILITY_CHOICES, default='public')
+    visibility = models.CharField(verbose_name=_("Visibilité"), help_text="Restriction ou pas pour le téléchargement du fichier", max_length=20, choices=VISIBILITY_CHOICES, default='membre')
 
     # Groupes autorisés (uniquement utilisé si visibility == 'restricted')
     allowed_groups = models.ManyToManyField(Group, blank=True, related_name='allowed_documents')
@@ -359,11 +359,11 @@ class Document(models.Model):
         if self.article:
             return self.article.get_absolute_url()
         #return reverse('photologue:doc-list')
-        return self.doc.url
+        return self.get_download_url()
 
     @property
     def get_absolute_url_fichier(self):
-        return self.doc.url
+        return self.get_download_url()
 
     def est_autorise(self, user):
         if not self.asso:

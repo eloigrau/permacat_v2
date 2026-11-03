@@ -258,7 +258,7 @@
         <thead><th>Date</th>
         <th>Document</th>
         <th>Groupe</th>
-        <th>Tags</th>
+        <th>Visibilité</th>
         {%if article.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                      <th>Modifier/Supprimer</th>
         {% endif %}
@@ -270,17 +270,19 @@
                         <tr><td>
                             {{ document.date_creation|date:"d/m/Y" }}
                         </td>
-                            <td><a href="{{document.doc.url}}"><i class="fa fa-download" aria-hidden="true"></i>
+                            <td><a href="{{document.get_download_url}}"><i class="fa fa-download" aria-hidden="true"></i>
                                 {{ document.titre }} </a> &nbsp;-&nbsp;
                                 <button type="button" class="btn btn-light btn-sm"
-                                        onclick="copyToClipboard('https://www.perma.cat{{document.doc.url}}')">
+                                        onclick="copyToClipboard('https://www.perma.cat{{document.get_download_url}}')">
                                     {% fa5_icon 'copy' title='Copier le lien' %}
                                 </button>
                             </td>
                             <td> {{ document.asso.get_logo_nomgroupe_html|safe }}</td>
+                            {% comment %}
                             <td> {% if document.tags.names %} - {% include 'listeTags_view_template.html' with tags=document.tags.names %} {% endif %}</td>
-                            {%if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
-
+                            {% endcomment %}
+                            <td>{{document.get_visibility_display}}</td>
+                            {% if article.auteur == request.user or document.auteur == request.user or article.estModifiable or request.user.is_superuser %}
                             <td><a class="btn btn-sm btn-warning textleft"
                                href="{% url 'photologue:modifierDocument' slug=document.slug%}">
                                 <i class="fa fa-edit"></i> </a>

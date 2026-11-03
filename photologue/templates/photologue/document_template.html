@@ -9,6 +9,7 @@
             <thead>
             <tr>
                 <th>Groupe</th>
+                <th>Visibilité</th>
                 <th>Titre</th>
                 <th>Article lié</th>
                 <th>Date</th>
@@ -21,9 +22,10 @@
             </tr>
             </thead>
             <tbody class="infinite-container justify-content-center">
-                    {% for doc in object_list %}
+                {% for doc in object_list %}
                     <tr class="infinite-item">
-                        <td> {{ doc.get_logo_nomgroupe_html|safe }}</td>
+                        <td> {{ doc.get_logo_nomgroupe_html|safe }} </td>
+                        <td>{{doc.get_visibility_display}}</td>
                         <td style="min-width:40%;">
                             <a href="{{doc.get_download_url}}" style="width:100%;">
                                 {% fa5_icon 'download' class='iconright' %} {{ doc.titre }}

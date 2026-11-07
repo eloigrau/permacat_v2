@@ -128,3 +128,60 @@ class TestBureauAssoMixin(UserPassesTestMixin):
         except:
             return False
 
+
+import logging
+import socket
+
+from django.core.cache import cache
+DEFAULT_TIMEOUT = cache.default_timeout
+
+logger = logging.getLogger(__name__)
+
+def safe_cache_delete(key):
+    """Safely deletes a given key from the cache."""
+    _ = safe_cache_get(key) and cache.delete(key)
+
+
+def safe_cache_set(key, value, timeout=DEFAULT_TIMEOUT):
+    """
+    Safely set a value in the cache.
+
+    If the cache is not reachable, the operation silently fails.
+
+    :param key: The cache key to set.
+    :param value: The value to store in the cache.
+    :param timeout: The cache timeout in seconds. If None,
+        the default cache timeout will be used.
+    """
+    try:
+        cache.set(key, value, timeout)
+    except ConnectionError as exc:
+        # Handle cache connection error
+        logger.exception(exc)
+    except socket.error as exc:
+        # Handle other potential connection errors, especially for
+        # older Python versions
+        logger.exception(exc)
+
+
+def safe_cache_get(key, default=None):
+    """
+    Safely get a value from the cache.
+
+    If the cache is not reachable, the operation silently fails.
+
+    :param key: The cache key to get.
+    :param default: The default value to return if the key is not found.
+    :return: The value from the cache or the default value.
+    """
+    try:
+        return cache.get(key, default)
+    except ConnectionError as exc:
+        # Handle cache connection error
+        logger.exception(exc)
+        return default
+    except socket.error as exc:
+        # Handle other potential connection errors, especially for
+        # older Python versions
+        logger.exception(exc)
+        return default

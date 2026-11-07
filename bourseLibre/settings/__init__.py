@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     'bootstrap','fontawesome_5','cookielaw_local',
     #'chatrooms',
     'bootstrap4',
+    'cache_fallback',
     #'haystack',
     'model_utils',
     'bourseLibre',
@@ -279,6 +280,10 @@ CHANNEL_LAYERS = {
 
 CACHES = {
     "default": {
+        'BACKEND': 'cache_fallback.FallbackCache',
+    },
+
+    'main_cache': {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
@@ -286,6 +291,11 @@ CACHES = {
                 "max_connections": 100,
             },
         }
+    },
+
+    'fallback_cache': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique'
     }
 }
 

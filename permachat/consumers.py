@@ -16,6 +16,8 @@ from django.core.cache import cache
 import base64
 from django.core.files.base import ContentFile
 import json
+from bourseLibre.utils import safe_cache_get, safe_cache_set, safe_cache_delete
+
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     """
@@ -1076,34 +1078,36 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
 
     @database_sync_to_async
     def add_online_connection(self, channel_name, username):
-        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        connections = safe_cache_get(ONLINE_CHANNELS_KEY, {})
         if not channel_name in connections:
             connections[channel_name] = username
-            cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+            safe_cache_set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+
 
     @database_sync_to_async
     def remove_online_connection(self, channel_name):
-        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        connections = safe_cache_get(ONLINE_CHANNELS_KEY, {})
         if channel_name in connections:
             del connections[channel_name]
-            cache.set(ONLINE_CHANNELS_KEY, connections, timeout=None)
+            safe_cache_set(ONLINE_CHANNELS_KEY, connections, timeout=None)
 
     @database_sync_to_async
     def remove_online_connections_user(self,):
-        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        connections = safe_cache_get(ONLINE_CHANNELS_KEY, {})
         if self.username in connections.values():
             new_connections = {}
             for channel, user_name in connections.items():
                 if user_name != self.username:
                     new_connections[channel] = user_name
 
-            cache.set(ONLINE_CHANNELS_KEY, new_connections, timeout=None)
+            safe_cache_set(ONLINE_CHANNELS_KEY, new_connections, timeout=None)
 
     @database_sync_to_async
     def get_online_users(self):
-        connections = cache.get(ONLINE_CHANNELS_KEY, {})
+        connections = safe_cache_get(ONLINE_CHANNELS_KEY, {})
         # Retourne la liste unique de tous les noms d'utilisateurs connectés
         return [(u, Profil.objects.get(username=u).get_absolute_url()) for u in list(set(connections.values()))]
+
 
     async def broadcast_user_list(self):
         users = await self.get_online_users()

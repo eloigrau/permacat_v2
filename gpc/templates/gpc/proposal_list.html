@@ -136,14 +136,14 @@
                                 {% elif proposal.status == 'CLARIFICATION' %}bg-info text-dark
                                 {% elif proposal.status == 'OBJECTION_ROUND' %}bg-warning text-dark
                                 {% else %}bg-secondary{% endif %}">
-                                {{ proposal.get_status_display }}
+                                Phase : {{ proposal.get_status_display }}
 
                                 {% if proposal.status == "CLARIFICATION" %}
-                                - {{ proposal|nb_clarifications_ok }} / {{ proposal.nbMinVote }}
+                                - Votes : {{ proposal|nb_clarifications_ok }} / {{ proposal.nbMinVote }}
                                 {% elif proposal.status == "OBJECTION_ROUND" %}
-                                - {{ proposal|nb_objections_ok}} / {{ proposal.nbMinVote }}
+                                - Votes : {{ proposal|nb_objections_ok}} / {{ proposal.nbMinVote }}
                                 {% elif proposal.status == "DELIBERATION" %}
-                                - {{ proposal|nb_has_voted }} / {{ proposal.nbMinVote }}
+                                - Votes : {{ proposal|nb_has_voted }} / {{ proposal.nbMinVote }}
                                 {% endif %}
                             </span>
                         </div>

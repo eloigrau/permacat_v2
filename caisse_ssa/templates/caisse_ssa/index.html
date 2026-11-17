@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caisse Alimentaire (June Ğ1 & Euros €)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans antialiased pb-24">
+
+    <!-- EN-TÊTE -->
+    <header class="bg-emerald-800 text-white p-4 shadow-md sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-lg tracking-tight">🌱 Caisse Alimentaire SSA</h1>
+                <p id="header-user" class="text-xs text-emerald-200">Vérification de session...</p>
+            </div>
+            <a href="/" class="text-xs bg-emerald-900/80 px-3 py-2 rounded-lg hover:bg-emerald-950 transition">
+                ← Retour site
+            </a>
+        </div>
+    </header>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="hidden fixed top-16 left-4 right-4 max-w-md mx-auto z-50 p-3.5 rounded-xl shadow-xl text-sm font-semibold text-white"></div>
+
+    <!-- ÉCRAN DE CONNEXION -->
+    <main id="view-login" class="hidden max-w-md mx-auto p-6 mt-10">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-stone-200">
+            <h2 class="text-xl font-bold mb-1">Connexion à la Caisse</h2>
+            <p class="text-sm text-stone-500 mb-6">Utilisez vos identifiants habituels du site</p>
+            <form onsubmit="login(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Identifiant ou Email</label>
+                    <input type="text" id="login-username" required class="w-full p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Mot de passe</label>
+                    <input type="password" id="login-password" required class="w-full p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-sm transition">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- APPLICATION PRINCIPALE -->
+    <main id="view-app" class="hidden max-w-4xl mx-auto p-4 space-y-6">
+
+        <!-- MES PORTEFEUILLES PERSONNELS (SÉPARÉS JUNE & EUROS) -->
+        <section class="grid grid-cols-2 gap-3">
+            <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white rounded-2xl p-4 shadow-sm">
+                <p class="text-[11px] uppercase tracking-wider text-indigo-200">Mon Solde June</p>
+                <p class="text-2xl md:text-3xl font-extrabold mt-1"><span id="user-solde-june">0.00</span> <span class="text-sm font-normal">Ğ1</span></p>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-4 shadow-sm">
+                <p class="text-[11px] uppercase tracking-wider text-emerald-100">Mon Solde Euros</p>
+                <p class="text-2xl md:text-3xl font-extrabold mt-1"><span id="user-solde-euros">0.00</span> <span class="text-sm font-normal">€</span></p>
+            </div>
+        </section>
+
+        <!-- CAISSES CENTRALES (VISIBLE UNIQUEMENT ADMIN CAISSE) -->
+        <section id="section-caisses-centrales" class="hidden grid grid-cols-2 gap-3">
+            <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-4">
+                <p class="text-[11px] uppercase font-bold text-indigo-700">🏦 Caisse Centrale June</p>
+                <p class="text-2xl font-extrabold text-indigo-950 mt-1"><span id="caisse-june-solde">0.00</span> Ğ1</p>
+            </div>
+            <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
+                <p class="text-[11px] uppercase font-bold text-amber-800">🏦 Caisse Centrale Euros</p>
+                <p class="text-2xl font-extrabold text-amber-950 mt-1"><span id="caisse-euros-solde">0.00</span> €</p>
+            </div>
+        </section>
+
+        <!-- BARRE DE NAVIGATION -->
+        <nav class="flex overflow-x-auto gap-1.5 bg-stone-200 p-1.5 rounded-xl text-xs font-bold">
+            <button onclick="switchTab('payer')" id="tab-payer" class="flex-1 py-2.5 px-3 rounded-lg bg-white text-emerald-800 shadow-sm whitespace-nowrap">💳 Payer / Achats</button>
+            <button onclick="switchTab('lieux')" id="tab-lieux" class="flex-1 py-2.5 px-3 rounded-lg text-stone-600 whitespace-nowrap">🚜 Lieux & Stands</button>
+            <button onclick="switchTab('caisse')" id="tab-caisse" class="hidden flex-1 py-2.5 px-3 rounded-lg text-stone-600 whitespace-nowrap">🏦 Caisses, Cotis & DU</button>
+            <button onclick="switchTab('membres')" id="tab-membres" class="hidden flex-1 py-2.5 px-3 rounded-lg text-stone-600 whitespace-nowrap">👥 Membres</button>
+            <button onclick="switchTab('pro')" id="tab-pro" class="hidden flex-1 py-2.5 px-3 rounded-lg text-stone-600 whitespace-nowrap">📱 Mon Stand / QR</button>
+        </nav>
+
+        <!-- ONGLET 1 : PAYER UN PRODUCTEUR -->
+        <div id="panel-payer" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-3">Régler un achat alimentaire</h3>
+                <div id="qr-reader" class="hidden mb-4 rounded-xl overflow-hidden border border-stone-300"></div>
+                <button type="button" onclick="toggleScanner()" class="w-full mb-4 bg-stone-800 hover:bg-stone-900 text-white py-2.5 rounded-xl text-sm font-medium">
+                    📷 Scanner le QR Code du stand
+                </button>
+
+                <form onsubmit="payerLieu(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1">Code du lieu conventionné</label>
+                        <input type="text" id="pay-code" placeholder="Ex: SSA-8F3A12" required class="w-full p-3 uppercase rounded-xl border border-stone-300 font-mono text-sm">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-stone-500 mb-1">Monnaie</label>
+                            <select id="pay-devise" class="w-full p-3 rounded-xl border border-stone-300 text-sm font-bold bg-stone-50">
+                                <option value="JUNE">June (Ğ1)</option>
+                                <option value="EUROS">Euros (€)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-stone-500 mb-1">Montant</label>
+                            <input type="number" step="0.01" min="0.01" id="pay-montant" placeholder="0.00" required class="w-full p-3 rounded-xl border border-stone-300 text-lg font-bold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1">Détail (facultatif)</label>
+                        <input type="text" id="pay-libelle" placeholder="Légumes, pain, œufs..." class="w-full p-2.5 rounded-xl border border-stone-300 text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-sm">
+                        Valider le paiement
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-sm text-stone-600 uppercase mb-3">Mes mouvements récents</h3>
+                <ul id="liste-transactions" class="divide-y divide-stone-100 text-sm max-h-96 overflow-y-auto"></ul>
+            </div>
+        </div>
+
+        <!-- ONGLET 2 : LIEUX DE VENTE -->
+        <div id="panel-lieux" class="hidden space-y-5">
+            <div id="form-ajout-lieu" class="hidden bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-3">➕ Ajouter un producteur ou lieu de vente</h3>
+                <form onsubmit="creerLieu(event)" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <input type="text" id="lieu-nom" placeholder="Nom de la ferme ou du commerce" required class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <select id="lieu-type" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                        <option value="PRODUCTEUR">Producteur direct / Ferme</option>
+                        <option value="MARCHE">Stand de marché</option>
+                        <option value="EPICERIE">Épicerie / Magasin</option>
+                        <option value="GROUPEMENT">Groupement d'achat</option>
+                    </select>
+                    <select id="lieu-gestionnaire" required class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                        <option value="">-- Sélectionner le membre gestionnaire --</option>
+                    </select>
+                    <input type="text" id="lieu-siret" placeholder="SIRET (facultatif)" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <input type="text" id="lieu-adresse" placeholder="Adresse complète" required class="md:col-span-2 p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <label class="flex items-center gap-2 text-sm md:col-span-2">
+                        <input type="checkbox" id="lieu-conventionne" checked class="rounded text-emerald-600">
+                        Activer immédiatement le conventionnement citoyen
+                    </label>
+                    <button type="submit" class="md:col-span-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm">
+                        Enregistrer le lieu de vente
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-3">Annuaire des lieux conventionnés</h3>
+                <div id="liste-lieux" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+        </div>
+
+        <!-- ONGLET 3 : GESTION DES CAISSES, COTISATIONS & DU (ADMIN) -->
+        <div id="panel-caisse" class="hidden space-y-5">
+
+            <!-- BLOC DIVIDENDE UNIVERSEL -->
+            <div class="bg-indigo-950 text-white rounded-2xl p-5 shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider bg-indigo-800 text-indigo-200 px-2.5 py-0.5 rounded-full font-bold">Monnaie Libre (TRM)</span>
+                        <h3 class="font-bold text-lg mt-2">Dividende Universel Quotidien (DU)</h3>
+                        <p class="text-xs text-indigo-300 mt-0.5">Calculé uniquement sur la masse monétaire June (M / N)</p>
+                    </div>
+                    <button onclick="verserDividendeUniversel()" class="bg-indigo-500 hover:bg-indigo-400 text-white font-bold px-4 py-3 rounded-xl text-xs shadow-sm">
+                        ✨ Générer le DU du jour
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 pt-4 border-t border-indigo-800/80 text-center">
+                    <div class="bg-indigo-900/60 p-3 rounded-xl">
+                        <p class="text-[11px] text-indigo-300">Masse June (M)</p>
+                        <p class="font-extrabold text-base mt-0.5"><span id="du-masse">0.00</span> Ğ1</p>
+                    </div>
+                    <div class="bg-indigo-900/60 p-3 rounded-xl">
+                        <p class="text-[11px] text-indigo-300">Co-créateurs (N)</p>
+                        <p class="font-extrabold text-base mt-0.5" id="du-membres">0</p>
+                    </div>
+                    <div class="bg-indigo-900/60 p-3 rounded-xl">
+                        <p class="text-[11px] text-indigo-300">Moyenne (M / N)</p>
+                        <p class="font-extrabold text-base mt-0.5"><span id="du-moyenne">0.00</span> Ğ1</p>
+                    </div>
+                    <div class="bg-indigo-900/60 p-3 rounded-xl border border-indigo-500/40">
+                        <p class="text-[11px] text-indigo-200">Prochain DU / jour</p>
+                        <p class="font-extrabold text-base text-emerald-300 mt-0.5">+<span id="du-prochain">0.00</span> Ğ1</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Enregistrer une cotisation -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                    <h3 class="font-bold text-base mb-1">📥 Encaisser une cotisation</h3>
+                    <p class="text-xs text-stone-500 mb-3">Bloqué automatiquement si le membre a un solde négatif ou insuffisant.</p>
+                    <form onsubmit="enregistrerCotisation(event)" class="space-y-3">
+                        <select id="cotis-membre" required class="w-full p-2.5 rounded-xl border border-stone-300 text-sm">
+                            <option value="">-- Choisir le cotisant --</option>
+                        </select>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="cotis-devise" onchange="syncMoyenCotisation()" class="p-2.5 rounded-xl border border-stone-300 text-sm font-bold bg-stone-50">
+                                <option value="JUNE">Caisse June (Ğ1)</option>
+                                <option value="EUROS">Caisse Euros (€)</option>
+                            </select>
+                            <input type="number" step="0.01" min="0.01" id="cotis-montant" placeholder="Montant" required class="p-2.5 rounded-xl border border-stone-300 text-sm font-bold">
+                        </div>
+                        <select id="cotis-moyen" class="w-full p-2.5 rounded-xl border border-stone-300 text-sm">
+                            <option value="JUNE_PORTEFEUILLE">Débit portefeuille June (Ğ1)</option>
+                            <option value="VIREMENT_EUROS">Virement bancaire (€)</option>
+                            <option value="ESPECES_EUROS">Espèces (€)</option>
+                        </select>
+                        <input type="date" id="cotis-mois" required class="w-full p-2.5 rounded-xl border border-stone-300 text-sm">
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm">
+                            Valider la cotisation
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Distribuer l'allocation mensuelle -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                    <h3 class="font-bold text-base mb-1">📤 Verser l'allocation mensuelle</h3>
+                    <p class="text-xs text-stone-500 mb-3">Choisissez la caisse à distribuer (June ou Euros).</p>
+                    <form onsubmit="distribuerAllocations(event)" class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="alloc-devise" class="p-2.5 rounded-xl border border-stone-300 text-sm font-bold bg-stone-50">
+                                <option value="JUNE">En June (Ğ1)</option>
+                                <option value="EUROS">En Euros (€)</option>
+                            </select>
+                            <input type="number" step="0.01" min="0.01" id="alloc-montant" placeholder="Montant / pers." required class="p-2.5 rounded-xl border border-stone-300 text-sm font-bold">
+                        </div>
+                        <input type="text" id="alloc-mois" placeholder="Libellé du mois (ex: Novembre 2026)" required class="w-full p-2.5 rounded-xl border border-stone-300 text-sm">
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl text-sm">
+                            Lancer le virement groupé
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Historique des cotisations -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-sm text-stone-600 uppercase mb-3">Dernières cotisations enregistrées</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs text-stone-400 border-b">
+                            <tr>
+                                <th class="pb-2">Membre</th>
+                                <th class="pb-2">Mois</th>
+                                <th class="pb-2">Caisse</th>
+                                <th class="pb-2 text-right">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-cotisations" class="divide-y divide-stone-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200 flex flex-col md:flex-row justify-between items-center gap-3">
+                <div>
+                    <h3 class="font-bold text-base">🖨️ Bilan Comptable & Transactions (PDF)</h3>
+                    <p class="text-xs text-stone-500">Génère le relevé mensuel complet des caisses June & Euros prêt à imprimer.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="month" id="bilan-mois-select" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <button onclick="telechargerBilanPDF()" class="bg-stone-800 hover:bg-stone-900 text-white font-bold px-4 py-2.5 rounded-xl text-xs whitespace-nowrap">
+                        Ouvrir le PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONGLET 4 : MEMBRES (ADMIN) -->
+        <div id="panel-membres" class="hidden space-y-5">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-3">➕ Inscrire / Rattacher un membre</h3>
+                <form onsubmit="creerMembre(event)" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <input type="text" id="membre-username" placeholder="Identifiant exact" required class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <input type="password" id="membre-password" placeholder="Mot de passe (si nouveau)" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <input type="email" id="membre-email" placeholder="Email (si nouveau)" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <select id="membre-role" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                        <option value="PARTICIPANT">Participant</option>
+                        <option value="PRODUCTEUR">Producteur</option>
+                        <option value="CONSEIL">Admin Caisse (Conseil)</option>
+                    </select>
+                    <input type="number" step="0.01" id="membre-cotis" placeholder="Cotisation engagée/mois" class="p-2.5 rounded-xl border border-stone-300 text-sm">
+                    <div class="flex flex-col justify-center gap-1 text-xs px-1">
+                        <label class="flex items-center gap-2"><input type="checkbox" id="membre-allocataire" checked> Allocataire SSA</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" id="membre-cocreateur" checked> Co-créateur DU</label>
+                    </div>
+                    <button type="submit" class="md:col-span-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm">
+                        Enregistrer le membre
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-3">Membres & Soldes séparés (Ğ1 / €)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs text-stone-400 border-b">
+                            <tr>
+                                <th class="pb-2">Membre</th>
+                                <th class="pb-2">Rôle</th>
+                                <th class="pb-2">Alloc.</th>
+                                <th class="pb-2">DU</th>
+                                <th class="pb-2 text-right">Solde June</th>
+                                <th class="pb-2 text-right">Solde Euros</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-membres" class="divide-y divide-stone-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONGLET 5 : MON STAND (PRODUCTEUR) -->
+        <!-- ONGLET 5 : MON STAND (PRODUCTEUR) -->
+        <div id="panel-pro" class="hidden space-y-4">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-stone-200 text-center max-w-md mx-auto">
+                <h3 class="font-bold text-lg mb-1" id="pro-nom-lieu">Mon Stand Conventionné</h3>
+                <p class="text-xs text-stone-500 mb-4">Présentez ce QR Code aux adhérents.</p>
+                <div id="mon-qrcode" class="flex justify-center my-4 p-4 bg-white rounded-xl border inline-block"></div>
+                <p id="mon-code-texte" class="font-mono font-extrabold text-xl text-emerald-700 bg-emerald-50 py-2.5 rounded-xl"></p>
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <div class="p-3 bg-indigo-50 rounded-xl">
+                        <p class="text-xs text-indigo-700">Encaissé en June</p>
+                        <p class="text-xl font-bold text-indigo-950"><span id="lieu-solde-june">0.00</span> Ğ1</p>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-xl">
+                        <p class="text-xs text-emerald-700">Encaissé en Euros</p>
+                        <p class="text-xl font-bold text-emerald-950"><span id="lieu-solde-euros">0.00</span> €</p>
+                    </div>
+                </div>
+                <!-- Bouton d'accès direct pour payer un autre producteur -->
+                <button onclick="switchTab('payer')" class="w-full mt-5 bg-stone-800 hover:bg-stone-900 text-white font-bold py-3 rounded-xl text-xs transition">
+                    🛒 Payer un autre producteur / stand
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentUser = null;
+        let html5QrCode = null;
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            document.getElementById('cotis-mois').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+            chargerTout();
+        });
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `fixed top-16 left-4 right-4 max-w-md mx-auto z-50 p-3.5 rounded-xl shadow-xl text-sm font-semibold text-white ${isError ? 'bg-red-600' : 'bg-emerald-800'}`;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4500);
+        }
+
+        function syncMoyenCotisation() {
+            const devise = document.getElementById('cotis-devise').value;
+            document.getElementById('cotis-moyen').value = devise === 'JUNE' ? 'JUNE_PORTEFEUILLE' : 'VIREMENT_EUROS';
+        }
+
+        async function apiFetch(url, options = {}) {
+            const relativeUrl = url.startsWith('/') ? url.slice(1) : url;
+            options.credentials = 'same-origin';
+            options.headers = {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+                ...options.headers
+            };
+            const response = await fetch(relativeUrl, options);
+            if (response.status === 401 || response.status === 403) {
+                if (relativeUrl === 'api/me/') {
+                    document.getElementById('view-app').classList.add('hidden');
+                    document.getElementById('view-login').classList.remove('hidden');
+                    document.getElementById('header-user').textContent = "Non connecté";
+                } else {
+                    const errData = await response.json().catch(() => ({}));
+                    showToast(errData.detail || "Action réservée aux administrateurs de la caisse.", true);
+                }
+                throw new Error("Accès refusé");
+            }
+            return response;
+        }
+
+        async function login(e) {
+            e.preventDefault();
+            const res = await fetch('api/login/', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({
+                    username: document.getElementById('login-username').value,
+                    password: document.getElementById('login-password').value
+                })
+            });
+            if (res.ok) chargerTout();
+            else showToast("Identifiant ou mot de passe incorrect.", true);
+        }
+
+        async function chargerTout() {
+            try {
+                const res = await apiFetch('api/me/');
+                currentUser = await res.json();
+            } catch (e) { return; }
+
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-app').classList.remove('hidden');
+
+            document.getElementById('header-user').textContent = `Connecté : ${currentUser.username} (${currentUser.role})`;
+            document.getElementById('user-solde-june').textContent = parseFloat(currentUser.solde_june).toFixed(2);
+            document.getElementById('user-solde-euros').textContent = parseFloat(currentUser.solde_euros).toFixed(2);
+
+            const estAdminCaisse = currentUser.caisse_june_solde !== null;
+            const estPro = currentUser.lieux_geres && currentUser.lieux_geres.length > 0;
+
+            document.getElementById('section-caisses-centrales').classList.toggle('hidden', !estAdminCaisse);
+            document.getElementById('tab-caisse').classList.toggle('hidden', !estAdminCaisse);
+            document.getElementById('tab-membres').classList.toggle('hidden', !estAdminCaisse);
+            document.getElementById('form-ajout-lieu').classList.toggle('hidden', !estAdminCaisse);
+            document.getElementById('tab-pro').classList.toggle('hidden', !estPro);
+
+            if (estAdminCaisse) {
+                document.getElementById('caisse-june-solde').textContent = parseFloat(currentUser.caisse_june_solde).toFixed(2);
+                document.getElementById('caisse-euros-solde').textContent = parseFloat(currentUser.caisse_euros_solde).toFixed(2);
+                await chargerStatsDU();
+                await chargerMembres();
+                await chargerCotisations();
+            }
+
+            if (estPro) {
+                const lieu = currentUser.lieux_geres[0];
+                document.getElementById('pro-nom-lieu').textContent = lieu.nom;
+                document.getElementById('mon-code-texte').textContent = lieu.code_paiement;
+                document.getElementById('lieu-solde-june').textContent = parseFloat(lieu.solde_june).toFixed(2);
+                document.getElementById('lieu-solde-euros').textContent = parseFloat(lieu.solde_euros).toFixed(2);
+                const qrDiv = document.getElementById('mon-qrcode');
+                qrDiv.innerHTML = "";
+                new QRCode(qrDiv, { text: lieu.code_paiement, width: 180, height: 180 });
+            }
+
+            await chargerTransactions();
+            await chargerLieux(estAdminCaisse);
+        }
+
+        async function chargerStatsDU() {
+            const res = await apiFetch('api/transactions/dividende-universel/');
+            if (!res.ok) return;
+            const stats = await res.json();
+            document.getElementById('du-masse').textContent = parseFloat(stats.masse_monetaire_totale).toFixed(2);
+            document.getElementById('du-membres').textContent = stats.nombre_cocreateurs;
+            document.getElementById('du-moyenne').textContent = parseFloat(stats.moyenne_M_sur_N).toFixed(2);
+            document.getElementById('du-prochain').textContent = parseFloat(stats.prochain_du_estime).toFixed(2);
+        }
+
+        async function chargerTransactions() {
+            const res = await apiFetch('api/transactions/');
+            const txs = await res.json();
+            const liste = document.getElementById('liste-transactions');
+            if (!txs.length) {
+                liste.innerHTML = '<li class="py-3 text-stone-400">Aucune transaction enregistrée.</li>';
+                return;
+            }
+            liste.innerHTML = txs.slice(0, 20).map(tx => {
+                const symbole = tx.devise === 'JUNE' ? 'Ğ1' : '€';
+                const badgeColor = tx.devise === 'JUNE' ? 'text-indigo-700' : 'text-emerald-700';
+                return `
+                    <li class="py-2.5 flex justify-between items-center">
+                        <div>
+                            <p class="font-semibold text-stone-800">${tx.type_transaction === 'CREATION_DU' ? '✨ ' : ''}${tx.libelle || tx.type_transaction}</p>
+                            <p class="text-xs text-stone-400">${new Date(tx.date_execution).toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'})}</p>
+                        </div>
+                        <span class="font-bold ${badgeColor}">${parseFloat(tx.montant).toFixed(2)} ${symbole}</span>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        async function chargerLieux(estAdminCaisse) {
+            const url = estAdminCaisse ? 'api/lieux/' : 'api/lieux/?est_conventionne=true';
+            const res = await apiFetch(url);
+            const lieux = await res.json();
+            document.getElementById('liste-lieux').innerHTML = lieux.map(l => `
+                <div class="p-4 rounded-xl bg-stone-50 border ${l.est_conventionne ? 'border-stone-200' : 'border-red-200 bg-red-50/40'} flex flex-col justify-between gap-3">
+                    <div>
+                        <div class="flex justify-between items-start gap-2">
+                            <p class="font-bold text-sm">${l.nom}</p>
+                            <span class="text-[11px] px-2 py-0.5 rounded-full font-semibold ${l.est_conventionne ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}">
+                                ${l.est_conventionne ? 'Conventionné' : 'Suspendu'}
+                            </span>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-0.5">${l.adresse}</p>
+                        <p class="text-xs font-mono text-stone-600 mt-1">Code : <strong>${l.code_paiement}</strong></p>
+                        ${estAdminCaisse ? `<p class="text-xs font-semibold mt-1 text-stone-700">Soldes : <span class="text-indigo-700">${parseFloat(l.solde_june).toFixed(2)} Ğ1</span> | <span class="text-emerald-700">${parseFloat(l.solde_euros).toFixed(2)} €</span></p>` : ''}
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-2 border-t border-stone-200/60">
+                        ${l.est_conventionne ? `<button onclick="preparerPaiement('${l.code_paiement}')" class="bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Payer</button>` : ''}
+                        ${estAdminCaisse ? `
+                            <button onclick="basculerConventionnement('${l.id}', ${!l.est_conventionne})" class="bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-semibold px-2.5 py-1.5 rounded-lg">
+                                ${l.est_conventionne ? 'Suspendre' : 'Conventionner'}
+                            </button>
+                            ${parseFloat(l.solde_euros) > 0 ? `<button onclick="reconvertirLieu('${l.id}', '${l.nom}', '${l.solde_euros}')" class="bg-amber-600 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg">Rembourser €</button>` : ''}
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function chargerMembres() {
+            const res = await apiFetch('api/membres/');
+            if (!res.ok) return;
+            const membres = await res.json();
+
+            const optionsHtml = '<option value="">-- Sélectionner un membre --</option>' +
+                membres.map(m => `<option value="${m.id}">${m.username} (${parseFloat(m.solde_june).toFixed(2)} Ğ1 | ${parseFloat(m.solde_euros).toFixed(2)} €)</option>`).join('');
+            document.getElementById('cotis-membre').innerHTML = optionsHtml;
+            document.getElementById('lieu-gestionnaire').innerHTML = optionsHtml;
+
+            document.getElementById('table-membres').innerHTML = membres.map(m => {
+                const sJune = parseFloat(m.solde_june || 0);
+                const sEuros = parseFloat(m.solde_euros || 0);
+                return `
+                <tr>
+                    <td class="py-2.5 font-semibold">${m.username}</td>
+                    <td class="py-2.5">
+                        <select onchange="patchMembre(${m.id}, {role: this.value})" class="text-xs bg-stone-100 border border-stone-200 rounded p-1">
+                            <option value="PARTICIPANT" ${m.role === 'PARTICIPANT' ? 'selected' : ''}>Participant</option>
+                            <option value="PRODUCTEUR" ${m.role === 'PRODUCTEUR' ? 'selected' : ''}>Producteur</option>
+                            <option value="CONSEIL" ${m.role === 'CONSEIL' ? 'selected' : ''}>Admin Caisse</option>
+                        </select>
+                    </td>
+                    <td class="py-2.5">
+                        <button onclick="patchMembre(${m.id}, {est_allocataire: ${!m.est_allocataire}})" class="text-xs px-2 py-0.5 rounded font-semibold ${m.est_allocataire ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-200 text-stone-600'}">
+                            ${m.est_allocataire ? 'Oui' : 'Non'}
+                        </button>
+                    </td>
+                    <td class="py-2.5">
+                        <button onclick="patchMembre(${m.id}, {est_cocreateur_du: ${!m.est_cocreateur_du}})" class="text-xs px-2 py-0.5 rounded font-semibold ${m.est_cocreateur_du ? 'bg-indigo-100 text-indigo-800' : 'bg-stone-200 text-stone-600'}">
+                            ${m.est_cocreateur_du ? '✨ Oui' : 'Non'}
+                        </button>
+                    </td>
+                    <td class="py-2.5 text-right font-bold ${sJune < 0 ? 'text-red-600' : 'text-indigo-700'}">${sJune.toFixed(2)} Ğ1</td>
+                    <td class="py-2.5 text-right font-bold ${sEuros < 0 ? 'text-red-600' : 'text-emerald-700'}">${sEuros.toFixed(2)} €</td>
+                </tr>
+            `}).join('');
+        }
+
+        async function chargerCotisations() {
+            const res = await apiFetch('api/cotisations/');
+            if (!res.ok) return;
+            const cotis = await res.json();
+            document.getElementById('table-cotisations').innerHTML = cotis.slice(0, 15).map(c => `
+                <tr>
+                    <td class="py-2 font-medium">${c.membre_nom}</td>
+                    <td class="py-2 text-xs text-stone-500">${c.mois_concerne}</td>
+                    <td class="py-2 text-xs font-semibold ${c.devise === 'JUNE' ? 'text-indigo-700' : 'text-emerald-700'}">${c.devise}</td>
+                    <td class="py-2 text-right font-bold">+${parseFloat(c.montant).toFixed(2)} ${c.devise === 'JUNE' ? 'Ğ1' : '€'}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function verserDividendeUniversel() {
+            if (!confirm("Lancer la création du Dividende Universel du jour ?")) return;
+            const res = await apiFetch('api/transactions/dividende-universel/', { method: 'POST' });
+            const data = await res.json();
+            if (res.ok) { showToast(data.message); chargerTout(); }
+            else showToast(data.detail || "Erreur DU", true);
+        }
+
+        function preparerPaiement(code) {
+            document.getElementById('pay-code').value = code;
+            switchTab('payer');
+            document.getElementById('pay-montant').focus();
+        }
+
+        async function payerLieu(e) {
+            e.preventDefault();
+            const res = await apiFetch('api/transactions/payer-lieu/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    code_paiement_lieu: document.getElementById('pay-code').value.trim(),
+                    devise: document.getElementById('pay-devise').value,
+                    montant: document.getElementById('pay-montant').value,
+                    libelle: document.getElementById('pay-libelle').value || "Achat alimentaire"
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showToast("Paiement validé !");
+                document.getElementById('pay-montant').value = "";
+                document.getElementById('pay-libelle').value = "";
+                chargerTout();
+            } else {
+                showToast(Array.isArray(data.detail) ? data.detail[0] : (data.detail || "Erreur"), true);
+            }
+        }
+
+        async function enregistrerCotisation(e) {
+            e.preventDefault();
+            const res = await apiFetch('api/cotisations/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    membre: document.getElementById('cotis-membre').value,
+                    devise: document.getElementById('cotis-devise').value,
+                    montant: document.getElementById('cotis-montant').value,
+                    moyen_paiement: document.getElementById('cotis-moyen').value,
+                    mois_concerne: document.getElementById('cotis-mois').value
+                })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) {
+                showToast("Cotisation encaissée !");
+                document.getElementById('cotis-montant').value = "";
+                chargerTout();
+            } else {
+                showToast(data.detail || "Cotisation refusée (solde négatif ou insuffisant).", true);
+            }
+        }
+
+        async function distribuerAllocations(e) {
+            e.preventDefault();
+            const res = await apiFetch('api/transactions/distribuer-allocations/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    devise: document.getElementById('alloc-devise').value,
+                    montant_allocation: document.getElementById('alloc-montant').value,
+                    mois: document.getElementById('alloc-mois').value
+                })
+            });
+            const data = await res.json();
+            if (res.ok) { showToast(data.message); chargerTout(); }
+            else showToast(data.detail || "Erreur distribution", true);
+        }
+
+        async function creerMembre(e) {
+            e.preventDefault();
+            const res = await apiFetch('api/membres/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: document.getElementById('membre-username').value.trim(),
+                    password: document.getElementById('membre-password').value,
+                    email: document.getElementById('membre-email').value,
+                    role: document.getElementById('membre-role').value,
+                    cotisation_mensuelle_engagee: document.getElementById('membre-cotis').value || "0.00",
+                    est_allocataire: document.getElementById('membre-allocataire').checked,
+                    est_cocreateur_du: document.getElementById('membre-cocreateur').checked
+                })
+            });
+            if (res.ok) { showToast("Membre enregistré !"); e.target.reset(); chargerTout(); }
+        }
+
+        async function patchMembre(membreId, payload) {
+            const res = await apiFetch(`api/membres/${membreId}/`, { method: 'PATCH', body: JSON.stringify(payload) });
+            if (res.ok) { showToast("Membre mis à jour."); chargerMembres(); chargerStatsDU(); }
+        }
+
+        async function creerLieu(e) {
+            e.preventDefault();
+            const res = await apiFetch('api/lieux/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    nom: document.getElementById('lieu-nom').value,
+                    type_lieu: document.getElementById('lieu-type').value,
+                    gestionnaire: document.getElementById('lieu-gestionnaire').value,
+                    siret: document.getElementById('lieu-siret').value,
+                    adresse: document.getElementById('lieu-adresse').value,
+                    est_conventionne: document.getElementById('lieu-conventionne').checked
+                })
+            });
+            if (res.ok) { showToast("Lieu ajouté !"); e.target.reset(); chargerTout(); }
+        }
+
+        async function basculerConventionnement(lieuId, nouvelEtat) {
+            const res = await apiFetch(`api/lieux/${lieuId}/`, { method: 'PATCH', body: JSON.stringify({ est_conventionne: nouvelEtat }) });
+            if (res.ok) { showToast(nouvelEtat ? "Lieu conventionné !" : "Suspendu."); chargerTout(); }
+        }
+
+        async function reconvertirLieu(lieuId, nomLieu, soldeMax) {
+            const montant = prompt(`Montant en Euros (€) à rembourser par virement bancaire à "${nomLieu}" (Max : ${soldeMax} €) :`, soldeMax);
+            if (!montant || parseFloat(montant) <= 0) return;
+            const res = await apiFetch('api/transactions/reconvertir/', {
+                method: 'POST',
+                body: JSON.stringify({ lieu_id: lieuId, montant: montant })
+            });
+            const data = await res.json();
+            if (res.ok) { showToast(data.message); chargerTout(); }
+            else showToast(data.detail || "Erreur remboursement", true);
+        }
+
+        function switchTab(tab) {
+            const activeClasses = ['bg-white', 'text-emerald-800', 'shadow-sm'];
+            const inactiveClasses = ['text-stone-600'];
+
+            ['payer', 'lieux', 'caisse', 'membres', 'pro'].forEach(t => {
+                const panel = document.getElementById(`panel-${t}`);
+                const btn = document.getElementById(`tab-${t}`);
+
+                if (panel) {
+                    panel.classList.toggle('hidden', t !== tab);
+                }
+
+                if (btn) {
+                    if (t === tab) {
+                        btn.classList.add(...activeClasses);
+                        btn.classList.remove(...inactiveClasses);
+                    } else {
+                        btn.classList.remove(...activeClasses);
+                        btn.classList.add(...inactiveClasses);
+                    }
+                }
+            });
+        }
+
+        function toggleScanner() {
+            const readerDiv = document.getElementById('qr-reader');
+            if (!readerDiv.classList.contains('hidden')) {
+                if (html5QrCode) html5QrCode.stop();
+                readerDiv.classList.add('hidden');
+                return;
+            }
+            readerDiv.classList.remove('hidden');
+            html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    document.getElementById('pay-code').value = decodedText;
+                    html5QrCode.stop();
+                    readerDiv.classList.add('hidden');
+                    showToast(`Code détecté : ${decodedText}`);
+                }
+            ).catch(() => { showToast("Caméra indisponible.", true); readerDiv.classList.add('hidden'); });
+        }
+
+        function telechargerBilanPDF() {
+            const val = document.getElementById('bilan-mois-select').value; // format "2026-11"
+            const [annee, mois] = val ? val.split('-') : [new Date().getFullYear(), new Date().getMonth() + 1];
+            window.open(`api/transactions/bilan-pdf/?annee=${annee}&mois=${parseInt(mois, 10)}`, '_blank');
+        }
+    </script>
+</body>
+</html>

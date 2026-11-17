@@ -1136,7 +1136,7 @@ class PermaChatConsumer(AsyncJsonWebsocketConsumer):
             # Si le délai expire sans annulation, on ferme le WebSocket.
             # Le code 4001 (ou autre code personnalisé entre 4000 et 4999)
             # permet au frontend de savoir qu'il s'agit d'un timeout d'inactivité.
-            await self.close(code=4001)
+            await self.signal(code=4001)
 
         except asyncio.CancelledError:
             # La tâche a été annulée parce que le client a envoyé un message.

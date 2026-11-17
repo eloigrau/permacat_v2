@@ -42,7 +42,14 @@
       </div>
       <!-- / Layout page: End -->
     </div>
+
+{% comment %}
+{% if request.user.is_authenticated %}
     {% include "../layout/partials/chat.html" %}
+{% endif %}
+{% endcomment %}
+{% block chat %}
+{% endblock %}
 
     {% if is_menu %}
     <!-- Overlay -->

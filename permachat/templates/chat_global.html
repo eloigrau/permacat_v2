@@ -1,0 +1,641 @@
+{% load fontawesome_5 %}
+<!-- ========================================== -->
+<!-- WIDGET DE CHAT COMPLET (Bootstrap 4.2)     -->
+<!-- ========================================== -->
+<style>
+@media (max-width: 768px) {
+        #chat-box {
+            position: fixed !important;
+            top: 10vh !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            max-height:65vh;/* Prend 100% de la hauteur de l'écran */
+            margin: 0 !important;
+            border-radius: 0 !important; /* Supprime les coins arrondis pour un effet natif */
+        }
+    }
+
+    #chat-box{
+        display: none;
+        width: 380px;
+        max-width: calc(100vw - 30px);
+        height: 500px;
+        bottom: 65px;
+        right: 15px; z-index: 1050;
+        border-radius: 12px;
+        overflow: hidden;
+        height:500px;
+        max-height:80vh;/* Prend 100% de la hauteur de l'écran */
+    }
+    /* Menu déroulant des utilisateurs */
+        #user-menu-container { position: relative; }
+        #user-menu-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        #user-menu-btn:hover { background: rgba(255, 255, 255, 0.3); }
+        #user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 32px;
+            background: white;
+            color: #333;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 180px;
+            max-height: 160px;
+            overflow-y: auto;
+            z-index: 100;
+            padding: 5px 0;
+        }
+        #user-list { list-style: none; margin: 0; padding: 0; }
+        #user-list li {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #user-list li:last-child { border-bottom: none; }
+        /* État hors ligne / déconnecté volontaire */
+        #offline-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            text-align: center;
+            padding: 20px;
+        }
+</style>
+<!-- Bouton Flottant (Bas à droite) -->
+<div class="position-fixed p-3" style="bottom: 0; right: 0; z-index: 1050;">
+    <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+        💬
+    </button>
+<span id="unread-badge" class="position-absolute  start-50 translate-middle badge rounded-pill bg-warning" style="display: none;">0</span>
+
+</div>
+
+<!-- Fenêtre de Chat (Card Bootstrap responsive avec correctif de scroll) -->
+<div id="chat-box" class="card shadow-lg position-fixed flex-column">
+
+    <!-- En-tête (Fixe) -->
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 flex-shrink-0">
+        <div>
+            <span>Perma.Chat</span>
+        </div>
+        <div class="header-actions align-items-center textcenter">
+                <!-- Menu déroulant des connectés -->
+                <div id="user-menu-container">
+                    <button id="user-menu-btn" class="btn btn-info chat-btn" type="button"  title="Utilisateurices présent-es">👥 <span id="online-count">0</span> ▼</button>
+                    <div id="user-dropdown">
+                        <ul id="user-list"></ul>
+                    </div>
+                    <button id="leave-btn" class="btn btn-sm btn-warning" type="button" title="Quitter le chat"><i class="fa fa-door-open"></i></button>
+                </div>
+        </div>
+        <button type="button" id="chat-close-btn" class="close text-white m-0 p-0" style="opacity: 0.9; font-size: 24px; outline: none;">
+            <span>&times;</span>
+        </button>
+    </div>
+
+    <!-- Corps des messages (Scrollable, min-height: 0 et padding de bas pour éviter le masquage) -->
+    <div id="chat-messages" class="card-body bg-light overflow-auto d-flex flex-column" style="font-size: 0.85rem; gap: 12px; flex: 1 1 auto; min-height: 0; padding-bottom: 2rem;">
+        <!-- Message système initial -->
+        <span id="connection-status" class="text-center text-muted small my-2">Benvingut !</span>
+        <div id="offline-overlay">
+            <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Vous avez quitté le chat.</p>
+            <button id="rejoin-btn" style="background: #28a745; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 12px;">Rejoindre</button>
+        </div>
+    </div>
+
+    <!-- Pied de page / Saisie (Fixe en bas) -->
+    <div class="card-footer bg-white p-2 border-top flex-shrink-0">
+            <div class="input-group">
+                <!-- Bouton Emoji -->
+                <button id="emoji-btn" class="btn btn-outline-secondary btn-sm px-2" type="button" title="Insérer un emoji">
+                    <i class="fa fa-smile"></i>
+                </button>
+                <!-- Bouton Microphone Vocal -->
+                <button id="mic-btn" class="btn btn-outline-secondary btn-sm px-2" type="button" title="Enregistrer un vocal">
+                    <i class="fa fa-microphone"></i>
+                </button>
+                <input id="chat-input" type="text" class="form-control form-control-sm" placeholder="Écrire un message..." autocomplete="off">
+                <button id="chat-send-btn" class="btn btn-primary btn-sm" type="button">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+            <!-- Panneau d'emojis étendu et catégorisé -->
+            <div id="emoji-picker-panel" class="bg-white border rounded shadow p-2 position-absolute bottom-100 start-0 mb-2 w-100" style="display: none; max-height: 220px; overflow-y: auto; z-index: 1060; font-size: 20px;">
+
+                 <div class="mb-2">
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😀</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😂</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤣</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😊</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😍</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😎</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤔</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😅</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😴</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🥳</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😭</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😡</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😱</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">😇</span>
+
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👍</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👎</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👏</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🙌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤝</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✌️</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤞</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💪</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🙏</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👋</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🤌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👇</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👆</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👈</span>
+
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🔥</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">⭐</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✨</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🎉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✅</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">❌</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💡</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🚀</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">👀</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">❤️</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💔</span>
+                </div>
+
+                {% comment %}
+                <div class="text-muted small fw-bold mb-1" style="font-size: 11px;">Symboles</div>
+                <div>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">❤️</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🧡</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💛</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💚</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💙</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💜</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🖤</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🔥</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">⭐</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">✨</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">🎉</span>
+                    <span class="emoji-option" style="cursor: pointer; padding: 2px;">💯</span>
+                </div>
+                {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- SCRIPT JAVASCRIPT & WEBSOCKET              -->
+<!-- ========================================== -->
+<script>
+    const toggleBtn = document.getElementById('chat-toggle-btn');
+    const chatBox = document.getElementById('chat-box');
+    const closeBtn = document.getElementById('chat-close-btn');
+    const sendBtn = document.getElementById('chat-send-btn');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const userListUl = document.querySelector('#user-list');
+    const onlineCountSpan = document.querySelector('#online-count');
+    const userMenuBtn = document.querySelector('#user-menu-btn');
+    const userDropdown = document.querySelector('#user-dropdown');
+
+    const leaveBtn = document.querySelector('#leave-btn');
+    const rejoinBtn = document.querySelector('#rejoin-btn');
+    const offlineOverlay = document.querySelector('#offline-overlay');
+    const statusSpan = document.querySelector('#connection-status');
+    const unreadBadge = document.querySelector('#unread-badge');
+
+    const emojiBtn = document.querySelector('#emoji-btn');
+    const emojiPickerPanel = document.querySelector('#emoji-picker-panel');
+
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+    const micBtn = document.querySelector('#mic-btn');
+
+
+    // Connexion WebSocket Django Channels
+    //const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    //const chatSocket = new WebSocket(wsProtocol + window.location.host + '/permachat/chat_direct/');
+
+    if (!sessionStorage.getItem('chat_user')) {
+        sessionStorage.setItem('chat_user', 'User_' + Math.floor(Math.random() * 900 + 100));
+    }
+    const username = sessionStorage.getItem('chat_user');
+
+    let chatSocket = null;
+    let unreadCount = 0;
+
+    userMenuBtn.onclick = function(e) {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        // Fermer le menu si on clique ailleurs dans la page
+        window.onclick = function() {
+            userDropdown.style.display = 'none';
+        };
+
+    function connectWebSocket() {
+        const username = "{{ request.user.username|default:'' }}";
+
+        // Si l'utilisateur n'est pas connecté, on masque complètement le widget de chat
+        if (!username || username === "") {
+            if (chatToggleBtn) chatToggleBtn.style.display = 'none';
+            return;
+        }
+
+        if (localStorage.getItem('chat_user_left') === 'true') {
+            offlineOverlay.style.display = 'flex';
+            statusSpan.textContent = "○ Hors ligne";
+            statusSpan.style.color = "#ccc";
+            onlineCountSpan.textContent = "0";
+            userListUl.innerHTML = '';
+            return; // Stoppe net l'exécution, aucune socket n'est ouverte
+        }
+
+        offlineOverlay.style.display = 'none';
+        intentionalClose = false;
+        // 1. Get the ID of the last message saved locally
+        const lastMessageId = localStorage.getItem('last_id') || 0;
+        // 2. Open WebSocket and pass last_id as a query parameter
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const wsUrl = wsProtocol + window.location.host + '/permachat/chat_direct/?last_id=' + lastMessageId;
+
+        chatSocket = new WebSocket(wsUrl);
+
+        chatSocket.onopen = function() {
+            statusSpan.textContent = "Connecté";
+            statusSpan.style.color = "#d4edda";
+
+            if (!sessionStorage.getItem('chat_session_initialized')) {
+                sessionStorage.setItem('chat_session_initialized', 'true');
+
+                // Send join notification to the server only once
+                chatSocket.send(JSON.stringify({
+                    'action': 'join',
+                    'user': username
+                }));
+            }
+        };
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            // Gestion selon le type d'événement reçu du backend
+            if (data.type === 'user_status') {
+                appendSystemMessage(data.message);
+            } else if (data.type === 'chat_message') {
+                appendMessage(data);
+            }else if (data.type === "audio_message") {
+                appendMessageAudio(data);
+            }else if (data.type === 'user_list') {
+                // Mise à jour de la liste des utilisateurs connectés
+                onlineCountSpan.textContent = data.users.length;
+                userListUl.innerHTML = '';
+                data.users.forEach(u => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${u[1]}" target=_blank><span style="color: #28a745;">●</span> ${u[0]} ${u[0] === username ? '(moi)' : ''} </a>`;
+                    userListUl.appendChild(li);
+                });
+            }
+
+            // 3. Update localStorage with the newest message ID received
+            if (data.id) {
+                localStorage.setItem('last_id', data.id);
+            }
+        };
+
+        chatSocket.onclose = function() {
+            if (!intentionalClose && localStorage.getItem('chat_user_left') !== 'true') {
+                statusSpan.textContent = "○ Reconnexion...";
+                statusSpan.style.color = "#fff3cd";
+                setTimeout(connectWebSocket, 2000);
+            }
+        };
+
+        chatSocket.onerror = function(error) {
+            console.error("Erreur WebSocket détectée :", error);
+            statusSpan.textContent = "● Erreur";
+            statusSpan.style.color = "#ff6b6b"; // Rouge clair pour signaler l'erreur
+        };
+    }
+
+
+    // Gestion de l'affichage / masquage de la fenêtre de chat
+    toggleBtn.addEventListener('click', () => {
+        const isVisible = chatBox.style.display === 'flex';
+        chatBox.style.display = isVisible ? 'none' : 'flex';
+        toggleBtn.innerHTML = isVisible ? '💬' : '✕';
+
+        if (isVisible){
+            unreadCount = 0;
+            unreadBadge.style.display = 'inline-block';
+            unreadBadge.textContent = '0';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        }else{
+            unreadBadge.style.display = 'none';
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        chatBox.style.display = 'none';
+        toggleBtn.innerHTML = '💬';
+    });
+
+    micBtn.onclick = async function() {
+    if (!isRecording) {
+        try {
+            // 1. Sauvegarder le flux dans mediaStream
+            mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(mediaStream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = async function() {
+                // 2. LIBÉRER LE MICROPHONE : Arrêter toutes les pistes audio du flux
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    mediaStream = null;
+                }
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.readAsDataURL(audioBlob);
+
+                reader.onloadend = function() {
+                    const base64Audio = reader.result;
+                    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                        chatSocket.send(JSON.stringify({
+                            'action': 'audio',
+                            'user': username,
+                            'audio_data': base64Audio
+                        }));
+                    }
+                };
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            micBtn.classList.remove('btn-outline-secondary');
+            micBtn.classList.add('btn-danger');
+            micBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+
+        } catch (err) {
+            console.error("Accès micro refusé :", err);
+            alert("Veuillez autoriser l'accès au microphone.");
+        }
+    } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.classList.remove('btn-danger');
+        micBtn.classList.add('btn-outline-secondary');
+        micBtn.innerHTML = '<i class="fa fa-microphone"></i>';
+    }
+};
+
+    // Affichage des messages de statut (connexion / déconnexion)
+    function appendSystemMessage(text) {
+        statusSpan.textContent = text;
+        statusSpan.style.color = "grey";
+    }
+
+    // Affichage d'un message standard (avec avatar, menu déroulant et timestamp)
+    function appendMessage(data) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = "d-flex align-items-start mb-4";
+        if (data.id){
+            messageContainer.id = "msg_" + data.id.toString();
+        }
+        messageContainer.innerHTML = `
+            <!-- Avatar -->
+            <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
+
+            <div class="flex-grow-1">
+                <!-- En-tête : Nom (Menu Dropdown) + Timestamp -->
+                <div class="d-flex justify-content-between align-items-center mb-1">
+
+                    <!-- Dropdown Bootstrap 4 sur l'auteur -->
+                    <div class="dropdown">
+                        <a class="font-weight-bold text-dark text-decoration-none dropdown-toggle small" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ${data.username}
+                        </a>
+                        <div class="dropdown-menu shadow-sm border-0" style="font-size: 0.8rem;">
+                            <a class="dropdown-item" href="${data.profile_url}">👤 Voir le profil</a>
+                            <a class="dropdown-item" href="${data.message_url}">✉️ Envoyer un message privé</a>
+                        </div>
+                    </div>
+
+                    <!-- Horodatage -->
+                    <span class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</span>
+                </div>
+
+                <!-- Bulle de texte -->
+                <div class="p-2 px-3 rounded bg-white text-dark shadow-sm border" style="display: inline-block; max-width: 100%; word-break: break-word;">
+                    ${escapeHtml(data.message)}
+                </div>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (chatBox.style.display !== 'flex' && data.user !== "System") {
+            unreadCount++;
+            unreadBadge.textContent = unreadCount;
+            unreadBadge.style.display = 'inline-block';
+        }
+    }
+
+// Affichage d'un message standard (avec avatar, menu déroulant et timestamp)
+    function appendMessageAudio(data) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = "d-flex align-items-start mb-4";
+        if (data.id){
+            messageContainer.id = "msg_" + data.id.toString();
+        }
+        const formattedMessage = linkify(data.message);
+        const isMe = data.user === username;
+        messageContainer.innerHTML = `
+            <!-- Avatar -->
+            <img src="${data.avatar_url}" class="rounded-circle mr-2" width="32" height="32" alt="Avatar">
+
+            <div class="flex-grow-1">
+                <!-- En-tête : Nom (Menu Dropdown) + Timestamp -->
+                <div class="d-flex justify-content-between align-items-center mb-1">
+
+                    <!-- Dropdown Bootstrap 4 sur l'auteur -->
+                    <div class="dropdown">
+                        <a class="font-weight-bold text-dark text-decoration-none dropdown-toggle small" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ${data.username}
+                        </a>
+                        <div class="dropdown-menu shadow-sm border-0" style="font-size: 0.8rem;">
+                            <a class="dropdown-item" href="${data.profile_url}">👤 Voir le profil</a>
+                            <a class="dropdown-item" href="${data.message_url}">✉️ Envoyer un message privé</a>
+                        </div>
+                    </div>
+
+                    <!-- Horodatage -->
+                    <span class="text-muted" style="font-size: 0.75rem;">${data.timestamp}</span>
+                </div>
+
+                <!-- Bulle de texte -->
+                <div class="p-2 px-3 rounded bg-white text-dark shadow-sm border" style="display: inline-block; max-width: 100%; word-break: break-word;">
+                    <div class="d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}">
+                        <div class="p-2 rounded ${isMe ? 'bg-primary text-white' : 'bg-white border text-dark'} shadow-sm" style="max-width: 90%;">
+                            <audio controls style="height: 32px; width: 200px;">
+                                <source src="${data.message}" type="audio/webm">
+                                Votre navigateur ne supporte pas l'audio.
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (chatBox.style.display !== 'flex' && data.user !== "System") {
+            unreadCount++;
+            unreadBadge.textContent = unreadCount;
+            unreadBadge.style.display = 'inline-block';
+        }
+    }
+
+    // Fonction d'échappement anti-XSS basique
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    // Envoi du message au serveur WebSocket
+    function handleSend() {
+        const text = chatInput.value.trim();
+        if (text === '') return;
+
+        if (chatSocket.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({
+                'message': text
+            }));
+            chatInput.value = '';
+        } else {
+            console.error("❌ Impossible d'envoyer : Le WebSocket n'est pas ouvert (État actuel : " + chatSocket.readyState + ")");
+            alert("La connexion au chat est perdue. Veuillez rafraîchir la page.");
+        }
+
+        chatInput.value = '';
+    }
+    leaveBtn.onclick = function() {
+        if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+            intentionalClose = true;
+
+            // Envoyer l'action de départ au serveur
+            chatSocket.send(JSON.stringify({
+                'action': 'leave',
+                'user': username
+            }));
+
+            // Petit délai de sécurité (100ms) pour s'assurer que le message WebSocket
+            // est bien envoyé avant de couper la socket
+            setTimeout(() => {
+                if (chatSocket) {
+                    chatSocket.close();
+                }
+            }, 100);
+        }
+
+        // Marquer comme déconnecté de façon persistante sur le site
+        localStorage.setItem('chat_user_left', 'true');
+
+        // Mettre à jour l'interface locale instantanément
+        offlineOverlay.style.display = 'flex';
+        statusSpan.textContent = "○ Hors ligne";
+        statusSpan.style.color = "#ccc";
+        onlineCountSpan.textContent = "0";
+        userListUl.innerHTML = '';
+        const messagesToRemove = chatMessages.querySelectorAll('[id^="msg_"]');
+
+        // Supprime chaque élément trouvé
+        messagesToRemove.forEach(el => el.remove());
+
+        // Fermer le menu déroulant s'il était ouvert
+        userDropdown.style.display = 'none';
+    };
+
+    // Clic sur "Rejoindre"
+    rejoinBtn.onclick = function() {
+        // Suppression du flag pour autoriser la reconnexion sur toutes les pages
+        localStorage.removeItem('chat_user_left');
+        sessionStorage.removeItem('chat_session_initialized');
+        connectWebSocket();
+    };
+
+
+    sendBtn.addEventListener('click', handleSend);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSend();
+        }
+    });
+    document.addEventListener("DOMContentLoaded", connectWebSocket);
+
+
+    // Afficher/Masquer le panneau d'emojis rapides au clic
+    emojiBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (emojiPickerPanel.style.display === 'none') {
+            emojiPickerPanel.style.display = 'block';
+        } else {
+            emojiPickerPanel.style.display = 'none';
+        }
+    };
+
+    // Insérer l'emoji cliqué dans l'input à la position du curseur
+    document.querySelectorAll('.emoji-option').forEach(span => {
+        span.onclick = function() {
+            const emoji = this.textContent;
+            const start = chatInput.selectionStart;
+            const end = chatInput.selectionEnd;
+
+            chatInput.value = chatInput.value.substring(0, start) + emoji + chatInput.value.substring(end);
+            chatInput.focus();
+            chatInput.setSelectionRange(start + emoji.length, start + emoji.length);
+
+            // Fermer le panneau après sélection
+            emojiPickerPanel.style.display = 'none';
+        };
+    });
+
+    // Fermer le panneau si on clique ailleurs dans le chat
+    document.addEventListener('click', function(e) {
+        if (!emojiPickerPanel.contains(e.target) && e.target !== emojiBtn && !emojiBtn.contains(e.target)) {
+            emojiPickerPanel.style.display = 'none';
+        }
+    });
+</script>

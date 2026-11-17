@@ -50,6 +50,8 @@ urlpatterns = [
     path(r'jardins/', include('jardins.urls')),
     path(r'permagora/', include('permagorapresentation.urls', namespace='permagorapresentation')),
     path(r'collectifssa/', include('collectifssa.urls', namespace='collectifssa')),
+    path(r'caisse_ssa/', include('caisse_ssa.urls', namespace='caisse_ssa')),
+    path(r'board/', include('board.urls', namespace='board')),
     path(r'adherents/', include('adherents.urls', namespace='adherents')),
     path(r'photolog/', include('photologue.urls', namespace='photologue')),
     path(r'permachat/', include("permachat.urls", namespace="permachat")),

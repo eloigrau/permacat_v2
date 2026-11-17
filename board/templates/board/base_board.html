@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load app_filters %}
+{% load fontawesome_5 %}
+
+{% block header %}
+    <!--link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"-->
+    <style>
+/* Style des cartes et conteneurs pour s'adapter à la grille Bootstrap */
+        .kanban-col {
+            background: #ebecf0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 1rem;
+        }
+        .kanban-cards-container {
+            min-height: 100px;
+        }
+        .kanban-card {
+            background: white;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            cursor: grab;
+        }
+        .kanban-card:active { cursor: grabbing; }
+        .sortable-ghost { opacity: 0.4; background: #d0d4db; }
+    </style>
+{% endblock header %}

@@ -1,0 +1,32 @@
+{% extends 'board/base_board.html' %}
+{% load app_filters %}
+{% load fontawesome_5 %}
+
+{% block header %}
+    <!--link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"-->
+{% endblock header %}
+
+{% block content %}
+<body class="bg-light">
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📋 Mes Tableaux de Projets</h1>
+        <a href="{% url 'board:creer_projet' %}" class="btn btn-primary">+ Nouveau Projet</a>
+    </div>
+    <div class="row g-4">
+        {% for projet in projets %}
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ projet.nom }}</h5>
+                    <p class="card-text text-muted">{{ projet.description|truncatewords_html:20 }}</p>
+                    <a href="{% url 'board:detail_projet' projet.id %}" class="btn btn-outline-primary btn-sm">Ouvrir le tableau</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Aucun projet disponible. Créez-en un via l'administration.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

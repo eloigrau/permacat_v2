@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Caisse Alimentaire Locale (SSA)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Librairies QR Code (génération & scan caméra) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body class="bg-stone-100 text-stone-800 font-sans antialiased pb-20">
+
+    <!-- En-tête mobile -->
+    <header class="bg-emerald-700 text-white p-4 shadow-md sticky top-0 z-10 flex justify-between items-center">
+        <div>
+            <h1 class="font-bold text-lg tracking-tight">🌱 Caisse Alimentaire</h1>
+            <p id="header-user" class="text-xs text-emerald-100">Non connecté</p>
+        </div>
+        <button id="btn-logout" onclick="logout()" class="hidden text-xs bg-emerald-800 px-3 py-1.5 rounded-lg hover:bg-emerald-900">
+            Déconnexion
+        </button>
+    </header>
+
+    <!-- Notification toast -->
+    <div id="toast" class="hidden fixed top-16 left-4 right-4 z-50 p-3 rounded-xl shadow-lg text-sm font-medium text-white transition-all"></div>
+
+    <!-- ÉCRAN 1 : CONNEXION -->
+    <main id="view-login" class="max-w-md mx-auto p-6 mt-8">
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-stone-200">
+            <h2 class="text-xl font-bold mb-1">Accéder à mon compte</h2>
+            <p class="text-sm text-stone-500 mb-6">Monnaie Locale & Solidarité Alimentaire</p>
+            <form onsubmit="login(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-stone-500 mb-1">Identifiant</label>
+                    <input type="text" id="login-username" required class="w-full p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-stone-500 mb-1">Mot de passe</label>
+                    <input type="password" id="login-password" required class="w-full p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-sm transition">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- ÉCRAN 2 : APPLICATION CONNECTÉE -->
+    <main id="view-app" class="hidden max-w-md mx-auto p-4 space-y-5">
+
+        <!-- Carte Solde Principal -->
+        <section class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-5 shadow-md">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-xs uppercase tracking-wider text-emerald-100">Mon solde disponible</p>
+                    <p class="text-4xl font-extrabold mt-1"><span id="user-solde">0.00</span> <span class="text-lg font-normal">ML</span></p>
+                </div>
+                <span id="user-role-badge" class="bg-white/20 text-xs px-2.5 py-1 rounded-full font-medium">Participant</span>
+            </div>
+        </section>
+
+        <!-- NAVIGATION PAR ONGLETS -->
+        <nav class="grid grid-cols-3 gap-2 bg-stone-200 p-1 rounded-xl text-xs font-semibold">
+            <button onclick="switchTab('payer')" id="tab-payer" class="py-2.5 rounded-lg bg-white text-emerald-800 shadow-sm">Payer / Achats</button>
+            <button onclick="switchTab('lieux')" id="tab-lieux" class="py-2.5 rounded-lg text-stone-600">Lieux & Stands</button>
+            <button onclick="switchTab('gestion')" id="tab-gestion" class="py-2.5 rounded-lg text-stone-600">Pro / Conseil</button>
+        </nav>
+
+        <!-- ONGLET 1 : PAYER UN PRODUCTEUR & HISTORIQUE -->
+        <div id="panel-payer" class="space-y-5">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-3">Régler un achat alimentaire</h3>
+                
+                <!-- Zone Scanner QR Code -->
+                <div id="qr-reader" class="hidden mb-4 rounded-xl overflow-hidden border border-stone-300"></div>
+                <button type="button" onclick="toggleScanner()" id="btn-scan" class="w-full mb-4 bg-stone-800 text-white py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+                    📷 Scanner le QR Code du stand
+                </button>
+
+                <form onsubmit="payerLieu(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1">Code du producteur / stand</label>
+                        <input type="text" id="pay-code" placeholder="Ex: SSA-8F3A12" required class="w-full p-3 uppercase rounded-xl border border-stone-300 font-mono text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1">Montant (en Monnaie Locale)</label>
+                        <input type="number" step="0.01" min="0.10" id="pay-montant" placeholder="0.00" required class="w-full p-3 rounded-xl border border-stone-300 text-lg font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-500 mb-1">Note (facultatif)</label>
+                        <input type="text" id="pay-libelle" placeholder="Légumes, pain, fromage..." class="w-full p-2.5 rounded-xl border border-stone-300 text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-sm">
+                        Valider le paiement
+                    </button>
+                </form>
+            </div>
+
+            <!-- Dernières transactions -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-sm text-stone-600 uppercase mb-3">Derniers mouvements</h3>
+                <ul id="liste-transactions" class="divide-y divide-stone-100 text-sm">
+                    <li class="py-2 text-stone-400">Chargement...</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ONGLET 2 : ANNUAIRE DES LIEUX CONVENTIONNÉS -->
+        <div id="panel-lieux" class="hidden space-y-3">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                <h3 class="font-bold text-base mb-1">Lieux conventionnés</h3>
+                <p class="text-xs text-stone-500 mb-4">Producteurs et commerces agréés par la commission citoyenne.</p>
+                <div id="liste-lieux" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- ONGLET 3 : ESPACE PRODUCTEUR & CONSEIL COLLÉGIAL -->
+        <div id="panel-gestion" class="hidden space-y-4">
+            <!-- Bloc Producteur : Mon QR Code d'encaissement -->
+            <div id="bloc-producteur" class="hidden bg-white rounded-2xl p-5 shadow-sm border border-stone-200 text-center">
+                <h3 class="font-bold text-base mb-1">Mon QR Code d'encaissement</h3>
+                <p class="text-xs text-stone-500 mb-4">Présentez ce code aux adhérents pour recevoir leurs paiements.</p>
+                <div id="mon-qrcode" class="flex justify-center my-4"></div>
+                <p id="mon-code-texte" class="font-mono font-bold text-lg text-emerald-700 bg-emerald-50 py-2 rounded-lg"></p>
+                <p class="text-xs text-stone-500 mt-3">Solde encaissé sur ce lieu : <strong id="lieu-solde">0.00</strong> ML</p>
+            </div>
+
+            <!-- Bloc Conseil Collégial : Gestion de la Caisse -->
+            <div id="bloc-conseil" class="hidden space-y-4">
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+                    <p class="text-xs uppercase font-bold text-amber-800">Réserve Caisse Centrale</p>
+                    <p class="text-3xl font-extrabold text-amber-900 mt-1"><span id="caisse-solde">0.00</span> ML</p>
+                </div>
+
+                <!-- Action : Verser les allocations mensuelles -->
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-stone-200">
+                    <h3 class="font-bold text-base mb-2">Verser l'allocation mensuelle</h3>
+                    <p class="text-xs text-stone-500 mb-3">Crédite tous les participants allocataires actifs depuis la caisse centrale.</p>
+                    <form onsubmit="distribuerAllocations(event)" class="space-y-3">
+                        <input type="number" step="0.01" id="alloc-montant" placeholder="Montant par personne (ex: 100)" required class="w-full p-3 rounded-xl border border-stone-300">
+                        <input type="text" id="alloc-mois" placeholder="Mois (ex: Novembre 2026)" required class="w-full p-3 rounded-xl border border-stone-300">
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl">
+                            Lancer la distribution groupée
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="bloc-aucun-droit" class="bg-white rounded-2xl p-5 text-center text-sm text-stone-500">
+                Cet espace est réservé aux producteurs conventionnés et aux membres du Conseil Collégial.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let accessToken = localStorage.getItem('ssa_token');
+        let html5QrCode = null;
+
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            if (accessToken) {
+                chargerProfil();
+            }
+        });
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `fixed top-16 left-4 right-4 z-50 p-3.5 rounded-xl shadow-lg text-sm font-semibold text-white ${isError ? 'bg-red-600' : 'bg-emerald-800'}`;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
+        }
+
+        async function apiFetch(url, options = {}) {
+            options.headers = {
+                'Content-Type': 'application/json',
+                ...(accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {}),
+                ...options.headers
+            };
+            const response = await fetch(url, options);
+            if (response.status === 401) {
+                logout();
+                throw new Error("Session expirée");
+            }
+            return response;
+        }
+
+        async function login(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const res = await fetch('/api/token/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                accessToken = data.access;
+                localStorage.setItem('ssa_token', accessToken);
+                chargerProfil();
+            } else {
+                showToast("Identifiant ou mot de passe incorrect.", true);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('ssa_token');
+            accessToken = null;
+            document.getElementById('view-app').classList.add('hidden');
+            document.getElementById('view-login').classList.remove('hidden');
+            document.getElementById('btn-logout').classList.add('hidden');
+            document.getElementById('header-user').textContent = "Non connecté";
+        }
+
+        async function chargerProfil() {
+            try {
+                const res = await apiFetch('/api/me/');
+                const data = await res.json();
+
+                document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('view-app').classList.remove('hidden');
+                document.getElementById('btn-logout').classList.remove('hidden');
+
+                document.getElementById('header-user').textContent = `Bonjour, ${data.username}`;
+                document.getElementById('user-solde').textContent = parseFloat(data.solde_ml).toFixed(2);
+                document.getElementById('user-role-badge').textContent = data.role;
+
+                // Gestion affichage onglet Pro / Conseil
+                let hasSpecialRole = false;
+                if (data.lieux_geres && data.lieux_geres.length > 0) {
+                    hasSpecialRole = true;
+                    const lieu = data.lieux_geres[0];
+                    document.getElementById('bloc-producteur').classList.remove('hidden');
+                    document.getElementById('mon-code-texte').textContent = lieu.code_paiement;
+                    document.getElementById('lieu-solde').textContent = parseFloat(lieu.solde_ml).toFixed(2);
+                    const qrContainer = document.getElementById('mon-qrcode');
+                    qrContainer.innerHTML = "";
+                    new QRCode(qrContainer, { text: lieu.code_paiement, width: 180, height: 180 });
+                }
+
+                if (data.caisse_centrale_solde !== null) {
+                    hasSpecialRole = true;
+                    document.getElementById('bloc-conseil').classList.remove('hidden');
+                    document.getElementById('caisse-solde').textContent = parseFloat(data.caisse_centrale_solde).toFixed(2);
+                }
+
+                if (hasSpecialRole) {
+                    document.getElementById('bloc-aucun-droit').classList.add('hidden');
+                }
+
+                chargerTransactions();
+                chargerLieux();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function chargerTransactions() {
+            const res = await apiFetch('/api/transactions/');
+            const txs = await res.json();
+            const liste = document.getElementById('liste-transactions');
+            if (txs.length === 0) {
+                liste.innerHTML = '<li class="py-2 text-stone-400">Aucune transaction enregistrée.</li>';
+                return;
+            }
+            liste.innerHTML = txs.slice(0, 10).map(tx => `
+                <li class="py-2.5 flex justify-between items-center">
+                    <div>
+                        <p class="font-medium text-stone-800">${tx.libelle || tx.type_transaction}</p>
+                        <p class="text-xs text-stone-400">${new Date(tx.date_execution).toLocaleDateString('fr-FR')}</p>
+                    </div>
+                    <span class="font-bold text-emerald-700">${parseFloat(tx.montant).toFixed(2)} ML</span>
+                </li>
+            `).join('');
+        }
+
+        async function chargerLieux() {
+            const res = await apiFetch('/api/lieux/?est_conventionne=true');
+            const lieux = await res.json();
+            const container = document.getElementById('liste-lieux');
+            container.innerHTML = lieux.map(l => `
+                <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-sm">${l.nom}</p>
+                        <p class="text-xs text-stone-500">${l.adresse}</p>
+                        <span class="inline-block mt-1 text-[11px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">${l.code_paiement}</span>
+                    </div>
+                    <button onclick="preparerPaiement('${l.code_paiement}')" class="bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-lg">
+                        Payer
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function preparerPaiement(code) {
+            document.getElementById('pay-code').value = code;
+            switchTab('payer');
+            document.getElementById('pay-montant').focus();
+        }
+
+        async function payerLieu(e) {
+            e.preventDefault();
+            const payload = {
+                code_paiement_lieu: document.getElementById('pay-code').value.trim(),
+                montant: document.getElementById('pay-montant').value,
+                libelle: document.getElementById('pay-libelle').value || "Achat alimentaire"
+            };
+
+            const res = await apiFetch('/api/transactions/payer-lieu/', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                showToast(`Paiement de ${payload.montant} ML effectué !`);
+                document.getElementById('pay-montant').value = "";
+                document.getElementById('pay-libelle').value = "";
+                chargerProfil();
+            } else {
+                showToast(Array.isArray(data.detail) ? data.detail[0] : (data.detail || "Erreur de paiement"), true);
+            }
+        }
+
+        async function distribuerAllocations(e) {
+            e.preventDefault();
+            const payload = {
+                montant_allocation: document.getElementById('alloc-montant').value,
+                mois: document.getElementById('alloc-mois').value
+            };
+
+            const res = await apiFetch('/api/transactions/distribuer-allocations/', {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                showToast(data.message);
+                chargerProfil();
+            } else {
+                showToast(data.detail || "Erreur lors de la distribution", true);
+            }
+        }
+
+        function switchTab(tab) {
+            ['payer', 'lieux', 'gestion'].forEach(t => {
+                document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+                const btn = document.getElementById(`tab-${t}`);
+                btn.className = t === tab
+                    ? "py-2.5 rounded-lg bg-white text-emerald-800 shadow-sm"
+                    : "py-2.5 rounded-lg text-stone-600";
+            });
+        }
+
+        function toggleScanner() {
+            const readerDiv = document.getElementById('qr-reader');
+            if (!readerDiv.classList.contains('hidden')) {
+                if (html5QrCode) html5QrCode.stop();
+                readerDiv.classList.add('hidden');
+                return;
+            }
+            readerDiv.classList.remove('hidden');
+            html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    document.getElementById('pay-code').value = decodedText;
+                    html5QrCode.stop();
+                    readerDiv.classList.add('hidden');
+                    showToast(`Code détecté : ${decodedText}`);
+                    document.getElementById('pay-montant').focus();
+                }
+            ).catch(() => {
+                showToast("Caméra indisponible ou autorisation refusée.", true);
+                readerDiv.classList.add('hidden');
+            });
+        }
+    </script>
+</body>
+</html>

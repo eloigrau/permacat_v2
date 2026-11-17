@@ -168,6 +168,11 @@
                         <div class="text-truncate">GPC</div>
                     </a>
                 </li>
+                <li class="menu-item {% if '/board/' in request.path %}active{% endif %}">
+                    <a class="menu-link" href="{% url 'board:liste_projets' %}">
+                        <div class="text-truncate">Plan</div>
+                    </a>
+                </li>
                 <li class="menu-item {% if '/forum/todoArticleList/' in request.path %}active{% endif %}">
                     <a class="menu-link" href="{% url 'blog:todoarticle_list' %}">
                         <div class="text-truncate">Yapluka</div>

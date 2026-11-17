@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 15mm 14mm 18mm 14mm;
+            @bottom-right {
+                content: "Page " counter(page) " / " counter(pages);
+                font-size: 8pt;
+                color: #666;
+            }
+            @bottom-left {
+                content: "Caisse Locale de Sécurité Sociale de l'Alimentation — Document comptable";
+                font-size: 8pt;
+                color: #666;
+            }
+        }
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            font-size: 9pt;
+            color: #1f2937;
+            line-height: 1.4;
+        }
+        .header {
+            border-bottom: 2px solid #065f46;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 16pt;
+            color: #065f46;
+        }
+        .header p {
+            margin: 3px 0 0 0;
+            font-size: 9pt;
+            color: #4b5563;
+        }
+        h2 {
+            font-size: 11pt;
+            color: #065f46;
+            border-left: 4px solid #065f46;
+            padding-left: 8px;
+            margin: 18px 0 8px 0;
+            text-transform: uppercase;
+        }
+        .grid-caisses {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px 0;
+            margin: 0 -8px 12px -8px;
+        }
+        .box-caisse {
+            width: 50%;
+            vertical-align: top;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            background-color: #f9fafb;
+        }
+        .box-june { border-top: 3px solid #4338ca; }
+        .box-euros { border-top: 3px solid #059669; }
+        .box-title {
+            font-weight: bold;
+            font-size: 10pt;
+            margin-bottom: 6px;
+        }
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+            font-size: 8.5pt;
+        }
+        table.data-table th {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-weight: bold;
+            text-align: left;
+            padding: 6px;
+            border-bottom: 1.5px solid #9ca3af;
+        }
+        table.data-table td {
+            padding: 5px 6px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+        table.data-table tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+        .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .bold { font-weight: bold; }
+        .june { color: #3730a3; }
+        .euros { color: #065f46; }
+        .page-break { page-break-before: always; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>Bilan Mensuel & Journal des Transactions</h1>
+            <p>Caisse Locale de Sécurité Sociale de l'Alimentation — Période : <strong>{{ mois }}/{{ annee }}</strong></p>
+        </div>
+        <div style="text-align: right;">
+            <p>Édité le : {{ date_edition|date:"d/m/Y à H:i" }}</p>
+            <p>Transactions du mois : <strong>{{ transactions.count }}</strong></p>
+        </div>
+    </div>
+
+    <!-- 1. BILAN COMPARATIF DES DEUX CAISSES -->
+    <h2>1. Bilan des Caisses (June Ğ1 & Euros €)</h2>
+    <table class="grid-caisses">
+        <tr>
+            <td class="box-caisse box-june">
+                <div class="box-title june">Caisse Monnaie Libre — JUNE (Ğ1)</div>
+                <table class="data-table">
+                    <tr>
+                        <td>Création monétaire DU ({{ nb_du_verses }} jours)</td>
+                        <td class="num bold june">+{{ bilan_june.du_cree }} Ğ1</td>
+                    </tr>
+                    <tr>
+                        <td>Cotisations solidaires reçues</td>
+                        <td class="num">+{{ bilan_june.cotisations }} Ğ1</td>
+                    </tr>
+                    <tr>
+                        <td>Allocations alimentaires versées</td>
+                        <td class="num">-{{ bilan_june.allocations_versees }} Ğ1</td>
+                    </tr>
+                    <tr>
+                        <td>Volume d'achats chez les producteurs</td>
+                        <td class="num">{{ bilan_june.achats_alimentaires }} Ğ1</td>
+                    </tr>
+                    <tr style="background-color: #eef2ff;">
+                        <td class="bold">Réserve Caisse Centrale June</td>
+                        <td class="num bold june">{{ bilan_june.solde_caisse_centrale }} Ğ1</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">Masse monétaire totale (M)</td>
+                        <td class="num bold">{{ bilan_june.masse_totale_circulation }} Ğ1</td>
+                    </tr>
+                </table>
+            </td>
+
+            <td class="box-caisse box-euros">
+                <div class="box-title euros">Caisse Monnaie Légale — EUROS (€)</div>
+                <table class="data-table">
+                    <tr>
+                        <td>Cotisations encaissées (virements/espèces)</td>
+                        <td class="num bold euros">+{{ bilan_euros.cotisations }} €</td>
+                    </tr>
+                    <tr>
+                        <td>Allocations alimentaires versées</td>
+                        <td class="num">-{{ bilan_euros.allocations_versees }} €</td>
+                    </tr>
+                    <tr>
+                        <td>Volume d'achats chez les producteurs</td>
+                        <td class="num">{{ bilan_euros.achats_alimentaires }} €</td>
+                    </tr>
+                    <tr>
+                        <td>Remboursements effectués aux producteurs</td>
+                        <td class="num">-{{ bilan_euros.reimbursements_pro }} €</td>
+                    </tr>
+                    <tr style="background-color: #ecfdf5;">
+                        <td class="bold">Réserve Caisse Centrale Euros</td>
+                        <td class="num bold euros">{{ bilan_euros.solde_caisse_centrale }} €</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 2. SITUATION DES LIEUX DE VENTE / PRODUCTEURS -->
+    <h2>2. Situation des Producteurs & Lieux Conventionnés</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Lieu / Producteur</th>
+                <th>Code</th>
+                <th>Statut</th>
+                <th class="num">Solde June (Ğ1)</th>
+                <th class="num">Solde à rembourser (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in lieux_etats %}
+            <tr>
+                <td class="bold">{{ l.nom }}</td>
+                <td>{{ l.code }}</td>
+                <td>{% if l.conventionne %}Conventionné{% else %}Suspendu{% endif %}</td>
+                <td class="num june">{{ l.solde_june }} Ğ1</td>
+                <td class="num euros bold">{{ l.solde_euros }} €</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">Aucun lieu enregistré.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 3. JOURNAL COMPLET DES TRANSACTIONS DU MOIS -->
+    <div class="page-break"></div>
+    <h2>3. Journal Chronologique des Transactions ({{ mois }}/{{ annee }})</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Émetteur</th>
+                <th>Destinataire</th>
+                <th>Libellé</th>
+                <th class="num">Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tx in transactions %}
+            <tr>
+                <td>{{ tx.date_execution|date:"d/m/Y H:i" }}</td>
+                <td>{{ tx.get_type_transaction_display }}</td>
+                <td>
+                    {% if tx.emetteur %}
+                        {% if tx.emetteur.proprietaire %}{{ tx.emetteur.proprietaire.user.username }}
+                        {% elif tx.emetteur.lieu_de_vente %}{{ tx.emetteur.lieu_de_vente.nom }}
+                        {% else %}Caisse Centrale{% endif %}
+                    {% else %}
+                        <em>Création Monétaire</em>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if tx.destinataire.proprietaire %}{{ tx.destinataire.proprietaire.user.username }}
+                    {% elif tx.destinataire.lieu_de_vente %}{{ tx.destinataire.lieu_de_vente.nom }}
+                    {% else %}Caisse Centrale{% endif %}
+                </td>
+                <td>{{ tx.libelle }}</td>
+                <td class="num bold {% if tx.devise == 'JUNE' %}june{% else %}euros{% endif %}">
+                    {{ tx.montant }} {% if tx.devise == 'JUNE' %}Ğ1{% else %}€{% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Aucune transaction sur cette période.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

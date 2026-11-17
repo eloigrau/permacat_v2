@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     'permachat',
     'dashboard',
     "gpc",
+    "board",
     #'chat_old',
     #'django_extensions',
     #'django_filters',
@@ -162,6 +163,7 @@ INSTALLED_APPS = [
     "django_minify_html",
     "permagorapresentation",
     "collectifssa",
+    "caisse_ssa",
     #'formtools',
     #'channels', 'chat',
     #'jet','jet.dashboard', 'django.contrib.admin',
@@ -550,9 +552,9 @@ BOWER_INSTALLED_APPS = (
 #    "bourseLibre.views_notifications.EnvoiMailsCronJob"
 #]
 CRONJOBS = [
-    ('0 6 * * 1,4', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1')
+    ('0 6 * * 1,4', 'bourseLibre.views_admin.envoyerEmails', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-envoimails-Logs.log 2>&1'),
+    ('5 0 * * *', 'caisse_ssa.services.distribuer_dividende_universel', [], {}, ' --settings=bourseLibre.settings.production >> /home/udjango/cron-verserDU-Logs.log 2>&1')
 ]
-
 GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
@@ -619,6 +621,15 @@ MESSAGE_TYPES_LIST = [
 ]
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
 
 # Theme Variables
 # ? Personalize template by changing theme variables (For ex: Name, URL Version etc...)

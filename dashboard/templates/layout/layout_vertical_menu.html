@@ -49,9 +49,13 @@
       <!-- / Layout page: End -->
     </div>
 
+{% comment %}
 {% if request.user.is_authenticated %}
     {% include "../layout/partials/chat.html" %}
 {% endif %}
+{% endcomment %}
+{% block chat %}
+{% endblock %}
 
     <div class="layout-overlay layout-menu-toggle"></div>
     <!-- Drag Target Area To SlideIn Menu On Small Screens -->

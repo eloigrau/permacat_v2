@@ -44,7 +44,7 @@
                     le {{ reunion.start_time|date:"l d F Y"}}
                 </p>
                 {% else %}
-                PAS de date renseignée (modifiez la réunion avec le bouton ci-dessus)
+                    PAS de date renseignée (modifiez la réunion avec le bouton ci-dessus)
                 {% endif %}
                 {% if reunion.article %}
                 <p class="inscrit_reunion textcenter">Article associé : <a href="{{reunion.article.get_absolute_url}}">{{reunion.article.titre|couperTexte:30}}</a>

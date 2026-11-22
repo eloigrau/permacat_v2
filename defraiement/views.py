@@ -276,6 +276,9 @@ class ModifierReunion(UpdateView):
     form_class = ReunionChangeForm
     template_name_suffix = '_modifier'
 
+    def get_object(self):
+        return Reunion.objects.get(slug=self.kwargs['slug'])
+
     def form_valid(self, form):
         self.object = form.save()
         self.object.date_modification = now()

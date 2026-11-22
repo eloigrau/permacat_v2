@@ -115,11 +115,7 @@ class ReunionChangeForm(forms.ModelForm):
         fields = ['asso', 'categorie', 'projet', 'titre', 'description', 'start_time', 'estArchive']
         widgets = {
             'contenu': SummernoteWidget(),
-            'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(),
         }
 
 class ParticipantReunionMultipleChoiceForm(forms.Form):

@@ -167,6 +167,10 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
         self.asso = Asso.objects.get(slug=self.kwargs["asso_slug"])
         return self.request.user.estmembre_bureau(self.asso.slug) or self.request.user == self.adherent.profil or self.request.user.is_superuser
 
+    def get_object(self):
+        self.object = Adresse.objects.get(pk=self.kwargs['pk'])
+        return self.object
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
@@ -178,7 +182,7 @@ class AdherentAdresseUpdateView(UserPassesTestMixin, UpdateView):
         desc =" a modifié l'adresse de l'adhérent : " + str(self.adherent) + " (" + str(form.changed_data)+ ")"
         action.send(self.request.user, verb="adherent_"+self.asso.slug+"_modifAdresse", action_object=self.object, url=self.adherent.get_absolute_url(), description=desc)
         titre = "[PCAT_adherents] Modification de l'adresse de l'adherent" + str(self.adherent)
-        action.send(self.request.user, verb='emails', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=[self.asso.email, ])
+        action.send(self.request.user, verb='info', url=self.adherent.get_absolute_url(), titre=titre, message=str(self.request.user) + desc, emails=[self.asso.email, ])
         return super().form_valid(form)
 
 

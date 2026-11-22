@@ -207,8 +207,9 @@ class DocumentDetailView(TestMembreAssoMixin, DetailView):
 @login_required
 def create_document(request, doc_type=DocumentType.FACTURE):
     """Vue générique pour créer une facture ou un devis avec ses lignes."""
-    form = FactureForm(request.POST or None)
-    formset = FactureItemFormSet(request.POST or None, asso_slug=request.session["asso_slug"])
+    asso = testIsMembreAsso(request, request.session["asso_slug"])
+    form = FactureForm(request.POST or None, asso_slug=asso.slug)
+    formset = FactureItemFormSet(request.POST or None, asso_slug=asso.slug)
 
     if form.is_valid() and formset.is_valid():
         with transaction.atomic():

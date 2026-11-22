@@ -287,8 +287,8 @@ class AdresseForm3(forms.ModelForm):
 
 
 class AdresseForm4(forms.ModelForm):
-    latitude = forms.FloatField(label="Latitude", initial="", required=False)
-    longitude = forms.FloatField(label="Longitude", initial="", required=False)
+    latitude = forms.FloatField(label="Latitude", required=False)
+    longitude = forms.FloatField(label="Longitude", required=False)
 
     class Meta:
         model = Adresse

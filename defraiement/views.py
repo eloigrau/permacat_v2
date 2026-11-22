@@ -316,7 +316,7 @@ def ajouterAdresseReunionChezParticipant(request, slug):
 def modifierAdresseReunion(request, slug):
     reunion = get_object_or_404(Reunion, slug=slug)
     #form_adresse = AdresseForm(request.POST or None, instance=reunion)
-    form_adresse = AdresseForm4(request.POST or None)
+    form_adresse = AdresseForm4(request.POST or None, instance=reunion)
 
     if form_adresse.is_valid():#form_adresse.is_valid() or
         # if 'adressebtn' in request.POST:

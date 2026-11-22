@@ -32,8 +32,7 @@ class ReunionForm(forms.ModelForm):
 
         #self.fields["projet"].choices = [('', "(Choisir d'abord un Dossier ci-dessus)"), ] #+ list(Choix.get_type_annonce_asso(""))
 
-        projets = Projet.objects.filter(asso__slug = asso_slug)
-        self.fields["projet"].choices = [(p.pk, p.titre) for p in projets]
+        self.fields['projet'].queryset = Projet.objects.filter(asso__slug=asso_slug, estArchive=False).order_by("titre")
 
         #elif self.instance.pk:
         #    self.fields["projet"].choices = ("0", "Global")
@@ -117,6 +116,17 @@ class ReunionChangeForm(forms.ModelForm):
             'contenu': SummernoteWidget(),
             'start_time': forms.DateInput(),
         }
+
+    def __init__(self, *args, **kwargs):
+        # On extrait le paramètre personnalisé 'association' s'il est fourni
+        asso_slug = kwargs.pop('asso_slug', None)
+        super().__init__(*args, **kwargs)
+
+        if asso_slug:
+            # Filtrage du QuerySet du champ produit
+            self.fields['projet'].queryset = Projet.objects.filter(asso__slug=asso_slug, estArchive=False).order_by(
+                "titre")
+
 
 class ParticipantReunionMultipleChoiceForm(forms.Form):
     participants = forms.ModelMultipleChoiceField(queryset=ParticipantReunion.objects.all(), required=True,

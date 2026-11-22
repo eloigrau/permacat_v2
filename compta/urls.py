@@ -59,6 +59,10 @@ urlpatterns = [
     path('facturation/clients/<int:pk>/edit/', views.ClientUpdateView.as_view(), name='client_update'),
     path('facturation/import_csv_factures/', utils.import_csv_factures, name='import_csv_factures'),
 
+    # Routes Factuers reçues
+    path('facturation/recues/', views.FactureRecueListView.as_view(), name='facturerecue_list'),
+    path('facturation/recues/add/', views.FactureRecueCreateView.as_view(), name='facturerecue_create'),
+    path('facturation/recues/<int:pk>/edit/', views.FactureRecueUpdateView.as_view(), name='facturerecue_update'),
 
     path('recus/', views.RecuListView.as_view(), name='recu_list'),
     path('recu/nouveau/', views.RecuCreateView.as_view(), name='recu_create'),
@@ -66,4 +70,6 @@ urlpatterns = [
     path('recu/<int:pk>/modifier/', views.RecuUpdateView.as_view(), name='recu_update'),
     path('recu/<int:pk>/supprimer/', views.RecuDeleteView.as_view(), name='recu_delete'),
     path('recu/<int:pk>/pdf/', views.telecharger_recu_pdf, name='recu_pdf'),
+
+    path('fa-recue/download/<int:pk>/', views.download_facturerecue, name='download_facturerecue'),
 ]

@@ -218,3 +218,14 @@ def import_csv_factures(request):
         form = csvFile_form()
 
     return render(request, 'compta/admin_utils.html', {"form": form, "title": "Lancer imports factures"})
+
+
+def compareStrings(name1, name2):
+    try:
+        import Levenshtein
+        similarity = Levenshtein.ratio(name1, name2)
+        if similarity > 0.8:
+            return True
+        return False
+    except:
+        return name1 == name2

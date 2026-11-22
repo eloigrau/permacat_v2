@@ -23,7 +23,7 @@
             {%if request.user.is_superuser or request.user == reunion.auteur %}
             <a href="{%if request.user.is_authenticated %}{% url 'defraiement:supprimerReunion' slug=reunion.slug %}{% endif %}">
                 <button type="button" class="btn btn-sm btn-danger">
-                    &nbsp;Supprimer la reunion
+                    &nbsp;Supprimer la réunion
                 </button>
             </a>
             {% endif %}
@@ -38,7 +38,7 @@
 
         <div class="row titre_reunion" style="background-color:{{reunion.reunion.get_couleur}};margin-bottom:5px;">
             <div class="col textcenter">
-                <h2> Reunion : {{ reunion.titre }}</h2>
+                <h2> Réunion : {{ reunion.titre }}</h2>
                 {% if reunion.start_time %}
                 <p class="inscrit_reunion textcenter">
                     le {{ reunion.start_time|date:"l d F Y"}}
@@ -97,6 +97,12 @@
         </div>
         <hr>
         {% endif %}
+        <div class="row">
+            <div class="col-sm-12 textcenter">
+                <p><b>Total km : </b>{{ reunion.getDistanceTotale }} </p>
+            </div>
+        </div>
+        <hr>
         <div class="row">
             <div class="col-sm-12 ">
                 {% if liste_participants %}

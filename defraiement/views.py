@@ -4,7 +4,7 @@ from django.views.generic import ListView, UpdateView, DeleteView, CreateView, D
 from django.http import HttpResponseForbidden, FileResponse
 from django.urls import reverse_lazy
 from bourseLibre.models import Asso
-from bourseLibre.utils import testIsMembreAsso
+from bourseLibre.utils import testIsMembreAsso, TestMembreAssoMixin
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
@@ -553,7 +553,7 @@ def voirLieux(request,):
 #         return context
 
 
-class ListeReunions_asso(ListView):
+class ListeReunions_asso(TestMembreAssoMixin, ListView):
     model = Reunion
     context_object_name = "reunion_list"
     template_name = "reunions/reunion_list.html"
@@ -573,6 +573,9 @@ class ListeReunions_asso(ListView):
 
         if "categorie" in self.params:
             qs = qs.filter(categorie=self.params['categorie'])
+
+        if "projet_slug" in self.params:
+            qs = qs.filter(projet__slug=self.params['projet_slug'])
 
         if "ordreTri" in self.params:
             qs = qs.order_by(self.params['ordreTri'])
@@ -610,7 +613,7 @@ def carte_reunions(request, asso_slug, ):
     return render(request, 'defraiement/carte_reunions.html', {'reunions':qs, })
 
 
-class ListeParticipants(ListView):
+class ListeParticipants(TestMembreAssoMixin, ListView):
     model = ParticipantReunion
     context_object_name = "participant_list"
     template_name = "reunions/participantreunion_list.html"

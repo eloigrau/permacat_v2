@@ -1,6 +1,5 @@
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
-from django.shortcuts import get_object_or_404
 from django.http import Http404, FileResponse, HttpResponseForbidden
 from django.views.generic.detail import DetailView
 from django.views.generic import ListView, UpdateView, DeleteView
@@ -475,6 +474,7 @@ def derniersDocs(request, asso):
 
 
 
+@login_required
 def download_document(request, pk):
     document = get_object_or_404(Document, pk=pk)
 
@@ -499,7 +499,7 @@ def download_document(request, pk):
             return HttpResponseForbidden("Accès refusé. Veuillez vous connecter.")
 
         # Un administrateur ou le propriétaire du fichier a toujours le droit
-        is_owner = (document.uploaded_by == request.user)
+        is_owner = (document.auteur == request.user)
         is_admin = request.user.is_staff or request.user.is_superuser
 
         # Vérifie si l'utilisateur fait partie d'un groupe autorisé ou est explicitement autorisé

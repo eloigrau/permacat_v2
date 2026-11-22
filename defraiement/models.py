@@ -140,7 +140,7 @@ class Reunion(models.Model):
     categorie = models.CharField(max_length=30,
                                  choices=(Choix.type_reunion),
                                  default='0', verbose_name=_("Dossier"))
-    projet = models.ForeignKey(Projet, on_delete=models.SET_NULL, blank=True, null=True)
+    projet = models.ForeignKey(Projet, on_delete=models.SET_NULL, related_name="defraiement_km", blank=True, null=True)
     titre = models.CharField(verbose_name=_("Titre de la rencontre"), max_length=120)
     slug = models.SlugField(max_length=100, default=uuid.uuid4)
     description = models.TextField(null=True, blank=True, verbose_name=_("Description / compte rendu"))
@@ -178,6 +178,12 @@ class Reunion(models.Model):
             except:
                 return -1
         return round(dist, 2)
+
+    def get_total_frais_km(self, taux=0.6):
+        d = self.getDistanceTotale
+        if d and d > 0:
+            return d*taux
+        return 0.0
 
     def recalculerDistance(self):
         for p in self.participants.all():

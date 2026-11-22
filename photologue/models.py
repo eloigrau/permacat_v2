@@ -79,6 +79,7 @@ else:
         fn = unicodedata.normalize('NFKD', force_str(filename)).encode('ascii', 'ignore').decode('ascii')
         return os.path.join(PHOTOLOGUE_DIR, 'photos', fn)
 
+
 # Support CACHEDIR.TAG spec for backups for ignoring cache dir.
 # See http://www.brynosaurus.com/cachedir/spec.html
 PHOTOLOGUE_CACHEDIRTAG = os.path.join(PHOTOLOGUE_DIR, "photos", "cache", "CACHEDIR.TAG")
@@ -152,6 +153,23 @@ IMAGE_FILTERS_HELP_TEXT = _('Chain multiple filters using the following pattern 
 
 size_method_map = {}
 
+#
+# def get_upload_path_image(instance, filename):
+#     name, ext = filename.split('.')
+#     if getattr(instance, 'date_creation') and instance.date_creation:
+#         file_path = 'documents/{asso}/photologue/photos/{annee}/{name}.{ext}'.format(
+#              asso=instance.asso.slug, annee=instance.date_creation.year,  name=name, ext=ext)
+#     else:
+#         file_path = 'photologue/{asso}/photos/{name}.{ext}'.format(
+#              asso=instance.asso.slug, annee=instance.date_taken,  name=name, ext=ext)
+#     return file_path
+
+
+def get_upload_path_document(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'documents/{asso}/{annee}/documents/{mois}-{name}.{ext}'.format(
+         asso=instance.asso.slug, annee=instance.date_creation.year, mois=instance.date_creation.month, name=name, ext=ext)
+    return file_path
 
 class TagField(models.CharField):
     """Tags have been removed from Photologue, but the migrations still refer to them so this
@@ -298,7 +316,7 @@ class Document(models.Model):
 
     doc = models.FileField('Document',
                             max_length=IMAGE_FIELD_MAX_LENGTH,
-                            upload_to='documents/%Y/%m', )
+                            upload_to=get_upload_path_document, )
 
     titre = models.CharField(_('titre'),
                              max_length=250,
@@ -386,7 +404,7 @@ class ImageModel(models.Model):
     image = models.ImageField(_('image'),
                               max_length=IMAGE_FIELD_MAX_LENGTH,
                               upload_to="photologue",
-                              help_text = 'max. 20 Mo')
+                              help_text='max. 20 Mo')
                               #upload_to=get_storage_path)
     date_taken = models.DateTimeField(_('date taken'),
                                       null=True,

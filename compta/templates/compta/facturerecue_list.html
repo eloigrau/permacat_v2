@@ -1,0 +1,45 @@
+{% extends 'compta/factures_base.html' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Factures reçues</h2>
+    <a href="{% url 'compta:facturerecue_create' %}" class="btn btn-primary">
+        <i class="fa fas fa-plus me-1"></i>Ajouter une facture
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Titre</th>
+                    <th>Echéance</th>
+                    <th>Montant</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fact in factures %}
+                <tr>
+                    <td class="fw-bold">{{ fact.titre }}</td>
+                    <td class="text-muted">{{ fact.date_echeance | date:'DATE_FORMAT'}}</td>
+                    <td class="text-muted">{{ fact.montant}}</td>
+                    <td class="text-end">
+                        <a href="{% url 'compta:facturerecue_update' fact.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fa fas fa-pen"></i> Modifier
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">Aucune facture reçue.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

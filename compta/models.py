@@ -5,10 +5,30 @@ from blog.models import Cercle, Projet
 from bourseLibre.models import Asso
 from django.urls import reverse
 from decimal import Decimal
-from django.db import models
 from django.db import models, transaction
 from django.utils import timezone
 from bourseLibre.utils import slugify_pcat_mini
+
+from django.db.models import Sum
+
+
+def get_upload_path(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'documents/{asso}/compta/{name}.{ext}'.format(
+         asso=instance.asso.slug, name=name, ext=ext)
+    return file_path
+
+def facture_get_upload_path(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'documents/{asso}/{annee}/compta/factures_emises/{name}.{ext}'.format(
+         asso=instance.asso.slug, annee=instance.annee.year, name=name, ext=ext)
+    return file_path
+
+def facturerecue_get_upload_path(instance, filename):
+    name, ext = filename.split('.')
+    file_path = 'documents/{asso}/{annee}/compta/factures_recues/{name}.{ext}'.format(
+         asso=instance.asso.slug, annee=instance.date_echeance.year, name=name, ext=ext)
+    return file_path
 
 class BudgetCercle(models.Model):
     titre = models.CharField(max_length=100, unique=True)
@@ -55,13 +75,55 @@ class BudgetProjet(models.Model):
     def get_absolute_url(self):
         return reverse('compta:detail_budget', kwargs={'budget_id':self.id})
 
+
+    def get_factures_recues(self):
+        if not hasattr(self, 'facturesrecues'):
+            #total des facts reçues (pas encore payées) et payées
+            self.facturesrecues = self.projet.facture_recue.exclude(statut='ANNULEE')
+            self.facturesrecues_total = self.facturesrecues.aggregate(total=Sum('montant'))["total"] or 0.0
+        return self.facturesrecues
+
+    def get_total_factures_recues(self):
+        if not hasattr(self, 'facturesrecues_total'):
+            self.get_factures_recues()
+        return self.facturesrecues_total
+
+    def get_total_factures_recues_nonpayees(self):
+        return self.facturesrecues.filter(statut='RECUES').aggregate(total=Sum('montant'))["total"] or 0.0
+
+
+    def get_factures_emises(self):
+        if not hasattr(self, 'facturesemises'):
+            #total des facts reçues (pas encore payées) et payées
+            if not self.projet:
+                self.facturesemises = Facture.objects.none()
+            else:
+                self.facturesemises = self.projet.facture_emise.exclude(status='REJECTED')
+        return self.facturesemises
+
+    def get_total_factures_emises(self):
+        if not hasattr(self, 'facturesemises_total'):
+            self.facturesemises_total = sum([t.total_ttc() for t in self.get_factures_emises()])
+        return self.facturesemises_total
+
+    def get_total_factures_emises_nonpayees(self):
+        return sum([t.total_ttc() for t in self.get_factures_emises().exclude(status='PAID')])
+
+
+    def get_frais_km(self):
+        return self.projet.defraiement_km.all()
+
     def total_recettes(self):
         # Recettes classiques + Transferts reçus en tant que destination
         recettes_pures = self.transactions.filter(type_transaction='RECETTE').aggregate(
             total=models.Sum('montant'))['total'] or 0.0
         transferts_recus = Transaction.objects.filter(type_transaction='TRANSFERT', budget_destination=self).aggregate(
             total=models.Sum('montant'))['total'] or 0.0
-        return float(recettes_pures) + float(transferts_recus)
+        factures_emises_total = self.get_total_factures_emises()
+        return float(recettes_pures) + float(transferts_recus) + factures_emises_total
+
+    def total_recettes_nonpayees(self):
+        return self.get_total_factures_emises_nonpayees()
 
     def total_transfert(self):
         # Dépenses classiques + Transferts émis (l'argent sort du projet)
@@ -78,11 +140,26 @@ class BudgetProjet(models.Model):
             total=models.Sum('montant'))['total'] or 0.0
         transferts_emis = self.transactions.filter(type_transaction='TRANSFERT').aggregate(
             total=models.Sum('montant'))['total'] or 0.0
-        return float(depenses_pures) + float(transferts_emis)
+        factures_recues = self.get_total_factures_recues()
+        defraiements = self.get_total_defraiements()
+        return float(depenses_pures) + float(transferts_emis) + float(factures_recues) + float(defraiements)
+
+    def total_depenses_nonpayees(self):
+        return self.get_total_factures_recues_nonpayees()
 
     def solde(self):
         return self.total_recettes() - self.total_depenses()
 
+
+    def get_defraiements(self):
+        if not hasattr(self, 'defraiements'):
+            self.defraiements = self.projet.defraiement_km.all()
+        return self.defraiements
+
+    def get_total_defraiements(self):
+        if not hasattr(self, 'defraiements_total'):
+            self.defraiements_total = sum([t.get_total_frais_km() for t in self.get_defraiements()])
+        return self.defraiements_total
 
     #def ecart_previsionnel(self):
     #    """Différence entre le prévisionnel et les dépenses réelles totales."""
@@ -157,6 +234,12 @@ class DocumentStatus(models.TextChoices):
     ACCEPTED = 'ACCEPTED', 'Accepté'
     REJECTED = 'REJECTED', 'Refusé'
     PAID = 'PAID', 'Payé'
+
+
+class FactureRecueStatus(models.TextChoices):
+    RECUE = 'RECUE', 'Reçue (non payée)'
+    PAYEE = 'PAYEE', 'Payée'
+    ANNULEE = 'ANNULEE', 'Annulée'
 
 # Sur ton modèle Facture (ou un modèle générique Document) :
 class Client(models.Model):
@@ -286,6 +369,7 @@ class Facture(models.Model):
     # Association au modèle AssoInfo
     asso_info = models.ForeignKey(AssoInfo, on_delete=models.PROTECT, related_name="documents", verbose_name="AssoInfo", null=False, )
     project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='facture_emise', blank=True, null=True)
 
     document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.FACTURE)
     status = models.CharField(max_length=10, choices=DocumentStatus.choices, default=DocumentStatus.DRAFT)
@@ -304,6 +388,8 @@ class Facture(models.Model):
     def get_absolute_url(self):
         return reverse('compta:document_detail', kwargs={'pk':self.pk})
 
+    def get_update_url(self):
+        return reverse('compta:document_update', kwargs={'pk':self.pk})
 
     # @property
     # def get_document_typedisplay(self):
@@ -418,3 +504,31 @@ class RecuFiscal(models.Model):
                 self.numero_recu = f"{prefixe}{nouveau_numero:05d}"
 
         super().save(*args, **kwargs)
+
+
+
+
+class FactureRecue(models.Model):
+    titre = models.CharField(max_length=100)
+    identifiant = models.CharField(max_length=50)
+    date_echeance = models.DateField(verbose_name="Date d'échéance")
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='facture_recue', blank=True, null=True)
+    statut = models.CharField(max_length=10, choices=FactureRecueStatus.choices, default=FactureRecueStatus.RECUE)
+    is_archived = models.BooleanField(default=False)
+    asso = models.ForeignKey(Asso, on_delete=models.SET_NULL, null=True)
+    doc = models.FileField(verbose_name='Facture Reçue', upload_to=facturerecue_get_upload_path, )
+    montant = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = "Facture Reçue"
+        verbose_name_plural = "Factures Reçues"
+
+    def __str__(self):
+        return f"Facture reçue {self.titre}"
+
+
+    def get_download_url(self):
+        return reverse("compta:download_facturerecue", kwargs={"pk":self.pk})
+
+    def get_update_url(self):
+        return reverse('compta:facturerecue_update', kwargs={'pk':self.pk})

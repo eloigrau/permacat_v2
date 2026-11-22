@@ -48,16 +48,28 @@
             <div class="card-body">
                 <h5 class="card-title text-muted h6 text-uppercase"><i class="bi bi-cash-stack me-2"></i>Total</h5>
                 <hr>
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Total Recettes :</span>
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">Total Recettes :</span>
                     <span class="text-success fw-bold">+{{ budget.total_recettes|floatformat:2 }} €</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
-                    <span>Total Dépenses :</span>
-                    <span class="text-danger fw-bold">-{{ budget.total_depenses|floatformat:2 }} €</span>
+                    <span>Dont non payées :</span>
+                    <span class="text-success ">+{{ budget.total_recettes_nonpayees|floatformat:2 }} €</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <span>Total Transferts (reçus - émis):</span>
+                    <span class="fw-bold">Total Dépenses :</span>
+                    <span class="text-danger fw-bold">-{{ budget.total_depenses|floatformat:2 }} €</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Dont non payées :</span>
+                    <span class="text-danger">-{{ budget.total_depenses_nonpayees|floatformat:2 }} €</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Dont <a href="{%url 'defraiement:reunions_asso' asso_slug=budget.projet.asso.slug %}?&projet_slug={{budget.projet.slug}}"> Defraiements</a></span>
+                    <span class="text-danger">-{{ defraiements|floatformat:2 }} €</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">Total Transferts (reçus - émis):</span>
                     <span class="text-danger fw-bold">{{ budget.total_transfert|floatformat:2 }} €</span>
                 </div>
             </div>
@@ -156,6 +168,87 @@
                     <td colspan="6" class="text-center text-muted py-4">Aucun mouvement financier sur ce budget.</td>
                 </tr>
                 {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Factures reçues : {{facturesrecue_total}} €</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Titre</th>
+                    <th>Statut</th>
+                    <th class="text-center">Montant</th>
+                    <th class="text-end">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in factures_recues %}
+                <tr>
+                    <td class="text-muted">{{ t.date_echeance|date:"d/m/Y" }}</td>
+                    <td><strong>{{ t.titre }}</strong></td>
+                    <td>
+                        <span class="badge bg-danger-subtle text-danger">Dépense</span>
+                        <span class="badge bg-info "> {{ t.statut }}</span>
+                    </td>
+                    <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
+                        -{{ t.montant|floatformat:2 }} €
+                    </td>
+                    <td class="text-end ">
+                        <a class="btn btn-warning btn-sm" href="{{ t.get_update_url }}"><i class="fa fa-edit"></i></a>
+                    </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Aucune facture reçue sur ce budget.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Factures émises : {{facturesemises_total}} €</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Titre</th>
+                    <th>Statut</th>
+                    <th class="text-center">Montant</th>
+                    <th class="text-end">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in factures_emises %}
+                <tr>
+                    <td class="text-muted">{{ t.date_echeance|date:"d/m/Y" }}</td>
+                    <td><strong>{{ t.number }}</strong></td>
+                    <td>
+                        <span class="badge bg-danger-subtle text-danger">Dépense</span>
+                        <span class="badge bg-info "> {{ t.status }}</span>
+                    </td>
+                    <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
+                        -{{ t.montant|floatformat:2 }} €
+                    </td>
+                    <td class="text-end ">
+                        <a class="btn btn-warning btn-sm" href="{{ t.get_update_url }}"><i class="fa fa-edit"></i></a>
+                    </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Aucun facture sur ce budget.</td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

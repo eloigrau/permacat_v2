@@ -2,27 +2,24 @@ from .models import BudgetCercle, BudgetProjet, Transaction
 from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, ClientForm, AssoInfoForm, ProductForm
 from django.contrib.auth.decorators import login_required
 from blog.models import Projet
-from django.http import HttpResponseForbidden
+from django.http import Http404, FileResponse, HttpResponseForbidden
 from django.shortcuts import HttpResponseRedirect
-from django.views.generic import UpdateView, DeleteView
 from .models import Client, Product, AssoInfo
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
-from bourseLibre.utils import testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
-from .models import RecuFiscal
+from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
+from .models import RecuFiscal, FactureRecue
 from bourseLibre.models import Asso
-from .forms import RecuFiscalForm
+from .forms import RecuFiscalForm, FactureRecueForm
 from django.db import IntegrityError
 from .forms import FactureForm, FactureItemFormSet, FactureStatutForm
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.db import transaction
-
 from .models import Facture, DocumentStatus, DocumentType, FactureItem
-
 # -----------------------
 @login_required
 def tableau_de_bord(request):
@@ -52,10 +49,29 @@ def detail_budget(request, budget_id):
     # On récupère aussi les transferts d'argent arrivés sur ce projet
     transferts_recus = budget.transferts_recus.all()
 
+    factures_recues = budget.get_factures_recues()
+    facturesrecue_total = budget.get_total_factures_recues()
+    total_factures_recues_nonpayees = budget.get_total_factures_recues_nonpayees()
+
+    factures_emises = budget.get_factures_emises()
+    facturesemises_total = budget.get_total_factures_emises()
+    total_factures_emises_nonpayees = budget.get_total_factures_emises_nonpayees()
+
+    factures_emises = budget.get_factures_emises()
+    facturesemises_total = budget.get_total_factures_emises()
+    total_factures_emises_nonpayees = budget.get_total_factures_emises_nonpayees()
+
+    defraiements = budget.get_total_defraiements()
+
     return render(request, 'compta/detail_budget.html', {
         'budget': budget,
         'transactions': transactions_importantes,
-        'transferts_recus': transferts_recus
+        'transferts_recus': transferts_recus,
+        'factures_recues': factures_recues, 'facturesrecue_total':facturesrecue_total,
+        "total_factures_recues_nonpayees":total_factures_recues_nonpayees,
+        'factures_emises': factures_emises, 'facturesemises_total':facturesemises_total,
+        "total_factures_emises_nonpayees":total_factures_emises_nonpayees,
+        "defraiements":defraiements
     })
 
 @login_required
@@ -529,3 +545,99 @@ class RecuCreateView(TestMembreAssoMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save(asso=self.asso)
         return HttpResponseRedirect(self.get_success_url())
+
+
+
+@login_required
+def download_facturerecue(request, pk):
+    document = get_object_or_404(FactureRecue, pk=pk)
+
+    asso = testIsMembreAsso(request, document.asso.slug)
+
+    # # --- NIVEAU 1 : FICHIER PUBLIC ---
+    # if document.visibility == 'public':
+    #     # Pas de vérification, tout le monde peut télécharger
+    #     pass
+    #
+    # # --- NIVEAU 2 : UTILISATEURS CONNECTÉS ---
+    # elif document.visibility == 'authenticated':
+    #     if not request.user.is_authenticated:
+    #         return HttpResponseForbidden("Vous devez être connecté pour accéder à ce fichier.")
+    #
+    # # --- NIVEAU 2 : UTILISATEURS CONNECTÉS ---
+    # elif document.visibility == 'membre':
+    #     if not document.asso.est_autorise(request.user):
+    #         return HttpResponseForbidden("Vous devez être membre du groupe pour accéder à ce fichier.")
+    #
+    # # --- NIVEAU 3 : RESTREINT (Groupes / Utilisateurs / Propriétaire) ---
+    # elif document.visibility == 'restricted':
+    #     if not request.user.is_authenticated:
+    #         return HttpResponseForbidden("Accès refusé. Veuillez vous connecter.")
+    #
+    #     # Un administrateur ou le propriétaire du fichier a toujours le droit
+    #     is_owner = (document.uploaded_by == request.user)
+    #     is_admin = request.user.is_staff or request.user.is_superuser
+    #
+    #     # Vérifie si l'utilisateur fait partie d'un groupe autorisé ou est explicitement autorisé
+    #     user_in_groups = document.allowed_groups.filter(id__in=request.user.groups.all()).exists()
+    #     user_explicitly_allowed = document.allowed_users.filter(id=request.user.id).exists()
+    #
+    #     if not (is_owner or is_admin or user_in_groups or user_explicitly_allowed):
+    #         return HttpResponseForbidden("Vous n'avez pas les autorisations nécessaires pour accéder à ce fichier.")
+
+    # --- SERVIR LE FICHIER ---
+    if not document.doc:
+        raise Http404("Fichier introuvable sur le serveur.")
+
+    filename = document.doc.name.split('/')[-1]
+
+    return FileResponse(document.doc.open('rb'), as_attachment=True, filename=filename)
+
+
+
+class FactureRecueListView(TestMembreAssoMixin, ListView):
+    model = FactureRecue
+    template_name = 'compta/facturerecue_list.html'
+    context_object_name = 'factures'
+
+    def get_queryset(self):
+        return FactureRecue.objects.filter(asso=self.asso).order_by("-date_echeance")
+
+
+class FactureRecueCreateView(TestMembreAssoMixin, CreateView):
+    model = FactureRecue
+    form_class = FactureRecueForm
+    template_name = 'compta/facturerecue_form.html'
+    success_url = reverse_lazy('compta:facturerecue_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Nouvelle facture reçue"
+        return context
+
+    def form_valid(self, form):
+        self.object = form.save(asso=self.asso)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(FactureRecueCreateView, self).get_form_kwargs(*args, **kwargs)
+        kwargs['asso_slug'] = self.asso.slug
+        return kwargs
+
+
+class FactureRecueUpdateView(TestMembreAssoMixin, UpdateView):
+    model = FactureRecue
+    form_class = FactureRecueForm
+    template_name = 'compta/facturerecue_form.html'
+    success_url = reverse_lazy('compta:facturerecue_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "Modifier la facture reçue"
+        return context
+
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(FactureRecueUpdateView, self).get_form_kwargs(*args, **kwargs)
+        kwargs['asso_slug'] = self.asso.slug
+        return kwargs

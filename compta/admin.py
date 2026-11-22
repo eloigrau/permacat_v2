@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import BudgetCercle, BudgetProjet, Transaction
-from .models import Client, Product, Facture, FactureItem, AssoInfo, RecuFiscal
+from .models import Client, Product, Facture, FactureItem, AssoInfo, RecuFiscal, FactureRecue
 
 @admin.register(BudgetProjet)
 class BudgetProjet_Admin(admin.ModelAdmin):
@@ -47,7 +47,7 @@ class AssoInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Facture)
 class FactureAdmin(admin.ModelAdmin):
-    list_display = ('number', 'client', 'created_at', 'get_total_ht', "is_archived", "status")
+    list_display = ('asso', 'number', 'client', 'created_at', 'get_total_ht', "is_archived", "status")
     search_fields = ('number', 'client__name')
     inlines = [FactureItemInline]
 
@@ -60,3 +60,8 @@ class FactureAdmin(admin.ModelAdmin):
 class RecuAdmin(admin.ModelAdmin):
     list_display = ('asso_info', 'nom_donateur', 'montant')
     search_fields = ('montant', 'nom_donateur')
+
+@admin.register(FactureRecue)
+class FactureRecueAdmin(admin.ModelAdmin):
+    list_display = ('asso', 'identifiant', 'titre', 'date_echeance', 'montant', 'doc')
+    search_fields = ('montant','identifiant', 'titre', 'doc')

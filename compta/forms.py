@@ -5,7 +5,7 @@ from bourseLibre.models import Asso
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from django.forms import inlineformset_factory
-from .models import Facture, FactureItem
+from .models import Facture, FactureItem, FactureRecue
 
 class BudgetProjetForm(forms.ModelForm):
     class Meta:
@@ -91,7 +91,7 @@ class FactureForm(forms.ModelForm):
 
     class Meta:
         model = Facture
-        fields = ['client', 'project', 'date_echeance']
+        fields = ['client', 'projet', 'date_echeance']
         widgets = {
             'client': forms.Select(attrs={'class': 'form-select'}),
             'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
@@ -105,6 +105,7 @@ class FactureForm(forms.ModelForm):
         self.instance.save(asso_info=asso_info, doc_type=doc_type)
         super(FactureForm, self)
         return self.instance
+
 
 class FactureStatutForm(forms.ModelForm):
     class Meta:
@@ -200,3 +201,28 @@ class RecuFiscalForm(forms.ModelForm):
     def save(self, asso):
         self.instance.save(asso=asso)
         return super(RecuFiscalForm, self)
+
+class FactureRecueForm(forms.ModelForm):
+    class Meta:
+        model = FactureRecue
+        fields = ['titre', 'doc', 'date_echeance', 'montant', 'projet', 'identifiant', 'statut']
+        widgets = {
+                'titre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du produit ou service'}),
+                'date_echeance': forms.DateInput(format=('%d-%m-%Y'),
+                                            attrs={'class': 'form-control', 'type': 'date'}),
+            }
+
+    def save(self, asso):
+        self.instance.asso = asso
+        self.instance.save()
+        return super(FactureRecueForm, self)
+
+
+    def __init__(self, *args, **kwargs):
+        self.asso_slug = kwargs.pop('asso_slug', None)
+        super().__init__(*args, **kwargs)
+        # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
+        if self.asso_slug:
+            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug)]
+       # if projet:
+       #     self.fields['projet'].initial = projet

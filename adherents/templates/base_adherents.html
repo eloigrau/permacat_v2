@@ -21,7 +21,7 @@
                 <li class="nav-item nav-jardin"><a class="dropdown-item"
                                                    href="{% url 'adherents:listeDiffusion_liste' asso_slug=request.session.asso_slug %}"> Les Listes
                     Mails</a></li>
-                {% if request.user.estmembre_bureau_conf %}
+                {% if request.user.estmembre_bureau %}
                 <li class="nav-item nav-jardin"><a class="dropdown-item" href="{% url 'adherents:adhesion_liste' asso_slug=request.session.asso_slug %}">
                     Gérer les Adhésions</a></li>
 

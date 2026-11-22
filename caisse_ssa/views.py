@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError as DRFValidationError
+from .services import calculer_prochain_du, distribuer_dividende_universel
 
 from .models import MembreSSA, LieuDeVente, CompteMonnaieLocale, Cotisation, Transaction
 from .serializers import (
@@ -15,12 +16,15 @@ from .serializers import (
 )
 from django.utils import timezone
 from caisse_ssa.pdf_reports import generer_pdf_bilan_mensuel
+from django.contrib.auth import authenticate, login as django_login
+from rest_framework import permissions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 class EstAdministrateurCaisse(permissions.BasePermission):
-    """
-    Autorise uniquement les administrateurs de la caisse (rôle CONSEIL ou is_staff).
-    """
-    message = "Action réservée aux administrateurs de la caisse."
+    """Autorise uniquement les membres du Conseil Collégial ou superusers."""
+    message = "Action réservée aux administrateurs de la caisse (Conseil)."
 
     def has_permission(self, request, view):
         if not (request.user and request.user.is_authenticated):
@@ -28,7 +32,7 @@ class EstAdministrateurCaisse(permissions.BasePermission):
         if request.user.is_staff:
             return True
         profil_ssa = getattr(request.user, 'profil_ssa', None)
-        return bool(profil_ssa and profil_ssa.role == 'CONSEIL')
+        return bool(profil_ssa and profil_ssa.est_membre_conseil)
 
 
 class EstAdminCaisseOuLectureSeule(permissions.BasePermission):
@@ -65,23 +69,21 @@ class ProfilConnecteView(APIView):
         user = request.user
         profil_ssa, _ = MembreSSA.objects.get_or_create(
             user=user,
-            defaults={'role': 'CONSEIL' if user.is_staff else 'PARTICIPANT'}
+            defaults={'est_membre_conseil': user.is_staff}
         )
         compte_june = profil_ssa.get_compte('JUNE')
         compte_euros = profil_ssa.get_compte('EUROS')
 
         lieux = LieuDeVente.objects.filter(gestionnaire=profil_ssa)
-        caisse_june_solde = None
-        caisse_euros_solde = None
+        est_admin = profil_ssa.est_membre_conseil or user.is_staff
 
-        if profil_ssa.role == 'CONSEIL' or user.is_staff:
-            caisse_june_solde = CompteMonnaieLocale.get_caisse_centrale('JUNE').solde
-            caisse_euros_solde = CompteMonnaieLocale.get_caisse_centrale('EUROS').solde
+        caisse_june_solde = CompteMonnaieLocale.get_caisse_centrale('JUNE').solde if est_admin else None
+        caisse_euros_solde = CompteMonnaieLocale.get_caisse_centrale('EUROS').solde if est_admin else None
 
         return Response({
             "id": profil_ssa.id,
             "username": user.username,
-            "role": profil_ssa.role,
+            "est_membre_conseil": est_admin,
             "solde_june": compte_june.solde,
             "solde_euros": compte_euros.solde,
             "caisse_june_solde": caisse_june_solde,
@@ -109,10 +111,18 @@ class CotisationViewSet(viewsets.ModelViewSet):
             # Renvoie proprement l'erreur si solde négatif ou insuffisant
             raise DRFValidationError({"detail": e.messages[0]})
 
+
 class MembreViewSet(viewsets.ModelViewSet):
-    queryset = MembreSSA.objects.select_related('user', 'compte_ml').all()
+    # CORRECTION : On ne garde que 'user' dans select_related
+    queryset = MembreSSA.objects.select_related('user').all()
     serializer_class = MembreSSASerializer
     permission_classes = [EstAdminCaisseOuLectureSeule]
+
+    def perform_create(self, serializer):
+        membre_ssa = serializer.save()
+        # Les comptes JUNE et EUROS sont créés automatiquement par le serializer ou les méthodes
+        membre_ssa.get_compte('JUNE')
+        membre_ssa.get_compte('EUROS')
 
     def get_queryset(self):
         user = self.request.user
@@ -121,13 +131,6 @@ class MembreViewSet(viewsets.ModelViewSet):
         if user.is_staff or (profil_ssa and profil_ssa.role == 'CONSEIL'):
             return self.queryset
         return self.queryset.filter(user=user)
-
-    def perform_create(self, serializer):
-        membre_ssa = serializer.save()
-        CompteMonnaieLocale.objects.get_or_create(
-            proprietaire=membre_ssa,
-            defaults={'type_compte': 'ALLOCATAIRE'}
-        )
 
 
 class LieuDeVenteViewSet(viewsets.ModelViewSet):
@@ -278,10 +281,50 @@ class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
             "message": f"Reconversion de {montant} ML validée pour {lieu.nom}.",
             "nouveau_solde_pro": compte_pro.solde
         }, status=status.HTTP_200_OK)
-from django.contrib.auth import authenticate, login as django_login
-from rest_framework import permissions, status
-from rest_framework.views import APIView
-from rest_framework.response import Response
+
+    @action(
+        detail=False, methods=['get', 'post'],
+        url_path='dividende-universel',
+        permission_classes=[EstAdministrateurCaisse]
+    )
+    def dividende_universel(self, request):
+        if request.method == 'GET':
+            du_unitaire, masse_totale, nb_membres = calculer_prochain_du()
+            moyenne_m_sur_n = (masse_totale / nb_membres) if nb_membres > 0 else Decimal('0.00')
+            return Response({
+                "masse_monetaire_totale": masse_totale,
+                "nombre_cocreateurs": nb_membres,
+                "moyenne_M_sur_N": round(moyenne_m_sur_n, 2),
+                "prochain_du_estime": du_unitaire
+            })
+
+        journal, message = distribuer_dividende_universel()
+        if not journal:
+            return Response({"detail": message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            "message": message,
+            "montant_du": journal.montant_du_unitaire,
+            "nombre_cocreateurs": journal.nombre_cocreateurs
+        }, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=False, methods=['get'],
+        url_path='bilan-pdf',
+        permission_classes=[EstAdministrateurCaisse]
+    )
+    def bilan_pdf(self, request):
+        """Télécharge le bilan PDF pour ?annee=2026&mois=11 (mois en cours par défaut)."""
+        now = timezone.localdate()
+        annee = int(request.query_params.get('annee', now.year))
+        mois = int(request.query_params.get('mois', now.month))
+
+        pdf_bytes = generer_pdf_bilan_mensuel(annee, mois, sauvegarder_fichier=True)
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="bilan_caisse_SSA_{annee}_{mois:02d}.pdf"'
+        return response
+
+
 
 class SessionLoginView(APIView):
     """Connexion via la session standard Django (compatible username ou email)."""
@@ -297,50 +340,3 @@ class SessionLoginView(APIView):
         return Response({"detail": "Identifiant ou mot de passe incorrect."}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-from .services import calculer_prochain_du, distribuer_dividende_universel
-
-@action(
-    detail=False, methods=['get', 'post'],
-    url_path='dividende-universel',
-    permission_classes=[EstAdministrateurCaisse]
-)
-def dividende_universel(self, request):
-    """
-    GET : Affiche les paramètres TRM actuels (Masse monétaire M, N membres, prochain DU).
-    POST : Déclenche manuellement le versement du DU du jour.
-    """
-    if request.method == 'GET':
-        du_unitaire, masse_totale, nb_membres = calculer_prochain_du()
-        moyenne_m_sur_n = (masse_totale / nb_membres) if nb_membres > 0 else Decimal('0.00')
-        return Response({
-            "masse_monetaire_totale": masse_totale,
-            "nombre_cocreateurs": nb_membres,
-            "moyenne_M_sur_N": round(moyenne_m_sur_n, 2),
-            "prochain_du_estime": du_unitaire
-        })
-
-    journal, message = distribuer_dividende_universel()
-    if not journal:
-        return Response({"detail": message}, status=status.HTTP_400_BAD_REQUEST)
-
-    return Response({
-        "message": message,
-        "montant_du": journal.montant_du_unitaire,
-        "nombre_cocreateurs": journal.nombre_cocreateurs
-    }, status=status.HTTP_201_CREATED)
-
-@action(
-        detail=False, methods=['get'],
-        url_path='bilan-pdf',
-        permission_classes=[EstAdministrateurCaisse]
-    )
-def bilan_pdf(self, request):
-    """Télécharge le bilan PDF pour ?annee=2026&mois=11 (mois en cours par défaut)."""
-    now = timezone.localdate()
-    annee = int(request.query_params.get('annee', now.year))
-    mois = int(request.query_params.get('mois', now.month))
-
-    pdf_bytes = generer_pdf_bilan_mensuel(annee, mois, sauvegarder_fichier=True)
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="bilan_caisse_SSA_{annee}_{mois:02d}.pdf"'
-    return response

@@ -100,7 +100,7 @@ def calculer_donnees_bilan_mensuel(annee: int, mois: int):
 def generer_pdf_bilan_mensuel(annee: int, mois: int, sauvegarder_fichier=True) -> bytes:
     """Génère le PDF en mémoire et l'archive optionnellement dans MEDIA_ROOT/bilans_ssa/."""
     context = calculer_donnees_bilan_mensuel(annee, mois)
-    html_string = render_to_string('caisse/rapport_mensuel_pdf.html', context)
+    html_string = render_to_string('caisse_ssa/rapport_mensuel_pdf.html', context)
     pdf_bytes = HTML(string=html_string).write_pdf()
 
     if sauvegarder_fichier:

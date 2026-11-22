@@ -12,22 +12,33 @@ DEVISE_CHOICES = [
 
 
 class MembreSSA(models.Model):
-    ROLE_CHOICES = [
-        ('PARTICIPANT', 'Participant (Cotisant / Allocataire)'),
-        ('PRODUCTEUR', 'Producteur / Lieu de vente'),
-        ('CONSEIL', 'Membre du Conseil Collégial'),
-    ]
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='profil_ssa'
     )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='PARTICIPANT')
+
+    # 1. Gouvernance / Administration (Indépendant)
+    est_membre_conseil = models.BooleanField(
+        default=False,
+        help_text="Membre du Conseil Collégial / Administrateur de la caisse"
+    )
+    # 2. Qualités économiques et monétaires (Modulables indépendamment)
+    est_cotisant = models.BooleanField(
+        default=True,
+        help_text="Participe aux cotisations solidaires"
+    )
     cotisation_mensuelle_engagee = models.DecimalField(
         max_digits=8, decimal_places=2, default=Decimal('0.00')
     )
-    est_allocataire = models.BooleanField(default=True)
-    est_cocreateur_du = models.BooleanField(default=True)
+    est_allocataire = models.BooleanField(
+        default=True,
+        help_text="Reçoit l'allocation alimentaire mensuelle de la caisse"
+    )
+    est_cocreateur_du = models.BooleanField(
+        default=True,
+        help_text="Co-crée quotidiennement le Dividende Universel (Monnaie Libre)"
+    )
 
     def get_compte(self, devise):
         compte, _ = CompteMonnaieLocale.objects.get_or_create(
@@ -38,8 +49,8 @@ class MembreSSA(models.Model):
         return compte
 
     def __str__(self):
-        return f"{self.user.username} ({self.get_role_display()})"
-
+        admin_badge = " [Conseil]" if self.est_membre_conseil else ""
+        return f"{self.user.username}{admin_badge}"
 
 class LieuDeVente(models.Model):
     TYPE_CHOICES = [

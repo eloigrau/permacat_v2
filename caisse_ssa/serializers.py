@@ -2,7 +2,6 @@ from rest_framework import serializers
 from bourseLibre.models import Profil
 from .models import MembreSSA, LieuDeVente, Cotisation, Transaction
 
-
 class MembreSSASerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     email = serializers.EmailField(source='user.email', required=False, allow_blank=True)
@@ -14,7 +13,7 @@ class MembreSSASerializer(serializers.ModelSerializer):
         model = MembreSSA
         fields = [
             'id', 'username', 'email', 'password',
-            'role', 'cotisation_mensuelle_engagee',
+            'est_membre_conseil', 'est_cotisant', 'cotisation_mensuelle_engagee',
             'est_allocataire', 'est_cocreateur_du',
             'solde_june', 'solde_euros'
         ]

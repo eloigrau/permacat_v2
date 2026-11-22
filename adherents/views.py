@@ -930,7 +930,7 @@ def get_mails(asso_slug, typeListe="bureau"):
     profils = Adherent.objects.filter(asso__slug=asso_slug).order_by("nom").distinct()
     current_year = date.today().isocalendar()[0]
     if typeListe=="bureau":
-        return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau_conf and a.email]))
+        return list(set([a.email for a in profils if a.profil and a.profil.estmembre_bureau and a.email]))
     elif typeListe=="ajour":
         return list(set([a.email for a in profils if a.get_adhesion_an(current_year).montant and a.email]))
     elif typeListe=="anneeprecedente_pasajour":

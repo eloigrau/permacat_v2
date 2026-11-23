@@ -142,7 +142,8 @@ class BudgetProjet(models.Model):
             total=models.Sum('montant'))['total'] or 0.0
         factures_recues = self.get_total_factures_recues()
         defraiements = self.get_total_defraiements()
-        return float(depenses_pures) + float(transferts_emis) + float(factures_recues) + float(defraiements)
+        ndf = self.get_total_ndf()
+        return float(depenses_pures) + float(transferts_emis) + float(factures_recues) + float(defraiements) + ndf
 
     def total_depenses_nonpayees(self):
         return self.get_total_factures_recues_nonpayees()
@@ -156,21 +157,21 @@ class BudgetProjet(models.Model):
             self.defraiements = self.projet.defraiement_km.all()
         return self.defraiements
 
-    def get_defraiements(self):
-        if not hasattr(self, 'defraiements'):
-            self.defraiements = self.projet.defraiement_km.all()
-        return self.defraiements
-
 
     def get_total_defraiements(self):
         if not hasattr(self, 'defraiements_total'):
             self.defraiements_total = sum([t.get_total_frais_km() for t in self.get_defraiements()])
         return self.defraiements_total
 
+    def get_ndf(self):
+        if not hasattr(self, 'ndf'):
+            self.ndf = self.projet.ndf.all()
+        return self.ndf
+
     def get_total_ndf(self):
-        if not hasattr(self, 'defraiements_total'):
+        if not hasattr(self, 'ndf_total'):
             self.ndf_total = sum([float(t.montant) for t in self.get_ndf() if t.montant])
-        return self.defraiements_total
+        return self.ndf_total
 
     #def ecart_previsionnel(self):
     #    """Différence entre le prévisionnel et les dépenses réelles totales."""

@@ -68,6 +68,10 @@
                     <span>Dont <a href="{%url 'defraiement:reunions_asso' asso_slug=budget.projet.asso.slug %}?&projet_slug={{budget.projet.slug}}"> Defraiements</a></span>
                     <span class="text-danger">-{{ defraiements|floatformat:2 }} €</span>
                 </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Dont <a href="{%url 'defraiement:ndf_liste' asso_slug=budget.projet.asso.slug %}?&projet_slug={{budget.projet.slug}}"> Notes de Frais</a></span>
+                    <span class="text-danger">-{{ ndf|floatformat:2 }} €</span>
+                </div>
                 <div class="d-flex justify-content-between">
                     <span class="fw-bold">Total Transferts (reçus - émis):</span>
                     <span class="text-danger fw-bold">{{ budget.total_transfert|floatformat:2 }} €</span>

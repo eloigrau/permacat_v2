@@ -63,6 +63,7 @@ def detail_budget(request, budget_id):
     total_factures_emises_nonpayees = budget.get_total_factures_emises_nonpayees()
 
     defraiements = budget.get_total_defraiements()
+    ndf = budget.get_total_ndf()
 
     return render(request, 'compta/detail_budget.html', {
         'budget': budget,
@@ -72,7 +73,7 @@ def detail_budget(request, budget_id):
         "total_factures_recues_nonpayees":total_factures_recues_nonpayees,
         'factures_emises': factures_emises, 'facturesemises_total':facturesemises_total,
         "total_factures_emises_nonpayees":total_factures_emises_nonpayees,
-        "defraiements":defraiements
+        "defraiements":defraiements, "ndf":ndf
     })
 
 @login_required

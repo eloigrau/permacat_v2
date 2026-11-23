@@ -266,3 +266,23 @@ class FactureRecueForm(forms.ModelForm):
             self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug)]
        # if projet:
        #     self.fields['projet'].initial = projet<
+
+
+class FactureRecueChangeForm(forms.ModelForm):
+    class Meta:
+        model = FactureRecue
+        fields = ['titre', 'date_echeance', 'montant', 'projet', 'identifiant', 'statut']
+        widgets = {
+                'titre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du produit ou service'}),
+                'date_echeance': forms.DateInput(),
+            }
+
+
+    def __init__(self, *args, **kwargs):
+        self.asso_slug = kwargs.pop('asso_slug', None)
+        super().__init__(*args, **kwargs)
+        # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
+        if self.asso_slug:
+            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug)]
+       # if projet:
+       #     self.fields['projet'].initial = projet<

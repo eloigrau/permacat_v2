@@ -1,5 +1,6 @@
 from .models import BudgetCercle, BudgetProjet, Transaction
-from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, ClientForm, AssoInfoForm, ProductForm
+from .forms import TransactionForm, BudgetProjetForm, TransationChangeForm, ClientForm, AssoInfoForm,\
+    ProductForm
 from django.contrib.auth.decorators import login_required
 from blog.models import Projet
 from django.http import Http404, FileResponse, HttpResponseForbidden
@@ -11,7 +12,7 @@ from weasyprint import HTML
 from bourseLibre.utils import testIsMembreAsso, testIsMembreAsso_bool, TestMembreAssoMixin, TestBureauAssoMixin, UserPassesTestMixin
 from .models import RecuFiscal, FactureRecue
 from bourseLibre.models import Asso
-from .forms import RecuFiscalForm, FactureRecueForm
+from .forms import RecuFiscalForm, FactureRecueForm, FactureRecueChangeForm
 from django.db import IntegrityError
 from .forms import FactureForm, FactureItemFormSet, FactureStatutForm, FactureChangeForm
 from django.shortcuts import get_object_or_404, redirect, render
@@ -628,7 +629,7 @@ class FactureRecueCreateView(TestMembreAssoMixin, CreateView):
 
 class FactureRecueUpdateView(TestMembreAssoMixin, UpdateView):
     model = FactureRecue
-    form_class = FactureRecueForm
+    form_class = FactureRecueChangeForm
     template_name = 'compta/facturerecue_form.html'
     success_url = reverse_lazy('compta:facturerecue_list')
 

@@ -8,7 +8,7 @@ from django.urls import reverse
 class Proposal(models.Model):
     class Status(models.TextChoices):
         DRAFT = 'DRAFT', 'Brouillon'
-        CLARIFICATION = 'CLARIFICATION', 'Demande de clarification'
+        CLARIFICATION = 'CLARIFICATION', 'Demande de clarification/suggestion'
         OBJECTION_ROUND = 'OBJECTION_ROUND', 'Recueil des objections'
         REFORMULATION = 'REFORMULATION', 'Reformulation'
         OBJECTION_RESPONSE = 'OBJECTION_RESPONSE', 'warning'

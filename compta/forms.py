@@ -10,7 +10,7 @@ from .models import Facture, FactureItem, FactureRecue
 class BudgetProjetForm(forms.ModelForm):
     class Meta:
         model = BudgetProjet
-        fields = ['projet', 'titre', 'description', 'coef_km']
+        fields = ['projet', 'titre', 'description', 'coef_km', 'budget_global_asso']
 
     def __init__(self, asso_slug, projet, *args, **kwargs):
         super().__init__(*args, **kwargs)

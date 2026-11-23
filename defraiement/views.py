@@ -17,9 +17,6 @@ from bourseLibre.forms import AdresseForm, AdresseForm3, AdresseForm4
 from datetime import datetime
 from django.contrib.auth.mixins import UserPassesTestMixin
 from blog.models import Projet
-import itertools
-import csv
-from django.http import HttpResponse
 
 @login_required
 def lireReunion(request, slug):
@@ -750,14 +747,14 @@ class NoteDeFrais_modifier(UserPassesTestMixin, UpdateView, ):
 
 class NoteDeFrais_supprimer(UserPassesTestMixin, DeleteView, ):
     model = NoteDeFrais
-    template_name_suffix = '_supprimer'
+    template_name = 'defraiement/ndf_supprimer.html'
 
     def test_func(self):
         self.asso = testIsMembreAsso(self.request, self.request.session['asso_slug'])
         return self.asso.est_autorise(self.request.user) or self.request.user == self.object.profil
 
     def get_success_url(self):
-        return reverse('defraiement:ndf_list', kwargs={'asso_slug': self.asso.slug})
+        return reverse('defraiement:ndf_liste', kwargs={'asso_slug': self.asso.slug})
 
 
     def get_context_data(self, **kwargs):

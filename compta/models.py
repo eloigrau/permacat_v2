@@ -64,10 +64,22 @@ class BudgetProjet(models.Model):
     description = models.TextField(blank=True, null=True)
     actif = models.BooleanField(default=True)
     slug = models.SlugField(max_length=100)
-    coef_km = models.DecimalField(verbose_name="Coefficient du defraiement km",max_digits=5, decimal_places=3, default=0.6)
+    coef_km = models.DecimalField(verbose_name="Coefficient du defraiement km", max_digits=5, decimal_places=3, default=0.6)
+
+    budget_global_asso = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.titre} (Projet : {self.projet.titre})"
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude=exclude)
+        if self.projet and self.budget_global_asso:
+            if BudgetProjet.objects.filter(asso=self.projet.asso, budget_global_asso=True).exists():
+                raise ValidationError("Il ne peut y avoir qu'un seul budget global pour le collectif " + str(self.projet__asso))
+
+    @property
+    def asso(self):
+        return self.projet.asso
 
     @property
     def get_titre(self):

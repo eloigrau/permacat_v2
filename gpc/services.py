@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from .models import Proposal, Objection, ObjectionResolutionVote, PhaseVote
 from django.db import transaction
+from actstream import action
 
 def submit_proposal(proposal: Proposal) -> None:
     if proposal.status != Proposal.Status.DRAFT:
@@ -36,6 +37,12 @@ def close_clarifications(proposal: Proposal) -> None:
             f"Impossible de clôturer : Il faut que au moins {proposal.nbMinVote} personnes votent 'Pas de question'"
         )
 
+    action.send(proposal,
+                action_object=proposal,
+                url=proposal.get_absolute_url(),
+                verb="gpc_modif_" + proposal.asso.slug,
+                description="Passage à la phase des objections")
+
     proposal.status = Proposal.Status.OBJECTION_ROUND
     proposal.save()
 
@@ -53,8 +60,18 @@ def close_objections(proposal: Proposal) -> None:
 
 
     if not has_active_objections and has_objections:
+        action.send(proposal,
+                action_object=proposal,
+                url=proposal.get_absolute_url(),
+                verb="gpc_modif_" + proposal.asso.slug,
+                description="Proposition acceptée !!")
         proposal.status = Proposal.Status.ACCEPTED
     else:
+        action.send(proposal,
+                    action_object=proposal,
+                    url=proposal.get_absolute_url(),
+                    verb="gpc_modif_" + proposal.asso.slug,
+                    description="Passage à la phase de délibération")
         proposal.status = Proposal.Status.DELIBERATION
 
     proposal.save()
@@ -165,6 +182,12 @@ def close_deliberation(proposal: Proposal) -> None:
     proposal.status = Proposal.Status.ACCEPTED
     proposal.save()
 
+    action.send(proposal,
+                action_object=proposal,
+                url=proposal.get_absolute_url(),
+                verb="gpc_modif_" + proposal.asso.slug,
+                description="Proposition acceptée !!")
+
 
 def reformulate_proposal(proposal: Proposal, new_content: Proposal) -> None:
     if proposal.status != Proposal.Status.DELIBERATION:
@@ -179,6 +202,12 @@ def reformulate_proposal(proposal: Proposal, new_content: Proposal) -> None:
         vote.delete()
 
     proposal.status = Proposal.Status.OBJECTION_ROUND
+
+    action.send(proposal,
+                action_object=proposal,
+                url=proposal.get_absolute_url(),
+                verb="gpc_modif_" + proposal.asso.slug,
+                description="La proposition a été reformulée -> phase d'objections")
 
     proposal.history.create(content=proposal.content)
     proposal.title = new_content.title

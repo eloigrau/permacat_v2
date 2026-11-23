@@ -20,7 +20,7 @@ from bourseLibre.constantes import get_bx_icon, get_date_text
 from django.contrib import messages
 
 class Choix:
-    statut_projet = ('prop','Proposition de projet'), ("AGO","Fiche projet soumise à l'AGO"), ('accep',"Accepté par l'association"), ('refus',"Refusé par l'association" ), #("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
+    statut_projet = ('prop','proposition de projet'), ("cours","en cours"), ('susp',"En suspens"), ('refus',"Refusé par l'association" ),#("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
     type_projet = ('Part','Participation à un évènement'), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
     type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
                    ('Documentation','Documentation'),  \

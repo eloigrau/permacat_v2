@@ -198,7 +198,7 @@ class Transaction(models.Model):
         if self.type_transaction == 'TRANSFERT':
             if not self.budget_destination:
                 raise ValidationError({'budget_destination': "Un projet de destination est obligatoire pour un transfert."})
-            if self.projet == self.budget_destination:
+            if self.budget == self.budget_destination:
                 raise ValidationError({'budget_destination': "Le projet de destination doit être différent du projet d'origine."})
         elif self.budget_destination:
             # Si ce n'est pas un transfert mais qu'un projet a été sélectionné par erreur

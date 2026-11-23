@@ -175,7 +175,7 @@
 
 <div class="card shadow-sm">
     <div class="card-header bg-white py-3">
-        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Factures reçues : {{facturesrecue_total}} €</h5>
+        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Factures <a href="{% url 'compta:facturerecue_list' %}">reçues</a> : {{facturesrecue_total}} €</h5>
     </div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -192,7 +192,7 @@
                 {% for t in factures_recues %}
                 <tr>
                     <td class="text-muted">{{ t.date_echeance|date:"d/m/Y" }}</td>
-                    <td><strong>{{ t.titre }}</strong></td>
+                    <td style="width:30%"><strong><a href="{{t.get_download_url}}">{{ t.titre }}</a></strong></td>
                     <td>
                         <span class="badge bg-danger-subtle text-danger">Dépense</span>
                         <span class="badge bg-info "> {{ t.statut }}</span>
@@ -216,7 +216,7 @@
 
 <div class="card shadow-sm">
     <div class="card-header bg-white py-3">
-        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Factures émises : {{facturesemises_total}} €</h5>
+        <h5 class="mb-0 text-muted h6 text-uppercase"><i class="bi bi-list-ul me-2"></i>Factures <a href="{% url 'compta:facture_list' %}">émises</a> : {{facturesemises_total}} €</h5>
     </div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -233,13 +233,13 @@
                 {% for t in factures_emises %}
                 <tr>
                     <td class="text-muted">{{ t.date_echeance|date:"d/m/Y" }}</td>
-                    <td><strong>{{ t.number }}</strong></td>
+                    <td style="width:30%"><strong><a href="{{t.get_absolute_url}}">{{ t.number }}</a></strong></td>
                     <td>
-                        <span class="badge bg-danger-subtle text-danger">Dépense</span>
+                        <span class="badge bg-danger-subtle text-primary">Recette</span>
                         <span class="badge bg-info "> {{ t.status }}</span>
                     </td>
                     <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
-                        -{{ t.montant|floatformat:2 }} €
+                        -{{ t.total_ttc|floatformat:2 }} €
                     </td>
                     <td class="text-end ">
                         <a class="btn btn-warning btn-sm" href="{{ t.get_update_url }}"><i class="fa fa-edit"></i></a>

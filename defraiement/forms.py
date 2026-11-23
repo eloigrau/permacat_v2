@@ -217,9 +217,14 @@ class NoteDeFrais_form(forms.ModelForm):
         super(NoteDeFrais_form, self).__init__(*args, **kwargs)
         self.fields['participant'].choices = [("", "---------"), ] + [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
 
+        # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
+        if self.asso_slug:
+            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) + ")") for p in
+                                             Projet.objects.filter(asso__slug=self.asso_slug)]
+
     class Meta:
         model = NoteDeFrais
-        fields = ['titre', 'participant', 'date_note', 'montant', 'categorie', 'moyen', 'detail' ]
+        fields = ['titre', 'participant', 'date_note', 'montant', 'projet', 'categorie', 'moyen', 'detail' ]
 
 
         widgets = {

@@ -523,7 +523,7 @@ class FactureRecue(models.Model):
         verbose_name_plural = "Factures Reçues"
 
     def __str__(self):
-        return f"Facture reçue {self.titre}"
+        return f"Facture reçue {self.titre} - {self.identifiant}"
 
     def get_download_url(self):
         return reverse("compta:download_facturerecue", kwargs={"pk":self.pk})

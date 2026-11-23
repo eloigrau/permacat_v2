@@ -286,6 +286,8 @@ class NoteDeFrais(models.Model):
     detail = models.TextField(null=True, blank=False)
     asso = models.ForeignKey(Asso, on_delete=models.CASCADE, null=False)
 
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='ndf', blank=True, null=True)
+
     estArchive = models.BooleanField(default=False, verbose_name=_("Archiver la Note de frais"))
 
     def __str__(self):
@@ -297,4 +299,3 @@ class NoteDeFrais(models.Model):
         return reverse('defraiement:ndf_modifier', kwargs={'pk': self.pk})
     def get_delete_url(self):
         return reverse('defraiement:ndf_supprimer', kwargs={'pk': self.pk})
-

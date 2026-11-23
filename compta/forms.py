@@ -57,7 +57,6 @@ class AssoInfoForm(forms.ModelForm):
         fields = ['name', 'siret', 'adresse','iban', 'bic', 'is_default']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Mon Entreprise SAS'}),
-            'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: Service Client'}),
             'siret': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '14 chiffres'}),
             'iban': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'FR76 ...'}),
             'bic': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'XXXXXXXXXXX'}),

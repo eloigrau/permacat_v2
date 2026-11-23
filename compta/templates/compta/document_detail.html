@@ -33,7 +33,6 @@
             <div class="row mb-4">
                 <div class="col-6">
                     <h5 class="fw-bold text-dark">{{ document.asso_info.name }}</h5>
-                    {% if document.project %}<p class="mb-1 text-muted">{{ document.project }}</p>{% endif %}
                     {%if document.projet %}<p class="mb-0 small">Projet : {{ document.projet }}</p>{% endif %}
                     <p class="mb-0 small">SIRET : {{ document.asso_info.siret }}</p>
                     <p class="mb-0 small">IBAN : {{ document.asso_info.iban }}</p>

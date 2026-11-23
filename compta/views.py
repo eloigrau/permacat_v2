@@ -307,7 +307,7 @@ def unarchive_document(request, pk):
 def convert_devis_to_facture(request, pk):
     """Transforme un devis en facture."""
     devis = get_object_or_404(Facture, pk=pk, document_type=DocumentType.DEVIS)
-    new_facture = Facture(client=devis.client, project=devis.project,
+    new_facture = Facture(client=devis.client, projet=devis.projet,
                           status=DocumentStatus.DRAFT, date_echeance=devis.date_echeance,
                           is_archived=True
                           )
@@ -327,7 +327,7 @@ def convert_devis_to_facture(request, pk):
 def dupliquer_document(request, pk):
     """Transforme un devis en facture."""
     devis = get_object_or_404(Facture, pk=pk)
-    new_facture = Facture(client=devis.client, project=devis.project,
+    new_facture = Facture(client=devis.client, projet=devis.projet,
                           status=DocumentStatus.DRAFT, date_echeance=devis.date_echeance,
                           is_archived=False
                           )

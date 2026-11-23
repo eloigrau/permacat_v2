@@ -368,7 +368,6 @@ class Facture(models.Model):
     # Informations du Vendeur (mémorisées par facture)
     # Association au modèle AssoInfo
     asso_info = models.ForeignKey(AssoInfo, on_delete=models.PROTECT, related_name="documents", verbose_name="AssoInfo", null=False, )
-    project = models.CharField(max_length=255, blank=True, verbose_name="Projet / Marque commerciale")
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='facture_emise', blank=True, null=True)
 
     document_type = models.CharField(max_length=10, choices=DocumentType.choices, default=DocumentType.FACTURE)

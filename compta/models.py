@@ -107,7 +107,7 @@ class BudgetProjet(models.Model):
         return self.facturesemises_total
 
     def get_total_factures_emises_nonpayees(self):
-        return sum([t.total_ttc() for t in self.get_factures_emises().exclude(status='PAID')])
+        return sum([t.total_ttc for t in self.get_factures_emises().exclude(status='PAID')])
 
 
     def get_frais_km(self):
@@ -524,7 +524,6 @@ class FactureRecue(models.Model):
 
     def __str__(self):
         return f"Facture reçue {self.titre}"
-
 
     def get_download_url(self):
         return reverse("compta:download_facturerecue", kwargs={"pk":self.pk})

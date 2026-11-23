@@ -103,7 +103,7 @@ class BudgetProjet(models.Model):
 
     def get_total_factures_emises(self):
         if not hasattr(self, 'facturesemises_total'):
-            self.facturesemises_total = sum([t.total_ttc() for t in self.get_factures_emises()])
+            self.facturesemises_total = sum([float(t.total_ttc) for t in self.get_factures_emises()])
         return self.facturesemises_total
 
     def get_total_factures_emises_nonpayees(self):

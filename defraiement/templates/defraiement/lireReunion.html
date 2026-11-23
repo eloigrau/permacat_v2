@@ -55,7 +55,10 @@
         <div class="row">
             <div class="col-md-12 textcenter">
                 <p>
-                    {{reunion.get_logo_nomgroupe_html|safe}} - {{ reunion.get_categorie_display }}{% if reunion.projet %} - <a href="{{reunion.projet.get_absolute_url}}">Projet : {{ reunion.projet.titre }}</a>{% endif %}
+                    {{reunion.get_logo_nomgroupe_html|safe}} - <span class="badge badge-info">{{ reunion.get_categorie_display }}</span>
+                    {% if reunion.projet %} - <span class="badge badge-primary">
+                    <a href="{{reunion.projet.get_absolute_url}}">Projet : {{ reunion.projet.titre }}</span>
+                    </a>{% endif %}
                 </p>
                 <p class="infos  textepetit">rédigé le {{ reunion.date_creation|date:"DATE_FORMAT" }}, par <a
                         href="{% url 'profil_nom' reunion.auteur.username %}">{{reunion.auteur.username}}</a>, dernière

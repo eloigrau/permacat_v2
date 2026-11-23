@@ -8,6 +8,7 @@ from decimal import Decimal
 from django.db import models, transaction
 from django.utils import timezone
 from bourseLibre.utils import slugify_pcat_mini
+from django.db.models import Q
 
 from django.db.models import Sum
 
@@ -98,7 +99,7 @@ class BudgetProjet(models.Model):
             if not self.projet:
                 self.facturesemises = Facture.objects.none()
             else:
-                self.facturesemises = self.projet.facture_emise.exclude(status='REJECTED')
+                self.facturesemises = self.projet.facture_emise.exclude(Q(status='REJECTED')|Q(status='DRAFT'))
         return self.facturesemises
 
     def get_total_factures_emises(self):

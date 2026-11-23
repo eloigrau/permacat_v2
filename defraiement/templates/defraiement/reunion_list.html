@@ -109,7 +109,8 @@
         <thead><td>Categorie</td><td><b>Titre</b></td><td>Distance Totale</td><td>date</td><td>Commune</td><td>Nb de participant-es</td></thead>
     {% for reunion in reunion_list %}
         <tr>
-            <td class="textepetit " style="background-color:{{reunion.get_couleur}}; "> {{reunion.get_logo_nomgroupe_html|safe}}  -{{ reunion.get_categorie_display }} {% if reunion.projet %} - {{ reunion.projet }}{% endif %}</td>
+            <td class="textepetit " style="background-color:{{reunion.get_couleur}}; "> {{reunion.get_logo_nomgroupe_html|safe}}  - <span class="badge badge-info">{{ reunion.get_categorie_display }}</span>
+                {% if reunion.projet %} - <span class="badge badge-primary">{{ reunion.projet }}</span>{% endif %}</td>
             <td style="background-color:{{reunion.get_couleur}}; font-variant: small-caps;" >
         <a  href="{% url 'defraiement:lireReunion' slug=reunion.slug %}" class="boutonAtelieDefraiementList" ><b>{{ reunion.titre }}</b></a></td>
         <td class="textepetit" style="background-color:{{reunion.get_couleur}};"> {{reunion.getDistanceTotale}} km</td>

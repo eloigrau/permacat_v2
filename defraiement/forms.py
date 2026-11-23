@@ -19,11 +19,10 @@ class ReunionForm(forms.ModelForm):
         fields = ['categorie', 'projet', 'titre', 'description', 'start_time']
         widgets = {
             'contenu': SummernoteWidget(),
-              'start_time':  forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+              'start_time':  forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def __init__(self, asso_slug, *args, **kwargs):
@@ -65,7 +64,10 @@ class ReunionDupliquerForm(forms.ModelForm):
         fields = ['categorie', 'projet', 'titre', 'description', 'start_time']
         widgets = {
             'contenu': SummernoteWidget(),
-             'start_time':  forms.DateInput(),
+             'start_time':  forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def __init__(self, reunion, *args, **kwargs):
@@ -114,7 +116,10 @@ class ReunionChangeForm(forms.ModelForm):
         fields = ['asso', 'categorie', 'projet', 'titre', 'description', 'start_time', 'estArchive']
         widgets = {
             'contenu': SummernoteWidget(),
-            'start_time': forms.DateInput(),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def __init__(self, *args, **kwargs):
@@ -228,11 +233,10 @@ class NoteDeFrais_form(forms.ModelForm):
 
 
         widgets = {
-              'date_note':  forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+              'date_note':  forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'detail': SummernoteWidget(),
         }
 
@@ -249,6 +253,9 @@ class NoteDeFrais_update_form(forms.ModelForm):
         fields = ['titre', 'participant', 'date_note', 'montant', 'categorie', 'moyen', 'detail', 'estArchive' ]
 
         widgets = {
-            'date_note':  forms.DateInput(),
+            'date_note':  forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'detail': SummernoteWidget(),
         }

@@ -46,16 +46,14 @@ class ProduitCreationForm(forms.ModelForm):
 
         fields = ['nom_produit', 'description', 'date_debut', 'estUneOffre', 'asso', 'date_expiration', 'monnaies', 'prix', ]
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }, ),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -92,16 +90,14 @@ class Produit_aliment_CreationForm(ProduitCreationForm):
         model = Produit_aliment
         fields = fieldsCommunsProduits
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }, ),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -115,16 +111,14 @@ class Produit_vegetal_CreationForm(ProduitCreationForm):
         model = Produit_vegetal
         fields = fieldsCommunsProduits
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }, ),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -145,16 +139,14 @@ class Produit_service_CreationForm(ProduitCreationForm):
         model = Produit_service
         fields = fieldsCommunsProduits
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }, ),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -175,16 +167,14 @@ class Produit_objet_CreationForm(ProduitCreationForm):
         model = Produit_objet
         fields = fieldsCommunsProduits
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -194,16 +184,14 @@ class Produit_offresEtDemandes_CreationForm(ProduitCreationForm):
         model = Produit_offresEtDemandes
         fields = ['nom_produit', 'description', 'asso', 'date_debut', 'date_expiration', ]
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -218,16 +206,14 @@ class Produit_offresEtDemandes_modifier_form(ProduitModifierForm):
         fields = ['nom_produit', 'description', 'asso',
                   'monnaies', 'prix', 'date_debut', 'date_expiration', ]
         widgets = {
-            'date_debut': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'date_expiration': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_debut': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'date_expiration': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'description': SummernoteWidget(),
         }
 
@@ -549,11 +535,10 @@ class Adhesion_permacatForm(forms.ModelForm):
         model = Adhesion_permacat
         fields = '__all__'
         widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_cotisation': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def __init__(self, *args, **kwargs):
@@ -567,11 +552,10 @@ class Adhesion_assoForm(forms.ModelForm):
         model = Adhesion_asso
         fields = '__all__'
         widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_cotisation': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def __init__(self, asso_slug, *args, **kwargs):
@@ -701,16 +685,14 @@ class EvenementSalonForm(forms.ModelForm):
         model = EvenementSalon
         fields = ['start_time', 'titre_even', ]
         widgets = {
-            'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'end_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'end_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def save(self, request, salon):

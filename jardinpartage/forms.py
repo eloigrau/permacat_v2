@@ -76,16 +76,14 @@ class ArticleForm(forms.ModelForm):
         fields = ['jardin', 'categorie', 'titre', 'contenu', 'start_time', 'end_time', 'estModifiable']
         widgets = {
             'contenu': SummernoteWidget(),
-              'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-              'end_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+              'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+              'end_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def save(self, userProfile, sendMail=True):
@@ -115,11 +113,10 @@ class ArticleChangeForm(forms.ModelForm):
         fields = ['jardin', 'categorie', 'titre', 'contenu', 'start_time', 'estModifiable', 'estArchive']
         widgets = {
             'contenu': SummernoteWidget(),
-              'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+              'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
 class CommentaireArticleForm(forms.ModelForm):
@@ -154,16 +151,14 @@ class EvenementForm(forms.ModelForm):
         model = Evenement
         fields = ['start_time', 'titre_even', 'article', 'end_time', ]
         widgets = {
-            'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'end_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'end_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
 
@@ -172,16 +167,14 @@ class EvenementArticleForm(forms.ModelForm):
         model = Evenement
         fields = ['start_time', 'titre_even', 'end_time', ]
         widgets = {
-            'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-            'end_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
+            'end_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def save(self, id_article):

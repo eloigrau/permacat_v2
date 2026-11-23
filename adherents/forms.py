@@ -14,11 +14,10 @@ class AdhesionForm(forms.ModelForm):
         model = Adhesion
         fields = ['date_cotisation', 'montant', 'moyen', 'detail']
         widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_cotisation': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
 
         }
 
@@ -29,11 +28,10 @@ class AdhesionForm_adherent(forms.ModelForm):
         model = Adhesion
         fields = [ 'adherent', 'date_cotisation', 'montant', 'moyen', 'detail']
         widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_cotisation': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
 
         }
 
@@ -59,11 +57,10 @@ class AdherentForm_conf66(forms.ModelForm):
 
 
         widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_cotisation': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             }
 
     def __init__(self, asso_slug, *args, **kwargs):
@@ -95,11 +92,10 @@ class AdherentForm(forms.ModelForm):
 
 
         widgets = {
-            'date_cotisation': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'date_cotisation': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             }
 
     def __init__(self, asso_slug, *args, **kwargs):

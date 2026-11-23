@@ -24,7 +24,8 @@ class SuffrageForm(forms.ModelForm):
                 format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',
                        'type': 'date'
-                       }),
+                       }
+              ),
               'end_time': forms.DateInput(
                 format=('%d-%m-%Y'),
                 attrs={'class': 'form-control',

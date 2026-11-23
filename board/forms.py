@@ -13,7 +13,10 @@ class TacheForm(forms.ModelForm):
         model = Tache
         fields = ['titre', 'description', 'colonne', 'date_limite'] #'assignes',
         widgets = {
-            'date_limite': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'date_limite': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'titre': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'colonne': forms.Select(attrs={'class': 'form-select'}),

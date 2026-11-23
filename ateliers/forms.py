@@ -19,11 +19,10 @@ class AtelierForm(forms.ModelForm):
         widgets = {
             'description': SummernoteWidget(),
             'materiel': SummernoteWidget(),
-            'start_time': forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
             'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }
@@ -77,10 +76,10 @@ class AtelierDupliquerForm(forms.ModelForm):
         widgets = {
             'description': SummernoteWidget(),
             'materiel': SummernoteWidget(),
-            'start_time': forms.DateInput(
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
             'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }
@@ -144,11 +143,10 @@ class AtelierChangeForm(forms.ModelForm):
             'description': SummernoteWidget(),
             'materiel': SummernoteWidget(),
             'outils': SummernoteWidget(),
-            'start_time': forms.DateInput(
-                format=('%Y-%m-%d'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
+            'start_time': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'heure_atelier': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
             'heure_atelier_fin': forms.TimeInput(attrs={'class': 'form-control','type':"time", },format='%H:%M'),
         }

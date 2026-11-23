@@ -162,11 +162,10 @@ class InfoGraineForm(forms.ModelForm):
         fields = [ 'date_recolte', 'stock_quantite', 'description',]
         widgets = {
             'description': SummernoteWidget(),
-            'date_recolte': forms.DateInput(
-            format = ('%Y-%m-%d'),
-                     attrs = {'class': 'form-control',
-                              'type': 'date'
-                              }),
+            'date_recolte': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            },)
         }
 
 

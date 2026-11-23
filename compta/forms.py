@@ -33,7 +33,10 @@ class TransactionForm(forms.ModelForm):
         model = Transaction
         fields = ['budget', 'type_transaction', 'budget_destination', 'libelle', 'montant', 'date', 'description']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'}),
+            'date': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def __init__(self, budgetprojet, *args, **kwargs):
@@ -95,8 +98,10 @@ class FactureForm(forms.ModelForm):
             'client': forms.Select(attrs={'class': 'form-select'}),
             'projet': forms.Select(attrs={'class': 'form-select'}),
             #'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
-            'date_echeance': forms.DateInput(format=('%d-%m-%Y'),
-                                            attrs={'class': 'form-control', 'type': 'date'}),
+            'date_echeance': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def save(self, asso_info, doc_type):
@@ -129,7 +134,10 @@ class FactureChangeForm(forms.ModelForm):
             'client': forms.Select(attrs={'class': 'form-select'}),
             'projet': forms.Select(attrs={'class': 'form-select'}),
             #'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
-            'date_echeance': forms.DateInput(),
+            'date_echeance': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
         }
 
     def save(self, asso_info, doc_type):
@@ -228,7 +236,10 @@ class RecuFiscalForm(forms.ModelForm):
             'description',
         ]
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'date': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             'asso_info': forms.Select(attrs={'class': 'form-control'}),
             'nom_donateur': forms.TextInput(attrs={'class': 'form-control'}),
             'prenom_donateur': forms.TextInput(attrs={'class': 'form-control'}),
@@ -248,8 +259,10 @@ class FactureRecueForm(forms.ModelForm):
         fields = ['titre', 'doc', 'date_echeance', 'montant', 'projet', 'identifiant', 'statut']
         widgets = {
                 'titre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du produit ou service'}),
-                'date_echeance': forms.DateInput(format=('%d-%m-%Y'),
-                                            attrs={'class': 'form-control', 'type': 'date'}),
+                'date_echeance': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             }
 
     def save(self, asso):
@@ -274,7 +287,10 @@ class FactureRecueChangeForm(forms.ModelForm):
         fields = ['titre', 'date_echeance', 'montant', 'projet', 'identifiant', 'statut']
         widgets = {
                 'titre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du produit ou service'}),
-                'date_echeance': forms.DateInput(),
+                'date_echeance': forms.DateInput(format=('%Y-%m-%d'),
+                                          attrs={'class': 'form-control',
+                                               'type': 'date'
+                                            }),
             }
 
 

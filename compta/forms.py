@@ -115,6 +115,39 @@ class FactureForm(forms.ModelForm):
             self.fields['projet'].queryset = Projet.objects.filter(asso__slug=asso_slug, estArchive=False).order_by("titre")
 
 
+class FactureChangeForm(forms.ModelForm):
+    #def __init__(self, *args, **kwargs):
+        #super().__init__(*args, **kwargs)
+        #if not self.instance.pk and "asso_slug" in request.session:
+        #self.default_asso_info, created = AssoInfo.objects.get_or_create(asso__slug=Asso.objects.get(slug=request.session["asso_slug"]), is_default=True)
+            # if self.default_asso_info:
+            #     self.fields['asso_info'].initial = self.default_asso_info.pk
+
+    class Meta:
+        model = Facture
+        fields = ['client', 'projet', 'date_echeance']
+        widgets = {
+            'client': forms.Select(attrs={'class': 'form-select'}),
+            'projet': forms.Select(attrs={'class': 'form-select'}),
+            #'project': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Projet'}),
+            'date_echeance': forms.DateInput(),
+        }
+
+    def save(self, asso_info, doc_type):
+        self.instance.save(asso_info=asso_info, doc_type=doc_type)
+        super(FactureForm, self)
+        return self.instance
+
+    def __init__(self, *args, **kwargs):
+        # On extrait le paramètre personnalisé 'association' s'il est fourni
+        asso_slug = kwargs.pop('asso_slug', None)
+        super().__init__(*args, **kwargs)
+
+        if asso_slug:
+            # Filtrage du QuerySet du champ produit
+            self.fields['projet'].queryset = Projet.objects.filter(asso__slug=asso_slug, estArchive=False).order_by("titre")
+
+
 class FactureStatutForm(forms.ModelForm):
     class Meta:
         model = Facture

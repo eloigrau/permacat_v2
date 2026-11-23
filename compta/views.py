@@ -13,7 +13,7 @@ from .models import RecuFiscal, FactureRecue
 from bourseLibre.models import Asso
 from .forms import RecuFiscalForm, FactureRecueForm
 from django.db import IntegrityError
-from .forms import FactureForm, FactureItemFormSet, FactureStatutForm
+from .forms import FactureForm, FactureItemFormSet, FactureStatutForm, FactureChangeForm
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -244,7 +244,7 @@ def update_document(request, pk):
         messages.error(request, "Un document archivé ne peut pas être modifié.")
         return redirect('compta:document_detail', pk=document.pk)
 
-    form = FactureForm(request.POST or None, instance=document)
+    form = FactureChangeForm(request.POST or None, instance=document)
     formset = FactureItemFormSet(request.POST or None, instance=document)
 
     if form.is_valid() and formset.is_valid():

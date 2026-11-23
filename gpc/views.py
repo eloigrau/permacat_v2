@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.urls import reverse
+from django.db.models import Q
 
 from .models import Proposal, ClarificationQuestion, Objection, ObjectionResponse, ClarificationVoteOK, ObjectionVoteOK
 from . import services
@@ -25,18 +26,21 @@ class ProposalListView(TestMembreAssoMixin, ListView):
     def get_queryset(self):
         if "asso" in self.request.GET and not "base" in self.request.GET:
             self.request.session["asso_slug"] = self.request.GET["asso"]
-            qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.GET["asso"]).order_by("-updated_at")
+            self.qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.GET["asso"]).order_by("-updated_at")
         elif "asso_slug" in self.request.session and not "base" in self.request.GET:
-            qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.session["asso_slug"]).order_by("-updated_at")
+            self.qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).filter(asso__slug=self.request.session["asso_slug"]).order_by("-updated_at")
         else:
-            qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-updated_at")
+            self.qs = Proposal.objects.exclude(asso__slug__in=self.request.user.getListeSlugsAssos_nonmembre()).order_by("-updated_at")
 
-        return qs
+        return self.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['asso_slug'] = self.asso.slug
         context['asso_list'] = self.request.user.getListeSlugsNomsAssoEtPublic()
+        context['acceptes'] = self.qs.filter(status=Proposal.Status.ACCEPTED)
+        context['encours'] = self.qs.exclude(Q(status=Proposal.Status.ACCEPTED) | Q(status=Proposal.Status.REJECTED))
+        context['rejetes'] = self.qs.filter(status=Proposal.Status.REJECTED)
         return context
 
 

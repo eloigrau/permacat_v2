@@ -64,6 +64,7 @@ class BudgetProjet(models.Model):
     description = models.TextField(blank=True, null=True)
     actif = models.BooleanField(default=True)
     slug = models.SlugField(max_length=100)
+    coef_km = models.DecimalField(verbose_name="Coefficient du defraiement km",max_digits=5, decimal_places=3, default=0.6)
 
     def __str__(self):
         return f"{self.titre} (Projet : {self.projet.titre})"
@@ -161,7 +162,7 @@ class BudgetProjet(models.Model):
 
     def get_total_defraiements(self):
         if not hasattr(self, 'defraiements_total'):
-            self.defraiements_total = sum([t.get_total_frais_km() for t in self.get_defraiements()])
+            self.defraiements_total = sum([t.get_total_frais_km(taux=float(self.coef_km)) for t in self.get_defraiements()])
         return self.defraiements_total
 
     def get_ndf(self):

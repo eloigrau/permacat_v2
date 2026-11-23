@@ -15,6 +15,8 @@ urlpatterns = [
     path('budget/transaction/supprimer/<int:pk>/',
          login_required(views.SupprimerTransaction.as_view(), login_url='/auth/login/'), name='supprimer_transaction'),
     path('budget/ajouter/', views.ajouter_budgetProjet, name='ajouter_budgetProjet'),
+    path('budget/modifier/<int:pk>/', views.BudgetProjetUpdateView.as_view(), name='modifier_budgetProjet'),
+
     #path('compta/projet/ajouter/', views.ajouter_projet, name='ajouter_projet'),
 
     path('facturation/', views.accueil, name='facturation_accueil'),

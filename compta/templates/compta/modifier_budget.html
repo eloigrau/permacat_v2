@@ -1,0 +1,11 @@
+{% extends 'compta/base_compta.html' %}
+
+{% block title %}Ajouter un Budget |{% endblock %}
+
+{% block subtitle %}
+<h3><i class="bi bi-plus-circle me-2"></i> Modifier un Budget (associé à un Projet) {{object}} </h3>
+{% endblock subtitle %}
+
+{% block content %}
+{% include 'form_template.html'%}
+{% endblock %}

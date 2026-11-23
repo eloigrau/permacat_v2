@@ -14,7 +14,7 @@ from urllib import parse
 register = template.Library()
 
 class Constantes:
-    typesAvecEntete = ['Select', " NumberInput", "DateInput", "DateTimeInputWidget", "SummernoteWidget",
+    typesAvecEntete = ['Select', "NumberInput", "DecimalInput", "DateInput", "DateTimeInputWidget", "SummernoteWidget",
                        "CheckboxSelectMultiple", "TextInput", 'Textarea', "ClearableFileInput","TagWidget",
                        "TimeInput"]
     #typesAvecEntete = ['Select', " NumberInput", "DateInput","DateTimeInputWidget", "SummernoteWidget", "CheckboxSelectMultiple", "TextInput" ]#'Textarea',

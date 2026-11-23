@@ -17,6 +17,9 @@
         <a class="nav-link btn btn-success btn-sm text-white px-3" href="{% url 'compta:ajouter_transaction' budget.id %}">
             <i class="fa fa-plus"></i> Nouvelle Opération
         </a>
+        <a class="nav-link btn btn-warning btn-sm text-white px-3" href="{% url 'compta:modifier_budgetProjet' budget.id %}">
+            Modifier
+        </a>
     </div>
 </div>
 {% endblock %}
@@ -26,11 +29,11 @@
     <div class="d-flex justify-content-between align-items-start flex-wrap">
         <div>
             <a href="{{budget.budget_cercle.get_absolute_url}}">
-                <span class="badge bg-primary mb-2">Cercle: {{ budget.budget_cercle.titre }}</span>
+                <span class="badge bg-infi">Cercle: {{ budget.budget_cercle.titre }}</span>
             </a>
-            Projet: <a href="{{budget.projet.get_absolute_url}}">{{ budget.projet.titre }}</a>
+            <a href="{{budget.projet.get_absolute_url}}"><span class="badge bg-primary">Projet: {{ budget.projet.titre }}</span></a>
             <h1 class="h2 mb-1">{{ budget.titre }}</h1>
-            <p class="text-muted">{{ budget.description|default:"Pas de description disponible." }}</p>
+            <p class="text-muted">{{ budget.description|default:"" }}</p>
         </div>
         <div class="text-end">
             <small class="text-muted d-block">Solde</small>
@@ -65,8 +68,8 @@
                     <span class="text-danger">-{{ budget.total_depenses_nonpayees|floatformat:2 }} €</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
-                    <span>Dont <a href="{%url 'defraiement:reunions_asso' asso_slug=budget.projet.asso.slug %}?&projet_slug={{budget.projet.slug}}"> Defraiements</a></span>
-                    <span class="text-danger">-{{ defraiements|floatformat:2 }} €</span>
+                    <span>Dont <a href="{%url 'defraiement:reunions_asso' asso_slug=budget.projet.asso.slug %}?&projet_slug={{budget.projet.slug}}"> Defraiements (taux: {{budget.coef_km}} €/km )</a></span>
+                    <span class="text-danger">-{{ defraiements|floatformat:2 }} € </span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span>Dont <a href="{%url 'defraiement:ndf_liste' asso_slug=budget.projet.asso.slug %}?&projet_slug={{budget.projet.slug}}"> Notes de Frais</a></span>

@@ -88,7 +88,7 @@ def ajouter_transaction(request, projet_id):
 
 
 
-class ModifierTransaction(UpdateView):
+class ModifierTransaction(TestMembreAssoMixin, UpdateView):
     model = Transaction
     form_class = TransationChangeForm
     template_name_suffix = '_modifier'
@@ -111,7 +111,7 @@ class ModifierTransaction(UpdateView):
         return form
 
 
-class SupprimerTransaction(DeleteView): #DeleteAccess,
+class SupprimerTransaction(TestMembreAssoMixin, DeleteView): #DeleteAccess,
     model = Transaction
     template_name_suffix = '_supprimer'
 
@@ -123,6 +123,7 @@ class SupprimerTransaction(DeleteView): #DeleteAccess,
 
 @login_required
 def ajouter_budgetProjet(request):
+
     if "projet_slug" in request.GET:
         projet = Projet.objects.get(slug=request.GET["projet_slug"])
         asso_slug = projet.asso.slug
@@ -145,6 +146,15 @@ def ajouter_budgetProjet(request):
     return render(request, 'compta/ajouter_budget.html', {'form': form})
 
 
+class BudgetProjetUpdateView(TestMembreAssoMixin, UpdateView):
+    model = BudgetProjet
+    form_class = BudgetProjetForm
+    template_name = 'compta/modifier_budget.html'
+
+    def get_form(self):
+        return BudgetProjetForm(self.object.projet.asso.slug, self.object.projet, **self.get_form_kwargs())
+
+@login_required
 def generate_facture_pdf(request, facture_id):
     facture = get_object_or_404(Facture, pk=facture_id)
 
@@ -237,7 +247,7 @@ def create_document(request, doc_type=DocumentType.FACTURE):
         'title': f"Créer un {'devis' if doc_type == DocumentType.DEVIS else 'facture'}"
     })
 
-
+@login_required
 def update_document(request, pk):
     """Vue pour éditer un devis ou une facture existante."""
     document = get_object_or_404(Facture, pk=pk)
@@ -268,6 +278,7 @@ def update_document(request, pk):
     })
 
 
+@login_required
 def document_update_statut(request, pk):
     """Vue pour éditer un devis ou une facture existante."""
     document = get_object_or_404(Facture, pk=pk)
@@ -288,6 +299,7 @@ def document_update_statut(request, pk):
 # ARCHIVAGE & ACTIONS
 # -------------------------------------------------------------------
 
+@login_required
 def archive_document(request, pk):
     """Archive un document (soft delete)."""
     document = get_object_or_404(Facture, pk=pk)
@@ -306,6 +318,7 @@ def unarchive_document(request, pk):
     return redirect('compta:document_detail', pk=document.pk)
 
 
+@login_required
 def convert_devis_to_facture(request, pk):
     """Transforme un devis en facture."""
     devis = get_object_or_404(Facture, pk=pk, document_type=DocumentType.DEVIS)
@@ -326,6 +339,7 @@ def convert_devis_to_facture(request, pk):
     return redirect('compta:document_detail', pk=new_facture.pk)
 
 
+@login_required
 def dupliquer_document(request, pk):
     """Transforme un devis en facture."""
     devis = get_object_or_404(Facture, pk=pk)

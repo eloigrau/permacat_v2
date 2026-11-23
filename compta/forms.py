@@ -135,7 +135,7 @@ class FactureChangeForm(forms.ModelForm):
 
     def save(self, asso_info, doc_type):
         self.instance.save(asso_info=asso_info, doc_type=doc_type)
-        super(FactureForm, self)
+        super(FactureChangeForm, self)
         return self.instance
 
     def __init__(self, *args, **kwargs):

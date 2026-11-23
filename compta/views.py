@@ -646,5 +646,5 @@ class FactureRecueUpdateView(TestMembreAssoMixin, UpdateView):
 
 
     def form_valid(self, form):
-        self.object = form.save(asso=self.asso)
+        self.object = form.save()
         return HttpResponseRedirect(self.get_success_url())

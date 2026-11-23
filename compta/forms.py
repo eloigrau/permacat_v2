@@ -265,4 +265,4 @@ class FactureRecueForm(forms.ModelForm):
         if self.asso_slug:
             self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug)]
        # if projet:
-       #     self.fields['projet'].initial = projet
+       #     self.fields['projet'].initial = projet<

@@ -28,7 +28,7 @@
                     <td class="text-muted">{{ fact.date_echeance | date:'DATE_FORMAT'}}</td>
                     <td class="text-muted">{{ fact.montant}}</td>
                     <td class="text-end">
-                        <a href="{% url 'compta:facturerecue_update' fact.pk %}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ fact.get_update_url}}" class="btn btn-sm btn-outline-primary">
                             <i class="fa fas fa-pen"></i> Modifier
                         </a>
                     </td>

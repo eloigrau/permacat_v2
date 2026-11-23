@@ -642,3 +642,8 @@ class FactureRecueUpdateView(TestMembreAssoMixin, UpdateView):
         kwargs = super(FactureRecueUpdateView, self).get_form_kwargs(*args, **kwargs)
         kwargs['asso_slug'] = self.asso.slug
         return kwargs
+
+
+    def form_valid(self, form):
+        self.object = form.save(asso=self.asso)
+        return HttpResponseRedirect(self.get_success_url())

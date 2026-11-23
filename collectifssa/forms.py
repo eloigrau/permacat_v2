@@ -54,11 +54,13 @@ class InscriptionForm(forms.ModelForm):
              'msg': SummernoteWidget(),
         }
 
-    def save(self,):
+    def save(self,type_atelier):
         instance = super(InscriptionForm, self).save()
+        instance.type_atelier = type_atelier
+        instance.save()
         if not LOCALL:
-            sujet = '[Collectifssa] Nouvelle inscription'
-            message_html = "Inscription au CLA de : " + self.cleaned_data['nom'] + " , "+self.cleaned_data['email'] +" " + self.cleaned_data['msg']
+            sujet = '[Collectifssa] Nouvelle inscription à un atelier'
+            message_html = "Inscription de : " + self.cleaned_data['nom'] + " , "+self.cleaned_data['email'] +" " + self.cleaned_data['msg']
             send_mail(sujet, message_html,  SERVER_EMAIL, LIST_EMAIL_SUIVI, fail_silently=False, html_message=message_html)
 
 

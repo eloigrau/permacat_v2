@@ -29,17 +29,15 @@
         <div class="container">
             <div class="row justify-content-center align-items-center">
 
-                <div class="col-lg-10 col-12 mb-5">
+                <div class="col-lg-10 col-12 mb-2">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{% url 'collectifssa:accueil_collectifssa' %}">Accueil</a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'collectifssa:inscriptionCLA' %}">CLA</a></li>
-
                             <li class="breadcrumb-item active" aria-current="page">Covoiturage</li>
                         </ol>
                     </nav>
 
-                    <h2 class="text-white">Covoiturage du 17 juin</h2>
+                    <h4 class="text-white">Covoiturage</h4>
 
                 </div>
 
@@ -56,7 +54,7 @@
                     {% if deja_inscrit == 1 %}
                         Votre inscription pour le covoiturage a bien été enregistrée, Merci de votre participation !
                     {% else %}
-                        <p>Nous proposons de vous inscrire ci-dessous si vous souhaitez covoiturer pour venir à la rencontre du 17 juin. Nous vous recontacterons pour finaliser l'organisation. Merci !</p>
+                    <p>Nous proposons de vous inscrire ci-dessous si vous souhaitez covoiturer pour venir à la rencontre. Vous pouvez vous inscrire sur <a href="https://www.perma.cat/forum/articles/ssa/#ref-titre">notre forum</a> pour faciliter la communication. Nous vous recontacterons pour finaliser l'organisation. Merci !</p>
                     {% endif %}
                 </div>
             </div>

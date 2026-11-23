@@ -27,8 +27,9 @@ class InscriptionCLA(models.Model):
     email = models.EmailField(verbose_name=_("Email"))
     nom = models.CharField(max_length=250, verbose_name=_("Nom prénom / Raison sociale"),)
     msg = models.TextField(verbose_name=_("Message (facultatif)"), null=True, blank=True)
-    date = models.DateTimeField(verbose_name=_("Date"), default=timezone.now)
+    date = models.DateTimeField(verbose_name=_("Date"), auto_now_add=True)
     commentaire = models.TextField(verbose_name=_("Commentaire (interne)"), blank=True, null=True)
+    type_atelier = models.CharField(max_length=30)
 
     def __str__(self):
         return self.nom + ", " + self.email + "; " + str(self.msg)

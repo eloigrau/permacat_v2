@@ -94,6 +94,38 @@ def inscriptionCLA(request):
     return render(request, 'collectifssa/inscriptionCLA.html', {"deja_inscrit":0, "msg":msg, "form_captcha": form_captcha, "form_inscriptionCLA": form_inscriptionCLA })
 
 
+
+def inscription_atelier(request, type_atelier):
+    msg = None
+    if request.user.is_anonymous:
+        form_captcha = CaptchaForm(request.POST or None, )
+        form_inscription = InscriptionForm(request.POST or None)
+    else:
+        form_captcha = None
+        form_inscription = InscriptionForm(request.POST or None, initial={"nom":request.user.username, "email":request.user.email, })
+
+        if InscriptionCLA.objects.filter(nom=request.user.username, email=request.user.email, type_atelier=type_atelier).exists():
+            return render(request, f'collectifssa/inscription_{type_atelier}.html', {"deja_inscrit":1,"msg":msg, "form_captcha": form_captcha, "form_inscription": form_inscription })
+
+    if form_inscription.is_valid():
+        form_inscription.save(type_atelier)
+        try:
+            admin = Profil.objects.get(username="Eloi")
+            if request.user.is_anonymous:
+                action.send(admin, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
+                    description=f"inscription Mail Atelier {type_atelier} (anonyme) " + form_inscription.cleaned_data["email"] )
+            else:
+                action.send(admin, verb='envoi_salon_prive',  url="/gestion/collectifssa/message_collectifssa/",
+                    description=f"inscription Mail {type_atelier}")
+        except :
+            pass
+        msg = "Votre inscription a bien été enregistré-e, merci !"
+        return render(request, f'collectifssa/inscription_{type_atelier}.html', {"deja_inscrit":2, "msg":msg, "form_captcha": form_captcha, "form_inscription": form_inscription })
+
+
+    return render(request, f'collectifssa/inscription_{type_atelier}.html', {"deja_inscrit":0, "msg":msg, "form_captcha": form_captcha, "form_inscription": form_inscription })
+
+
 def inscriptionCovoitCLA(request):
     msg = None
     deja_inscrit = 0

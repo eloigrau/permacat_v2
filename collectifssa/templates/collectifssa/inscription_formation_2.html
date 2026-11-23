@@ -1,0 +1,275 @@
+{% extends 'collectifssa/base_ssa.html' %}
+{% block content %}
+{% load static %}
+<main>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'collectifssa:accueil_collectifssa' %}">
+                <i class="bi-back"></i>
+                <span>Collectif SSA 66</span>
+            </a>
+
+            <div class="d-lg-none ms-auto me-4">
+                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="d-none d-lg-block">
+                <a href="{% url 'blog:index_asso' asso='ssa' %}" class="navbar-icon bi-person"></a>
+            </div>
+        </div>
+        </div>
+    </nav>
+    <header class="site-header d-flex flex-column justify-content-center align-items-center" id="section_1">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+
+                <div class="col-lg-10 col-12 mb-5">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'collectifssa:accueil_collectifssa' %}">Accueil</a></li>
+
+                            <li class="breadcrumb-item active" aria-current="page">Inscription à l'atelier de formation</li>
+                        </ol>
+                    </nav>
+
+                    <h2 class="text-white">Inscription à l'atelier de formation "Gouvernance démocratique et prises de décision"</h2>
+
+                </div>
+
+
+            </div>
+        </div>
+    </header>
+
+
+    <section class="topics-detail-section section-padding" id="topics-detail">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                    <h3 class="mb-4">Rencontre Sécurité Sociale de l'Alimentation - SSA66</h3>
+                    <p>Samedi 5 décembre 2026 de 9h30 à 15h</p>
+
+  <style>
+    .ssa-card {
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 2.5rem;
+      background-color: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-top: 5px solid #2e6f40; /* Vert sobre évoquant l'alimentation durable */
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #2c3e50;
+      line-height: 1.65;
+    }
+
+    .ssa-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #1e4620;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      line-height: 1.35;
+    }
+
+    .ssa-location {
+      display: inline-block;
+      background-color: #f3f7f4;
+      color: #2e6f40;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .ssa-location a {
+      color: #1e4620;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .ssa-location a:hover {
+      color: #d97706;
+    }
+
+    .ssa-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #2c3e50;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.4rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .ssa-list {
+      padding-left: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ssa-list li {
+      margin-bottom: 0.75rem;
+    }
+
+    .ssa-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+
+    .ssa-tag {
+      background-color: #fef3c7;
+      color: #92400e;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+    }
+
+    .ssa-schedule {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .ssa-schedule li {
+      display: flex;
+      align-items: baseline;
+      padding: 0.65rem 0;
+      border-bottom: 1px dashed #e5e7eb;
+    }
+
+    .ssa-schedule li:last-child {
+      border-bottom: none;
+    }
+
+    .ssa-time {
+      flex: 0 0 115px;
+      font-weight: 700;
+      color: #2e6f40;
+      font-size: 0.95rem;
+    }
+
+    .ssa-desc {
+      flex: 1;
+    }
+
+    @media (max-width: 540px) {
+      .ssa-card {
+        padding: 1.5rem;
+      }
+      .ssa-schedule li {
+        flex-direction: column;
+      }
+      .ssa-time {
+        flex: none;
+        margin-bottom: 0.2rem;
+      }
+    }
+  </style>
+  <article class="ssa-card">
+    <h1 class="ssa-title">
+      « Principes généraux de la Sécurité sociale de l’Alimentation et fonctionnement pratique de Caisses locales de l’alimentation existantes »
+    </h1>
+
+    <div class="ssa-location">
+      📍 Accueillie dans les locaux du Secours Catholique,
+      <a href="https://maps.app.goo.gl/ZbETuRZzancFtJjJ9" target="_blank" rel="noopener noreferrer">5 rue des Romarins à Perpignan</a>
+    </div>
+
+    <h2 class="ssa-section-title">Contenu et objectifs</h2>
+    <p>
+      Explorer le fonctionnement d’une caisse en croisant des expériences d’ailleurs avec nos critères et valeurs pour :
+    </p>
+    <ul class="ssa-list">
+      <li>Acquérir une culture commune de la SSA à partir d’une vision générale.</li>
+      <li>
+        Donner une approche concrète et stimuler la réflexion sur notre projet <strong>SSA66</strong> : ateliers thématiques en petits groupes construits à partir des expériences existantes de caisses en Occitanie notamment, autour des sujets suivants :
+        <div class="ssa-tags">
+          <span class="ssa-tag">Conventionnement</span>
+          <span class="ssa-tag">Modèle économique, cotisation, monnaie…</span>
+          <span class="ssa-tag">Gouvernance</span>
+          <span class="ssa-tag">Mobilisation citoyenne</span>
+        </div>
+      </li>
+    </ul>
+
+    <h2 class="ssa-section-title">Programme de la journée</h2>
+    <ul class="ssa-schedule">
+      <li>
+        <span class="ssa-time">9h00</span>
+        <span class="ssa-desc">Accueil des participants</span>
+      </li>
+      <li>
+        <span class="ssa-time">9h30 – 13h00</span>
+        <span class="ssa-desc">Présentation des contenus et ateliers animés par des membres du <strong>Collectif SSA66</strong> <em>(avec une pause)</em></span>
+      </li>
+      <li>
+        <span class="ssa-time">13h00 – 15h00</span>
+        <span class="ssa-desc">Temps convivial sur le mode d’une <strong>auberge catalane gourmande</strong> (chacun·e offre en partage des mets ou boissons de son goût)</span>
+      </li>
+    </ul>
+  </article>
+
+                          </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                    <h5>Inscription</h5>
+                   <p>
+                       {% if deja_inscrit == 1 %}
+                        Vous êtes déjà inscrit-e pour cette rencontre. Merci de <a href="{% url 'collectifssa:accueil_collectifssa' %}">nous prévenir</a> si vous ne pouvez finalement pas venir le 17 juin
+                    {% elif deja_inscrit == 2 %}
+                        Votre inscription a bien été enregistrée, Merci de votre participation ! pensez à le noter dans votre agenda ;)
+                    {% else %}
+                        Alors si vous souhaitez participer, merci de vous inscrire ci-dessous !
+                   </p>
+                    <form class="custom-form" method="post" role="form">
+                        {% csrf_token %}
+                           {% include 'form_template2bis.html' with form=form_inscription %}
+
+                            {% if request.user.is_anonymous %}
+                            <div class="col-md-12 textcenter">
+                                <div class="container" style="width:150px">
+                                    {% include 'form_template2bis.html' with form=form_captcha %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">S'inscrire à la rencontre
+                                </button>
+                            </div>
+                            {% if msg %}
+                            <p>{{msg|safe}}</p>
+                            {% endif %}
+                    </form>
+                    {% endif %}
+
+                </div>
+
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-lg-8 col-12 m-auto">
+                    <h5>Covoiturage</h5>
+                   <p>
+                       Si vous souhaitez participer au covoiturage, vous pouvez <a href="{% url 'collectifssa:inscriptionCovoitCLA' %}"> vous inscrire ici </a>  (vous recherchez ou vous proposez une place dans un véhicule)
+                   </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

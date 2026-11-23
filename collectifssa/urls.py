@@ -9,6 +9,7 @@ app_name = 'collectifssa'
 urlpatterns = [
     path('', views.accueil, name="accueil_collectifssa"),
     path('inscriptionCLA', views.inscriptionCLA, name="inscriptionCLA"),
+    path('inscription_atelier/<str:type_atelier>', views.inscription_atelier, name="inscription_atelier"),
     path('inscriptionCovoitCLA', views.inscriptionCovoitCLA, name="inscriptionCovoitCLA"),
     path('voirMessages', views.voirMessages, name="voirMessages"),
     path('modifierComm_msg/<int:pk>', login_required(views.CommentaireMessage_modifier.as_view(), login_url='/auth/login/'), name="modifierComm_msg"),

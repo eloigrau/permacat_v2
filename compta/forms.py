@@ -15,7 +15,7 @@ class BudgetProjetForm(forms.ModelForm):
     def __init__(self, asso_slug, projet, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
-        self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=asso_slug)]
+        self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=asso_slug, estArchive=False).order_by("titre")]
         if projet:
             self.fields['projet'].initial = projet
 
@@ -263,7 +263,7 @@ class FactureRecueForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
         if self.asso_slug:
-            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug)]
+            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug, estArchive=False).order_by("titre")]
        # if projet:
        #     self.fields['projet'].initial = projet<
 
@@ -283,6 +283,6 @@ class FactureRecueChangeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
         if self.asso_slug:
-            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug)]
+            self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) +")") for p in Projet.objects.filter(asso__slug=self.asso_slug, estArchive=False).order_by("titre")]
        # if projet:
        #     self.fields['projet'].initial = projet<

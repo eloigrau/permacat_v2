@@ -244,9 +244,8 @@
                 {% for t in factures_emises %}
                 <tr>
                     <td class="text-muted">{{ t.date_echeance|date:"d/m/Y" }}</td>
-                    <td style="width:30%"><strong><a href="{{t.get_absolute_url}}">{{ t.number }}</a></strong></td>
+                    <td style="width:30%"><strong><a href="{{t.get_absolute_url}}">{{ t.number }} - {{ t.client.name }} </a></strong></td>
                     <td>
-
                         <span class="badge bg-info "> {{ t.get_status_display }}</span>
                     </td>
                     <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">

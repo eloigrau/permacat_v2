@@ -218,9 +218,9 @@ class NoteDeFrais_form(forms.ModelForm):
         self.fields['participant'].choices = [("", "---------"), ] + [(x.id, x.nom) for x in ParticipantReunion.objects.filter(asso__slug=asso_slug).order_by('nom')]
 
         # Rendre le projet de destination optionnel au niveau HTML (la validation se fait côté modèle)
-        if self.asso_slug:
+        if asso_slug:
             self.fields['projet'].choices = [(p.id, p.titre + " (Cercle " + str(p.cercle) + ")") for p in
-                                             Projet.objects.filter(asso__slug=self.asso_slug)]
+                                             Projet.objects.filter(asso__slug=asso_slug, estArchive=False).order_by("titre")]
 
     class Meta:
         model = NoteDeFrais
@@ -249,11 +249,6 @@ class NoteDeFrais_update_form(forms.ModelForm):
         fields = ['titre', 'participant', 'date_note', 'montant', 'categorie', 'moyen', 'detail', 'estArchive' ]
 
         widgets = {
-              'date_note':  forms.DateInput(
-                format=('%d-%m-%Y'),
-                attrs={'class': 'form-control',
-                       'type': 'date'
-                       }),
-
+            'date_note':  forms.DateInput(),
             'detail': SummernoteWidget(),
         }

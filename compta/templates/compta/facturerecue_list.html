@@ -15,6 +15,7 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
+                    <th>Id</th>
                     <th>Titre</th>
                     <th>Echéance</th>
                     <th>Projet</th>
@@ -25,6 +26,7 @@
             <tbody>
                 {% for fact in factures %}
                 <tr>
+                    <td class="">{{ fact.identifiant }}</a></td>
                     <td class="fw-bold"><a href="{{fact.get_download_url}}">{{ fact.titre }}</a></td>
                     <td class="text-muted">{{ fact.date_echeance | date:'DATE_FORMAT'}}</td>
                     <td class="text-muted">{{ fact.projet}}</td>

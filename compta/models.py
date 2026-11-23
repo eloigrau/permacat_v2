@@ -156,9 +156,20 @@ class BudgetProjet(models.Model):
             self.defraiements = self.projet.defraiement_km.all()
         return self.defraiements
 
+    def get_defraiements(self):
+        if not hasattr(self, 'defraiements'):
+            self.defraiements = self.projet.defraiement_km.all()
+        return self.defraiements
+
+
     def get_total_defraiements(self):
         if not hasattr(self, 'defraiements_total'):
             self.defraiements_total = sum([t.get_total_frais_km() for t in self.get_defraiements()])
+        return self.defraiements_total
+
+    def get_total_ndf(self):
+        if not hasattr(self, 'defraiements_total'):
+            self.ndf_total = sum([float(t.montant) for t in self.get_ndf() if t.montant])
         return self.defraiements_total
 
     #def ecart_previsionnel(self):
@@ -236,10 +247,6 @@ class DocumentStatus(models.TextChoices):
     PAID = 'PAID', 'Payé'
 
 
-class FactureRecueStatus(models.TextChoices):
-    RECUE = 'RECUE', 'Reçue (non payée)'
-    PAYEE = 'PAYEE', 'Payée'
-    ANNULEE = 'ANNULEE', 'Annulée'
 
 # Sur ton modèle Facture (ou un modèle générique Document) :
 class Client(models.Model):
@@ -505,6 +512,10 @@ class RecuFiscal(models.Model):
         super().save(*args, **kwargs)
 
 
+class FactureRecueStatus(models.TextChoices):
+    RECUE = 'RECUE', 'Reçue (non payée)'
+    PAYEE = 'PAYEE', 'Payée'
+    ANNULEE = 'ANNULEE', 'Annulée'
 
 
 class FactureRecue(models.Model):

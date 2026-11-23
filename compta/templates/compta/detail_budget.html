@@ -195,7 +195,7 @@
                     <td style="width:30%"><strong><a href="{{t.get_download_url}}">{{ t.titre }}</a></strong></td>
                     <td>
                         <span class="badge bg-danger-subtle text-danger">Dépense</span>
-                        <span class="badge bg-info "> {{ t.statut }}</span>
+                        <span class="badge bg-info "> {{ t.get_statut_display }}</span>
                     </td>
                     <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
                         -{{ t.montant|floatformat:2 }} €
@@ -236,7 +236,7 @@
                     <td style="width:30%"><strong><a href="{{t.get_absolute_url}}">{{ t.number }}</a></strong></td>
                     <td>
                         <span class="badge bg-danger-subtle text-primary">Recette</span>
-                        <span class="badge bg-info "> {{ t.status }}</span>
+                        <span class="badge bg-info "> {{ t.get_status_display }}</span>
                     </td>
                     <td class="textcenter fw-bold {% if t.type_transaction == 'RECETTE' %}text-success{% else %}text-danger{% endif %}">
                         -{{ t.total_ttc|floatformat:2 }} €

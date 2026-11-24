@@ -20,7 +20,7 @@ from bourseLibre.constantes import get_bx_icon, get_date_text
 from django.contrib import messages
 
 class Choix:
-    statut_projet = ('bprop','proposition de projet'), ("aencours","en cours"), ('csusp',"En suspens"), ('term',"Projet terminé" ), ('drefus',"Refusé par l'association" ),#("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
+    statut_projet = ('bprop','Proposition'), ("aencours","En cours"), ('csusp',"En suspens"), ('term',"Projet terminé" ), ('drefus',"Refusé" ),#("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
     type_projet = ('Part','Participation à un évènement'), ('Projlong','Projet a long terme'), ('Projcourt','Projet a court terme'), ('Projponct','Projet ponctuel'),
     type_annonce_base = ('Annonce','Information'), ('Administratif','Organisation'), ('Agenda','Evenement / Agenda'),  ('Chantier','Atelier/Chantier participatif'),\
                    ('Documentation','Documentation'),  \
@@ -128,6 +128,13 @@ class Choix:
     "ppam":"#C9E182",
     }
     couleurs_projets = {
+        'aencours':"#d0e8da",
+        'term':"#dcc0de",
+        'bprop':"#d1d0dc",
+        'csusp':"#ffc09f",
+        'drefus':"#e4f9d4",
+    }
+    couleurs_projets_type = {
         'Part':"#d0e8da", 'AGO':"#dcc0de", 'Projlong':"#d1d0dc", 'Projcourt':"#ffc09f", 'Projponct':"#e4f9d4",
     }
 
@@ -860,7 +867,7 @@ class Projet(models.Model):
     @property
     def get_couleur(self):
         try:
-            return Choix.couleurs_projets[str(self.categorie)]
+            return Choix.couleurs_projets[str(self.statut)]
         except:
             return Choix.couleurs_annonces["Autre"]
 

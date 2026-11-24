@@ -309,7 +309,7 @@ class ProjetChangeForm(forms.ModelForm):
 
     class Meta:
         model = Projet
-        fields = ['asso', 'categorie', 'cercle', 'coresponsable', 'titre', 'contenu', 'tags', 'lien_document', 'start_time', 'estArchive']
+        fields = ['asso', 'categorie', 'statut', 'cercle', 'coresponsable', 'titre', 'contenu', 'tags', 'lien_document', 'start_time', 'estArchive']
         widgets = {
             'contenu': SummernoteWidget(),
               'start_time': forms.DateInput(format=('%Y-%m-%d'),

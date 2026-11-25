@@ -251,7 +251,7 @@ class Transaction(models.Model):
 
 
     def get_absolute_url(self):
-        return self.budget.get_absolute_url
+        return self.budget.get_absolute_url()
 
     def get_update_url(self):
         return reverse('compta:modifier_transaction', kwargs={'pk':self.pk})

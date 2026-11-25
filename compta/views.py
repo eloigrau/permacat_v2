@@ -117,7 +117,7 @@ class SupprimerTransaction(TestMembreAssoMixin, DeleteView): #DeleteAccess,
 
     #    fields = ['user','site_web','description', 'competences', 'adresse', 'avatar', 'inscrit_newsletter']
     def form_valid(self, form):
-        success_url = self.object.budget.get_absolute_url
+        success_url = self.object.budget.get_absolute_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
@@ -154,9 +154,16 @@ class BudgetProjetUpdateView(TestMembreAssoMixin, UpdateView):
     def get_form(self):
         return BudgetProjetForm(self.object.projet.asso.slug, self.object.projet, **self.get_form_kwargs())
 
+    def form_valid(self, form):
+        self.object = form.save()
+        return redirect(self.object.get_absolute_url())
+
 @login_required
 def generate_facture_pdf(request, facture_id):
     facture = get_object_or_404(Facture, pk=facture_id)
+
+    if not testIsMembreAsso_bool(request, facture.asso.slug):
+        return HttpResponseForbidden("Désolé, vous n'avez pas l'autorisation ")
 
     context = {
         'facture': facture,

@@ -209,11 +209,15 @@ class Comm_adh_form(forms.ModelForm):
         model = Comm_adherent
         fields = ['commentaire']
 
-
+def test_codepostal(value):
+    if value.isdigit()==False:
+        raise ValidationError('Le code postal doit contenir des chiffres ')
+    if len(value) > 5:
+        raise ValidationError('Le code postal ne doit pas avoir plus de 5 chiffres')
 
 class Contact_form(forms.ModelForm):
     telephone = forms.CharField(label="Téléphone", required=False)
-    code_postal = forms.CharField(label="Code postal*", required=False)
+    code_postal = forms.CharField(label="Code postal*", required=False, validators=[test_codepostal])
     commune = forms.CharField(label="Commune",  required=False)
     rue = forms.CharField(label="Rue", required=False)
     #adherent =  forms.ModelChoiceField(queryset=Adherent.objects.order_by('nom'), required=False,

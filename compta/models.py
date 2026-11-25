@@ -20,13 +20,25 @@ def get_upload_path(instance, filename):
     return file_path
 
 def facture_get_upload_path(instance, filename):
-    name, ext = filename.split('.')
+    splitted = filename.split('.')
+    if len(splitted) == 2:
+        name, ext = splitted[0], splitted[1]
+    elif len(splitted) > 2:
+        name, ext = splitted[:-1], splitted[-1]
+    else:
+        name, ext = splitted, "pdf"
     file_path = 'documents/{asso}/{annee}/compta/factures_emises/{name}.{ext}'.format(
          asso=instance.asso.slug, annee=instance.annee.year, name=name, ext=ext)
     return file_path
 
 def facturerecue_get_upload_path(instance, filename):
-    name, ext = filename.split('.')
+    splitted = filename.split('.')
+    if len(splitted) == 2:
+        name, ext = splitted[0], splitted[1]
+    elif len(splitted) > 2:
+        name, ext = splitted[:-1], splitted[-1]
+    else:
+        name, ext = splitted, "jpg"
     file_path = 'documents/{asso}/{annee}/compta/factures_recues/{name}.{ext}'.format(
          asso=instance.asso.slug, annee=instance.date_echeance.year, name=name, ext=ext)
     return file_path
@@ -85,10 +97,8 @@ class BudgetProjet(models.Model):
     def get_titre(self):
         return self.titre
 
-    @property
     def get_absolute_url(self):
         return reverse('compta:detail_budget', kwargs={'budget_id':self.id})
-
 
     def get_factures_recues(self):
         if not hasattr(self, 'facturesrecues'):
@@ -236,7 +246,7 @@ class Transaction(models.Model):
 
     def __str__(self):
         if self.type_transaction == 'TRANSFERT':
-            return f"TRANSFERT: {self.projet.titre} → {self.budget_destination.titre} ({self.montant}€)"
+            return f"TRANSFERT: {self.budget.titre} → {self.budget_destination.titre} ({self.montant}€)"
         return f"{self.type_transaction} - {self.libelle} ({self.montant}€)"
 
 

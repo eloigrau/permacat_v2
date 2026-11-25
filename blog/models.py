@@ -17,7 +17,6 @@ from django.core.validators import MinLengthValidator
 from django.utils.translation import gettext_lazy as _
 import uuid
 from bourseLibre.constantes import get_bx_icon, get_date_text
-from django.contrib import messages
 
 class Choix:
     statut_projet = ('bprop','Proposition'), ("aencours","En cours"), ('csusp',"En suspens"), ('term',"Projet terminé" ), ('drefus',"Refusé" ),#("0", "Cercle Ancrage"), ("1", "Cercle Jardins"), ("2", "Cercle Education"), ("3", "Cercle Evenement")
@@ -571,15 +570,12 @@ class LienArticle(models.Model):
             return "(" + str(self.nom) + ") " + str(self.url_dest)
         return str(self.url_dest)
 
-    @property
     def get_absolute_url(self):
         return self.article.get_absolute_url()
 
-    @property
     def get_update_url(self):
         return reverse('blog:modifierLienArticle',  kwargs={'slug_lien':self.article.slug,})
 
-    @property
     def get_delete_url(self):
         return reverse('blog:supprimerLienArticle',  kwargs={'slug_lien':self.article.slug,})
     #
